@@ -58,12 +58,13 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   for(int bank = 0; bank < 2; ++bank)
     VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
-  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBank);
+  myLabelColumn.emplace_back(myBankLabel);
 
   // The data fetcher registers, each a labelled row of a grid
   myFetcherLabel = new StaticTextWidget(boss, _font, "Data fetchers");
@@ -109,7 +110,7 @@ void CartridgeDPCWidget::layoutContent(GUI::BoxLayout& col) const
                     {myCountersLabel, indent}, {myFlagsLabel, indent}});
   GUI::alignLabels({{myMusicModeLabel}, {myRandomLabel}});
 
-  col.addAuto(anchoredItem(myBank));
+  col.addAuto(labeledRow(myBankLabel, myBank));
 
   col.addSpace(_lineHeight);
   col.addAuto(anchoredItem(myFetcherLabel));

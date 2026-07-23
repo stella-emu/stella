@@ -96,17 +96,26 @@ class InputDialog : public Dialog
 
     CheckboxWidget*   mySAPort{nullptr};
 
+    StaticTextWidget* myAVoxPortLabel{nullptr};
     PopUpWidget*      myAVoxPort{nullptr};
 
+    StaticTextWidget* myDigitalDeadzoneLabel{nullptr};
     SliderWidget*     myDigitalDeadzone{nullptr};
+    StaticTextWidget* myAnalogDeadzoneLabel{nullptr};
     SliderWidget*     myAnalogDeadzone{nullptr};
+    StaticTextWidget* myPaddleSpeedLabel{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
+    StaticTextWidget* myPaddleLinearityLabel{nullptr};
     SliderWidget*     myPaddleLinearity{nullptr};
+    StaticTextWidget* myDejitterBaseLabel{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
+    StaticTextWidget* myDejitterDiffLabel{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
+    StaticTextWidget* myDPaddleSpeedLabel{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
     StaticTextWidget* myAnalogPaddleLabel{nullptr};
     CheckboxWidget*   myAutoFire{nullptr};
+    StaticTextWidget* myAutoFireRateLabel{nullptr};
     SliderWidget*     myAutoFireRate{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myModCombo{nullptr};
@@ -115,11 +124,16 @@ class InputDialog : public Dialog
     ButtonWidget*     myJoyDlgButton{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
 
+    StaticTextWidget* myMouseControlLabel{nullptr};
     PopUpWidget*      myMouseControl{nullptr};
     StaticTextWidget* myMouseSensitivity{nullptr};
+    StaticTextWidget* myMPaddleSpeedLabel{nullptr};
     SliderWidget*     myMPaddleSpeed{nullptr};
+    StaticTextWidget* myTrackBallSpeedLabel{nullptr};
     SliderWidget*     myTrackBallSpeed{nullptr};
+    StaticTextWidget* myDrivingSpeedLabel{nullptr};
     SliderWidget*     myDrivingSpeed{nullptr};
+    StaticTextWidget* myCursorStateLabel{nullptr};
     PopUpWidget*      myCursorState{nullptr};
     CheckboxWidget*   myGrabMouse{nullptr};
 

@@ -49,10 +49,11 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   // Every widget is created at a placeholder position; reflow() positions them
-  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  myLabelColumn.emplace_back(myBank);
+  myLabelColumn.emplace_back(myBankLabel);
 
   // Fast Fetch flag, and (CDFJ+) the offset it fetches from
   myFastFetch = new CheckboxWidget(boss, _font, "Fast Fetcher enabled");
@@ -194,7 +195,7 @@ void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
 
   // The bank selector, with the fast fetcher beside it
   auto top = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  top->addAuto(anchoredItem(myBank));
+  top->addAuto(labeledRow(myBankLabel, myBank));
   top->addAuto(anchoredItem(myFastFetch));
   col.addAuto(std::move(top));
 

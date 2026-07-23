@@ -75,18 +75,22 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   };
 
   myLeftPortLabel = new StaticTextWidget(this, font, "Left port");
-  myLeft1Port = new PopUpWidget(this, font, pwidth, ctrls, "P1");
+  myLeft1PortLabel = new StaticTextWidget(this, font, "P1");
+  myLeft1Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myLeft1Port);
   myLeft1PortDetected = detectedLabel();
-  myLeft2Port = new PopUpWidget(this, font, pwidth, ctrls, "P3");
+  myLeft2PortLabel = new StaticTextWidget(this, font, "P3");
+  myLeft2Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myLeft2Port);
   myLeft2PortDetected = detectedLabel();
 
   myRightPortLabel = new StaticTextWidget(this, font, "Right port");
-  myRight1Port = new PopUpWidget(this, font, pwidth, ctrls, "P2");
+  myRight1PortLabel = new StaticTextWidget(this, font, "P2");
+  myRight1Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myRight1Port);
   myRight1PortDetected = detectedLabel();
-  myRight2Port = new PopUpWidget(this, font, pwidth, ctrls, "P4");
+  myRight2PortLabel = new StaticTextWidget(this, font, "P4");
+  myRight2Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myRight2Port);
   myRight2PortDetected = detectedLabel();
 
@@ -103,6 +107,7 @@ void QuadTariDialog::layout()
   using GUI::BoxLayout;
   using GUI::stretchedItem;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -111,16 +116,18 @@ void QuadTariDialog::layout()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // The four popups draw their own labels ("P1".."P4"), so one shared column
-  // keeps their value boxes the same width and in line across both ports
-  GUI::alignLabels({{myLeft1Port},  {myLeft2Port},
-                    {myRight1Port}, {myRight2Port}});
+  // The four popups' labels ("P1".."P4") share one column, keeping their
+  // value boxes the same width and in line across both ports
+  GUI::alignLabels({{myLeft1PortLabel},  {myLeft2PortLabel},
+                    {myRight1PortLabel}, {myRight2PortLabel}});
 
   // Both ports have the same structure: a header label, then two popups each
   // followed by its (indented) auto-detect label, which fills the column
   const auto portColumn = [&](StaticTextWidget* label,
-                              PopUpWidget* popup1, StaticTextWidget* detected1,
-                              PopUpWidget* popup2, StaticTextWidget* detected2)
+                              StaticTextWidget* popup1Label, PopUpWidget* popup1,
+                              StaticTextWidget* detected1,
+                              StaticTextWidget* popup2Label, PopUpWidget* popup2,
+                              StaticTextWidget* detected2)
   {
     const auto detectedRow = [&](StaticTextWidget* detected) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -132,11 +139,11 @@ void QuadTariDialog::layout()
     auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
     col->addAuto(anchoredItem(label));
     col->addSpace(VGAP * 2);
-    col->addAuto(anchoredItem(popup1));
+    col->addAuto(labeledRow(popup1Label, popup1));
     col->addSpace(VGAP);
     col->addAuto(detectedRow(detected1));
     col->addSpace(VGAP);
-    col->addAuto(anchoredItem(popup2));
+    col->addAuto(labeledRow(popup2Label, popup2));
     col->addSpace(VGAP);
     col->addAuto(detectedRow(detected2));
     return col;
@@ -144,11 +151,13 @@ void QuadTariDialog::layout()
 
   // The two port columns side by side, each as wide as its popups need
   auto root = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, VBORDER);
-  root->addAuto(portColumn(myLeftPortLabel, myLeft1Port, myLeft1PortDetected,
-                           myLeft2Port, myLeft2PortDetected));
+  root->addAuto(portColumn(myLeftPortLabel,
+                           myLeft1PortLabel, myLeft1Port, myLeft1PortDetected,
+                           myLeft2PortLabel, myLeft2Port, myLeft2PortDetected));
   root->addSpace(fontWidth * 3);
-  root->addAuto(portColumn(myRightPortLabel, myRight1Port, myRight1PortDetected,
-                           myRight2Port, myRight2PortDetected));
+  root->addAuto(portColumn(myRightPortLabel,
+                           myRight1PortLabel, myRight1Port, myRight1PortDetected,
+                           myRight2PortLabel, myRight2Port, myRight2PortDetected));
 
   // The dialog is as large as the two columns ask to be, and at least wide
   // enough for the button row below them
@@ -167,10 +176,14 @@ void QuadTariDialog::layout()
 void QuadTariDialog::show(bool enableLeft, bool enableRight)
 {
   myLeftPortLabel->setEnabled(enableLeft);
+  myLeft1PortLabel->setEnabled(enableLeft);
   myLeft1Port->setEnabled(enableLeft);
+  myLeft2PortLabel->setEnabled(enableLeft);
   myLeft2Port->setEnabled(enableLeft);
   myRightPortLabel->setEnabled(enableRight);
+  myRight1PortLabel->setEnabled(enableRight);
   myRight1Port->setEnabled(enableRight);
+  myRight2PortLabel->setEnabled(enableRight);
   myRight2Port->setEnabled(enableRight);
 
   open();

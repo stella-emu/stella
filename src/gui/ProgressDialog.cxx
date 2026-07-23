@@ -39,7 +39,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                    TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  mySlider = new SliderWidget(this, font, 1, "", 0, 0);
+  mySlider = new SliderWidget(this, font, 1, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 

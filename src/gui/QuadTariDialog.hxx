@@ -51,14 +51,18 @@ class QuadTariDialog: public Dialog
 
   private:
     StaticTextWidget* myLeftPortLabel{nullptr};
+    StaticTextWidget* myLeft1PortLabel{nullptr};
     PopUpWidget*      myLeft1Port{nullptr};
     StaticTextWidget* myLeft1PortDetected{nullptr};
+    StaticTextWidget* myLeft2PortLabel{nullptr};
     PopUpWidget*      myLeft2Port{nullptr};
     StaticTextWidget* myLeft2PortDetected{nullptr};
 
     StaticTextWidget* myRightPortLabel{nullptr};
+    StaticTextWidget* myRight1PortLabel{nullptr};
     PopUpWidget*      myRight1Port{nullptr};
     StaticTextWidget* myRight1PortDetected{nullptr};
+    StaticTextWidget* myRight2PortLabel{nullptr};
     PopUpWidget*      myRight2Port{nullptr};
     StaticTextWidget* myRight2PortDetected{nullptr};
 

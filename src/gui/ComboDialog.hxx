@@ -45,6 +45,7 @@ class ComboDialog : public Dialog
 
   private:
     Event::Type myComboEvent{Event::NoType};
+    std::array<StaticTextWidget*, 8> myEventLabels{nullptr};
     std::array<PopUpWidget*, 8> myEvents{nullptr};
 
   private:

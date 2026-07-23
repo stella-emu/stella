@@ -75,8 +75,9 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
+  mySpeedLabel = new StaticTextWidget(this, _font, "Emulation speed");
   mySpeed = new SliderWidget(this, _font, swidth,
-                             "Emulation speed", 0, kSpeedupChanged, fontWidth * 5, "%");
+                             kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
   mySpeed->setTickmarkIntervals(2);
@@ -165,6 +166,7 @@ void EmulationDialog::layout()
   using GUI::stretchedItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -185,13 +187,17 @@ void EmulationDialog::layout()
   pathRow->addStretch(stretchedItem(myStatePath,
                                     EditTextWidget::calcWidth(_font, 24)));
 
+  // mySpeed isn't self-labeling, so its label needs its clearance BEFORE
+  // labeledRow() reads the label's width to size the row's label column
+  GUI::alignLabels({{mySpeedLabel}});
+
   // Vertical stack; the button group sits below it, positioned separately by
-  // layoutButtonGroup().  The self-labeling slider, header and checkboxes keep
-  // their natural size, so all are anchored; the save-on-exit radio buttons are
-  // indented under their header.  Explicit addSpace() calls reproduce the
-  // original's irregular inter-row gaps.
+  // layoutButtonGroup().  The header and checkboxes keep their natural size,
+  // so they are anchored; the save-on-exit radio buttons are indented under
+  // their header.  Explicit addSpace() calls reproduce the original's
+  // irregular inter-row gaps.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addAuto(anchoredItem(mySpeed));
+  root->addAuto(labeledRow(mySpeedLabel, mySpeed));
   root->addSpace(VGAP);
   root->addAuto(anchoredItem(myUseVSync));
   root->addSpace(VGAP);
@@ -223,7 +229,6 @@ void EmulationDialog::layout()
 
   // The dialog is as large as its content asks to be, and at least wide enough
   // for the button row below it (which the content knows nothing about)
-  GUI::alignLabels({{mySpeed}});
   const Common::Size natural = root->naturalSize();
 
   _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());

@@ -42,6 +42,8 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
 
     StaticTextWidget* myROMTypeLabel{nullptr};
     StaticTextWidget* myRAMTypeLabel{nullptr};
+    StaticTextWidget* myBankLabel{nullptr};
+    StaticTextWidget* myRAMBankLabel{nullptr};
 
   protected:
     string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }

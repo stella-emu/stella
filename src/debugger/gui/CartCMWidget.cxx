@@ -51,12 +51,13 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
 
-  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBank);
+  myLabelColumn.emplace_back(myBankLabel);
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
   mySWCHALabel = new StaticTextWidget(boss, _font, "Current SWCHA");
@@ -109,7 +110,7 @@ void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col) const
   GUI::alignLabels({{mySWCHALabel}, {myColumnLabel}});
   GUI::alignLabels({{myRAMLabel}});
 
-  col.addAuto(anchoredItem(myBank));
+  col.addAuto(labeledRow(myBankLabel, myBank));
   col.addSpace(_lineHeight / 2);
   col.addAuto(labeledRow(mySWCHALabel, mySWCHA));
   col.addAuto(labeledRow(myColumnLabel, myColumn));

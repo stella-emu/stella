@@ -85,14 +85,14 @@ void Cartridge3EPlusWidget::createBankWidgets()
 
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
                                       seg, items);
-    myBankWidgets[seg] =
-      new PopUpWidget(_boss, _font, items, "Bank", 0, kBankChanged);
+    myBankWidgetLabel[seg] = new StaticTextWidget(_boss, _font, "Bank");
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
-    myBankType[seg] =
-      new PopUpWidget(_boss, _font, banktype, "of", 0, kRomRamChanged);
+    myBankTypeLabel[seg] = new StaticTextWidget(_boss, _font, "of");
+    myBankType[seg] = new PopUpWidget(_boss, _font, banktype, kRomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
@@ -127,13 +127,13 @@ void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
   using GUI::LabeledControl;
   using Dir = BoxLayout::Dir;
 
-  // Each kind of control aligns down its own column: the bank and type pop-ups
-  // (which draw their own labels) and the address labels beside the state fields
+  // Each kind of control aligns down its own column: the bank and type pop-ups'
+  // labels, and the address labels beside the state fields
   std::vector<LabeledControl> banks, types, addrs;
-  for(auto* popup: myBankWidgets)
-    banks.emplace_back(popup);
-  for(auto* popup: myBankType)
-    types.emplace_back(popup);
+  for(auto* label: myBankWidgetLabel)
+    banks.emplace_back(label);
+  for(auto* label: myBankTypeLabel)
+    types.emplace_back(label);
   for(auto* label: myAddrLabel)
     addrs.emplace_back(label);
   GUI::alignLabels(banks);
@@ -146,8 +146,8 @@ void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
 
     // The bank / type / commit controls along one row
     auto controls = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth);
-    controls->addAuto(anchoredItem(myBankWidgets[seg]));
-    controls->addAuto(anchoredItem(myBankType[seg]));
+    controls->addAuto(labeledRow(myBankWidgetLabel[seg], myBankWidgets[seg]));
+    controls->addAuto(labeledRow(myBankTypeLabel[seg], myBankType[seg]));
     controls->addAuto(anchoredItem(myBankCommit[seg]));
 
     // The two address rows on the right, each an address label + filling field

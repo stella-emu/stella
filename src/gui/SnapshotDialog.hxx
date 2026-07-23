@@ -58,6 +58,7 @@ class SnapshotDialog : public Dialog
 
     StaticTextWidget* myWhenLabel{nullptr};
     CheckboxWidget* mySnapName{nullptr};
+    StaticTextWidget* mySnapIntervalLabel{nullptr};
     SliderWidget* mySnapInterval{nullptr};
 
     CheckboxWidget* mySnapSingle{nullptr};

@@ -43,7 +43,8 @@ class PaddleWidget : public ControllerWidget
     bool myEmbedded{false};
     SliderWidget *myP0Resistance{nullptr}, *myP1Resistance{nullptr};
     CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
-    // Short pot labels shown only when embedded in a QuadTari
+    // Short pot labels when embedded in a QuadTari; the resistance sliders'
+    // own labels otherwise (the two uses are mutually exclusive)
     StaticTextWidget *myP0Label{nullptr}, *myP1Label{nullptr};
 
   private:

@@ -42,7 +42,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   myBSLabel = new StaticTextWidget(this, font, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
     VarList::push_back(items, desc, name);
-  myBSType = new PopUpWidget(this, font, items, "");
+  myBSType = new PopUpWidget(this, font, items);
   wid.push_back(myBSType);
 
   // TV type
@@ -51,7 +51,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B/W", "BW");
-  myTVType = new PopUpWidget(this, font, items, "");
+  myTVType = new PopUpWidget(this, font, items);
   wid.push_back(myTVType);
 
   // Left difficulty
@@ -60,13 +60,13 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
   VarList::push_back(items, "B (Novice)", "B");
-  myLeftDiff = new PopUpWidget(this, font, items, "");
+  myLeftDiff = new PopUpWidget(this, font, items);
   wid.push_back(myLeftDiff);
 
   // Right difficulty
   myRightDiffLabel = new StaticTextWidget(this, font, GUI::RIGHT_DIFFICULTY);
   // ... use same items as above
-  myRightDiff = new PopUpWidget(this, font, items, "");
+  myRightDiff = new PopUpWidget(this, font, items);
   wid.push_back(myRightDiff);
 
   // Start console with buttons held down

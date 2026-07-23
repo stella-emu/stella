@@ -499,32 +499,58 @@ void alignButtons(std::span<ButtonWidget* const> buttons, int minWidth = 0);
 // Pair it with alignLabels() to line up their left edges too.
 void alignPopUps(std::initializer_list<PopUpWidget*> popups);
 
+// The width of a span that starts at THIS row's own beginning and reaches
+// flush with a pop-up sitting elsewhere in the dialog -- the same fact
+// alignTracks() below uses internally for a slider's track, generalized for
+// anything else that needs to end flush with a pop-up: a whole label+control
+// row sized with addFixed(), or the 'span' argument to alignTracks()'s
+// span/spacing overload. 'popupLabel' is the pop-up's own paired label (see
+// alignTracks() for why it must be named, not measured); 'indent' is how much
+// further THIS row's own start sits in from the pop-up's row than the
+// pop-up's row sits from its own container (0 when they start at the same
+// point). Returns 0 if popup is null.
+int flushSpan(const PopUpWidget* popup, const Widget* popupLabel, int indent = 0);
+
 // Give a COLUMN of sliders the track that makes them end flush with the pop-up
 // they sit under -- their value readouts hanging past that edge, which is the
-// house style for a form of pop-ups and sliders.  'indent' is how far the sliders
-// sit IN from the pop-up (0 when they share its left edge).
+// house style for a form of pop-ups and sliders.  'indent' is how far the WHOLE
+// GROUP sits IN from the pop-up's row (0 when they share it); a slider the layout
+// indents WITHIN the group needs no special case here; because alignLabels() has
+// already narrowed that slider's own label column by exactly that indent (see its
+// LabeledControl overload), so its track still lines up with the rest of the
+// group without alignTracks() knowing anything about labels at all.
 //
-// This exists because a layout can only size WHOLE widgets, and a slider is not
-// one thing: it is a label, a track and a value readout drawn in one rect, and
-// what has to line up across a dialog is the TRACK inside it.  That is below the
-// level a layout can see.  A slider does know what its own label and readout
-// take; what it cannot know is the box it is meant to span -- and that, once
-// again, is the only thing about a slider a layout has to say.
+// This exists because a layout can only size WHOLE widgets, and what has to line
+// up across a dialog is the TRACK inside a slider, not the whole control. A
+// slider knows what its own readout takes; what it cannot know is the box it is
+// meant to span -- and that is the only thing about a slider a layout has to say.
+//
+// The sliders may instead sit in a DIFFERENT alignLabels() group than the
+// pop-up's -- a longer sub-heading (VideoAudioDialog's "Resampling quality")
+// that would otherwise widen the pop-up's own short label's column ("Mode"),
+// so it gets a group of its own.  'indent' alone cannot then bridge the two
+// groups' differently-sized columns, so name one label from each: alignLabels
+// has made every member of a group equal-width, so any one of a group stands
+// for the whole.  Leave both null for the common case (one shared group, or no
+// group at all) -- the default is the plain 'indent' behaviour above.  (This is
+// flushSpan() above, minus the calling slider group's own label column.)
 //
 // Pair it with alignLabels(): that lines their left edges up, this their right.
-// A slider the layout INDENTS within the group needs no special case, because
-// alignLabels has already narrowed its label column by exactly that indent -- so
-// they all take the same track.
 void alignTracks(std::initializer_list<SliderWidget*> sliders,
-                 const PopUpWidget* popup, int indent = 0);
+                 const PopUpWidget* popup, int indent = 0,
+                 const Widget* sliderLabel = nullptr,
+                 const Widget* popupLabel = nullptr);
 
 // ...and for a ROW of sliders that must SHARE one span between them (the video
 // dialog's R/G/B saturation-and-shift pairs), give them equal tracks that tile
 // it, so the last one's track still ends exactly at the span's right edge.
 // 'span' is measured from where the first slider starts; 'spacing' is the gap the
 // layout leaves between them.  The last readout is deliberately not counted -- it
-// hangs past the end, like every other slider's here.
+// hangs past the end, like every other slider's here.  'labels' runs parallel to
+// 'sliders' -- nullptr for a slider with no label of its own (an R/G row pairs a
+// labelled "R" slider with an unlabelled shift slider in the same span).
 void alignTracks(std::initializer_list<SliderWidget*> sliders,
+                 std::initializer_list<const Widget*> labels,
                  int span, int spacing);
 
 // A horizontal form row pairing a separate label with a control: the label

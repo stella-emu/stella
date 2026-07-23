@@ -44,8 +44,9 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
-  mySnapInterval = new SliderWidget(this, font,
-                                    "Continuous snapshot interval", 0, kSnapshotInterval,
+  mySnapIntervalLabel = new StaticTextWidget(this, font, "Continuous snapshot interval");
+  mySnapInterval = new SliderWidget(this, font, 0,
+                                    kSnapshotInterval,
                                     font.getStringWidth("10 seconds"));
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
@@ -87,6 +88,7 @@ void SnapshotDialog::layout()
   using GUI::stretchedItem;
   using GUI::anchoredItem;
   using GUI::indentedItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -96,8 +98,8 @@ void SnapshotDialog::layout()
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
 
-  // The slider draws its own label, so give it a label column of its own
-  GUI::alignLabels({{mySnapInterval}});
+  // The slider's label stands on its own, so give it a label column of its own
+  GUI::alignLabels({{mySnapIntervalLabel}});
 
   // Save-path row: a button plus an edit field that fills the remaining width.
   // The row is the only one with several widgets, so it needs its own HBox; the
@@ -112,12 +114,12 @@ void SnapshotDialog::layout()
                                     EditTextWidget::calcWidth(_font, 48)));
 
   // Assemble the vertical stack; the button group sits below it, positioned
-  // separately by layoutButtonGroup().  The interval slider is self-labeling and
-  // the header/checkboxes keep their natural size, so all are anchored.
+  // separately by layoutButtonGroup().  The header/checkboxes keep their
+  // natural size, so all but the interval row are anchored.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addAuto(std::move(pathRow));
   root->addSpace(VGAP * 4);
-  root->addAuto(anchoredItem(mySnapInterval));
+  root->addAuto(labeledRow(mySnapIntervalLabel, mySnapInterval));
   root->addSpace(VGAP * 3);
   root->addAuto(anchoredItem(myWhenLabel));
   root->addSpace(VGAP);

@@ -51,6 +51,8 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
 
     std::array<StaticTextWidget*, 4> mySegLabel{nullptr};
     std::array<StaticTextWidget*, 8> myAddrLabel{nullptr};
+    std::array<StaticTextWidget*, 4> myBankWidgetLabel{nullptr};
+    std::array<StaticTextWidget*, 4> myBankTypeLabel{nullptr};
     std::array<PopUpWidget*, 4> myBankType{nullptr};
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};

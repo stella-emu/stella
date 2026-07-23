@@ -74,6 +74,7 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     };
 
     CartridgeCDF& myCart;
+    StaticTextWidget* myBankLabel{nullptr};
     PopUpWidget* myBank{nullptr};
 
     StaticTextWidget *myPointersLabel{nullptr}, *myIncrementsLabel{nullptr},

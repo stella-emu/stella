@@ -53,6 +53,7 @@ class JoystickDialog : public Dialog
     StringListWidget* myJoyList{nullptr};
     StaticTextWidget* myIDLabel{nullptr};
     EditTextWidget*   myJoyText{nullptr};
+    StaticTextWidget* myJoyPortLabel{nullptr};
     PopUpWidget*      myJoyPort{nullptr};
 
     ButtonWidget* myRemoveBtn{nullptr};

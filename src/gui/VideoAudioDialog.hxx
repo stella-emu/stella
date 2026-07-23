@@ -81,32 +81,46 @@ class VideoAudioDialog : public Dialog
     TabWidget* myTab{nullptr};
 
     // General options
+    StaticTextWidget* myRendererLabel{nullptr};
     PopUpWidget*      myRenderer{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
     CheckboxWidget*   myFullscreen{nullptr};
     CheckboxWidget*   myUseStretch{nullptr};
+    StaticTextWidget* myTVOverscanLabel{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
     CheckboxWidget*   myRefreshAdapt{nullptr};
+    StaticTextWidget* myTIAZoomLabel{nullptr};
     SliderWidget*     myTIAZoom{nullptr};
     CheckboxWidget*   myCorrectAspect{nullptr};
+    StaticTextWidget* myVSizeAdjustLabel{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
     StaticTextWidget* myDisplayInfo{nullptr};
 
     // TV effects adjustables (custom mode)
+    StaticTextWidget* myTVModeLabel{nullptr};
     PopUpWidget*      myTVMode{nullptr};
+    StaticTextWidget* myTVSharpLabel{nullptr};
     SliderWidget*     myTVSharp{nullptr};
+    StaticTextWidget* myTVResLabel{nullptr};
     SliderWidget*     myTVRes{nullptr};
+    StaticTextWidget* myTVArtifactsLabel{nullptr};
     SliderWidget*     myTVArtifacts{nullptr};
+    StaticTextWidget* myTVFringeLabel{nullptr};
     SliderWidget*     myTVFringe{nullptr};
+    StaticTextWidget* myTVBleedLabel{nullptr};
     SliderWidget*     myTVBleed{nullptr};
 
     // TV phosphor effect
+    StaticTextWidget* myTVPhosphorLabel{nullptr};
     PopUpWidget*      myTVPhosphor{nullptr};
+    StaticTextWidget* myTVPhosLevelLabel{nullptr};
     SliderWidget*     myTVPhosLevel{nullptr};
 
     // TV scanline intensity and interpolation
     StaticTextWidget* myTVScanLabel{nullptr};
+    StaticTextWidget* myTVScanIntenseLabel{nullptr};
     SliderWidget*     myTVScanIntense{nullptr};
+    StaticTextWidget* myTVScanMaskLabel{nullptr};
     PopUpWidget*      myTVScanMask{nullptr};
 
     // TV effects adjustables presets (custom mode)
@@ -117,20 +131,30 @@ class VideoAudioDialog : public Dialog
     ButtonWidget*     myCloneCustom{nullptr};
 
     // Palettes
+    StaticTextWidget* myTIAPaletteLabel{nullptr};
     PopUpWidget*      myTIAPalette{nullptr};
     CheckboxWidget*   myDetectPal60{nullptr};
     CheckboxWidget*   myDetectNtsc50{nullptr};
+    StaticTextWidget* myPhaseShiftLabel{nullptr};
     SliderWidget*     myPhaseShift{nullptr};
+    StaticTextWidget* myTVRedScaleLabel{nullptr};
     SliderWidget*     myTVRedScale{nullptr};
     SliderWidget*     myTVRedShift{nullptr};
+    StaticTextWidget* myTVGreenScaleLabel{nullptr};
     SliderWidget*     myTVGreenScale{nullptr};
     SliderWidget*     myTVGreenShift{nullptr};
+    StaticTextWidget* myTVBlueScaleLabel{nullptr};
     SliderWidget*     myTVBlueScale{nullptr};
     SliderWidget*     myTVBlueShift{nullptr};
+    StaticTextWidget* myTVHueLabel{nullptr};
     SliderWidget*     myTVHue{nullptr};
+    StaticTextWidget* myTVSaturLabel{nullptr};
     SliderWidget*     myTVSatur{nullptr};
+    StaticTextWidget* myTVBrightLabel{nullptr};
     SliderWidget*     myTVBright{nullptr};
+    StaticTextWidget* myTVContrastLabel{nullptr};
     SliderWidget*     myTVContrast{nullptr};
+    StaticTextWidget* myTVGammaLabel{nullptr};
     SliderWidget*     myTVGamma{nullptr};
     StaticTextWidget* myAutodetectLabel{nullptr};
     // The palette: a chroma per row, a luminance per column
@@ -145,20 +169,31 @@ class VideoAudioDialog : public Dialog
     EditTextWidget*   myBezelPath{nullptr};
     CheckboxWidget*   myBezelShowWindowed{nullptr};
     CheckboxWidget*   myManualWindow{nullptr};
+    StaticTextWidget* myWinLeftSliderLabel{nullptr};
     SliderWidget*     myWinLeftSlider{nullptr};
+    StaticTextWidget* myWinRightSliderLabel{nullptr};
     SliderWidget*     myWinRightSlider{nullptr};
+    StaticTextWidget* myWinTopSliderLabel{nullptr};
     SliderWidget*     myWinTopSlider{nullptr};
+    StaticTextWidget* myWinBottomSliderLabel{nullptr};
     SliderWidget*     myWinBottomSlider{nullptr};
 
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
+    StaticTextWidget* myVolumeSliderLabel{nullptr};
     SliderWidget*     myVolumeSlider{nullptr};
     CheckboxWidget*   myStereoSoundCheckbox{nullptr};
+    StaticTextWidget* myModePopupLabel{nullptr};
     PopUpWidget*      myModePopup{nullptr};
+    StaticTextWidget* myFreqPopupLabel{nullptr};
     PopUpWidget*      myFreqPopup{nullptr};
+    StaticTextWidget* myResamplingPopupLabel{nullptr};
     PopUpWidget*      myResamplingPopup{nullptr};
+    StaticTextWidget* myHeadroomSliderLabel{nullptr};
     SliderWidget*     myHeadroomSlider{nullptr};
+    StaticTextWidget* myBufferSizeSliderLabel{nullptr};
     SliderWidget*     myBufferSizeSlider{nullptr};
+    StaticTextWidget* myDpcPitchLabel{nullptr};
     SliderWidget*     myDpcPitch{nullptr};
 
     string            myPalette;

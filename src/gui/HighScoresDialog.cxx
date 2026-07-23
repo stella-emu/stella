@@ -142,7 +142,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // The list is filled per ROM in loadConfig(), so the pop-up cannot size its
   // box to it; the widest variation there can be is what it must show
   myVariationPopup = new PopUpWidget(this, _font,
-      fontWidth * HSM::MAX_VARIATION_DIGITS, items, "", 0, kVariationChanged);
+      fontWidth * HSM::MAX_VARIATION_DIGITS, items, kVariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
       largeFont ? PREV_GFX_LARGE.data() : PREV_GFX.data(),

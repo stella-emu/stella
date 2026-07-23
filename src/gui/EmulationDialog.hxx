@@ -20,6 +20,8 @@
 
 class RadioButtonGroup;
 class RadioButtonWidget;
+class SliderWidget;
+class StaticTextWidget;
 
 #include "Dialog.hxx"
 
@@ -43,6 +45,7 @@ class EmulationDialog : public Dialog
     void updateStatePathEnabled();
 
   private:
+    StaticTextWidget* mySpeedLabel{nullptr};
     SliderWidget*     mySpeed{nullptr};
     CheckboxWidget*   myUseVSync{nullptr};
     CheckboxWidget*   myTurbo{nullptr};

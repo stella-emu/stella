@@ -232,7 +232,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Timeline scrubber
-  myTimeline = new TimeLineWidget(this, font, _w, "", 0, kTimeline);
+  myTimeline = new TimeLineWidget(this, font, _w, kTimeline);
   myTimeline->setMinValue(0);
 
   // Time info (current + last time)

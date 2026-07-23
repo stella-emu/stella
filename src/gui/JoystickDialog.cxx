@@ -51,7 +51,8 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPort = new PopUpWidget(this, font, ports, "Port", 0, kPortCmd);
+  myJoyPortLabel = new StaticTextWidget(this, font, "Port");
+  myJoyPort = new PopUpWidget(this, font, ports, kPortCmd);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
@@ -75,6 +76,7 @@ void JoystickDialog::layout()
   using GUI::BoxLayout;
   using GUI::widgetItem;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -85,8 +87,7 @@ void JoystickDialog::layout()
   // Remove and Close share one width, the wider of the two
   GUI::alignButtons({myRemoveBtn, myCloseBtn});
 
-  // The popup draws its own label, so give it a label column of its own
-  GUI::alignLabels({{myJoyPort}});
+  GUI::alignLabels({{myJoyPortLabel}});
 
   // The joystick list fills the area above the bottom control/button row.  This
   // dialog takes all the space it is given, so its size is not derived from the
@@ -106,7 +107,7 @@ void JoystickDialog::layout()
   band->addSpace(fontWidth);
   band->addAuto(anchoredItem(myJoyText));
   band->addSpace(fontWidth * 2);
-  band->addAuto(anchoredItem(myJoyPort));
+  band->addAuto(labeledRow(myJoyPortLabel, myJoyPort));
   band->addStretchSpace();
   band->addAuto(anchoredItem(myRemoveBtn));
   band->addSpace(fontWidth);
@@ -177,6 +178,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
         myJoyText->setText("Unplugged");
         myJoyPort->setText("");
       }
+      myJoyPortLabel->setEnabled(isPlugged);
       myJoyPort->setEnabled(isPlugged);
       myRemoveBtn->setEnabled(!isPlugged);
       break;

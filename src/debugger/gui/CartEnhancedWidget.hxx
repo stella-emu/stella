@@ -107,6 +107,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     EditTextWidget* myPlusROMSendWidget{nullptr};
     EditTextWidget* myPlusROMReceiveWidget{nullptr};
 
+    std::vector<StaticTextWidget*> myBankWidgetLabels;
     std::vector<PopUpWidget*> myBankWidgets;
 
     // Display all addresses based on this

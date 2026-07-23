@@ -73,19 +73,25 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myGlobalLabel{nullptr};
 
     // UI theme
+    StaticTextWidget* myThemePopupLabel{nullptr};
     PopUpWidget*      myThemePopup{nullptr};
+    StaticTextWidget* myPositionPopupLabel{nullptr};
     PopUpWidget*      myPositionPopup{nullptr};
 
     // TV effects
+    StaticTextWidget* myTVModeLabel{nullptr};
     PopUpWidget*      myTVMode{nullptr};
 
     // TV scanline intensity
+    StaticTextWidget* myTVScanIntenseLabel{nullptr};
     SliderWidget*     myTVScanIntense{nullptr};
 
     // TV phosphor effect
+    StaticTextWidget* myTVPhosLevelLabel{nullptr};
     SliderWidget*     myTVPhosLevel{nullptr};
 
     // TV Overscan
+    StaticTextWidget* myTVOverscanLabel{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
     StaticTextWidget* myOverscanInfo{nullptr};
 

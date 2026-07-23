@@ -37,8 +37,7 @@ class PopUpWidget : public EditableWidget
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int w, int h, const VariantList& items,
-                string_view label = "", int labelWidth = 0, int cmd = 0);
+                int w, int h, const VariantList& items, int cmd = 0);
 
     /**
       Size me from my own items: the value box is as wide as the widest of them
@@ -52,8 +51,7 @@ class PopUpWidget : public EditableWidget
       dialog can still say it in items rather than pixels — see calcWidth().
     */
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                const VariantList& items, string_view label = "",
-                int labelWidth = 0, int cmd = 0);
+                const VariantList& items, int cmd = 0);
 
     /**
       Take this value-box width, but size your own height.  For the pop-up whose
@@ -62,14 +60,13 @@ class PopUpWidget : public EditableWidget
       the user if it tried, so the DIALOG says how wide an entry it will show.
     */
     PopUpWidget(GuiObject* boss, const GUI::Font& font, int w,
-                const VariantList& items, string_view label = "",
-                int labelWidth = 0, int cmd = 0);
+                const VariantList& items, int cmd = 0);
 
     ~PopUpWidget() override = default;
 
     void setID(uInt32 id) override;
 
-    // Set the total widget width (label + value box + drop-down arrow); also
+    // Set the total widget width (value box + drop-down arrow); also
     // resizes the drop-down menu so it tracks the value box
     void setWidth(int w) override;
 
@@ -111,25 +108,19 @@ class PopUpWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
 
-    int naturalLabelWidth() const override {
-      return _label.empty() ? 0 : _font.getStringWidth(_label);
-    }
-    int labelWidth() const override { return _labelWidth; }
-    void setLabelWidth(int w) override;
-
     /**
-      My value box: the part between my label and my drop-down arrow.  I size it
-      to my own items, but a COLUMN of pop-ups wants them all the same width —
+      My value box: the part between my left edge and my drop-down arrow.  I size
+      it to my own items, but a COLUMN of pop-ups wants them all the same width —
       which none of us can know alone — so GUI::alignPopUps() equalizes them.
     */
-    int boxWidth() const { return _w - _labelWidth - dropDownWidth(_font); }
+    int boxWidth() const { return _w - dropDownWidth(_font); }
     void setBoxWidth(int w);
 
     void refreshFontMetrics() override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    int caretOfs() const override { return _editScrollOffset - _labelWidth; }
+    int caretOfs() const override { return _editScrollOffset; }
 
     void setArrow();
     void drawWidget(bool hilite) override;
@@ -143,8 +134,6 @@ class PopUpWidget : public EditableWidget
     unique_ptr<ContextMenu> myMenu;
     int myArrowsY{0};
 
-    string _label;
-    int    _labelWidth{0};
     bool   _changed{false};
 
     int _textOfs{0};

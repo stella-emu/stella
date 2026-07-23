@@ -135,10 +135,10 @@ working around it in the dialog. `VAlign::Baseline`, `addAuto` and
 ```
   class MyDialog : public Dialog
   ┌───────────────────────────────────────────────────────────────┐
-  │  MyDialog(...)                 ← CREATE widgets at (0,0) only   │
+  │  MyDialog(...)                 ← CREATE widgets, no geometry    │
   │  {                                                              │
-  │     myFoo = new PopUpWidget(this, font, 0,0, w, h, ...);        │
-  │     myBar = new CheckboxWidget(this, font, 0,0, "Bar");         │
+  │     myFoo = new PopUpWidget(this, font, items, ...);            │
+  │     myBar = new CheckboxWidget(this, font, "Bar");              │
   │     addToFocusList(wid);                                        │
   │     addDefaultsOKCancelBGroup(wid, font);                       │
   │  }                                                              │
@@ -226,8 +226,8 @@ for form dialogs (label + control per row).
 
 Use this **only** for genuine tables where cells must line up across both rows
 *and* columns (e.g. `HighScoresDialog`). Do **not** use it for ordinary forms —
-self-labeling popups/sliders already align themselves (see below), so a vertical
-`BoxLayout` is simpler.
+`labeledRow`'d sliders and pop-ups already align themselves (see below), so a
+vertical `BoxLayout` is simpler.
 
 ```cpp
 GridLayout(int cols, int rows, int hSpacing=0, int vSpacing=0,
@@ -341,17 +341,16 @@ beside a grid is one item to the row, so it cannot use it — start the column w
 
 Rules of thumb:
 
-- **Self-labeling widgets** (`PopUpWidget`, `SliderWidget` — they draw their own
-  label) → use `anchoredItem`. Filling them would stretch the *track/value box*
-  and look wrong. Because they share a common label width, they line up across
-  rows without a grid.
 - **A control that should span the row** (an `EditTextWidget`) → `stretchedItem`
   in a row sized with `addAuto`: it widens with the dialog but keeps the height
   it built itself from the font. Only a **list** or an image — which have no
   height of their own — wants `widgetItem` and a stretching row.
 - **A checkbox indented under a group header** → `indentedItem(cb, indent())`.
-- **A separate label + control** (label is its own `StaticTextWidget`, control is
-  not self-labeling) → `labeledRow(label, control, sharedLabelW)`.
+- **A separate label + control** (label is its own `StaticTextWidget`, control
+  takes no label of its own — this includes `PopUpWidget` and `SliderWidget`) →
+  `labeledRow(label, control, sharedLabelW)`. Filling a slider this way (the
+  `fill=true` argument) stretches its *track*, not its label — see the sliders
+  bullet below for what to reach for when it must line up with a pop-up instead.
 - **Right-align a column of value fields** whose widths differ (say a 3-digit and
   an 8-digit field, which should still end flush) → do *not* compute per-row
   label widths. Stretch the label and fix the field:
@@ -369,14 +368,17 @@ Rules of thumb:
   match the dialog's own buttons rather than shrink-wrap to its labels.
 - **Sliders that must end flush with the pop-up above them** →
   `GUI::alignTracks({s1, s2, …}, popup)` (add the indent as a third argument if the
-  sliders sit a level in from it). A slider is a *label + track + readout* drawn in
-  one rect, and what lines up down a form is the **track inside it** — which is
-  below the level a layout can see, since a layout only sizes whole widgets. The
-  slider knows what its own label and readout take; what it cannot know is the box
-  it should span. Never compute a track width in a dialog.
+  sliders sit a level in from it). A slider carries no label of its own — that is
+  a separate `StaticTextWidget` composed via `labeledRow`, same as a pop-up — but
+  its **track** still isn't something a layout can size directly: a slider's
+  width is track + value readout in one rect, and what has to line up down a form
+  is the track, which is below the level a layout can see, since a layout only
+  sizes whole widgets. The slider knows what its own readout takes; what it
+  cannot know is the box it should span. Never compute a track width in a dialog.
   For two sliders **sharing one row** (a value and its offset, side by side), the
-  other form tiles their tracks across a span:
-  `GUI::alignTracks({scale, shift}, span, gap)`.
+  other overload tiles their tracks across a span and takes a parallel label list
+  (`nullptr` for a slider with no label of its own):
+  `GUI::alignTracks({scale, shift}, {scaleLabel, nullptr}, span, gap)`.
 - **How many rows should this list show?** → `ListWidget::calcHeight(font, rows)`
   as the item's `minH`, the same way `EditTextWidget::calcWidth(font, chars)`
   says how wide a field must be. Say what you mean in rows and characters; do not
@@ -493,6 +495,7 @@ class MyDialog : public Dialog
 
   private:
     // Promote to members ANY widget layout() must position.
+    StaticTextWidget* myModeLabel{nullptr};  // PopUpWidget isn't self-labeling
     PopUpWidget*   myMode{nullptr};
     CheckboxWidget* myEnable{nullptr};
     // ... deleted copy/move ctors ...
@@ -513,11 +516,13 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
   const int lineHeight = Dialog::lineHeight();
   WidgetArray wid;
 
-  // Create every widget at placeholder (0,0), with its real font-derived WIDTH.
-  myMode = new PopUpWidget(this, font, 0, 0, popupWidth, lineHeight, items, "Mode ");
+  // Create every widget with only what it cannot derive itself — no ctor
+  // geometry anywhere in this tree any more.
+  myModeLabel = new StaticTextWidget(this, font, "Mode");
+  myMode = new PopUpWidget(this, font, items);
   wid.push_back(myMode);
 
-  myEnable = new CheckboxWidget(this, font, 0, 0, "Enable feature");
+  myEnable = new CheckboxWidget(this, font, "Enable feature");
   wid.push_back(myEnable);
 
   addDefaultsOKCancelBGroup(wid, font);   // creates the button group
@@ -560,9 +565,10 @@ constructor's closing brace):
 
 ```cpp
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myMode = new PopUpWidget(this, font, 0, 0, popupWidth, lineHeight, items, "Mode ");
+  myModeLabel = new StaticTextWidget(this, font, "Mode");
+  myMode = new PopUpWidget(this, font, items);
   wid.push_back(myMode);
-  myEnable = new CheckboxWidget(this, font, 0, 0, "Enable feature");
+  myEnable = new CheckboxWidget(this, font, "Enable feature");
   wid.push_back(myEnable);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 ```
@@ -578,6 +584,7 @@ void MyDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int lineHeight   = Dialog::lineHeight(),
@@ -591,8 +598,10 @@ void MyDialog::layout()
   _h = _th + VBORDER * 2 + 2 * (lineHeight + VGAP) + buttonHeight;
 
   // 2. Build a throwaway layout tree and apply it below the title bar.
+  //    myMode isn't self-labeling any more, so it's paired with myModeLabel
+  //    via labeledRow(); myEnable draws its own label, so it stays anchoredItem.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
-  root->addFixed(anchoredItem(myMode),   lineHeight);
+  root->addAuto(labeledRow(myModeLabel, myMode));
   root->addFixed(anchoredItem(myEnable), lineHeight);
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -621,8 +630,7 @@ re-deriving (badly) a rule that is already settled:
 
 | Your dialog is…                                       | Use                                                                   | Read first          |
 | ----------------------------------------------------- | --------------------------------------------------------------------- | ------------------- |
-| A vertical **form** of self-labeling popups/sliders   | `BoxLayout(Vertical)` of `anchoredItem`s                              | `EmulationDialog`   |
-| A form with **separate** label + control rows         | `BoxLayout(Vertical)` of `labeledRow(...)`, columns via `GUI::alignLabels` | `GlobalPropsDialog` |
+| A form with label + control rows (pop-ups, sliders — every control takes an external label) | `BoxLayout(Vertical)` of `labeledRow(...)`, columns via `GUI::alignLabels` | `GlobalPropsDialog` |
 | A genuine **table** (cells align in 2-D)              | `GridLayout`                                                          | `HighScoresDialog`  |
 | A grid of **buttons** (OptionsDialog, CommandDialog)  | `GridLayout` with `widgetItem` cells                                  | `OptionsDialog`     |
 | **Tabbed**                                            | `TabWidget` + a `TabPaneWidget` per tab (see below)                   | `InputDialog`       |
@@ -688,28 +696,36 @@ does the tab wiring.
 ### A tab of loose controls — `TabPaneWidget`
 
 ```cpp
-// ctor: create the tab widget at a PLACEHOLDER size
-myTab = new TabWidget(this, font, 0, 0, 1, 1);
+// ctor: create the tab widget — no ctor geometry anywhere in this tree
+myTab = new TabWidget(this, font);
 addTabWidget(myTab);
 
 const int tabID = myTab->addTab(" General ", TabWidget::AUTO_WIDTH);
 auto* pane = new TabPaneWidget(myTab, _font);
 myTab->setPaneWidget(tabID, pane);
 
-// this tab's controls are parented to the PANE, not to myTab
-myMode  = new PopUpWidget(pane, _font, 0, 0, pwidth, lineHeight, items, "Mode ", lwidth);
-mySpeed = new SliderWidget(pane, _font, 0, 0, swidth, lineHeight, "Speed", lwidth);
+// this tab's controls are parented to the PANE, not to myTab.  Neither
+// PopUpWidget nor SliderWidget draws its own label any more — each gets an
+// ordinary sibling StaticTextWidget, paired up below by labeledRow()
+myModeLabel  = new StaticTextWidget(pane, _font, "Mode");
+myMode       = new PopUpWidget(pane, _font, items, kModeChanged);
+mySpeedLabel = new StaticTextWidget(pane, _font, "Speed");
+mySpeed      = new SliderWidget(pane, _font, Dialog::fontWidth() * 10, kSpeedChanged);
 addToFocusList(wid, myTab, tabID);
 pane->setHelpAnchor("General");
 
 // describe the layout ONCE; the pane re-runs it on every resize/font change.
 // The box is vertical and already inset by the standard borders
 pane->setLayout([this](GUI::BoxLayout& col) {
-  const int lh = Dialog::lineHeight(), VGAP = Dialog::vGap();
+  using GUI::labeledRow;
+  const int VGAP = Dialog::vGap();
 
-  col.addFixed(GUI::anchoredItem(myMode), lh);
+  // Line the two value boxes up under a shared label column
+  GUI::alignLabels({{myModeLabel}, {mySpeedLabel}});
+
+  col.addAuto(labeledRow(myModeLabel, myMode));
   col.addSpace(VGAP);
-  col.addFixed(GUI::anchoredItem(mySpeed), lh);
+  col.addAuto(labeledRow(mySpeedLabel, mySpeed));
 });
 ```
 
@@ -724,15 +740,25 @@ columns** — an `addStretch`ed left column beside a fixed-width right one (see
 ```cpp
 void MyTabbedDialog::layout()
 {
-  _w = ...; _h = ...;
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            VGAP         = Dialog::vGap();
+  constexpr int xpos = 2;
 
-  // Size the tab widget…
-  myTab->setPos(2, Dialog::vGap() + _th);
-  myTab->setWidth(_w - 4);
-  myTab->setHeight(_h - _th - Dialog::vGap()
-                   - Dialog::buttonHeight() - Dialog::vBorder() * 2);
-  // …then recompute the tab-bar geometry from the live font.  This also re-lays
-  // out the tabs' content — that is the container's job, not the dialog's
+  // Both dimensions come from what the tabs ask for: nothing here counts rows
+  // or columns.  Every tab lays itself out via the tab widget, so there is no
+  // per-tab code here either
+  const Common::Size tabSize = myTab->naturalSize();
+
+  myTab->setPos(xpos, VGAP + _th);
+  myTab->setWidth(static_cast<int>(tabSize.w));
+  myTab->setHeight(static_cast<int>(tabSize.h));
+
+  _w = myTab->getWidth() + 2 * xpos;
+  _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
+
+  // Recompute the tab-bar geometry from the live font.  This also re-lays out
+  // the tabs' content — that is the container's job, not the dialog's
   myTab->updateTabSizes();
 
   layoutButtonGroup();
@@ -741,7 +767,8 @@ void MyTabbedDialog::layout()
 
 Key points:
 
-- Create `myTab` at `(0, 0, 1, 1)` and size it in `layout()`. **You must call
+- Create `myTab` with just `(this, font)` — no ctor geometry at all — and size
+  it in `layout()` from its own `naturalSize()`. **You must call
   `myTab->updateTabSizes()`** after sizing, or the tab headers render with a
   negative/placeholder width and the content is never laid out.
 - A pane's children are **pane-relative**, and the builder's box is already inset
@@ -754,8 +781,8 @@ Key points:
   Self-contained content is laid out only when its tab is **active**, because a
   child it creates lazily (`RomListWidget`'s checkbox pool) would otherwise attach
   itself to whichever tab is currently showing.
-- `layout()` order: compute `_w`/`_h` → size `myTab` → `updateTabSizes()` →
-  `layoutButtonGroup()`.
+- `layout()` order: size `myTab` from its `naturalSize()` → derive `_w`/`_h` from
+  `myTab` → `updateTabSizes()` → `layoutButtonGroup()`.
 
 ---
 
@@ -807,11 +834,11 @@ Two corollaries:
   from the widget, or give them `VAlign::Center` so they keep it. Passing
   `lineHeight` as the cell height makes them 2px too short — including via
   `widgetItem()`, which fills its cell in **both** axes.
-- **`PopUpWidget::setWidth(w)` takes the TOTAL width** (`value box + label +
-  dropDownWidth`), not just the value box. To fill a row, pass the full span
-  (`_w - HBORDER*2 - …`), not the ctor's value-box formula. `setWidth` also
-  resizes the drop-down menu, so a placeholder-width popup sized in `layout()`
-  gets a correct menu.
+- **`PopUpWidget::setWidth(w)` takes the TOTAL width** (`value box +
+  dropDownWidth` — it carries no label of its own). `setWidth` also resizes the
+  drop-down menu, so a placeholder-width popup sized in `layout()` gets a
+  correct menu. Use `boxWidth()`/`setBoxWidth()` when you mean just the value
+  box (what `GUI::alignPopUps()` equalizes).
 - **Never nudge text to make it line up.** Text alignment is not something a
   dialog states: each widget centers its own text and the layout centers each
   widget in its cell, so centered items on a row always agree. A stray `+2` in a
@@ -839,13 +866,15 @@ Two corollaries:
   formula like `listHeight = h - 3*lineHeight - VBORDER - …` is right for exactly
   one height and silently drifts the moment anything above or below it changes.
   Make it an `addStretch()` item and let it take whatever is left over.
-- **Filling a self-labeling widget** (`PopUpWidget`/`SliderWidget`) stretches its
-  value box / track, so only fill one when its **cell is the thing it must end
-  flush with** (a pop-up handed the list's width). Anchor it otherwise — and never
-  stretch it into a container that is wider than its anchor, or it will chase the
-  container's edge and sail past what it was meant to meet. A slider lining up with
-  a pop-up wants `GUI::alignTracks`, not a fill: what has to meet is the *track*,
-  not the widget's edge.
+- **Filling a `SliderWidget`** (via `labeledRow(label, slider, 0, 0, true)`)
+  stretches its *track*, so only fill one when its **cell is the thing it must
+  end flush with**. Anchor it otherwise — and never stretch it into a container
+  that is wider than its anchor, or it will chase the container's edge and sail
+  past what it was meant to meet. A slider lining up with a pop-up wants
+  `GUI::alignTracks`, not a fill: what has to meet is the *track*, not the
+  widget's edge. `PopUpWidget` has no such caveat — it takes no label of its
+  own, so filling it (via `labeledRow(label, popup, 0, 0, true)`) just fills
+  its whole box, like any other control.
 - **A widget that shows text loaded LATER must FILL.** A caption filled in by
   `loadConfig()` — a detected controller, a score, a date, an MD5 — must be given
   its width by the layout (`stretchedItem`, or `HAlign::Fill`), and built with no
@@ -901,35 +930,40 @@ the dialog font (Small ↔ Large) and confirm nothing clips or overlaps.
 ## A complete minimal example
 
 `ComboDialog` (`src/gui/ComboDialog.cxx`) is the smallest fully-converted dialog
-— a vertical stack of eight self-labeling event popups over a button row. Its
-`layout()` is the canonical template:
+— a vertical stack of eight labeled event popups over a button row, each popup
+paired with its own `StaticTextWidget` via `labeledRow`. Its `layout()` is the
+canonical template:
 
 ```cpp
 void ComboDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
+  const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // Size the (fixed) dialog from the current font so it reflows on font change
-  _w = 8 * fontWidth + myPopupWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2;
-  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
+  // One shared label column lines the popups' value boxes up down the dialog
+  GUI::alignLabels({{myEventLabels[0]}, {myEventLabels[1]}, {myEventLabels[2]},
+                    {myEventLabels[3]}, {myEventLabels[4]}, {myEventLabels[5]},
+                    {myEventLabels[6]}, {myEventLabels[7]}});
 
-  // Vertical stack of the eight self-labeling event popups; the button group
-  // sits below, positioned by layoutButtonGroup().
-  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  for(auto* e: myEvents)
-  {
-    root->addFixed(anchoredItem(e), lineHeight);
-    root->addSpace(VGAP);
-  }
+  // Vertical stack of the eight labeled event popups; the button group sits
+  // below, positioned by layoutButtonGroup().
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
+  for(size_t i = 0; i < myEvents.size(); ++i)
+    root->addAuto(labeledRow(myEventLabels[i], myEvents[i]));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
   root->doLayout(0, _th, _w, _h - _th);
 
   // Standard button group (Defaults / OK / Cancel) along the bottom edge
@@ -941,9 +975,9 @@ void ComboDialog::layout()
   ┌───────────── Add events for … ─────────────┐   ← title bar (_th)
   │  Event 1 [ Fire            ▼]               │  ┐
   │  Event 2 [ Up              ▼]               │  │ VBox of
-  │  Event 3 [ Down            ▼]               │  │ anchoredItem(popup)
-  │  Event 4 [ Left            ▼]               │  │ on a lineHeight+VGAP
-  │  Event 5 [ Right           ▼]               │  │ pitch
+  │  Event 3 [ Down            ▼]               │  │ labeledRow(label, popup)
+  │  Event 4 [ Left            ▼]               │  │ rows, addAuto-sized from
+  │  Event 5 [ Right           ▼]               │  │ each row's own font height
   │  Event 6 [ None            ▼]               │  │
   │  Event 7 [ None            ▼]               │  │
   │  Event 8 [ None            ▼]               │  ┘

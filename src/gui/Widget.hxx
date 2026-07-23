@@ -435,7 +435,6 @@ class ButtonWidget : public StaticTextWidget
       GUI::alignButtons() is what sizes a group of them.  These undo the
       StaticTextWidget behaviour we would otherwise inherit -- which would let
       GUI::alignLabels() resize a button to the width of its label alone.
-      SliderWidget, which DOES draw a label beside its track, overrides them again
     */
     int naturalLabelWidth() const override { return 0; }
     int labelWidth() const override { return 0; }
@@ -596,25 +595,16 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
-    SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int w, int h,
-                 string_view label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, string_view valueUnit = "",
-                 int valueLabelGap = 0, bool forceLabelSign = false);
-
     /**
-      Take this TRACK width, and my height from the font.  How long a track the
-      dialog wants is its own decision; how tall a slider is never was.
+      Take this TRACK width (0 = a reasonable default), and my height from the
+      font.  How long a track the dialog wants is its own decision; how tall a
+      slider is never was.  No caller has ever needed a height of my own to
+      differ from the font's, so there is no overload for one -- and none for
+      a bare 'no width' either: a real width and a bald int cmd are otherwise
+      indistinguishable to the overload resolver once neither is a label.
     */
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int w,
-                 string_view label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, string_view valueUnit = "",
-                 int valueLabelGap = 0, bool forceLabelSign = false);
-
-    // ...and with a default track width as well
-    SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 string_view label = "", int labelWidth = 0, int cmd = 0,
+                 int w = 0, int cmd = 0,
                  int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;
@@ -640,22 +630,17 @@ class SliderWidget : public ButtonWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
 
-    int naturalLabelWidth() const override {
-      return _label.empty() ? 0 : _font.getStringWidth(_label);
-    }
-    int labelWidth() const override { return _labelWidth; }
-    void setLabelWidth(int w) override;
-
     /**
-      My track: the part between my label and my value readout.  How long it is
-      IS the dialog's decision (it says how finely the value can be dragged), but
-      it says it by handing me a width, never by reaching inside me for the pieces.
+      My track: the part between my left edge and my value readout.  How long
+      it is IS the dialog's decision (it says how finely the value can be
+      dragged), but it says it by handing me a width, never by reaching inside
+      me for the pieces.
     */
     int trackWidth() const {
-      return _w - _labelWidth - _valueLabelGap - _valueLabelWidth;
+      return _w - _valueLabelGap - _valueLabelWidth;
     }
     void setTrackWidth(int w) {
-      _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
+      _w = w + _valueLabelGap + _valueLabelWidth;
       setDirty();
     }
 
@@ -669,7 +654,6 @@ class SliderWidget : public ButtonWidget
     int    _value{-INT_MAX}, _stepValue{1};
     int    _valueMin{0}, _valueMax{100};
     bool   _isDragging{false};
-    int    _labelWidth{0};
     string _valueLabel;
     string _valueUnit;
     int    _valueLabelGap{0};

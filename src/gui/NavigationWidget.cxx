@@ -64,6 +64,18 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size NavigationWidget::naturalSize() const
+{
+  // My ctor is built at a placeholder, so I cannot know my own height any other
+  // way.  Read it from the font directly (the same formula the icon buttons use
+  // to size themselves) rather than from a button's current height: that height
+  // is mutable and layoutChildren() -- called once from the ctor at height 0 --
+  // would otherwise have already overwritten it with a stale 0 by the time
+  // anyone asks
+  return Common::Size(std::max(_w, 0), ButtonWidget::calcHeight(_font));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::layoutChildren()
 {
   const int fontWidth = _font.getMaxCharWidth();
@@ -80,14 +92,22 @@ void NavigationWidget::layoutChildren()
   myNextButton->setIcon(nextIcon);
   myUpButton->setIcon(upIcon);
 
-  // setIcon() re-sized each button around its new bitmap, so it knows its width
+  // setIcon() re-sized each button around its new bitmap, so it knows its width.
+  // Its HEIGHT comes from the font, the same as naturalSize() reports -- not
+  // from _h, which is 0 on the placeholder pass the ctor makes before anyone
+  // has given me a real height, and would otherwise squash the buttons down to
+  // that placeholder permanently (setArea() is the only place their height is
+  // ever set again). Center the row within whatever height I was actually given.
   const int buttonWidth = myHomeButton->getWidth();
+  const int buttonHeight = ButtonWidget::calcHeight(_font);
+  const int ypos = _y + (_h - buttonHeight) / 2;
+
   int xpos = _x;
-  myHomeButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
-  myPrevButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
-  myNextButton->setArea(xpos, _y, buttonWidth, _h); xpos += buttonWidth + BTN_GAP;
-  myUpButton->setArea(xpos, _y, buttonWidth, _h);   xpos += buttonWidth + BTN_GAP;
-  myPath->setArea(xpos, _y, _w + _x - xpos, _h);
+  myHomeButton->setArea(xpos, ypos, buttonWidth, buttonHeight); xpos += buttonWidth + BTN_GAP;
+  myPrevButton->setArea(xpos, ypos, buttonWidth, buttonHeight); xpos += buttonWidth + BTN_GAP;
+  myNextButton->setArea(xpos, ypos, buttonWidth, buttonHeight); xpos += buttonWidth + BTN_GAP;
+  myUpButton->setArea(xpos, ypos, buttonWidth, buttonHeight);   xpos += buttonWidth + BTN_GAP;
+  myPath->setArea(xpos, ypos, _w + _x - xpos, buttonHeight);
   // The path is unchanged but its folder-link widths depend on the font
   myPath->refresh();
 }

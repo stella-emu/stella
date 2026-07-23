@@ -29,8 +29,7 @@ class TimeLineWidget : public ButtonWidget
       thin is what I am, not something the dialog holding me decides.
     */
     TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                   int w, string_view label = "",
-                   uInt32 labelWidth = 0, int cmd = 0);
+                   int w, int cmd = 0);
 
     ~TimeLineWidget() override = default;
 
@@ -68,7 +67,6 @@ class TimeLineWidget : public ButtonWidget
     uInt32  _value{0};
     uInt32  _valueMin{0}, _valueMax{0};
     bool    _isDragging{false};
-    uInt32  _labelWidth{0};
 
     uIntArray _stepValue;
 

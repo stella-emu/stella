@@ -46,10 +46,10 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   }
   else
   {
-    myP0Resistance = new SliderWidget(boss, font,
-                                      leftport ? "P1 pot" : "P3 pot", 0, kP0Changed);
-    myP1Resistance = new SliderWidget(boss, font,
-                                      leftport ? "P2 pot" : "P4 pot", 0, kP1Changed);
+    myP0Label = new StaticTextWidget(boss, font, leftport ? "P1 pot" : "P3 pot");
+    myP0Resistance = new SliderWidget(boss, font, 0, kP0Changed);
+    myP1Label = new StaticTextWidget(boss, font, leftport ? "P2 pot" : "P4 pot");
+    myP1Resistance = new SliderWidget(boss, font, 0, kP1Changed);
   }
   myP0Fire = new CheckboxWidget(boss, font, "Fire", kP0Fire);
   myP1Fire = new CheckboxWidget(boss, font, "Fire", kP1Fire);
@@ -80,6 +80,7 @@ void PaddleWidget::layoutContent(GUI::BoxLayout& col)
 {
   using GUI::anchoredItem;
   using GUI::indentedItem;
+  using GUI::labeledRow;
 
   const int VGAP   = _font.getFontHeight() / 4,
             INDENT = _font.getMaxCharWidth() * 2;
@@ -95,11 +96,11 @@ void PaddleWidget::layoutContent(GUI::BoxLayout& col)
   }
   else
   {
-    // A self-labeling resistance slider with its fire button indented below
-    col.addAuto(anchoredItem(myP0Resistance));
+    // A resistance slider beside its label, with the fire button indented below
+    col.addAuto(labeledRow(myP0Label, myP0Resistance));
     col.addAuto(indentedItem(myP0Fire, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(anchoredItem(myP1Resistance));
+    col.addAuto(labeledRow(myP1Label, myP1Resistance));
     col.addAuto(indentedItem(myP1Fire, INDENT));
   }
 }

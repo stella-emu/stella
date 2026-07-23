@@ -62,10 +62,11 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   // Every widget is created at a placeholder position; reflow() positions them
-  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  myLabelColumn.emplace_back(myBank);
+  myLabelColumn.emplace_back(myBankLabel);
 
   const auto addGrid = [&](DataGridWidget*& grid, int cols, int rows,
                            int colchars, int bits, Common::Base::Fmt fmt) {
@@ -199,7 +200,7 @@ void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col) const
   GUI::alignLabels({{myCountersLabel}, {myFrequenciesLabel},
                     {myWaveformsLabel}, {myWaveformSizesLabel}});
 
-  col.addAuto(anchoredItem(myBank));
+  col.addAuto(labeledRow(myBankLabel, myBank));
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(layoutDatastreams());

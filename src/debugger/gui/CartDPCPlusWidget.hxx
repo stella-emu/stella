@@ -68,6 +68,7 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
     };
 
     CartridgeDPCPlus& myCart;
+    StaticTextWidget* myBankLabel{nullptr};
     PopUpWidget* myBank{nullptr};
 
     StaticTextWidget *myTopsLabel{nullptr}, *myBottomsLabel{nullptr},

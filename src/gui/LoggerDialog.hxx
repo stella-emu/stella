@@ -21,6 +21,7 @@
 class GuiObject;
 class CheckboxWidget;
 class PopUpWidget;
+class StaticTextWidget;
 class StringListWidget;
 
 #include "Dialog.hxx"
@@ -47,6 +48,7 @@ class LoggerDialog : public Dialog
 
   private:
     StringListWidget* myLogInfo{nullptr};
+    StaticTextWidget* myLogLevelLabel{nullptr};
     PopUpWidget*      myLogLevel{nullptr};
     CheckboxWidget*   myLogToConsole{nullptr};
 

@@ -70,7 +70,8 @@ void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, _font, items, "UI theme");
+  myThemePopupLabel = new StaticTextWidget(this, _font, "UI theme");
+  myThemePopup = new PopUpWidget(this, _font, items);
   wid.push_back(myThemePopup);
 
   // Dialog position
@@ -80,7 +81,8 @@ void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(this, _font, items, "Dialogs position");
+  myPositionPopupLabel = new StaticTextWidget(this, _font, "Dialogs position");
+  myPositionPopup = new PopUpWidget(this, _font, items);
   wid.push_back(myPositionPopup);
 }
 
@@ -104,26 +106,30 @@ void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  myTVMode = new PopUpWidget(this, _font, items, "TV mode");
+  myTVModeLabel = new StaticTextWidget(this, _font, "TV mode");
+  myTVMode = new PopUpWidget(this, _font, items);
   wid.push_back(myTVMode);
 
   // Scanline intensity
+  myTVScanIntenseLabel = new StaticTextWidget(this, _font, "Scanline intensity");
   myTVScanIntense = new SliderWidget(this, _font, swidth,
-    "Scanline intensity", 0, kScanlinesChanged, fontWidth * 3);
+    kScanlinesChanged, fontWidth * 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
 
   // TV Phosphor blend level
+  myTVPhosLevelLabel = new StaticTextWidget(this, _font, "Phosphor blend");
   myTVPhosLevel = new SliderWidget(this, _font, swidth,
-    "Phosphor blend", 0, kPhosphorChanged, fontWidth * 3);
+    kPhosphorChanged, fontWidth * 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
 
   // FS overscan
+  myTVOverscanLabel = new StaticTextWidget(this, _font, "Overscan (*)");
   myTVOverscan = new SliderWidget(this, _font, swidth,
-    "Overscan (*)", 0, kOverscanChanged, fontWidth * 3);
+    kOverscanChanged, fontWidth * 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
@@ -153,12 +159,12 @@ void StellaSettingsDialog::createGameOptions(WidgetArray& wid)
 
   // Both port popups offer this same (fixed) list, so they size themselves to it
   myLeftPortLabel = new StaticTextWidget(this, _font, "Left port");
-  myLeftPort = new PopUpWidget(this, _font, ctrls, "", 0, kLeftCChanged);
+  myLeftPort = new PopUpWidget(this, _font, ctrls, kLeftCChanged);
   wid.push_back(myLeftPort);
   myLeftPortDetected = new StaticTextWidget(this, ifont, "Sega Genesis detected");
 
   myRightPortLabel = new StaticTextWidget(this, _font, "Right port");
-  myRightPort = new PopUpWidget(this, _font, ctrls, "", 0, kRightCChanged);
+  myRightPort = new PopUpWidget(this, _font, ctrls, kRightCChanged);
   wid.push_back(myRightPort);
   myRightPortDetected = new StaticTextWidget(this, ifont, "Sega Genesis detected");
 }
@@ -170,6 +176,7 @@ void StellaSettingsDialog::layout()
   using GUI::stretchedItem;
   using GUI::GridLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using GUI::indentedItem;
   using Dir = BoxLayout::Dir;
 
@@ -180,10 +187,10 @@ void StellaSettingsDialog::layout()
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
 
-  // The UI and video options all draw their own labels, so one shared label
-  // column lines their pop-up boxes and slider tracks up down the dialog...
-  GUI::alignLabels({{myThemePopup}, {myPositionPopup}, {myTVMode},
-                    {myTVScanIntense}, {myTVPhosLevel}, {myTVOverscan}});
+  // The pop-ups and the sliders each have a separate label; all share one
+  // label column, lining their boxes and tracks up down the dialog...
+  GUI::alignLabels({{myThemePopupLabel}, {myPositionPopupLabel}, {myTVModeLabel},
+                    {myTVScanIntenseLabel}, {myTVPhosLevelLabel}, {myTVOverscanLabel}});
   // ...and one shared box width keeps the pop-ups' right edges flush too
   GUI::alignPopUps({myThemePopup, myPositionPopup, myTVMode});
 
@@ -220,17 +227,26 @@ void StellaSettingsDialog::layout()
   // Global settings: header, then the indented UI and video options
   root->addAuto(anchoredItem(myGlobalLabel));
   root->addSpace(VGAP);
-  root->addAuto(indentedItem(myThemePopup, INDENT));
+  auto themeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  themeRow->addSpace(INDENT);
+  themeRow->addStretch(labeledRow(myThemePopupLabel, myThemePopup));
+  root->addAuto(std::move(themeRow));
   root->addSpace(VGAP);
-  root->addAuto(indentedItem(myPositionPopup, INDENT));
+  auto positionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  positionRow->addSpace(INDENT);
+  positionRow->addStretch(labeledRow(myPositionPopupLabel, myPositionPopup));
+  root->addAuto(std::move(positionRow));
   root->addSpace(VGAP * 5);
-  root->addAuto(indentedItem(myTVMode, INDENT));
+  auto tvModeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  tvModeRow->addSpace(INDENT);
+  tvModeRow->addStretch(labeledRow(myTVModeLabel, myTVMode));
+  root->addAuto(std::move(tvModeRow));
   root->addSpace(VGAP);
-  root->addAuto(indentedItem(myTVScanIntense, INDENT));
+  root->addAuto(labeledRow(myTVScanIntenseLabel, myTVScanIntense, 0, INDENT));
   root->addSpace(VGAP);
-  root->addAuto(indentedItem(myTVPhosLevel, INDENT));
+  root->addAuto(labeledRow(myTVPhosLevelLabel, myTVPhosLevel, 0, INDENT));
   root->addSpace(VGAP);
-  root->addAuto(indentedItem(myTVOverscan, INDENT));
+  root->addAuto(labeledRow(myTVOverscanLabel, myTVOverscan, 0, INDENT));
   root->addSpace(VGAP);
   root->addAuto(indentedItem(myOverscanInfo, INDENT));
   root->addSpace(VGAP * 5);

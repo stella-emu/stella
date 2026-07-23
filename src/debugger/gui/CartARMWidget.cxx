@@ -45,8 +45,9 @@ void CartridgeARMWidget::createCycleWidgets()
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
   myIncCycles->setTarget(this);
 
+  myCycleFactorLabel = new StaticTextWidget(_boss, _font, "Cycle factor");
   myCycleFactor = new SliderWidget(_boss, _font, _fontWidth * 10,
-                                   "Cycle factor", 0, kFactorChanged, _fontWidth * 4, "%");
+                                   kFactorChanged, _fontWidth * 4, "%");
   myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
   myCycleFactor->setTickmarkIntervals(4);
   myCycleFactor->setToolTip("Correct approximated ARM cycles by factor.");
@@ -71,7 +72,8 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<Int32>(Thumbulator::ChipType::LPC2104_OC));
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
   VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
-  myChipType = new PopUpWidget(_boss, _font, items, "Chip", 0, kChipChanged);
+  myChipTypeLabel = new StaticTextWidget(_boss, _font, "Chip");
+  myChipType = new PopUpWidget(_boss, _font, items, kChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
   myChipType->setTarget(this);
 
@@ -84,7 +86,7 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "Partial (1)", static_cast<uInt32>(Thumbulator::MamModeType::mode1));
   VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
   VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
-  myMamMode = new PopUpWidget(_boss, _font, items, "", 0, kMamModeChanged);
+  myMamMode = new PopUpWidget(_boss, _font, items, kMamModeChanged);
   myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
   myMamMode->setTarget(this);
 
@@ -106,12 +108,11 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
-  // "Chip" and "Cycle factor" are drawn INSIDE their widgets, and the counter
-  // captions are labels beside theirs: either way the clearance from what follows
-  // comes from a group -- and each of these has nothing to line up with, so each
-  // is a group of one
-  GUI::alignLabels({{myChipType}});
-  GUI::alignLabels({{myCycleFactor}});
+  // "Chip", "Cycle factor" and the counter captions are each beside their own
+  // control: the clearance from what follows comes from a group -- and each of
+  // these has nothing to line up with, so each is a group of one
+  GUI::alignLabels({{myChipTypeLabel}});
+  GUI::alignLabels({{myCycleFactorLabel}});
   GUI::alignLabels({{myCyclesLabel}});
   GUI::alignLabels({{myInstructionsLabel}});
 
@@ -142,8 +143,8 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   grid->rowAuto(2);
 
   grid->place(0, 0, anchoredItem(myIncCycles));
-  grid->place(1, 0, anchoredItem(myCycleFactor));
-  grid->place(0, 1, stretchedItem(myChipType));
+  grid->place(1, 0, labeledRow(myCycleFactorLabel, myCycleFactor));
+  grid->place(0, 1, labeledRow(myChipTypeLabel, myChipType, 0, 0, true));
   grid->place(1, 1, std::move(mam));
   grid->place(0, 2, counters(myCyclesLabel, myPrevThumbCycles, myThumbCycles));
   grid->place(1, 2, counters(myInstructionsLabel, myPrevThumbInstructions,
@@ -244,6 +245,7 @@ void CartridgeARMWidget::handleChipType()
 {
   const bool devSettings = instance().settings().getBool("dev.settings");
 
+  myChipTypeLabel->setEnabled(devSettings);
   myChipType->setEnabled(devSettings);
 
   if(devSettings)
@@ -304,6 +306,7 @@ void CartridgeARMWidget::handleArmCycles()
   }
 
   myIncCycles->setEnabled(devSettings);
+  myCycleFactorLabel->setEnabled(devSettings);
   myCycleFactor->setEnabled(devSettings);
   myCyclesLabel->setEnabled(devSettings);
   myThumbCycles->setEnabled(devSettings);

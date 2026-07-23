@@ -58,7 +58,8 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
   VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
   VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
-  myLogLevel = new PopUpWidget(this, font, items, "Log level");
+  myLogLevelLabel = new StaticTextWidget(this, font, "Log level");
+  myLogLevel = new PopUpWidget(this, font, items);
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
@@ -84,6 +85,7 @@ void LoggerDialog::layout()
   using GUI::BoxLayout;
   using GUI::widgetItem;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int fontWidth    = Dialog::fontWidth(),
@@ -92,12 +94,11 @@ void LoggerDialog::layout()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // The popup draws its own label, so give it a label column of its own
-  GUI::alignLabels({{myLogLevel}});
+  GUI::alignLabels({{myLogLevelLabel}});
 
   // Bottom controls: the log-level popup and a checkbox to its right
   auto controlRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  controlRow->addAuto(anchoredItem(myLogLevel));
+  controlRow->addAuto(labeledRow(myLogLevelLabel, myLogLevel));
   controlRow->addSpace(fontWidth * 4);
   controlRow->addAuto(anchoredItem(myLogToConsole));
 

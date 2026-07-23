@@ -90,6 +90,7 @@ class NavigationWidget : public Widget
     NavigationWidget(GuiObject* boss, const GUI::Font& font);
     ~NavigationWidget() override = default;
 
+    Common::Size naturalSize() const override;
     void setWidth(int w) override;
     void setArea(int x, int y, int w, int h) override;
     void setList(FileListWidget* list);

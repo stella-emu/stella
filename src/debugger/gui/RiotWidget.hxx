@@ -89,7 +89,9 @@ class RiotWidget : public Widget, public CommandSender
     DataGridWidget* myTimDivider{nullptr};
 
     ControllerWidget *myLeftControl{nullptr}, *myRightControl{nullptr};
+    StaticTextWidget *myP0DiffLabel{nullptr}, *myP1DiffLabel{nullptr};
     PopUpWidget *myP0Diff{nullptr}, *myP1Diff{nullptr};
+    StaticTextWidget *myTVTypeLabel{nullptr};
     PopUpWidget *myTVType{nullptr};
     CheckboxWidget* mySelect{nullptr};
     CheckboxWidget* myReset{nullptr};

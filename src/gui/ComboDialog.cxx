@@ -40,7 +40,8 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   // Add event popup for 8 events; each sizes itself to the events it can show
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
-    myEvents[idx] = new PopUpWidget(this, font, combolist, label);
+    myEventLabels[idx] = new StaticTextWidget(this, font, label);
+    myEvents[idx] = new PopUpWidget(this, font, combolist);
     wid.push_back(myEvents[idx]);
   };
   ADD_EVENT_POPUP(0, "Event 1");
@@ -65,7 +66,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 void ComboDialog::layout()
 {
   using GUI::BoxLayout;
-  using GUI::anchoredItem;
+  using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
   const int buttonHeight = Dialog::buttonHeight(),
@@ -73,16 +74,16 @@ void ComboDialog::layout()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  // The popups draw their own labels; one shared column lines their value boxes
-  // up down the dialog
-  GUI::alignLabels({{myEvents[0]}, {myEvents[1]}, {myEvents[2]}, {myEvents[3]},
-                    {myEvents[4]}, {myEvents[5]}, {myEvents[6]}, {myEvents[7]}});
+  // One shared label column lines the popups' value boxes up down the dialog
+  GUI::alignLabels({{myEventLabels[0]}, {myEventLabels[1]}, {myEventLabels[2]},
+                    {myEventLabels[3]}, {myEventLabels[4]}, {myEventLabels[5]},
+                    {myEventLabels[6]}, {myEventLabels[7]}});
 
-  // Vertical stack of the eight self-labeling event popups; the button group
-  // sits below, positioned by layoutButtonGroup().
+  // Vertical stack of the eight labeled event popups; the button group sits
+  // below, positioned by layoutButtonGroup().
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
-  for(auto* e: myEvents)
-    root->addAuto(anchoredItem(e));
+  for(size_t i = 0; i < myEvents.size(); ++i)
+    root->addAuto(labeledRow(myEventLabels[i], myEvents[i]));
 
   // The dialog is as large as its content asks to be, and at least wide enough
   // for the button row below it (which the content knows nothing about)

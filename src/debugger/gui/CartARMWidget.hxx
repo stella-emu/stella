@@ -66,7 +66,9 @@ class CartridgeARMWidget : public CartDebugWidget
     CartridgeARM& myCart;
 
     CheckboxWidget*   myIncCycles{nullptr};
+    StaticTextWidget* myCycleFactorLabel{nullptr};
     SliderWidget*     myCycleFactor{nullptr};
+    StaticTextWidget* myChipTypeLabel{nullptr};
     PopUpWidget*      myChipType{nullptr};
     CheckboxWidget*   myLockMamMode{nullptr};
     PopUpWidget*      myMamMode{nullptr};

@@ -73,13 +73,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   VarList::push_back(items, "Dark", "dark");
-  myPalette1Popup = new PopUpWidget(lookPane, font,
-                                    items, "Light theme", 0);
+  myPalette1Label = new StaticTextWidget(lookPane, font, "Light theme");
+  myPalette1Popup = new PopUpWidget(lookPane, font, items);
   myPalette1Popup->setToolTip("Primary/light theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette1Popup);
 
-  myPalette2Popup = new PopUpWidget(lookPane, font,
-                                    items, "Dark theme", 0);
+  myPalette2Label = new StaticTextWidget(lookPane, font, "Dark theme");
+  myPalette2Popup = new PopUpWidget(lookPane, font, items);
   myPalette2Popup->setToolTip("Alternative/dark theme.", Event::ToggleUIPalette, EventMode::kMenuMode);
   wid.push_back(myPalette2Popup);
 
@@ -96,8 +96,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
-  myDialogFontPopup = new PopUpWidget(lookPane, font,
-                                      items, "Dialogs font", 0, kDialogFont);
+  myDialogFontLabel = new StaticTextWidget(lookPane, font, "Dialogs font");
+  myDialogFontPopup = new PopUpWidget(lookPane, font, items, kDialogFont);
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
@@ -112,8 +112,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(lookPane, font,
-                                    items, "Dialogs position", 0);
+  myPositionLabel = new StaticTextWidget(lookPane, font, "Dialogs position");
+  myPositionPopup = new PopUpWidget(lookPane, font, items);
   wid.push_back(myPositionPopup);
 
   // Center window (in windowed mode)
@@ -125,8 +125,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // span the pop-ups' boxes and arrows beside them, but the pop-ups have not been
   // given their shared width yet, so layout() sets the real track width
   const int swidth = 1;
+  myListDelaySliderLabel = new StaticTextWidget(lookPane, font, "List input delay");
   myListDelaySlider = new SliderWidget(lookPane, font, swidth,
-                                      "List input delay", 0, kListDelay,
+                                      kListDelay,
                                       font.getStringWidth("1 second"));
   myListDelaySlider->setMinValue(0);
   myListDelaySlider->setMaxValue(1000);
@@ -137,8 +138,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myListDelaySlider);
 
   // Number of lines a mouse wheel will scroll
+  myWheelLinesSliderLabel = new StaticTextWidget(lookPane, font, "Mouse wheel scroll");
   myWheelLinesSlider = new SliderWidget(lookPane, font, swidth,
-                                      "Mouse wheel scroll", 0, kMouseWheel,
+                                      kMouseWheel,
                                        font.getStringWidth("10 lines"));
   myWheelLinesSlider->setMinValue(1);
   myWheelLinesSlider->setMaxValue(10);
@@ -146,8 +148,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myWheelLinesSlider);
 
   // Mouse double click speed
+  myDoubleClickSliderLabel = new StaticTextWidget(lookPane, font, "Double-click speed");
   myDoubleClickSlider = new SliderWidget(lookPane, font, swidth,
-                                         "Double-click speed", 0, 0,
+                                         0,
                                          font.getStringWidth("900 ms"), " ms");
   myDoubleClickSlider->setMinValue(100);
   myDoubleClickSlider->setMaxValue(900);
@@ -156,8 +159,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDoubleClickSlider);
 
   // Initial delay before controller input will start repeating
+  myControllerDelaySliderLabel = new StaticTextWidget(lookPane, font, "Controller repeat delay");
   myControllerDelaySlider = new SliderWidget(lookPane, font, swidth,
-                                             "Controller repeat delay", 0, kControllerDelay,
+                                             kControllerDelay,
                                              font.getStringWidth("1 second"));
   myControllerDelaySlider->setMinValue(200);
   myControllerDelaySlider->setMaxValue(1000);
@@ -166,8 +170,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myControllerDelaySlider);
 
   // Controller repeat rate
+  myControllerRateSliderLabel = new StaticTextWidget(lookPane, font, "Controller repeat rate");
   myControllerRateSlider = new SliderWidget(lookPane, font, swidth,
-                                            "Controller repeat rate", 0, 0,
+                                            0,
                                             font.getStringWidth("30 repeats/s"), " repeats/s");
   myControllerRateSlider->setMinValue(2);
   myControllerRateSlider->setMaxValue(30);
@@ -190,18 +195,19 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     using GUI::GridLayout;
     using GUI::anchoredItem;
     using GUI::alignedItem;
+    using GUI::labeledRow;
     using GUI::HAlign;
     using GUI::VAlign;
 
     const int fontWidth = Dialog::fontWidth(),
               VGAP      = Dialog::vGap();
 
-    // The pop-ups and sliders draw their own labels, so they share one label
-    // column and their value boxes and tracks line up down the tab
-    GUI::alignLabels({{myPalette1Popup}, {myPalette2Popup}, {myDialogFontPopup},
-                      {myPositionPopup}, {myListDelaySlider}, {myWheelLinesSlider},
-                      {myDoubleClickSlider}, {myControllerDelaySlider},
-                      {myControllerRateSlider}});
+    // The sliders and the pop-ups each have a separate label beside them; all
+    // share one label column so their value boxes and tracks line up down the tab
+    GUI::alignLabels({{myPalette1Label}, {myPalette2Label}, {myDialogFontLabel},
+                      {myPositionLabel}, {myListDelaySliderLabel}, {myWheelLinesSliderLabel},
+                      {myDoubleClickSliderLabel}, {myControllerDelaySliderLabel},
+                      {myControllerRateSliderLabel}});
     // The pop-ups size their own boxes to their items; one shared width keeps
     // them flush, and the sliders' tracks then span box and arrow alike
     GUI::alignPopUps({myPalette1Popup, myPalette2Popup, myDialogFontPopup,
@@ -220,10 +226,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
       grid->rowAuto(r);
     grid->rowFixed(GAP, VGAP);
 
-    grid->place(MAIN, THEME1,   anchoredItem(myPalette1Popup));
-    grid->place(MAIN, THEME2,   anchoredItem(myPalette2Popup));
-    grid->place(MAIN, FONT,     anchoredItem(myDialogFontPopup));
-    grid->place(MAIN, POSITION, anchoredItem(myPositionPopup));
+    grid->place(MAIN, THEME1,   labeledRow(myPalette1Label, myPalette1Popup));
+    grid->place(MAIN, THEME2,   labeledRow(myPalette2Label, myPalette2Popup));
+    grid->place(MAIN, FONT,     labeledRow(myDialogFontLabel, myDialogFontPopup));
+    grid->place(MAIN, POSITION, labeledRow(myPositionLabel, myPositionPopup));
 
     // The auto-theme box governs both theme rows, so it is centered across them
     grid->place(EXTRA, THEME1,
@@ -232,11 +238,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     grid->place(EXTRA, POSITION, anchoredItem(myCenter));
 
     // The sliders have nothing beside them, so they take the whole row
-    grid->place(MAIN, LIST,  anchoredItem(myListDelaySlider), COLS - MAIN);
-    grid->place(MAIN, WHEEL, anchoredItem(myWheelLinesSlider), COLS - MAIN);
-    grid->place(MAIN, CLICK, anchoredItem(myDoubleClickSlider), COLS - MAIN);
-    grid->place(MAIN, DELAY, anchoredItem(myControllerDelaySlider), COLS - MAIN);
-    grid->place(MAIN, RATE,  anchoredItem(myControllerRateSlider), COLS - MAIN);
+    grid->place(MAIN, LIST,  labeledRow(myListDelaySliderLabel, myListDelaySlider), COLS - MAIN);
+    grid->place(MAIN, WHEEL, labeledRow(myWheelLinesSliderLabel, myWheelLinesSlider), COLS - MAIN);
+    grid->place(MAIN, CLICK, labeledRow(myDoubleClickSliderLabel, myDoubleClickSlider), COLS - MAIN);
+    grid->place(MAIN, DELAY, labeledRow(myControllerDelaySliderLabel, myControllerDelaySlider), COLS - MAIN);
+    grid->place(MAIN, RATE,  labeledRow(myControllerRateSliderLabel, myControllerRateSlider), COLS - MAIN);
 
     col.addAuto(std::move(grid));
     // Info message along the bottom of the tab
@@ -271,19 +277,21 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
-  myLauncherFontPopup =
-    new PopUpWidget(launchPane, font, items, "Launcher font", 0);
+  myLauncherFontLabel = new StaticTextWidget(launchPane, font, "Launcher font");
+  myLauncherFontPopup = new PopUpWidget(launchPane, font, items);
   wid.push_back(myLauncherFontPopup);
 
   // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(launchPane, font, "Launcher width",
-                                           0, 0, 6 * fontWidth, "px");
+  myLauncherWidthSliderLabel = new StaticTextWidget(launchPane, font, "Launcher width");
+  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0,
+                                           0, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
 
-  myLauncherHeightSlider = new SliderWidget(launchPane, font, "Launcher height",
-                                            0, 0, 6 * fontWidth, "px");
+  myLauncherHeightSliderLabel = new StaticTextWidget(launchPane, font, "Launcher height");
+  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0,
+                                            0, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
@@ -303,8 +311,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLauncherButtonsWidget);
 
   // ROM launcher info/snapshot viewer
-  myRomViewerSize = new SliderWidget(launchPane, font, "ROM info width",
-                                     0, kRomViewer, 6 * fontWidth, "%");
+  myRomViewerSizeLabel = new StaticTextWidget(launchPane, font, "ROM info width");
+  myRomViewerSize = new SliderWidget(launchPane, font, 0,
+                                     kRomViewer, 6 * fontWidth, "%");
   myRomViewerSize->setMinValue(0);
   myRomViewerSize->setMaxValue(100);
   myRomViewerSize->setStepValue(2);
@@ -343,6 +352,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     using GUI::anchoredItem;
     using GUI::alignedItem;
     using GUI::widgetItem;
+    using GUI::labeledRow;
     using GUI::HAlign;
     using GUI::VAlign;
     using Dir = BoxLayout::Dir;
@@ -351,10 +361,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
 
-    // The launcher's self-labeling controls share one label column
-    GUI::alignLabels({{myLauncherFontPopup}, {myLauncherWidthSlider},
-                      {myLauncherHeightSlider}, {myRomViewerSize}});
-    const int labelW = myLauncherFontPopup->labelWidth();
+    // The launcher's controls share one label column
+    GUI::alignLabels({{myLauncherFontLabel}, {myLauncherWidthSliderLabel},
+                      {myLauncherHeightSliderLabel}, {myRomViewerSizeLabel}});
+    const int labelW = myLauncherFontLabel->getWidth();
 
     // A path row: its browse button, then the path filling the rest.  The
     // button may be given the shared label column to sit in (anchored left),
@@ -394,16 +404,16 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                 COLS - MAIN);
     grid->place(EXTRA, FOLLOW, anchoredItem(myFollowLauncherWidget));
 
-    grid->place(MAIN,  FONT,   anchoredItem(myLauncherFontPopup));
+    grid->place(MAIN,  FONT,   labeledRow(myLauncherFontLabel, myLauncherFontPopup));
     grid->place(EXTRA, FONT,   anchoredItem(myFavoritesWidget));
-    grid->place(MAIN,  WIDTH,  anchoredItem(myLauncherWidthSlider));
+    grid->place(MAIN,  WIDTH,  labeledRow(myLauncherWidthSliderLabel, myLauncherWidthSlider));
     grid->place(EXTRA, WIDTH,  anchoredItem(myLauncherExtensionsWidget));
-    grid->place(MAIN,  HEIGHT, anchoredItem(myLauncherHeightSlider));
+    grid->place(MAIN,  HEIGHT, labeledRow(myLauncherHeightSliderLabel, myLauncherHeightSlider));
     grid->place(EXTRA, HEIGHT, anchoredItem(myLauncherButtonsWidget));
 
     // The image path lines up with the value boxes of the controls above it:
     // its browse button occupies the shared label column
-    grid->place(MAIN, VIEWER, anchoredItem(myRomViewerSize), COLS - MAIN);
+    grid->place(MAIN, VIEWER, labeledRow(myRomViewerSizeLabel, myRomViewerSize), COLS - MAIN);
     grid->place(MAIN, IMAGE_PATH,
                 pathRow(myOpenBrowserButton, mySnapLoadPath, INDENT, labelW),
                 COLS - MAIN);

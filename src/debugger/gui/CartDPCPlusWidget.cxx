@@ -49,12 +49,13 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "4 ($FFFA)");
   VarList::push_back(items, "5 ($FFFB)");
 
-  myBank = new PopUpWidget(boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBank);
+  myLabelColumn.emplace_back(myBankLabel);
 
   // The DPC+ registers, each a labelled row of a grid
   const auto addRegisters = [&](StaticTextWidget*& label, string_view text,
@@ -117,7 +118,7 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
                     {myMusicFrequenciesLabel}, {myMusicWaveformsLabel},
                     {myRandomLabel}});
 
-  col.addAuto(anchoredItem(myBank));
+  col.addAuto(labeledRow(myBankLabel, myBank));
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(labeledRow(myTopsLabel,           myTops));

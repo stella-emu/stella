@@ -96,11 +96,15 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myBSType{nullptr};
     CheckboxWidget*   myBSFilter{nullptr};
     StaticTextWidget* myTypeDetected{nullptr};
+    StaticTextWidget* myStartBankLabel{nullptr};
     PopUpWidget*      myStartBank{nullptr};
+    StaticTextWidget* myFormatLabel{nullptr};
     PopUpWidget*      myFormat{nullptr};
     StaticTextWidget* myFormatDetected{nullptr};
+    StaticTextWidget* myVCenterLabel{nullptr};
     SliderWidget*     myVCenter{nullptr};
     CheckboxWidget*   myPhosphor{nullptr};
+    StaticTextWidget* myPPBlendLabel{nullptr};
     SliderWidget*     myPPBlend{nullptr};
     CheckboxWidget*   mySound{nullptr};
     StaticTextWidget* myEmulInfo{nullptr};
@@ -130,11 +134,16 @@ class GameInfoDialog : public Dialog, public CommandSender
     ButtonWidget*     myEraseEEPROMButton{nullptr};
     StaticTextWidget* myEraseEEPROMInfo{nullptr};
     StaticTextWidget* myPaddlesCenter{nullptr};
+    StaticTextWidget* myPaddleXCenterLabel{nullptr};
     SliderWidget*     myPaddleXCenter{nullptr};
+    StaticTextWidget* myPaddleYCenterLabel{nullptr};
     SliderWidget*     myPaddleYCenter{nullptr};
     CheckboxWidget*   myMouseControl{nullptr};
+    StaticTextWidget* myMouseXLabel{nullptr};
     PopUpWidget*      myMouseX{nullptr};
+    StaticTextWidget* myMouseYLabel{nullptr};
     PopUpWidget*      myMouseY{nullptr};
+    StaticTextWidget* myMouseRangeLabel{nullptr};
     SliderWidget*     myMouseRange{nullptr};
 
     // Allow assigning the four QuadTari controllers

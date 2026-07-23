@@ -75,8 +75,8 @@ void Cartridge3EWidget::createBankWidgets()
   myBankWidgets.resize(2);
 
   bankList(myCart.romBankCount(), 0, items);
-  myBankWidgets[0] =
-    new PopUpWidget(_boss, _font, items, "Set bank", 0, kBankChanged);
+  myBankLabel = new StaticTextWidget(_boss, _font, "Set bank");
+  myBankWidgets[0] = new PopUpWidget(_boss, _font, items, kBankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
@@ -85,8 +85,8 @@ void Cartridge3EWidget::createBankWidgets()
 
   items.clear();
   bankList(myCart.ramBankCount(), 0, items);
-  myBankWidgets[1] =
-    new PopUpWidget(_boss, _font, items, "", 0, kRAMBankChanged);
+  myRAMBankLabel = new StaticTextWidget(_boss, _font, "");
+  myBankWidgets[1] = new PopUpWidget(_boss, _font, items, kRAMBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
@@ -96,7 +96,7 @@ void Cartridge3EWidget::createBankWidgets()
   // Both selectors take the tab's label column, so their boxes line up under one
   // another; the RAM one has no label of its own and simply leaves it empty
   myLabelColumn.insert(myLabelColumn.end(),
-                       {{myBankWidgets[0]}, {myBankWidgets[1]}});
+                       {{myBankLabel}, {myRAMBankLabel}});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,17 +104,19 @@ void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
 
   // A row per selector, each annotated with the kind of bank it selects.  Both
   // boxes sit in the tab's label column (see collectBankLabels), so they line up
   // with each other and with the ROM info fields above -- and the row's width no
   // longer grows with the bank labels, as a side-by-side pair's did
+  const std::array<StaticTextWidget*, 2> labels{myBankLabel, myRAMBankLabel};
   const std::array<StaticTextWidget*, 2> types{myROMTypeLabel, myRAMTypeLabel};
 
   for(size_t i = 0; i < myBankWidgets.size(); ++i)
   {
     auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
-    row->addAuto(anchoredItem(myBankWidgets[i]));
+    row->addAuto(labeledRow(labels[i], myBankWidgets[i]));
     row->addAuto(anchoredItem(types[i]));
 
     col.addAuto(std::move(row));

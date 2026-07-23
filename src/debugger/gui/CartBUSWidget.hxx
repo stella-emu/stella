@@ -73,6 +73,7 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     };
 
     CartridgeBUS& myCart;
+    StaticTextWidget* myBankLabel{nullptr};
     PopUpWidget* myBank{nullptr};
     int myDatastreamCount;
     int myDatastream2Rows{0};   // named streams below the main table

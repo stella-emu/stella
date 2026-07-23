@@ -57,28 +57,32 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // Each region: a heading, with a ROM and a RAM selector indented beneath it.
   // Every widget is created at a placeholder position; reflow() positions them
   const auto addRegion = [&](StaticTextWidget*& label, string_view heading,
-                             PopUpWidget*& rom, const VariantList& romItems, int romCmd,
-                             PopUpWidget*& ram, const VariantList& ramItems, int ramCmd) {
+                             StaticTextWidget*& romLabel, PopUpWidget*& rom,
+                             const VariantList& romItems, int romCmd,
+                             StaticTextWidget*& ramLabel, PopUpWidget*& ram,
+                             const VariantList& ramItems, int ramCmd) {
     label = new StaticTextWidget(_boss, _font, heading);
 
-    rom = new PopUpWidget(boss, _font, romItems, "ROM", 0, romCmd);
+    romLabel = new StaticTextWidget(_boss, _font, "ROM");
+    rom = new PopUpWidget(boss, _font, romItems, romCmd);
     rom->setTarget(this);
     addFocusWidget(rom);
 
-    ram = new PopUpWidget(boss, _font, ramItems, "RAM", 0, ramCmd);
+    ramLabel = new StaticTextWidget(_boss, _font, "RAM");
+    ram = new PopUpWidget(boss, _font, ramItems, ramCmd);
     ram->setTarget(this);
     addFocusWidget(ram);
   };
 
   addRegion(myLowerLabel,  "Set lower 2K region ($F000 - $F7FF):",
-            myROMLower,  items32,  kROMLowerChanged,
-            myRAMLower,  items16,  kRAMLowerChanged);
+            myROMLowerLabel,  myROMLower,  items32,  kROMLowerChanged,
+            myRAMLowerLabel,  myRAMLower,  items16,  kRAMLowerChanged);
   addRegion(myMiddleLabel, "Set middle 1.5K region ($F800 - $FDFF):",
-            myROMMiddle, items32,  kROMMiddleChanged,
-            myRAMMiddle, items16,  kRAMMiddleChanged);
+            myROMMiddleLabel, myROMMiddle, items32,  kROMMiddleChanged,
+            myRAMMiddleLabel, myRAMMiddle, items16,  kRAMMiddleChanged);
   addRegion(myHighLabel,   "Set high 256B region ($FE00 - $FEFF):",
-            myROMHigh,   items256, kROMHighChanged,
-            myRAMHigh,   items128, kRAMHighChanged);
+            myROMHighLabel,   myROMHigh,   items256, kROMHighChanged,
+            myRAMHighLabel,   myRAMHigh,   items128, kRAMHighChanged);
 
   reflow();
 }
@@ -86,31 +90,34 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col) const
 {
-  // The ROM selectors form a column, as do the RAM ones: each gets one label
-  // column, and all six get one box width, so the two columns line up down the tab
-  GUI::alignLabels({{myROMLower}, {myROMMiddle}, {myROMHigh}});
-  GUI::alignLabels({{myRAMLower}, {myRAMMiddle}, {myRAMHigh}});
+  // The ROM selectors' labels form a column, as do the RAM ones: each gets one
+  // label column, and all six pop-ups get one box width, so the two columns
+  // line up down the tab
+  GUI::alignLabels({{myROMLowerLabel}, {myROMMiddleLabel}, {myROMHighLabel}});
+  GUI::alignLabels({{myRAMLowerLabel}, {myRAMMiddleLabel}, {myRAMHighLabel}});
   GUI::alignPopUps({myROMLower, myROMMiddle, myROMHigh,
                     myRAMLower, myRAMMiddle, myRAMHigh});
 
-  layoutRegion(col, myLowerLabel,  myROMLower,  myRAMLower);
+  layoutRegion(col, myLowerLabel,  myROMLowerLabel,  myROMLower,  myRAMLowerLabel,  myRAMLower);
   col.addSpace(_lineHeight);
-  layoutRegion(col, myMiddleLabel, myROMMiddle, myRAMMiddle);
+  layoutRegion(col, myMiddleLabel, myROMMiddleLabel, myROMMiddle, myRAMMiddleLabel, myRAMMiddle);
   col.addSpace(_lineHeight);
-  layoutRegion(col, myHighLabel,   myROMHigh,   myRAMHigh);
+  layoutRegion(col, myHighLabel,   myROMHighLabel,   myROMHigh,   myRAMHighLabel,   myRAMHigh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50Widget::layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
-                                       PopUpWidget* rom, PopUpWidget* ram) const
+                                       StaticTextWidget* romLabel, PopUpWidget* rom,
+                                       StaticTextWidget* ramLabel, PopUpWidget* ram) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
 
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth * 2);
   row->addSpace(_fontWidth * 4);   // the selectors sit in from their heading
-  row->addAuto(anchoredItem(rom));
-  row->addAuto(anchoredItem(ram));
+  row->addAuto(labeledRow(romLabel, rom));
+  row->addAuto(labeledRow(ramLabel, ram));
 
   col.addAuto(anchoredItem(label));
   col.addAuto(std::move(row));

@@ -59,8 +59,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myFilterPopup = new PopUpWidget(boss, font, items, "Events", 0,
-                                  kFilterCmd);
+  myFilterPopupLabel = new StaticTextWidget(boss, font, "Events");
+  myFilterPopup = new PopUpWidget(boss, font, items, kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
 
@@ -140,6 +140,7 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   using GUI::alignedItem;
   using GUI::widgetItem;
   using GUI::stretchedItem;
+  using GUI::labeledRow;
   using GUI::HAlign;
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
@@ -161,13 +162,11 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   // The width the list actually gets: what is left beside the button column
   const int listArea = w - buttonWidth - HBORDER * 2 - fontWidth;
 
-  // Event-group filter popup, flush with the actions list below it.  The popup
-  // splits the width it is given into its own label, value box and arrow, so it
-  // is simply handed the list's width
-  GUI::alignLabels({{myFilterPopup}});
+  // Event-group filter popup, flush with the actions list below it
+  GUI::alignLabels({{myFilterPopupLabel}});
 
   auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  filterRow->addFixed(stretchedItem(myFilterPopup), listArea);
+  filterRow->addFixed(labeledRow(myFilterPopupLabel, myFilterPopup, 0, 0, true), listArea);
   filterRow->addStretchSpace();
 
   // The buttons form a column to the right of the list, aligned to its top

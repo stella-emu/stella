@@ -60,29 +60,42 @@ class UIDialog : public Dialog, public CommandSender
     ButtonWidget*     myRomButton{nullptr};
     EditTextWidget*   myRomPath{nullptr};
     CheckboxWidget*   myFollowLauncherWidget{nullptr};
+    StaticTextWidget* myLauncherWidthSliderLabel{nullptr};
     SliderWidget*     myLauncherWidthSlider{nullptr};
+    StaticTextWidget* myLauncherHeightSliderLabel{nullptr};
     SliderWidget*     myLauncherHeightSlider{nullptr};
+    StaticTextWidget* myLauncherFontLabel{nullptr};
     PopUpWidget*      myLauncherFontPopup{nullptr};
     CheckboxWidget*   myFavoritesWidget{nullptr};
     CheckboxWidget*   myLauncherExtensionsWidget{nullptr};
     CheckboxWidget*   myLauncherButtonsWidget{nullptr};
+    StaticTextWidget* myRomViewerSizeLabel{nullptr};
     SliderWidget*     myRomViewerSize{nullptr};
     ButtonWidget*     myOpenBrowserButton{nullptr};
     EditTextWidget*   mySnapLoadPath{nullptr};
     CheckboxWidget*   myLauncherExitWidget{nullptr};
 
     // Misc options
+    StaticTextWidget* myPalette1Label{nullptr};
     PopUpWidget*      myPalette1Popup{nullptr};
+    StaticTextWidget* myPalette2Label{nullptr};
     PopUpWidget*      myPalette2Popup{nullptr};
     CheckboxWidget*   myAutoPalette{nullptr};
+    StaticTextWidget* myDialogFontLabel{nullptr};
     PopUpWidget*      myDialogFontPopup{nullptr};
     CheckboxWidget*   myHidpiWidget{nullptr};
+    StaticTextWidget* myPositionLabel{nullptr};
     PopUpWidget*      myPositionPopup{nullptr};
     CheckboxWidget*   myCenter{nullptr};
+    StaticTextWidget* myListDelaySliderLabel{nullptr};
     SliderWidget*     myListDelaySlider{nullptr};
+    StaticTextWidget* myWheelLinesSliderLabel{nullptr};
     SliderWidget*     myWheelLinesSlider{nullptr};
+    StaticTextWidget* myControllerRateSliderLabel{nullptr};
     SliderWidget*     myControllerRateSlider{nullptr};
+    StaticTextWidget* myControllerDelaySliderLabel{nullptr};
     SliderWidget*     myControllerDelaySlider{nullptr};
+    StaticTextWidget* myDoubleClickSliderLabel{nullptr};
     SliderWidget*     myDoubleClickSlider{nullptr};
 
     // Bottom-of-tab "(*) ..." info messages

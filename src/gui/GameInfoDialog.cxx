@@ -138,7 +138,7 @@ void GameInfoDialog::addEmulationTab()
   // cannot size themselves: the dialog says how wide an entry it will show
   myBSType = new PopUpWidget(pane, _font,
                              _font.getStringWidth("CM (SpectraVideo CompuMate)"),
-                             items, "", 0, kBSTypeChanged);
+                             items, kBSTypeChanged);
   wid.push_back(myBSType);
   myBSFilter = new CheckboxWidget(pane, _font, "Filter", kBSFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
@@ -148,8 +148,9 @@ void GameInfoDialog::addEmulationTab()
                                         "CM (SpectraVideo CompuMate) detected");
 
   // Start bank
+  myStartBankLabel = new StaticTextWidget(pane, _font, "Start bank (*)");
   myStartBank = new PopUpWidget(pane, _font,
-                                _font.getStringWidth("AUTO"), items, "Start bank (*)");
+                                _font.getStringWidth("AUTO"), items);
   wid.push_back(myStartBank);
 
   items.clear();
@@ -160,7 +161,8 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "NTSC-50", "NTSC50");
   VarList::push_back(items, "PAL-60", "PAL60");
   VarList::push_back(items, "SECAM-60", "SECAM60");
-  myFormat = new PopUpWidget(pane, _font, items, "TV format");
+  myFormatLabel = new StaticTextWidget(pane, _font, "TV format");
+  myFormat = new PopUpWidget(pane, _font, items);
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
@@ -172,15 +174,17 @@ void GameInfoDialog::addEmulationTab()
   myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
+  myPPBlendLabel = new StaticTextWidget(pane, _font, "Blend");
   myPPBlend = new SliderWidget(pane, _font,
-                               "Blend", 0, kPPBlendChanged, 4 * fontWidth, "%");
+                               0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
   myPPBlend->setToolTip(Event::PhosphorDecrease, Event::PhosphorIncrease);
   wid.push_back(myPPBlend);
 
-  myVCenter = new SliderWidget(pane, _font, "V-Center",
-                               0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
+  myVCenterLabel = new StaticTextWidget(pane, _font, "V-Center");
+  myVCenter = new SliderWidget(pane, _font, 0,
+                               kVCenterChanged, 7 * fontWidth, "px", 0, true);
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
   myVCenter->setTickmarkIntervals(4);
@@ -202,6 +206,7 @@ void GameInfoDialog::addEmulationTab()
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::BoxLayout;
     using GUI::anchoredItem;
+    using GUI::labeledRow;
     using GUI::indentedItem;
     using GUI::alignedItem;
     using GUI::HAlign;
@@ -212,13 +217,12 @@ void GameInfoDialog::addEmulationTab()
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
     // Each group is given ONE label column, sized to the longest label in it, so
-    // the value boxes beside them line up.  It makes no difference whether a
-    // control draws its own label (the pop-ups) or is named by a separate one
-    // (the bankswitch type) -- a label is a label, and all three boxes line up.
-    // The blend slider is indented, so its column is narrowed to match and its
-    // track still meets the V-Center one below it
-    GUI::alignLabels({{myBSTypeLabel}, {myStartBank}, {myFormat}});
-    GUI::alignLabels({{myPPBlend, INDENT}, {myVCenter}});
+    // the value boxes beside them line up.  A label is a label whether it names
+    // a pop-up (the bankswitch type) or a slider (the blend/V-Center pair), so
+    // all three line up the same way.  The blend row's label is indented, so
+    // its column is narrowed to match and its track still meets V-Center's
+    GUI::alignLabels({{myBSTypeLabel}, {myStartBankLabel}, {myFormatLabel}});
+    GUI::alignLabels({{myPPBlendLabel, INDENT}, {myVCenterLabel}});
 
     // Bankswitch-type row: label + type popup + filter checkbox
     auto bsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -230,7 +234,7 @@ void GameInfoDialog::addEmulationTab()
     // TV-format row, with the detected format beside the popup (it uses the
     // smaller info font, so it is centered on the row rather than filling it)
     auto formatRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    formatRow->addAuto(anchoredItem(myFormat));
+    formatRow->addAuto(labeledRow(myFormatLabel, myFormat));
     formatRow->addSpace(fontWidth);
     formatRow->addStretch(alignedItem(myFormatDetected, HAlign::Fill, VAlign::Center));
 
@@ -242,14 +246,14 @@ void GameInfoDialog::addEmulationTab()
     // Detected type, indented to line up under the type popup
     col.addAuto(indentedItem(myTypeDetected, myBSTypeLabel->getWidth()));
     col.addSpace(VGAP);
-    col.addAuto(anchoredItem(myStartBank));
+    col.addAuto(labeledRow(myStartBankLabel, myStartBank));
     col.addSpace(VGAP * 4);
     col.addAuto(std::move(formatRow));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myPhosphor));
-    col.addAuto(indentedItem(myPPBlend, INDENT));
+    col.addAuto(labeledRow(myPPBlendLabel, myPPBlend, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(anchoredItem(myVCenter));
+    col.addAuto(labeledRow(myVCenterLabel, myVCenter));
     col.addSpace(VGAP * 3);
     col.addAuto(anchoredItem(mySound));
     // Usage note along the bottom of the tab, never closer than this to the row
@@ -373,14 +377,14 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "QuadTari", "QUADTARI");
 
   myLeftPortLabel = new StaticTextWidget(pane, _font, "Left port");
-  myLeftPort = new PopUpWidget(pane, _font, items, "", 0, kLeftCChanged);
+  myLeftPort = new PopUpWidget(pane, _font, items, kLeftCChanged);
   myLeftPort->setToolTip(Event::PreviousLeftPort, Event::NextLeftPort);
   wid.push_back(myLeftPort);
 
   myLeftPortDetected = new StaticTextWidget(pane, ifont, "Sega Genesis detected");
 
   myRightPortLabel = new StaticTextWidget(pane, _font, "Right port");
-  myRightPort = new PopUpWidget(pane, _font, items, "", 0, kRightCChanged);
+  myRightPort = new PopUpWidget(pane, _font, items, kRightCChanged);
   myRightPort->setToolTip(Event::PreviousRightPort, Event::NextRightPort);
   wid.push_back(myRightPort);
 
@@ -408,7 +412,8 @@ void GameInfoDialog::addControllersTab()
   // Paddles
   myPaddlesCenter = new StaticTextWidget(pane, _font, "Paddles center:");
 
-  myPaddleXCenter = new SliderWidget(pane, _font, "X", 0, kPXCenterChanged,
+  myPaddleXCenterLabel = new StaticTextWidget(pane, _font, "X");
+  myPaddleXCenter = new SliderWidget(pane, _font, 0, kPXCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -416,7 +421,8 @@ void GameInfoDialog::addControllersTab()
   myPaddleXCenter->setToolTip(Event::DecreasePaddleCenterX, Event::IncreasePaddleCenterX);
   wid.push_back(myPaddleXCenter);
 
-  myPaddleYCenter = new SliderWidget(pane, _font, "Y", 0, kPYCenterChanged,
+  myPaddleYCenterLabel = new StaticTextWidget(pane, _font, "Y");
+  myPaddleYCenter = new SliderWidget(pane, _font, 0, kPYCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
@@ -440,13 +446,16 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
   VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
 
-  myMouseX = new PopUpWidget(pane, _font, ctrls, "X-Axis is");
+  myMouseXLabel = new StaticTextWidget(pane, _font, "X-Axis is");
+  myMouseX = new PopUpWidget(pane, _font, ctrls);
   wid.push_back(myMouseX);
-  myMouseY = new PopUpWidget(pane, _font, ctrls, "Y-Axis is");
+  myMouseYLabel = new StaticTextWidget(pane, _font, "Y-Axis is");
+  myMouseY = new PopUpWidget(pane, _font, ctrls);
   wid.push_back(myMouseY);
 
+  myMouseRangeLabel = new StaticTextWidget(pane, _font, "Mouse axes range");
   myMouseRange = new SliderWidget(pane, _font,
-                                  "Mouse axes range", 0, 0, fontWidth * 4, "%");
+                                  0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
   myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.",
@@ -462,6 +471,7 @@ void GameInfoDialog::addControllersTab()
     using GUI::BoxLayout;
     using GUI::GridLayout;
     using GUI::anchoredItem;
+    using GUI::labeledRow;
     using GUI::indentedItem;
     using GUI::stretchedItem;
     using GUI::alignedItem;
@@ -510,13 +520,13 @@ void GameInfoDialog::addControllersTab()
                                             VAlign::Center));
     ports->place(EXTRA, EEPROM, stretchedItem(myEraseEEPROMInfo));
 
-    // Each of these draws its own label, so each group gets its own column: the
+    // Each of these has its own label, so each group gets its own column: the
     // two paddle-centre sliders, the two mouse-axis pop-ups, and the range slider
     // (which lines up with nothing)
     const int prefix = CheckboxWidget::prefixSize(_font);
-    GUI::alignLabels({{myPaddleXCenter, INDENT}, {myPaddleYCenter, INDENT}});
-    GUI::alignLabels({{myMouseX, prefix}, {myMouseY, prefix}});
-    GUI::alignLabels({{myMouseRange}});
+    GUI::alignLabels({{myPaddleXCenterLabel, INDENT}, {myPaddleYCenterLabel, INDENT}});
+    GUI::alignLabels({{myMouseXLabel, prefix}, {myMouseYLabel, prefix}});
+    GUI::alignLabels({{myMouseRangeLabel}});
     GUI::alignPopUps({myMouseX, myMouseY});
 
     // The paddle options and the mouse axes run as two parallel columns
@@ -525,20 +535,26 @@ void GameInfoDialog::addControllersTab()
     paddleCol->addSpace(VGAP);
     paddleCol->addAuto(anchoredItem(myPaddlesCenter));
     paddleCol->addSpace(VGAP);
-    paddleCol->addAuto(indentedItem(myPaddleXCenter, INDENT));
+    paddleCol->addAuto(labeledRow(myPaddleXCenterLabel, myPaddleXCenter, 0, INDENT));
     paddleCol->addSpace(VGAP);
-    paddleCol->addAuto(indentedItem(myPaddleYCenter, INDENT));
+    paddleCol->addAuto(labeledRow(myPaddleYCenterLabel, myPaddleYCenter, 0, INDENT));
 
     // The two axis popups are indented by the checkbox prefix, so they line up
     // under its text
     auto mouseCol = std::make_unique<BoxLayout>(Dir::Vertical);
     mouseCol->addAuto(anchoredItem(myMouseControl));
     mouseCol->addSpace(VGAP);
-    mouseCol->addAuto(indentedItem(myMouseX, prefix));
+    auto mouseXRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+    mouseXRow->addSpace(prefix);
+    mouseXRow->addStretch(labeledRow(myMouseXLabel, myMouseX));
+    mouseCol->addAuto(std::move(mouseXRow));
     mouseCol->addSpace(VGAP);
-    mouseCol->addAuto(indentedItem(myMouseY, prefix));
+    auto mouseYRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+    mouseYRow->addSpace(prefix);
+    mouseYRow->addStretch(labeledRow(myMouseYLabel, myMouseY));
+    mouseCol->addAuto(std::move(mouseYRow));
     mouseCol->addSpace(VGAP);
-    mouseCol->addAuto(anchoredItem(myMouseRange));
+    mouseCol->addAuto(labeledRow(myMouseRangeLabel, myMouseRange));
 
     auto lowerRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     lowerRow->addFixed(std::move(paddleCol), fontWidth * 24 - INDENT);
@@ -746,8 +762,7 @@ void GameInfoDialog::addHighScoresTab()
   for(uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   myScoreDigitsLabel = new StaticTextWidget(pane, _font, "Digits");
-  myScoreDigits = new PopUpWidget(pane, _font, items, "", 0,
-                                  kHiScoresChanged);
+  myScoreDigits = new PopUpWidget(pane, _font, items, kHiScoresChanged);
   myScoreDigits->setToolTip("Select the number of score digits displayed.");
   wid.push_back(myScoreDigits);
 
@@ -755,8 +770,7 @@ void GameInfoDialog::addHighScoresTab()
   for(uInt32 i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   myTrailingZeroesLabel = new StaticTextWidget(pane, _font, "0-digits");
-  myTrailingZeroes = new PopUpWidget(pane, _font, items, "", 0,
-                                     kHiScoresChanged);
+  myTrailingZeroes = new PopUpWidget(pane, _font, items, kHiScoresChanged);
   myTrailingZeroes->setToolTip("Select the number of trailing score digits which are fixed to 0.");
   wid.push_back(myTrailingZeroes);
 
@@ -1126,7 +1140,9 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
     myMouseX->setSelected(axisStr[0] - '0');
     myMouseY->setSelected(axisStr[1] - '0');
   }
+  myMouseXLabel->setEnabled(!autoAxis);
   myMouseX->setEnabled(!autoAxis);
+  myMouseYLabel->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);
 
   // Parse optional range value after the control string
@@ -1430,7 +1446,9 @@ void GameInfoDialog::updateMultiCart()
   myBSTypeLabel->setEnabled(!isInMulti);
   myBSType->setEnabled(!isInMulti); // TODO: currently only auto-detected, add using properties
   myBSFilter->setEnabled(!isInMulti);
+  myStartBankLabel->setEnabled(!isMulti && instance().hasConsole());
   myStartBank->setEnabled(!isMulti && instance().hasConsole());
+  myFormatLabel->setEnabled(!isMulti);
   myFormat->setEnabled(!isMulti);
 
   // if phosphor is always enabled, disable game specific phosphor settings
@@ -1567,7 +1585,9 @@ void GameInfoDialog::updateControllerStates()
   myEraseEEPROMInfo->setEnabled(enableEEEraseButton);
 
   myPaddlesCenter->setEnabled(enablePaddles);
+  myPaddleXCenterLabel->setEnabled(enablePaddles);
   myPaddleXCenter->setEnabled(enablePaddles);
+  myPaddleYCenterLabel->setEnabled(enablePaddles);
   myPaddleYCenter->setEnabled(enablePaddles);
 
   const bool enableMouse = enablePaddles ||
@@ -1577,9 +1597,12 @@ void GameInfoDialog::updateControllerStates()
     BSPF::startsWithIgnoreCase(contrRight, "MindLink");
 
   myMouseControl->setEnabled(enableMouse);
+  myMouseXLabel->setEnabled(enableMouse && myMouseControl->getState());
   myMouseX->setEnabled(enableMouse && myMouseControl->getState());
+  myMouseYLabel->setEnabled(enableMouse && myMouseControl->getState());
   myMouseY->setEnabled(enableMouse && myMouseControl->getState());
 
+  myMouseRangeLabel->setEnabled(enablePaddles);
   myMouseRange->setEnabled(enablePaddles);
 }
 
@@ -1841,7 +1864,9 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     case kMCtrlChanged:
     {
       const bool state = myMouseControl->getState();
+      myMouseXLabel->setEnabled(state);
       myMouseX->setEnabled(state);
+      myMouseYLabel->setEnabled(state);
       myMouseY->setEnabled(state);
       break;
     }

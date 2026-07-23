@@ -218,6 +218,7 @@ void CartridgeEnhancedWidget::createBankWidgets()
   if(myCart.romBankCount() + myCart.ramBankCount() <= 1)
     return;
 
+  myBankWidgetLabels.resize(bankSegs());
   myBankWidgets.resize(bankSegs());
 
   for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
@@ -232,24 +233,24 @@ void CartridgeEnhancedWidget::createBankWidgets()
       ? std::format("Set bank for segment #{}", seg)
       : "Set bank";
 
-    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, label,
-                                         0, kBankChanged);
+    myBankWidgetLabels[seg] = new StaticTextWidget(_boss, _font, label);
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
     myBankWidgets[seg]->setTarget(this);
     myBankWidgets[seg]->setID(seg);
     addFocusWidget(myBankWidgets[seg]);
 
     // The selector's box lines up with the info fields above it
-    myLabelColumn.emplace_back(myBankWidgets[seg]);
+    myLabelColumn.emplace_back(myBankWidgetLabels[seg]);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
-  using GUI::anchoredItem;
+  using GUI::labeledRow;
 
-  for(auto* popup: myBankWidgets)
-    col.addAuto(anchoredItem(popup));
+  for(size_t seg = 0; seg < myBankWidgets.size(); ++seg)
+    col.addAuto(labeledRow(myBankWidgetLabels[seg], myBankWidgets[seg]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

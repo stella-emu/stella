@@ -94,6 +94,7 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myEraseButton{nullptr};
     ButtonWidget*     myResetButton{nullptr};
     ButtonWidget*     myComboButton{nullptr};
+    StaticTextWidget* myFilterPopupLabel{nullptr};
     PopUpWidget*      myFilterPopup{nullptr};
     StringListWidget* myActionsList{nullptr};
     StaticTextWidget* myActionLabel{nullptr};

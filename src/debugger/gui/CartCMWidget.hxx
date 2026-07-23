@@ -63,6 +63,7 @@ class CartridgeCMWidget : public CartDebugWidget
     };
 
     CartridgeCM& myCart;
+    StaticTextWidget* myBankLabel{nullptr};
     PopUpWidget* myBank{nullptr};
 
     StaticTextWidget *mySWCHALabel{nullptr}, *myColumnLabel{nullptr},

@@ -331,23 +331,31 @@ void alignPopUps(std::initializer_list<PopUpWidget*> popups)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int flushSpan(const PopUpWidget* popup, const Widget* popupLabel, int indent)
+{
+  if(popup == nullptr)
+    return 0;
+
+  // The pop-up's own width is just its value box and arrow (it carries no
+  // label of its own), so its paired label's width has to be added back to
+  // recover the full distance from the pop-up ROW's start; 'indent' then
+  // carries that back to THIS row's own start
+  const int popupLabelW = popupLabel != nullptr ? popupLabel->getWidth() : 0;
+  return popupLabelW + popup->getWidth() - indent;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void alignTracks(std::initializer_list<SliderWidget*> sliders,
-                 const PopUpWidget* popup, int indent)
+                 const PopUpWidget* popup, int indent,
+                 const Widget* sliderLabel, const Widget* popupLabel)
 {
   if(popup == nullptr)
     return;
 
-  // Their own label column, which is what the tracks start after.  It is the
-  // SLIDERS' column, not the pop-up's: the two coincide only when the pop-up
-  // shares their alignLabels group, and it does not always.  A slider the layout
-  // indents within the group reports a column narrowed by exactly that indent, so
-  // taking the widest is what puts them all on the same track
-  int column = 0;
-  for(const auto* s: sliders)
-    if(s != nullptr)
-      column = std::max(column, s->labelWidth());
-
-  const int track = popup->getWidth() - indent - column;
+  // The track is the flush span, minus whatever the sliders' own label
+  // column (a different alignLabels() group, if any) takes off the front
+  const int sliderLabelW = sliderLabel != nullptr ? sliderLabel->getWidth() : 0;
+  const int track = flushSpan(popup, popupLabel, indent) - sliderLabelW;
 
   for(auto* s: sliders)
     if(s != nullptr)
@@ -356,26 +364,30 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void alignTracks(std::initializer_list<SliderWidget*> sliders,
+                 std::initializer_list<const Widget*> labels,
                  int span, int spacing)
 {
   const int count = static_cast<int>(sliders.size());
   if(count == 0)
     return;
 
-  // What in the span is NOT track: the gaps between them, every slider's label,
-  // and every readout but the LAST, which hangs past the end.  Only each slider
-  // knows how wide its own label and readout are, so ask it
+  // What in the span is NOT track: the gaps between them, every slider's label
+  // (now a separate widget, so the CALLER names it -- a slider with none passes
+  // nullptr), and every readout but the LAST, which hangs past the end
   int overhead = spacing * (count - 1);
   int idx = 0;
+  auto label = labels.begin();
 
   for(auto* s: sliders)
   {
+    const Widget* l = label != labels.end() ? *label++ : nullptr;
     if(s == nullptr)
       continue;
 
-    overhead += s->labelWidth();
+    if(l != nullptr)
+      overhead += l->getWidth();
     if(++idx < count)  // not the last: its readout sits between the tracks
-      overhead += s->getWidth() - s->trackWidth() - s->labelWidth();
+      overhead += s->getWidth() - s->trackWidth();
   }
 
   const int track = (span - overhead) / count;

@@ -55,13 +55,14 @@ string CartridgeMDMWidget::description()
 void CartridgeMDMWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using GUI::indentedItem;
 
   // A single-bank cart has neither a selector nor a checkbox to lock it with
   if(myBankWidgets.empty())
     return;
 
-  col.addAuto(anchoredItem(myBankWidgets[0]));
+  col.addAuto(labeledRow(myBankWidgetLabels[0], myBankWidgets[0]));
 
   // The lock checkbox goes UNDER the selector rather than beside it: its label is
   // long and the selector's width follows the bank labels, so a single row would
@@ -75,6 +76,7 @@ void CartridgeMDMWidget::loadConfig()
 {
   if(!myBankWidgets.empty())
   {
+    myBankWidgetLabels[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankDisabled->setState(myCartMDM.myBankingDisabled);
   }
@@ -88,6 +90,7 @@ void CartridgeMDMWidget::handleCommand(CommandSender* sender,
   if(cmd == kBankDisabled)
   {
     myCartMDM.myBankingDisabled = myBankDisabled->getState();
+    myBankWidgetLabels[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
   }
   else

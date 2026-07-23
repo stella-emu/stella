@@ -97,6 +97,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myDetectedInfoWidget{nullptr};
     CheckboxWidget*     myExternAccessWidget{nullptr};
     CheckboxWidget*     myPlusRomWidget{nullptr};
+    StaticTextWidget*   myConsoleWidgetLabel{nullptr};
     PopUpWidget*        myConsoleWidget{nullptr};
     StaticTextWidget*   myLoadingROMLabel{nullptr};
     CheckboxWidget*     myRandomBankWidget{nullptr};
@@ -112,10 +113,12 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myWRPortBreakWidget{nullptr};
 #endif
     CheckboxWidget*     myThumbExceptionWidget{nullptr};
+    StaticTextWidget*   myArmSpeedWidgetLabel{nullptr};
     SliderWidget*       myArmSpeedWidget{nullptr};
 
     // TIA widgets
     unique_ptr<RadioButtonGroup> mySettingsGroupTia;
+    StaticTextWidget*   myTIATypeWidgetLabel{nullptr};
     PopUpWidget*        myTIATypeWidget{nullptr};
 
     StaticTextWidget*   myInvPhaseLabel{nullptr};
@@ -147,26 +150,37 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     // Video widgets
     unique_ptr<RadioButtonGroup> mySettingsGroupVideo;
     CheckboxWidget*     myTVJitterWidget{nullptr};
+    StaticTextWidget*   myTVJitterRecWidgetLabel{nullptr};
     SliderWidget*       myTVJitterRecWidget{nullptr};
+    StaticTextWidget*   myTVJitterSenseWidgetLabel{nullptr};
     SliderWidget*       myTVJitterSenseWidget{nullptr};
     CheckboxWidget*     myColorLossWidget{nullptr};
     CheckboxWidget*     myDebugColorsWidget{nullptr};
+    std::array<StaticTextWidget*, DEBUG_COLORS> myDbgColourLabel{nullptr};
     std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour{nullptr};
     std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch{nullptr};
 
     // States widgets
     unique_ptr<RadioButtonGroup> mySettingsGroupTM;
     CheckboxWidget*     myTimeMachineWidget{nullptr};
+    StaticTextWidget*   myStateSizeWidgetLabel{nullptr};
     SliderWidget*       myStateSizeWidget{nullptr};
+    StaticTextWidget*   myUncompressedWidgetLabel{nullptr};
     SliderWidget*       myUncompressedWidget{nullptr};
+    StaticTextWidget*   myStateIntervalWidgetLabel{nullptr};
     PopUpWidget*        myStateIntervalWidget{nullptr};
+    StaticTextWidget*   myStateHorizonWidgetLabel{nullptr};
     PopUpWidget*        myStateHorizonWidget{nullptr};
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
+    StaticTextWidget*   myDebuggerWidthSliderLabel{nullptr};
     SliderWidget*       myDebuggerWidthSlider{nullptr};
+    StaticTextWidget*   myDebuggerHeightSliderLabel{nullptr};
     SliderWidget*       myDebuggerHeightSlider{nullptr};
+    StaticTextWidget*   myDebuggerFontSizeLabel{nullptr};
     PopUpWidget*        myDebuggerFontSize{nullptr};
+    StaticTextWidget*   myDebuggerFontStyleLabel{nullptr};
     PopUpWidget*        myDebuggerFontStyle{nullptr};
     CheckboxWidget*     myGhostReadsTrapWidget{nullptr};
 #endif

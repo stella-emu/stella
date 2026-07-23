@@ -64,6 +64,7 @@ class CartridgeDPCWidget : public CartDebugWidget
     };
 
     CartridgeDPC& myCart;
+    StaticTextWidget* myBankLabel{nullptr};
     PopUpWidget* myBank{nullptr};
 
     StaticTextWidget* myFetcherLabel{nullptr};

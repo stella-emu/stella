@@ -26,11 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int w, int h, const VariantList& items,
-                         string_view label, int labelWidth, int cmd)
-  : EditableWidget(boss, font, w, h + 2),
-    _label{label},
-    _labelWidth{labelWidth}
+                         int w, int h, const VariantList& items, int cmd)
+  : EditableWidget(boss, font, w, h + 2)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
     | Widget::FLAG_TRACK_MOUSE;
@@ -44,12 +41,9 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   });
   setEditable(false);
 
-  if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
-
   setArrow();
 
-  _w = w + _labelWidth + dropDownWidth(font); // 23
+  _w = w + dropDownWidth(font);
 
   // vertically center the arrows (the text centers itself, see firstTextY())
   myArrowsY = (_h - _arrowHeight) / 2;
@@ -60,19 +54,16 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, string_view label,
-                         int labelWidth, int cmd)
+                         const VariantList& items, int cmd)
   : PopUpWidget(boss, font, calcWidth(font, items), font.getLineHeight(),
-                items, label, labelWidth, cmd)
+                items, cmd)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int w, const VariantList& items, string_view label,
-                         int labelWidth, int cmd)
-  : PopUpWidget(boss, font, w, font.getLineHeight(), items, label,
-                labelWidth, cmd)
+                         int w, const VariantList& items, int cmd)
+  : PopUpWidget(boss, font, w, font.getLineHeight(), items, cmd)
 {
 }
 
@@ -88,23 +79,10 @@ int PopUpWidget::calcWidth(const GUI::Font& font, const VariantList& items)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setLabelWidth(int w)
-{
-  // Keep the value box the width it already has: the label column grows or
-  // shrinks and we grow or shrink with it, rather than eating into the box
-  _w += w - _labelWidth;
-  _labelWidth = w;
-  myMenu->setMaxWidth(_w - _labelWidth);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setBoxWidth(int w)
 {
-  // Keep my label column as it is; the box (and the menu that drops out of it)
-  // grow or shrink, and I grow or shrink with them
-  _w = w + _labelWidth + dropDownWidth(_font);
-  myMenu->setMaxWidth(_w - _labelWidth);
+  _w = w + dropDownWidth(_font);
+  myMenu->setMaxWidth(_w);
   setDirty();
 }
 
@@ -133,8 +111,8 @@ void PopUpWidget::setID(uInt32 id)
 void PopUpWidget::setWidth(int w)
 {
   Widget::setWidth(w);
-  // Keep the drop-down menu as wide as the value box (total minus the label)
-  myMenu->setMaxWidth(_w - _labelWidth);
+  // Keep the drop-down menu as wide as the value box
+  myMenu->setMaxWidth(_w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,7 +193,7 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
       if(isEnabled() && !myMenu->isVisible())
       {
         // Add menu just underneath parent widget
-        myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
+        myMenu->show(getAbsX(), getAbsY() + getHeight(),
                      dialog().surface().dstRect(), myMenu->getSelected());
       }
     }
@@ -328,13 +306,8 @@ void PopUpWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
 
-  const int x = _x + _labelWidth;
-  int w = _w - _labelWidth;
-
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + firstTextY(), _labelWidth,
-                 isEnabled() ? _textcolor : kColor, TextAlign::Left);
+  const int x = _x;
+  int w = _w;
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
@@ -371,7 +344,7 @@ void PopUpWidget::drawWidget(bool hilite)
 Common::Rect PopUpWidget::getEditRect() const
 {
   return {
-    static_cast<uInt32>(_labelWidth + _textOfs), 1,
+    static_cast<uInt32>(_textOfs), 1,
     static_cast<uInt32>(_w - _textOfs - dropDownWidth(_font)),
     static_cast<uInt32>(_h)
   };

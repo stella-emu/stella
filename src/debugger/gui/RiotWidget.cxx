@@ -171,10 +171,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
-  myP0Diff = new PopUpWidget(boss, lfont, items, "Left Diff", 0, kP0DiffChanged);
+  myP0DiffLabel = new StaticTextWidget(boss, lfont, "Left Diff");
+  myP0Diff = new PopUpWidget(boss, lfont, items, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
-  myP1Diff = new PopUpWidget(boss, lfont, items, "Right Diff", 0, kP1DiffChanged);
+  myP1DiffLabel = new StaticTextWidget(boss, lfont, "Right Diff");
+  myP1Diff = new PopUpWidget(boss, lfont, items, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
@@ -182,7 +184,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
-  myTVType = new PopUpWidget(boss, lfont, items, "TV Type", 0, kTVTypeChanged);
+  myTVTypeLabel = new StaticTextWidget(boss, lfont, "TV Type");
+  myTVType = new PopUpWidget(boss, lfont, items, kTVTypeChanged);
   myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
@@ -192,7 +195,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
   myConsoleLabel = new StaticTextWidget(boss, lfont, "Console");
-  myConsole = new PopUpWidget(boss, lfont, items, "", 0, kConsoleID);
+  myConsole = new PopUpWidget(boss, lfont, items, kConsoleID);
   myConsole->setTarget(this);
   myConsole->setToolTip("Emulated console.");
   addFocusWidget(myConsole);
@@ -230,6 +233,7 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   using GUI::BoxLayout;
   using GUI::GridLayout;
   using GUI::anchoredItem;
+  using GUI::labeledRow;
   using GUI::indentedItem;
   using GUI::alignedItem;
   using GUI::HAlign;
@@ -369,20 +373,20 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   right->addAuto(indentedItem(myINPTDump, HGAP * 2));
   right->addSpace(VGAP * 4);
 
-  // Switches: the diff/TV pop-ups line up as one column, the Select/Reset/Pause
-  // checkboxes beside them, row for row
-  GUI::alignLabels({{myP0Diff}, {myP1Diff}, {myTVType}});
+  // Switches: the diff/TV pop-ups' labels line up as one column, the
+  // Select/Reset/Pause checkboxes beside them, row for row
+  GUI::alignLabels({{myP0DiffLabel}, {myP1DiffLabel}, {myTVTypeLabel}});
   GUI::alignPopUps({myP0Diff, myP1Diff, myTVType});
   {
     auto grid = std::make_unique<GridLayout>(2, 3, HGAP * 2, VGAP);
     grid->columnAuto(0).columnAuto(1);
     for(int r = 0; r < 3; ++r)
       grid->rowAuto(r);
-    grid->place(0, 0, anchoredItem(myP0Diff));
+    grid->place(0, 0, labeledRow(myP0DiffLabel, myP0Diff));
     grid->place(1, 0, anchoredItem(mySelect));
-    grid->place(0, 1, anchoredItem(myP1Diff));
+    grid->place(0, 1, labeledRow(myP1DiffLabel, myP1Diff));
     grid->place(1, 1, anchoredItem(myReset));
-    grid->place(0, 2, anchoredItem(myTVType));
+    grid->place(0, 2, labeledRow(myTVTypeLabel, myTVType));
     grid->place(1, 2, anchoredItem(myPause));
     right->addAuto(std::move(grid));
   }
@@ -713,6 +717,7 @@ void RiotWidget::handleConsole()
   const bool is7800 = instance().settings().getString(
     devSettings ? "dev.console" : "plr.console") == "7800";
 
+  myTVTypeLabel->setEnabled(!is7800);
   myTVType->setEnabled(!is7800);
   myPause->setEnabled(is7800);
   if(is7800)
