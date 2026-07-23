@@ -610,8 +610,7 @@ void VideoAudioDialog::addBezelTab()
   wid.push_back(myOpenBrowserButton);
 
   // The path widens with the tab, but it says how much room a path needs
-  myBezelPath = new EditTextWidget(pane, _font,
-                                   EditTextWidget::calcWidth(_font, 24));
+  myBezelPath = new EditTextWidget(pane, _font, 24);
   wid.push_back(myBezelPath);
 
   myBezelShowWindowed = new CheckboxWidget(pane, _font, "Windowed modes");

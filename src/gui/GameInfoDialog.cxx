@@ -706,9 +706,6 @@ void GameInfoDialog::addHighScoresTab()
 {
   // 4) High Scores properties.  The tab's controls are parented to a content
   // pane; the pane lays them out (see setLayout below) whenever the tab is sized
-  const int awidth  = EditTextWidget::calcWidth(_font, 4); // addresses
-  const int swidth  = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
-  const int fwidth  = EditTextWidget::calcWidth(_font, 3); // variants
   WidgetArray wid;
   VariantList items;
 
@@ -731,21 +728,20 @@ void GameInfoDialog::addHighScoresTab()
 
   // Variations
   myVariationsLabel = new StaticTextWidget(pane, _font, "Variations");
-  myVariations = new EditTextWidget(pane, _font, fwidth);
+  myVariations = new EditTextWidget(pane, _font, 3);
   myVariations->setTextFilter(fVars);
   myVariations->setMaxLen(3);
   myVariations->setToolTip("Define the number of game variations.");
   wid.push_back(myVariations);
 
   myVarAddressLabel = new StaticTextWidget(pane, _font, "Address");
-  myVarAddress = new EditTextWidget(pane, _font, awidth);
+  myVarAddress = new EditTextWidget(pane, _font, 4);
   myVarAddress->setTextFilter(fAddr);
   myVarAddress->setMaxLen(4);
   myVarAddress->setToolTip("Define the address (in hex format) where the variation number "
                            "is stored.");
   wid.push_back(myVarAddress);
-  myVarAddressVal = new EditTextWidget(pane, _font,
-                                       EditTextWidget::calcWidth(_font, 3));
+  myVarAddressVal = new EditTextWidget(pane, _font, 3);
   myVarAddressVal->setEditable(false);
 
   myVarsBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
@@ -785,14 +781,13 @@ void GameInfoDialog::addHighScoresTab()
   myScoreAddressesLabel = new StaticTextWidget(pane, _font, "Addresses");
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    myScoreAddress[a] = new EditTextWidget(pane, _font, awidth);
+    myScoreAddress[a] = new EditTextWidget(pane, _font, 4);
     myScoreAddress[a]->setTextFilter(fAddr);
     myScoreAddress[a]->setMaxLen(4);
     myScoreAddress[a]->setToolTip("Define the addresses (in hex format, highest byte first) "
                                   "where the score is stored.");
     wid.push_back(myScoreAddress[a]);
-    myScoreAddressVal[a] = new EditTextWidget(pane, _font,
-                                              EditTextWidget::calcWidth(_font, 2));
+    myScoreAddressVal[a] = new EditTextWidget(pane, _font, 2);
     myScoreAddressVal[a]->setEditable(false);
   }
 
@@ -802,7 +797,7 @@ void GameInfoDialog::addHighScoresTab()
 
   // Special
   mySpecialLabel = new StaticTextWidget(pane, _font, "Special");
-  mySpecialName = new EditTextWidget(pane, _font, swidth);
+  mySpecialName = new EditTextWidget(pane, _font, HSM::MAX_SPECIAL_NAME);
   mySpecialName->setTextFilter(fText);
   mySpecialName->setMaxLen(HSM::MAX_SPECIAL_NAME);
   mySpecialName->setToolTip("Define a short label (up to 5 chars) for the optional,\ngame's "
@@ -810,14 +805,13 @@ void GameInfoDialog::addHighScoresTab()
   wid.push_back(mySpecialName);
 
   mySpecialAddressLabel = new StaticTextWidget(pane, _font, "Address");
-  mySpecialAddress = new EditTextWidget(pane, _font, awidth);
+  mySpecialAddress = new EditTextWidget(pane, _font, 4);
   mySpecialAddress->setTextFilter(fAddr);
   mySpecialAddress->setMaxLen(4);
   mySpecialAddress->setToolTip("Define the address (in hex format) where the special "
                                "number is stored.");
   wid.push_back(mySpecialAddress);
-  mySpecialAddressVal = new EditTextWidget(pane, _font,
-                                           EditTextWidget::calcWidth(_font, 3));
+  mySpecialAddressVal = new EditTextWidget(pane, _font, 3);
   mySpecialAddressVal->setEditable(false);
 
   mySpecialBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);

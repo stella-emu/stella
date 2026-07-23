@@ -184,7 +184,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizP0->setID(kNusizP0ID);
   addFocusWidget(myNusizP0);
 
-  myNusizP0Text = new EditTextWidget(boss, nfont, 1, lineHeight);
+  myNusizP0Text = new EditTextWidget(boss, nfont, 1);
   myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
@@ -251,7 +251,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizP1->setID(kNusizP1ID);
   addFocusWidget(myNusizP1);
 
-  myNusizP1Text = new EditTextWidget(boss, nfont, 1, lineHeight);
+  myNusizP1Text = new EditTextWidget(boss, nfont, 1);
   myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////

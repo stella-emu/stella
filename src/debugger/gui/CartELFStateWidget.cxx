@@ -89,18 +89,15 @@ void CartridgeELFStateWidget::initialize()
 
   // The readouts are as wide as the value they hold, in characters
   myTimeVcsLabel = new StaticTextWidget(_boss, _font, "Time VCS:");
-  myCurrentCyclesVcs = new EditTextWidget(_boss, _font,
-                                          16 * _font.getMaxCharWidth());
+  myCurrentCyclesVcs = new EditTextWidget(_boss, _font, 16);
   myCurrentCyclesVcs->setEditable(false, true);
 
   myTimeArmLabel = new StaticTextWidget(_boss, _font, "Time ARM:");
-  myCurrentCyclesArm = new EditTextWidget(_boss, _font,
-                                          16 * _font.getMaxCharWidth());
+  myCurrentCyclesArm = new EditTextWidget(_boss, _font, 16);
   myCurrentCyclesArm->setEditable(false, true);
 
   myQueueSizeLabel = new StaticTextWidget(_boss, _font, "Bus queue size:");
-  myQueueSize = new EditTextWidget(_boss, _font,
-                                   4 * _font.getMaxCharWidth());
+  myQueueSize = new EditTextWidget(_boss, _font, 4);
   myQueueSize->setEditable(false, true);
 
   myNextTransaction = new StaticTextWidget(_boss, _font,

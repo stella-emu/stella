@@ -90,7 +90,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   // Ram state (combination of several bits in SWCHA)
   myRAMLabel = new StaticTextWidget(boss, _font, "Ram State");
   myRAM = new EditTextWidget(boss, _nfont,
-                             EditTextWidget::calcWidth(_nfont, " Write-only "));
+                             static_cast<int>(string_view(" Write-only ").size()));
   myRAM->setEditable(false, true);
 
   reflow();

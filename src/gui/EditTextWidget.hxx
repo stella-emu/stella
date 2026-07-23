@@ -25,16 +25,21 @@
 class EditTextWidget : public EditableWidget
 {
   public:
-    EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int w, int h, string_view text = "");
-
     /**
-      A box of a single line: I take my height from the font, so a dialog states
-      only how WIDE a field it needs (which is its own decision — see calcWidth).
-      For a box of several lines, pass calcHeight(font, lines) to the ctor above.
+      A box `chars` characters wide and `lines` lines tall.  State the content
+      you need to show — how many characters, how many lines — and I derive my
+      own pixel size from the font; see calcWidth()/calcHeight() if a dialog
+      ever needs that pixel size itself (to line a column up with a sibling
+      that isn't an EditTextWidget, say).
     */
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int w, string_view text = "");
+                   int chars, int lines, string_view text = "");
+
+    /**
+      A box of a single line, `chars` characters wide.
+    */
+    EditTextWidget(GuiObject* boss, const GUI::Font& font,
+                   int chars, string_view text = "");
 
     ~EditTextWidget() override = default;
 

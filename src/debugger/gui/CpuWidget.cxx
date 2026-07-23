@@ -34,7 +34,6 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, 0, 0),
     CommandSender(boss)
 {
-  const int fontHeight = lfont.getFontHeight();
   const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
 
   // Create every widget; reflow() positions and sizes them for the area the
@@ -48,7 +47,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myPCGrid);
 
   // Read-only textbox containing the current PC label
-  myPCLabel = new EditTextWidget(boss, nfont, 1, fontHeight + 1, "");
+  myPCLabel = new EditTextWidget(boss, nfont, 1, "");
   myPCLabel->setEditable(false, true);
 
   // 1x4 grid with labels for the other CPU registers
@@ -74,7 +73,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Labels showing the source of data for the SP/A/X/Y registers
   for(int i = 0; i < 4; ++i)
   {
-    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 1, fontHeight + 1);
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 1);
     myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
   }
@@ -96,7 +95,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Last write destination address
   myDestText = new StaticTextWidget(boss, lfont, "Dest");
-  myCpuDataDest = new EditTextWidget(boss, nfont, 1, fontHeight + 1);
+  myCpuDataDest = new EditTextWidget(boss, nfont, 1);
   myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)

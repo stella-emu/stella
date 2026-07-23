@@ -175,7 +175,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                                TextAlign::Center);
     myNameWidgets[r] = new StaticTextWidget(this, _font, "");
     myEditNameWidgets[r] = new EditTextWidget(this, _font,
-        EditTextWidget::calcWidth(_font, NAME_FIELD));
+        static_cast<int>(NAME_FIELD.size()));
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new StaticTextWidget(this, _font, "");

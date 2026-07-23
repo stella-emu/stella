@@ -23,18 +23,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int w, int h, string_view text)
-  : EditableWidget(boss, font, w, h + 2, text)
+                               int chars, int lines, string_view text)
+  : EditableWidget(boss, font, calcWidth(font, chars), calcHeight(font, lines) + 2, text),
+    _lines{std::max(1, lines)}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
     | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
 
   EditableWidget::startEditMode();  // We're always in edit mode
-
-  // A box taller than one line was built to show several (each further line
-  // adds a font height to the first line's row); remember how many, so a font
-  // change can restore the height
-  _lines = std::max(1, 1 + (h - font.getLineHeight()) / font.getFontHeight());
 
   if(_font.isLarge())
     _textOfs = 5;
@@ -44,8 +40,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int w, string_view text)
-  : EditTextWidget(boss, font, w, calcHeight(font), text)
+                               int chars, string_view text)
+  : EditTextWidget(boss, font, chars, 1, text)
 {
 }
 
@@ -54,10 +50,10 @@ void EditTextWidget::refreshFontMetrics()
 {
   Widget::refreshFontMetrics();
 
-  // Restore the framed height (lineHeight + 2, plus a font height for each line
-  // beyond the first) and the text offset for the live font; the width is
-  // dialog-chosen and re-applied by the owning layout().
-  _h = _font.getLineHeight() + 2 + _font.getFontHeight() * (_lines - 1);
+  // Restore the framed height for the live font and the number of lines I was
+  // built to show; the width is dialog-chosen and re-applied by the owning
+  // layout().
+  _h = calcHeight(_font, _lines) + 2;
   _textOfs = _font.isLarge() ? 5 : 3;
 }
 

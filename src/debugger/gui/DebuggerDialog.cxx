@@ -559,8 +559,7 @@ void DebuggerDialog::addStatusArea()
   myTiaZoom = new TiaZoomWidget(this, *myNFont);
   addToFocusList(myTiaZoom->getFocusList());
 
-  myMessageBox = new EditTextWidget(this, *myLFont, 1,
-                                    myLFont->getLineHeight());
+  myMessageBox = new EditTextWidget(this, *myLFont, 1);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myMessageBox->setEditable(false, false);
   myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);

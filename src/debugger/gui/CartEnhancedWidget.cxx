@@ -145,12 +145,12 @@ void CartridgeEnhancedWidget::createPlusROM()
   myPlusROMLabel = new StaticTextWidget(_boss, _font, "PlusROM:");
 
   myPlusROMHostLabel = new StaticTextWidget(_boss, _font, "Host");
-  myPlusROMHostWidget = new EditTextWidget(_boss, _font, 1, _lineHeight,
+  myPlusROMHostWidget = new EditTextWidget(_boss, _font, 1,
                                            myCart.myPlusROM->getHost());
   myPlusROMHostWidget->setEditable(false);
 
   myPlusROMPathLabel = new StaticTextWidget(_boss, _font, "Path");
-  myPlusROMPathWidget = new EditTextWidget(_boss, _font, 1, _lineHeight,
+  myPlusROMPathWidget = new EditTextWidget(_boss, _font, 1,
                                            myCart.myPlusROM->getPath());
   myPlusROMPathWidget->setEditable(false);
 

@@ -56,13 +56,11 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Show results of ROM audit
   myRenamedLabel = new StaticTextWidget(this, font,
                                         "ROMs with properties (renamed)");
-  myResults1 = new EditTextWidget(this, font,
-                                  EditTextWidget::calcWidth(font, 5));
+  myResults1 = new EditTextWidget(this, font, 5);
   myResults1->setEditable(false, true);
   mySkippedLabel = new StaticTextWidget(this, font,
                                         "ROMs without properties (skipped)");
-  myResults2 = new EditTextWidget(this, font,
-                                  EditTextWidget::calcWidth(font, 5));
+  myResults2 = new EditTextWidget(this, font, 5);
   myResults2->setEditable(false, true);
 
   myWarningLabel = new StaticTextWidget(this, font,

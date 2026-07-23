@@ -539,8 +539,9 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
 > and nowhere else. So: **a label or a text field the layout does not stretch must
 > be built with its real, font-derived width** — for a `StaticTextWidget` that
 > means the short ctor (which derives it from the text), and for an
-> `EditTextWidget`, `EditTextWidget::calcWidth(font, chars)`. Only the widget's
-> *position*, and any size the layout will assign, belong in `layout()`.
+> `EditTextWidget`, its own ctor stated directly in characters (`chars`, not
+> pixels). Only the widget's *position*, and any size the layout will assign,
+> belong in `layout()`.
 >
 > This misbehaves *intermittently*, which makes it nasty: `refreshFontMetrics()`
 > recomputes a `StaticTextWidget`'s width from its label, so a clipped label
