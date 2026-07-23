@@ -410,6 +410,8 @@ bool M6532::save(Serializer& out) const
     out.putLong(mySetTimerCycle);
   #ifdef DEBUGGER_SUPPORT
     out.putInt(myTimReadCycles);
+    out.putBool(myTimWrappedOnRead);
+    out.putBool(myTimWrappedOnWrite);
   #endif
 
     out.putByte(myDDRA);
@@ -443,12 +445,19 @@ bool M6532::load(Serializer& in)
     myTimer = in.getInt();
     mySubTimer = in.getInt();
     myDivider = in.getInt();
+    // myDivider must be one of the four legal timer intervals; anything else
+    // (e.g. 0) corrupts myDividerShift (shift-by-255) and the (myDivider - 1)
+    // bit masks used on the hot path
+    if(myDivider != 1 && myDivider != 8 && myDivider != 64 && myDivider != 1024)
+      return false;
     myDividerShift = static_cast<uInt8>(std::bit_width(myDivider) - 1);
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
   #ifdef DEBUGGER_SUPPORT
     myTimReadCycles = in.getInt();
+    myTimWrappedOnRead = in.getBool();
+    myTimWrappedOnWrite = in.getBool();
   #endif
 
     myDDRA = in.getByte();

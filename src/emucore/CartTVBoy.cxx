@@ -54,7 +54,8 @@ bool CartridgeTVBoy::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeTVBoy::save(Serializer& out) const
 {
-  CartridgeEnhanced::save(out);
+  if(!CartridgeEnhanced::save(out))
+    return false;
   try
   {
     out.putBool(myBankingDisabled);
@@ -71,7 +72,8 @@ bool CartridgeTVBoy::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeTVBoy::load(Serializer& in)
 {
-  CartridgeEnhanced::load(in);
+  if(!CartridgeEnhanced::load(in))
+    return false;
   try
   {
     myBankingDisabled = in.getBool();

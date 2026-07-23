@@ -108,7 +108,8 @@ bool CartridgeFE::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::save(Serializer& out) const
 {
-  CartridgeEnhanced::save(out);
+  if(!CartridgeEnhanced::save(out))
+    return false;
   try
   {
     out.putBool(myLastAccessWasFE);
@@ -125,7 +126,8 @@ bool CartridgeFE::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::load(Serializer& in)
 {
-  CartridgeEnhanced::load(in);
+  if(!CartridgeEnhanced::load(in))
+    return false;
   try
   {
     myLastAccessWasFE = in.getBool();

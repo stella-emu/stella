@@ -354,7 +354,9 @@ bool Missile::load(Serializer& in)
     myRenderCounter = in.getByte();
     myCopy = in.getByte();
 
-    myDecodesOffset = in.getByte();
+    // Mask as in setNusiz(); the decode table has only 8 entries, so an
+    // out-of-range offset from a corrupt save file must not index past it
+    myDecodesOffset = in.getByte() & 0x07;
     myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
     myColor = in.getByte();

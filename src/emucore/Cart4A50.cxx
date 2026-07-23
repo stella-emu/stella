@@ -408,6 +408,19 @@ bool Cartridge4A50::load(Serializer& in)
     myIsRomMiddle = in.getBool();
     myIsRomHigh = in.getBool();
 
+    // Reject a corrupt save state whose slice offsets, combined with the
+    // ROM/RAM flags, would index myImage/myRAM out of bounds in peek()/poke().
+    // Each expression is the worst-case index (max address mask) of the
+    // matching access there
+    const auto inBounds = [](size_t index, size_t size) { return index < size; };
+    if(!((myIsRomLow    ? inBounds(0x7ffu + mySliceLow,               myImage.size())
+                        : inBounds(0x7ffu + mySliceLow,               myRAM.size())) &&
+         (myIsRomMiddle ? inBounds(0x7ffu + mySliceMiddle + 0x10000u, myImage.size())
+                        : inBounds(0x7ffu + mySliceMiddle,            myRAM.size())) &&
+         (myIsRomHigh   ? inBounds(0x0ffu + mySliceHigh + 0x10000u,   myImage.size())
+                        : inBounds(0x0ffu + mySliceHigh,              myRAM.size()))))
+      return false;
+
     // Last address and data values
     myLastData = in.getByte();
     myLastAddress = in.getShort();

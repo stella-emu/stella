@@ -570,6 +570,11 @@ bool CartridgeAR::load(Serializer& in)
     // Indicates the offset within the image for the corresponding bank
     in.getIntArray(myImageOffset);
 
+    // Reject a corrupt save state whose bank offsets would index myImage
+    // (8K) out of bounds in peek()/poke(); a valid offset is at most RAM_SIZE
+    if(myImageOffset[0] > RAM_SIZE || myImageOffset[1] > RAM_SIZE)
+      return false;
+
     // The 6K of RAM and 2K of ROM contained in the Supercharger
     in.getByteArray(myImage);
 
@@ -578,6 +583,11 @@ bool CartridgeAR::load(Serializer& in)
 
     // Indicates how many 8448 loads there are
     myNumberOfLoadImages = in.getByte();
+
+    // Reject a corrupt count that would read past myLoadImages, whose size is
+    // fixed at construction to (actual load count * LOAD_SIZE)
+    if(static_cast<size_t>(myNumberOfLoadImages) * LOAD_SIZE > myLoadImages.size())
+      return false;
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448

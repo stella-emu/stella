@@ -240,6 +240,10 @@ void CartridgeE7::bankRAM(uInt16 bank)
 {
   if(hotspotsLocked()) return;
 
+  // Constrain to a valid RAM bank (there are 4, as in the 0x1800 hotspots)
+  // so a corrupt value can't map page access outside myRAM
+  bank &= 0x03;
+
   // Remember what bank we're in
   myCurrentRAM = bank;
   const uInt16 offset = bank << 8; // * RAM_BANK_SIZE (256)
@@ -257,6 +261,10 @@ void CartridgeE7::bankRAM(uInt16 bank)
 bool CartridgeE7::bank(uInt16 bank, uInt16)
 {
   if(hotspotsLocked()) return false;
+
+  // Constrain to a valid bank so a corrupt value (e.g. from a tampered save
+  // state) can't map page access outside the ROM image
+  bank %= romBankCount();
 
   // Remember what bank we're in
   myCurrentBank[0] = bank;
