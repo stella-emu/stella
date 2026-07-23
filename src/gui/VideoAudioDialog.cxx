@@ -44,13 +44,13 @@
 
 // A custom-adjustable slider: 0-100%, in 1% steps.  The track width is the
 // dialog's choice and is set when the tab lays itself out
-#define CREATE_CUSTOM_SLIDER(obj, desc, cmd)                             \
-  myTV ## obj ## Label = new StaticTextWidget(pane, _font, desc);        \
-  myTV ## obj =                                                          \
-    new SliderWidget(pane, _font, 1, cmd, fontWidth*4, "%");             \
-  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setStepValue(1);                                          \
-  myTV ## obj->setTickmarkIntervals(2);                                  \
+#define CREATE_CUSTOM_SLIDER(obj, desc, cmd)                      \
+  myTV ## obj ## Label = new StaticTextWidget(pane, _font, desc); \
+  myTV ## obj =                                                   \
+    new SliderWidget(pane, _font, 1, cmd, 4, "%");                \
+  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);     \
+  myTV ## obj->setStepValue(1);                                   \
+  myTV ## obj->setTickmarkIntervals(2);                           \
   wid.push_back(myTV ## obj);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +122,6 @@ void VideoAudioDialog::layout()
 void VideoAudioDialog::addDisplayTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
 
   const int tabID = myTab->addTab(" Display ", TabWidget::AUTO_WIDTH);
@@ -147,7 +146,7 @@ void VideoAudioDialog::addDisplayTab()
   // track width from the renderer pop-up beside them, in the layout below
   myTIAZoomLabel = new StaticTextWidget(pane, _font, "Zoom");
   myTIAZoom = new SliderWidget(pane, _font, 1,
-                               0, fontWidth * 4, "%");
+                               0, 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
   myTIAZoom->setToolTip(Event::VidmodeDecrease, Event::VidmodeIncrease);
   wid.push_back(myTIAZoom);
@@ -174,7 +173,7 @@ void VideoAudioDialog::addDisplayTab()
   // FS overscan
   myTVOverscanLabel = new StaticTextWidget(pane, _font, "Overscan");
   myTVOverscan = new SliderWidget(pane, _font, 1,
-                                  kOverscanChanged, fontWidth * 3, "%");
+                                  kOverscanChanged, 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   myTVOverscan->setToolTip(Event::OverscanDecrease, Event::OverscanIncrease);
@@ -188,9 +187,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // Vertical size
   myVSizeAdjustLabel = new StaticTextWidget(pane, _font, "V-Size adjust");
-  myVSizeAdjust =
-    new SliderWidget(pane, _font, 1,
-                     kVSizeChanged, fontWidth * 7, "%", 0, true);
+  myVSizeAdjust = new SliderWidget(pane, _font, 1, kVSizeChanged, 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.",
@@ -250,7 +247,6 @@ void VideoAudioDialog::addDisplayTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addPaletteTab()
 {
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
 
@@ -273,15 +269,12 @@ void VideoAudioDialog::addPaletteTab()
   // The phase shift and the R/G/B pairs are indented under the palette; every
   // track width is set in the layout below, from the pop-up they sit beneath
   myPhaseShiftLabel = new StaticTextWidget(pane, _font, "NTSC phase");
-  myPhaseShift =
-    new SliderWidget(pane, _font, 1,
-                     kPhaseShiftChanged, fontWidth * 5);
+  myPhaseShift = new SliderWidget(pane, _font, 1, kPhaseShiftChanged, 5);
   wid.push_back(myPhaseShift);
 
   // Each R/G/B row is a saturation slider and a shift slider sharing the row
   const auto scaleSlider = [&](int cmd, string_view tip) {
-    auto* s = new SliderWidget(pane, _font, 1, cmd,
-                               fontWidth * 4, "%");
+    auto* s = new SliderWidget(pane, _font, 1, cmd, 4, "%");
     s->setMinValue(0);
     s->setMaxValue(100);
     s->setTickmarkIntervals(2);
@@ -290,7 +283,7 @@ void VideoAudioDialog::addPaletteTab()
     return s;
   };
   const auto shiftSlider = [&](int cmd, string_view tip) {
-    auto* s = new SliderWidget(pane, _font, 1, cmd, fontWidth * 6);
+    auto* s = new SliderWidget(pane, _font, 1, cmd, 6);
     s->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
     s->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
     s->setTickmarkIntervals(2);
@@ -430,7 +423,6 @@ void VideoAudioDialog::addPaletteTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addTVEffectsTab()
 {
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
 
@@ -489,9 +481,9 @@ void VideoAudioDialog::addTVEffectsTab()
   wid.push_back(myTVScanMask);
 
   // Adjustable presets, in a column of their own
-#define CREATE_CLONE_BUTTON(obj, desc)                                 \
-  myClone ## obj =                                                     \
-    new ButtonWidget(pane, _font, desc, kClone ## obj ##Cmd);    \
+#define CREATE_CLONE_BUTTON(obj, desc)                        \
+  myClone ## obj =                                            \
+    new ButtonWidget(pane, _font, desc, kClone ## obj ##Cmd); \
   wid.push_back(myClone ## obj);
 
   CREATE_CLONE_BUTTON(RGB, "Clone RGB")
@@ -590,7 +582,6 @@ void VideoAudioDialog::addTVEffectsTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addBezelTab()
 {
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
 
   const int tabID = myTab->addTab(" Bezels ", TabWidget::AUTO_WIDTH);
@@ -598,14 +589,14 @@ void VideoAudioDialog::addBezelTab()
   myTab->setPaneWidget(tabID, pane);
 
   // Enable bezels
-  myBezelEnableCheckbox = new CheckboxWidget(pane, _font,
-                                             "Enable bezels", kBezelEnableChanged);
+  myBezelEnableCheckbox =
+    new CheckboxWidget(pane, _font, "Enable bezels", kBezelEnableChanged);
   myBezelEnableCheckbox->setToolTip(Event::ToggleBezel);
   wid.push_back(myBezelEnableCheckbox);
 
   // Bezel path
-  myOpenBrowserButton = new ButtonWidget(pane, _font,
-                                         "Bezel path" + ELLIPSIS, kChooseBezelDirCmd);
+  myOpenBrowserButton =
+    new ButtonWidget(pane, _font, "Bezel path" + ELLIPSIS, kChooseBezelDirCmd);
   myOpenBrowserButton->setToolTip("Select path for bezels.");
   wid.push_back(myOpenBrowserButton);
 
@@ -618,14 +609,13 @@ void VideoAudioDialog::addBezelTab()
   wid.push_back(myBezelShowWindowed);
 
   // Disable auto borders
-  myManualWindow = new CheckboxWidget(pane, _font,
-                                      "Manual emulation window", kAutoWindowChanged);
+  myManualWindow =
+    new CheckboxWidget(pane, _font, "Manual emulation window", kAutoWindowChanged);
   myManualWindow->setToolTip("Enable if automatic window detection fails.");
   wid.push_back(myManualWindow);
 
   const auto winSlider = [&]() {
-    auto* s = new SliderWidget(pane, _font, 1, 0,
-                               4 * fontWidth, "%");
+    auto* s = new SliderWidget(pane, _font, 1, 0, 4, "%");
     s->setMinValue(0);
     s->setMaxValue(40);
     s->setTickmarkIntervals(4);
@@ -633,11 +623,11 @@ void VideoAudioDialog::addBezelTab()
     return s;
   };
   myWinLeftSliderLabel = new StaticTextWidget(pane, _font, "Left");
-  myWinLeftSlider   = winSlider();
+  myWinLeftSlider = winSlider();
   myWinRightSliderLabel = new StaticTextWidget(pane, _font, "Right");
-  myWinRightSlider  = winSlider();
+  myWinRightSlider = winSlider();
   myWinTopSliderLabel = new StaticTextWidget(pane, _font, "Top");
-  myWinTopSlider    = winSlider();
+  myWinTopSlider = winSlider();
   myWinBottomSliderLabel = new StaticTextWidget(pane, _font, "Bottom");
   myWinBottomSlider = winSlider();
 
@@ -689,7 +679,6 @@ void VideoAudioDialog::addBezelTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addAudioTab()
 {
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
 
@@ -698,16 +687,15 @@ void VideoAudioDialog::addAudioTab()
   myTab->setPaneWidget(tabID, pane);
 
   // Enable sound
-  mySoundEnableCheckbox = new CheckboxWidget(pane, _font,
-                                             "Enable sound", kSoundEnableChanged);
+  mySoundEnableCheckbox =
+    new CheckboxWidget(pane, _font, "Enable sound", kSoundEnableChanged);
   mySoundEnableCheckbox->setToolTip(Event::SoundToggle);
   wid.push_back(mySoundEnableCheckbox);
 
   // Volume: it sizes its own track (it is not one of the controls that must end
   // flush with the Mode pop-up below)
   myVolumeSliderLabel = new StaticTextWidget(pane, _font, "Volume");
-  myVolumeSlider = new SliderWidget(pane, _font,
-                                    0, 0, 4 * fontWidth, "%");
+  myVolumeSlider = new SliderWidget(pane, _font, 0, 0, 4, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   myVolumeSlider->setTickmarkIntervals(4);
   myVolumeSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
@@ -744,29 +732,28 @@ void VideoAudioDialog::addAudioTab()
 
   // Param 1
   myHeadroomSliderLabel = new StaticTextWidget(pane, _font, "Headroom");
-  myHeadroomSlider = new SliderWidget(pane, _font, 1,
-                                      kHeadroomChanged, 10 * fontWidth);
-  myHeadroomSlider->setMinValue(0); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
+  myHeadroomSlider = new SliderWidget(pane, _font, 1, kHeadroomChanged, 10);
+  myHeadroomSlider->setMinValue(0);
+  myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   myHeadroomSlider->setTickmarkIntervals(5);
   wid.push_back(myHeadroomSlider);
 
   // Param 2
   myBufferSizeSliderLabel = new StaticTextWidget(pane, _font, "Buffer size");
-  myBufferSizeSlider = new SliderWidget(pane, _font, 1,
-                                        kBufferSizeChanged, 10 * fontWidth);
-  myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
+  myBufferSizeSlider = new SliderWidget(pane, _font, 1, kBufferSizeChanged, 10);
+  myBufferSizeSlider->setMinValue(0);
+  myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   myBufferSizeSlider->setTickmarkIntervals(5);
   wid.push_back(myBufferSizeSlider);
 
   // Stereo sound
-  myStereoSoundCheckbox = new CheckboxWidget(pane, _font,
-                                             "Stereo for all ROMs");
+  myStereoSoundCheckbox = new CheckboxWidget(pane, _font, "Stereo for all ROMs");
   wid.push_back(myStereoSoundCheckbox);
 
   myDpcPitchLabel = new StaticTextWidget(pane, _font, "Pitfall II music pitch");
-  myDpcPitch = new SliderWidget(pane, _font, 1,
-                                0, 5 * fontWidth);
-  myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
+  myDpcPitch = new SliderWidget(pane, _font, 1, 0, 5);
+  myDpcPitch->setMinValue(10000);
+  myDpcPitch->setMaxValue(30000);
   myDpcPitch->setStepValue(100);
   myDpcPitch->setTickmarkIntervals(2);
   wid.push_back(myDpcPitch);
@@ -929,8 +916,7 @@ void VideoAudioDialog::loadConfig()
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
   // TV Mode
-  myTVMode->setSelected(
-    settings.getString("tv.filter"), "0");
+  myTVMode->setSelected(settings.getString("tv.filter"), "0");
   const int preset = settings.getInt("tv.filter");
   handleTVModeChange(static_cast<NTSCFilter::Preset>(preset));
 
@@ -1068,8 +1054,10 @@ void VideoAudioDialog::saveConfig()
 
   // TV phosphor mode & blend
   settings.setValue(PhosphorHandler::SETTING_MODE, myTVPhosphor->getSelectedTag());
-  settings.setValue(PhosphorHandler::SETTING_BLEND, myTVPhosLevel->getValueLabel() == "Off"
-                    ? "0" : myTVPhosLevel->getValueLabel());
+  settings.setValue(PhosphorHandler::SETTING_BLEND,
+                    myTVPhosLevel->getValueLabel() == "Off"
+                      ? "0"
+                      : myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity & mask
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
@@ -1135,8 +1123,8 @@ void VideoAudioDialog::saveConfig()
       (myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
-  if(preset == AudioSettings::Preset::custom) {
-    // Fragsize
+  if(preset == AudioSettings::Preset::custom)
+  {
     audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
     audioSettings.setHeadroom(myHeadroomSlider->getValue());
     audioSettings.setBufferSize(myBufferSizeSlider->getValue());

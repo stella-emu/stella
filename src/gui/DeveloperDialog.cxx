@@ -215,13 +215,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myThumbExceptionWidget);
 
   myArmSpeedWidgetLabel = new StaticTextWidget(pane, font, "Limit ARM speed (*)");
-  myArmSpeedWidget = new SliderWidget(pane, font,
-                                      Dialog::fontWidth() * 10,
-                                      kArmSpeedChanged, Dialog::fontWidth() * 9, " MIPS");
+  myArmSpeedWidget = new SliderWidget(pane, font, 10, kArmSpeedChanged, 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
   myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX);
-  myArmSpeedWidget->setTickmarkIntervals((CartridgeELF::MIPS_MAX - CartridgeELF::MIPS_MIN) / 50);
   myArmSpeedWidget->setStepValue(2);
+  myArmSpeedWidget->setTickmarkIntervals((CartridgeELF::MIPS_MAX - CartridgeELF::MIPS_MIN) / 50);
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
   wid.push_back(myArmSpeedWidget);
 
@@ -527,8 +525,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.push_back(myTVJitterWidget);
 
   myTVJitterSenseWidgetLabel = new StaticTextWidget(pane, font, "Sensitivity");
-  myTVJitterSenseWidget = new SliderWidget(pane, font, fontWidth * 10,
-                                           0, fontWidth * 2);
+  myTVJitterSenseWidget = new SliderWidget(pane, font, 10, 0, 2);
   myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
   myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
   myTVJitterSenseWidget->setTickmarkIntervals(3);
@@ -537,8 +534,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.push_back(myTVJitterSenseWidget);
 
   myTVJitterRecWidgetLabel = new StaticTextWidget(pane, font, "Recovery");
-  myTVJitterRecWidget = new SliderWidget(pane, font, fontWidth * 10,
-                                         0, fontWidth * 2);
+  myTVJitterRecWidget = new SliderWidget(pane, font, 10, 0, 2);
   myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
   myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
   myTVJitterRecWidget->setTickmarkIntervals(5);
@@ -680,8 +676,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "~ 30 minutes",
     "~ 60 minutes"
   };
-  const int fontWidth  = Dialog::fontWidth();
-  const int lwidth = fontWidth * 11;
+  const int lwidth = 11;
   WidgetArray wid;
   VariantList items;
 
@@ -704,10 +699,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myTimeMachineWidget->setToolTip(Event::ToggleTimeMachine);
   wid.push_back(myTimeMachineWidget);
 
-  const int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
   myStateSizeWidgetLabel = new StaticTextWidget(pane, font, "Buffer size (*)");
-  myStateSizeWidget = new SliderWidget(pane, font, swidth,
-                                       kSizeChanged, lwidth, " states");
+  myStateSizeWidget = new SliderWidget(pane, font, 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(RewindManager::MIN_BUF_SIZE);
   myStateSizeWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myStateSizeWidget->setStepValue(20);
@@ -716,8 +709,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myStateSizeWidget);
 
   myUncompressedWidgetLabel = new StaticTextWidget(pane, font, "Uncompressed size");
-  myUncompressedWidget = new SliderWidget(pane, font, swidth,
-                                          kUncompressedChanged, lwidth, " states");
+  myUncompressedWidget = new SliderWidget(pane, font, 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myUncompressedWidget->setStepValue(20);
@@ -764,13 +756,15 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     // The sliders and pop-ups line up under the Time Machine checkbox's text
     const int under = INDENT + CheckboxWidget::prefixSize(_font);
 
-    // The sliders' labels and the pop-ups' separate labels share one column,
-    // lining up the sliders' tracks with the pop-ups' boxes...
+    // The sliders' labels and the pop-ups' separate labels share one column, so
+    // every control starts at the same x...
     GUI::alignLabels({{myStateSizeWidgetLabel, under}, {myUncompressedWidgetLabel, under},
                       {myStateIntervalWidgetLabel, under}, {myStateHorizonWidgetLabel, under}});
-    // ...and the pop-ups, which size their boxes to their own lists, take one
-    // shared box width so their right edges are flush too
+    // ...the pop-ups size their boxes to their own lists and then take one
+    // shared box width, so their right edges are flush...
     GUI::alignPopUps({myStateIntervalWidget, myStateHorizonWidget});
+    // ...and the sliders' tracks span that same box, so they end flush with it
+    GUI::alignTracks({myStateSizeWidget, myUncompressedWidget}, myStateIntervalWidget);
 
     col.addAuto(anchoredItem(myTMSettings[0]));
     col.addSpace(VGAP);
@@ -807,7 +801,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
-  const int fontWidth  = Dialog::fontWidth();
   VariantList items;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
 
@@ -832,8 +825,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Debugger width and height
   myDebuggerWidthSliderLabel = new StaticTextWidget(pane, font, "Debugger width (*)");
-  myDebuggerWidthSlider = new SliderWidget(pane, font, 0,
-                                           0, 6 * fontWidth, "px");
+  myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
@@ -842,8 +834,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   wid.push_back(myDebuggerWidthSlider);
 
   myDebuggerHeightSliderLabel = new StaticTextWidget(pane, font, "Debugger height (*)");
-  myDebuggerHeightSlider = new SliderWidget(pane, font, 0,
-                                            0, 6 * fontWidth, "px");
+  myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);

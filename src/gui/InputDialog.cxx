@@ -122,8 +122,7 @@ void InputDialog::layout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addDevicePortTab()
 {
-  const int fontWidth  = Dialog::fontWidth();
-  const int swidth = 13 * fontWidth;
+  const int swidth = 13;
   WidgetArray wid;
 
   // Devices & ports.  The tab's controls are parented to a content pane; the
@@ -135,8 +134,7 @@ void InputDialog::addDevicePortTab()
 
   // Add digital dead zone setting
   myDigitalDeadzoneLabel = new StaticTextWidget(pane, _font, "Digital dead zone size");
-  myDigitalDeadzone = new SliderWidget(pane, _font, swidth,
-                                       kDDeadzoneChanged, 3 * fontWidth, "%");
+  myDigitalDeadzone = new SliderWidget(pane, _font, swidth, kDDeadzoneChanged, 3, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
   myDigitalDeadzone->setTickmarkIntervals(5);
@@ -146,8 +144,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog dead zone
   myAnalogDeadzoneLabel = new StaticTextWidget(pane, _font, "Analog dead zone size");
-  myAnalogDeadzone = new SliderWidget(pane, _font, swidth,
-                                      kADeadzoneChanged, 3 * fontWidth, "%");
+  myAnalogDeadzone = new SliderWidget(pane, _font, swidth, kADeadzoneChanged, 3, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
   myAnalogDeadzone->setTickmarkIntervals(5);
@@ -159,8 +156,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle sensitivity
   myPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Sensitivity");
-  myPaddleSpeed = new SliderWidget(pane, _font, swidth,
-                                   kPSpeedChanged, 4 * fontWidth, "%");
+  myPaddleSpeed = new SliderWidget(pane, _font, swidth, kPSpeedChanged, 4, "%");
   myPaddleSpeed->setMinValue(0);
   myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
   myPaddleSpeed->setTickmarkIntervals(3);
@@ -169,8 +165,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle linearity
   myPaddleLinearityLabel = new StaticTextWidget(pane, _font, "Linearity");
-  myPaddleLinearity = new SliderWidget(pane, _font, swidth,
-                                       0, 4 * fontWidth, "%");
+  myPaddleLinearity = new SliderWidget(pane, _font, swidth, 0, 4, "%");
   myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
   myPaddleLinearity->setStepValue(5);
@@ -181,8 +176,7 @@ void InputDialog::addDevicePortTab()
 
   // Add dejitter (analog paddles)
   myDejitterBaseLabel = new StaticTextWidget(pane, _font, "Dejitter averaging");
-  myDejitterBase = new SliderWidget(pane, _font, swidth,
-                                    kDejitterAvChanged, 3 * fontWidth);
+  myDejitterBase = new SliderWidget(pane, _font, swidth, kDejitterAvChanged, 3);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(5);
@@ -192,8 +186,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterBase);
 
   myDejitterDiffLabel = new StaticTextWidget(pane, _font, "Dejitter reaction");
-  myDejitterDiff = new SliderWidget(pane, _font, swidth,
-                                    kDejitterReChanged, 3 * fontWidth);
+  myDejitterDiff = new SliderWidget(pane, _font, swidth, kDejitterReChanged, 3);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(5);
@@ -203,9 +196,9 @@ void InputDialog::addDevicePortTab()
 
   // Add paddle speed (digital emulation)
   myDPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Digital paddle sensitivity");
-  myDPaddleSpeed = new SliderWidget(pane, _font, swidth,
-                                    kDPSpeedChanged, 4 * fontWidth, "%");
-  myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
+  myDPaddleSpeed = new SliderWidget(pane, _font, swidth, kDPSpeedChanged, 4, "%");
+  myDPaddleSpeed->setMinValue(1);
+  myDPaddleSpeed->setMaxValue(20);
   myDPaddleSpeed->setTickmarkIntervals(4);
   myDPaddleSpeed->setToolTip(Event::DecDigitalSense, Event::IncDigitalSense);
   wid.push_back(myDPaddleSpeed);
@@ -215,28 +208,24 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myAutoFire);
 
   myAutoFireRateLabel = new StaticTextWidget(pane, _font, "Rate");
-  myAutoFireRate = new SliderWidget(pane, _font, swidth,
-    kAutoFireRate, 5 * fontWidth, "Hz");
+  myAutoFireRate = new SliderWidget(pane, _font, swidth, kAutoFireRate, 5, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
   myAutoFireRate->setToolTip(Event::DecreaseAutoFire, Event::IncreaseAutoFire);
   wid.push_back(myAutoFireRate);
 
   // Add 'allow all 4 directions' for joystick
-  myAllowAll4 = new CheckboxWidget(pane, _font,
-                                   "Allow all 4 directions on joystick");
+  myAllowAll4 = new CheckboxWidget(pane, _font, "Allow all 4 directions on joystick");
   myAllowAll4->setToolTip(Event::ToggleFourDirections);
   wid.push_back(myAllowAll4);
 
   // Enable/disable modifier key-combos
-  myModCombo = new CheckboxWidget(pane, _font,
-                                  "Use modifier key combos");
+  myModCombo = new CheckboxWidget(pane, _font, "Use modifier key combos");
   myModCombo->setToolTip(Event::ToggleKeyCombos);
   wid.push_back(myModCombo);
 
   // Stelladaptor mappings
-  mySAPort = new CheckboxWidget(pane, _font,
-                                "Swap Stelladaptor ports");
+  mySAPort = new CheckboxWidget(pane, _font, "Swap Stelladaptor ports");
   mySAPort->setToolTip(Event::ToggleSAPortOrder);
   wid.push_back(mySAPort);
 
@@ -363,8 +352,7 @@ void InputDialog::addDevicePortTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addMouseTab()
 {
-  const int fontWidth  = Dialog::fontWidth();
-  const int swidth = 13 * fontWidth;
+  constexpr int swidth = 13;
   WidgetArray wid;
   VariantList items;
 
@@ -388,27 +376,27 @@ void InputDialog::addMouseTab()
   // Add paddle speed (mouse emulation); the sensitivity sliders are indented, so
   // their reduced label widths keep the tracks aligned with the popups above
   myMPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Paddle");
-  myMPaddleSpeed = new SliderWidget(pane, _font, swidth,
-                                    kMPSpeedChanged, 4 * fontWidth, "%");
-  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
+  myMPaddleSpeed = new SliderWidget(pane, _font, swidth, kMPSpeedChanged, 4, "%");
+  myMPaddleSpeed->setMinValue(1);
+  myMPaddleSpeed->setMaxValue(20);
   myMPaddleSpeed->setTickmarkIntervals(4);
   myMPaddleSpeed->setToolTip(Event::DecMousePaddleSense, Event::IncMousePaddleSense);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
   myTrackBallSpeedLabel = new StaticTextWidget(pane, _font, "Trackball");
-  myTrackBallSpeed = new SliderWidget(pane, _font, swidth,
-                                      kTBSpeedChanged, 4 * fontWidth, "%");
-  myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
+  myTrackBallSpeed = new SliderWidget(pane, _font, swidth, kTBSpeedChanged, 4, "%");
+  myTrackBallSpeed->setMinValue(1);
+  myTrackBallSpeed->setMaxValue(20);
   myTrackBallSpeed->setTickmarkIntervals(4);
   myTrackBallSpeed->setToolTip(Event::DecMouseTrackballSense, Event::IncMouseTrackballSense);
   wid.push_back(myTrackBallSpeed);
 
   // Add driving controller speed
   myDrivingSpeedLabel = new StaticTextWidget(pane, _font, "Driving controller");
-  myDrivingSpeed = new SliderWidget(pane, _font, swidth,
-                                    kDCSpeedChanged, 4 * fontWidth, "%");
-  myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
+  myDrivingSpeed = new SliderWidget(pane, _font, swidth, kDCSpeedChanged, 4, "%");
+  myDrivingSpeed->setMinValue(1);
+  myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
   myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.",
     Event::DecreaseDrivingSense, Event::IncreaseDrivingSense);
@@ -429,8 +417,7 @@ void InputDialog::addMouseTab()
 #endif
 
   // Grab mouse (in windowed mode)
-  myGrabMouse = new CheckboxWidget(pane, _font,
-                                   "Grab mouse in emulation mode");
+  myGrabMouse = new CheckboxWidget(pane, _font, "Grab mouse in emulation mode");
   myGrabMouse->setToolTip(Event::ToggleGrabMouse);
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
@@ -482,8 +469,7 @@ void InputDialog::loadConfig()
   mySAPort->setState(settings.getString("saport") == "rl");
 
   // Use mouse as a controller
-  myMouseControl->setSelected(
-    settings.getString("usemouse"), "analog");
+  myMouseControl->setSelected(settings.getString("usemouse"), "analog");
   handleMouseControlState();
 
   // Mouse cursor state

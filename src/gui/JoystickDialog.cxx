@@ -42,7 +42,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   // Joystick ID
   myIDLabel = new StaticTextWidget(this, font, "Controller ID");
   myJoyText = new EditTextWidget(this, font,
-      static_cast<int>(string_view("Unplugged").size()), "");
+      static_cast<int>(string_view("Unplugged").size()));
   myJoyText->setEditable(false);
 
   // Port

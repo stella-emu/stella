@@ -47,7 +47,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myPCGrid);
 
   // Read-only textbox containing the current PC label
-  myPCLabel = new EditTextWidget(boss, nfont, 1, "");
+  myPCLabel = new EditTextWidget(boss, nfont, 1);
   myPCLabel->setEditable(false, true);
 
   // 1x4 grid with labels for the other CPU registers

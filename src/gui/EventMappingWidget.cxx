@@ -109,7 +109,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
 
   // Label and (read-only) display for the currently selected event's mapping
   myActionLabel = new StaticTextWidget(boss, font, "Action");
-  myKeyMapping = new EditTextWidget(boss, font, 1, ACTION_LINES, "");
+  myKeyMapping = new EditTextWidget(boss, font, 1, ACTION_LINES);
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)

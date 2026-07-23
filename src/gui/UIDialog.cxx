@@ -47,7 +47,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
@@ -126,9 +125,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // given their shared width yet, so layout() sets the real track width
   const int swidth = 1;
   myListDelaySliderLabel = new StaticTextWidget(lookPane, font, "List input delay");
-  myListDelaySlider = new SliderWidget(lookPane, font, swidth,
-                                      kListDelay,
-                                      font.getStringWidth("1 second"));
+  myListDelaySlider = new SliderWidget(lookPane, font, swidth, kListDelay, 8);
   myListDelaySlider->setMinValue(0);
   myListDelaySlider->setMaxValue(1000);
   myListDelaySlider->setStepValue(50);
@@ -139,9 +136,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Number of lines a mouse wheel will scroll
   myWheelLinesSliderLabel = new StaticTextWidget(lookPane, font, "Mouse wheel scroll");
-  myWheelLinesSlider = new SliderWidget(lookPane, font, swidth,
-                                      kMouseWheel,
-                                       font.getStringWidth("10 lines"));
+  myWheelLinesSlider = new SliderWidget(lookPane, font, swidth, kMouseWheel, 8);
   myWheelLinesSlider->setMinValue(1);
   myWheelLinesSlider->setMaxValue(10);
   myWheelLinesSlider->setTickmarkIntervals(3);
@@ -149,9 +144,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Mouse double click speed
   myDoubleClickSliderLabel = new StaticTextWidget(lookPane, font, "Double-click speed");
-  myDoubleClickSlider = new SliderWidget(lookPane, font, swidth,
-                                         0,
-                                         font.getStringWidth("900 ms"), " ms");
+  myDoubleClickSlider = new SliderWidget(lookPane, font, swidth, 0, 6, " ms");
   myDoubleClickSlider->setMinValue(100);
   myDoubleClickSlider->setMaxValue(900);
   myDoubleClickSlider->setStepValue(50);
@@ -160,9 +153,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Initial delay before controller input will start repeating
   myControllerDelaySliderLabel = new StaticTextWidget(lookPane, font, "Controller repeat delay");
-  myControllerDelaySlider = new SliderWidget(lookPane, font, swidth,
-                                             kControllerDelay,
-                                             font.getStringWidth("1 second"));
+  myControllerDelaySlider = new SliderWidget(lookPane, font, swidth, kControllerDelay, 8);
   myControllerDelaySlider->setMinValue(200);
   myControllerDelaySlider->setMaxValue(1000);
   myControllerDelaySlider->setStepValue(100);
@@ -171,9 +162,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Controller repeat rate
   myControllerRateSliderLabel = new StaticTextWidget(lookPane, font, "Controller repeat rate");
-  myControllerRateSlider = new SliderWidget(lookPane, font, swidth,
-                                            0,
-                                            font.getStringWidth("30 repeats/s"), " repeats/s");
+  myControllerRateSlider = new SliderWidget(lookPane, font, swidth, 0, 12, " repeats/s");
   myControllerRateSlider->setMinValue(2);
   myControllerRateSlider->setMaxValue(30);
   myControllerRateSlider->setStepValue(1);
@@ -258,10 +247,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setPaneWidget(tabID, launchPane);
 
   // ROM path
-  myRomButton = new ButtonWidget(launchPane, font,
-      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  myRomButton = new ButtonWidget(launchPane, font, "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(myRomButton);
-  myRomPath = new EditTextWidget(launchPane, font, 1, "");
+  myRomPath = new EditTextWidget(launchPane, font, 1);
   wid.push_back(myRomPath);
 
   myFollowLauncherWidget = new CheckboxWidget(launchPane, font, "Follow Launcher path");
@@ -283,15 +271,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Launcher width and height
   myLauncherWidthSliderLabel = new StaticTextWidget(launchPane, font, "Launcher width");
-  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0,
-                                           0, 6 * fontWidth, "px");
+  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0, 0, 6, "px");
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
 
   myLauncherHeightSliderLabel = new StaticTextWidget(launchPane, font, "Launcher height");
-  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0,
-                                            0, 6 * fontWidth, "px");
+  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0, 0, 6, "px");
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
@@ -312,8 +298,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM launcher info/snapshot viewer
   myRomViewerSizeLabel = new StaticTextWidget(launchPane, font, "ROM info width");
-  myRomViewerSize = new SliderWidget(launchPane, font, 0,
-                                     kRomViewer, 6 * fontWidth, "%");
+  myRomViewerSize = new SliderWidget(launchPane, font, 0, kRomViewer, 6, "%");
   myRomViewerSize->setMinValue(0);
   myRomViewerSize->setMaxValue(100);
   myRomViewerSize->setStepValue(2);
@@ -322,12 +307,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRomViewerSize);
 
   // Snapshot path (load files)
-  myOpenBrowserButton = new ButtonWidget(launchPane, font,
-                                         "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
+  myOpenBrowserButton =
+    new ButtonWidget(launchPane, font, "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   myOpenBrowserButton->setToolTip("Select path for images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
-  mySnapLoadPath = new EditTextWidget(launchPane, font, 1, "");
+  mySnapLoadPath = new EditTextWidget(launchPane, font, 1);
   wid.push_back(mySnapLoadPath);
 
   // Exit to Launcher
@@ -403,7 +388,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     grid->place(MAIN,  ROM_PATH, pathRow(myRomButton, myRomPath, 0),
                 COLS - MAIN);
     grid->place(EXTRA, FOLLOW, anchoredItem(myFollowLauncherWidget));
-
     grid->place(MAIN,  FONT,   labeledRow(myLauncherFontLabel, myLauncherFontPopup));
     grid->place(EXTRA, FONT,   anchoredItem(myFavoritesWidget));
     grid->place(MAIN,  WIDTH,  labeledRow(myLauncherWidthSliderLabel, myLauncherWidthSlider));
@@ -588,7 +572,7 @@ void UIDialog::saveConfig()
   // Launcher size
   settings.setValue("launcherres",
     Common::Size(myLauncherWidthSlider->getValue(),
-              myLauncherHeightSlider->getValue()));
+                 myLauncherHeightSlider->getValue()));
 
   // Launcher font
   settings.setValue("launcherfont",

@@ -52,9 +52,8 @@ using namespace std;
 using namespace BSPF;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::GameInfoDialog(
-      OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-      GuiObject* boss)
+GameInfoDialog::GameInfoDialog(OSystem& osystem, DialogContainer& parent,
+                               const GUI::Font& font, GuiObject* boss)
   : Dialog(osystem, parent, font, "Game properties"),
     CommandSender(boss)
 {
@@ -104,12 +103,12 @@ void GameInfoDialog::layout()
   // widen with the dialog says how much room they need where the fields are (see
   // the cartridge grid's field column), so even that is not guessed at here
   const Common::Size tabSize = myTab->naturalSize();
-  _w = static_cast<int>(tabSize.w) + 2 * xpos;
 
-  myTab->setPos(xpos, 4 + _th);
-  myTab->setWidth(_w - 2 * xpos);
+  myTab->setPos(xpos, VGAP + _th);
+  myTab->setWidth(static_cast<int>(tabSize.w));
   myTab->setHeight(static_cast<int>(tabSize.h));
 
+  _w = myTab->getWidth() + 2 * xpos;
   _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
 
   // Recompute the tab-bar geometry for the current font/width
@@ -123,7 +122,6 @@ void GameInfoDialog::layout()
 void GameInfoDialog::addEmulationTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int fontWidth = Dialog::fontWidth();
   WidgetArray wid;
   VariantList items;
 
@@ -134,11 +132,12 @@ void GameInfoDialog::addEmulationTab()
   myTab->setPaneWidget(tabID, pane);
 
   myBSTypeLabel = new StaticTextWidget(pane, _font, "Type (*)");
-  // The bankswitch and start-bank lists are refilled per ROM, so these two
-  // cannot size themselves: the dialog says how wide an entry it will show
-  myBSType = new PopUpWidget(pane, _font,
-                             _font.getStringWidth("CM (SpectraVideo CompuMate)"),
-                             items, kBSTypeChanged);
+  // The list is refilled per ROM, but never with an entry wider than the full
+  // scheme list, so size the box to that -- the way GlobalPropsDialog sizes this
+  // same list, rather than measuring a copy of its widest entry
+  for(const auto& [name, desc]: Bankswitch::BSList)
+    VarList::push_back(items, desc, name);
+  myBSType = new PopUpWidget(pane, _font, items, kBSTypeChanged);
   wid.push_back(myBSType);
   myBSFilter = new CheckboxWidget(pane, _font, "Filter", kBSFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
@@ -147,10 +146,12 @@ void GameInfoDialog::addEmulationTab()
   myTypeDetected = new StaticTextWidget(pane, ifont,
                                         "CM (SpectraVideo CompuMate) detected");
 
-  // Start bank
+  // Start bank -- "Auto" is always present and the widest fixed entry, so the
+  // box sizes to it; the per-ROM bank numbers are refilled later
+  items.clear();
+  VarList::push_back(items, "Auto", "AUTO");
   myStartBankLabel = new StaticTextWidget(pane, _font, "Start bank (*)");
-  myStartBank = new PopUpWidget(pane, _font,
-                                _font.getStringWidth("AUTO"), items);
+  myStartBank = new PopUpWidget(pane, _font, items);
   wid.push_back(myStartBank);
 
   items.clear();
@@ -175,16 +176,15 @@ void GameInfoDialog::addEmulationTab()
   wid.push_back(myPhosphor);
 
   myPPBlendLabel = new StaticTextWidget(pane, _font, "Blend");
-  myPPBlend = new SliderWidget(pane, _font,
-                               0, kPPBlendChanged, 4 * fontWidth, "%");
-  myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
+  myPPBlend = new SliderWidget(pane, _font, 0, kPPBlendChanged, 4, "%");
+  myPPBlend->setMinValue(0);
+  myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
   myPPBlend->setToolTip(Event::PhosphorDecrease, Event::PhosphorIncrease);
   wid.push_back(myPPBlend);
 
   myVCenterLabel = new StaticTextWidget(pane, _font, "V-Center");
-  myVCenter = new SliderWidget(pane, _font, 0,
-                               kVCenterChanged, 7 * fontWidth, "px", 0, true);
+  myVCenter = new SliderWidget(pane, _font, 0, kVCenterChanged, 7, "px", 0, true);
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
   myVCenter->setTickmarkIntervals(4);
@@ -195,8 +195,7 @@ void GameInfoDialog::addEmulationTab()
   wid.push_back(mySound);
 
   // Message concerning usage (positioned along the bottom in layout)
-  myEmulInfo = new StaticTextWidget(pane, ifont,
-                                    "(*) Change requires a ROM reload");
+  myEmulInfo = new StaticTextWidget(pane, ifont, "(*) Change requires a ROM reload");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -346,7 +345,6 @@ void GameInfoDialog::addConsoleTab()
 void GameInfoDialog::addControllersTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int fontWidth    = Dialog::fontWidth();
   VariantList items, ctrls;
   WidgetArray wid;
 
@@ -394,14 +392,14 @@ void GameInfoDialog::addControllersTab()
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
 
-  myQuadTariButton = new ButtonWidget(pane, _font,
-                                      " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
+  myQuadTariButton =
+    new ButtonWidget(pane, _font, " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
   wid.push_back(myQuadTariButton);
 
   // EEPROM erase button for left/right controller
   myEraseEEPROMLabel = new StaticTextWidget(pane, _font, "AtariVox/SaveKey");
-  myEraseEEPROMButton = new ButtonWidget(pane, _font,
-                                         "Erase EEPROM", kEEButtonPressed);
+  myEraseEEPROMButton =
+    new ButtonWidget(pane, _font, "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
   myEraseEEPROMInfo = new StaticTextWidget(pane, ifont, "(for this game only)");
 
@@ -413,8 +411,7 @@ void GameInfoDialog::addControllersTab()
   myPaddlesCenter = new StaticTextWidget(pane, _font, "Paddles center:");
 
   myPaddleXCenterLabel = new StaticTextWidget(pane, _font, "X");
-  myPaddleXCenter = new SliderWidget(pane, _font, 0, kPXCenterChanged,
-                                     fontWidth * 6, "px", 0 ,true);
+  myPaddleXCenter = new SliderWidget(pane, _font, 0, kPXCenterChanged, 6, "px", 0 , true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleXCenter->setTickmarkIntervals(4);
@@ -422,8 +419,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myPaddleXCenter);
 
   myPaddleYCenterLabel = new StaticTextWidget(pane, _font, "Y");
-  myPaddleYCenter = new SliderWidget(pane, _font, 0, kPYCenterChanged,
-                                     fontWidth * 6, "px", 0 ,true);
+  myPaddleYCenter = new SliderWidget(pane, _font, 0, kPYCenterChanged, 6, "px", 0 , true);
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleYCenter->setTickmarkIntervals(4);
@@ -431,8 +427,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myPaddleYCenter);
 
   // Mouse
-  myMouseControl = new CheckboxWidget(pane, _font, "Specific mouse axes",
-                                      kMCtrlChanged);
+  myMouseControl = new CheckboxWidget(pane, _font, "Specific mouse axes", kMCtrlChanged);
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
@@ -454,9 +449,9 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseY);
 
   myMouseRangeLabel = new StaticTextWidget(pane, _font, "Mouse axes range");
-  myMouseRange = new SliderWidget(pane, _font,
-                                  0, 0, fontWidth * 4, "%");
-  myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
+  myMouseRange = new SliderWidget(pane, _font, 0, 0, 4, "%");
+  myMouseRange->setMinValue(1);
+  myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
   myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.",
     Event::DecreaseMouseAxesRange, Event::IncreaseMouseAxesRange);
@@ -582,44 +577,43 @@ void GameInfoDialog::addCartridgeTab()
   myTab->setPaneWidget(tabID, pane);
 
   myCartLabels[0] = new StaticTextWidget(pane, _font, "Name");
-  myName = new EditTextWidget(pane, _font, 1, "");
+  myName = new EditTextWidget(pane, _font, 1);
   wid.push_back(myName);
 
   myCartLabels[1] = new StaticTextWidget(pane, _font, "MD5");
-  myMD5 = new EditTextWidget(pane, _font, 1, "");
+  myMD5 = new EditTextWidget(pane, _font, 1);
   myMD5->setEditable(false);
 
   myCartLabels[2] = new StaticTextWidget(pane, _font, "Manufacturer");
-  myManufacturer = new EditTextWidget(pane, _font, 1, "");
+  myManufacturer = new EditTextWidget(pane, _font, 1);
   wid.push_back(myManufacturer);
 
-  myCartLabels[3] = new StaticTextWidget(pane, _font,
-                                         "Model", TextAlign::Left);
-  myModelNo = new EditTextWidget(pane, _font, 1, "");
+  myCartLabels[3] = new StaticTextWidget(pane, _font, "Model", TextAlign::Left);
+  myModelNo = new EditTextWidget(pane, _font, 1);
   wid.push_back(myModelNo);
 
   myCartLabels[4] = new StaticTextWidget(pane, _font, "Rarity");
-  myRarity = new EditTextWidget(pane, _font, 1, "");
+  myRarity = new EditTextWidget(pane, _font, 1);
   wid.push_back(myRarity);
 
   myCartLabels[5] = new StaticTextWidget(pane, _font, "Note");
-  myNote = new EditTextWidget(pane, _font, 1, "");
+  myNote = new EditTextWidget(pane, _font, 1);
   wid.push_back(myNote);
 
   myCartLabels[6] = new StaticTextWidget(pane, _font, "Link");
-  myUrl = new EditTextWidget(pane, _font, 1, "");
+  myUrl = new EditTextWidget(pane, _font, 1);
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
 
-  myUrlButton = new ButtonWidget(pane, _font, bw, myUrl->getHeight(),
-                                 ">>", kLinkPressed);
+  myUrlButton =
+    new ButtonWidget(pane, _font, bw, myUrl->getHeight(), ">>", kLinkPressed);
   wid.push_back(myUrlButton);
 
 #ifdef IMAGE_SUPPORT
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
 
   myCartLabels[7] = new StaticTextWidget(pane, _font, "Bezelname");
-  myBezelName = new EditTextWidget(pane, _font, 1, "");
+  myBezelName = new EditTextWidget(pane, _font, 1);
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
 
@@ -1213,7 +1207,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   myVarAddress->setText(std::format("{:X}", info.varsAddr));
   mySpecialAddress->setText(std::format("{:X}", info.specialAddr));
 
-  for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
+  for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
     if(a < HighScoresManager::numAddrBytes(info.numDigits, info.trailingZeroes))
       myScoreAddress[a]->setText(std::format("{:X}", info.scoreAddr[a]));
@@ -1336,7 +1330,7 @@ void GameInfoDialog::saveHighScoresProperties()
 {
   HSM::ScoresProps info;
 
-  if (myHighScores->getState())
+  if(myHighScores->getState())
   {
     // limit variants and special size
     myVariations->setText(myVariations->getText().substr(0, 3));
@@ -1365,7 +1359,7 @@ void GameInfoDialog::saveHighScoresProperties()
     strAddr = mySpecialAddress->getText();
     info.specialAddr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
 
-    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
+    for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       strAddr = myScoreAddress[a]->getText();
       info.scoreAddr[a] = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
@@ -1726,7 +1720,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
   strAddr = addressWidget->getText();
   strAddr = strAddr.substr(0, HSM::MAX_ADDR_CHARS);
 
-  if (instance().hasConsole() && valWidget->isEnabled())
+  if(instance().hasConsole() && valWidget->isEnabled())
   {
     // convert to number and read from memory
     const uInt16 addr = BSPF::stoi<16>(strAddr, HSM::DEFAULT_ADDRESS);
@@ -1747,7 +1741,7 @@ void GameInfoDialog::exportCurrentPropertiesToDisk(const FSNode& node)
 
   KeyValueRepositoryPropertyFile repo(node);
 
-  if (myGameProperties.save(repo))
+  if(myGameProperties.save(repo))
     instance().frameBuffer().showTextMessage("ROM properties exported");
   else
     instance().frameBuffer().showTextMessage("Error exporting ROM properties");
@@ -1838,7 +1832,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kVCenterChanged:
-      if (myVCenter->getValue() == 0)
+      if(myVCenter->getValue() == 0)
       {
         myVCenter->setValueLabel("Default");
         myVCenter->setValueUnit("");

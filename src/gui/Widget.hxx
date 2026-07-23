@@ -596,16 +596,18 @@ class SliderWidget : public ButtonWidget
 {
   public:
     /**
-      Take this TRACK width (0 = a reasonable default), and my height from the
-      font.  How long a track the dialog wants is its own decision; how tall a
-      slider is never was.  No caller has ever needed a height of my own to
-      differ from the font's, so there is no overload for one -- and none for
-      a bare 'no width' either: a real width and a bald int cmd are otherwise
-      indistinguishable to the overload resolver once neither is a label.
+      Build me from CHARACTER counts, not pixels, the way EditTextWidget does:
+      how many characters long a TRACK the dialog wants (0 = a reasonable
+      default), and how many characters wide the value readout beside it must be
+      (0 = none).  I turn those into pixels from the font.  How long a track the
+      dialog wants is its own decision; how tall a slider is never was, so there
+      is no height -- and there is no bare 'no width' overload either: a real
+      count and a bald int cmd are otherwise indistinguishable to the overload
+      resolver once neither is a label.
     */
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int w = 0, int cmd = 0,
-                 int valueLabelWidth = 0, string_view valueUnit = "",
+                 int trackChars = 0, int cmd = 0,
+                 int valueChars = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;
 

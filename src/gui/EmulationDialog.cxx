@@ -66,8 +66,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "Emulation settings"),
     mySaveOnExitGroup{std::make_unique<RadioButtonGroup>()}
 {
-  const int fontWidth = Dialog::fontWidth();
-  const int swidth = fontWidth * 10;
   WidgetArray wid;
 
   // Widgets are only created here (at placeholder geometry); layout() assigns
@@ -76,9 +74,9 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
   mySpeedLabel = new StaticTextWidget(this, _font, "Emulation speed");
-  mySpeed = new SliderWidget(this, _font, swidth,
-                             kSpeedupChanged, fontWidth * 5, "%");
-  mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
+  mySpeed = new SliderWidget(this, _font, 10, kSpeedupChanged, 5, "%");
+  mySpeed->setMinValue(MIN_SPEED);
+  mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
   mySpeed->setTickmarkIntervals(2);
   mySpeed->setToolTip(Event::DecreaseSpeed, Event::IncreaseSpeed);
@@ -108,7 +106,8 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Automatically pause emulation when focus is lost
   myAutoPauseWidget = new CheckboxWidget(this, _font, "Automatic pause");
-  myAutoPauseWidget->setToolTip("Check for automatic pause/continue of\nemulation when Stella loses/gains focus.");
+  myAutoPauseWidget->setToolTip("Check for automatic pause/continue of\n"
+                                "emulation when Stella loses/gains focus.");
   wid.push_back(myAutoPauseWidget);
 
   // Confirm dialog when exiting emulation
@@ -116,34 +115,33 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myConfirmExitWidget);
 
   // Save on exit
-  mySaveOnExitLabel = new StaticTextWidget(this, font,
-                                           "When entering/exiting emulation:");
-  mySaveOnExitButtons[0] = new RadioButtonWidget(this, font,
-                                                 "Do nothing", mySaveOnExitGroup.get());
+  mySaveOnExitLabel = new StaticTextWidget(this, font, "When entering/exiting emulation:");
+  mySaveOnExitButtons[0] =
+    new RadioButtonWidget(this, font, "Do nothing", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[0]);
-  mySaveOnExitButtons[1] = new RadioButtonWidget(this, font,
-                                                 "Save current state in current slot", mySaveOnExitGroup.get());
+  mySaveOnExitButtons[1] =
+    new RadioButtonWidget(this, font, "Save current state in current slot", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[1]);
-  mySaveOnExitButtons[2] = new RadioButtonWidget(this, font,
-                                                 "Load/save all Time Machine states", mySaveOnExitGroup.get());
+  mySaveOnExitButtons[2] =
+    new RadioButtonWidget(this, font, "Load/save all Time Machine states", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[2]);
 
-  myAutoSlotWidget = new CheckboxWidget(this, font,
-                                        "Automatically change save state slots");
+  myAutoSlotWidget =
+    new CheckboxWidget(this, font, "Automatically change save state slots");
   myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
 
   // State directory
-  myStatePathButton = new ButtonWidget(this, font,
-                                       "State path" + ELLIPSIS, kChooseStateDir);
+  myStatePathButton =
+    new ButtonWidget(this, font, "State path" + ELLIPSIS, kChooseStateDir);
   myStatePathButton->setToolTip("Select the directory to load/save state files from/to.");
   wid.push_back(myStatePathButton);
-  myStatePath = new EditTextWidget(this, font, 1, "");
+  myStatePath = new EditTextWidget(this, font, 1);
   wid.push_back(myStatePath);
 
   // Save/load states in the ROM directory
-  myStateWithRom = new CheckboxWidget(this, font,
-                                      "Load/save states in ROM directory", kStateWithRom);
+  myStateWithRom =
+    new CheckboxWidget(this, font, "Load/save states in ROM directory", kStateWithRom);
   myStateWithRom->setToolTip("Use the current ROM's directory for state files.");
   wid.push_back(myStateWithRom);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)

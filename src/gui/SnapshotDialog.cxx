@@ -37,25 +37,22 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
-  mySnapSaveButton = new ButtonWidget(this, font,
-                                      "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
+  mySnapSaveButton =
+    new ButtonWidget(this, font, "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(mySnapSaveButton);
-  mySnapSavePath = new EditTextWidget(this, font, 1, "");
+  mySnapSavePath = new EditTextWidget(this, font, 1);
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
   mySnapIntervalLabel = new StaticTextWidget(this, font, "Continuous snapshot interval");
-  mySnapInterval = new SliderWidget(this, font, 0,
-                                    kSnapshotInterval,
-                                    font.getStringWidth("10 seconds"));
+  mySnapInterval = new SliderWidget(this, font, 0, kSnapshotInterval, 10);
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
   mySnapInterval->setTickmarkIntervals(3);
   wid.push_back(mySnapInterval);
 
   // Header for the boolean save options
-  myWhenLabel = new StaticTextWidget(this, font,
-                                     "When saving snapshots:", TextAlign::Left);
+  myWhenLabel = new StaticTextWidget(this, font, "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
   mySnapName = new CheckboxWidget(this, font, "Use actual ROM name");

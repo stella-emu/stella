@@ -89,12 +89,11 @@ void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
 {
-  const int fontWidth = Dialog::fontWidth();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList items;
 
   // TV effects options
-  const int swidth = _font.getMaxCharWidth() * 11;
+  const int swidth = 11;
 
   // These controls all draw their own label, and the pop-up sizes its own value
   // box; layout() gives the group one label column and one box width (see
@@ -112,24 +111,21 @@ void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
 
   // Scanline intensity
   myTVScanIntenseLabel = new StaticTextWidget(this, _font, "Scanline intensity");
-  myTVScanIntense = new SliderWidget(this, _font, swidth,
-    kScanlinesChanged, fontWidth * 3);
+  myTVScanIntense = new SliderWidget(this, _font, swidth, kScanlinesChanged, 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
 
   // TV Phosphor blend level
   myTVPhosLevelLabel = new StaticTextWidget(this, _font, "Phosphor blend");
-  myTVPhosLevel = new SliderWidget(this, _font, swidth,
-    kPhosphorChanged, fontWidth * 3);
+  myTVPhosLevel = new SliderWidget(this, _font, swidth, kPhosphorChanged, 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
 
   // FS overscan
   myTVOverscanLabel = new StaticTextWidget(this, _font, "Overscan (*)");
-  myTVOverscan = new SliderWidget(this, _font, swidth,
-    kOverscanChanged, fontWidth * 3);
+  myTVOverscan = new SliderWidget(this, _font, swidth, kOverscanChanged, 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
@@ -280,8 +276,7 @@ void StellaSettingsDialog::loadConfig()
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
 
   // TV Mode
-  myTVMode->setSelected(
-    settings.getString("tv.filter"), "0");
+  myTVMode->setSelected(settings.getString("tv.filter"), "0");
 
   // TV scanline intensity
   myTVScanIntense->setValue(valueToLevel(settings.getInt("tv.scanlines")));
@@ -313,8 +308,7 @@ void StellaSettingsDialog::saveConfig()
   Settings& settings = instance().settings();
 
   // UI palette
-  settings.setValue("uipalette",
-    myThemePopup->getSelectedTag().toString());
+  settings.setValue("uipalette", myThemePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
   instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
@@ -322,12 +316,13 @@ void StellaSettingsDialog::saveConfig()
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
   // TV Mode
-  instance().settings().setValue("tv.filter",
-    myTVMode->getSelectedTag().toString());
+  instance().settings().setValue("tv.filter", myTVMode->getSelectedTag().toString());
 
   // TV phosphor mode
   instance().settings().setValue(PhosphorHandler::SETTING_MODE,
-    myTVPhosLevel->getValue() > 0 ? PhosphorHandler::VALUE_ALWAYS : PhosphorHandler::VALUE_BYROM);
+                                 myTVPhosLevel->getValue() > 0
+                                  ? PhosphorHandler::VALUE_ALWAYS
+                                  : PhosphorHandler::VALUE_BYROM);
   // TV phosphor blend
   instance().settings().setValue(PhosphorHandler::SETTING_BLEND,
     levelToValue(myTVPhosLevel->getValue()));
@@ -349,9 +344,7 @@ void StellaSettingsDialog::saveConfig()
 
   // In any event, inform the Console
   if(instance().hasConsole())
-  {
     instance().console().setProperties(myGameProperties);
-  }
 
   // Finally, issue a complete framebuffer re-initialization...
   instance().createFrameBuffer();

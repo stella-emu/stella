@@ -72,7 +72,7 @@ void BrowserDialog::initialize(int max_w, int max_h)
 
   // Currently selected item
   _name = new StaticTextWidget(this, _font, "Name");
-  _selected = new EditTextWidget(this, _font, 1, "");
+  _selected = new EditTextWidget(this, _font, 1);
   addFocusWidget(_selected);
 
   // Directory-navigation buttons
