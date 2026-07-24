@@ -97,6 +97,19 @@ Common::Size Debugger::fontMinSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::changeFont() const
+{
+  myDialog->changeFont(myOSystem.settings().getString("dbg.fontsize"),
+                       myOSystem.settings().getInt("dbg.fontstyle"));
+  myDialog->refreshFont();
+
+  // A larger font can raise the content minimum past the window's current
+  // size (dialogMinSize() reads the just-refreshed dialog, so this must
+  // follow refreshFont()); grow the window to fit, same as the launcher
+  myOSystem.frameBuffer().growWindowTo(dialogMinSize());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size Debugger::dialogMinSize() const
 {
   // Start from the font-based minimum, then make sure the window is tall

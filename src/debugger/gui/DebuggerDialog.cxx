@@ -73,7 +73,9 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                                int w, int h)
   : Dialog(osystem, parent, w, h)
 {
-  createFont();  // Font is sized according to available space
+  // Font is sized according to available space
+  changeFont(instance().settings().getString("dbg.fontsize"),
+             instance().settings().getInt("dbg.fontstyle"));
 
   addTiaArea();
   addTabArea();
@@ -410,62 +412,84 @@ void DebuggerDialog::doExitRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::createFont()
+void DebuggerDialog::changeFont(string_view fontSize, int fontStyle)
 {
-  const string fontSize = instance().settings().getString("dbg.fontsize");
-  const int fontStyle = instance().settings().getInt("dbg.fontstyle");
+  FontDesc lDesc, nDesc;
 
   if(fontSize == "large")
   {
     // Large font doesn't use fontStyle at all
-    myLFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
-    myNFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
+    lDesc = nDesc = GUI::stellaMediumDesc;
   }
   else if(fontSize == "medium")
+  {
+    switch(fontStyle)
     {
-      switch(fontStyle)
-      {
-        case 1:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          break;
-        case 2:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          break;
-        case 3:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          break;
-        default: // default to zero
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          break;
-      }
+      case 1:
+        lDesc = GUI::consoleMediumBDesc;
+        nDesc = GUI::consoleMediumDesc;
+        break;
+      case 2:
+        lDesc = GUI::consoleMediumDesc;
+        nDesc = GUI::consoleMediumBDesc;
+        break;
+      case 3:
+        lDesc = nDesc = GUI::consoleMediumBDesc;
+        break;
+      default: // default to zero
+        lDesc = nDesc = GUI::consoleMediumDesc;
+        break;
     }
+  }
   else
   {
     switch(fontStyle)
     {
       case 1:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
+        lDesc = GUI::consoleBDesc;
+        nDesc = GUI::consoleDesc;
         break;
       case 2:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
+        lDesc = GUI::consoleDesc;
+        nDesc = GUI::consoleBDesc;
         break;
       case 3:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
+        lDesc = nDesc = GUI::consoleBDesc;
         break;
       default: // default to zero
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
+        lDesc = nDesc = GUI::consoleDesc;
         break;
     }
   }
+
+  if(myLFont == nullptr)
+  {
+    myLFont = std::make_unique<GUI::Font>(lDesc);
+    myNFont = std::make_unique<GUI::Font>(nDesc);
+  }
+  else
+  {
+    // Every widget already references *myLFont/*myNFont directly, so
+    // swapping the descriptors in place picks up the new glyphs and metrics
+    // without recreating anything (see refreshFont())
+    myLFont->changeDesc(lDesc);
+    myNFont->changeDesc(nDesc);
+  }
+
   tooltip().setFont(*myNFont);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::refreshFont()
+{
+  Dialog::refreshFont();
+  tooltip().setFont(*myNFont);
+
+  // The Options dialog is a separate Dialog; only allocated on first use, so
+  // it must forward explicitly rather than assume it will always be freshly
+  // reconstructed before it goes stale
+  if(myOptions)
+    myOptions->refreshFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

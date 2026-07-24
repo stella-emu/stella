@@ -52,6 +52,10 @@ class EventMappingWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setDefaults();
 
+    // The combo dialog is a Dialog, not a Widget, so no Widget-tree walk
+    // reaches it on its own; forward explicitly
+    void refreshFontMetrics() override;
+
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button, bool longPress = false) override;

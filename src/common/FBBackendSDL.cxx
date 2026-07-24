@@ -522,6 +522,22 @@ void FBBackendSDL::setWindowMinSize(const Common::Size& minSize)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::resizeWindow(const Common::Size& size)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow)
+  {
+    SDL_SetWindowSize(myWindow, static_cast<int>(size.w), static_cast<int>(size.h));
+    // Block until the window manager has actually applied the new size, the
+    // same way the video-mode reuse-path above does -- so the resize event
+    // we rely on to re-flow (see EventHandler::handleSystemEvent) reports the
+    // real, settled size rather than racing an async X11/Wayland compositor
+    SDL_SyncWindow(myWindow);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::refreshDimensions()
 {
   determineDimensions();

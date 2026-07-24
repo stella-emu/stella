@@ -205,6 +205,10 @@ void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
   {
     ourBrowser.reset(new BrowserDialog(parent, font, w, h));
   }
+  // A reused instance may have been built before the dialog font last changed
+  // live; its own children never see that until refreshed.  Unconditional, so
+  // this stays correct regardless of the recreate-vs-reuse condition above
+  ourBrowser->refreshFont();
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
 }
@@ -242,6 +246,10 @@ void BrowserDialog::show(OSystem& osystem,
   {
     ourBrowser.reset(new BrowserDialog(osystem, overlay, font, w, h));
   }
+  // A reused instance may have been built before the dialog font last changed
+  // live; its own children never see that until refreshed.  Unconditional, so
+  // this stays correct regardless of the recreate-vs-reuse condition above
+  ourBrowser->refreshFont();
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
 }

@@ -194,9 +194,13 @@ class DialogContainer
     /**
       Re-font every dialog in the stack after the dialog font has been changed
       in place (see FrameBuffer::changeDialogFont).  Broadcasts refreshFont() to
-      the whole stack so all open dialogs re-font live, no restart.
+      the whole stack so all open dialogs re-font live, no restart.  Virtual so
+      a container that also caches dialogs OUTSIDE the stack (e.g. OverlayMenu,
+      which keeps one instance per EventHandlerState and only ever pushes the
+      active one) can refresh those too -- otherwise a font change while one is
+      inactive would leave it stale until reselected.
     */
-    void refreshFont();
+    virtual void refreshFont();
 
     /**
       Return (and possibly create) the bottom-most dialog of this container.

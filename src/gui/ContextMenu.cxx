@@ -45,13 +45,8 @@ void ContextMenu::addItems(const VariantList& items)
   _entries = items;
   _enabled.assign(_entries.size(), true);
 
-  // Resize to largest string
-  int maxwidth = _maxWidth;
-  for(const auto& e: _entries)
-    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
-
   _x = _y = 0;
-  _w = maxwidth;
+  recalcWidth();
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -63,12 +58,29 @@ void ContextMenu::addItems(const VariantList& items)
 void ContextMenu::setMaxWidth(int width)
 {
   _maxWidth = width;
+  recalcWidth();
+}
 
-  // Recompute the menu width from the new minimum and any existing entries
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::recalcWidth()
+{
+  // Resize to largest string
   int maxwidth = _maxWidth;
   for(const auto& e: _entries)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
   _w = maxwidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::refreshFontMetrics()
+{
+  // The font object was mutated in place by a live font change; this menu is
+  // a Dialog, not a Widget, so no Widget-tree walk reaches it -- the owning
+  // PopUpWidget calls this directly instead (see PopUpWidget::refreshFontMetrics)
+  _rowHeight = _font.getLineHeight();
+  setArrows();     // re-picks the arrow bitmap/_textOfs for the new font
+  recalcWidth();   // _textOfs feeds the per-entry width, so this must follow
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

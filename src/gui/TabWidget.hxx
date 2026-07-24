@@ -93,6 +93,14 @@ class TabWidget : public Widget, public CommandSender
     // floor if the tabs are many or their titles long
     Common::Size naturalSize() const override;
 
+    // Only the active tab's widgets live in _children (see setActiveTab), so
+    // the base walk a caller does over _children reaches those; each hidden
+    // tab keeps its widgets in its own list instead, invisible to that walk,
+    // so refresh those here too -- otherwise a live font change leaves a
+    // hidden tab's content sized/positioned from the OLD font until it is
+    // next activated and reflowed, while it already draws with the new one
+    void refreshFontMetrics() override;
+
     void loadConfig() override;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

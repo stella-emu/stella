@@ -174,6 +174,11 @@ class FBBackendSDL : public FBBackend
     void setWindowMinSize(const Common::Size& minSize) override;
 
     /**
+      Resize the window in place (in pixels).
+    */
+    void resizeWindow(const Common::Size& size) override;
+
+    /**
       Refresh cached window/renderer dimensions after an external resize.
     */
     void refreshDimensions() override;

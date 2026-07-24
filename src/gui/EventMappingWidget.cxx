@@ -207,6 +207,14 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  myComboDialog->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::loadConfig()
 {
   if(myFirstTime)

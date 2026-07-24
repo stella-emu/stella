@@ -88,9 +88,13 @@ class Dialog : public GuiObject
     /**
       Refresh all font-derived state after the dialog's font has been changed
       in place (see FrameBuffer::changeDialogFont), then re-run layout() so the
-      whole dialog re-fonts live without being recreated.
+      whole dialog re-fonts live without being recreated.  Virtual so that a
+      subclass owning a Dialog-as-member (e.g. a ContextMenu, which is a
+      Dialog, not a Widget, so no Widget-tree walk reaches it) can forward to
+      it; this is also what DialogContainer::refreshFont's broadcast over
+      Dialog* relies on to actually reach that override.
     */
-    void refreshFont();
+    virtual void refreshFont();
 
     /**
       Answers whether this dialog (at its current size and hidpi scaling) is

@@ -101,6 +101,22 @@ void TabWidget::updateTabSizes()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::refreshFontMetrics()
+{
+  Widget::refreshFontMetrics();
+
+  // A caller's recursion over _children reaches only the active tab (see
+  // setActiveTab); each hidden tab's widgets live in _tabs[i].children
+  // instead, so refresh those directly.  This is safe to do while hidden --
+  // unlike layoutTabs(), it only recomputes cached metrics, it does not lay
+  // anything out or create widgets -- and it is what lets a hidden tab already
+  // hold correct sizes for the new font once it is later activated and reflowed
+  for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
+    if(i != _activeTab)
+      refreshFontMetricsInList(_tabs[i].children);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::getMaxContentHeight() const
 {
   int maxHeight = 0;

@@ -58,6 +58,13 @@ class ContextMenu : public Dialog, public CommandSender
         the menu still grows to fit its widest entry. */
     void setMaxWidth(int width);
 
+    /** Recompute cached font-derived state (row height, arrow bitmap, entry
+        widths) after the font object was mutated in place by a live font
+        change.  Called explicitly by the owning PopUpWidget -- see its own
+        refreshFontMetrics() -- since this menu is a Dialog, not a Widget, so
+        no Widget-tree walk ever reaches it. */
+    void refreshFontMetrics();
+
     /** Enable or disable an item.  Disabled items are greyed out and
         cannot be selected. */
     void setEnabled(int index, bool enable);
@@ -115,6 +122,7 @@ class ContextMenu : public Dialog, public CommandSender
     void setArrows();
 
     void recalc(const Common::Rect& image);
+    void recalcWidth();
 
     int findItem(int x, int y) const;
     void drawCurrentSelection(int item);

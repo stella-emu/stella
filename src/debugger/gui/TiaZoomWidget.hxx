@@ -50,6 +50,11 @@ class TiaZoomWidget : public Widget, public CommandSender
 
     bool wantsFocus() const override { return true; }
 
+    // The right-click context menu is a Dialog, not a Widget, so no Widget-tree
+    // walk reaches it on its own; forward explicitly (see
+    // ContextMenu::refreshFontMetrics)
+    void refreshFontMetrics() override;
+
   protected:
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;

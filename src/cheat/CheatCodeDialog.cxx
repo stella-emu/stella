@@ -179,6 +179,14 @@ void CheatCodeDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::refreshFont()
+{
+  Dialog::refreshFont();
+
+  myCheatInput->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::saveConfig()
 {
   // Inspect checkboxes for enable/disable codes

@@ -34,6 +34,11 @@ class OptionsDialog : public Dialog
 
     void loadConfig() override;
 
+    // The active nested panel (Video/Audio/Input/...) is a separate Dialog;
+    // forward explicitly rather than assume it will always be freshly
+    // reconstructed on the next navigation before it goes stale
+    void refreshFont() override;
+
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

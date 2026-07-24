@@ -45,6 +45,11 @@ class GameInfoDialog : public Dialog, public CommandSender
     void saveConfig() override;
     void setDefaults() override;
 
+    // The QuadTari dialog is a separate Dialog; only allocated on first use,
+    // so it must forward explicitly rather than assume it will always be
+    // freshly reconstructed before it goes stale
+    void refreshFont() override;
+
   protected:
     void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

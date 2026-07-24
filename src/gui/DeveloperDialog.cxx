@@ -808,7 +808,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Small", "small");
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
-  myDebuggerFontSizeLbl = new LabelWidget(pane, font, "Font size (*)");
+  myDebuggerFontSizeLbl = new LabelWidget(pane, font, "Font size");
   myDebuggerFontSize = new PopUpWidget(pane, font, items, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
 
@@ -818,7 +818,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Bold labels only", "1");
   VarList::push_back(items, "Bold non-labels only", "2");
   VarList::push_back(items, "All bold font", "3");
-  myDebuggerFontStyleLbl = new LabelWidget(pane, font, "Font style (*)");
+  myDebuggerFontStyleLbl = new LabelWidget(pane, font, "Font style");
   myDebuggerFontStyle = new PopUpWidget(pane, font, items);
   wid.push_back(myDebuggerFontStyle);
 
@@ -1299,9 +1299,22 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 #endif
 
     case GuiObject::kOKCmd:
+    {
+  #ifdef DEBUGGER_SUPPORT
+      const bool informDebuggerFont = instance().hasConsole() &&
+        (myDebuggerFontSize->getSelectedTag().toString() !=
+             instance().settings().getString("dbg.fontsize")
+         || myDebuggerFontStyle->getSelectedTag().toString() !=
+             instance().settings().getString("dbg.fontstyle"));
+  #endif
       saveConfig();
       close();
+  #ifdef DEBUGGER_SUPPORT
+      if(informDebuggerFont)
+        instance().debugger().changeFont();
+  #endif
       break;
+    }
 
     case GuiObject::kCloseCmd:
       // Revert changes made to event mapping

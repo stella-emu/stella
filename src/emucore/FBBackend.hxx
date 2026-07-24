@@ -94,6 +94,16 @@ class FBBackend
     virtual void setWindowMinSize(const Common::Size& minSize) { }
 
     /**
+      Resize this backend's window in place (no destroy/recreate), in
+      pixels.  Used to grow a resizable window (the launcher or the
+      debugger) whose minimum size has just increased past its current size
+      (e.g. a live font change) -- the window's owner learns the new size
+      back through the normal live-resize event path, exactly as it would
+      from the user dragging the border.
+    */
+    virtual void resizeWindow(const Common::Size& size) { }
+
+    /**
       Refresh cached window/renderer dimensions after the window has been
       resized externally (e.g. the user dragging the window border).
     */

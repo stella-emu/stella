@@ -55,6 +55,11 @@ class RamWidget : public Widget, public CommandSender
     // buttons and detail row make me -- so report what my layout tree comes to
     Common::Size naturalSize() const override;
 
+    // The search/compare input box is a Dialog, not a Widget, so no Widget-tree
+    // walk reaches it on its own; forward explicitly (its own children then
+    // refresh through the normal Dialog::refreshFont mechanism)
+    void refreshFontMetrics() override;
+
     virtual string getLabel(int addr) const = 0;
 
   protected:

@@ -81,6 +81,17 @@ class DebuggerDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
 
+    // Swap the label/normal font descriptors in place (allocating them on
+    // first call, from the constructor), so every widget's reference to
+    // *myLFont/*myNFont picks up the new glyphs and metrics without being
+    // recreated.
+    void changeFont(string_view fontSize, int fontStyle);
+
+    // Refresh cached font-derived widget state and re-flow after changeFont()
+    // -- like Dialog::refreshFont(), but also re-fonts the tooltip to myNFont
+    // (the debugger's own font, not the shared dialog font used by _font).
+    void refreshFont() override;
+
     void setPosition() override { positionAt(0); }
 
     /**
@@ -112,7 +123,6 @@ class DebuggerDialog : public Dialog
     void doExitDebugger();
     void doExitRom();
 
-    void createFont();
     void addTiaArea();
     void addTabArea();
     void addStatusArea();

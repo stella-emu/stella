@@ -151,6 +151,11 @@ void RomListWidget::refreshFontMetrics()
   // The base reset _lineHeight to the plain font line height; the row must
   // still clear the checkbox (mirrors the constructor)
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+
+  // Both are Dialogs, not Widgets, so no Widget-tree walk reaches them on
+  // their own; their own children then refresh through Dialog::refreshFont
+  myMenu->refreshFont();
+  myDisasmColorsDialog->refreshFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

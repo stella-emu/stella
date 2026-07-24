@@ -201,10 +201,13 @@ class Debugger : public DialogContainer
 
     const GUI::Font& lfont() const      { return myDialog->lfont();     }
     const GUI::Font& nlfont() const     { return myDialog->nfont();     }
+    void changeFont() const;
+
     DebuggerParser& parser() const      { return *myParser;             }
     PromptWidget& prompt() const        { return myDialog->prompt();    }
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
+
 
     BreakpointMap& breakPoints() const;
 

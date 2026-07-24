@@ -34,6 +34,16 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::refreshFontMetrics()
+{
+  StringListWidget::refreshFontMetrics();
+
+  // Only allocated on first use; nothing to refresh otherwise
+  if(myProgressDialog)
+    myProgressDialog->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::setInitialDirectory(const FSNode& node, string_view select)
 {
   _node = node;

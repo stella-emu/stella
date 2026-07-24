@@ -138,6 +138,19 @@ class FrameBuffer
     void setWindowMinSize(const Common::Size& size);
 
     /**
+      Ensure a resizeable UI window (the launcher or the debugger) is at
+      least the given size, growing it in place if not -- used when a live
+      font change raises the content's minimum past the window's current
+      size.  Also applies the size as the new minimum (see setWindowMinSize).
+      Never shrinks a window the user has already sized larger, and never
+      exceeds the desktop.  A no-op window resize (already big enough) costs
+      nothing beyond the minimum-size update.
+
+      @param minSize  The new minimum, in logical (unscaled) UI pixels
+    */
+    void growWindowTo(const Common::Size& minSize);
+
+    /**
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */

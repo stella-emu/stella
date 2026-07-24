@@ -41,6 +41,10 @@ class CheatCodeDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
 
+    // The cheat input box is a separate Dialog; forward explicitly rather
+    // than assume it will always be freshly reconstructed before it goes stale
+    void refreshFont() override;
+
   protected:
     void layout() override;
 

@@ -72,6 +72,11 @@ class OverlayMenu : public DialogContainer
     // creating and caching the matching built-in menu dialog as needed.
     Dialog* baseDialog() override;
 
+    // The base broadcast only reaches whichever cached dialog is currently
+    // active (on the stack); refresh every other cached one too, so it isn't
+    // left stale until the user switches back to it
+    void refreshFont() override;
+
   private:
     // The concrete built-in menu dialogs, each cached on first use
     enum class Cached: uInt8 {

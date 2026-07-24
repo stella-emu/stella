@@ -375,6 +375,25 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::growWindowTo(const Common::Size& minSize)
+{
+  setWindowMinSize(minSize);
+
+  const uInt32 scale = hidpiScaleFactor();
+  const Common::Rect& r = imageRect();
+  const Common::Size current(r.w() / scale, r.h() / scale);
+
+  if(current.w >= minSize.w && current.h >= minSize.h)
+    return;
+
+  Common::Size grown = current;
+  const Common::Size& d = desktopSize();
+  grown.clamp(minSize.w, d.w, minSize.h, d.h);
+
+  myBackend->resizeWindow(Common::Size(grown.w * scale, grown.h * scale));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::handleResize(int width, int height)
 {
   // Only the launcher and debugger windows are user-resizable

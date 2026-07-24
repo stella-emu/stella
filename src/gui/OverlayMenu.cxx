@@ -70,6 +70,23 @@ Dialog* OverlayMenu::baseDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OverlayMenu::refreshFont()
+{
+  // Refreshes whichever dialog is currently on the stack (harmless to also
+  // refresh it again below)
+  DialogContainer::refreshFont();
+
+  // Each is a Dialog, so relayout() safely no-ops for one that is not
+  // currently visible; only its font-derived metrics get refreshed here,
+  // ready for whenever it is next selected
+  for(auto& dlg: myCached)
+    if(dlg)
+      dlg->refreshFont();
+  if(myTransientDialog)
+    myTransientDialog->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog& OverlayMenu::cached(Cached id)
 {
   auto& slot = myCached[std::to_underlying(id)];

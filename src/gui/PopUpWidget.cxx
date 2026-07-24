@@ -89,7 +89,8 @@ void PopUpWidget::setBoxWidth(int w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::refreshFontMetrics()
 {
-  Widget::refreshFontMetrics();
+  // Also refreshes the inherited (right-click) mouse menu, if allocated
+  EditableWidget::refreshFontMetrics();
 
   // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
   // height and vertically re-center the arrows (mirrors the ctor).
@@ -97,6 +98,10 @@ void PopUpWidget::refreshFontMetrics()
   setArrow();
   _h = _font.getLineHeight() + 2;
   myArrowsY = (_h - _arrowHeight) / 2;
+
+  // The dropdown menu is a separate Dialog, not part of this widget's
+  // (Widget-tree-only) child list, so no walk ever reaches it on its own
+  myMenu->refreshFontMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

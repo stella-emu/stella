@@ -204,6 +204,16 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AboutDialog::refreshFont()
+{
+  Dialog::refreshFont();
+
+  // Only allocated on first use; nothing to refresh otherwise
+  if(myWhatsNewDialog)
+    myWhatsNewDialog->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AboutDialog::displayInfo()
 {
   string titleStr;
