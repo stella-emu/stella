@@ -27,9 +27,8 @@
 #include "JoystickDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
-                               int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent(), font, "Controller database", max_w, max_h)
+JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
+  : Dialog(boss->instance(), boss->parent(), font, "Controller database")
 {
   WidgetArray wid;
 
@@ -89,13 +88,20 @@ void JoystickDialog::layout()
 
   GUI::alignLabels({{myJoyPortLabel}});
 
-  // The joystick list fills the area above the bottom control/button row.  This
-  // dialog takes all the space it is given, so its size is not derived from the
-  // content.
+  // The list shows a reasonable number of joysticks by default -- which, with
+  // the room device names need, is what sizes the dialog; more entries scroll.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addStretch(widgetItem(myJoyList));
+  root->addStretch(widgetItem(myJoyList, 60 * fontWidth,
+                              ListWidget::calcHeight(_font, 12)));
   root->addSpace(VBORDER);
   root->addSpace(buttonHeight);  // reserve the button row
+
+  // The list STRETCHES, so the band for the button group has to be reserved
+  // above (see CheatCodeDialog for the same gotcha)
+  const Common::Size natural = root->naturalSize();
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h);
+
   root->doLayout(0, _th, _w, _h - _th);
 
   // The button band is entirely this dialog's own: the controller ID readout on
@@ -183,6 +189,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       myRemoveBtn->setEnabled(!isPlugged);
       break;
     }
+
     default:
       Dialog::handleCommand(sender, cmd, data, id);
       break;

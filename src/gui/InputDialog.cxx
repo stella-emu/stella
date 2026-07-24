@@ -857,12 +857,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDBButtonPressed:
       if(!myJoyDialog)
-      {
-        const GUI::Font& font = instance().frameBuffer().font();
-        myJoyDialog = std::make_unique<JoystickDialog>
-          (this, font, fontWidth() * 60 + 20, fontHeight() * 18 + 20);
-      }
-      myJoyDialog->show();
+        myJoyDialog = std::make_unique<JoystickDialog>(this, instance().frameBuffer().font());
+      myJoyDialog->open();
       break;
 
     case kEEButtonPressed:
