@@ -20,72 +20,24 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
+#include "FrameBuffer.hxx"
 #include "StringParser.hxx"
 #include "Layout.hxx"
 #include "MessageBox.hxx"
 
 namespace GUI {
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int max_w, int max_h, int okCmd,
-                       int cancelCmd, string_view okText, string_view cancelText,
-                       string_view title, bool focusOKButton)
-  : Dialog(boss->instance(), boss->parent(), font, title, max_w, max_h),
-    CommandSender(boss),
-    myOkCmd{okCmd},
-    myCancelCmd{cancelCmd},
-    myMaxW{max_w},
-    myMaxH{max_h}
-{
-  createText(font, text);
-
-  WidgetArray wid;
-  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
-  addToFocusList(wid);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int max_w, int max_h, int okCmd,
-                       string_view okText, string_view cancelText,
-                       string_view title, bool focusOKButton)
-  : MessageBox(boss, font, text, max_w, max_h,
-               okCmd, 0, okText, cancelText, title, focusOKButton)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       string_view text, int max_w, int max_h, int okCmd,
-                       string_view okText, string_view cancelText,
-                       string_view title, bool focusOKButton)
-  : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
-               okCmd, okText, cancelText, title, focusOKButton)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       string_view text, int max_w, int max_h, int okCmd,
-                       int cancelCmd, string_view okText, string_view cancelText,
-                       string_view title, bool focusOKButton)
-  : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
-               okCmd, cancelCmd, okText, cancelText, title, focusOKButton)
-{
-}
+unique_ptr<MessageBox> MessageBox::ourBox;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(OSystem& osystem, DialogContainer& parent,
-                       const GUI::Font& font, const StringList& text,
-                       int max_w, int max_h,
+                       const GUI::Font& font, string_view text,
                        const std::function<void(bool ok)>& callback,
                        string_view okText, string_view cancelText,
-                       string_view title, bool focusOKButton)
-  : Dialog(osystem, parent, font, title, max_w, max_h),
-    myMaxW{max_w},
-    myMaxH{max_h},
-    myCallback{callback}
+                       string_view title, bool focusOKButton, bool transient)
+  : Dialog(osystem, parent, font, title),
+    myCallback{callback},
+    myTransient{transient}
 {
   createText(font, text);
 
@@ -95,11 +47,44 @@ MessageBox::MessageBox(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageBox::createText(const GUI::Font& font, const StringList& text)
+// static
+void MessageBox::confirm(GuiObject* boss, string_view text,
+                         const std::function<void(bool ok)>& callback,
+                         string_view title, string_view okText,
+                         string_view cancelText, bool focusOKButton)
 {
+  ourBox.reset(new MessageBox(boss->instance(), boss->parent(),
+                              boss->instance().frameBuffer().font(), text,
+                              callback, okText, cancelText, title,
+                              focusOKButton, /*transient=*/false));
+  ourBox->open();
+}
 
-  myText = text;
-  for(const auto& s: text)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// static
+unique_ptr<Dialog> MessageBox::create(OSystem& osystem, DialogContainer& parent,
+                         const GUI::Font& font, string_view text,
+                         const std::function<void(bool ok)>& callback,
+                         string_view okText, string_view cancelText,
+                         string_view title)
+{
+  return unique_ptr<Dialog>(new MessageBox(osystem, parent, font, text, callback,
+                            okText, cancelText, title,
+                            /*focusOKButton=*/true, /*transient=*/true));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// static
+void MessageBox::hide()
+{
+  ourBox.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MessageBox::createText(const GUI::Font& font, string_view text)
+{
+  myText = StringParser(text).stringList();
+  for(const auto& s: myText)
     myTextWidgets.push_back(new StaticTextWidget(this, font, s,
                                                  TextAlign::Left));
 }
@@ -125,16 +110,15 @@ void MessageBox::layout()
   root->addSpace(VGAP * 2);
 
   // As wide as the longest line, and as tall as the lines need -- but never
-  // narrower than the button group below them, and never bigger than the caller
-  // said we may be
+  // narrower than the button group below them. If this ends up bigger than
+  // the screen, Dialog::open()'s exceedsScreen() check reports it, the same
+  // as any other dialog.
   int str_w = 0;
   for(const auto& s: myText)
     str_w = std::max(static_cast<int>(s.length()), str_w);
 
-  _w = std::min(std::max(str_w * fontWidth + HBORDER * 2,
-                         Dialog::buttonGroupWidth()), myMaxW);
-  _h = std::min(_th + static_cast<int>(root->naturalSize().h)
-                + buttonHeight + VBORDER, myMaxH);
+  _w = std::max(str_w * fontWidth + HBORDER * 2, Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -149,26 +133,17 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
   {
     const bool ok = cmd == GuiObject::kOKCmd;
 
-    if(myCallback)
-    {
-      // As a transient dialog over TIA mode, any answer leaves the menu mode;
-      // the result is reported through the callback
+    if(myTransient)
+      // Over TIA mode with no boss to return to: leaving menu mode (which
+      // removes us from the dialog stack) IS the close
       instance().eventHandler().leaveMenuMode();
-      myCallback(ok);
-    }
     else
-    {
-      close();
+      close();  // Owned by a boss dialog; behave like any other dialog
 
-      // Send a signal to the calling class which button was selected
-      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      const int replyCmd = ok ? myOkCmd : myCancelCmd;
-      if(replyCmd)
-        sendCommand(replyCmd, 0, 0);
-    }
+    myCallback(ok);
   }
   else
     Dialog::handleCommand(sender, cmd, data, id);
 }
 
-} // namespace GUI
+}  // namespace GUI

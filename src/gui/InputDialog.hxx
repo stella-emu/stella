@@ -27,9 +27,6 @@ class JoystickDialog;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
@@ -38,7 +35,7 @@ class InputDialog : public Dialog
 {
   public:
     InputDialog(OSystem& osystem, DialogContainer& parent,
-                const GUI::Font& font, int max_w, int max_h);
+                const GUI::Font& font);
     ~InputDialog() override;
 
     void loadConfig() override;
@@ -84,7 +81,6 @@ class InputDialog : public Dialog
       kDCSpeedChanged     = 'DCch',
       kDBButtonPressed    = 'DBbp',
       kEEButtonPressed    = 'EEbp',
-      kConfirmEEEraseCmd  = 'EEcf',
       kMouseCtrlChanged   = 'MCch',
       kCursorStateChanged = 'CSch',
       kMPSpeedChanged     = 'PMch',
@@ -139,12 +135,6 @@ class InputDialog : public Dialog
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
-
-    // Show a message about the dangers of using this function
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
-
-    // Maximum width and height for this dialog
-    int myMaxWidth{0}, myMaxHeight{0};
 
   private:
     // Following constructors and assignment operators not supported

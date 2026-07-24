@@ -35,10 +35,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
-                               const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Audit ROMs"),
-    myMaxWidth{max_w},
-    myMaxHeight{max_h}
+                               const GUI::Font& font)
+  : Dialog(osystem, parent, font, "Audit ROMs")
 {
   WidgetArray wid;
 
@@ -216,26 +214,21 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case GuiObject::kOKCmd:
-      if(!myConfirmMsg)
-      {
-        StringList msg;
-        msg.emplace_back("This operation cannot be undone.  Your ROMs");
-        msg.emplace_back("will be modified, and as such there is a chance");
-        msg.emplace_back("that files may be lost.  You are recommended");
-        msg.emplace_back("to back up your files before proceeding.");
-        msg.emplace_back("");
-        msg.emplace_back("If you're sure you want to proceed with the");
-        msg.emplace_back("audit, click 'OK', otherwise click 'Cancel'.");
-        myConfirmMsg = std::make_unique<GUI::MessageBox>
-          (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
-          "OK", "Cancel", "ROM Audit", false);
-      }
-      myConfirmMsg->show();
-      break;
-
-    case kConfirmAuditCmd:
-      auditRoms();
-      instance().launcher().reload();
+      GUI::MessageBox::confirm(this,
+        "This operation cannot be undone.  Your ROMs\n"
+        "will be modified, and as such there is a chance\n"
+        "that files may be lost.  You are recommended\n"
+        "to back up your files before proceeding.\n\n"
+        "If you're sure you want to proceed with the\n"
+        "audit, click 'OK', otherwise click 'Cancel'.",
+        [this](bool ok) {
+          if(ok)
+          {
+            auditRoms();
+            instance().launcher().reload();
+          }
+        },
+        "ROM Audit");
       break;
 
     case kChooseAuditDirCmd:

@@ -28,7 +28,6 @@ class ButtonWidget;
 
 namespace GUI {
   class Font;
-  class MessageBox;
 }  // namespace GUI
 
 class StellaSettingsDialog : public Dialog
@@ -105,7 +104,6 @@ class StellaSettingsDialog : public Dialog
     PopUpWidget*      myRightPort{nullptr};
     StaticTextWidget* myRightPortDetected{nullptr};
 
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
     unique_ptr<HelpDialog> myHelpDialog;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
@@ -113,7 +111,6 @@ class StellaSettingsDialog : public Dialog
 
     enum {
       kAdvancedSettings = 'SSad',
-      kConfirmSwitchCmd = 'SScf',
       kHelp             = 'SShl',
       kScanlinesChanged = 'SSsc',
       kPhosphorChanged  = 'SSph',

@@ -1211,21 +1211,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       handleFavoritesChanged();
       break;
 
-    case kRmAllFav:
-      myList->removeAllUserFavorites();
-      reload();
-      break;
-
-    case kRmAllPop:
-      myList->removeAllPopular();
-      reload();
-      break;
-
-    case kRmAllRec:
-      myList->removeAllRecent();
-      reload();
-      break;
-
     case kExtChangedCmd:
       reload();
       break;
@@ -1421,8 +1406,7 @@ void LauncherDialog::openGlobalProps()
 void LauncherDialog::openHighScores()
 {
   // Create an high scores dialog, similar to the in-game one
-  myDialog = std::make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
-                                           AppMode::launcher);
+  myDialog = std::make_unique<HighScoresDialog>(instance(), parent(), AppMode::launcher);
   myDialog->open();
 }
 
@@ -1480,42 +1464,31 @@ void LauncherDialog::toggleSorting()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllFavorites()
 {
-  StringList msg;
-
-  msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back("your 'Favorites' list!");
-  msg.emplace_back("");
-  msg.emplace_back("Are you sure?");
-  myConfirmMsg = std::make_unique<GUI::MessageBox>
-    (this, _font, msg, _w, _h, kRmAllFav,
-      "Yes", "No", "Remove all Favorites", false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    "This will remove ALL ROMs from\n"
+    "your 'Favorites' list!\n\n"
+    "Are you sure?",
+    [this](bool ok) { if(ok) { myList->removeAllUserFavorites(); reload(); } },
+    "Remove all Favorites", "Yes", "No");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::removeAll(string_view name)
+void LauncherDialog::removeAll(string_view name, const std::function<void()>& action)
 {
-  StringList msg;
-
-  msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back(std::format("your '{}' list!", name));
-  msg.emplace_back("");
-  msg.emplace_back("Are you sure?");
-
-  myConfirmMsg = std::make_unique<GUI::MessageBox>(
-    this, _font, msg, _w, _h, kRmAllPop,
-    "Yes", "No", std::format("Remove all {}", name), false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    std::format("This will remove ALL ROMs from\nyour '{}' list!\n\nAre you sure?", name),
+    [this, action](bool ok) { if(ok) { action(); reload(); } },
+    std::format("Remove all {}", name), "Yes", "No");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllPopular()
 {
-  removeAll("Most Popular");
+  removeAll("Most Popular", [this]() { myList->removeAllPopular(); });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllRecent()
 {
-  removeAll("Recently Played");
+  removeAll("Recently Played", [this]() { myList->removeAllRecent(); });
 }

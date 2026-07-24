@@ -115,11 +115,8 @@ static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                                   int max_w, int max_h,
                                    AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "High Scores"),
-    _max_w{max_w},
-    _max_h{max_h},
     myMode{mode}
 {
   myScores.variation = HSM::DEFAULT_VARIATION;
@@ -442,14 +439,6 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       updateWidgets();
       break;
 
-    case kConfirmSave:
-      saveConfig();
-      [[fallthrough]];
-    case kCancelSave:
-      myDirty = false;
-      handleVariation();
-      break;
-
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
@@ -590,18 +579,16 @@ bool HighScoresDialog::handleDirty()
 {
   if (myDirty)
   {
-    if (!myConfirmMsg)
-    {
-      StringList msg;
-
-      msg.emplace_back("Do you want to save the changes");
-      msg.emplace_back("for this variation?");
-      msg.emplace_back("");
-      myConfirmMsg = std::make_unique<GUI::MessageBox>
-        (this, _font, msg, _max_w, _max_h, kConfirmSave, kCancelSave,
-         "Yes", "No", "Save High Scores", false);
-    }
-    myConfirmMsg->show();
+    GUI::MessageBox::confirm(this,
+      "Do you want to save the changes\n"
+      "for this variation?\n",
+      [this](bool ok) {
+        if(ok)
+          saveConfig();
+        myDirty = false;
+        handleVariation();
+      },
+      "Save High Scores", "Yes", "No");
     return false;
   }
   return true;

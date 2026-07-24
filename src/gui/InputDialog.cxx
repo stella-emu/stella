@@ -41,10 +41,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
-                         const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Input settings"),
-    myMaxWidth{max_w},
-    myMaxHeight{max_h}
+                         const GUI::Font& font)
+  : Dialog(osystem, parent, font, "Input settings")
 {
   // Widgets are only created here (at placeholder geometry); layout() sizes the
   // dialog and positions everything from the current font, so it reflows on
@@ -94,8 +92,7 @@ void InputDialog::layout()
   // available space): a clamped dialog would keep _w/_h within the screen while
   // its content overflowed, so Dialog::exceedsScreen() could not detect the
   // too-large case.  Sizing naturally lets that check fire the "too large"
-  // message like every other dialog.  (myMaxWidth/myMaxHeight are still used to
-  // bound the confirm MessageBox below.)
+  // message like every other dialog.
   // Both dimensions come from the tab widget: it reports what its largest tab's
   // content asks for, so nothing here counts rows, gaps or columns, and adding a
   // row to any tab needs no change at all
@@ -869,26 +866,15 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kEEButtonPressed:
-      if(!myConfirmMsg)
-      {
-        StringList msg;
-        msg.emplace_back("This operation cannot be undone.");
-        msg.emplace_back("All data stored on your AtariVox");
-        msg.emplace_back("or SaveKey will be erased!");
-        msg.emplace_back("");
-        msg.emplace_back("If you are sure you want to erase");
-        msg.emplace_back("the data, click 'OK', otherwise ");
-        msg.emplace_back("click 'Cancel'.");
-        myConfirmMsg = std::make_unique<GUI::MessageBox>
-          (this, instance().frameBuffer().font(), msg,
-           myMaxWidth, myMaxHeight, kConfirmEEEraseCmd,
-           "OK", "Cancel", "Erase EEPROM", false);
-      }
-      myConfirmMsg->show();
-      break;
-
-    case kConfirmEEEraseCmd:
-      eraseEEPROM();
+      GUI::MessageBox::confirm(this,
+        "This operation cannot be undone.\n"
+        "All data stored on your AtariVox\n"
+        "or SaveKey will be erased!\n\n"
+        "If you are sure you want to erase\n"
+        "the data, click 'OK', otherwise \n"
+        "click 'Cancel'.",
+        [this](bool ok) { if(ok) eraseEEPROM(); },
+        "Erase EEPROM");
       break;
 
     case kMouseCtrlChanged:

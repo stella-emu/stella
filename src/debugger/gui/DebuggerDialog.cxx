@@ -316,10 +316,6 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doExitDebugger();
       break;
 
-    case kDDExitFatalCmd:
-      doExitRom();
-      break;
-
     case kDDOptionsCmd:
       saveConfig();
 
@@ -475,9 +471,9 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(string_view msg)
 {
-  myFatalError = std::make_unique<GUI::MessageBox>(this, *myLFont, msg, _w-20, _h-20,
-                                              kDDExitFatalCmd, "Exit ROM", "Continue", "Fatal error");
-  myFatalError->show();
+  GUI::MessageBox::confirm(this, msg,
+    [this](bool ok) { if(ok) doExitRom(); },
+    "Fatal error", "Exit ROM", "Continue", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

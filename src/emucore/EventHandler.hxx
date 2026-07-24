@@ -188,7 +188,7 @@ class EventHandler
       Show a transient message box over TIA mode; the answer is reported
       through 'callback' after the menu mode is left.
     */
-    void openMessageBox(string_view title, const StringList& text,
+    void openMessageBox(string_view title, string_view text,
                         const std::function<void(bool ok)>& callback,
                         string_view okText = "OK",
                         string_view cancelText = "Cancel");

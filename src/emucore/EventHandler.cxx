@@ -2608,13 +2608,13 @@ void EventHandler::openBrowserDialog(string_view title, string_view startpath,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::openMessageBox(string_view title, const StringList& text,
+void EventHandler::openMessageBox(string_view title, string_view text,
                                   const std::function<void(bool ok)>& callback,
                                   string_view okText, string_view cancelText)
 {
-  openDialog(std::make_unique<GUI::MessageBox>(
+  openDialog(GUI::MessageBox::create(
     myOSystem, myOSystem.overlayMenu(), myOSystem.frameBuffer().font(), text,
-    FBMinimum::Width, FBMinimum::Height, callback, okText, cancelText, title));
+    callback, okText, cancelText, title));
 }
 #endif
 
@@ -2825,14 +2825,11 @@ void EventHandler::confirmExitEmulation(bool quitApp)
     const bool activeTM = myOSystem.settings().getBool(
       myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
-    StringList msg;
-    msg.emplace_back(quitApp ? "Do you really want to quit Stella?"
-                             : "Do you really want to exit emulation?");
+    string msg = quitApp ? "Do you really want to quit Stella?"
+                         : "Do you really want to exit emulation?";
     if(saveOnExit != "all" || !activeTM)
-    {
-      msg.emplace_back("");
-      msg.emplace_back("You will lose all your progress.");
-    }
+      msg += "\n\nYou will lose all your progress.";
+
     openMessageBox(quitApp ? "Quit Stella" : "Exit Emulation", msg,
       [this, quitApp](bool ok)
       {

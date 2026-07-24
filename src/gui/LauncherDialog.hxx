@@ -34,9 +34,6 @@ class StaticTextWidget;
 namespace Common {
   struct Size;
 }  // namespace Common
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
 
 #include <unordered_map>
 #include <unordered_set>
@@ -175,7 +172,7 @@ class LauncherDialog : public Dialog, CommandSender
     void toggleSorting();
     void handleFavoritesChanged();
     void removeAllFavorites();
-    void removeAll(string_view name);
+    void removeAll(string_view name, const std::function<void()>& action);
     void removeAllPopular();
     void removeAllRecent();
 
@@ -224,9 +221,6 @@ class LauncherDialog : public Dialog, CommandSender
 
     std::unordered_map<string, string, BSPF::StringHash, std::equal_to<>> myMD5List;
 
-    // Show a message about the dangers of using this function
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
-
     int mySelectedItem{0};
 
     bool myShowRomInfo{false};
@@ -242,10 +236,7 @@ class LauncherDialog : public Dialog, CommandSender
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
       kReloadCmd     = 'relc',
-      kRomWidthCmd   = 'lrwd',
-      kRmAllFav      = 'rmaf',
-      kRmAllPop      = 'rmap',
-      kRmAllRec      = 'rmar'
+      kRomWidthCmd   = 'lrwd'
     };
 
   private:

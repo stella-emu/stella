@@ -40,9 +40,6 @@ class RiotWidget;
 class AudioWidget;
 class OptionsDialog;
 
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
 namespace Common {
   struct Rect;
 }  // namespace Common
@@ -146,7 +143,6 @@ class DebuggerDialog : public Dialog
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
       kDDRunCmd       = 'DDex',
-      kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
 
@@ -174,7 +170,6 @@ class DebuggerDialog : public Dialog
     // Step / Trace / Scan +1 / Frame +1 / Run
     std::array<ButtonWidget*, 5> myStepButtons{};
 
-    unique_ptr<GUI::MessageBox> myFatalError;
     unique_ptr<OptionsDialog>   myOptions;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels

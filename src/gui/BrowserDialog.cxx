@@ -203,7 +203,7 @@ void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
   if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent() ||
      std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
-    ourBrowser = std::make_unique<BrowserDialog>(parent, font, w, h);
+    ourBrowser.reset(new BrowserDialog(parent, font, w, h));
   }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
@@ -240,7 +240,7 @@ void BrowserDialog::show(OSystem& osystem,
   if(ourBrowser == nullptr || &ourBrowser->parent() != &overlay ||
      std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
-    ourBrowser = std::make_unique<BrowserDialog>(osystem, overlay, font, w, h);
+    ourBrowser.reset(new BrowserDialog(osystem, overlay, font, w, h));
   }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);

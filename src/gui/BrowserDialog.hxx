@@ -47,11 +47,6 @@ class BrowserDialog : public Dialog
     using Command = std::function<void(bool, const FSNode&)>;
 
   public:
-    // NOTE: Do not call these c'tors directly!  Use the static show methods below
-    //       There is no point in doing so, since the result can't be returned
-    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
-    BrowserDialog(OSystem& osystem, DialogContainer& parent,
-                  const GUI::Font& font, int max_w, int max_h);
     ~BrowserDialog() override = default;
 
     /**
@@ -121,6 +116,12 @@ class BrowserDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // No point calling these directly: the result can't be gotten back
+    // that way. Use the static show() methods above instead.
+    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
+    BrowserDialog(OSystem& osystem, DialogContainer& parent,
+                  const GUI::Font& font, int max_w, int max_h);
+
     void initialize(int max_w, int max_h);
 
     /** Place the browser window onscreen, using the given attributes */

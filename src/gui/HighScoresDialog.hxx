@@ -23,9 +23,6 @@ class DialogContainer;
 class OSystem;
 class EditTextWidget;
 class PopUpWidget;
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
 class Serializer;
 
 #include "Dialog.hxx"
@@ -45,8 +42,7 @@ class HighScoresDialog : public Dialog
   public:
     static constexpr uInt32 NUM_RANKS = 10;
 
-    HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                     int max_w, int max_h, AppMode mode);
+    HighScoresDialog(OSystem& osystem, DialogContainer& parent, AppMode mode);
     ~HighScoresDialog() override;
 
     void loadConfig() override;
@@ -71,9 +67,7 @@ class HighScoresDialog : public Dialog
       kVariationChanged = 'Vach',
       kPrevVariation    = 'PrVr',
       kNextVariation    = 'NxVr',
-      kDeleteSingle     = 'DeSi',
-      kConfirmSave      = 'CfSv',
-      kCancelSave       = 'CcSv'
+      kDeleteSingle     = 'DeSi'
     };
 
   private:
@@ -81,10 +75,6 @@ class HighScoresDialog : public Dialog
     bool myDirty{false};
     bool myHighScoreSaved{false};  // remember if current high score was already saved
                                    // (avoids double HS)
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
-    int _max_w{0};
-    int _max_h{0};
-
     string myInitials;
     Int32 myEditRank{-1};
     Int32 myHighScoreRank{-1};

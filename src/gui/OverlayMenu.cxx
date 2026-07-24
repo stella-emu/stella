@@ -95,8 +95,7 @@ Dialog* OverlayMenu::createDialog(Cached id)
       return new CommandDialog(myOSystem, *this);
 
     case Cached::HighScores:
-      return new HighScoresDialog(myOSystem, *this,
-        FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
+      return new HighScoresDialog(myOSystem, *this, Dialog::AppMode::emulator);
 
     case Cached::PlusRoms:
       return new PlusRomsSetupDialog(myOSystem, *this,

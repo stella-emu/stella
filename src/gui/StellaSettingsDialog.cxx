@@ -403,14 +403,6 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       switchSettingsMode();
       break;
 
-    case kConfirmSwitchCmd:
-      instance().settings().setValue("basic_settings", false);
-      if(myMode != AppMode::emulator)
-        close();
-      else
-        instance().eventHandler().leaveMenuMode();
-      break;
-
     case kHelp:
       openHelp();
       break;
@@ -455,21 +447,25 @@ void StellaSettingsDialog::handleOverscanChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::switchSettingsMode()
 {
-  StringList msg;
-
-  msg.emplace_back("Warning!");
-  msg.emplace_back("");
-  msg.emplace_back("Advanced settings should be");
-  msg.emplace_back("handled with care! When in");
-  msg.emplace_back("doubt, read the manual.");
-  msg.emplace_back("");
-  msg.emplace_back("If you are sure you want to");
-  msg.emplace_back("proceed with the switch, click");
-  msg.emplace_back("'OK', otherwise click 'Cancel'.");
-
-  myConfirmMsg = std::make_unique<GUI::MessageBox>(this, _font, msg,
-      _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    "Warning!\n\n"
+    "Advanced settings should be\n"
+    "handled with care! When in\n"
+    "doubt, read the manual.\n\n"
+    "If you are sure you want to\n"
+    "proceed with the switch, click\n"
+    "'OK', otherwise click 'Cancel'.",
+    [this](bool ok) {
+      if(ok)
+      {
+        instance().settings().setValue("basic_settings", false);
+        if(myMode != AppMode::emulator)
+          close();
+        else
+          instance().eventHandler().leaveMenuMode();
+      }
+    },
+    "Switch settings mode");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

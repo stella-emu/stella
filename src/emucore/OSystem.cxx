@@ -29,6 +29,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
+  #include "MessageBox.hxx"
   #include "OverlayMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -104,11 +105,12 @@ OSystem::OSystem()
 OSystem::~OSystem()
 {
 #ifdef GUI_SUPPORT
-  // BrowserDialog is a special dialog that is statically allocated
-  // So we need to make sure that it is destroyed in the normal d'tor chain;
-  // not at the very end of program exit, when some objects it requires
-  // have already been destroyed
+  // BrowserDialog/MessageBox are special dialogs that are statically
+  // allocated.  So we need to make sure that they are destroyed in the
+  // normal d'tor chain; not at the very end of program exit, when some
+  // objects they require have already been destroyed
   BrowserDialog::hide();
+  GUI::MessageBox::hide();
 #endif
 }
 

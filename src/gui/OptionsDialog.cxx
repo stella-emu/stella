@@ -213,14 +213,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       myDialog->open();
       break;
     case kInptCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<InputDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<InputDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    }
 
     case kUsrIfaceCmd:
       myDialog = std::make_unique<UIDialog>(instance(), parent(), _font, myBoss);
@@ -250,14 +245,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 #endif
 
     case kAuditCmd:
-    {
-      uInt32 w = 0, h = 0;
-
-      getDynamicBounds(w, h);
-      myDialog = std::make_unique<RomAuditDialog>(instance(), parent(), _font, w, h);
+      myDialog = std::make_unique<RomAuditDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    }
     case kLoggerCmd:
     {
       uInt32 w = 0, h = 0;

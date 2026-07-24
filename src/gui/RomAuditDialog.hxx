@@ -24,9 +24,6 @@ class DialogContainer;
 class ButtonWidget;
 class EditTextWidget;
 class StaticTextWidget;
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -36,7 +33,7 @@ class RomAuditDialog : public Dialog
 {
   public:
     RomAuditDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, int max_w, int max_h);
+                   const GUI::Font& font);
     ~RomAuditDialog() override;
 
     void loadConfig() override;
@@ -51,8 +48,7 @@ class RomAuditDialog : public Dialog
 
   private:
     enum {
-      kChooseAuditDirCmd = 'RAsl', // audit dir select
-      kConfirmAuditCmd   = 'RAcf'  // confirm rom audit
+      kChooseAuditDirCmd = 'RAsl' // audit dir select
     };
 
     // ROM audit path
@@ -67,12 +63,6 @@ class RomAuditDialog : public Dialog
 
     // Inline warning about the dangers of using this function
     StaticTextWidget* myWarningLabel{nullptr};
-
-    // Show a message about the dangers of using this function
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
-
-    // Maximum width and height for this dialog
-    int myMaxWidth{0}, myMaxHeight{0};
 
   private:
     // Following constructors and assignment operators not supported
