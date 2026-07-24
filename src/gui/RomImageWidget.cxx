@@ -161,7 +161,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   {
     myImageIdx = 0;
     myImageList.clear();
-    myLabel.clear();
+    myLbl.clear();
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
@@ -330,17 +330,17 @@ bool RomImageWidget::loadPng(const string& fileName)
     PNGLibrary::loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
-    myLabel.clear();
+    myLbl.clear();
     for(const auto& data: metaData)
     {
       if(data.first == "Title")
       {
-        myLabel = data.second.toString();
+        myLbl = data.second.toString();
         break;
       }
       if(data.first == "Software"
           && data.second.toString().starts_with("Stella"))
-        myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
+        myLbl = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
   }
@@ -360,12 +360,12 @@ bool RomImageWidget::loadJpg(const string& fileName)
     instance().jpg().loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
-    myLabel.clear();
+    myLbl.clear();
     for(const auto& data: metaData)
     {
       if(data.first == "ImageDescription")
       {
-        myLabel = data.second.toString();
+        myLbl = data.second.toString();
         break;
       }
     }
@@ -592,8 +592,8 @@ void RomImageWidget::drawWidget(bool hilite)
   const int yText = _y + _h - _font.getFontHeight() * 10 / 8;
 
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
-  if(!myLabel.empty())
-    s.drawString(_font, myLabel, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
+  if(!myLbl.empty())
+    s.drawString(_font, myLbl, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
   if(!myImageList.empty())
     s.drawString(_font, buf, _x + _w - wText, yText, wText, _textcolor);
 

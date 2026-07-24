@@ -21,7 +21,7 @@
 class RadioButtonGroup;
 class RadioButtonWidget;
 class SliderWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 
@@ -45,7 +45,7 @@ class EmulationDialog : public Dialog
     void updateStatePathEnabled();
 
   private:
-    StaticTextWidget* mySpeedLabel{nullptr};
+    LabelWidget*      mySpeedLbl{nullptr};
     SliderWidget*     mySpeed{nullptr};
     CheckboxWidget*   myUseVSync{nullptr};
     CheckboxWidget*   myTurbo{nullptr};
@@ -54,7 +54,7 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myUseThreads{nullptr};
     CheckboxWidget*   myAutoPauseWidget{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
-    StaticTextWidget* mySaveOnExitLabel{nullptr};
+    LabelWidget*      mySaveOnExitLbl{nullptr};
     unique_ptr<RadioButtonGroup> mySaveOnExitGroup;
     std::array<RadioButtonWidget*, 3> mySaveOnExitButtons{nullptr, nullptr, nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};

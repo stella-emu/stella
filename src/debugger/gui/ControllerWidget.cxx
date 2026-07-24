@@ -30,9 +30,9 @@ void ControllerWidget::setArea(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ControllerWidget::createHeader()
 {
-  myHeaderName = new StaticTextWidget(_boss, _font, controller().name());
-  myHeaderPort = new StaticTextWidget(_boss, _font,
-                                      isLeftPort() ? "(Left)" : "(Right)");
+  myHeaderName = new LabelWidget(_boss, _font, controller().name());
+  myHeaderPort = new LabelWidget(_boss, _font,
+                                 isLeftPort() ? "(Left)" : "(Right)");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

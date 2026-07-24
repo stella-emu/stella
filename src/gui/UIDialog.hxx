@@ -34,73 +34,71 @@ class UIDialog : public Dialog, public CommandSender
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void layout() override;
 
   private:
-
     void handleLauncherSize();
     void handleRomViewer();
 
   private:
     enum
     {
-      kDialogFont = 'UIDf',
-      kListDelay  = 'UILd',
-      kMouseWheel = 'UIMw',
-      kControllerDelay = 'UIcd',
-      kChooseRomDirCmd = 'LOrm', // rom select
-      kRomViewer = 'UIRv',
+      kDialogFont           = 'UIDf',
+      kListDelay            = 'UILd',
+      kMouseWheel           = 'UIMw',
+      kControllerDelay      = 'UIcd',
+      kChooseRomDirCmd      = 'LOrm', // rom select
+      kRomViewer            = 'UIRv',
       kChooseSnapLoadDirCmd = 'UIsl' // snapshot dir (load files)
     };
 
     TabWidget* myTab{nullptr};
 
     // Launcher options
-    ButtonWidget*     myRomButton{nullptr};
-    EditTextWidget*   myRomPath{nullptr};
-    CheckboxWidget*   myFollowLauncherWidget{nullptr};
-    StaticTextWidget* myLauncherWidthSliderLabel{nullptr};
-    SliderWidget*     myLauncherWidthSlider{nullptr};
-    StaticTextWidget* myLauncherHeightSliderLabel{nullptr};
-    SliderWidget*     myLauncherHeightSlider{nullptr};
-    StaticTextWidget* myLauncherFontLabel{nullptr};
-    PopUpWidget*      myLauncherFontPopup{nullptr};
-    CheckboxWidget*   myFavoritesWidget{nullptr};
-    CheckboxWidget*   myLauncherExtensionsWidget{nullptr};
-    CheckboxWidget*   myLauncherButtonsWidget{nullptr};
-    StaticTextWidget* myRomViewerSizeLabel{nullptr};
-    SliderWidget*     myRomViewerSize{nullptr};
-    ButtonWidget*     myOpenBrowserButton{nullptr};
-    EditTextWidget*   mySnapLoadPath{nullptr};
-    CheckboxWidget*   myLauncherExitWidget{nullptr};
+    ButtonWidget*   myRomButton{nullptr};
+    EditTextWidget* myRomPath{nullptr};
+    CheckboxWidget* myFollowLauncherWidget{nullptr};
+    LabelWidget*    myLauncherWidthSliderLbl{nullptr};
+    SliderWidget*   myLauncherWidthSlider{nullptr};
+    LabelWidget*    myLauncherHeightSliderLbl{nullptr};
+    SliderWidget*   myLauncherHeightSlider{nullptr};
+    LabelWidget*    myLauncherFontLbl{nullptr};
+    PopUpWidget*    myLauncherFontPopup{nullptr};
+    CheckboxWidget* myFavoritesWidget{nullptr};
+    CheckboxWidget* myLauncherExtensionsWidget{nullptr};
+    CheckboxWidget* myLauncherButtonsWidget{nullptr};
+    LabelWidget*    myRomViewerSizeLbl{nullptr};
+    SliderWidget*   myRomViewerSize{nullptr};
+    ButtonWidget*   myOpenBrowserButton{nullptr};
+    EditTextWidget* mySnapLoadPath{nullptr};
+    CheckboxWidget* myLauncherExitWidget{nullptr};
 
     // Misc options
-    StaticTextWidget* myPalette1Label{nullptr};
-    PopUpWidget*      myPalette1Popup{nullptr};
-    StaticTextWidget* myPalette2Label{nullptr};
-    PopUpWidget*      myPalette2Popup{nullptr};
-    CheckboxWidget*   myAutoPalette{nullptr};
-    StaticTextWidget* myDialogFontLabel{nullptr};
-    PopUpWidget*      myDialogFontPopup{nullptr};
-    CheckboxWidget*   myHidpiWidget{nullptr};
-    StaticTextWidget* myPositionLabel{nullptr};
-    PopUpWidget*      myPositionPopup{nullptr};
-    CheckboxWidget*   myCenter{nullptr};
-    StaticTextWidget* myListDelaySliderLabel{nullptr};
-    SliderWidget*     myListDelaySlider{nullptr};
-    StaticTextWidget* myWheelLinesSliderLabel{nullptr};
-    SliderWidget*     myWheelLinesSlider{nullptr};
-    StaticTextWidget* myControllerRateSliderLabel{nullptr};
-    SliderWidget*     myControllerRateSlider{nullptr};
-    StaticTextWidget* myControllerDelaySliderLabel{nullptr};
-    SliderWidget*     myControllerDelaySlider{nullptr};
-    StaticTextWidget* myDoubleClickSliderLabel{nullptr};
-    SliderWidget*     myDoubleClickSlider{nullptr};
+    LabelWidget*    myPalette1Lbl{nullptr};
+    PopUpWidget*    myPalette1Popup{nullptr};
+    LabelWidget*    myPalette2Lbl{nullptr};
+    PopUpWidget*    myPalette2Popup{nullptr};
+    CheckboxWidget* myAutoPalette{nullptr};
+    LabelWidget*    myDialogFontLbl{nullptr};
+    PopUpWidget*    myDialogFontPopup{nullptr};
+    CheckboxWidget* myHidpiWidget{nullptr};
+    LabelWidget*    myPositionLbl{nullptr};
+    PopUpWidget*    myPositionPopup{nullptr};
+    CheckboxWidget* myCenter{nullptr};
+    LabelWidget*    myListDelaySliderLbl{nullptr};
+    SliderWidget*   myListDelaySlider{nullptr};
+    LabelWidget*    myWheelLinesSliderLbl{nullptr};
+    SliderWidget*   myWheelLinesSlider{nullptr};
+    LabelWidget*    myControllerRateSliderLbl{nullptr};
+    SliderWidget*   myControllerRateSlider{nullptr};
+    LabelWidget*    myControllerDelaySliderLbl{nullptr};
+    SliderWidget*   myControllerDelaySlider{nullptr};
+    LabelWidget*    myDoubleClickSliderLbl{nullptr};
+    SliderWidget*   myDoubleClickSlider{nullptr};
 
     // Bottom-of-tab "(*) ..." info messages
-    StaticTextWidget* myLookFeelInfo{nullptr};
-    StaticTextWidget* myLauncherInfo{nullptr};
+    LabelWidget* myLookFeelInfo{nullptr};
+    LabelWidget* myLauncherInfo{nullptr};
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal{false};

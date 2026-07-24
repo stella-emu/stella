@@ -24,7 +24,7 @@ class ButtonWidget;
 class DataGridWidget;
 class DataGridOpsWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 class CartDebug;
 
 #include "RamWidget.hxx"

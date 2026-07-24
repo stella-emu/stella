@@ -21,7 +21,7 @@
 class CommandSender;
 class ButtonWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 class StringListWidget;
 class PopUpWidget;
 class GuiObject;
@@ -94,10 +94,10 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myEraseButton{nullptr};
     ButtonWidget*     myResetButton{nullptr};
     ButtonWidget*     myComboButton{nullptr};
-    StaticTextWidget* myFilterPopupLabel{nullptr};
+    LabelWidget*      myFilterPopupLbl{nullptr};
     PopUpWidget*      myFilterPopup{nullptr};
     StringListWidget* myActionsList{nullptr};
-    StaticTextWidget* myActionLabel{nullptr};
+    LabelWidget*      myActionLbl{nullptr};
     EditTextWidget*   myKeyMapping{nullptr};
 
     unique_ptr<ComboDialog> myComboDialog;

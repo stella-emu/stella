@@ -22,7 +22,7 @@ class OSystem;
 class GuiObject;
 class EditTextWidget;
 class PopUpWidget;
-class StaticTextWidget;
+class LabelWidget;
 class RadioButtonGroup;
 class RadioButtonWidget;
 class TabWidget;
@@ -92,114 +92,113 @@ class GameInfoDialog : public Dialog, public CommandSender
     TabWidget* myTab{nullptr};
 
     // Emulation properties
-    StaticTextWidget* myBSTypeLabel{nullptr};
-    PopUpWidget*      myBSType{nullptr};
-    CheckboxWidget*   myBSFilter{nullptr};
-    StaticTextWidget* myTypeDetected{nullptr};
-    StaticTextWidget* myStartBankLabel{nullptr};
-    PopUpWidget*      myStartBank{nullptr};
-    StaticTextWidget* myFormatLabel{nullptr};
-    PopUpWidget*      myFormat{nullptr};
-    StaticTextWidget* myFormatDetected{nullptr};
-    StaticTextWidget* myVCenterLabel{nullptr};
-    SliderWidget*     myVCenter{nullptr};
-    CheckboxWidget*   myPhosphor{nullptr};
-    StaticTextWidget* myPPBlendLabel{nullptr};
-    SliderWidget*     myPPBlend{nullptr};
-    CheckboxWidget*   mySound{nullptr};
-    StaticTextWidget* myEmulInfo{nullptr};
+    LabelWidget*    myBSTypeLbl{nullptr};
+    PopUpWidget*    myBSType{nullptr};
+    CheckboxWidget* myBSFilter{nullptr};
+    LabelWidget*    myTypeDetected{nullptr};
+    LabelWidget*    myStartBankLbl{nullptr};
+    PopUpWidget*    myStartBank{nullptr};
+    LabelWidget*    myFormatLbl{nullptr};
+    PopUpWidget*    myFormat{nullptr};
+    LabelWidget*    myFormatDetected{nullptr};
+    LabelWidget*    myVCenterLbl{nullptr};
+    SliderWidget*   myVCenter{nullptr};
+    CheckboxWidget* myPhosphor{nullptr};
+    LabelWidget*    myPPBlendLbl{nullptr};
+    SliderWidget*   myPPBlend{nullptr};
+    CheckboxWidget* mySound{nullptr};
+    LabelWidget*    myEmulInfo{nullptr};
 
     // Console properties
     unique_ptr<RadioButtonGroup> myLeftDiffGroup;
     unique_ptr<RadioButtonGroup> myRightDiffGroup;
     unique_ptr<RadioButtonGroup> myTVTypeGroup;
-    StaticTextWidget* myTVTypeLabel{nullptr};
-    StaticTextWidget* myLeftDiffLabel{nullptr};
-    StaticTextWidget* myRightDiffLabel{nullptr};
+    LabelWidget* myTVTypeLbl{nullptr};
+    LabelWidget* myLeftDiffLbl{nullptr};
+    LabelWidget* myRightDiffLbl{nullptr};
     std::array<RadioButtonWidget*, 2> myTVType{nullptr};
     std::array<RadioButtonWidget*, 2> myLeftDiff{nullptr};
     std::array<RadioButtonWidget*, 2> myRightDiff{nullptr};
 
     // Controller properties
-    StaticTextWidget* myLeftPortLabel{nullptr};
-    StaticTextWidget* myRightPortLabel{nullptr};
-    PopUpWidget*      myLeftPort{nullptr};
-    StaticTextWidget* myLeftPortDetected{nullptr};
-    PopUpWidget*      myRightPort{nullptr};
-    StaticTextWidget* myRightPortDetected{nullptr};
-    ButtonWidget*     myQuadTariButton{nullptr};
-    CheckboxWidget*   mySwapPorts{nullptr};
-    CheckboxWidget*   mySwapPaddles{nullptr};
-    StaticTextWidget* myEraseEEPROMLabel{nullptr};
-    ButtonWidget*     myEraseEEPROMButton{nullptr};
-    StaticTextWidget* myEraseEEPROMInfo{nullptr};
-    StaticTextWidget* myPaddlesCenter{nullptr};
-    StaticTextWidget* myPaddleXCenterLabel{nullptr};
-    SliderWidget*     myPaddleXCenter{nullptr};
-    StaticTextWidget* myPaddleYCenterLabel{nullptr};
-    SliderWidget*     myPaddleYCenter{nullptr};
-    CheckboxWidget*   myMouseControl{nullptr};
-    StaticTextWidget* myMouseXLabel{nullptr};
-    PopUpWidget*      myMouseX{nullptr};
-    StaticTextWidget* myMouseYLabel{nullptr};
-    PopUpWidget*      myMouseY{nullptr};
-    StaticTextWidget* myMouseRangeLabel{nullptr};
-    SliderWidget*     myMouseRange{nullptr};
+    LabelWidget*    myLeftPortLbl{nullptr};
+    LabelWidget*    myRightPortLbl{nullptr};
+    PopUpWidget*    myLeftPort{nullptr};
+    LabelWidget*    myLeftPortDetected{nullptr};
+    PopUpWidget*    myRightPort{nullptr};
+    LabelWidget*    myRightPortDetected{nullptr};
+    ButtonWidget*   myQuadTariButton{nullptr};
+    CheckboxWidget* mySwapPorts{nullptr};
+    CheckboxWidget* mySwapPaddles{nullptr};
+    LabelWidget*    myEraseEEPROMLbl{nullptr};
+    ButtonWidget*   myEraseEEPROMButton{nullptr};
+    LabelWidget*    myEraseEEPROMInfo{nullptr};
+    LabelWidget*    myPaddlesCenter{nullptr};
+    LabelWidget*    myPaddleXCenterLbl{nullptr};
+    SliderWidget*   myPaddleXCenter{nullptr};
+    LabelWidget*    myPaddleYCenterLbl{nullptr};
+    SliderWidget*   myPaddleYCenter{nullptr};
+    CheckboxWidget* myMouseControl{nullptr};
+    LabelWidget*    myMouseXLbl{nullptr};
+    PopUpWidget*    myMouseX{nullptr};
+    LabelWidget*    myMouseYLbl{nullptr};
+    PopUpWidget*    myMouseY{nullptr};
+    LabelWidget*    myMouseRangeLbl{nullptr};
+    SliderWidget*   myMouseRange{nullptr};
 
     // Allow assigning the four QuadTari controllers
     unique_ptr<QuadTariDialog> myQuadTariDialog;
 
     // Cartridge properties
     // Row labels: Name/MD5/Manufacturer/Model/Rarity/Note/Link/Bezelname
-    std::array<StaticTextWidget*, 8> myCartLabels{nullptr};
-    EditTextWidget*   myName{nullptr};
-    EditTextWidget*   myMD5{nullptr};
-    EditTextWidget*   myManufacturer{nullptr};
-    EditTextWidget*   myModelNo{nullptr};
-    EditTextWidget*   myRarity{nullptr};
-    EditTextWidget*   myNote{nullptr};
-    EditTextWidget*   myUrl{nullptr};
-    ButtonWidget*     myUrlButton{nullptr};
-    EditTextWidget*   myBezelName{nullptr};
-    ButtonWidget*     myBezelButton{nullptr};
-    StaticTextWidget* myBezelDetected{nullptr};
+    std::array<LabelWidget*, 8> myCartLabels{nullptr};
+    EditTextWidget* myName{nullptr};
+    EditTextWidget* myMD5{nullptr};
+    EditTextWidget* myManufacturer{nullptr};
+    EditTextWidget* myModelNo{nullptr};
+    EditTextWidget* myRarity{nullptr};
+    EditTextWidget* myNote{nullptr};
+    EditTextWidget* myUrl{nullptr};
+    ButtonWidget*   myUrlButton{nullptr};
+    EditTextWidget* myBezelName{nullptr};
+    ButtonWidget*   myBezelButton{nullptr};
+    LabelWidget*    myBezelDetected{nullptr};
 
     // High Scores properties
-    CheckboxWidget*   myHighScores{nullptr};
-    //CheckboxWidget*   myARMGame{nullptr};
+    CheckboxWidget* myHighScores{nullptr};
 
-    StaticTextWidget* myVariationsLabel{nullptr};
-    EditTextWidget*   myVariations{nullptr};
-    StaticTextWidget* myVarAddressLabel{nullptr};
-    EditTextWidget*   myVarAddress{nullptr};
-    EditTextWidget*   myVarAddressVal{nullptr};
-    CheckboxWidget*   myVarsBCD{nullptr};
-    CheckboxWidget*   myVarsZeroBased{nullptr};
+    LabelWidget*    myVariationsLbl{nullptr};
+    EditTextWidget* myVariations{nullptr};
+    LabelWidget*    myVarAddressLbl{nullptr};
+    EditTextWidget* myVarAddress{nullptr};
+    EditTextWidget* myVarAddressVal{nullptr};
+    CheckboxWidget* myVarsBCD{nullptr};
+    CheckboxWidget* myVarsZeroBased{nullptr};
 
-    StaticTextWidget* myScoreLabel{nullptr};
-    StaticTextWidget* myScoreDigitsLabel{nullptr};
-    PopUpWidget*      myScoreDigits{nullptr};
-    StaticTextWidget* myTrailingZeroesLabel{nullptr};
-    PopUpWidget*      myTrailingZeroes{nullptr};
-    CheckboxWidget*   myScoreBCD{nullptr};
-    CheckboxWidget*   myScoreInvert{nullptr};
+    LabelWidget*    myScoreLbl{nullptr};
+    LabelWidget*    myScoreDigitsLbl{nullptr};
+    PopUpWidget*    myScoreDigits{nullptr};
+    LabelWidget*    myTrailingZeroesLbl{nullptr};
+    PopUpWidget*    myTrailingZeroes{nullptr};
+    CheckboxWidget* myScoreBCD{nullptr};
+    CheckboxWidget* myScoreInvert{nullptr};
 
-    StaticTextWidget* myScoreAddressesLabel{nullptr};
-    EditTextWidget*   myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
-    EditTextWidget*   myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
-    StaticTextWidget* myCurrentScoreLabel{nullptr};
-    StaticTextWidget* myCurrentScore{nullptr};
+    LabelWidget*    myScoreAddressesLbl{nullptr};
+    EditTextWidget* myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget* myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
+    LabelWidget*    myCurrentScoreLbl{nullptr};
+    LabelWidget*    myCurrentScore{nullptr};
 
-    StaticTextWidget* mySpecialLabel{nullptr};
-    EditTextWidget*   mySpecialName{nullptr};
-    StaticTextWidget* mySpecialAddressLabel{nullptr};
-    EditTextWidget*   mySpecialAddress{nullptr};
-    EditTextWidget*   mySpecialAddressVal{nullptr};
-    CheckboxWidget*   mySpecialBCD{nullptr};
-    CheckboxWidget*   mySpecialZeroBased{nullptr};
+    LabelWidget*    mySpecialLbl{nullptr};
+    EditTextWidget* mySpecialName{nullptr};
+    LabelWidget*    mySpecialAddressLbl{nullptr};
+    EditTextWidget* mySpecialAddress{nullptr};
+    EditTextWidget* mySpecialAddressVal{nullptr};
+    CheckboxWidget* mySpecialBCD{nullptr};
+    CheckboxWidget* mySpecialZeroBased{nullptr};
 
-    StaticTextWidget* myHighScoreNotesLabel{nullptr};
-    EditTextWidget*   myHighScoreNotes{nullptr};
+    LabelWidget*    myHighScoreNotesLbl{nullptr};
+    EditTextWidget* myHighScoreNotes{nullptr};
 
     enum {
       kBSTypeChanged    = 'Btch',

@@ -67,42 +67,42 @@ class StellaSettingsDialog : public Dialog
 
   private:
     // Top-row buttons and section headers
-    ButtonWidget*     myAdvancedButton{nullptr};
-    ButtonWidget*     myHelpButton{nullptr};
-    StaticTextWidget* myGlobalLabel{nullptr};
+    ButtonWidget* myAdvancedButton{nullptr};
+    ButtonWidget* myHelpButton{nullptr};
+    LabelWidget*  myGlobalLbl{nullptr};
 
     // UI theme
-    StaticTextWidget* myThemePopupLabel{nullptr};
-    PopUpWidget*      myThemePopup{nullptr};
-    StaticTextWidget* myPositionPopupLabel{nullptr};
-    PopUpWidget*      myPositionPopup{nullptr};
+    LabelWidget*  myThemePopupLbl{nullptr};
+    PopUpWidget*  myThemePopup{nullptr};
+    LabelWidget*  myPositionPopupLbl{nullptr};
+    PopUpWidget*  myPositionPopup{nullptr};
 
     // TV effects
-    StaticTextWidget* myTVModeLabel{nullptr};
-    PopUpWidget*      myTVMode{nullptr};
+    LabelWidget*  myTVModeLbl{nullptr};
+    PopUpWidget*  myTVMode{nullptr};
 
     // TV scanline intensity
-    StaticTextWidget* myTVScanIntenseLabel{nullptr};
-    SliderWidget*     myTVScanIntense{nullptr};
+    LabelWidget*  myTVScanIntenseLbl{nullptr};
+    SliderWidget* myTVScanIntense{nullptr};
 
     // TV phosphor effect
-    StaticTextWidget* myTVPhosLevelLabel{nullptr};
-    SliderWidget*     myTVPhosLevel{nullptr};
+    LabelWidget*  myTVPhosLevelLbl{nullptr};
+    SliderWidget* myTVPhosLevel{nullptr};
 
     // TV Overscan
-    StaticTextWidget* myTVOverscanLabel{nullptr};
-    SliderWidget*     myTVOverscan{nullptr};
-    StaticTextWidget* myOverscanInfo{nullptr};
+    LabelWidget*  myTVOverscanLbl{nullptr};
+    SliderWidget* myTVOverscan{nullptr};
+    LabelWidget*  myOverscanInfo{nullptr};
 
     // Controller properties
-    StaticTextWidget* myGameSettings{nullptr};
+    LabelWidget*  myGameSettings{nullptr};
 
-    StaticTextWidget* myLeftPortLabel{nullptr};
-    StaticTextWidget* myRightPortLabel{nullptr};
-    PopUpWidget*      myLeftPort{nullptr};
-    StaticTextWidget* myLeftPortDetected{nullptr};
-    PopUpWidget*      myRightPort{nullptr};
-    StaticTextWidget* myRightPortDetected{nullptr};
+    LabelWidget*  myLeftPortLbl{nullptr};
+    LabelWidget*  myRightPortLbl{nullptr};
+    PopUpWidget*  myLeftPort{nullptr};
+    LabelWidget*  myLeftPortDetected{nullptr};
+    PopUpWidget*  myRightPort{nullptr};
+    LabelWidget*  myRightPortDetected{nullptr};
 
     unique_ptr<HelpDialog> myHelpDialog;
 

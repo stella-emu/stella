@@ -133,9 +133,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() assigns
   // all geometry from the current font, so the dialog reflows on font change.
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myGameNameWidget = new StaticTextWidget(this, _font, "");
+  myGameNameWidget = new LabelWidget(this, _font, "");
 
-  myVariationLabel = new StaticTextWidget(this, _font, "Variation");
+  myVariationLbl = new LabelWidget(this, _font, "Variation");
   // The list is filled per ROM in loadConfig(), so the pop-up cannot size its
   // box to it; the widest variation there can be is what it must show
   myVariationPopup = new PopUpWidget(this, _font,
@@ -152,11 +152,11 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   // Score-table column headers.  The special value's heading is the game's own
   // word for it ("Round", "Level", ...), so it arrives with the scores
-  myRankLabel          = new StaticTextWidget(this, _font, "Rank");
-  myScoreLabel         = new StaticTextWidget(this, _font, "Score");
-  mySpecialLabelWidget = new StaticTextWidget(this, _font, "");
-  myNameLabel          = new StaticTextWidget(this, _font, "Name");
-  myDateLabel          = new StaticTextWidget(this, _font, "Date   Time");
+  myRankLbl    = new LabelWidget(this, _font, "Rank");
+  myScoreLbl   = new LabelWidget(this, _font, "Score");
+  mySpecialLbl = new LabelWidget(this, _font, "");
+  myNameLbl    = new LabelWidget(this, _font, "Name");
+  myDateLbl    = new LabelWidget(this, _font, "Date   Time");
 
   // Score-table data rows.  Every one of these is filled in as the scores load,
   // so each takes its width from the column it sits in and starts out empty; the
@@ -165,17 +165,17 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // their text under them
   for(int r = 0; r < numRanks; ++r)
   {
-    myRankWidgets[r] = new StaticTextWidget(this, _font,
+    myRankWidgets[r] = new LabelWidget(this, _font,
         (r < 9 ? " " : "") + std::to_string(r + 1), TextAlign::Center);
-    myScoreWidgets[r] = new StaticTextWidget(this, _font, "");
-    mySpecialWidgets[r] = new StaticTextWidget(this, _font, "",
+    myScoreWidgets[r] = new LabelWidget(this, _font, "");
+    mySpecialWidgets[r] = new LabelWidget(this, _font, "",
                                                TextAlign::Center);
-    myNameWidgets[r] = new StaticTextWidget(this, _font, "");
+    myNameWidgets[r] = new LabelWidget(this, _font, "");
     myEditNameWidgets[r] = new EditTextWidget(this, _font,
         static_cast<int>(NAME_FIELD.size()));
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
-    myDateWidgets[r] = new StaticTextWidget(this, _font, "");
+    myDateWidgets[r] = new LabelWidget(this, _font, "");
     myDeleteButtons[r] = new ButtonWidget(this, _font, fontWidth * 2,
                                           Dialog::fontHeight(), "X", kDeleteSingle);
     myDeleteButtons[r]->setID(r);
@@ -185,9 +185,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myDeleteButtons[r]);
   }
 
-  myNotesWidget = new StaticTextWidget(this, ifont, "");
-  myMD5Widget = new StaticTextWidget(this, ifont, "");
-  myCheckSumWidget = new StaticTextWidget(this, ifont, "");
+  myNotesWidget = new LabelWidget(this, ifont, "");
+  myMD5Widget = new LabelWidget(this, ifont, "");
+  myCheckSumWidget = new LabelWidget(this, ifont, "");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
@@ -227,12 +227,12 @@ void HighScoresDialog::layout()
 
   // The only label of its kind in the dialog, so it is a group on its own --
   // which is where its clearance from the pop-up comes from
-  GUI::alignLabels({{myVariationLabel}});
+  GUI::alignLabels({{myVariationLbl}});
 
   // Variation: the pop-up beside its label, and the prev/next buttons at the
   // far end of the row (i.e. at the end of the table below)
   auto varRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  varRow->addAuto(anchoredItem(myVariationLabel));
+  varRow->addAuto(anchoredItem(myVariationLbl));
   varRow->addAuto(anchoredItem(myVariationPopup));
   varRow->addStretchSpace();
   varRow->addAuto(anchoredItem(myPrevVarButton));
@@ -254,12 +254,12 @@ void HighScoresDialog::layout()
 
   // A score is right-aligned in its field, so its heading sits at the right of
   // the column; the date's heading is shorter than the dates and centers on them
-  table->place(COL_RANK, 0, anchoredItem(myRankLabel));
-  table->place(COL_SCORE, 0, alignedItem(myScoreLabel, HAlign::Right,
+  table->place(COL_RANK, 0, anchoredItem(myRankLbl));
+  table->place(COL_SCORE, 0, alignedItem(myScoreLbl, HAlign::Right,
                                          VAlign::Center));
-  table->place(COL_SPECIAL, 0, stretchedItem(mySpecialLabelWidget));
-  table->place(COL_NAME, 0, anchoredItem(myNameLabel));
-  table->place(COL_DATE, 0, alignedItem(myDateLabel, HAlign::Center,
+  table->place(COL_SPECIAL, 0, stretchedItem(mySpecialLbl));
+  table->place(COL_NAME, 0, anchoredItem(myNameLbl));
+  table->place(COL_DATE, 0, alignedItem(myDateLbl, HAlign::Center,
                                         VAlign::Center));
 
   for(int r = 0; r < numRanks; ++r)
@@ -358,7 +358,7 @@ void HighScoresDialog::loadConfig()
   string label = "   " + instance().highScores().specialLabel();
   if (label.length() > HSM::MAX_SPECIAL_NAME)
     label = label.substr(label.length() - HSM::MAX_SPECIAL_NAME);
-  mySpecialLabelWidget->setLabel(label);
+  mySpecialLbl->setLabel(label);
 
   if (!instance().highScores().notes().empty())
     myNotesWidget->setLabel(std::format("Note: {}", instance().highScores().notes()));

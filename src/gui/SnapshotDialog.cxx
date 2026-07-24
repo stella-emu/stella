@@ -44,7 +44,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
-  mySnapIntervalLabel = new StaticTextWidget(this, font, "Continuous snapshot interval");
+  mySnapIntervalLbl = new LabelWidget(this, font, "Continuous snapshot interval");
   mySnapInterval = new SliderWidget(this, font, 0, kSnapshotInterval, 10);
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
@@ -52,7 +52,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapInterval);
 
   // Header for the boolean save options
-  myWhenLabel = new StaticTextWidget(this, font, "When saving snapshots:", TextAlign::Left);
+  myWhenLbl = new LabelWidget(this, font, "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
   mySnapName = new CheckboxWidget(this, font, "Use actual ROM name");
@@ -96,7 +96,7 @@ void SnapshotDialog::layout()
             INDENT       = Dialog::indent();
 
   // The slider's label stands on its own, so give it a label column of its own
-  GUI::alignLabels({{mySnapIntervalLabel}});
+  GUI::alignLabels({{mySnapIntervalLbl}});
 
   // Save-path row: a button plus an edit field that fills the remaining width.
   // The row is the only one with several widgets, so it needs its own HBox; the
@@ -116,9 +116,9 @@ void SnapshotDialog::layout()
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addAuto(std::move(pathRow));
   root->addSpace(VGAP * 4);
-  root->addAuto(labeledRow(mySnapIntervalLabel, mySnapInterval));
+  root->addAuto(labeledRow(mySnapIntervalLbl, mySnapInterval));
   root->addSpace(VGAP * 3);
-  root->addAuto(anchoredItem(myWhenLabel));
+  root->addAuto(anchoredItem(myWhenLbl));
   root->addSpace(VGAP);
   root->addAuto(indentedItem(mySnapName, INDENT));
   root->addSpace(VGAP);

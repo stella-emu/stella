@@ -19,7 +19,7 @@
 #define PROGRESS_DIALOG_HXX
 
 class GuiObject;
-class StaticTextWidget;
+class LabelWidget;
 class SliderWidget;
 class ButtonWidget;
 
@@ -29,8 +29,7 @@ class ButtonWidget;
 class ProgressDialog : public Dialog
 {
   public:
-    ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                   string_view message = "");
+    ProgressDialog(GuiObject* boss, const GUI::Font& font, string_view message = "");
     ~ProgressDialog() override = default;
 
     void setMessage(string_view message);
@@ -45,9 +44,9 @@ class ProgressDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    StaticTextWidget* myMessage{nullptr};
-    SliderWidget*     mySlider{nullptr};
-    string            myMessageText;
+    LabelWidget*  myMessage{nullptr};
+    SliderWidget* mySlider{nullptr};
+    string        myMessageText;
 
     int myStart{0}, myFinish{0}, myStep{0};
     int myProgress{0};

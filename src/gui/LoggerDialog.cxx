@@ -58,7 +58,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
   VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
   VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
-  myLogLevelLabel = new StaticTextWidget(this, font, "Log level");
+  myLogLevelLbl = new LabelWidget(this, font, "Log level");
   myLogLevel = new PopUpWidget(this, font, items);
   wid.push_back(myLogLevel);
 
@@ -94,11 +94,11 @@ void LoggerDialog::layout()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
 
-  GUI::alignLabels({{myLogLevelLabel}});
+  GUI::alignLabels({{myLogLevelLbl}});
 
   // Bottom controls: the log-level popup and a checkbox to its right
   auto controlRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
-  controlRow->addAuto(labeledRow(myLogLevelLabel, myLogLevel));
+  controlRow->addAuto(labeledRow(myLogLevelLbl, myLogLevel));
   controlRow->addSpace(fontWidth * 4);
   controlRow->addAuto(anchoredItem(myLogToConsole));
 

@@ -98,8 +98,8 @@ class CartRamWidget : public Widget, public CommandSender
     // The most lines of description to show before it scrolls
     static constexpr uInt16 MAX_DESC_LINES = 6;
 
-    StaticTextWidget* myRamSizeLabel{nullptr};
-    StaticTextWidget* myDescLabel{nullptr};
+    LabelWidget* myRamSizeLbl{nullptr};
+    LabelWidget* myDescLbl{nullptr};
     EditTextWidget* myRamSize{nullptr};
     WrappedTextWidget* myDesc{nullptr};
     InternalRamWidget* myRam{nullptr};

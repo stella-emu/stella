@@ -39,14 +39,14 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Bankswitch type
-  myBSLabel = new StaticTextWidget(this, font, "Bankswitch type");
+  myBSLbl = new LabelWidget(this, font, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
     VarList::push_back(items, desc, name);
   myBSType = new PopUpWidget(this, font, items);
   wid.push_back(myBSType);
 
   // TV type
-  myTVLabel = new StaticTextWidget(this, font, "TV type");
+  myTVLbl = new LabelWidget(this, font, "TV type");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
@@ -55,7 +55,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myTVType);
 
   // Left difficulty
-  myLeftDiffLabel = new StaticTextWidget(this, font, GUI::LEFT_DIFFICULTY);
+  myLeftDiffLbl = new LabelWidget(this, font, GUI::LEFT_DIFFICULTY);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
@@ -64,16 +64,15 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myLeftDiff);
 
   // Right difficulty
-  myRightDiffLabel = new StaticTextWidget(this, font, GUI::RIGHT_DIFFICULTY);
+  myRightDiffLbl = new LabelWidget(this, font, GUI::RIGHT_DIFFICULTY);
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, items);
   wid.push_back(myRightDiff);
 
   // Start console with buttons held down
-  myHeldLabel = new StaticTextWidget(this, font,
-      "Start with the following held down:");
-  myReleasedLabel = new StaticTextWidget(this, infofont,
-      "(automatically released shortly after start)");
+  myHeldLbl = new LabelWidget(this, font, "Start with the following held down:");
+  myReleasedLbl = new LabelWidget(this, infofont,
+                                  "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
   createHoldWidgets(font, wid);
@@ -86,9 +85,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myDebug);
 
   // Add message concerning usage
-  myInfo1 = new StaticTextWidget(this, infofont,
+  myInfo1 = new LabelWidget(this, infofont,
     "(*) These options are not saved, but apply to all");
-  myInfo2 = new StaticTextWidget(this, infofont,
+  myInfo2 = new LabelWidget(this, infofont,
     "    further ROMs until selecting 'Defaults'.");
 
   // Add Defaults, OK and Cancel buttons
@@ -104,7 +103,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wid)
 {
   // Left joystick
-  myLeftJoyLabel = new StaticTextWidget(this, font, "Left joy");
+  myLeftJoyLbl    = new LabelWidget(this, font, "Left joy");
   myJoy[kJ0Up]    = new CheckboxWidget(this, font, "", kJ0Up);
   myJoy[kJ0Down]  = new CheckboxWidget(this, font, "", kJ0Down);
   myJoy[kJ0Left]  = new CheckboxWidget(this, font, "", kJ0Left);
@@ -112,7 +111,7 @@ void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wi
   myJoy[kJ0Fire]  = new CheckboxWidget(this, font, "Fire", kJ0Fire);
 
   // Right joystick
-  myRightJoyLabel = new StaticTextWidget(this, font, "Right joy");
+  myRightJoyLbl   = new LabelWidget(this, font, "Right joy");
   myJoy[kJ1Up]    = new CheckboxWidget(this, font, "", kJ1Up);
   myJoy[kJ1Down]  = new CheckboxWidget(this, font, "", kJ1Down);
   myJoy[kJ1Left]  = new CheckboxWidget(this, font, "", kJ1Left);
@@ -120,7 +119,7 @@ void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wi
   myJoy[kJ1Fire]  = new CheckboxWidget(this, font, "Fire", kJ1Fire);
 
   // Console Select/Reset
-  myConsoleLabel = new StaticTextWidget(this, font, "Console");
+  myConsoleLbl = new LabelWidget(this, font, "Console");
   myHoldSelect = new CheckboxWidget(this, font, GUI::SELECT);
   myHoldReset  = new CheckboxWidget(this, font, "Reset");
 
@@ -136,7 +135,7 @@ void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wi
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(StaticTextWidget* label,
+unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(LabelWidget* label,
                                                      int base)
 {
   using GUI::BoxLayout;
@@ -196,7 +195,7 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::consoleLayout()
   stackRow->addStretchSpace();
 
   auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-  column->addAuto(centeredItem(myConsoleLabel));
+  column->addAuto(centeredItem(myConsoleLbl));
   column->addAuto(std::move(stackRow));
 
   return column;
@@ -210,8 +209,8 @@ unique_ptr<GUI::Layout> GlobalPropsDialog::holdLayout()
 
   // The three groups share the width equally
   auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-  row->addStretch(joyLayout(myLeftJoyLabel, kJ0Up));
-  row->addStretch(joyLayout(myRightJoyLabel, kJ1Up));
+  row->addStretch(joyLayout(myLeftJoyLbl, kJ0Up));
+  row->addStretch(joyLayout(myRightJoyLbl, kJ1Up));
   row->addStretch(consoleLayout());
 
   return row;
@@ -233,21 +232,21 @@ void GlobalPropsDialog::layout()
   // The four pop-ups share one label column; the three offering the same kind
   // of choice also share one value-box width, so their boxes line up (the
   // bankswitch list has far longer entries and keeps its own width)
-  GUI::alignLabels({{myBSLabel}, {myTVLabel},
-                    {myLeftDiffLabel}, {myRightDiffLabel}});
+  GUI::alignLabels({{myBSLbl}, {myTVLbl},
+                    {myLeftDiffLbl}, {myRightDiffLbl}});
   GUI::alignPopUps({myTVType, myLeftDiff, myRightDiff});
 
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addAuto(labeledRow(myBSLabel, myBSType));
+  root->addAuto(labeledRow(myBSLbl, myBSType));
   root->addSpace(VGAP * 3);
-  root->addAuto(labeledRow(myTVLabel, myTVType));
+  root->addAuto(labeledRow(myTVLbl, myTVType));
   root->addSpace(VGAP);
-  root->addAuto(labeledRow(myLeftDiffLabel, myLeftDiff));
+  root->addAuto(labeledRow(myLeftDiffLbl, myLeftDiff));
   root->addSpace(VGAP);
-  root->addAuto(labeledRow(myRightDiffLabel, myRightDiff));
+  root->addAuto(labeledRow(myRightDiffLbl, myRightDiff));
   root->addSpace(VGAP * 3);
-  root->addAuto(anchoredItem(myHeldLabel));
-  root->addAuto(anchoredItem(myReleasedLabel));
+  root->addAuto(anchoredItem(myHeldLbl));
+  root->addAuto(anchoredItem(myReleasedLbl));
   root->addSpace(VGAP * 2);
   root->addAuto(holdLayout());
   root->addSpace(VGAP * 4);

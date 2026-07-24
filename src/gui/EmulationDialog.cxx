@@ -73,7 +73,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
-  mySpeedLabel = new StaticTextWidget(this, _font, "Emulation speed");
+  mySpeedLbl = new LabelWidget(this, _font, "Emulation speed");
   mySpeed = new SliderWidget(this, _font, 10, kSpeedupChanged, 5, "%");
   mySpeed->setMinValue(MIN_SPEED);
   mySpeed->setMaxValue(MAX_SPEED);
@@ -115,7 +115,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myConfirmExitWidget);
 
   // Save on exit
-  mySaveOnExitLabel = new StaticTextWidget(this, font, "When entering/exiting emulation:");
+  mySaveOnExitLbl = new LabelWidget(this, font, "When entering/exiting emulation:");
   mySaveOnExitButtons[0] =
     new RadioButtonWidget(this, font, "Do nothing", mySaveOnExitGroup.get());
   wid.push_back(mySaveOnExitButtons[0]);
@@ -187,7 +187,7 @@ void EmulationDialog::layout()
 
   // mySpeed isn't self-labeling, so its label needs its clearance BEFORE
   // labeledRow() reads the label's width to size the row's label column
-  GUI::alignLabels({{mySpeedLabel}});
+  GUI::alignLabels({{mySpeedLbl}});
 
   // Vertical stack; the button group sits below it, positioned separately by
   // layoutButtonGroup().  The header and checkboxes keep their natural size,
@@ -195,7 +195,7 @@ void EmulationDialog::layout()
   // their header.  Explicit addSpace() calls reproduce the original's
   // irregular inter-row gaps.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
-  root->addAuto(labeledRow(mySpeedLabel, mySpeed));
+  root->addAuto(labeledRow(mySpeedLbl, mySpeed));
   root->addSpace(VGAP);
   root->addAuto(anchoredItem(myUseVSync));
   root->addSpace(VGAP);
@@ -211,7 +211,7 @@ void EmulationDialog::layout()
   root->addSpace(VGAP);
   root->addAuto(anchoredItem(myConfirmExitWidget));
   root->addSpace(VGAP * 3);
-  root->addAuto(anchoredItem(mySaveOnExitLabel));
+  root->addAuto(anchoredItem(mySaveOnExitLbl));
   root->addSpace(VGAP);
   root->addAuto(indentedItem(mySaveOnExitButtons[0], INDENT));
   root->addSpace(VGAP);

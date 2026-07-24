@@ -130,7 +130,7 @@ void InputDialog::addDevicePortTab()
   myTab->setPaneWidget(tabID, pane);
 
   // Add digital dead zone setting
-  myDigitalDeadzoneLabel = new StaticTextWidget(pane, _font, "Digital dead zone size");
+  myDigitalDeadzoneLbl = new LabelWidget(pane, _font, "Digital dead zone size");
   myDigitalDeadzone = new SliderWidget(pane, _font, swidth, kDDeadzoneChanged, 3, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
@@ -140,7 +140,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDigitalDeadzone);
 
   // Add analog dead zone
-  myAnalogDeadzoneLabel = new StaticTextWidget(pane, _font, "Analog dead zone size");
+  myAnalogDeadzoneLbl = new LabelWidget(pane, _font, "Analog dead zone size");
   myAnalogDeadzone = new SliderWidget(pane, _font, swidth, kADeadzoneChanged, 3, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
@@ -149,10 +149,10 @@ void InputDialog::addDevicePortTab()
     Event::DecAnalogDeadzone, Event::IncAnalogDeadzone);
   wid.push_back(myAnalogDeadzone);
 
-  myAnalogPaddleLabel = new StaticTextWidget(pane, _font, "Analog paddle:");
+  myAnalogPaddleLbl = new LabelWidget(pane, _font, "Analog paddle:");
 
   // Add analog paddle sensitivity
-  myPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Sensitivity");
+  myPaddleSpeedLbl = new LabelWidget(pane, _font, "Sensitivity");
   myPaddleSpeed = new SliderWidget(pane, _font, swidth, kPSpeedChanged, 4, "%");
   myPaddleSpeed->setMinValue(0);
   myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
@@ -161,7 +161,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myPaddleSpeed);
 
   // Add analog paddle linearity
-  myPaddleLinearityLabel = new StaticTextWidget(pane, _font, "Linearity");
+  myPaddleLinearityLbl = new LabelWidget(pane, _font, "Linearity");
   myPaddleLinearity = new SliderWidget(pane, _font, swidth, 0, 4, "%");
   myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
@@ -172,7 +172,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myPaddleLinearity);
 
   // Add dejitter (analog paddles)
-  myDejitterBaseLabel = new StaticTextWidget(pane, _font, "Dejitter averaging");
+  myDejitterBaseLbl = new LabelWidget(pane, _font, "Dejitter averaging");
   myDejitterBase = new SliderWidget(pane, _font, swidth, kDejitterAvChanged, 3);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
@@ -182,7 +182,7 @@ void InputDialog::addDevicePortTab()
     Event::DecDejtterAveraging, Event::IncDejtterAveraging);
   wid.push_back(myDejitterBase);
 
-  myDejitterDiffLabel = new StaticTextWidget(pane, _font, "Dejitter reaction");
+  myDejitterDiffLbl = new LabelWidget(pane, _font, "Dejitter reaction");
   myDejitterDiff = new SliderWidget(pane, _font, swidth, kDejitterReChanged, 3);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
@@ -192,7 +192,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  myDPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Digital paddle sensitivity");
+  myDPaddleSpeedLbl = new LabelWidget(pane, _font, "Digital paddle sensitivity");
   myDPaddleSpeed = new SliderWidget(pane, _font, swidth, kDPSpeedChanged, 4, "%");
   myDPaddleSpeed->setMinValue(1);
   myDPaddleSpeed->setMaxValue(20);
@@ -204,7 +204,7 @@ void InputDialog::addDevicePortTab()
   myAutoFire->setToolTip(Event::ToggleAutoFire);
   wid.push_back(myAutoFire);
 
-  myAutoFireRateLabel = new StaticTextWidget(pane, _font, "Rate");
+  myAutoFireRateLbl = new LabelWidget(pane, _font, "Rate");
   myAutoFireRate = new SliderWidget(pane, _font, swidth, kAutoFireRate, 5, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
@@ -227,7 +227,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(mySAPort);
 
   // EEPROM erase group heading (right column)
-  myAtariVoxLabel = new StaticTextWidget(pane, _font, "AtariVox/SaveKey");
+  myAtariVoxLbl = new LabelWidget(pane, _font, "AtariVox/SaveKey");
 
   // Show joystick database
   myJoyDlgButton = new ButtonWidget(pane, _font,
@@ -240,7 +240,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
-  myAVoxPortLabel = new StaticTextWidget(pane, _font, "AtariVox serial port");
+  myAVoxPortLbl = new LabelWidget(pane, _font, "AtariVox serial port");
   myAVoxPort = new PopUpWidget(pane, _font, 1, VariantList{}, kCursorStateChanged);
   myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
@@ -266,43 +266,43 @@ void InputDialog::addDevicePortTab()
     // up: instead they share ONE label column, sized to the longest of their
     // labels.  The indented ones say so, and their columns are narrowed to
     // match, so every track still starts on the same line
-    GUI::alignLabels({{myDigitalDeadzoneLabel}, {myAnalogDeadzoneLabel},
-                      {myPaddleSpeedLabel, INDENT}, {myPaddleLinearityLabel, INDENT},
-                      {myDejitterBaseLabel, INDENT}, {myDejitterDiffLabel, INDENT},
-                      {myDPaddleSpeedLabel}});
+    GUI::alignLabels({{myDigitalDeadzoneLbl}, {myAnalogDeadzoneLbl},
+                      {myPaddleSpeedLbl, INDENT}, {myPaddleLinearityLbl, INDENT},
+                      {myDejitterBaseLbl, INDENT}, {myDejitterDiffLbl, INDENT},
+                      {myDPaddleSpeedLbl}});
     // The Autofire rate keeps its own column: it sits beside a checkbox rather
     // than in the slider column above, so it lines up with nothing
-    GUI::alignLabels({{myAutoFireRateLabel}});
+    GUI::alignLabels({{myAutoFireRateLbl}});
 
     // The serial port pop-up keeps its own column (it lines up with nothing),
     // but it still wants the clearance between a label and the box beside it
-    GUI::alignLabels({{myAVoxPortLabel}});
+    GUI::alignLabels({{myAVoxPortLbl}});
 
     // Every row is as tall as what it holds (addAuto), so no height is stated
     // here and none can be wrong — the pop-ups frame their text and are taller
     // than the sliders and checkboxes, and the rows follow the font on their own
-    col.addAuto(labeledRow(myDigitalDeadzoneLabel, myDigitalDeadzone));
+    col.addAuto(labeledRow(myDigitalDeadzoneLbl, myDigitalDeadzone));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myAnalogDeadzoneLabel, myAnalogDeadzone));
+    col.addAuto(labeledRow(myAnalogDeadzoneLbl, myAnalogDeadzone));
     col.addSpace(VGAP);
-    col.addAuto(anchoredItem(myAnalogPaddleLabel));
-    col.addAuto(labeledRow(myPaddleSpeedLabel, myPaddleSpeed, 0, INDENT));
+    col.addAuto(anchoredItem(myAnalogPaddleLbl));
+    col.addAuto(labeledRow(myPaddleSpeedLbl, myPaddleSpeed, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myPaddleLinearityLabel, myPaddleLinearity, 0, INDENT));
+    col.addAuto(labeledRow(myPaddleLinearityLbl, myPaddleLinearity, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDejitterBaseLabel, myDejitterBase, 0, INDENT));
+    col.addAuto(labeledRow(myDejitterBaseLbl, myDejitterBase, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDejitterDiffLabel, myDejitterDiff, 0, INDENT));
+    col.addAuto(labeledRow(myDejitterDiffLbl, myDejitterDiff, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDPaddleSpeedLabel, myDPaddleSpeed));
+    col.addAuto(labeledRow(myDPaddleSpeedLbl, myDPaddleSpeed));
     col.addSpace(VGAP);
     // The Autofire rate slider sits beside its checkbox, yet its track still
     // lines up with the sliders above: the checkbox takes the shared label
     // column, less the slider's own label
     auto autofireRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     autofireRow->addFixed(anchoredItem(myAutoFire),
-                          myDPaddleSpeedLabel->getWidth() - myAutoFireRateLabel->getWidth());
-    autofireRow->addStretch(labeledRow(myAutoFireRateLabel, myAutoFireRate));
+                          myDPaddleSpeedLbl->getWidth() - myAutoFireRateLbl->getWidth());
+    autofireRow->addStretch(labeledRow(myAutoFireRateLbl, myAutoFireRate));
     col.addAuto(std::move(autofireRow));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myAllowAll4));
@@ -330,7 +330,7 @@ void InputDialog::addDevicePortTab()
     // The EEPROM column is as wide as its heading, and the button fills it
     auto eepromCol = std::make_unique<BoxLayout>(Dir::Vertical);
     eepromCol->addStretchSpace();
-    eepromCol->addAuto(anchoredItem(myAtariVoxLabel));
+    eepromCol->addAuto(anchoredItem(myAtariVoxLbl));
     eepromCol->addAuto(alignedItem(myEraseEEPROMButton, HAlign::Fill, VAlign::Center));
 
     auto portsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -342,7 +342,7 @@ void InputDialog::addDevicePortTab()
     // The serial-port pop-up widens with the dialog and keeps its own height (it
     // asks for no width of its own: the event mapper's list is what sets the
     // dialog's width, and a port name needs far less than that)
-    col.addAuto(labeledRow(myAVoxPortLabel, myAVoxPort, 0, 0, true));
+    col.addAuto(labeledRow(myAVoxPortLbl, myAVoxPort, 0, 0, true));
   });
 }
 
@@ -363,16 +363,16 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
-  myMouseControlLabel = new StaticTextWidget(pane, _font, "Use mouse as a controller");
+  myMouseControlLbl = new LabelWidget(pane, _font, "Use mouse as a controller");
   myMouseControl = new PopUpWidget(pane, _font, items, kMouseCtrlChanged);
   myMouseControl->setToolTip(Event::PrevMouseAsController, Event::NextMouseAsController);
   wid.push_back(myMouseControl);
 
-  myMouseSensitivity = new StaticTextWidget(pane, _font, "Sensitivity:");
+  myMouseSensitivity = new LabelWidget(pane, _font, "Sensitivity:");
 
   // Add paddle speed (mouse emulation); the sensitivity sliders are indented, so
   // their reduced label widths keep the tracks aligned with the popups above
-  myMPaddleSpeedLabel = new StaticTextWidget(pane, _font, "Paddle");
+  myMPaddleSpeedLbl = new LabelWidget(pane, _font, "Paddle");
   myMPaddleSpeed = new SliderWidget(pane, _font, swidth, kMPSpeedChanged, 4, "%");
   myMPaddleSpeed->setMinValue(1);
   myMPaddleSpeed->setMaxValue(20);
@@ -381,7 +381,7 @@ void InputDialog::addMouseTab()
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
-  myTrackBallSpeedLabel = new StaticTextWidget(pane, _font, "Trackball");
+  myTrackBallSpeedLbl = new LabelWidget(pane, _font, "Trackball");
   myTrackBallSpeed = new SliderWidget(pane, _font, swidth, kTBSpeedChanged, 4, "%");
   myTrackBallSpeed->setMinValue(1);
   myTrackBallSpeed->setMaxValue(20);
@@ -390,7 +390,7 @@ void InputDialog::addMouseTab()
   wid.push_back(myTrackBallSpeed);
 
   // Add driving controller speed
-  myDrivingSpeedLabel = new StaticTextWidget(pane, _font, "Driving controller");
+  myDrivingSpeedLbl = new LabelWidget(pane, _font, "Driving controller");
   myDrivingSpeed = new SliderWidget(pane, _font, swidth, kDCSpeedChanged, 4, "%");
   myDrivingSpeed->setMinValue(1);
   myDrivingSpeed->setMaxValue(20);
@@ -405,7 +405,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "-UI, +Emulation", "1");
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
-  myCursorStateLabel = new StaticTextWidget(pane, _font, "Mouse cursor visibility");
+  myCursorStateLbl = new LabelWidget(pane, _font, "Mouse cursor visibility");
   myCursorState = new PopUpWidget(pane, _font, items, kCursorStateChanged);
   myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
@@ -434,24 +434,24 @@ void InputDialog::addMouseTab()
     // The pop-up's and the sliders' labels share one label column, sized to
     // the longest of them (see the Devices tab).  The "Sensitivity:" heading
     // is not one of them: it is a plain label
-    GUI::alignLabels({{myMouseControlLabel},
-                      {myMPaddleSpeedLabel, INDENT}, {myTrackBallSpeedLabel, INDENT},
-                      {myDrivingSpeedLabel, INDENT}, {myCursorStateLabel}});
+    GUI::alignLabels({{myMouseControlLbl},
+                      {myMPaddleSpeedLbl, INDENT}, {myTrackBallSpeedLbl, INDENT},
+                      {myDrivingSpeedLbl, INDENT}, {myCursorStateLbl}});
 
     // Every row is as tall as what it holds (addAuto), so no height is stated
     // here and none can be wrong: the pop-up frames its text and is taller than
     // the sliders, and the rows follow the font on their own
-    col.addAuto(labeledRow(myMouseControlLabel, myMouseControl));
+    col.addAuto(labeledRow(myMouseControlLbl, myMouseControl));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myMouseSensitivity));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myMPaddleSpeedLabel, myMPaddleSpeed, 0, INDENT));
+    col.addAuto(labeledRow(myMPaddleSpeedLbl, myMPaddleSpeed, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myTrackBallSpeedLabel, myTrackBallSpeed, 0, INDENT));
+    col.addAuto(labeledRow(myTrackBallSpeedLbl, myTrackBallSpeed, 0, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDrivingSpeedLabel, myDrivingSpeed, 0, INDENT));
+    col.addAuto(labeledRow(myDrivingSpeedLbl, myDrivingSpeed, 0, INDENT));
     col.addSpace(VGAP * 4);
-    col.addAuto(labeledRow(myCursorStateLabel, myCursorState));
+    col.addAuto(labeledRow(myCursorStateLbl, myCursorState));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myGrabMouse));
   });
@@ -923,9 +923,9 @@ void InputDialog::handleMouseControlState()
 {
   const bool enable = myMouseControl->getSelected() != 2;
 
-  myMPaddleSpeedLabel->setEnabled(enable);
+  myMPaddleSpeedLbl->setEnabled(enable);
   myMPaddleSpeed->setEnabled(enable);
-  myTrackBallSpeedLabel->setEnabled(enable);
+  myTrackBallSpeedLbl->setEnabled(enable);
   myTrackBallSpeed->setEnabled(enable);
 }
 

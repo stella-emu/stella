@@ -52,17 +52,14 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  myRenamedLabel = new StaticTextWidget(this, font,
-                                        "ROMs with properties (renamed)");
+  myRenamedLbl = new LabelWidget(this, font, "ROMs with properties (renamed)");
   myResults1 = new EditTextWidget(this, font, 5);
   myResults1->setEditable(false, true);
-  mySkippedLabel = new StaticTextWidget(this, font,
-                                        "ROMs without properties (skipped)");
+  mySkippedLbl = new LabelWidget(this, font, "ROMs without properties (skipped)");
   myResults2 = new EditTextWidget(this, font, 5);
   myResults2->setEditable(false, true);
 
-  myWarningLabel = new StaticTextWidget(this, font,
-                                        "(*) WARNING: Operation cannot be undone!");
+  myWarningLbl = new LabelWidget(this, font, "(*) WARNING: Operation cannot be undone!");
 
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Close");
@@ -106,9 +103,9 @@ void RomAuditDialog::layout()
   auto results = std::make_unique<GridLayout>(2, 2, fontWidth, VGAP);
   results->columnAuto(0).columnStretch(1);
   results->rowAuto(0).rowAuto(1);
-  results->place(0, 0, anchoredItem(myRenamedLabel));
+  results->place(0, 0, anchoredItem(myRenamedLbl));
   results->place(1, 0, anchoredItem(myResults1));
-  results->place(0, 1, anchoredItem(mySkippedLabel));
+  results->place(0, 1, anchoredItem(mySkippedLbl));
   results->place(1, 1, anchoredItem(myResults2));
 
   // Vertical stack; the OK/Cancel group sits below, positioned by
@@ -118,7 +115,7 @@ void RomAuditDialog::layout()
   root->addSpace(VGAP * 4);
   root->addAuto(std::move(results));
   root->addSpace(VGAP * 2);
-  root->addAuto(anchoredItem(myWarningLabel));
+  root->addAuto(anchoredItem(myWarningLbl));
 
   // The dialog is as large as its content asks to be, and at least wide enough
   // for the button row below it (which the content knows nothing about)

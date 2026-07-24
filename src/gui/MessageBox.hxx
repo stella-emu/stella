@@ -19,7 +19,7 @@
 #define MESSAGE_BOX_HXX
 
 class GuiObject;
-class StaticTextWidget;
+class LabelWidget;
 
 #include <functional>
 
@@ -103,7 +103,7 @@ class MessageBox : public Dialog
 
   private:
     StringList myText;
-    std::vector<StaticTextWidget*> myTextWidgets;
+    std::vector<LabelWidget*> myTextWidgets;
     std::function<void(bool ok)> myCallback;
     bool myTransient{false};
 

@@ -75,28 +75,28 @@ void Cartridge3EWidget::createBankWidgets()
   myBankWidgets.resize(2);
 
   bankList(myCart.romBankCount(), 0, items);
-  myBankLabel = new StaticTextWidget(_boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(_boss, _font, "Set bank");
   myBankWidgets[0] = new PopUpWidget(_boss, _font, items, kBankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  myROMTypeLabel = new StaticTextWidget(_boss, _font, "(ROM)");
+  myROMTypeLbl = new LabelWidget(_boss, _font, "(ROM)");
 
   items.clear();
   bankList(myCart.ramBankCount(), 0, items);
-  myRAMBankLabel = new StaticTextWidget(_boss, _font, "");
+  myRAMBankLbl = new LabelWidget(_boss, _font, "");
   myBankWidgets[1] = new PopUpWidget(_boss, _font, items, kRAMBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
 
-  myRAMTypeLabel = new StaticTextWidget(_boss, _font, "(RAM)");
+  myRAMTypeLbl = new LabelWidget(_boss, _font, "(RAM)");
 
   // Both selectors take the tab's label column, so their boxes line up under one
   // another; the RAM one has no label of its own and simply leaves it empty
   myLabelColumn.insert(myLabelColumn.end(),
-                       {{myBankLabel}, {myRAMBankLabel}});
+                       {{myBankLbl}, {myRAMBankLbl}});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,8 +110,8 @@ void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col) const
   // boxes sit in the tab's label column (see collectBankLabels), so they line up
   // with each other and with the ROM info fields above -- and the row's width no
   // longer grows with the bank labels, as a side-by-side pair's did
-  const std::array<StaticTextWidget*, 2> labels{myBankLabel, myRAMBankLabel};
-  const std::array<StaticTextWidget*, 2> types{myROMTypeLabel, myRAMTypeLabel};
+  const std::array<LabelWidget*, 2> labels{myBankLbl, myRAMBankLbl};
+  const std::array<LabelWidget*, 2> types{myROMTypeLbl, myRAMTypeLbl};
 
   for(size_t i = 0; i < myBankWidgets.size(); ++i)
   {

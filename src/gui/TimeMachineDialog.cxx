@@ -224,10 +224,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Index info (current + last state index)
-  myCurrentIdxWidget = new StaticTextWidget(this, font, "1000", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
   myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
-  myLastIdxWidget = new StaticTextWidget(this, font, "1000", TextAlign::Right, kBGColor);
+  myLastIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
@@ -236,10 +236,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myTimeline->setMinValue(0);
 
   // Time info (current + last time)
-  myCurrentTimeWidget = new StaticTextWidget(this, font, "00:00.00", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, "00:00.00", TextAlign::Right, kBGColor);
+  myLastTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Right, kBGColor);
   myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastTimeWidget->setTextColor(kColorInfo);
 
@@ -251,16 +251,20 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                   EXIT.data(), BUTTON_W, BUTTON_H, kExit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
   myRewindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                       REWIND_ALL.data(), BUTTON_W, BUTTON_H, kRewindAll);
+                                       REWIND_ALL.data(), BUTTON_W, BUTTON_H,
+                                       kRewindAll);
   myRewind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
+                                     REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1,
+                                     true);
   myPlayBackWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                       PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
   myUnwind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1, true);
+                                     UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1,
+                                     true);
   myUnwindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                       UNWIND_ALL.data(), BUTTON_W, BUTTON_H, kUnwindAll);
+                                       UNWIND_ALL.data(), BUTTON_W, BUTTON_H,
+                                       kUnwindAll);
   mySaveAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                      SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
@@ -269,8 +273,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
 
   // Message (fills the space between the buttons and the last-time readout)
-  myMessageWidget = new StaticTextWidget(this, font, "",
-                                         TextAlign::Left, kBGColor);
+  myMessageWidget = new LabelWidget(this, font, "", TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -417,7 +420,8 @@ void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
   // The following shortcuts duplicate the shortcuts in EventHandler
   // Note: mode switches must happen in key UP
 
-  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+  const Event::Type event =
+    instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
   if(event == Event::TogglePlayBackMode || key == StellaKey::SPACE)
     handleCommand(nullptr, kPlayBack, 0, 0);
@@ -510,7 +514,9 @@ void TimeMachineDialog::initBar()
   const IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  const uInt32 maxValue = cycles.size() > 1 ? static_cast<uInt32>(cycles.size() - 1) : 0;
+  const uInt32 maxValue = cycles.size() > 1
+    ? static_cast<uInt32>(cycles.size() - 1)
+    : 0;
   myTimeline->setMaxValue(maxValue);
   myTimeline->setStepValues(cycles);
 

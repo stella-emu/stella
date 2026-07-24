@@ -59,7 +59,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myFilterPopupLabel = new StaticTextWidget(boss, font, "Events");
+  myFilterPopupLbl = new LabelWidget(boss, font, "Events");
   myFilterPopup = new PopUpWidget(boss, font, items, kFilterCmd);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
@@ -108,7 +108,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
   myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
   // Label and (read-only) display for the currently selected event's mapping
-  myActionLabel = new StaticTextWidget(boss, font, "Action");
+  myActionLbl = new LabelWidget(boss, font, "Action");
   myKeyMapping = new EditTextWidget(boss, font, 1, ACTION_LINES);
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
@@ -162,10 +162,10 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   const int listArea = w - buttonWidth - HBORDER * 2 - fontWidth;
 
   // Event-group filter popup, flush with the actions list below it
-  GUI::alignLabels({{myFilterPopupLabel}});
+  GUI::alignLabels({{myFilterPopupLbl}});
 
   auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  filterRow->addFixed(labeledRow(myFilterPopupLabel, myFilterPopup, 0, 0, true), listArea);
+  filterRow->addFixed(labeledRow(myFilterPopupLbl, myFilterPopup, 0, 0, true), listArea);
   filterRow->addStretchSpace();
 
   // The buttons form a column to the right of the list, aligned to its top
@@ -192,7 +192,7 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   // is a multi-line box, so the two sit on its FIRST line: centering the label
   // would drop it to the middle of a box whose lower lines are there to be used
   auto actionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  actionRow->addAuto(alignedItem(myActionLabel, HAlign::Left, VAlign::Baseline));
+  actionRow->addAuto(alignedItem(myActionLbl, HAlign::Left, VAlign::Baseline));
   actionRow->addSpace(fontWidth);
   actionRow->addStretch(alignedItem(myKeyMapping, HAlign::Fill, VAlign::Baseline));
 

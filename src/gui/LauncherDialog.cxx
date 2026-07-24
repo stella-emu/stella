@@ -160,7 +160,7 @@ void LauncherDialog::addFilteringWidgets()
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
   wid.push_back(myReloadButton);
 
-  myFilterLabel = new StaticTextWidget(this, _font, "Filter");
+  myFilterLbl = new LabelWidget(this, _font, "Filter");
 
   myPattern = new EditTextWidget(this, _font, 1);
   myPattern->setToolTip("Enter filter text to reduce file list.\n"
@@ -172,7 +172,7 @@ void LauncherDialog::addFilteringWidgets()
   mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
   wid.push_back(mySubDirsButton);
 
-  myRomCount = new StaticTextWidget(this, _font, "", TextAlign::Right);
+  myRomCount = new LabelWidget(this, _font, "", TextAlign::Right);
 
   myRandomRomButton = new ButtonWidget(this, _font,
                                        GUI::icon_random_small, kLoadRndRomCmd);
@@ -438,7 +438,7 @@ void LauncherDialog::layout()
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
     row->addAuto(anchoredItem(myReloadButton));
     row->addSpace(LBL_GAP * 2);
-    row->addAuto(anchoredItem(myFilterLabel));
+    row->addAuto(anchoredItem(myFilterLbl));
     row->addSpace(LBL_GAP);
     row->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));
     row->addSpace(BTN_GAP);

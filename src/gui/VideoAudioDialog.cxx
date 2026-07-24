@@ -44,13 +44,13 @@
 
 // A custom-adjustable slider: 0-100%, in 1% steps.  The track width is the
 // dialog's choice and is set when the tab lays itself out
-#define CREATE_CUSTOM_SLIDER(obj, desc, cmd)                      \
-  myTV ## obj ## Label = new StaticTextWidget(pane, _font, desc); \
-  myTV ## obj =                                                   \
-    new SliderWidget(pane, _font, 1, cmd, 4, "%");                \
-  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);     \
-  myTV ## obj->setStepValue(1);                                   \
-  myTV ## obj->setTickmarkIntervals(2);                           \
+#define CREATE_CUSTOM_SLIDER(obj, desc, cmd)                  \
+  myTV ## obj ## Lbl = new LabelWidget(pane, _font, desc);    \
+  myTV ## obj =                                               \
+    new SliderWidget(pane, _font, 1, cmd, 4, "%");            \
+  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100); \
+  myTV ## obj->setStepValue(1);                               \
+  myTV ## obj->setTickmarkIntervals(2);                       \
   wid.push_back(myTV ## obj);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +130,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // Video renderer.  The list is fixed for this dialog's life, so it sizes
   // itself to the widest renderer the platform offers
-  myRendererLabel = new StaticTextWidget(pane, _font, "Renderer");
+  myRendererLbl = new LabelWidget(pane, _font, "Renderer");
   myRenderer = new PopUpWidget(pane, _font,
                                instance().frameBuffer().supportedRenderers(),
                                kRendererChanged);
@@ -144,7 +144,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // TIA zoom levels (will be dynamically filled later).  The sliders take their
   // track width from the renderer pop-up beside them, in the layout below
-  myTIAZoomLabel = new StaticTextWidget(pane, _font, "Zoom");
+  myTIAZoomLbl = new LabelWidget(pane, _font, "Zoom");
   myTIAZoom = new SliderWidget(pane, _font, 1,
                                0, 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
@@ -171,7 +171,7 @@ void VideoAudioDialog::addDisplayTab()
 #endif
 
   // FS overscan
-  myTVOverscanLabel = new StaticTextWidget(pane, _font, "Overscan");
+  myTVOverscanLbl = new LabelWidget(pane, _font, "Overscan");
   myTVOverscan = new SliderWidget(pane, _font, 1,
                                   kOverscanChanged, 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
@@ -186,7 +186,7 @@ void VideoAudioDialog::addDisplayTab()
   wid.push_back(myCorrectAspect);
 
   // Vertical size
-  myVSizeAdjustLabel = new StaticTextWidget(pane, _font, "V-Size adjust");
+  myVSizeAdjustLbl = new LabelWidget(pane, _font, "V-Size adjust");
   myVSizeAdjust = new SliderWidget(pane, _font, 1, kVSizeChanged, 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
@@ -195,7 +195,7 @@ void VideoAudioDialog::addDisplayTab()
   wid.push_back(myVSizeAdjust);
 
   // Message concerning usage; it sits at the foot of the tab
-  myDisplayInfo = new StaticTextWidget(pane, ifont,
+  myDisplayInfo = new LabelWidget(pane, ifont,
                        "(*) Change may require an application restart");
 
   addToFocusList(wid, myTab, tabID);
@@ -213,17 +213,17 @@ void VideoAudioDialog::addDisplayTab()
     // The renderer's and the sliders' labels share one label column; the
     // indented one declares its indent, which narrows its column to match
     // so that all the tracks still line up
-    GUI::alignLabels({{myRendererLabel}, {myTIAZoomLabel},
-                      {myTVOverscanLabel, INDENT}, {myVSizeAdjustLabel}});
+    GUI::alignLabels({{myRendererLbl}, {myTIAZoomLbl},
+                      {myTVOverscanLbl, INDENT}, {myVSizeAdjustLbl}});
 
     // The sliders' tracks span the renderer pop-up's box, so they end flush
     GUI::alignTracks({myTIAZoom, myTVOverscan, myVSizeAdjust}, myRenderer);
 
-    col.addAuto(labeledRow(myRendererLabel, myRenderer));
+    col.addAuto(labeledRow(myRendererLbl, myRenderer));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myTIAInterpolate));
     col.addSpace(VGAP * 4);
-    col.addAuto(labeledRow(myTIAZoomLabel, myTIAZoom));
+    col.addAuto(labeledRow(myTIAZoomLbl, myTIAZoom));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myFullscreen));
     col.addSpace(VGAP);
@@ -233,11 +233,11 @@ void VideoAudioDialog::addDisplayTab()
     col.addAuto(indentedItem(myRefreshAdapt, INDENT));
 #endif
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myTVOverscanLabel, myTVOverscan, 0, INDENT));
+    col.addAuto(labeledRow(myTVOverscanLbl, myTVOverscan, 0, INDENT));
     col.addSpace(VGAP * 4);
     col.addAuto(anchoredItem(myCorrectAspect));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myVSizeAdjustLabel, myVSizeAdjust));
+    col.addAuto(labeledRow(myVSizeAdjustLbl, myVSizeAdjust));
     // The note is anchored to the foot of the tab, whatever height it ends up
     col.addStretchSpace();
     col.addAuto(anchoredItem(myDisplayInfo));
@@ -261,14 +261,14 @@ void VideoAudioDialog::addPaletteTab()
   if(instance().checkUserPalette())
     VarList::push_back(items, "User", PaletteHandler::SETTING_USER);
   VarList::push_back(items, "Custom", PaletteHandler::SETTING_CUSTOM);
-  myTIAPaletteLabel = new StaticTextWidget(pane, _font, "Palette");
+  myTIAPaletteLbl = new LabelWidget(pane, _font, "Palette");
   myTIAPalette = new PopUpWidget(pane, _font, items, kPaletteChanged);
   myTIAPalette->setToolTip(Event::PaletteDecrease, Event::PaletteIncrease);
   wid.push_back(myTIAPalette);
 
   // The phase shift and the R/G/B pairs are indented under the palette; every
   // track width is set in the layout below, from the pop-up they sit beneath
-  myPhaseShiftLabel = new StaticTextWidget(pane, _font, "NTSC phase");
+  myPhaseShiftLbl = new LabelWidget(pane, _font, "NTSC phase");
   myPhaseShift = new SliderWidget(pane, _font, 1, kPhaseShiftChanged, 5);
   wid.push_back(myPhaseShift);
 
@@ -292,17 +292,17 @@ void VideoAudioDialog::addPaletteTab()
     return s;
   };
 
-  myTVRedScaleLabel = new StaticTextWidget(pane, _font, "R");
+  myTVRedScaleLbl = new LabelWidget(pane, _font, "R");
   myTVRedScale   = scaleSlider(kPaletteUpdated,
                                "Adjust red saturation of 'Custom' palette.");
   myTVRedShift   = shiftSlider(kRedShiftChanged,
                                "Adjust red shift of 'Custom' palette.");
-  myTVGreenScaleLabel = new StaticTextWidget(pane, _font, "G");
+  myTVGreenScaleLbl = new LabelWidget(pane, _font, "G");
   myTVGreenScale = scaleSlider(kPaletteUpdated,
                                "Adjust green saturation of 'Custom' palette.");
   myTVGreenShift = shiftSlider(kGreenShiftChanged,
                                "Adjust green shift of 'Custom' palette.");
-  myTVBlueScaleLabel = new StaticTextWidget(pane, _font, "B");
+  myTVBlueScaleLbl = new LabelWidget(pane, _font, "B");
   myTVBlueScale  = scaleSlider(kPaletteUpdated,
                                "Adjust blue saturation of 'Custom' palette.");
   myTVBlueShift  = shiftSlider(kBlueShiftChanged,
@@ -314,7 +314,7 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDER(Bright, "Brightness", kPaletteUpdated)
   CREATE_CUSTOM_SLIDER(Gamma, "Gamma", kPaletteUpdated)
 
-  myAutodetectLabel = new StaticTextWidget(pane, _font, "Autodetection");
+  myAutodetectLbl = new LabelWidget(pane, _font, "Autodetection");
 
   myDetectPal60 = new CheckboxWidget(pane, _font, "PAL-60");
   myDetectPal60->setToolTip("Enable autodetection of PAL-60 based on colors used.");
@@ -344,12 +344,12 @@ void VideoAudioDialog::addPaletteTab()
     // One label column for the palette pop-up and everything that has its
     // own label; the indented ones say so, so their columns narrow and all
     // the tracks still line up
-    GUI::alignLabels({{myTIAPaletteLabel}, {myPhaseShiftLabel, INDENT},
-                      {myTVHueLabel}, {myTVSaturLabel}, {myTVContrastLabel},
-                      {myTVBrightLabel}, {myTVGammaLabel}});
+    GUI::alignLabels({{myTIAPaletteLbl}, {myPhaseShiftLbl, INDENT},
+                      {myTVHueLbl}, {myTVSaturLbl}, {myTVContrastLbl},
+                      {myTVBrightLbl}, {myTVGammaLbl}});
     // The R/G/B saturation sliders are a column of their own (the shift sliders
     // beside them have no label at all)
-    GUI::alignLabels({{myTVRedScaleLabel}, {myTVGreenScaleLabel}, {myTVBlueScaleLabel}});
+    GUI::alignLabels({{myTVRedScaleLbl}, {myTVGreenScaleLbl}, {myTVBlueScaleLbl}});
 
     // Every track spans the pop-up's value box, so the controls end flush
     GUI::alignTracks({myPhaseShift, myTVHue, myTVSatur, myTVContrast,
@@ -358,15 +358,15 @@ void VideoAudioDialog::addPaletteTab()
     // Each R/G/B row's two sliders SHARE the span under the pop-up, so the shift
     // slider's track still ends where the pop-up does -- lining up with the phase
     // slider above it
-    const int rgbSpan = GUI::flushSpan(myTIAPalette, myTIAPaletteLabel, INDENT);
-    GUI::alignTracks({myTVRedScale, myTVRedShift}, {myTVRedScaleLabel, nullptr},
+    const int rgbSpan = GUI::flushSpan(myTIAPalette, myTIAPaletteLbl, INDENT);
+    GUI::alignTracks({myTVRedScale, myTVRedShift}, {myTVRedScaleLbl, nullptr},
                      rgbSpan, fontWidth);
-    GUI::alignTracks({myTVGreenScale, myTVGreenShift}, {myTVGreenScaleLabel, nullptr},
+    GUI::alignTracks({myTVGreenScale, myTVGreenShift}, {myTVGreenScaleLbl, nullptr},
                      rgbSpan, fontWidth);
-    GUI::alignTracks({myTVBlueScale, myTVBlueShift}, {myTVBlueScaleLabel, nullptr},
+    GUI::alignTracks({myTVBlueScale, myTVBlueShift}, {myTVBlueScaleLbl, nullptr},
                      rgbSpan, fontWidth);
 
-    const auto rgbRow = [&](StaticTextWidget* scaleLabel, SliderWidget* scale,
+    const auto rgbRow = [&](LabelWidget* scaleLabel, SliderWidget* scale,
                             SliderWidget* shift) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
       row->addSpace(INDENT);
@@ -378,25 +378,25 @@ void VideoAudioDialog::addPaletteTab()
 
     // The controls, with the palette itself beside them
     auto controls = std::make_unique<BoxLayout>(Dir::Vertical);
-    controls->addAuto(labeledRow(myTIAPaletteLabel, myTIAPalette));
+    controls->addAuto(labeledRow(myTIAPaletteLbl, myTIAPalette));
     controls->addSpace(VGAP);
-    controls->addAuto(labeledRow(myPhaseShiftLabel, myPhaseShift, 0, INDENT));
+    controls->addAuto(labeledRow(myPhaseShiftLbl, myPhaseShift, 0, INDENT));
     controls->addSpace(VGAP);
-    controls->addAuto(rgbRow(myTVRedScaleLabel, myTVRedScale, myTVRedShift));
+    controls->addAuto(rgbRow(myTVRedScaleLbl, myTVRedScale, myTVRedShift));
     controls->addSpace(VGAP);
-    controls->addAuto(rgbRow(myTVGreenScaleLabel, myTVGreenScale, myTVGreenShift));
+    controls->addAuto(rgbRow(myTVGreenScaleLbl, myTVGreenScale, myTVGreenShift));
     controls->addSpace(VGAP);
-    controls->addAuto(rgbRow(myTVBlueScaleLabel, myTVBlueScale, myTVBlueShift));
+    controls->addAuto(rgbRow(myTVBlueScaleLbl, myTVBlueScale, myTVBlueShift));
     controls->addSpace(VGAP * 2);
-    controls->addAuto(labeledRow(myTVHueLabel, myTVHue));
+    controls->addAuto(labeledRow(myTVHueLbl, myTVHue));
     controls->addSpace(VGAP);
-    controls->addAuto(labeledRow(myTVSaturLabel, myTVSatur));
+    controls->addAuto(labeledRow(myTVSaturLbl, myTVSatur));
     controls->addSpace(VGAP);
-    controls->addAuto(labeledRow(myTVContrastLabel, myTVContrast));
+    controls->addAuto(labeledRow(myTVContrastLbl, myTVContrast));
     controls->addSpace(VGAP);
-    controls->addAuto(labeledRow(myTVBrightLabel, myTVBright));
+    controls->addAuto(labeledRow(myTVBrightLbl, myTVBright));
     controls->addSpace(VGAP);
-    controls->addAuto(labeledRow(myTVGammaLabel, myTVGamma));
+    controls->addAuto(labeledRow(myTVGammaLbl, myTVGamma));
 
     // The palette takes the width left over, but it says how much room it needs
     // -- a couple of characters per luminance -- and that is what gives the tab
@@ -408,7 +408,7 @@ void VideoAudioDialog::addPaletteTab()
 
     // The autodetection options sit below, on one line
     auto detect = std::make_unique<BoxLayout>(Dir::Horizontal);
-    detect->addAuto(anchoredItem(myAutodetectLabel));
+    detect->addAuto(anchoredItem(myAutodetectLbl));
     detect->addSpace(fontWidth * 2);
     detect->addAuto(anchoredItem(myDetectPal60));
     detect->addSpace(fontWidth * 2);
@@ -437,7 +437,7 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
   VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
-  myTVModeLabel = new StaticTextWidget(pane, _font, "TV mode");
+  myTVModeLbl = new LabelWidget(pane, _font, "TV mode");
   myTVMode = new PopUpWidget(pane, _font, items, kTVModeChanged);
   myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
   wid.push_back(myTVMode);
@@ -455,7 +455,7 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "always", PhosphorHandler::VALUE_ALWAYS);
   VarList::push_back(items, "auto on", PhosphorHandler::VALUE_AUTO_ON);
   VarList::push_back(items, "auto on/off", PhosphorHandler::VALUE_AUTO);
-  myTVPhosphorLabel = new StaticTextWidget(pane, _font, "Phosphor");
+  myTVPhosphorLbl = new LabelWidget(pane, _font, "Phosphor");
   myTVPhosphor = new PopUpWidget(pane, _font, items, kPhosphorChanged);
   myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
   wid.push_back(myTVPhosphor);
@@ -464,7 +464,7 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDER(PhosLevel, "Blend", kPhosBlendChanged)
 
   // Scanline intensity and interpolation
-  myTVScanLabel = new StaticTextWidget(pane, _font, "Scanlines:");
+  myTVScanLbl = new LabelWidget(pane, _font, "Scanlines:");
 
   CREATE_CUSTOM_SLIDER(ScanIntense, "Intensity", kScanlinesChanged)
   myTVScanIntense->setToolTip(Event::ScanlinesDecrease, Event::ScanlinesIncrease);
@@ -475,7 +475,7 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "Pixelated", TIASurface::SETTING_PIXELS);
   VarList::push_back(items, "Aperture Gr.", TIASurface::SETTING_APERTURE);
   VarList::push_back(items, "MAME", TIASurface::SETTING_MAME);
-  myTVScanMaskLabel = new StaticTextWidget(pane, _font, "Mask");
+  myTVScanMaskLbl = new LabelWidget(pane, _font, "Mask");
   myTVScanMask = new PopUpWidget(pane, _font, items);
   myTVScanMask->setToolTip(Event::PreviousScanlineMask, Event::NextScanlineMask);
   wid.push_back(myTVScanMask);
@@ -508,23 +508,23 @@ void VideoAudioDialog::addTVEffectsTab()
     // The two pop-ups read as one column and must END at the same place, so they
     // share both a label column and a box width.  (The old code did this by
     // padding a specimen -- "Bad adjust  " -- until the two came out equal.)
-    GUI::alignLabels({{myTVModeLabel}, {myTVPhosphorLabel}});
+    GUI::alignLabels({{myTVModeLbl}, {myTVPhosphorLbl}});
     GUI::alignPopUps({myTVMode, myTVPhosphor});
 
     // Every slider sits a level in from those pop-ups and reads as one column of
     // its own -- a SEPARATE alignLabels group from TV mode/Phosphor's, so its
     // label column is its own width, not theirs; naming one label from each
     // group lets alignTracks() cross that gap itself
-    GUI::alignLabels({{myTVSharpLabel}, {myTVResLabel}, {myTVArtifactsLabel},
-                      {myTVFringeLabel}, {myTVBleedLabel}, {myTVPhosLevelLabel},
-                      {myTVScanIntenseLabel}});
+    GUI::alignLabels({{myTVSharpLbl}, {myTVResLbl}, {myTVArtifactsLbl},
+                      {myTVFringeLbl}, {myTVBleedLbl}, {myTVPhosLevelLbl},
+                      {myTVScanIntenseLbl}});
     GUI::alignTracks({myTVSharp, myTVRes, myTVArtifacts, myTVFringe, myTVBleed,
                       myTVPhosLevel, myTVScanIntense}, myTVMode, INDENT,
-                     myTVSharpLabel, myTVModeLabel);
+                     myTVSharpLbl, myTVModeLbl);
 
     // The mask pop-up is on its own, and a control in no group gets no clearance
     // between its label and its box
-    GUI::alignLabels({{myTVScanMaskLabel}});
+    GUI::alignLabels({{myTVScanMaskLbl}});
 
     // Only the TV mode block and the clone buttons stand side by side; everything
     // below them runs the full width of the tab
@@ -537,17 +537,17 @@ void VideoAudioDialog::addTVEffectsTab()
     clones->addStretchSpace();
 
     auto modes = std::make_unique<BoxLayout>(Dir::Vertical);
-    modes->addAuto(labeledRow(myTVModeLabel, myTVMode));
+    modes->addAuto(labeledRow(myTVModeLbl, myTVMode));
     modes->addSpace(VGAP);
-    modes->addAuto(labeledRow(myTVSharpLabel, myTVSharp, 0, INDENT));
+    modes->addAuto(labeledRow(myTVSharpLbl, myTVSharp, 0, INDENT));
     modes->addSpace(VGAP);
-    modes->addAuto(labeledRow(myTVResLabel, myTVRes, 0, INDENT));
+    modes->addAuto(labeledRow(myTVResLbl, myTVRes, 0, INDENT));
     modes->addSpace(VGAP);
-    modes->addAuto(labeledRow(myTVArtifactsLabel, myTVArtifacts, 0, INDENT));
+    modes->addAuto(labeledRow(myTVArtifactsLbl, myTVArtifacts, 0, INDENT));
     modes->addSpace(VGAP);
-    modes->addAuto(labeledRow(myTVFringeLabel, myTVFringe, 0, INDENT));
+    modes->addAuto(labeledRow(myTVFringeLbl, myTVFringe, 0, INDENT));
     modes->addSpace(VGAP);
-    modes->addAuto(labeledRow(myTVBleedLabel, myTVBleed, 0, INDENT));
+    modes->addAuto(labeledRow(myTVBleedLbl, myTVBleed, 0, INDENT));
 
     // Neither column fills, so nothing here claims the tab's leftover width
     // (the widest tab in the dialog, not this one, may demand more than
@@ -563,17 +563,17 @@ void VideoAudioDialog::addTVEffectsTab()
     // rest of the tab -- which is what runs it out under the buttons
     auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     scanRow->addSpace(INDENT);
-    scanRow->addAuto(labeledRow(myTVScanIntenseLabel, myTVScanIntense));
+    scanRow->addAuto(labeledRow(myTVScanIntenseLbl, myTVScanIntense));
     scanRow->addSpace(fontWidth * 2);
-    scanRow->addStretch(labeledRow(myTVScanMaskLabel, myTVScanMask, 0, 0, true));
+    scanRow->addStretch(labeledRow(myTVScanMaskLbl, myTVScanMask, 0, 0, true));
 
     col.addAuto(std::move(main));
     col.addSpace(VGAP * 4);
-    col.addAuto(labeledRow(myTVPhosphorLabel, myTVPhosphor));
+    col.addAuto(labeledRow(myTVPhosphorLbl, myTVPhosphor));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myTVPhosLevelLabel, myTVPhosLevel, 0, INDENT));
+    col.addAuto(labeledRow(myTVPhosLevelLbl, myTVPhosLevel, 0, INDENT));
     col.addSpace(VGAP * 2);
-    col.addAuto(anchoredItem(myTVScanLabel));
+    col.addAuto(anchoredItem(myTVScanLbl));
     col.addSpace(VGAP);
     col.addAuto(std::move(scanRow));
   });
@@ -622,13 +622,13 @@ void VideoAudioDialog::addBezelTab()
     wid.push_back(s);
     return s;
   };
-  myWinLeftSliderLabel = new StaticTextWidget(pane, _font, "Left");
+  myWinLeftSliderLbl = new LabelWidget(pane, _font, "Left");
   myWinLeftSlider = winSlider();
-  myWinRightSliderLabel = new StaticTextWidget(pane, _font, "Right");
+  myWinRightSliderLbl = new LabelWidget(pane, _font, "Right");
   myWinRightSlider = winSlider();
-  myWinTopSliderLabel = new StaticTextWidget(pane, _font, "Top");
+  myWinTopSliderLbl = new LabelWidget(pane, _font, "Top");
   myWinTopSlider = winSlider();
-  myWinBottomSliderLabel = new StaticTextWidget(pane, _font, "Bottom");
+  myWinBottomSliderLbl = new LabelWidget(pane, _font, "Bottom");
   myWinBottomSlider = winSlider();
 
   addToFocusList(wid, myTab, tabID);
@@ -646,8 +646,8 @@ void VideoAudioDialog::addBezelTab()
     const int INDENT = CheckboxWidget::prefixSize(_font);
 
     // The four window sliders share one label column
-    GUI::alignLabels({{myWinLeftSliderLabel}, {myWinRightSliderLabel},
-                      {myWinTopSliderLabel}, {myWinBottomSliderLabel}});
+    GUI::alignLabels({{myWinLeftSliderLbl}, {myWinRightSliderLbl},
+                      {myWinTopSliderLbl}, {myWinBottomSliderLbl}});
 
     // The path row: the browse button, then a field filling the rest
     auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -666,13 +666,13 @@ void VideoAudioDialog::addBezelTab()
     col.addSpace(VGAP);
     // The sliders fill the width they are given, so they end flush with the
     // path field above them and no track width is stated
-    col.addAuto(labeledRow(myWinLeftSliderLabel, myWinLeftSlider, 0, INDENT * 2, true));
+    col.addAuto(labeledRow(myWinLeftSliderLbl, myWinLeftSlider, 0, INDENT * 2, true));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myWinRightSliderLabel, myWinRightSlider, 0, INDENT * 2, true));
+    col.addAuto(labeledRow(myWinRightSliderLbl, myWinRightSlider, 0, INDENT * 2, true));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myWinTopSliderLabel, myWinTopSlider, 0, INDENT * 2, true));
+    col.addAuto(labeledRow(myWinTopSliderLbl, myWinTopSlider, 0, INDENT * 2, true));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myWinBottomSliderLabel, myWinBottomSlider, 0, INDENT * 2, true));
+    col.addAuto(labeledRow(myWinBottomSliderLbl, myWinBottomSlider, 0, INDENT * 2, true));
   });
 }
 
@@ -694,7 +694,7 @@ void VideoAudioDialog::addAudioTab()
 
   // Volume: it sizes its own track (it is not one of the controls that must end
   // flush with the Mode pop-up below)
-  myVolumeSliderLabel = new StaticTextWidget(pane, _font, "Volume");
+  myVolumeSliderLbl = new LabelWidget(pane, _font, "Volume");
   myVolumeSlider = new SliderWidget(pane, _font, 0, 0, 4, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   myVolumeSlider->setTickmarkIntervals(4);
@@ -708,7 +708,7 @@ void VideoAudioDialog::addAudioTab()
   VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
   VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
   VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
-  myModePopupLabel = new StaticTextWidget(pane, _font, "Mode");
+  myModePopupLbl = new LabelWidget(pane, _font, "Mode");
   myModePopup = new PopUpWidget(pane, _font, items, kModeChanged);
   wid.push_back(myModePopup);
 
@@ -717,7 +717,7 @@ void VideoAudioDialog::addAudioTab()
   VarList::push_back(items, "44100 Hz", 44100);
   VarList::push_back(items, "48000 Hz", 48000);
   VarList::push_back(items, "96000 Hz", 96000);
-  myFreqPopupLabel = new StaticTextWidget(pane, _font, "Sample rate");
+  myFreqPopupLbl = new LabelWidget(pane, _font, "Sample rate");
   myFreqPopup = new PopUpWidget(pane, _font, items);
   wid.push_back(myFreqPopup);
 
@@ -726,12 +726,12 @@ void VideoAudioDialog::addAudioTab()
   VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
   VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
   VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
-  myResamplingPopupLabel = new StaticTextWidget(pane, _font, "Resampling quality");
+  myResamplingPopupLbl = new LabelWidget(pane, _font, "Resampling quality");
   myResamplingPopup = new PopUpWidget(pane, _font, items);
   wid.push_back(myResamplingPopup);
 
   // Param 1
-  myHeadroomSliderLabel = new StaticTextWidget(pane, _font, "Headroom");
+  myHeadroomSliderLbl = new LabelWidget(pane, _font, "Headroom");
   myHeadroomSlider = new SliderWidget(pane, _font, 1, kHeadroomChanged, 10);
   myHeadroomSlider->setMinValue(0);
   myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
@@ -739,7 +739,7 @@ void VideoAudioDialog::addAudioTab()
   wid.push_back(myHeadroomSlider);
 
   // Param 2
-  myBufferSizeSliderLabel = new StaticTextWidget(pane, _font, "Buffer size");
+  myBufferSizeSliderLbl = new LabelWidget(pane, _font, "Buffer size");
   myBufferSizeSlider = new SliderWidget(pane, _font, 1, kBufferSizeChanged, 10);
   myBufferSizeSlider->setMinValue(0);
   myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
@@ -750,7 +750,7 @@ void VideoAudioDialog::addAudioTab()
   myStereoSoundCheckbox = new CheckboxWidget(pane, _font, "Stereo for all ROMs");
   wid.push_back(myStereoSoundCheckbox);
 
-  myDpcPitchLabel = new StaticTextWidget(pane, _font, "Pitfall II music pitch");
+  myDpcPitchLbl = new LabelWidget(pane, _font, "Pitfall II music pitch");
   myDpcPitch = new SliderWidget(pane, _font, 1, 0, 5);
   myDpcPitch->setMinValue(10000);
   myDpcPitch->setMaxValue(30000);
@@ -772,10 +772,10 @@ void VideoAudioDialog::addAudioTab()
     // Three columns, not one: Volume and Mode read as one, the four controls
     // indented under Mode as another, and the pitch slider stands alone.  Merging
     // them would push Mode's box out to the width of "Resampling quality"
-    GUI::alignLabels({{myVolumeSliderLabel}, {myModePopupLabel}});
-    GUI::alignLabels({{myFreqPopupLabel}, {myResamplingPopupLabel},
-                      {myHeadroomSliderLabel}, {myBufferSizeSliderLabel}});
-    GUI::alignLabels({{myDpcPitchLabel}});
+    GUI::alignLabels({{myVolumeSliderLbl}, {myModePopupLbl}});
+    GUI::alignLabels({{myFreqPopupLbl}, {myResamplingPopupLbl},
+                      {myHeadroomSliderLbl}, {myBufferSizeSliderLbl}});
+    GUI::alignLabels({{myDpcPitchLbl}});
 
     // Everything indented under Mode ends flush with IT -- not with the tab,
     // which is wider (the widest tab in the dialog sets that).  The sliders'
@@ -786,41 +786,41 @@ void VideoAudioDialog::addAudioTab()
     // alignTracks() cross that gap itself -- same gap flushWidth below crosses
     // by hand for the pop-up rows it sizes
     GUI::alignTracks({myHeadroomSlider, myBufferSizeSlider}, myModePopup, INDENT,
-                     myHeadroomSliderLabel, myModePopupLabel);
+                     myHeadroomSliderLbl, myModePopupLbl);
     // DpcPitch sits at Mode's OWN indent level (not a level further in), so only
     // the label-column-width gap between its lone group and Mode's needs crossing
-    GUI::alignTracks({myDpcPitch}, myModePopup, 0, myDpcPitchLabel, myModePopupLabel);
+    GUI::alignTracks({myDpcPitch}, myModePopup, 0, myDpcPitchLbl, myModePopupLbl);
 
     // They sit a level further in than Mode, so the cell that reaches its
     // right edge is that much narrower
-    const int flushWidth = GUI::flushSpan(myModePopup, myModePopupLabel, INDENT);
+    const int flushWidth = GUI::flushSpan(myModePopup, myModePopupLbl, INDENT);
 
     col.addAuto(anchoredItem(mySoundEnableCheckbox));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myVolumeSliderLabel, myVolumeSlider, 0, INDENT));
+    col.addAuto(labeledRow(myVolumeSliderLbl, myVolumeSlider, 0, INDENT));
     col.addSpace(VGAP);
     auto modeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     modeRow->addSpace(INDENT);
-    modeRow->addStretch(labeledRow(myModePopupLabel, myModePopup));
+    modeRow->addStretch(labeledRow(myModePopupLbl, myModePopup));
     col.addAuto(std::move(modeRow));
     col.addSpace(VGAP);
     auto freqRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     freqRow->addSpace(INDENT * 2);
-    freqRow->addFixed(labeledRow(myFreqPopupLabel, myFreqPopup, 0, 0, true), flushWidth);
+    freqRow->addFixed(labeledRow(myFreqPopupLbl, myFreqPopup, 0, 0, true), flushWidth);
     col.addAuto(std::move(freqRow));
     col.addSpace(VGAP);
     auto resamplingRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     resamplingRow->addSpace(INDENT * 2);
-    resamplingRow->addFixed(labeledRow(myResamplingPopupLabel, myResamplingPopup, 0, 0, true), flushWidth);
+    resamplingRow->addFixed(labeledRow(myResamplingPopupLbl, myResamplingPopup, 0, 0, true), flushWidth);
     col.addAuto(std::move(resamplingRow));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myHeadroomSliderLabel, myHeadroomSlider, 0, INDENT * 2));
+    col.addAuto(labeledRow(myHeadroomSliderLbl, myHeadroomSlider, 0, INDENT * 2));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myBufferSizeSliderLabel, myBufferSizeSlider, 0, INDENT * 2));
+    col.addAuto(labeledRow(myBufferSizeSliderLbl, myBufferSizeSlider, 0, INDENT * 2));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myStereoSoundCheckbox));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDpcPitchLabel, myDpcPitch, 0, INDENT));
+    col.addAuto(labeledRow(myDpcPitchLbl, myDpcPitch, 0, INDENT));
   });
 }
 
@@ -1244,15 +1244,15 @@ void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
   const bool enable = preset == NTSCFilter::Preset::CUSTOM;
 
-  myTVSharpLabel->setEnabled(enable);
+  myTVSharpLbl->setEnabled(enable);
   myTVSharp->setEnabled(enable);
-  myTVResLabel->setEnabled(enable);
+  myTVResLbl->setEnabled(enable);
   myTVRes->setEnabled(enable);
-  myTVArtifactsLabel->setEnabled(enable);
+  myTVArtifactsLbl->setEnabled(enable);
   myTVArtifacts->setEnabled(enable);
-  myTVFringeLabel->setEnabled(enable);
+  myTVFringeLbl->setEnabled(enable);
   myTVFringe->setEnabled(enable);
-  myTVBleedLabel->setEnabled(enable);
+  myTVBleedLbl->setEnabled(enable);
   myTVBleed->setEnabled(enable);
   myCloneComposite->setEnabled(enable);
   myCloneSvideo->setEnabled(enable);
@@ -1285,15 +1285,15 @@ void VideoAudioDialog::handlePaletteChange()
 {
   const bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
 
-  myPhaseShiftLabel->setEnabled(enable);
+  myPhaseShiftLbl->setEnabled(enable);
   myPhaseShift->setEnabled(enable);
-  myTVRedScaleLabel->setEnabled(enable);
+  myTVRedScaleLbl->setEnabled(enable);
   myTVRedScale->setEnabled(enable);
   myTVRedShift->setEnabled(enable);
-  myTVGreenScaleLabel->setEnabled(enable);
+  myTVGreenScaleLbl->setEnabled(enable);
   myTVGreenScale->setEnabled(enable);
   myTVGreenShift->setEnabled(enable);
-  myTVBlueScaleLabel->setEnabled(enable);
+  myTVBlueScaleLbl->setEnabled(enable);
   myTVBlueScale->setEnabled(enable);
   myTVBlueShift->setEnabled(enable);
 }
@@ -1357,7 +1357,7 @@ void VideoAudioDialog::handleFullScreenChange()
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   myRefreshAdapt->setEnabled(enable);
 #endif
-  myTVOverscanLabel->setEnabled(enable);
+  myTVOverscanLbl->setEnabled(enable);
   myTVOverscan->setEnabled(enable);
 }
 
@@ -1377,7 +1377,7 @@ void VideoAudioDialog::handleOverscanChange()
 void VideoAudioDialog::handlePhosphorChange()
 {
   const bool enable = myTVPhosphor->getSelectedTag() != PhosphorHandler::VALUE_BYROM;
-  myTVPhosLevelLabel->setEnabled(enable);
+  myTVPhosLevelLbl->setEnabled(enable);
   myTVPhosLevel->setEnabled(enable);
 }
 
@@ -1390,13 +1390,13 @@ void VideoAudioDialog::handleBezelChange()
   myOpenBrowserButton->setEnabled(enable);
   myBezelPath->setEnabled(enable);
   myBezelShowWindowed->setEnabled(enable);
-  myWinLeftSliderLabel->setEnabled(enable && nonAuto);
+  myWinLeftSliderLbl->setEnabled(enable && nonAuto);
   myWinLeftSlider->setEnabled(enable && nonAuto);
-  myWinRightSliderLabel->setEnabled(enable && nonAuto);
+  myWinRightSliderLbl->setEnabled(enable && nonAuto);
   myWinRightSlider->setEnabled(enable && nonAuto);
-  myWinTopSliderLabel->setEnabled(enable && nonAuto);
+  myWinTopSliderLbl->setEnabled(enable && nonAuto);
   myWinTopSlider->setEnabled(enable && nonAuto);
-  myWinBottomSliderLabel->setEnabled(enable && nonAuto);
+  myWinBottomSliderLbl->setEnabled(enable && nonAuto);
   myWinBottomSlider->setEnabled(enable && nonAuto);
 }
 
@@ -1492,13 +1492,13 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       {
         myTVScanIntense->setValueLabel("Off");
         myTVScanIntense->setValueUnit("");
-        myTVScanMaskLabel->setEnabled(false);
+        myTVScanMaskLbl->setEnabled(false);
         myTVScanMask->setEnabled(false);
       }
       else
       {
         myTVScanIntense->setValueUnit("%");
-        myTVScanMaskLabel->setEnabled(true);
+        myTVScanMaskLbl->setEnabled(true);
         myTVScanMask->setEnabled(true);
       }
       break;
@@ -1564,7 +1564,7 @@ void VideoAudioDialog::createPaletteWidgets(TabPaneWidget* pane)
   for(int idx = 0; idx < NUM_CHROMA; ++idx)
   {
     // The chroma's hex digit, put in as the palette loads
-    myColorLbl[idx] = new StaticTextWidget(pane, ifont, "");
+    myColorLbl[idx] = new LabelWidget(pane, ifont, "");
     for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
       myColor[idx][lum] = new ColorWidget(pane, _font, 1, 1, 0, false);
@@ -1640,24 +1640,24 @@ void VideoAudioDialog::updateAudioEnabledState()
       (myModePopup->getSelectedTag().toInt());
   const bool userMode = preset == AudioSettings::Preset::custom;
 
-  myVolumeSliderLabel->setEnabled(active);
+  myVolumeSliderLbl->setEnabled(active);
   myVolumeSlider->setEnabled(active);
   myStereoSoundCheckbox->setEnabled(active);
-  myModePopupLabel->setEnabled(active);
+  myModePopupLbl->setEnabled(active);
   myModePopup->setEnabled(active);
   // enable only for Pitfall II cart
   const bool dpcEnable = active && instance().hasConsole() &&
       instance().console().cartridge().name() == "CartridgeDPC";
-  myDpcPitchLabel->setEnabled(dpcEnable);
+  myDpcPitchLbl->setEnabled(dpcEnable);
   myDpcPitch->setEnabled(dpcEnable);
 
-  myFreqPopupLabel->setEnabled(active && userMode);
+  myFreqPopupLbl->setEnabled(active && userMode);
   myFreqPopup->setEnabled(active && userMode);
-  myResamplingPopupLabel->setEnabled(active && userMode);
+  myResamplingPopupLbl->setEnabled(active && userMode);
   myResamplingPopup->setEnabled(active && userMode);
-  myHeadroomSliderLabel->setEnabled(active && userMode);
+  myHeadroomSliderLbl->setEnabled(active && userMode);
   myHeadroomSlider->setEnabled(active && userMode);
-  myBufferSizeSliderLabel->setEnabled(active && userMode);
+  myBufferSizeSliderLbl->setEnabled(active && userMode);
   myBufferSizeSlider->setEnabled(active && userMode);
 }
 

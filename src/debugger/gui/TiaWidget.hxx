@@ -21,7 +21,7 @@
 class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
-class StaticTextWidget;
+class LabelWidget;
 class TogglePixelWidget;
 class EditTextWidget;
 class ColorWidget;
@@ -66,21 +66,21 @@ class TiaWidget : public Widget, public CommandSender
 
     // Labels and buttons promoted from anonymous locals, so that the layout can
     // place them.  Grouped as they are built
-    std::array<StaticTextWidget*, 4> myColorRegLabels{nullptr};
-    std::array<StaticTextWidget*, 8> myDbgColorLabels{nullptr};
-    std::array<StaticTextWidget*, 5> myCollRowLabels{nullptr};
-    std::array<StaticTextWidget*, 5> myCollColLabels{nullptr};
-    std::array<StaticTextWidget*, 20> myPFBitLabels{nullptr};
-    StaticTextWidget* myPFLabel{nullptr};
-    StaticTextWidget* myQueuedWritesLabel{nullptr};
+    std::array<LabelWidget*, 4> myColorRegLabels{nullptr};
+    std::array<LabelWidget*, 8> myDbgColorLabels{nullptr};
+    std::array<LabelWidget*, 5> myCollRowLabels{nullptr};
+    std::array<LabelWidget*, 5> myCollColLabels{nullptr};
+    std::array<LabelWidget*, 20> myPFBitLabels{nullptr};
+    LabelWidget* myPFLbl{nullptr};
+    LabelWidget* myQueuedWritesLbl{nullptr};
 
     // One per register block: its name, then "Pos#"/"HM" and the block's fourth
     // label ("NuSiz" for a player, "Size" for a missile or the ball)
     struct BlockLabels {
-      StaticTextWidget* name{nullptr};
-      StaticTextWidget* pos{nullptr};
-      StaticTextWidget* hm{nullptr};
-      StaticTextWidget* size{nullptr};
+      LabelWidget* name{nullptr};
+      LabelWidget* pos{nullptr};
+      LabelWidget* hm{nullptr};
+      LabelWidget* size{nullptr};
     };
     // P0, P1, M0, M1, BL, in that order
     std::array<BlockLabels, 5> myBlockLabels{};

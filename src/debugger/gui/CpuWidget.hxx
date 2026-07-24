@@ -100,12 +100,12 @@ class CpuWidget : public Widget, public CommandSender
     EditTextWidget*  myCpuDataDest{nullptr};
 
     // Labels promoted from anonymous locals so the reflow can reposition them
-    StaticTextWidget* myPCText{nullptr};
-    StaticTextWidget* myPSText{nullptr};
-    StaticTextWidget* myDestText{nullptr};
-    std::array<StaticTextWidget*, 4> myRegLabels{nullptr};  // SP/A/X/Y
-    std::array<StaticTextWidget*, 4> myDecPrefix{nullptr};  // '#'
-    std::array<StaticTextWidget*, 4> myBinPrefix{nullptr};  // '%'
+    LabelWidget* myPCText{nullptr};
+    LabelWidget* myPSText{nullptr};
+    LabelWidget* myDestText{nullptr};
+    std::array<LabelWidget*, 4> myRegLabels{nullptr};  // SP/A/X/Y
+    std::array<LabelWidget*, 4> myDecPrefix{nullptr};  // '#'
+    std::array<LabelWidget*, 4> myBinPrefix{nullptr};  // '%'
 
   private:
     // Following constructors and assignment operators not supported

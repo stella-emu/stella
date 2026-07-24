@@ -19,7 +19,7 @@
 #define INPUT_TEXT_DIALOG_HXX
 
 class GuiObject;
-class StaticTextWidget;
+class LabelWidget;
 class EditTextWidget;
 
 #include "Dialog.hxx"
@@ -69,9 +69,9 @@ class InputTextDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    vector<StaticTextWidget*> myLabel;
+    vector<LabelWidget*> myLbl;
     vector<EditTextWidget*> myInput;
-    StaticTextWidget* myMessage{nullptr};
+    LabelWidget* myMessage{nullptr};
 
     // Dialog width (in characters) and per-input character limit (0 = fill),
     // both needed by layout() to reflow from the current font

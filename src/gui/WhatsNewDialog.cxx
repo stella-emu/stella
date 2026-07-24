@@ -62,11 +62,11 @@ void WhatsNewDialog::add(string_view text)
     int i = MAX_CHARS;
 
     while(--i && txt[i] != ' ');  // NOLINT(bugprone-inc-dec-in-conditions)
-    myLines.push_back(new StaticTextWidget(this, _font, txt.substr(0, i)));
+    myLines.push_back(new LabelWidget(this, _font, txt.substr(0, i)));
     myLineAdvance.push_back(fontHeight);
     txt = " " + txt.substr(i);
   }
-  myLines.push_back(new StaticTextWidget(this, _font, txt));
+  myLines.push_back(new LabelWidget(this, _font, txt));
   myLineAdvance.push_back(lineHeight);
 }
 

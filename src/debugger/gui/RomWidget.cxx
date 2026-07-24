@@ -37,7 +37,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create the bank display and the listing at a placeholder position/size;
   // reflow() positions and sizes them for the area the widget occupies
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myInfoLabel = new StaticTextWidget(boss, lfont, "Info ");
+  myInfoLbl = new LabelWidget(boss, lfont, "Info ");
 
   myBank = new EditTextWidget(boss, nfont, 1);
   myBank->setEditable(false);
@@ -81,7 +81,7 @@ void RomWidget::reflow()
 
   // The bank info row: a label, then the bank display filling the rest
   auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-  infoRow->addAuto(anchoredItem(myInfoLabel));
+  infoRow->addAuto(anchoredItem(myInfoLbl));
   infoRow->addStretch(alignedItem(myBank, HAlign::Fill, VAlign::Center));
   root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
 

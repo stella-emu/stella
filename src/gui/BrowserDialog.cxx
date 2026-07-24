@@ -71,7 +71,7 @@ void BrowserDialog::initialize(int max_w, int max_h)
   _navigationBar->setList(_fileList);
 
   // Currently selected item
-  _name = new StaticTextWidget(this, _font, "Name");
+  _name = new LabelWidget(this, _font, "Name");
   _selected = new EditTextWidget(this, _font, 1);
   addFocusWidget(_selected);
 

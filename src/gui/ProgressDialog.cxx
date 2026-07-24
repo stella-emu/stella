@@ -35,7 +35,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 {
   WidgetArray wid;
 
-  myMessage = new StaticTextWidget(this, font, message,
+  myMessage = new LabelWidget(this, font, message,
                                    TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 

@@ -23,7 +23,7 @@ class GuiObject;
 class DialogContainer;
 class ButtonWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -32,15 +32,13 @@ class StaticTextWidget;
 class RomAuditDialog : public Dialog
 {
   public:
-    RomAuditDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font);
+    RomAuditDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~RomAuditDialog() override;
 
     void loadConfig() override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void layout() override;
 
   private:
@@ -56,13 +54,13 @@ class RomAuditDialog : public Dialog
     EditTextWidget* myRomPath{nullptr};
 
     // Show the results of the ROM audit
-    StaticTextWidget* myRenamedLabel{nullptr};
-    EditTextWidget*   myResults1{nullptr};
-    StaticTextWidget* mySkippedLabel{nullptr};
-    EditTextWidget*   myResults2{nullptr};
+    LabelWidget*    myRenamedLbl{nullptr};
+    EditTextWidget* myResults1{nullptr};
+    LabelWidget*    mySkippedLbl{nullptr};
+    EditTextWidget* myResults2{nullptr};
 
     // Inline warning about the dangers of using this function
-    StaticTextWidget* myWarningLabel{nullptr};
+    LabelWidget* myWarningLbl{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

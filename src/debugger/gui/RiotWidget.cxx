@@ -66,7 +66,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   int reg = 0;
   const auto ioReg = [&](string_view desc, uInt8 bitsID) {
-    myRegLabel[reg++] = new StaticTextWidget(boss, lfont, desc);
+    myRegLbl[reg++] = new LabelWidget(boss, lfont, desc);
     auto* wid = new ToggleBitWidget(boss, nfont, 8, 1, 1, labels);
     wid->setTarget(this);
     wid->setID(bitsID);
@@ -102,12 +102,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     "TIM1T", "TIM8T", "TIM64T", "T1024T"
   };
   for(int row = 0; row < 4; ++row)
-    myTimWriteLabel[row] = new StaticTextWidget(boss, lfont, writeNames[row]);
+    myTimWriteLbl[row] = new LabelWidget(boss, lfont, writeNames[row]);
   myTimWrite = new DataGridWidget(boss, nfont, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
-  myTimHash[0] = new StaticTextWidget(boss, lfont, "#");
+  myTimHash[0] = new LabelWidget(boss, lfont, "#");
   myTimAvail = new DataGridWidget(boss, nfont, 1, 1, 6, 30, Common::Base::Fmt::_10_6);
   myTimAvail->setToolTip("Number of CPU cycles available for current timer interval.\n");
   myTimAvail->setTarget(this);
@@ -118,14 +118,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     "INTIM", " Clocks", "TIMINT", "Divider #"
   };
   for(int row = 0; row < 4; ++row)
-    myTimReadLabel[row] = new StaticTextWidget(boss, lfont, readNames[row]);
+    myTimReadLbl[row] = new LabelWidget(boss, lfont, readNames[row]);
   myTimRead = new DataGridWidget(boss, nfont, 1, 3, 4, 30, Common::Base::Fmt::_16_2);
   myTimRead->setToolTip(0, 1, "Remaining timer interval clocks.\n");
   myTimRead->setToolTip(0, 2, "Timer interrupt flag in bit 7.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
-  myTimHash[1] = new StaticTextWidget(boss, lfont, "#");
-  myTimHash[2] = new StaticTextWidget(boss, lfont, "#");
+  myTimHash[1] = new LabelWidget(boss, lfont, "#");
+  myTimHash[2] = new LabelWidget(boss, lfont, "#");
   myTimTotal = new DataGridWidget(boss, nfont, 1, 2, 6, 30, Common::Base::Fmt::_10_6);
   myTimTotal->setToolTip(0, 0, "Number of CPU cycles since last TIMxxT write.\n");
   myTimTotal->setToolTip(0, 1, "Number of CPU cycles remaining.\n");
@@ -149,8 +149,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<string_view, 3> rightINPTNames = {"INPT2", "INPT3", "INPT5"};
   for(int row = 0; row < 3; ++row)
   {
-    myLeftINPTLabel[row]  = new StaticTextWidget(boss, lfont, leftINPTNames[row]);
-    myRightINPTLabel[row] = new StaticTextWidget(boss, lfont, rightINPTNames[row]);
+    myLeftINPTLbl[row]  = new LabelWidget(boss, lfont, leftINPTNames[row]);
+    myRightINPTLbl[row] = new LabelWidget(boss, lfont, rightINPTNames[row]);
   }
   myLeftINPT = new DataGridWidget(boss, nfont, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
@@ -171,11 +171,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
-  myP0DiffLabel = new StaticTextWidget(boss, lfont, "Left Diff");
+  myP0DiffLbl = new LabelWidget(boss, lfont, "Left Diff");
   myP0Diff = new PopUpWidget(boss, lfont, items, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
-  myP1DiffLabel = new StaticTextWidget(boss, lfont, "Right Diff");
+  myP1DiffLbl = new LabelWidget(boss, lfont, "Right Diff");
   myP1Diff = new PopUpWidget(boss, lfont, items, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
@@ -184,7 +184,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
-  myTVTypeLabel = new StaticTextWidget(boss, lfont, "TV Type");
+  myTVTypeLbl = new LabelWidget(boss, lfont, "TV Type");
   myTVType = new PopUpWidget(boss, lfont, items, kTVTypeChanged);
   myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
@@ -194,7 +194,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  myConsoleLabel = new StaticTextWidget(boss, lfont, "Console");
+  myConsoleLbl = new LabelWidget(boss, lfont, "Console");
   myConsole = new PopUpWidget(boss, lfont, items, kConsoleID);
   myConsole->setTarget(this);
   myConsole->setToolTip("Emulated console.");
@@ -268,19 +268,19 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
 
   // Six I/O bit registers: label + 8-bit toggle, a wider gap between the groups
-  const auto regRow = [&](StaticTextWidget* label, ToggleBitWidget* bits) {
+  const auto regRow = [&](LabelWidget* label, ToggleBitWidget* bits) {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
     row->addFixed(onBaseline(label), lwidth);
     row->addFixed(onBaseline(bits), bits->getWidth());
     return row;
   };
-  left->addAuto(regRow(myRegLabel[0], mySWCHAWriteBits));
-  left->addAuto(regRow(myRegLabel[1], mySWACNTBits));
-  left->addAuto(regRow(myRegLabel[2], mySWCHAReadBits));
+  left->addAuto(regRow(myRegLbl[0], mySWCHAWriteBits));
+  left->addAuto(regRow(myRegLbl[1], mySWACNTBits));
+  left->addAuto(regRow(myRegLbl[2], mySWCHAReadBits));
   left->addSpace(VGAP * 2);
-  left->addAuto(regRow(myRegLabel[3], mySWCHBWriteBits));
-  left->addAuto(regRow(myRegLabel[4], mySWBCNTBits));
-  left->addAuto(regRow(myRegLabel[5], mySWCHBReadBits));
+  left->addAuto(regRow(myRegLbl[3], mySWCHBWriteBits));
+  left->addAuto(regRow(myRegLbl[4], mySWBCNTBits));
+  left->addAuto(regRow(myRegLbl[5], mySWCHBReadBits));
   left->addSpace(VGAP * 4);
 
   // The write grid is 2 chars wide, the read/divider grids 4; giving both the
@@ -291,7 +291,7 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   // abuts its readout (gaps added explicitly so the two stay centered but touch)
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(gridLabels(myTimWriteLabel, myTimWrite), lwidth);
+    row->addFixed(gridLabels(myTimWriteLbl, myTimWrite), lwidth);
     row->addFixed(anchoredItem(myTimWrite), gridColW);
     row->addSpace(HGAP);
     row->addAuto(anchoredItem(myTimHash[0]));
@@ -304,9 +304,9 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   // half a row down, centered against the 3 read rows; its two "#" ride along
   // (both top-aligned within the block, so gridLabels pairs each "#" to its row)
   {
-    const std::array<StaticTextWidget*, 3> readLbls =
-      {myTimReadLabel[0], myTimReadLabel[1], myTimReadLabel[2]};
-    const std::array<StaticTextWidget*, 2> hashLbls =
+    const std::array<LabelWidget*, 3> readLbls =
+      {myTimReadLbl[0], myTimReadLbl[1], myTimReadLbl[2]};
+    const std::array<LabelWidget*, 2> hashLbls =
       {myTimHash[1], myTimHash[2]};
 
     auto total = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -327,7 +327,7 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   // Timer divider: its own labeled row, value aligned under the read grid
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(onBaseline(myTimReadLabel[3]), lwidth);
+    row->addFixed(onBaseline(myTimReadLbl[3]), lwidth);
     row->addFixed(onBaseline(myTimDivider), gridColW);
     left->addAuto(std::move(row));
   }
@@ -336,7 +336,7 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   // Console 2600/7800 selector
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(onBaseline(myConsoleLabel), lwidth);
+    row->addFixed(onBaseline(myConsoleLbl), lwidth);
     row->addAuto(anchoredItem(myConsole));
     left->addAuto(std::move(row));
   }
@@ -362,8 +362,8 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
   };
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 3);
-    row->addAuto(inptCluster(myLeftINPTLabel, myLeftINPT));
-    row->addAuto(inptCluster(myRightINPTLabel, myRightINPT));
+    row->addAuto(inptCluster(myLeftINPTLbl, myLeftINPT));
+    row->addAuto(inptCluster(myRightINPTLbl, myRightINPT));
     right->addAuto(std::move(row));
   }
   right->addSpace(VGAP);
@@ -375,18 +375,18 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
 
   // Switches: the diff/TV pop-ups' labels line up as one column, the
   // Select/Reset/Pause checkboxes beside them, row for row
-  GUI::alignLabels({{myP0DiffLabel}, {myP1DiffLabel}, {myTVTypeLabel}});
+  GUI::alignLabels({{myP0DiffLbl}, {myP1DiffLbl}, {myTVTypeLbl}});
   GUI::alignPopUps({myP0Diff, myP1Diff, myTVType});
   {
     auto grid = std::make_unique<GridLayout>(2, 3, HGAP * 2, VGAP);
     grid->columnAuto(0).columnAuto(1);
     for(int r = 0; r < 3; ++r)
       grid->rowAuto(r);
-    grid->place(0, 0, labeledRow(myP0DiffLabel, myP0Diff));
+    grid->place(0, 0, labeledRow(myP0DiffLbl, myP0Diff));
     grid->place(1, 0, anchoredItem(mySelect));
-    grid->place(0, 1, labeledRow(myP1DiffLabel, myP1Diff));
+    grid->place(0, 1, labeledRow(myP1DiffLbl, myP1Diff));
     grid->place(1, 1, anchoredItem(myReset));
-    grid->place(0, 2, labeledRow(myTVTypeLabel, myTVType));
+    grid->place(0, 2, labeledRow(myTVTypeLbl, myTVType));
     grid->place(1, 2, anchoredItem(myPause));
     right->addAuto(std::move(grid));
   }
@@ -492,10 +492,10 @@ void RiotWidget::loadConfig()
   alist.push_back(kTim1024TID);  vlist.push_back(state.T1024T);
     changed.push_back(state.T1024T != oldstate.T1024T);
   myTimWrite->setList(alist, vlist, changed);
-  myTimWriteLabel[0]->setEnabled(state.TIM1T);
-  myTimWriteLabel[1]->setEnabled(state.TIM8T);
-  myTimWriteLabel[2]->setEnabled(state.TIM64T);
-  myTimWriteLabel[3]->setEnabled(state.T1024T);
+  myTimWriteLbl[0]->setEnabled(state.TIM1T);
+  myTimWriteLbl[1]->setEnabled(state.TIM8T);
+  myTimWriteLbl[2]->setEnabled(state.TIM64T);
+  myTimWriteLbl[3]->setEnabled(state.T1024T);
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
@@ -717,7 +717,7 @@ void RiotWidget::handleConsole()
   const bool is7800 = instance().settings().getString(
     devSettings ? "dev.console" : "plr.console") == "7800";
 
-  myTVTypeLabel->setEnabled(!is7800);
+  myTVTypeLbl->setEnabled(!is7800);
   myTVType->setEnabled(!is7800);
   myPause->setEnabled(is7800);
   if(is7800)

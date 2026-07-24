@@ -57,7 +57,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     "COLUP0", "COLUP1", "COLUPF", "COLUBK"
   };
   for(int row = 0; row < 4; ++row)
-    myColorRegLabels[row] = new StaticTextWidget(boss, lfont, regNames[row]);
+    myColorRegLabels[row] = new LabelWidget(boss, lfont, regNames[row]);
 
   myColorRegs = new DataGridWidget(boss, nfont,
                                    1, 4, 2, 8, Common::Base::Fmt::_16);
@@ -89,7 +89,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   };
   for(uInt32 row = 0; row < 8; ++row)
   {
-    myDbgColorLabels[row] = new StaticTextWidget(boss, lfont, dbgLabels[row]);
+    myDbgColorLabels[row] = new LabelWidget(boss, lfont, dbgLabels[row]);
     myFixedColors[row] = swatch();
   }
 
@@ -102,8 +102,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   int idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
-    myCollRowLabels[row] = new StaticTextWidget(boss, lfont, rowLabel[row]);
-    myCollColLabels[row] = new StaticTextWidget(boss, lfont, colLabel[row]);
+    myCollRowLabels[row] = new LabelWidget(boss, lfont, rowLabel[row]);
+    myCollColLabels[row] = new LabelWidget(boss, lfont, colLabel[row]);
 
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
@@ -123,10 +123,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // P0 register info
   ////////////////////////////
-  myBlockLabels[0].name = new StaticTextWidget(boss, lfont, "P0");
-  myBlockLabels[0].pos  = new StaticTextWidget(boss, lfont, "Pos#");
-  myBlockLabels[0].hm   = new StaticTextWidget(boss, lfont, "HM");
-  myBlockLabels[0].size = new StaticTextWidget(boss, lfont, "NuSiz");
+  myBlockLabels[0].name = new LabelWidget(boss, lfont, "P0");
+  myBlockLabels[0].pos  = new LabelWidget(boss, lfont, "Pos#");
+  myBlockLabels[0].hm   = new LabelWidget(boss, lfont, "HM");
+  myBlockLabels[0].size = new LabelWidget(boss, lfont, "NuSiz");
 
   // grP0 (new)
   myGRP0 = new TogglePixelWidget(boss, nfont, 8, 1);
@@ -190,10 +190,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // P1 register info
   ////////////////////////////
-  myBlockLabels[1].name = new StaticTextWidget(boss, lfont, "P1");
-  myBlockLabels[1].pos  = new StaticTextWidget(boss, lfont, "Pos#");
-  myBlockLabels[1].hm   = new StaticTextWidget(boss, lfont, "HM");
-  myBlockLabels[1].size = new StaticTextWidget(boss, lfont, "NuSiz");
+  myBlockLabels[1].name = new LabelWidget(boss, lfont, "P1");
+  myBlockLabels[1].pos  = new LabelWidget(boss, lfont, "Pos#");
+  myBlockLabels[1].hm   = new LabelWidget(boss, lfont, "HM");
+  myBlockLabels[1].size = new LabelWidget(boss, lfont, "NuSiz");
 
   // grP1 (new)
   myGRP1 = new TogglePixelWidget(boss, nfont, 8, 1);
@@ -257,10 +257,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // M0 register info
   ////////////////////////////
-  myBlockLabels[2].name = new StaticTextWidget(boss, lfont, "M0");
-  myBlockLabels[2].pos  = new StaticTextWidget(boss, lfont, "Pos#");
-  myBlockLabels[2].hm   = new StaticTextWidget(boss, lfont, "HM");
-  myBlockLabels[2].size = new StaticTextWidget(boss, lfont, "Size");
+  myBlockLabels[2].name = new LabelWidget(boss, lfont, "M0");
+  myBlockLabels[2].pos  = new LabelWidget(boss, lfont, "Pos#");
+  myBlockLabels[2].hm   = new LabelWidget(boss, lfont, "HM");
+  myBlockLabels[2].size = new LabelWidget(boss, lfont, "Size");
 
   // enaM0
   myEnaM0 = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -307,10 +307,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // M1 register info
   ////////////////////////////
-  myBlockLabels[3].name = new StaticTextWidget(boss, lfont, "M1");
-  myBlockLabels[3].pos  = new StaticTextWidget(boss, lfont, "Pos#");
-  myBlockLabels[3].hm   = new StaticTextWidget(boss, lfont, "HM");
-  myBlockLabels[3].size = new StaticTextWidget(boss, lfont, "Size");
+  myBlockLabels[3].name = new LabelWidget(boss, lfont, "M1");
+  myBlockLabels[3].pos  = new LabelWidget(boss, lfont, "Pos#");
+  myBlockLabels[3].hm   = new LabelWidget(boss, lfont, "HM");
+  myBlockLabels[3].size = new LabelWidget(boss, lfont, "Size");
 
   // enaM1
   myEnaM1 = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -357,10 +357,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // BL register info
   ////////////////////////////
-  myBlockLabels[4].name = new StaticTextWidget(boss, lfont, "BL");
-  myBlockLabels[4].pos  = new StaticTextWidget(boss, lfont, "Pos#");
-  myBlockLabels[4].hm   = new StaticTextWidget(boss, lfont, "HM");
-  myBlockLabels[4].size = new StaticTextWidget(boss, lfont, "Size");
+  myBlockLabels[4].name = new LabelWidget(boss, lfont, "BL");
+  myBlockLabels[4].pos  = new LabelWidget(boss, lfont, "Pos#");
+  myBlockLabels[4].hm   = new LabelWidget(boss, lfont, "HM");
+  myBlockLabels[4].size = new LabelWidget(boss, lfont, "Size");
 
   // enaBL
   myEnaBL = new TogglePixelWidget(boss, nfont, 1, 1);
@@ -419,7 +419,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     "0", "1", "2", "3", "4", "5", "6", "7"
   };
 
-  myPFLabel = new StaticTextWidget(boss, lfont, "PF");
+  myPFLbl = new LabelWidget(boss, lfont, "PF");
 
   // PF0 is four bits wide at double width; PF1 and PF2 are eight
   myPF[0] = new TogglePixelWidget(boss, nfont, 4, 1, 4);
@@ -444,11 +444,11 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   {
     int label = 0;
     for(int i = 4; i <= 7; ++i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
+      myPFBitLabels[label++] = new LabelWidget(boss, sf, bitNames[i]);
     for(int i = 7; i >= 0; --i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
+      myPFBitLabels[label++] = new LabelWidget(boss, sf, bitNames[i]);
     for(int i = 0; i <= 7; ++i)
-      myPFBitLabels[label++] = new StaticTextWidget(boss, sf, bitNames[i]);
+      myPFBitLabels[label++] = new LabelWidget(boss, sf, bitNames[i]);
   }
 
   // PF reflect, score, priority
@@ -470,7 +470,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
-  myQueuedWritesLabel = new StaticTextWidget(boss, lfont, "Queued Writes");
+  myQueuedWritesLbl = new LabelWidget(boss, lfont, "Queued Writes");
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont);
 
   ////////////////////////////
@@ -825,7 +825,7 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
       pfBlock->place(pfFirst[reg], 1, anchoredItem(myPF[reg]), pfCount[reg]);
     }
   }
-  pfBlock->place(PF_NAME, 1, onBaseline(myPFLabel));
+  pfBlock->place(PF_NAME, 1, onBaseline(myPFLbl));
 
   auto pfFlags = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP * 2);
   pfFlags->addAuto(anchoredItem(myRefPF));
@@ -850,7 +850,7 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
   strobes->place(1, 1, anchoredItem(myStrobeButtons[3]));
 
   auto queueRow = std::make_unique<BoxLayout>(Dir::Horizontal, HGAP);
-  queueRow->addAuto(onBaseline(myQueuedWritesLabel));
+  queueRow->addAuto(onBaseline(myQueuedWritesLbl));
   queueRow->addAuto(anchoredItem(myDelayQueueWidget));
   queueRow->addSpace(HGAP * 2);
   queueRow->addAuto(std::move(strobes));

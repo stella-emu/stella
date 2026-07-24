@@ -49,44 +49,44 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "4 ($FFFA)");
   VarList::push_back(items, "5 ($FFFB)");
 
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   // The DPC+ registers, each a labelled row of a grid
-  const auto addRegisters = [&](StaticTextWidget*& label, string_view text,
+  const auto addRegisters = [&](LabelWidget*& label, string_view text,
                                 DataGridWidget*& grid, int cols, int rows,
                                 int colchars, int bits, Common::Base::Fmt fmt) {
-    label = new StaticTextWidget(boss, _font, text);
+    label = new LabelWidget(boss, _font, text);
 
     grid = new DataGridWidget(boss, _nfont, cols, rows, colchars, bits, fmt);
     grid->setTarget(this);
     grid->setEditable(false);
   };
 
-  addRegisters(myTopsLabel,        "Top Registers",     myTops,        8, 1, 2,  8,
+  addRegisters(myTopsLbl, "Top Registers", myTops, 8, 1, 2, 8,
                Common::Base::Fmt::_16);
-  addRegisters(myBottomsLabel,     "Bottom Registers",  myBottoms,     8, 1, 2,  8,
+  addRegisters(myBottomsLbl, "Bottom Registers", myBottoms, 8, 1, 2, 8,
                Common::Base::Fmt::_16);
-  addRegisters(myCountersLabel,    "Counter Registers", myCounters,    8, 1, 4, 16,
+  addRegisters(myCountersLbl, "Counter Registers", myCounters, 8, 1, 4, 16,
                Common::Base::Fmt::_16_4);
-  addRegisters(myFracCountersLabel, "Frac Counters",    myFracCounters, 4, 2, 8, 32,
+  addRegisters(myFracCountersLbl, "Frac Counters", myFracCounters, 4, 2, 8, 32,
                Common::Base::Fmt::_16_8);
-  addRegisters(myFracIncrementsLabel, "Frac Increments", myFracIncrements, 8, 1, 2, 8,
+  addRegisters(myFracIncrementsLbl, "Frac Increments", myFracIncrements, 8, 1, 2, 8,
                Common::Base::Fmt::_16);
-  addRegisters(myParameterLabel,   "Function Params",   myParameter,   8, 1, 2,  8,
+  addRegisters(myParameterLbl,   "Function Params", myParameter,  8, 1, 2, 8,
                Common::Base::Fmt::_16);
-  addRegisters(myMusicCountersLabel, "Music Counters",  myMusicCounters, 3, 1, 8, 32,
+  addRegisters(myMusicCountersLbl, "Music Counters", myMusicCounters, 3, 1, 8, 32,
                Common::Base::Fmt::_16_8);
-  addRegisters(myMusicFrequenciesLabel, "Music Frequencies", myMusicFrequencies, 3, 1, 8, 32,
+  addRegisters(myMusicFrequenciesLbl, "Music Frequencies", myMusicFrequencies, 3, 1, 8, 32,
                Common::Base::Fmt::_16_8);
-  addRegisters(myMusicWaveformsLabel, "Music Waveforms", myMusicWaveforms, 3, 1, 4, 16,
+  addRegisters(myMusicWaveformsLbl, "Music Waveforms", myMusicWaveforms, 3, 1, 4, 16,
                Common::Base::Fmt::_16_4);
-  addRegisters(myRandomLabel,      "Current random number", myRandom,  1, 1, 8, 32,
+  addRegisters(myRandomLbl, "Current random number", myRandom,  1, 1, 8, 32,
                Common::Base::Fmt::_16_8);
 
   // Fast fetch and immediate mode LDA flags
@@ -112,24 +112,24 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
   using Dir = BoxLayout::Dir;
 
   // Every register row shares one label column
-  GUI::alignLabels({{myTopsLabel}, {myBottomsLabel}, {myCountersLabel},
-                    {myFracCountersLabel}, {myFracIncrementsLabel},
-                    {myParameterLabel}, {myMusicCountersLabel},
-                    {myMusicFrequenciesLabel}, {myMusicWaveformsLabel},
-                    {myRandomLabel}});
+  GUI::alignLabels({{myTopsLbl}, {myBottomsLbl}, {myCountersLbl},
+                    {myFracCountersLbl}, {myFracIncrementsLbl},
+                    {myParameterLbl}, {myMusicCountersLbl},
+                    {myMusicFrequenciesLbl}, {myMusicWaveformsLbl},
+                    {myRandomLbl}});
 
-  col.addAuto(labeledRow(myBankLabel, myBank));
+  col.addAuto(labeledRow(myBankLbl, myBank));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(labeledRow(myTopsLabel,           myTops));
-  col.addAuto(labeledRow(myBottomsLabel,        myBottoms));
-  col.addAuto(labeledRow(myCountersLabel,       myCounters));
-  col.addAuto(labeledRow(myFracCountersLabel,   myFracCounters));
-  col.addAuto(labeledRow(myFracIncrementsLabel, myFracIncrements));
-  col.addAuto(labeledRow(myParameterLabel,      myParameter));
-  col.addAuto(labeledRow(myMusicCountersLabel,  myMusicCounters));
-  col.addAuto(labeledRow(myMusicFrequenciesLabel, myMusicFrequencies));
-  col.addAuto(labeledRow(myMusicWaveformsLabel, myMusicWaveforms));
+  col.addAuto(labeledRow(myTopsLbl,             myTops));
+  col.addAuto(labeledRow(myBottomsLbl,          myBottoms));
+  col.addAuto(labeledRow(myCountersLbl,         myCounters));
+  col.addAuto(labeledRow(myFracCountersLbl,     myFracCounters));
+  col.addAuto(labeledRow(myFracIncrementsLbl,   myFracIncrements));
+  col.addAuto(labeledRow(myParameterLbl,        myParameter));
+  col.addAuto(labeledRow(myMusicCountersLbl,    myMusicCounters));
+  col.addAuto(labeledRow(myMusicFrequenciesLbl, myMusicFrequencies));
+  col.addAuto(labeledRow(myMusicWaveformsLbl,   myMusicWaveforms));
 
   // The random number, with the two fetcher flags stacked beside it
   auto flags = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
@@ -137,7 +137,7 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
   flags->addAuto(anchoredItem(myIMLDA));
 
   auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  row->addAuto(labeledRow(myRandomLabel, myRandom));
+  row->addAuto(labeledRow(myRandomLbl, myRandom));
   row->addAuto(std::move(flags));
 
   col.addAuto(std::move(row));

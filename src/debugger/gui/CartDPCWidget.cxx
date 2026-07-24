@@ -58,39 +58,39 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   for(int bank = 0; bank < 2; ++bank)
     VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   // The data fetcher registers, each a labelled row of a grid
-  myFetcherLabel = new StaticTextWidget(boss, _font, "Data fetchers");
+  myFetcherLbl = new LabelWidget(boss, _font, "Data fetchers");
 
-  const auto addRegisters = [&](StaticTextWidget*& label, string_view text,
+  const auto addRegisters = [&](LabelWidget*& label, string_view text,
                                 DataGridWidget*& grid, int cols, int colchars,
                                 int bits, Common::Base::Fmt fmt) {
-    label = new StaticTextWidget(boss, _font, text);
+    label = new LabelWidget(boss, _font, text);
 
     grid = new DataGridWidget(boss, _nfont, cols, 1, colchars, bits, fmt);
     grid->setTarget(this);
     grid->setEditable(false);
   };
 
-  addRegisters(myTopsLabel,     "Top registers",     myTops,     8, 2,  8,
+  addRegisters(myTopsLbl,     "Top registers",     myTops,     8, 2,  8,
                Common::Base::Fmt::_16);
-  addRegisters(myBottomsLabel,  "Bottom registers",  myBottoms,  8, 2,  8,
+  addRegisters(myBottomsLbl,  "Bottom registers",  myBottoms,  8, 2,  8,
                Common::Base::Fmt::_16);
-  addRegisters(myCountersLabel, "Counter registers", myCounters, 8, 4, 16,
+  addRegisters(myCountersLbl, "Counter registers", myCounters, 8, 4, 16,
                Common::Base::Fmt::_16_4);
-  addRegisters(myFlagsLabel,    "Flag registers",    myFlags,    8, 2,  8,
+  addRegisters(myFlagsLbl,    "Flag registers",    myFlags,    8, 2,  8,
                Common::Base::Fmt::_16);
 
-  addRegisters(myMusicModeLabel, "Music mode (DF5/DF6/DF7)", myMusicMode, 3, 2, 8,
+  addRegisters(myMusicModeLbl, "Music mode (DF5/DF6/DF7)", myMusicMode, 3, 2, 8,
                Common::Base::Fmt::_16);
-  addRegisters(myRandomLabel,    "Current random number",    myRandom,    1, 2, 8,
+  addRegisters(myRandomLbl,    "Current random number",    myRandom,    1, 2, 8,
                Common::Base::Fmt::_16);
 
   reflow();
@@ -106,22 +106,22 @@ void CartridgeDPCWidget::layoutContent(GUI::BoxLayout& col) const
   // share a label column; the two rows below it share the tab's left edge
   const int indent = _fontWidth * 2;
 
-  GUI::alignLabels({{myTopsLabel, indent}, {myBottomsLabel, indent},
-                    {myCountersLabel, indent}, {myFlagsLabel, indent}});
-  GUI::alignLabels({{myMusicModeLabel}, {myRandomLabel}});
+  GUI::alignLabels({{myTopsLbl, indent}, {myBottomsLbl, indent},
+                    {myCountersLbl, indent}, {myFlagsLbl, indent}});
+  GUI::alignLabels({{myMusicModeLbl}, {myRandomLbl}});
 
-  col.addAuto(labeledRow(myBankLabel, myBank));
-
-  col.addSpace(_lineHeight);
-  col.addAuto(anchoredItem(myFetcherLabel));
-  col.addAuto(labeledRow(myTopsLabel,     myTops,     0, indent));
-  col.addAuto(labeledRow(myBottomsLabel,  myBottoms,  0, indent));
-  col.addAuto(labeledRow(myCountersLabel, myCounters, 0, indent));
-  col.addAuto(labeledRow(myFlagsLabel,    myFlags,    0, indent));
+  col.addAuto(labeledRow(myBankLbl, myBank));
 
   col.addSpace(_lineHeight);
-  col.addAuto(labeledRow(myMusicModeLabel, myMusicMode));
-  col.addAuto(labeledRow(myRandomLabel,    myRandom));
+  col.addAuto(anchoredItem(myFetcherLbl));
+  col.addAuto(labeledRow(myTopsLbl,     myTops,     0, indent));
+  col.addAuto(labeledRow(myBottomsLbl,  myBottoms,  0, indent));
+  col.addAuto(labeledRow(myCountersLbl, myCounters, 0, indent));
+  col.addAuto(labeledRow(myFlagsLbl,    myFlags,    0, indent));
+
+  col.addSpace(_lineHeight);
+  col.addAuto(labeledRow(myMusicModeLbl, myMusicMode));
+  col.addAuto(labeledRow(myRandomLbl,    myRandom));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

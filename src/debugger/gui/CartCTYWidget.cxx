@@ -49,13 +49,13 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "6 ($FFFA)");
   VarList::push_back(items, "7 ($FFFB)");
 
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   reflow();
 }
@@ -63,7 +63,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTYWidget::layoutContent(GUI::BoxLayout& col) const
 {
-  col.addAuto(GUI::labeledRow(myBankLabel, myBank));
+  col.addAuto(GUI::labeledRow(myBankLbl, myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

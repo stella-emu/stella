@@ -65,20 +65,20 @@ class CartridgeARMWidget : public CartDebugWidget
 
     CartridgeARM& myCart;
 
-    CheckboxWidget*   myIncCycles{nullptr};
-    StaticTextWidget* myCycleFactorLabel{nullptr};
-    SliderWidget*     myCycleFactor{nullptr};
-    StaticTextWidget* myChipTypeLabel{nullptr};
-    PopUpWidget*      myChipType{nullptr};
-    CheckboxWidget*   myLockMamMode{nullptr};
-    PopUpWidget*      myMamMode{nullptr};
-    StaticTextWidget* myArmCyclesLabel{nullptr};
-    StaticTextWidget* myInstructionsLabel{nullptr};
-    StaticTextWidget* myCyclesLabel{nullptr};
-    DataGridWidget*   myPrevThumbCycles{nullptr};
-    DataGridWidget*   myPrevThumbInstructions{nullptr};
-    DataGridWidget*   myThumbCycles{nullptr};
-    DataGridWidget*   myThumbInstructions{nullptr};
+    CheckboxWidget*  myIncCycles{nullptr};
+    LabelWidget*     myCycleFactorLbl{nullptr};
+    SliderWidget*    myCycleFactor{nullptr};
+    LabelWidget*     myChipTypeLbl{nullptr};
+    PopUpWidget*     myChipType{nullptr};
+    CheckboxWidget*  myLockMamMode{nullptr};
+    PopUpWidget*     myMamMode{nullptr};
+    LabelWidget*     myArmCyclesLbl{nullptr};
+    LabelWidget*     myInstructionsLbl{nullptr};
+    LabelWidget*     myCyclesLbl{nullptr};
+    DataGridWidget*  myPrevThumbCycles{nullptr};
+    DataGridWidget*  myPrevThumbInstructions{nullptr};
+    DataGridWidget*  myThumbCycles{nullptr};
+    DataGridWidget*  myThumbInstructions{nullptr};
 
     CartState myOldState;
 

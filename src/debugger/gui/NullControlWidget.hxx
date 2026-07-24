@@ -34,8 +34,8 @@ class NullControlWidget : public ControllerWidget
 
   private:
     // The two "not available" lines (shorter when embedded in a QuadTari)
-    StaticTextWidget* myLine1{nullptr};
-    StaticTextWidget* myLine2{nullptr};
+    LabelWidget* myLine1{nullptr};
+    LabelWidget* myLine2{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

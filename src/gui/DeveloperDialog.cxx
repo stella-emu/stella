@@ -145,7 +145,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  myConsoleWidgetLabel = new StaticTextWidget(pane, font, "Console");
+  myConsoleWidgetLbl = new LabelWidget(pane, font, "Console");
   myConsoleWidget = new PopUpWidget(pane, font, items, kConsole);
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
                               "page RAM initialization differently.");
@@ -157,8 +157,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myPlusRomWidget);
 
   // Randomize items
-  myLoadingROMLabel = new StaticTextWidget(pane, font, "When loading a ROM:");
-  wid.push_back(myLoadingROMLabel);
+  myLoadingROMLbl = new LabelWidget(pane, font, "When loading a ROM:");
+  wid.push_back(myLoadingROMLbl);
 
   myRandomBankWidget = new CheckboxWidget(pane, font, "Random startup bank");
   myRandomBankWidget->setToolTip("Randomize the startup bank for\n"
@@ -174,8 +174,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myRandomizeRAMWidget);
 
   // Randomize CPU
-  myRandomizeCPULabel = new StaticTextWidget(pane, font, "Randomize CPU");
-  wid.push_back(myRandomizeCPULabel);
+  myRandomizeCPULbl = new LabelWidget(pane, font, "Randomize CPU");
+  wid.push_back(myRandomizeCPULbl);
 
   const std::array<string, 5> cpuregsLabels = {"SP", "A", "X", "Y", "PS"};
   for(int i = 0; i < 5; ++i)
@@ -196,7 +196,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myUndrivenPinsWidget);
 
 #ifdef DEBUGGER_SUPPORT
-  myPortBreakLabel = new StaticTextWidget(pane, font, "Break on:");
+  myPortBreakLbl = new LabelWidget(pane, font, "Break on:");
   myRWPortBreakWidget = new CheckboxWidget(pane, font, "Reads from write ports");
   myRWPortBreakWidget->setToolTip("Cause reads from write ports to interrupt\n"
                                   "emulation and enter debugger.");
@@ -214,7 +214,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                      "Interrupts emulation and enters debugger in such cases.");
   wid.push_back(myThumbExceptionWidget);
 
-  myArmSpeedWidgetLabel = new StaticTextWidget(pane, font, "Limit ARM speed (*)");
+  myArmSpeedWidgetLbl = new LabelWidget(pane, font, "Limit ARM speed (*)");
   myArmSpeedWidget = new SliderWidget(pane, font, 10, kArmSpeedChanged, 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
   myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX);
@@ -223,7 +223,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myArmSpeedWidget->setToolTip("Limit emulation speed to simulate ARM CPU used for ELF.");
   wid.push_back(myArmSpeedWidget);
 
-  myEmuInfo = new StaticTextWidget(pane, infofont,
+  myEmuInfo = new LabelWidget(pane, infofont,
                                    "(*) Change requires a reload for ELF ROMs");
 
   // Add items for tab 0
@@ -251,8 +251,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     // buy no alignment and cost the shorter label a wide gap between it and
     // its value box.  Each gets a group of its own, purely for the clearance
     // a group supplies
-    GUI::alignLabels({{myConsoleWidgetLabel, INDENT}});
-    GUI::alignLabels({{myArmSpeedWidgetLabel, INDENT}});
+    GUI::alignLabels({{myConsoleWidgetLbl, INDENT}});
+    GUI::alignLabels({{myArmSpeedWidgetLbl, INDENT}});
 
     enum Col: int { MAIN, EXTRA, COLS };
     enum Row: int {
@@ -280,11 +280,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     option(ACCESS, myExternAccessWidget, INDENT);
     auto consoleRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     consoleRow->addSpace(INDENT);
-    consoleRow->addStretch(labeledRow(myConsoleWidgetLabel, myConsoleWidget));
+    consoleRow->addStretch(labeledRow(myConsoleWidgetLbl, myConsoleWidget));
     grid->place(MAIN,  CONSOLE, std::move(consoleRow));
     grid->place(EXTRA, CONSOLE, anchoredItem(myPlusRomWidget));
 
-    option(LOADING, myLoadingROMLabel, INDENT);
+    option(LOADING, myLoadingROMLbl, INDENT);
     grid->place(MAIN,  BANK, indentedItem(myRandomBankWidget, INDENT * 2));
     grid->place(EXTRA, BANK, anchoredItem(myRandomizeTIAWidget));
     option(RAM, myRandomizeRAMWidget, INDENT * 2);
@@ -300,7 +300,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
       regs->addAuto(anchoredItem(reg));
 
     auto cpuRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    cpuRow->addAuto(indentedItem(myRandomizeCPULabel, INDENT * 2));
+    cpuRow->addAuto(indentedItem(myRandomizeCPULbl, INDENT * 2));
     cpuRow->addSpace(fontWidth * 1.25);
     cpuRow->addAuto(std::move(regs));
     cpuRow->addStretchSpace();
@@ -310,7 +310,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     option(PINS, myUndrivenPinsWidget, INDENT);
 #ifdef DEBUGGER_SUPPORT
     auto portRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    portRow->addAuto(indentedItem(myPortBreakLabel, INDENT));
+    portRow->addAuto(indentedItem(myPortBreakLbl, INDENT));
     portRow->addSpace(fontWidth);
     portRow->addAuto(anchoredItem(myRWPortBreakWidget));
     portRow->addSpace(fontWidth * 2);
@@ -321,7 +321,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     option(THUMB, myThumbExceptionWidget, INDENT);
     auto armRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     armRow->addSpace(INDENT);
-    armRow->addStretch(labeledRow(myArmSpeedWidgetLabel, myArmSpeedWidget));
+    armRow->addStretch(labeledRow(myArmSpeedWidgetLbl, myArmSpeedWidget));
     grid->place(MAIN, ARM, std::move(armRow), COLS - MAIN);
 
     col.addAuto(std::move(grid));
@@ -365,17 +365,16 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Light Sixer", "lightsixer");
   VarList::push_back(items, "Glitched Jr. missiles", "juniorbug");
   VarList::push_back(items, "Custom", "custom");
-  myTIATypeWidgetLabel = new StaticTextWidget(pane, font, "Chip type");
+  myTIATypeWidgetLbl = new LabelWidget(pane, font, "Chip type");
   myTIATypeWidget = new PopUpWidget(pane, font, items, kTIAType);
   myTIATypeWidget->setToolTip("Select which TIA chip type to emulate.\n"
                               "Some types cause defined glitches.");
   wid.push_back(myTIATypeWidget);
 
-  myInvPhaseLabel = new StaticTextWidget(pane, font,
-                                         "Inverted HMOVE clock phase for");
-  myInvPhaseLabel->setToolTip("Objects react different to too\n"
-                              "early HM" + ELLIPSIS + " after HMOVE changes.");
-  wid.push_back(myInvPhaseLabel);
+  myInvPhaseLbl = new LabelWidget(pane, font, "Inverted HMOVE clock phase for");
+  myInvPhaseLbl->setToolTip("Objects react different to too\n"
+                            "early HM" + ELLIPSIS + " after HMOVE changes.");
+  wid.push_back(myInvPhaseLbl);
   myPlInvPhaseWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlInvPhaseWidget);
   myMsInvPhaseWidget = new CheckboxWidget(pane, font, "Missiles");
@@ -383,9 +382,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myBlInvPhaseWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlInvPhaseWidget);
 
-  myLateHMoveLabel = new StaticTextWidget(pane, font, "Short late HMOVE for");
-  myLateHMoveLabel->setToolTip("Objects react different to late HMOVEs");
-  wid.push_back(myLateHMoveLabel);
+  myLateHMoveLbl = new LabelWidget(pane, font, "Short late HMOVE for");
+  myLateHMoveLbl->setToolTip("Objects react different to late HMOVEs");
+  wid.push_back(myLateHMoveLbl);
   myPlLateHMoveWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlLateHMoveWidget);
   myMsLateHMoveWidget = new CheckboxWidget(pane, font, "Missiles");
@@ -393,9 +392,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myBlLateHMoveWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlLateHMoveWidget);
 
-  myLateRespxLabel = new StaticTextWidget(pane, font, "Late RESPx for");
-  myLateRespxLabel->setToolTip("RESP/RESM/RESBL strobed during HBLANK at HMOVE start shifts object 1 pixel right");
-  wid.push_back(myLateRespxLabel);
+  myLateRespxLbl = new LabelWidget(pane, font, "Late RESPx for");
+  myLateRespxLbl->setToolTip("RESP/RESM/RESBL strobed during HBLANK at HMOVE start shifts object 1 pixel right");
+  wid.push_back(myLateRespxLbl);
   myPlLateRespxWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlLateRespxWidget);
   myMsLateRespxWidget = new CheckboxWidget(pane, font, "Missiles");
@@ -403,9 +402,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myBlLateRespxWidget = new CheckboxWidget(pane, font, "Ball");
   wid.push_back(myBlLateRespxWidget);
 
-  myPlayfieldLabel = new StaticTextWidget(pane, font, "Delayed playfield");
-  myPlayfieldLabel->setToolTip("Playfield reacts one color clock slower to updates.");
-  wid.push_back(myPlayfieldLabel);
+  myPlayfieldLbl = new LabelWidget(pane, font, "Delayed playfield");
+  myPlayfieldLbl->setToolTip("Playfield reacts one color clock slower to updates.");
+  wid.push_back(myPlayfieldLbl);
   myPFBitsWidget = new CheckboxWidget(pane, font, "Bits");
   wid.push_back(myPFBitsWidget);
   myPFColorWidget = new CheckboxWidget(pane, font, "Color");
@@ -414,16 +413,16 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myPFScoreWidget->setToolTip("In score mode, playfield color gets updated one pixel early.");
   wid.push_back(myPFScoreWidget);
 
-  myBackgroundLabel = new StaticTextWidget(pane, font, "Delayed background");
-  myBackgroundLabel->setToolTip("Background color reacts one color clock slower to updates.");
-  wid.push_back(myBackgroundLabel);
+  myBackgroundLbl = new LabelWidget(pane, font, "Delayed background");
+  myBackgroundLbl->setToolTip("Background color reacts one color clock slower to updates.");
+  wid.push_back(myBackgroundLbl);
   myBKColorWidget = new CheckboxWidget(pane, font, "Color");
   wid.push_back(myBKColorWidget);
 
-  mySwapLabel = new StaticTextWidget(pane, font,
+  mySwapLbl = new LabelWidget(pane, font,
     std::format("Delayed VDEL{} swap for", ELLIPSIS));
-  mySwapLabel->setToolTip("VDELed objects react one color clock slower to updates.");
-  wid.push_back(mySwapLabel);
+  mySwapLbl->setToolTip("VDELed objects react one color clock slower to updates.");
+  wid.push_back(mySwapLbl);
   myPlSwapWidget = new CheckboxWidget(pane, font, "Players");
   wid.push_back(myPlSwapWidget);
   myBlSwapWidget = new CheckboxWidget(pane, font, "Ball");
@@ -448,7 +447,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
     const int gap = fontWidth * 2.5;
 
     // The chip-type pop-up's label gets a column of its own
-    GUI::alignLabels({{myTIATypeWidgetLabel, INDENT}});
+    GUI::alignLabels({{myTIATypeWidgetLbl, INDENT}});
 
     // Each quirk is a heading with a row of the objects it applies to beneath it
     const auto objectRow = [&](CheckboxWidget* first, CheckboxWidget* second,
@@ -465,7 +464,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
       row->addStretchSpace();
       return row;
     };
-    const auto quirk = [&](StaticTextWidget* label, CheckboxWidget* first,
+    const auto quirk = [&](LabelWidget* label, CheckboxWidget* first,
                            CheckboxWidget* second, CheckboxWidget* third) {
       col.addAuto(indentedItem(label, INDENT * 2));
       col.addSpace(VGAP);
@@ -479,19 +478,19 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
     col.addSpace(VGAP);
     auto tiaTypeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     tiaTypeRow->addSpace(INDENT);
-    tiaTypeRow->addStretch(labeledRow(myTIATypeWidgetLabel, myTIATypeWidget));
+    tiaTypeRow->addStretch(labeledRow(myTIATypeWidgetLbl, myTIATypeWidget));
     col.addAuto(std::move(tiaTypeRow));
     col.addSpace(VGAP);
 
-    quirk(myInvPhaseLabel, myPlInvPhaseWidget, myMsInvPhaseWidget, myBlInvPhaseWidget);
-    quirk(myLateHMoveLabel, myPlLateHMoveWidget, myMsLateHMoveWidget, myBlLateHMoveWidget);
-    quirk(myLateRespxLabel, myPlLateRespxWidget, myMsLateRespxWidget, myBlLateRespxWidget);
-    quirk(myPlayfieldLabel, myPFBitsWidget, myPFColorWidget, myPFScoreWidget);
-    col.addAuto(indentedItem(myBackgroundLabel, INDENT * 2));
+    quirk(myInvPhaseLbl, myPlInvPhaseWidget, myMsInvPhaseWidget, myBlInvPhaseWidget);
+    quirk(myLateHMoveLbl, myPlLateHMoveWidget, myMsLateHMoveWidget, myBlLateHMoveWidget);
+    quirk(myLateRespxLbl, myPlLateRespxWidget, myMsLateRespxWidget, myBlLateRespxWidget);
+    quirk(myPlayfieldLbl, myPFBitsWidget, myPFColorWidget, myPFScoreWidget);
+    col.addAuto(indentedItem(myBackgroundLbl, INDENT * 2));
     col.addSpace(VGAP);
     col.addAuto(indentedItem(myBKColorWidget, INDENT * 3));
     col.addSpace(VGAP);
-    quirk(mySwapLabel, myPlSwapWidget, myBlSwapWidget, nullptr);
+    quirk(mySwapLbl, myPlSwapWidget, myBlSwapWidget, nullptr);
   });
 }
 
@@ -524,7 +523,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
 
-  myTVJitterSenseWidgetLabel = new StaticTextWidget(pane, font, "Sensitivity");
+  myTVJitterSenseWidgetLbl = new LabelWidget(pane, font, "Sensitivity");
   myTVJitterSenseWidget = new SliderWidget(pane, font, 10, 0, 2);
   myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
   myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
@@ -533,7 +532,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     Event::JitterSenseDecrease, Event::JitterSenseIncrease);
   wid.push_back(myTVJitterSenseWidget);
 
-  myTVJitterRecWidgetLabel = new StaticTextWidget(pane, font, "Recovery");
+  myTVJitterRecWidgetLbl = new LabelWidget(pane, font, "Recovery");
   myTVJitterRecWidget = new SliderWidget(pane, font, 10, 0, 2);
   myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
   myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
@@ -567,7 +566,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   const auto createDebugColourWidgets = [&](int idx, string_view desc)
   {
-    myDbgColourLabel[idx] = new StaticTextWidget(pane, font, desc);
+    myDbgColourLbl[idx] = new LabelWidget(pane, font, desc);
     myDbgColour[idx] = new PopUpWidget(pane, font, pwidth, items, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
     myDbgColourSwatch[idx] = new ColorWidget(
@@ -581,7 +580,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   createDebugColourWidgets(4, "Playfield");
   createDebugColourWidgets(5, "Ball");
 
-  myVideoInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
+  myVideoInfo = new LabelWidget(pane, instance().frameBuffer().infoFont(),
                                      "(*) Colors identical for player and developer settings");
 
   // Add items for tab 2
@@ -606,15 +605,15 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     // align nothing (their tracks start at different places regardless) and
     // would only pad the shorter label out to the longer one.  Each gets a
     // group of its own, purely for the clearance a group supplies
-    GUI::alignLabels({{myTVJitterSenseWidgetLabel}});
-    GUI::alignLabels({{myTVJitterRecWidgetLabel}});
+    GUI::alignLabels({{myTVJitterSenseWidgetLbl}});
+    GUI::alignLabels({{myTVJitterRecWidgetLbl}});
 
     // The jitter sliders share a row, indented under the checkbox's text
     auto jitterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
-    jitterRow->addAuto(labeledRow(myTVJitterSenseWidgetLabel, myTVJitterSenseWidget,
+    jitterRow->addAuto(labeledRow(myTVJitterSenseWidgetLbl, myTVJitterSenseWidget,
                                   0, INDENT + prefix));
     jitterRow->addSpace(fontWidth * 2);
-    jitterRow->addAuto(labeledRow(myTVJitterRecWidgetLabel, myTVJitterRecWidget));
+    jitterRow->addAuto(labeledRow(myTVJitterRecWidgetLbl, myTVJitterRecWidget));
     jitterRow->addStretchSpace();
 
     col.addAuto(anchoredItem(myVideoSettings[0]));
@@ -632,14 +631,14 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
     // Each debug colour is a pop-up with its colour swatch beside it.  Their
     // labels share one column, keeping their value boxes in line
-    GUI::alignLabels({{myDbgColourLabel[0]}, {myDbgColourLabel[1]}, {myDbgColourLabel[2]},
-                      {myDbgColourLabel[3]}, {myDbgColourLabel[4]}, {myDbgColourLabel[5]}});
+    GUI::alignLabels({{myDbgColourLbl[0]}, {myDbgColourLbl[1]}, {myDbgColourLbl[2]},
+                      {myDbgColourLbl[3]}, {myDbgColourLbl[4]}, {myDbgColourLbl[5]}});
 
     for(int i = 0; i < DEBUG_COLORS; ++i)
     {
       auto colourRow = std::make_unique<BoxLayout>(Dir::Horizontal);
       colourRow->addSpace(INDENT);
-      colourRow->addAuto(labeledRow(myDbgColourLabel[i], myDbgColour[i]));
+      colourRow->addAuto(labeledRow(myDbgColourLbl[i], myDbgColour[i]));
       colourRow->addSpace(fontWidth * 1.25);
       colourRow->addAuto(anchoredItem(myDbgColourSwatch[i]));
       colourRow->addStretchSpace();
@@ -699,7 +698,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myTimeMachineWidget->setToolTip(Event::ToggleTimeMachine);
   wid.push_back(myTimeMachineWidget);
 
-  myStateSizeWidgetLabel = new StaticTextWidget(pane, font, "Buffer size (*)");
+  myStateSizeWidgetLbl = new LabelWidget(pane, font, "Buffer size (*)");
   myStateSizeWidget = new SliderWidget(pane, font, 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(RewindManager::MIN_BUF_SIZE);
   myStateSizeWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
@@ -708,7 +707,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget->setToolTip("Define the total Time Machine buffer size.");
   wid.push_back(myStateSizeWidget);
 
-  myUncompressedWidgetLabel = new StaticTextWidget(pane, font, "Uncompressed size");
+  myUncompressedWidgetLbl = new LabelWidget(pane, font, "Uncompressed size");
   myUncompressedWidget = new SliderWidget(pane, font, 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
@@ -722,7 +721,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < RewindManager::NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], RewindManager::INT_SETTINGS[i]);
-  myStateIntervalWidgetLabel = new StaticTextWidget(pane, font, "Interval");
+  myStateIntervalWidgetLbl = new LabelWidget(pane, font, "Interval");
   myStateIntervalWidget = new PopUpWidget(pane, font, items, kIntervalChanged);
   myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
   wid.push_back(myStateIntervalWidget);
@@ -730,13 +729,13 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < RewindManager::NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], RewindManager::HOR_SETTINGS[i]);
-  myStateHorizonWidgetLabel = new StaticTextWidget(pane, font, "Horizon");
+  myStateHorizonWidgetLbl = new LabelWidget(pane, font, "Horizon");
   myStateHorizonWidget = new PopUpWidget(pane, font, items, kHorizonChanged);
   myStateHorizonWidget->setToolTip("Define how far the Time Machine\n"
                                    "will allow moving back in time.");
   wid.push_back(myStateHorizonWidget);
 
-  myTMInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
+  myTMInfo = new LabelWidget(pane, instance().frameBuffer().infoFont(),
                                   "(*) Any size change clears the buffer");
 
   addToFocusList(wid, myTab, tabID);
@@ -758,8 +757,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
     // The sliders' labels and the pop-ups' separate labels share one column, so
     // every control starts at the same x...
-    GUI::alignLabels({{myStateSizeWidgetLabel, under}, {myUncompressedWidgetLabel, under},
-                      {myStateIntervalWidgetLabel, under}, {myStateHorizonWidgetLabel, under}});
+    GUI::alignLabels({{myStateSizeWidgetLbl, under}, {myUncompressedWidgetLbl, under},
+                      {myStateIntervalWidgetLbl, under}, {myStateHorizonWidgetLbl, under}});
     // ...the pop-ups size their boxes to their own lists and then take one
     // shared box width, so their right edges are flush...
     GUI::alignPopUps({myStateIntervalWidget, myStateHorizonWidget});
@@ -772,18 +771,18 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     col.addSpace(VGAP);
     col.addAuto(indentedItem(myTimeMachineWidget, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myStateSizeWidgetLabel, myStateSizeWidget, 0, under));
+    col.addAuto(labeledRow(myStateSizeWidgetLbl, myStateSizeWidget, 0, under));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myUncompressedWidgetLabel, myUncompressedWidget, 0, under));
+    col.addAuto(labeledRow(myUncompressedWidgetLbl, myUncompressedWidget, 0, under));
     col.addSpace(VGAP);
     auto intervalRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     intervalRow->addSpace(under);
-    intervalRow->addStretch(labeledRow(myStateIntervalWidgetLabel, myStateIntervalWidget));
+    intervalRow->addStretch(labeledRow(myStateIntervalWidgetLbl, myStateIntervalWidget));
     col.addAuto(std::move(intervalRow));
     col.addSpace(VGAP);
     auto horizonRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     horizonRow->addSpace(under);
-    horizonRow->addStretch(labeledRow(myStateHorizonWidgetLabel, myStateHorizonWidget));
+    horizonRow->addStretch(labeledRow(myStateHorizonWidgetLbl, myStateHorizonWidget));
     col.addAuto(std::move(horizonRow));
 
     // Usage note along the bottom of the tab
@@ -809,7 +808,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Small", "small");
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
-  myDebuggerFontSizeLabel = new StaticTextWidget(pane, font, "Font size (*)");
+  myDebuggerFontSizeLbl = new LabelWidget(pane, font, "Font size (*)");
   myDebuggerFontSize = new PopUpWidget(pane, font, items, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
 
@@ -819,12 +818,12 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Bold labels only", "1");
   VarList::push_back(items, "Bold non-labels only", "2");
   VarList::push_back(items, "All bold font", "3");
-  myDebuggerFontStyleLabel = new StaticTextWidget(pane, font, "Font style (*)");
+  myDebuggerFontStyleLbl = new LabelWidget(pane, font, "Font style (*)");
   myDebuggerFontStyle = new PopUpWidget(pane, font, items);
   wid.push_back(myDebuggerFontStyle);
 
   // Debugger width and height
-  myDebuggerWidthSliderLabel = new StaticTextWidget(pane, font, "Debugger width (*)");
+  myDebuggerWidthSliderLbl = new LabelWidget(pane, font, "Debugger width (*)");
   myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -833,7 +832,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setTickmarkIntervals((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
 
-  myDebuggerHeightSliderLabel = new StaticTextWidget(pane, font, "Debugger height (*)");
+  myDebuggerHeightSliderLbl = new LabelWidget(pane, font, "Debugger height (*)");
   myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -846,7 +845,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myGhostReadsTrapWidget->setToolTip("Traps will consider CPU 'ghost' reads too.");
   wid.push_back(myGhostReadsTrapWidget);
 
-  myDebuggerInfo = new StaticTextWidget(pane, instance().frameBuffer().infoFont(),
+  myDebuggerInfo = new LabelWidget(pane, instance().frameBuffer().infoFont(),
                                         "(*) Change requires a ROM reload");
 
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
@@ -854,15 +853,15 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   // (and when it's actually been compiled into the app)
   if(ds.w < 800 || ds.h < 600)  // TODO - maybe this logic can disappear?
   {
-    myDebuggerWidthSliderLabel->clearFlags(Widget::FLAG_ENABLED);
+    myDebuggerWidthSliderLbl->clearFlags(Widget::FLAG_ENABLED);
     myDebuggerWidthSlider->clearFlags(Widget::FLAG_ENABLED);
-    myDebuggerHeightSliderLabel->clearFlags(Widget::FLAG_ENABLED);
+    myDebuggerHeightSliderLbl->clearFlags(Widget::FLAG_ENABLED);
     myDebuggerHeightSlider->clearFlags(Widget::FLAG_ENABLED);
   }
 #endif
 #else
-  myDebuggerInfo = new StaticTextWidget(pane, font,
-                                        "Debugger support not included", TextAlign::Center);
+  myDebuggerInfo = new LabelWidget(pane, font, "Debugger support not included",
+                                   TextAlign::Center);
 #endif
 
   addToFocusList(wid, myTab, tabID);
@@ -882,17 +881,17 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
     // The two pop-ups and the two sliders each have a separate label; all
     // four share one column, and the pop-ups take one shared box width
-    GUI::alignLabels({{myDebuggerFontSizeLabel}, {myDebuggerFontStyleLabel},
-                      {myDebuggerWidthSliderLabel}, {myDebuggerHeightSliderLabel}});
+    GUI::alignLabels({{myDebuggerFontSizeLbl}, {myDebuggerFontStyleLbl},
+                      {myDebuggerWidthSliderLbl}, {myDebuggerHeightSliderLbl}});
     GUI::alignPopUps({myDebuggerFontSize, myDebuggerFontStyle});
 
-    col.addAuto(labeledRow(myDebuggerFontSizeLabel, myDebuggerFontSize));
+    col.addAuto(labeledRow(myDebuggerFontSizeLbl, myDebuggerFontSize));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDebuggerFontStyleLabel, myDebuggerFontStyle));
+    col.addAuto(labeledRow(myDebuggerFontStyleLbl, myDebuggerFontStyle));
     col.addSpace(VGAP * 4);
-    col.addAuto(labeledRow(myDebuggerWidthSliderLabel, myDebuggerWidthSlider));
+    col.addAuto(labeledRow(myDebuggerWidthSliderLbl, myDebuggerWidthSlider));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDebuggerHeightSliderLabel, myDebuggerHeightSlider));
+    col.addAuto(labeledRow(myDebuggerHeightSliderLbl, myDebuggerHeightSlider));
     col.addSpace(VGAP * 4);
     col.addAuto(anchoredItem(myGhostReadsTrapWidget));
 
@@ -1325,12 +1324,12 @@ void DeveloperDialog::handleSettings(bool devSettings)
   myRandomHotspotsWidget->setEnabled(devSettings);
   myUndrivenPinsWidget->setEnabled(devSettings);
 #ifdef DEBUGGER_SUPPORT
-  myPortBreakLabel->setEnabled(devSettings);
+  myPortBreakLbl->setEnabled(devSettings);
   myRWPortBreakWidget->setEnabled(devSettings);
   myWRPortBreakWidget->setEnabled(devSettings);
 #endif
   myThumbExceptionWidget->setEnabled(devSettings);
-  myArmSpeedWidgetLabel->setEnabled(devSettings);
+  myArmSpeedWidgetLbl->setEnabled(devSettings);
   myArmSpeedWidget->setEnabled(devSettings);
 
   if (mySettings != devSettings)
@@ -1355,9 +1354,9 @@ void DeveloperDialog::handleTVJitterChange()
 {
   const bool enable = myTVJitterWidget->getState();
 
-  myTVJitterSenseWidgetLabel->setEnabled(enable);
+  myTVJitterSenseWidgetLbl->setEnabled(enable);
   myTVJitterSenseWidget->setEnabled(enable);
-  myTVJitterRecWidgetLabel->setEnabled(enable);
+  myTVJitterRecWidgetLbl->setEnabled(enable);
   myTVJitterRecWidget->setEnabled(enable);
 }
 
@@ -1377,27 +1376,27 @@ void DeveloperDialog::handleTia()
   const string tiaType = myTIATypeWidget->getSelectedTag().toString();
   const bool enable = BSPF::equalsIgnoreCase("custom", tiaType);
 
-  myTIATypeWidgetLabel->setEnabled(mySettings);
+  myTIATypeWidgetLbl->setEnabled(mySettings);
   myTIATypeWidget->setEnabled(mySettings);
-  myInvPhaseLabel->setEnabled(enable);
+  myInvPhaseLbl->setEnabled(enable);
   myPlInvPhaseWidget->setEnabled(enable);
   myMsInvPhaseWidget->setEnabled(enable);
   myBlInvPhaseWidget->setEnabled(enable);
-  myLateHMoveLabel->setEnabled(enable);
+  myLateHMoveLbl->setEnabled(enable);
   myPlLateHMoveWidget->setEnabled(enable);
   myMsLateHMoveWidget->setEnabled(enable);
   myBlLateHMoveWidget->setEnabled(enable);
-  myLateRespxLabel->setEnabled(enable);
+  myLateRespxLbl->setEnabled(enable);
   myPlLateRespxWidget->setEnabled(enable);
   myMsLateRespxWidget->setEnabled(enable);
   myBlLateRespxWidget->setEnabled(enable);
-  myPlayfieldLabel->setEnabled(enable);
-  myBackgroundLabel->setEnabled(enable);
+  myPlayfieldLbl->setEnabled(enable);
+  myBackgroundLbl->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
   myPFScoreWidget->setEnabled(enable);
   myBKColorWidget->setEnabled(enable);
-  mySwapLabel->setEnabled(enable);
+  mySwapLbl->setEnabled(enable);
   myPlSwapWidget->setEnabled(enable);
   myBlSwapWidget->setEnabled(enable);
 
@@ -1447,17 +1446,17 @@ void DeveloperDialog::handleTimeMachine()
 {
   const bool enable = myTimeMachineWidget->getState();
 
-  myStateSizeWidgetLabel->setEnabled(enable);
+  myStateSizeWidgetLbl->setEnabled(enable);
   myStateSizeWidget->setEnabled(enable);
-  myUncompressedWidgetLabel->setEnabled(enable);
+  myUncompressedWidgetLbl->setEnabled(enable);
   myUncompressedWidget->setEnabled(enable);
-  myStateIntervalWidgetLabel->setEnabled(enable);
+  myStateIntervalWidgetLbl->setEnabled(enable);
   myStateIntervalWidget->setEnabled(enable);
 
   const uInt32 size = myStateSizeWidget->getValue();
   const uInt32 uncompressed = myUncompressedWidget->getValue();
 
-  myStateHorizonWidgetLabel->setEnabled(enable && size > uncompressed);
+  myStateHorizonWidgetLbl->setEnabled(enable && size > uncompressed);
   myStateHorizonWidget->setEnabled(enable && size > uncompressed);
 }
 
@@ -1497,7 +1496,7 @@ void DeveloperDialog::handleSize()
     myUncompressedWidget->setValue(size);
   myStateIntervalWidget->setSelectedIndex(interval);
   myStateHorizonWidget->setSelectedIndex(i);
-  myStateHorizonWidgetLabel->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
+  myStateHorizonWidgetLbl->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
   myStateHorizonWidget->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
 }
 
@@ -1509,7 +1508,7 @@ void DeveloperDialog::handleUncompressed()
 
   if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
-  myStateHorizonWidgetLabel->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
+  myStateHorizonWidgetLbl->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
   myStateHorizonWidget->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
 }
 
@@ -1597,7 +1596,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 
   if(!instance().hasConsole())
   {
-    myDbgColourLabel[idx]->clearFlags(Widget::FLAG_ENABLED);
+    myDbgColourLbl[idx]->clearFlags(Widget::FLAG_ENABLED);
     myDbgColour[idx]->clearFlags(Widget::FLAG_ENABLED);
     myDbgColourSwatch[idx]->clearFlags(Widget::FLAG_ENABLED);
     return;

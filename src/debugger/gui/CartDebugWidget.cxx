@@ -79,24 +79,24 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
   // positions it, and the description re-wraps itself, at reflow() time.  The
   // labels carry no padding of their own: they join the tab's label column below,
   // and GUI::alignLabels() supplies the column and its clearance
-  myROMSizeLabel = new StaticTextWidget(_boss, _font, "ROM size");
+  myROMSizeLbl = new LabelWidget(_boss, _font, "ROM size");
   myROMSize = new EditTextWidget(_boss, _nfont, 1,
     bytes >= 1024
       ? std::format("{} bytes / {}KB", bytes, bytes / 1024)
       : std::format("{} bytes", bytes));
   myROMSize->setEditable(false);
 
-  myManufacturerLabel = new StaticTextWidget(_boss, _font, "Manufacturer");
+  myManufacturerLbl = new LabelWidget(_boss, _font, "Manufacturer");
   myManufacturer = new EditTextWidget(_boss, _nfont, 1, manufacturer);
   myManufacturer->setEditable(false);
 
-  myDescLabel = new StaticTextWidget(_boss, _font, "Description");
+  myDescLbl = new LabelWidget(_boss, _font, "Description");
   myDesc = new WrappedTextWidget(_boss, _nfont, desc, maxlines);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
 
   myLabelColumn.insert(myLabelColumn.end(),
-                       {{myROMSizeLabel}, {myManufacturerLabel}, {myDescLabel}});
+                       {{myROMSizeLbl}, {myManufacturerLbl}, {myDescLbl}});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,17 +107,17 @@ void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col) const
   // Not every cart tab has an info block: the ARM carts show theirs on a tab of
   // its own (CartridgeBUSInfoWidget, CartridgeCDFInfoWidget) and this one holds
   // nothing but their registers
-  if(myROMSizeLabel == nullptr)
+  if(myROMSizeLbl == nullptr)
     return;
 
   // Word wrap couples width to height: the description only knows how tall it is
   // once it knows how wide it is, so it is given its width before the column is
   // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
   // filling row below will hand it -- the content, less the shared label column
-  myDesc->setWidth(contentWidth(_w) - myDescLabel->getWidth());
+  myDesc->setWidth(contentWidth(_w) - myDescLbl->getWidth());
 
-  col.addAuto(labeledRow(myROMSizeLabel, myROMSize, 0, 0, true));
-  col.addAuto(labeledRow(myManufacturerLabel, myManufacturer, 0, 0, true));
+  col.addAuto(labeledRow(myROMSizeLbl, myROMSize, 0, 0, true));
+  col.addAuto(labeledRow(myManufacturerLbl, myManufacturer, 0, 0, true));
 
   // The description is the one row here that can be SQUEEZED: it scrolls, so it
   // gives up height before anything below it is pushed off the tab.  Hence a
@@ -127,7 +127,7 @@ void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col) const
   // only the floor is width-independent, which is what lets this column be
   // measured before anything has been sized (see the class comment there)
   auto descRow = std::make_unique<GUI::BoxLayout>(GUI::BoxLayout::Dir::Horizontal);
-  descRow->addFixed(GUI::anchoredItem(myDescLabel), myDescLabel->getWidth());
+  descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
   descRow->addStretch(GUI::widgetItem(myDesc, 0, myDesc->minHeight()));
   col.add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
           static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());

@@ -41,11 +41,11 @@ class FlashWidget : public ControllerWidget
     enum { kEEPROMEraseCurrent = 'eeEC' };
 
     bool myEmbedded{false};
-    StaticTextWidget* myPagesLabel{nullptr};
+    LabelWidget* myPagesLbl{nullptr};
     ButtonWidget* myEEPROMEraseCurrent{nullptr};
 
     static constexpr uInt32 MAX_PAGES = 5;
-    std::array<StaticTextWidget*, MAX_PAGES> myPage{nullptr};
+    std::array<LabelWidget*, MAX_PAGES> myPage{nullptr};
 
   private:
     /**

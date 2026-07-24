@@ -39,10 +39,10 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
   // Create the controls at a placeholder position; reflow() lays them out.  The
   // page ranges are filled in by loadConfig(), so they take no text here
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myPagesLabel = new StaticTextWidget(boss, font,
-                                      embedded ? "Pages:" : "Pages/Ranges used:");
+  myPagesLbl = new LabelWidget(boss, font,
+                               embedded ? "Pages:" : "Pages/Ranges used:");
   for(uInt32 page = 0; page < MAX_PAGES; ++page)
-    myPage[page] = new StaticTextWidget(boss, font, page ? "" : "none");
+    myPage[page] = new LabelWidget(boss, font, page ? "" : "none");
   myEEPROMEraseCurrent = new ButtonWidget(boss, font,
                                           embedded ? "Erase" : "Erase used pages",
                                           kEEPROMEraseCurrent);
@@ -66,7 +66,7 @@ void FlashWidget::layoutContent(GUI::BoxLayout& col)
 
   // The "Pages/Ranges used:" caption, then the used-page ranges (filled in by
   // loadConfig) indented under it, then the erase button
-  col.addAuto(anchoredItem(myPagesLabel));
+  col.addAuto(anchoredItem(myPagesLbl));
   for(auto* page: myPage)
     col.addAuto(indentedFill(page, _font.getMaxCharWidth()));
   col.addSpace(VGAP);

@@ -44,7 +44,7 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
   private:
     CartridgeFA2& myCartFA2;
 
-    StaticTextWidget* myFlashLabel{nullptr};
+    LabelWidget* myFlashLbl{nullptr};
     ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
     enum {

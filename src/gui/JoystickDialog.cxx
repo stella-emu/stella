@@ -39,7 +39,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myJoyList);
 
   // Joystick ID
-  myIDLabel = new StaticTextWidget(this, font, "Controller ID");
+  myIDLbl = new LabelWidget(this, font, "Controller ID");
   myJoyText = new EditTextWidget(this, font,
       static_cast<int>(string_view("Unplugged").size()));
   myJoyText->setEditable(false);
@@ -50,7 +50,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPortLabel = new StaticTextWidget(this, font, "Port");
+  myJoyPortLbl = new LabelWidget(this, font, "Port");
   myJoyPort = new PopUpWidget(this, font, ports, kPortCmd);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
@@ -86,7 +86,7 @@ void JoystickDialog::layout()
   // Remove and Close share one width, the wider of the two
   GUI::alignButtons({myRemoveBtn, myCloseBtn});
 
-  GUI::alignLabels({{myJoyPortLabel}});
+  GUI::alignLabels({{myJoyPortLbl}});
 
   // The list shows a reasonable number of joysticks by default -- which, with
   // the room device names need, is what sizes the dialog; more entries scroll.
@@ -109,11 +109,11 @@ void JoystickDialog::layout()
   // group's) on the right.  Everything keeps its own size and is centered in the
   // (taller) band, so all the texts line up
   auto band = std::make_unique<BoxLayout>(Dir::Horizontal);
-  band->addAuto(anchoredItem(myIDLabel));
+  band->addAuto(anchoredItem(myIDLbl));
   band->addSpace(fontWidth);
   band->addAuto(anchoredItem(myJoyText));
   band->addSpace(fontWidth * 2);
-  band->addAuto(labeledRow(myJoyPortLabel, myJoyPort));
+  band->addAuto(labeledRow(myJoyPortLbl, myJoyPort));
   band->addStretchSpace();
   band->addAuto(anchoredItem(myRemoveBtn));
   band->addSpace(fontWidth);
@@ -184,7 +184,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
         myJoyText->setText("Unplugged");
         myJoyPort->setText("");
       }
-      myJoyPortLabel->setEnabled(isPlugged);
+      myJoyPortLbl->setEnabled(isPlugged);
       myJoyPort->setEnabled(isPlugged);
       myRemoveBtn->setEnabled(!isPlugged);
       break;

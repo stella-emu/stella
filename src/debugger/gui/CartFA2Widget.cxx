@@ -35,7 +35,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 void CartridgeFA2Widget::createFlashWidgets()
 {
   // Each button sizes itself to its label; layoutContent() gives the group one width
-  myFlashLabel = new StaticTextWidget(_boss, _font, "Harmony flash memory");
+  myFlashLbl = new LabelWidget(_boss, _font, "Harmony flash memory");
 
   myFlashErase = new ButtonWidget(_boss, _font, "Erase", kFlashErase);
   myFlashErase->setTarget(this);
@@ -63,7 +63,7 @@ void CartridgeFA2Widget::layoutContent(GUI::BoxLayout& col) const
 
   // The flash label and the three flash buttons, in a row
   auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
-  row->addAuto(anchoredItem(myFlashLabel));
+  row->addAuto(anchoredItem(myFlashLbl));
   row->addAuto(anchoredItem(myFlashErase));
   row->addAuto(anchoredItem(myFlashLoad));
   row->addAuto(anchoredItem(myFlashSave));

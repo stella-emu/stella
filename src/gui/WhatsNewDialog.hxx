@@ -20,7 +20,7 @@
 
 #include "Dialog.hxx"
 
-class StaticTextWidget;
+class LabelWidget;
 
 class WhatsNewDialog : public Dialog
 {
@@ -35,7 +35,7 @@ class WhatsNewDialog : public Dialog
     void add(string_view text);
 
   private:
-    std::vector<StaticTextWidget*> myLines;
+    std::vector<LabelWidget*> myLines;
     std::vector<int> myLineAdvance;
 
   private:

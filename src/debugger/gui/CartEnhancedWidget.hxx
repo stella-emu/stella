@@ -97,17 +97,17 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // Distance between two hotspots
     int myHotspotDelta{1};
 
-    StaticTextWidget* myPlusROMLabel{nullptr};
-    StaticTextWidget* myPlusROMHostLabel{nullptr};
-    StaticTextWidget* myPlusROMPathLabel{nullptr};
-    StaticTextWidget* myPlusROMSendLabel{nullptr};
-    StaticTextWidget* myPlusROMReceiveLabel{nullptr};
+    LabelWidget* myPlusROMLbl{nullptr};
+    LabelWidget* myPlusROMHostLbl{nullptr};
+    LabelWidget* myPlusROMPathLbl{nullptr};
+    LabelWidget* myPlusROMSendLbl{nullptr};
+    LabelWidget* myPlusROMReceiveLbl{nullptr};
     EditTextWidget* myPlusROMHostWidget{nullptr};
     EditTextWidget* myPlusROMPathWidget{nullptr};
     EditTextWidget* myPlusROMSendWidget{nullptr};
     EditTextWidget* myPlusROMReceiveWidget{nullptr};
 
-    std::vector<StaticTextWidget*> myBankWidgetLabels;
+    std::vector<LabelWidget*> myBankWidgetLabels;
     std::vector<PopUpWidget*> myBankWidgets;
 
     // Display all addresses based on this

@@ -22,7 +22,7 @@ class CommandSender;
 class DialogContainer;
 class CheckboxWidget;
 class PopUpWidget;
-class StaticTextWidget;
+class LabelWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -48,7 +48,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     // The three groups of buttons which can be held down at power-on: a
     // directional cross per joystick, and the console's Select/Reset
     unique_ptr<GUI::Layout> holdLayout();
-    unique_ptr<GUI::Layout> joyLayout(StaticTextWidget* label, int base);
+    unique_ptr<GUI::Layout> joyLayout(LabelWidget* label, int base);
     unique_ptr<GUI::Layout> consoleLayout();
 
   private:
@@ -67,17 +67,17 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     CheckboxWidget* myHoldReset{nullptr};
     CheckboxWidget* myDebug{nullptr};
 
-    StaticTextWidget* myBSLabel{nullptr};
-    StaticTextWidget* myTVLabel{nullptr};
-    StaticTextWidget* myLeftDiffLabel{nullptr};
-    StaticTextWidget* myRightDiffLabel{nullptr};
-    StaticTextWidget* myHeldLabel{nullptr};
-    StaticTextWidget* myReleasedLabel{nullptr};
-    StaticTextWidget* myLeftJoyLabel{nullptr};
-    StaticTextWidget* myRightJoyLabel{nullptr};
-    StaticTextWidget* myConsoleLabel{nullptr};
-    StaticTextWidget* myInfo1{nullptr};
-    StaticTextWidget* myInfo2{nullptr};
+    LabelWidget* myBSLbl{nullptr};
+    LabelWidget* myTVLbl{nullptr};
+    LabelWidget* myLeftDiffLbl{nullptr};
+    LabelWidget* myRightDiffLbl{nullptr};
+    LabelWidget* myHeldLbl{nullptr};
+    LabelWidget* myReleasedLbl{nullptr};
+    LabelWidget* myLeftJoyLbl{nullptr};
+    LabelWidget* myRightJoyLbl{nullptr};
+    LabelWidget* myConsoleLbl{nullptr};
+    LabelWidget* myInfo1{nullptr};
+    LabelWidget* myInfo2{nullptr};
 
     static constexpr std::array<string_view, 10> ourJoyState = {
       "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"

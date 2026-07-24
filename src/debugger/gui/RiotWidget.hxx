@@ -19,7 +19,7 @@
 #define RIOT_WIDGET_HXX
 
 class GuiObject;
-class StaticTextWidget;
+class LabelWidget;
 class ButtonWidget;
 class DataGridWidget;
 class PopUpWidget;
@@ -64,7 +64,7 @@ class RiotWidget : public Widget, public CommandSender
 
   private:
     // The six SW register labels (SWCHA(W)/SWACNT/... ), shared label column
-    std::array<StaticTextWidget*, 6> myRegLabel{nullptr};
+    std::array<LabelWidget*, 6> myRegLbl{nullptr};
     ToggleBitWidget* mySWCHAReadBits{nullptr};
     ToggleBitWidget* mySWCHAWriteBits{nullptr};
     ToggleBitWidget* mySWACNTBits{nullptr};
@@ -72,16 +72,16 @@ class RiotWidget : public Widget, public CommandSender
     ToggleBitWidget* mySWCHBWriteBits{nullptr};
     ToggleBitWidget* mySWBCNTBits{nullptr};
 
-    std::array<StaticTextWidget*, 3> myLeftINPTLabel{nullptr};
-    std::array<StaticTextWidget*, 3> myRightINPTLabel{nullptr};
+    std::array<LabelWidget*, 3> myLeftINPTLbl{nullptr};
+    std::array<LabelWidget*, 3> myRightINPTLbl{nullptr};
     DataGridWidget* myLeftINPT{nullptr};
     DataGridWidget* myRightINPT{nullptr};
     CheckboxWidget* myINPTLatch{nullptr};
     CheckboxWidget* myINPTDump{nullptr};
 
-    std::array<StaticTextWidget*, 4> myTimWriteLabel{nullptr};
-    std::array<StaticTextWidget*, 4> myTimReadLabel{nullptr};
-    std::array<StaticTextWidget*, 3> myTimHash{nullptr};  // "#" cycle markers
+    std::array<LabelWidget*, 4> myTimWriteLbl{nullptr};
+    std::array<LabelWidget*, 4> myTimReadLbl{nullptr};
+    std::array<LabelWidget*, 3> myTimHash{nullptr};  // "#" cycle markers
     DataGridWidget* myTimWrite{nullptr};
     DataGridWidget* myTimAvail{nullptr};
     DataGridWidget* myTimRead{nullptr};
@@ -89,15 +89,15 @@ class RiotWidget : public Widget, public CommandSender
     DataGridWidget* myTimDivider{nullptr};
 
     ControllerWidget *myLeftControl{nullptr}, *myRightControl{nullptr};
-    StaticTextWidget *myP0DiffLabel{nullptr}, *myP1DiffLabel{nullptr};
+    LabelWidget *myP0DiffLbl{nullptr}, *myP1DiffLbl{nullptr};
     PopUpWidget *myP0Diff{nullptr}, *myP1Diff{nullptr};
-    StaticTextWidget *myTVTypeLabel{nullptr};
+    LabelWidget *myTVTypeLbl{nullptr};
     PopUpWidget *myTVType{nullptr};
     CheckboxWidget* mySelect{nullptr};
     CheckboxWidget* myReset{nullptr};
     CheckboxWidget* myPause{nullptr};
 
-    StaticTextWidget* myConsoleLabel{nullptr};
+    LabelWidget* myConsoleLbl{nullptr};
     PopUpWidget *myConsole{nullptr};
 
     // ID's for the various widgets

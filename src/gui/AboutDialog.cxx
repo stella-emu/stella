@@ -47,7 +47,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, "", TextAlign::Center);
+  myTitle = new LabelWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   myWhatsNewButton =
@@ -56,7 +56,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    auto* s = new StaticTextWidget(this, font, "", TextAlign::Left, kNone);
+    auto* s = new LabelWidget(this, font, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");
@@ -312,7 +312,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
       myWhatsNewDialog->open();
       break;
 
-    case StaticTextWidget::kOpenUrlCmd:
+    case LabelWidget::kOpenUrlCmd:
     {
       const string& url = myDesc[id]->getUrl();
 

@@ -40,17 +40,16 @@ class Cartridge4A50Widget : public CartDebugWidget
 
   private:
     // One region: a heading, with its ROM and RAM selectors indented beneath it
-    void layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
-                      StaticTextWidget* romLabel, PopUpWidget* rom,
-                      StaticTextWidget* ramLabel, PopUpWidget* ram) const;
+    void layoutRegion(GUI::BoxLayout& col, LabelWidget* label,
+                      LabelWidget* romLabel, PopUpWidget* rom,
+                      LabelWidget* ramLabel, PopUpWidget* ram) const;
 
   private:
     Cartridge4A50& myCart;
-    StaticTextWidget *myLowerLabel{nullptr}, *myMiddleLabel{nullptr},
-                     *myHighLabel{nullptr};
-    StaticTextWidget *myROMLowerLabel{nullptr}, *myRAMLowerLabel{nullptr};
-    StaticTextWidget *myROMMiddleLabel{nullptr}, *myRAMMiddleLabel{nullptr};
-    StaticTextWidget *myROMHighLabel{nullptr}, *myRAMHighLabel{nullptr};
+    LabelWidget *myLowerLbl{nullptr}, *myMiddleLbl{nullptr}, *myHighLbl{nullptr};
+    LabelWidget *myROMLowerLbl{nullptr}, *myRAMLowerLbl{nullptr};
+    LabelWidget *myROMMiddleLbl{nullptr}, *myRAMMiddleLbl{nullptr};
+    LabelWidget *myROMHighLbl{nullptr}, *myRAMHighLbl{nullptr};
     PopUpWidget *myROMLower{nullptr}, *myRAMLower{nullptr};
     PopUpWidget *myROMMiddle{nullptr}, *myRAMMiddle{nullptr};
     PopUpWidget *myROMHigh{nullptr}, *myRAMHigh{nullptr};

@@ -52,7 +52,7 @@ class CartridgeCTYWidget : public CartDebugWidget
 
   private:
     CartridgeCTY& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
     struct CartState {

@@ -73,15 +73,15 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     };
 
     CartridgeBUS& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
     int myDatastreamCount;
     int myDatastream2Rows{0};   // named streams below the main table
 
-    StaticTextWidget *myPointersLabel{nullptr}, *myIncrementsLabel{nullptr},
-                     *myAddressMapsLabel{nullptr}, *myCountersLabel{nullptr},
-                     *myFrequenciesLabel{nullptr}, *myWaveformsLabel{nullptr},
-                     *myWaveformSizesLabel{nullptr}, *mySamplePointerLabel{nullptr};
+    LabelWidget *myPointersLbl{nullptr}, *myIncrementsLbl{nullptr},
+                *myAddressMapsLbl{nullptr}, *myCountersLbl{nullptr},
+                *myFrequenciesLbl{nullptr}, *myWaveformsLbl{nullptr},
+                *myWaveformSizesLbl{nullptr}, *mySamplePointerLbl{nullptr};
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};
@@ -95,7 +95,7 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
-    std::array<StaticTextWidget*, 8> myDatastreamLabels{nullptr};
+    std::array<LabelWidget*, 8> myDatastreamLabels{nullptr};
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

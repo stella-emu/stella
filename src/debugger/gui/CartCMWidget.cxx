@@ -51,22 +51,22 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
 
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
-  mySWCHALabel = new StaticTextWidget(boss, _font, "Current SWCHA");
+  mySWCHALbl = new LabelWidget(boss, _font, "Current SWCHA");
   mySWCHA = new ToggleBitWidget(boss, _nfont, 8, 1);
   mySWCHA->setTarget(this);
   mySWCHA->setEditable(false);
 
   // Current column number
-  myColumnLabel = new StaticTextWidget(boss, _font, "Current column");
+  myColumnLbl = new LabelWidget(boss, _font, "Current column");
   myColumn = new DataGridWidget(boss, _nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
@@ -88,7 +88,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   addPin(myAudOut, "Audio Output");        // D6 (audio part)
 
   // Ram state (combination of several bits in SWCHA)
-  myRAMLabel = new StaticTextWidget(boss, _font, "Ram State");
+  myRAMLbl = new LabelWidget(boss, _font, "Ram State");
   myRAM = new EditTextWidget(boss, _nfont,
                              static_cast<int>(string_view(" Write-only ").size()));
   myRAM->setEditable(false, true);
@@ -107,13 +107,13 @@ void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col) const
   // The two SWCHA rows share a label column of their own, below the info block's.
   // The RAM state label has nothing to line up with, so it is a group of one --
   // which is where its clearance from the field beside it comes from
-  GUI::alignLabels({{mySWCHALabel}, {myColumnLabel}});
-  GUI::alignLabels({{myRAMLabel}});
+  GUI::alignLabels({{mySWCHALbl}, {myColumnLbl}});
+  GUI::alignLabels({{myRAMLbl}});
 
-  col.addAuto(labeledRow(myBankLabel, myBank));
+  col.addAuto(labeledRow(myBankLbl, myBank));
   col.addSpace(_lineHeight / 2);
-  col.addAuto(labeledRow(mySWCHALabel, mySWCHA));
-  col.addAuto(labeledRow(myColumnLabel, myColumn));
+  col.addAuto(labeledRow(mySWCHALbl, mySWCHA));
+  col.addAuto(labeledRow(myColumnLbl, myColumn));
 
   // The SWCHA pins, in two columns: the keyboard ones, then the audio ones with
   // the RAM state under them
@@ -129,7 +129,7 @@ void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col) const
   audio->addAuto(anchoredItem(myAudIn));
   audio->addAuto(anchoredItem(myAudOut));
   audio->addSpace(_lineHeight / 2);
-  audio->addAuto(labeledRow(myRAMLabel, myRAM));
+  audio->addAuto(labeledRow(myRAMLbl, myRAM));
 
   auto pins = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 2);
   pins->addSpace(_fontWidth * 2);   // the pins sit in from the rows above them

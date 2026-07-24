@@ -40,10 +40,10 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
       kRAMBankChanged = 'raCH'
     };
 
-    StaticTextWidget* myROMTypeLabel{nullptr};
-    StaticTextWidget* myRAMTypeLabel{nullptr};
-    StaticTextWidget* myBankLabel{nullptr};
-    StaticTextWidget* myRAMBankLabel{nullptr};
+    LabelWidget* myROMTypeLbl{nullptr};
+    LabelWidget* myRAMTypeLbl{nullptr};
+    LabelWidget* myBankLbl{nullptr};
+    LabelWidget* myRAMBankLbl{nullptr};
 
   protected:
     string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }

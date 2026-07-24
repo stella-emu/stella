@@ -150,7 +150,7 @@ class RomImageWidget : public Widget
     size_t myImageIdx{0};
 
     // Label for the loaded image
-    string myLabel;
+    string myLbl;
 
     // Maximum load time, for adapting pending loads delay
     uInt64 myMaxLoadTime{0};

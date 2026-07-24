@@ -45,7 +45,7 @@ class PaddleWidget : public ControllerWidget
     CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
     // Short pot labels when embedded in a QuadTari; the resistance sliders'
     // own labels otherwise (the two uses are mutually exclusive)
-    StaticTextWidget *myP0Label{nullptr}, *myP1Label{nullptr};
+    LabelWidget *myP0Lbl{nullptr}, *myP1Lbl{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

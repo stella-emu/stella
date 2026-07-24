@@ -41,30 +41,29 @@ class QuadTariDialog: public Dialog
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
     void layout() override;
 
   private:
     void loadControllerProperties(const Properties& props);
     void defineController(const Properties& props, PropType key,
-      Controller::Jack jack, PopUpWidget* popup, StaticTextWidget* label, bool first = true);
+      Controller::Jack jack, PopUpWidget* popup, LabelWidget* label, bool first = true);
 
   private:
-    StaticTextWidget* myLeftPortLabel{nullptr};
-    StaticTextWidget* myLeft1PortLabel{nullptr};
-    PopUpWidget*      myLeft1Port{nullptr};
-    StaticTextWidget* myLeft1PortDetected{nullptr};
-    StaticTextWidget* myLeft2PortLabel{nullptr};
-    PopUpWidget*      myLeft2Port{nullptr};
-    StaticTextWidget* myLeft2PortDetected{nullptr};
+    LabelWidget* myLeftPortLbl{nullptr};
+    LabelWidget* myLeft1PortLbl{nullptr};
+    PopUpWidget* myLeft1Port{nullptr};
+    LabelWidget* myLeft1PortDetected{nullptr};
+    LabelWidget* myLeft2PortLbl{nullptr};
+    PopUpWidget* myLeft2Port{nullptr};
+    LabelWidget* myLeft2PortDetected{nullptr};
 
-    StaticTextWidget* myRightPortLabel{nullptr};
-    StaticTextWidget* myRight1PortLabel{nullptr};
-    PopUpWidget*      myRight1Port{nullptr};
-    StaticTextWidget* myRight1PortDetected{nullptr};
-    StaticTextWidget* myRight2PortLabel{nullptr};
-    PopUpWidget*      myRight2Port{nullptr};
-    StaticTextWidget* myRight2PortDetected{nullptr};
+    LabelWidget* myRightPortLbl{nullptr};
+    LabelWidget* myRight1PortLbl{nullptr};
+    PopUpWidget* myRight1Port{nullptr};
+    LabelWidget* myRight1PortDetected{nullptr};
+    LabelWidget* myRight2PortLbl{nullptr};
+    PopUpWidget* myRight2Port{nullptr};
+    LabelWidget* myRight2PortDetected{nullptr};
 
     // Game properties for currently loaded ROM
     Properties& myGameProperties;

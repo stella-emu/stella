@@ -85,12 +85,12 @@ class TimeMachineDialog : public Dialog
     ButtonWidget* mySaveAllWidget{nullptr};
     ButtonWidget* myLoadAllWidget{nullptr};
 
-    StaticTextWidget* myCurrentTimeWidget{nullptr};
-    StaticTextWidget* myLastTimeWidget{nullptr};
+    LabelWidget* myCurrentTimeWidget{nullptr};
+    LabelWidget* myLastTimeWidget{nullptr};
 
-    StaticTextWidget* myCurrentIdxWidget{nullptr};
-    StaticTextWidget* myLastIdxWidget{nullptr};
-    StaticTextWidget* myMessageWidget{nullptr};
+    LabelWidget* myCurrentIdxWidget{nullptr};
+    LabelWidget* myLastIdxWidget{nullptr};
+    LabelWidget* myMessageWidget{nullptr};
 
     Int32 _enterWinds{0};
 

@@ -21,7 +21,7 @@
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
-class StaticTextWidget;
+class LabelWidget;
 class SliderWidget;
 
 #include "CartCDF.hxx"
@@ -74,14 +74,14 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     };
 
     CartridgeCDF& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
-    StaticTextWidget *myPointersLabel{nullptr}, *myIncrementsLabel{nullptr},
-                     *myFastFetchOffsetLabel{nullptr}, *myMusicLabel{nullptr},
-                     *myCountersLabel{nullptr}, *myFrequenciesLabel{nullptr},
-                     *myWaveformsLabel{nullptr}, *myWaveformSizesLabel{nullptr},
-                     *mySamplePointerLabel{nullptr};
+    LabelWidget *myPointersLbl{nullptr}, *myIncrementsLbl{nullptr},
+                *myFastFetchOffsetLbl{nullptr}, *myMusicLbl{nullptr},
+                *myCountersLbl{nullptr}, *myFrequenciesLbl{nullptr},
+                *myWaveformsLbl{nullptr}, *myWaveformSizesLbl{nullptr},
+                *mySamplePointerLbl{nullptr};
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};
@@ -95,7 +95,7 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     DataGridWidget* myMusicWaveformSizes{nullptr};
     DataGridWidget* mySamplePointer{nullptr};
     DataGridWidget* myFastFetcherOffset{nullptr};
-    std::array<StaticTextWidget*, 10> myDatastreamLabels{nullptr};
+    std::array<LabelWidget*, 10> myDatastreamLabels{nullptr};
 
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};

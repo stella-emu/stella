@@ -62,16 +62,16 @@ class AudioWidget : public Widget, public CommandSender
     };
 
     DataGridWidget*   myAudF{nullptr};
-    StaticTextWidget* myAud0F{nullptr};
-    StaticTextWidget* myAud1F{nullptr};
+    LabelWidget* myAud0F{nullptr};
+    LabelWidget* myAud1F{nullptr};
     DataGridWidget*   myAudC{nullptr};
     DataGridWidget*   myAudV{nullptr};
-    StaticTextWidget* myAudEffV{nullptr};
+    LabelWidget* myAudEffV{nullptr};
 
     // Labels promoted from anonymous locals so reflow() can reposition them
-    std::array<StaticTextWidget*, 3> myRegLabels{nullptr};      // AUDF/AUDC/AUDV
-    std::array<StaticTextWidget*, 2> myChannelLabels{nullptr};  // channel 0/1
-    StaticTextWidget* mySlash{nullptr};                         // between freqs
+    std::array<LabelWidget*, 3> myRegLabels{nullptr};      // AUDF/AUDC/AUDV
+    std::array<LabelWidget*, 2> myChannelLabels{nullptr};  // channel 0/1
+    LabelWidget* mySlash{nullptr};                         // between freqs
 
     // Audio channels
     enum: uInt8

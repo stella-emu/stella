@@ -82,31 +82,31 @@ class HighScoresDialog : public Dialog
 
     HSM::ScoresData myScores;
 
-    StaticTextWidget* myGameNameWidget{nullptr};
+    LabelWidget* myGameNameWidget{nullptr};
 
-    StaticTextWidget* myVariationLabel{nullptr};
-    PopUpWidget*      myVariationPopup{nullptr};
-    ButtonWidget*     myPrevVarButton{nullptr};
-    ButtonWidget*     myNextVarButton{nullptr};
+    LabelWidget*  myVariationLbl{nullptr};
+    PopUpWidget*  myVariationPopup{nullptr};
+    ButtonWidget* myPrevVarButton{nullptr};
+    ButtonWidget* myNextVarButton{nullptr};
 
     // Score-table column headers
-    StaticTextWidget* myRankLabel{nullptr};
-    StaticTextWidget* myScoreLabel{nullptr};
-    StaticTextWidget* mySpecialLabelWidget{nullptr};
-    StaticTextWidget* myNameLabel{nullptr};
-    StaticTextWidget* myDateLabel{nullptr};
+    LabelWidget* myRankLbl{nullptr};
+    LabelWidget* myScoreLbl{nullptr};
+    LabelWidget* mySpecialLbl{nullptr};
+    LabelWidget* myNameLbl{nullptr};
+    LabelWidget* myDateLbl{nullptr};
 
-    StaticTextWidget* myRankWidgets[NUM_RANKS]{nullptr};
-    StaticTextWidget* myScoreWidgets[NUM_RANKS]{nullptr};
-    StaticTextWidget* mySpecialWidgets[NUM_RANKS]{nullptr};
-    StaticTextWidget* myNameWidgets[NUM_RANKS]{nullptr};
-    EditTextWidget*   myEditNameWidgets[NUM_RANKS]{nullptr};
-    StaticTextWidget* myDateWidgets[NUM_RANKS]{nullptr};
-    ButtonWidget*     myDeleteButtons[NUM_RANKS]{nullptr};
+    LabelWidget*    myRankWidgets[NUM_RANKS]{nullptr};
+    LabelWidget*    myScoreWidgets[NUM_RANKS]{nullptr};
+    LabelWidget*    mySpecialWidgets[NUM_RANKS]{nullptr};
+    LabelWidget*    myNameWidgets[NUM_RANKS]{nullptr};
+    EditTextWidget* myEditNameWidgets[NUM_RANKS]{nullptr};
+    LabelWidget*    myDateWidgets[NUM_RANKS]{nullptr};
+    ButtonWidget*   myDeleteButtons[NUM_RANKS]{nullptr};
 
-    StaticTextWidget* myNotesWidget{nullptr};
-    StaticTextWidget* myMD5Widget{nullptr};
-    StaticTextWidget* myCheckSumWidget{nullptr};
+    LabelWidget* myNotesWidget{nullptr};
+    LabelWidget* myMD5Widget{nullptr};
+    LabelWidget* myCheckSumWidget{nullptr};
 
     AppMode myMode{AppMode::emulator};
 

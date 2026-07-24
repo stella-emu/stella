@@ -26,7 +26,7 @@ class CheckboxWidget;
 class JoystickDialog;
 class PopUpWidget;
 class SliderWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
@@ -34,8 +34,7 @@ class StaticTextWidget;
 class InputDialog : public Dialog
 {
   public:
-    InputDialog(OSystem& osystem, DialogContainer& parent,
-                const GUI::Font& font);
+    InputDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~InputDialog() override;
 
     void loadConfig() override;
@@ -92,46 +91,46 @@ class InputDialog : public Dialog
 
     CheckboxWidget*   mySAPort{nullptr};
 
-    StaticTextWidget* myAVoxPortLabel{nullptr};
+    LabelWidget* myAVoxPortLbl{nullptr};
     PopUpWidget*      myAVoxPort{nullptr};
 
-    StaticTextWidget* myDigitalDeadzoneLabel{nullptr};
-    SliderWidget*     myDigitalDeadzone{nullptr};
-    StaticTextWidget* myAnalogDeadzoneLabel{nullptr};
-    SliderWidget*     myAnalogDeadzone{nullptr};
-    StaticTextWidget* myPaddleSpeedLabel{nullptr};
-    SliderWidget*     myPaddleSpeed{nullptr};
-    StaticTextWidget* myPaddleLinearityLabel{nullptr};
-    SliderWidget*     myPaddleLinearity{nullptr};
-    StaticTextWidget* myDejitterBaseLabel{nullptr};
-    SliderWidget*     myDejitterBase{nullptr};
-    StaticTextWidget* myDejitterDiffLabel{nullptr};
-    SliderWidget*     myDejitterDiff{nullptr};
-    StaticTextWidget* myDPaddleSpeedLabel{nullptr};
-    SliderWidget*     myDPaddleSpeed{nullptr};
-    StaticTextWidget* myAnalogPaddleLabel{nullptr};
-    CheckboxWidget*   myAutoFire{nullptr};
-    StaticTextWidget* myAutoFireRateLabel{nullptr};
-    SliderWidget*     myAutoFireRate{nullptr};
-    CheckboxWidget*   myAllowAll4{nullptr};
-    CheckboxWidget*   myModCombo{nullptr};
+    LabelWidget*    myDigitalDeadzoneLbl{nullptr};
+    SliderWidget*   myDigitalDeadzone{nullptr};
+    LabelWidget*    myAnalogDeadzoneLbl{nullptr};
+    SliderWidget*   myAnalogDeadzone{nullptr};
+    LabelWidget*    myPaddleSpeedLbl{nullptr};
+    SliderWidget*   myPaddleSpeed{nullptr};
+    LabelWidget*    myPaddleLinearityLbl{nullptr};
+    SliderWidget*   myPaddleLinearity{nullptr};
+    LabelWidget*    myDejitterBaseLbl{nullptr};
+    SliderWidget*   myDejitterBase{nullptr};
+    LabelWidget*    myDejitterDiffLbl{nullptr};
+    SliderWidget*   myDejitterDiff{nullptr};
+    LabelWidget*    myDPaddleSpeedLbl{nullptr};
+    SliderWidget*   myDPaddleSpeed{nullptr};
+    LabelWidget*    myAnalogPaddleLbl{nullptr};
+    CheckboxWidget* myAutoFire{nullptr};
+    LabelWidget*    myAutoFireRateLbl{nullptr};
+    SliderWidget*   myAutoFireRate{nullptr};
+    CheckboxWidget* myAllowAll4{nullptr};
+    CheckboxWidget* myModCombo{nullptr};
 
-    StaticTextWidget* myAtariVoxLabel{nullptr};
-    ButtonWidget*     myJoyDlgButton{nullptr};
-    ButtonWidget*     myEraseEEPROMButton{nullptr};
+    LabelWidget*    myAtariVoxLbl{nullptr};
+    ButtonWidget*   myJoyDlgButton{nullptr};
+    ButtonWidget*   myEraseEEPROMButton{nullptr};
 
-    StaticTextWidget* myMouseControlLabel{nullptr};
-    PopUpWidget*      myMouseControl{nullptr};
-    StaticTextWidget* myMouseSensitivity{nullptr};
-    StaticTextWidget* myMPaddleSpeedLabel{nullptr};
-    SliderWidget*     myMPaddleSpeed{nullptr};
-    StaticTextWidget* myTrackBallSpeedLabel{nullptr};
-    SliderWidget*     myTrackBallSpeed{nullptr};
-    StaticTextWidget* myDrivingSpeedLabel{nullptr};
-    SliderWidget*     myDrivingSpeed{nullptr};
-    StaticTextWidget* myCursorStateLabel{nullptr};
-    PopUpWidget*      myCursorState{nullptr};
-    CheckboxWidget*   myGrabMouse{nullptr};
+    LabelWidget*    myMouseControlLbl{nullptr};
+    PopUpWidget*    myMouseControl{nullptr};
+    LabelWidget*    myMouseSensitivity{nullptr};
+    LabelWidget*    myMPaddleSpeedLbl{nullptr};
+    SliderWidget*   myMPaddleSpeed{nullptr};
+    LabelWidget*    myTrackBallSpeedLbl{nullptr};
+    SliderWidget*   myTrackBallSpeed{nullptr};
+    LabelWidget*    myDrivingSpeedLbl{nullptr};
+    SliderWidget*   myDrivingSpeed{nullptr};
+    LabelWidget*    myCursorStateLbl{nullptr};
+    PopUpWidget*    myCursorState{nullptr};
+    CheckboxWidget* myGrabMouse{nullptr};
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;

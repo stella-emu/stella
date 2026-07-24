@@ -19,7 +19,7 @@
 #define COMBO_DIALOG_HXX
 
 class PopUpWidget;
-class StaticTextWidget;
+class LabelWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -45,7 +45,7 @@ class ComboDialog : public Dialog
 
   private:
     Event::Type myComboEvent{Event::NoType};
-    std::array<StaticTextWidget*, 8> myEventLabels{nullptr};
+    std::array<LabelWidget*, 8> myEventLabels{nullptr};
     std::array<PopUpWidget*, 8> myEvents{nullptr};
 
   private:

@@ -49,11 +49,11 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     VarList::push_back(items, "6 ($FFFB)");
   }
   // Every widget is created at a placeholder position; reflow() positions them
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   // Fast Fetch flag, and (CDFJ+) the offset it fetches from
   myFastFetch = new CheckboxWidget(boss, _font, "Fast Fetcher enabled");
@@ -62,7 +62,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   if(isCDFJplus())
   {
-    myFastFetchOffsetLabel = new StaticTextWidget(_boss, _font, "Fast Fetch Offset:");
+    myFastFetchOffsetLbl = new LabelWidget(_boss, _font, "Fast Fetch Offset:");
 
     myFastFetcherOffset = new DataGridWidget(boss, _nfont, 1, 1, 2, 8,
                                              Common::Base::Fmt::_16_2);
@@ -80,12 +80,12 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   // The datastream table: pointers on the left, increments on the right, with the
   // command and jump streams on rows of their own beneath them
-  myPointersLabel = new StaticTextWidget(boss, _font, "Datastream Pointers");
+  myPointersLbl = new LabelWidget(boss, _font, "Datastream Pointers");
   addGrid(myDatastreamPointers,     4, 8, 6, 32, Common::Base::Fmt::_16_3_2);
   addGrid(myCommandStreamPointer,   1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
   addGrid(myJumpStreamPointers, jump2 ? 2 : 1, 1, 6, 32, Common::Base::Fmt::_16_3_2);
 
-  myIncrementsLabel = new StaticTextWidget(boss, _font, "Datastream Increments");
+  myIncrementsLbl = new LabelWidget(boss, _font, "Datastream Increments");
   addGrid(myDatastreamIncrements,   4, 8, 5, 32, Common::Base::Fmt::_16_2_2);
   addGrid(myCommandStreamIncrement, 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
   addGrid(myJumpStreamIncrements, jump2 ? 2 : 1, 1, 5, 32, Common::Base::Fmt::_16_2_2);
@@ -93,26 +93,26 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // The stream each table row holds: the first eight by number, then the named ones
   for(uInt32 row = 0; row < 8; ++row)
     myDatastreamLabels[row] =
-      new StaticTextWidget(_boss, _font,
+      new LabelWidget(_boss, _font,
                            Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
-  myDatastreamLabels[8] = new StaticTextWidget(_boss, _font, "Write Data (20)");
-  myDatastreamLabels[9] = new StaticTextWidget(_boss, _font,
+  myDatastreamLabels[8] = new LabelWidget(_boss, _font, "Write Data (20)");
+  myDatastreamLabels[9] = new LabelWidget(_boss, _font,
                             jump2 ? "Jump Data (21|22)" : "Jump Data (21)");
 
   // Music states
-  myMusicLabel = new StaticTextWidget(_boss, _font, "Music States:");
+  myMusicLbl = new LabelWidget(_boss, _font, "Music States:");
 
-  myCountersLabel = new StaticTextWidget(boss, _font, "Counters");
+  myCountersLbl = new LabelWidget(boss, _font, "Counters");
   addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myFrequenciesLabel = new StaticTextWidget(boss, _font, "Frequencies");
+  myFrequenciesLbl = new LabelWidget(boss, _font, "Frequencies");
   addGrid(myMusicFrequencies,   3, 1, 8, 32, Common::Base::Fmt::_16_8);
 
-  myWaveformsLabel = new StaticTextWidget(boss, _font, "Waveforms");
+  myWaveformsLbl = new LabelWidget(boss, _font, "Waveforms");
   addGrid(myMusicWaveforms,     3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
-  myWaveformSizesLabel = new StaticTextWidget(boss, _font, "Waveform Sizes");
+  myWaveformSizesLbl = new LabelWidget(boss, _font, "Waveform Sizes");
   addGrid(myMusicWaveformSizes, 3, 1, 8, 16, Common::Base::Fmt::_16_2);
 
   // Digital Audio flag, and the sample it plays from
@@ -120,7 +120,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
 
-  mySamplePointerLabel = new StaticTextWidget(boss, _font, "Sample Pointer");
+  mySamplePointerLbl = new LabelWidget(boss, _font, "Sample Pointer");
   addGrid(mySamplePointer,      1, 1, 8, 32, Common::Base::Fmt::_16_8);
 
   createCycleWidgets();
@@ -159,8 +159,8 @@ unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams() const
   for(int row = 0; row < 4; ++row)
     table->rowAuto(row);
 
-  table->place(1, 0, anchoredItem(myPointersLabel));
-  table->place(2, 0, anchoredItem(myIncrementsLabel));
+  table->place(1, 0, anchoredItem(myPointersLbl));
+  table->place(2, 0, anchoredItem(myIncrementsLbl));
 
   table->place(0, 1, std::move(streams));
   table->place(1, 1, alignedItem(myDatastreamPointers, HAlign::Left, VAlign::Top));
@@ -189,32 +189,32 @@ void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
   const int indent = _fontWidth * 2;
 
   // The music rows share a label column, as do the sample rows below them
-  GUI::alignLabels({{myCountersLabel, indent}, {myFrequenciesLabel, indent},
-                    {myWaveformsLabel, indent}, {myWaveformSizesLabel, indent}});
-  GUI::alignLabels({{mySamplePointerLabel, indent}});
+  GUI::alignLabels({{myCountersLbl, indent}, {myFrequenciesLbl, indent},
+                    {myWaveformsLbl, indent}, {myWaveformSizesLbl, indent}});
+  GUI::alignLabels({{mySamplePointerLbl, indent}});
 
   // The bank selector, with the fast fetcher beside it
   auto top = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  top->addAuto(labeledRow(myBankLabel, myBank));
+  top->addAuto(labeledRow(myBankLbl, myBank));
   top->addAuto(anchoredItem(myFastFetch));
   col.addAuto(std::move(top));
 
   if(myFastFetcherOffset != nullptr)
-    col.addAuto(labeledRow(myFastFetchOffsetLabel, myFastFetcherOffset, 0, indent));
+    col.addAuto(labeledRow(myFastFetchOffsetLbl, myFastFetcherOffset, 0, indent));
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(layoutDatastreams());
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(anchoredItem(myMusicLabel));
-  col.addAuto(labeledRow(myCountersLabel,      myMusicCounters,      0, indent));
-  col.addAuto(labeledRow(myFrequenciesLabel,   myMusicFrequencies,   0, indent));
-  col.addAuto(labeledRow(myWaveformsLabel,     myMusicWaveforms,     0, indent));
-  col.addAuto(labeledRow(myWaveformSizesLabel, myMusicWaveformSizes, 0, indent));
+  col.addAuto(anchoredItem(myMusicLbl));
+  col.addAuto(labeledRow(myCountersLbl,      myMusicCounters,      0, indent));
+  col.addAuto(labeledRow(myFrequenciesLbl,   myMusicFrequencies,   0, indent));
+  col.addAuto(labeledRow(myWaveformsLbl,     myMusicWaveforms,     0, indent));
+  col.addAuto(labeledRow(myWaveformSizesLbl, myMusicWaveformSizes, 0, indent));
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(anchoredItem(myDigitalSample));
-  col.addAuto(labeledRow(mySamplePointerLabel, mySamplePointer, 0, indent));
+  col.addAuto(labeledRow(mySamplePointerLbl, mySamplePointer, 0, indent));
 
   // ...and the ARM cycle counters below everything
   CartridgeARMWidget::layoutContent(col);

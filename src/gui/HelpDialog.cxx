@@ -52,13 +52,13 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, "", TextAlign::Center);
+  myTitle = new LabelWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myKey[i] = new StaticTextWidget(this, font);
-    myDesc[i] = new StaticTextWidget(this, font);
+    myKey[i] = new LabelWidget(this, font);
+    myDesc[i] = new LabelWidget(this, font);
     myDesc[i]->setID(i);
   }
 
@@ -267,7 +267,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
                             + instance().settings().getString("stella.version"));
       break;
 
-    case StaticTextWidget::kOpenUrlCmd:
+    case LabelWidget::kOpenUrlCmd:
     {
       const string& url = myDesc[id]->getUrl();
 

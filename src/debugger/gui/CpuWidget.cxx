@@ -39,7 +39,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create every widget; reflow() positions and sizes them for the area the
   // parent layout gives us
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myPCText = new StaticTextWidget(boss, lfont, "PC", TextAlign::Left);
+  myPCText = new LabelWidget(boss, lfont, "PC", TextAlign::Left);
   myPCGrid = new DataGridWidget(boss, nfont, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
@@ -81,20 +81,20 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Row labels for the other CPU registers and the '#'/'%' value prefixes
   for(int row = 0; row < 4; ++row)
   {
-    myRegLabels[row] = new StaticTextWidget(boss, lfont, labels[row], TextAlign::Left);
-    myDecPrefix[row] = new StaticTextWidget(boss, lfont, "#");
-    myBinPrefix[row] = new StaticTextWidget(boss, lfont, "%");
+    myRegLabels[row] = new LabelWidget(boss, lfont, labels[row], TextAlign::Left);
+    myDecPrefix[row] = new LabelWidget(boss, lfont, "#");
+    myBinPrefix[row] = new LabelWidget(boss, lfont, "%");
   }
 
   // Bitfield widget for changing the processor status
-  myPSText = new StaticTextWidget(boss, lfont, "PS", TextAlign::Left);
+  myPSText = new LabelWidget(boss, lfont, "PS", TextAlign::Left);
   myPSRegister = new ToggleBitWidget(boss, nfont, 8, 1);
   myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
 
   // Last write destination address
-  myDestText = new StaticTextWidget(boss, lfont, "Dest");
+  myDestText = new LabelWidget(boss, lfont, "Dest");
   myCpuDataDest = new EditTextWidget(boss, nfont, 1);
   myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
@@ -152,7 +152,7 @@ unique_ptr<GUI::Layout> CpuWidget::buildLayout() const
   // row's text where a label centers its own, so the column starts that much
   // lower and label i lands on grid row i's line.  A stack of labels is one item
   // to the row beside it, so it cannot use VAlign::Baseline
-  const auto column = [&](const std::array<StaticTextWidget*, 4>& cells) {
+  const auto column = [&](const std::array<LabelWidget*, 4>& cells) {
     auto col = std::make_unique<BoxLayout>(Dir::Vertical);
     col->addSpace(myCpuGrid->firstTextY() - cells[0]->firstTextY());
     for(auto* wid: cells)

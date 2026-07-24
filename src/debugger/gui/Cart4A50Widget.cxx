@@ -56,33 +56,33 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 
   // Each region: a heading, with a ROM and a RAM selector indented beneath it.
   // Every widget is created at a placeholder position; reflow() positions them
-  const auto addRegion = [&](StaticTextWidget*& label, string_view heading,
-                             StaticTextWidget*& romLabel, PopUpWidget*& rom,
+  const auto addRegion = [&](LabelWidget*& label, string_view heading,
+                             LabelWidget*& romLabel, PopUpWidget*& rom,
                              const VariantList& romItems, int romCmd,
-                             StaticTextWidget*& ramLabel, PopUpWidget*& ram,
+                             LabelWidget*& ramLabel, PopUpWidget*& ram,
                              const VariantList& ramItems, int ramCmd) {
-    label = new StaticTextWidget(_boss, _font, heading);
+    label = new LabelWidget(_boss, _font, heading);
 
-    romLabel = new StaticTextWidget(_boss, _font, "ROM");
+    romLabel = new LabelWidget(_boss, _font, "ROM");
     rom = new PopUpWidget(boss, _font, romItems, romCmd);
     rom->setTarget(this);
     addFocusWidget(rom);
 
-    ramLabel = new StaticTextWidget(_boss, _font, "RAM");
+    ramLabel = new LabelWidget(_boss, _font, "RAM");
     ram = new PopUpWidget(boss, _font, ramItems, ramCmd);
     ram->setTarget(this);
     addFocusWidget(ram);
   };
 
-  addRegion(myLowerLabel,  "Set lower 2K region ($F000 - $F7FF):",
-            myROMLowerLabel,  myROMLower,  items32,  kROMLowerChanged,
-            myRAMLowerLabel,  myRAMLower,  items16,  kRAMLowerChanged);
-  addRegion(myMiddleLabel, "Set middle 1.5K region ($F800 - $FDFF):",
-            myROMMiddleLabel, myROMMiddle, items32,  kROMMiddleChanged,
-            myRAMMiddleLabel, myRAMMiddle, items16,  kRAMMiddleChanged);
-  addRegion(myHighLabel,   "Set high 256B region ($FE00 - $FEFF):",
-            myROMHighLabel,   myROMHigh,   items256, kROMHighChanged,
-            myRAMHighLabel,   myRAMHigh,   items128, kRAMHighChanged);
+  addRegion(myLowerLbl,  "Set lower 2K region ($F000 - $F7FF):",
+            myROMLowerLbl,  myROMLower,  items32,  kROMLowerChanged,
+            myRAMLowerLbl,  myRAMLower,  items16,  kRAMLowerChanged);
+  addRegion(myMiddleLbl, "Set middle 1.5K region ($F800 - $FDFF):",
+            myROMMiddleLbl, myROMMiddle, items32,  kROMMiddleChanged,
+            myRAMMiddleLbl, myRAMMiddle, items16,  kRAMMiddleChanged);
+  addRegion(myHighLbl,   "Set high 256B region ($FE00 - $FEFF):",
+            myROMHighLbl,   myROMHigh,   items256, kROMHighChanged,
+            myRAMHighLbl,   myRAMHigh,   items128, kRAMHighChanged);
 
   reflow();
 }
@@ -93,22 +93,22 @@ void Cartridge4A50Widget::layoutContent(GUI::BoxLayout& col) const
   // The ROM selectors' labels form a column, as do the RAM ones: each gets one
   // label column, and all six pop-ups get one box width, so the two columns
   // line up down the tab
-  GUI::alignLabels({{myROMLowerLabel}, {myROMMiddleLabel}, {myROMHighLabel}});
-  GUI::alignLabels({{myRAMLowerLabel}, {myRAMMiddleLabel}, {myRAMHighLabel}});
+  GUI::alignLabels({{myROMLowerLbl}, {myROMMiddleLbl}, {myROMHighLbl}});
+  GUI::alignLabels({{myRAMLowerLbl}, {myRAMMiddleLbl}, {myRAMHighLbl}});
   GUI::alignPopUps({myROMLower, myROMMiddle, myROMHigh,
                     myRAMLower, myRAMMiddle, myRAMHigh});
 
-  layoutRegion(col, myLowerLabel,  myROMLowerLabel,  myROMLower,  myRAMLowerLabel,  myRAMLower);
+  layoutRegion(col, myLowerLbl,  myROMLowerLbl,  myROMLower,  myRAMLowerLbl,  myRAMLower);
   col.addSpace(_lineHeight);
-  layoutRegion(col, myMiddleLabel, myROMMiddleLabel, myROMMiddle, myRAMMiddleLabel, myRAMMiddle);
+  layoutRegion(col, myMiddleLbl, myROMMiddleLbl, myROMMiddle, myRAMMiddleLbl, myRAMMiddle);
   col.addSpace(_lineHeight);
-  layoutRegion(col, myHighLabel,   myROMHighLabel,   myROMHigh,   myRAMHighLabel,   myRAMHigh);
+  layoutRegion(col, myHighLbl,   myROMHighLbl,   myROMHigh,   myRAMHighLbl,   myRAMHigh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50Widget::layoutRegion(GUI::BoxLayout& col, StaticTextWidget* label,
-                                       StaticTextWidget* romLabel, PopUpWidget* rom,
-                                       StaticTextWidget* ramLabel, PopUpWidget* ram) const
+void Cartridge4A50Widget::layoutRegion(GUI::BoxLayout& col, LabelWidget* label,
+                                       LabelWidget* romLabel, PopUpWidget* rom,
+                                       LabelWidget* ramLabel, PopUpWidget* ram) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;

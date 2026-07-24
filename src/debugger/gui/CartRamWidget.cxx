@@ -35,7 +35,7 @@ CartRamWidget::CartRamWidget(
 {
   // Everything is created at a placeholder position; reflow() positions and
   // sizes it, and the description re-wraps itself, whenever our area changes
-  myRamSizeLabel = new StaticTextWidget(_boss, _font, "RAM size");
+  myRamSizeLbl = new LabelWidget(_boss, _font, "RAM size");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
   myRamSize = new EditTextWidget(boss, nfont, 1,
@@ -44,7 +44,7 @@ CartRamWidget::CartRamWidget(
       : std::format("{} bytes", ramsize));
   myRamSize->setEditable(false);
 
-  myDescLabel = new StaticTextWidget(_boss, _font, "Description");
+  myDescLbl = new LabelWidget(_boss, _font, "Description");
   myDesc = new WrappedTextWidget(boss, nfont,
                                  cartDebug.internalRamDescription(), MAX_DESC_LINES);
   myDesc->setEditable(false);
@@ -65,7 +65,7 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
   using GUI::widgetItem;
 
   // The two rows share one label column, as wide as the longer of their labels
-  GUI::alignLabels({{myRamSizeLabel}, {myDescLabel}});
+  GUI::alignLabels({{myRamSizeLbl}, {myDescLbl}});
 
   const int contentW = CartDebugWidget::contentWidth(_w);
 
@@ -73,12 +73,12 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
   // once it knows how wide it is, so it is given its width before the column is
   // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
   // filling row below will hand it -- the content, less the shared label column
-  myDesc->setWidth(contentW - myDescLabel->getWidth());
+  myDesc->setWidth(contentW - myDescLbl->getWidth());
 
   auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical,
                 CartDebugWidget::VGAP, 0, CartDebugWidget::VBORDER);
 
-  col->addAuto(labeledRow(myRamSizeLabel, myRamSize, 0, 0, true));
+  col->addAuto(labeledRow(myRamSizeLbl, myRamSize, 0, 0, true));
 
   // The description scrolls, so it is squeezable: a stretching cell between the
   // floor it always shows and the height of its own text, exactly as on the
@@ -87,7 +87,7 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
   // been sized.  The RAM view below is the last stretching cell, so it is what
   // takes the slack the description's cap declines
   auto descRow = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
-  descRow->addFixed(GUI::anchoredItem(myDescLabel), myDescLabel->getWidth());
+  descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
   descRow->addStretch(widgetItem(myDesc, 0, myDesc->minHeight()));
   col->add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
            static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());

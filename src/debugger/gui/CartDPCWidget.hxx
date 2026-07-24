@@ -64,13 +64,13 @@ class CartridgeDPCWidget : public CartDebugWidget
     };
 
     CartridgeDPC& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
-    StaticTextWidget* myFetcherLabel{nullptr};
-    StaticTextWidget *myTopsLabel{nullptr}, *myBottomsLabel{nullptr},
-                     *myCountersLabel{nullptr}, *myFlagsLabel{nullptr},
-                     *myMusicModeLabel{nullptr}, *myRandomLabel{nullptr};
+    LabelWidget *myFetcherLbl{nullptr};
+    LabelWidget *myTopsLbl{nullptr}, *myBottomsLbl{nullptr},
+                *myCountersLbl{nullptr}, *myFlagsLbl{nullptr},
+                *myMusicModeLbl{nullptr}, *myRandomLbl{nullptr};
 
     DataGridWidget* myTops{nullptr};
     DataGridWidget* myBottoms{nullptr};

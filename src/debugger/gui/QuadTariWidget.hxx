@@ -39,7 +39,7 @@ class QuadTariWidget: public ControllerWidget
     ControllerWidget* addController(GuiObject* boss, Controller& controller,
                                     bool second);
 
-    StaticTextWidget* myPointer{nullptr};
+    LabelWidget* myPointer{nullptr};
     ControllerWidget* myFirst{nullptr};
     ControllerWidget* mySecond{nullptr};
 

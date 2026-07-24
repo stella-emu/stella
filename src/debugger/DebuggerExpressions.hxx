@@ -142,24 +142,24 @@ class EqualsExpression : public Expression
 class EquateExpression : public Expression
 {
   public:
-    explicit EquateExpression(string_view label) : myLabel{label} { }
+    explicit EquateExpression(string_view label) : myLbl{label} { }
     Int32 evaluate() const override
-      { return Debugger::debugger().cartDebug().getAddress(myLabel); }
+      { return Debugger::debugger().cartDebug().getAddress(myLbl); }
 
   private:
-    string myLabel;
+    string myLbl;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class FunctionExpression : public Expression
 {
   public:
-    explicit FunctionExpression(string_view label) : myLabel{label} { }
+    explicit FunctionExpression(string_view label) : myLbl{label} { }
     Int32 evaluate() const override
-      { return Debugger::debugger().getFunction(myLabel).evaluate(); }
+      { return Debugger::debugger().getFunction(myLbl).evaluate(); }
 
   private:
-    string myLabel;
+    string myLbl;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

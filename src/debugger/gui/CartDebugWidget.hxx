@@ -132,9 +132,9 @@ class CartDebugWidget : public Widget, public CommandSender
   private:
     // The ROM size / manufacturer / description fields and their labels.
     // The description (myDesc) re-wraps itself whenever its width changes
-    StaticTextWidget* myROMSizeLabel{nullptr};
-    StaticTextWidget* myManufacturerLabel{nullptr};
-    StaticTextWidget* myDescLabel{nullptr};
+    LabelWidget* myROMSizeLbl{nullptr};
+    LabelWidget* myManufacturerLbl{nullptr};
+    LabelWidget* myDescLbl{nullptr};
     EditTextWidget* myROMSize{nullptr};
     EditTextWidget* myManufacturer{nullptr};
     WrappedTextWidget* myDesc{nullptr};

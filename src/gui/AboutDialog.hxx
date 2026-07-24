@@ -22,7 +22,7 @@ class OSystem;
 class DialogContainer;
 class CommandSender;
 class ButtonWidget;
-class StaticTextWidget;
+class LabelWidget;
 class WhatsNewDialog;
 
 #include "Dialog.hxx"
@@ -49,8 +49,8 @@ class AboutDialog : public Dialog
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
 
-    StaticTextWidget* myTitle{nullptr};
-    vector<StaticTextWidget*> myDesc;
+    LabelWidget* myTitle{nullptr};
+    vector<LabelWidget*> myDesc;
     vector<string> myDescStr;
 
     int myPage{1};

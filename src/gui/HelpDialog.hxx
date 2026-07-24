@@ -21,7 +21,7 @@
 class DialogContainer;
 class CommandSender;
 class ButtonWidget;
-class StaticTextWidget;
+class LabelWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -49,9 +49,9 @@ class HelpDialog : public Dialog
     ButtonWidget* myPrevButton{nullptr};
     ButtonWidget* myUpdateButton{nullptr};
 
-    StaticTextWidget* myTitle;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myKey{nullptr};
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc{nullptr};
+    LabelWidget* myTitle;
+    std::array<LabelWidget*, LINES_PER_PAGE> myKey{nullptr};
+    std::array<LabelWidget*, LINES_PER_PAGE> myDesc{nullptr};
     std::array<string, LINES_PER_PAGE> myKeyStr;
     std::array<string, LINES_PER_PAGE> myDescStr;
 

@@ -43,13 +43,13 @@ CartridgeARWidget::CartridgeARWidget(
   for(int i = 0; i < 32; ++i)
     VarList::push_back(items, std::format("{:3}", i));
 
-  myBankLabel = new StaticTextWidget(boss, _font, "Set bank");
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // The selector's box lines up with the info fields above it
-  myLabelColumn.emplace_back(myBankLabel);
+  myLabelColumn.emplace_back(myBankLbl);
 
   reflow();
 }
@@ -57,7 +57,7 @@ CartridgeARWidget::CartridgeARWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARWidget::layoutContent(GUI::BoxLayout& col) const
 {
-  col.addAuto(GUI::labeledRow(myBankLabel, myBank));
+  col.addAuto(GUI::labeledRow(myBankLbl, myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

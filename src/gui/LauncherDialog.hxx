@@ -29,7 +29,7 @@ class NavigationWidget;
 class LauncherFileListWidget;
 class RomImageWidget;
 class RomInfoWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 namespace Common {
   struct Size;
@@ -48,17 +48,16 @@ class LauncherDialog : public Dialog, CommandSender
   public:
     // These must be accessible from dialogs created by this class
     enum {
-      kLoadROMCmd      = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd = 'romc',  // ROM dir chosen
-      kFavChangedCmd   = 'favc',  // Favorite tracking changed
-      kExtChangedCmd   = 'extc',  // File extension display changed
+      kLoadROMCmd          = 'STRT',  // load currently selected ROM
+      kRomDirChosenCmd     = 'romc',  // ROM dir chosen
+      kFavChangedCmd       = 'favc',  // Favorite tracking changed
+      kExtChangedCmd       = 'extc',  // File extension display changed
       kRomViewerChangedCmd = 'rmvc',  // ROM info viewer enabled/disabled
-      kFontChangedCmd  = 'fntc',  // Launcher font changed
+      kFontChangedCmd      = 'fntc',  // Launcher font changed
     };
 
   public:
-    LauncherDialog(OSystem& osystem, DialogContainer& parent,
-                   int w, int h);
+    LauncherDialog(OSystem& osystem, DialogContainer& parent, int w, int h);
     ~LauncherDialog() override;
 
     /**
@@ -185,39 +184,39 @@ class LauncherDialog : public Dialog, CommandSender
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
 
-    ButtonWidget*     mySettingsButton{nullptr};
-    StaticTextWidget* myFilterLabel{nullptr};
-    EditTextWidget*   myPattern{nullptr};
-    ButtonWidget*     mySubDirsButton{nullptr};
-    ButtonWidget*     myRandomRomButton{nullptr};
-    StaticTextWidget* myRomCount{nullptr};
-    ButtonWidget*     myHelpButton{nullptr};
+    ButtonWidget*   mySettingsButton{nullptr};
+    LabelWidget*    myFilterLbl{nullptr};
+    EditTextWidget* myPattern{nullptr};
+    ButtonWidget*   mySubDirsButton{nullptr};
+    ButtonWidget*   myRandomRomButton{nullptr};
+    LabelWidget*    myRomCount{nullptr};
+    ButtonWidget*   myHelpButton{nullptr};
 
     NavigationWidget* myNavigationBar{nullptr};
     ButtonWidget*     myReloadButton{nullptr};
 
     LauncherFileListWidget* myList{nullptr};
 
-    ButtonWidget*     myStartButton{nullptr};
-    ButtonWidget*     myGoUpButton{nullptr};
-    ButtonWidget*     myOptionsButton{nullptr};
-    ButtonWidget*     myQuitButton{nullptr};
+    ButtonWidget*   myStartButton{nullptr};
+    ButtonWidget*   myGoUpButton{nullptr};
+    ButtonWidget*   myOptionsButton{nullptr};
+    ButtonWidget*   myQuitButton{nullptr};
 
-    RomImageWidget*   myRomImageWidget{nullptr};
-    RomInfoWidget*    myRomInfoWidget{nullptr};
+    RomImageWidget* myRomImageWidget{nullptr};
+    RomInfoWidget*  myRomInfoWidget{nullptr};
 
     // ROM info column width as a fraction of the launcher content width.
     // Keeps the ROM info area scaling proportionally as the window resizes,
     // and is adjusted by dragging the divider.
-    float             myRomInfoFraction{0.F};
+    float myRomInfoFraction{0.F};
 
     // The minimum content size, recomputed at the end of each layout() from the
     // laid-out widgets and used to clamp the next one (the widgets carry no
     // meaningful geometry until layout() runs, so it cannot be read up front)
-    Common::Size      myMinSize;
+    Common::Size myMinSize;
 
     // Draggable divider between the list and the ROM info column
-    Widget*           myDivider{nullptr};
+    Widget* myDivider{nullptr};
 
     std::unordered_map<string, string, BSPF::StringHash, std::equal_to<>> myMD5List;
 

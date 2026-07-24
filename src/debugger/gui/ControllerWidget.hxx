@@ -20,7 +20,7 @@
 
 class GuiObject;
 class ButtonWidget;
-class StaticTextWidget;
+class LabelWidget;
 class CheckboxWidget;
 
 namespace GUI {
@@ -93,8 +93,8 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
   private:
     // The shared two-line header, laid out by reflow(): the controller name over
     // its "(Left)"/"(Right)" port, both centered (null when embedded)
-    StaticTextWidget* myHeaderName{nullptr};
-    StaticTextWidget* myHeaderPort{nullptr};
+    LabelWidget* myHeaderName{nullptr};
+    LabelWidget* myHeaderPort{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

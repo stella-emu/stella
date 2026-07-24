@@ -24,7 +24,7 @@ class ButtonWidget;
 class EditTextWidget;
 class PopUpWidget;
 class StringListWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 
@@ -47,9 +47,9 @@ class JoystickDialog : public Dialog
 
   private:
     StringListWidget* myJoyList{nullptr};
-    StaticTextWidget* myIDLabel{nullptr};
+    LabelWidget*      myIDLbl{nullptr};
     EditTextWidget*   myJoyText{nullptr};
-    StaticTextWidget* myJoyPortLabel{nullptr};
+    LabelWidget*      myJoyPortLbl{nullptr};
     PopUpWidget*      myJoyPort{nullptr};
 
     ButtonWidget* myRemoveBtn{nullptr};

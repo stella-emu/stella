@@ -63,36 +63,36 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // Create every field; reflow() picks the short/long label text and positions
   // and sizes everything for the width the parent layout gives us
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myFrameCyclesLabel = new StaticTextWidget(boss, lfont, "Frame Cycles");
+  myFrameCyclesLbl = new LabelWidget(boss, lfont, "Frame Cycles");
   myFrameCycles = new EditTextWidget(boss, nfont, 1);
   myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
-  myWSyncCyclesLabel = new StaticTextWidget(boss, lfont, "WSync Cycles");
+  myWSyncCyclesLbl = new LabelWidget(boss, lfont, "WSync Cycles");
   myWSyncCylces = new EditTextWidget(boss, nfont, 1);
   myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
   myWSyncCylces->setEditable(false, true);
 
-  myTimerCyclesLabel = new StaticTextWidget(boss, lfont, "Timer Cycles");
+  myTimerCyclesLbl = new LabelWidget(boss, lfont, "Timer Cycles");
   myTimerCylces = new EditTextWidget(boss, nfont, 1);
   myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
   myTimerCylces->setEditable(false, true);
 
-  myTotalLabel = new StaticTextWidget(boss, lfont, "Total");
+  myTotalLbl = new LabelWidget(boss, lfont, "Total");
   myTotalCycles = new EditTextWidget(boss, nfont, 1);
   myTotalCycles->setEditable(false, true);
 
-  myDeltaLabel = new StaticTextWidget(boss, lfont, "Delta");
+  myDeltaLbl = new LabelWidget(boss, lfont, "Delta");
   myDeltaCycles = new EditTextWidget(boss, nfont, 1);
   myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
-  myFrameCountLabel = new StaticTextWidget(boss, lfont, "Frame Cnt.");
+  myFrameCountLbl = new LabelWidget(boss, lfont, "Frame Cnt.");
   myFrameCount = new EditTextWidget(boss, nfont, 1);
   myFrameCount->setToolTip("Total number of frames executed this session.");
   myFrameCount->setEditable(false, true);
 
-  myScanlineLabel = new StaticTextWidget(boss, lfont, "Scanline");
+  myScanlineLbl = new LabelWidget(boss, lfont, "Scanline");
   myScanlineCountLast = new EditTextWidget(boss, nfont, 1);
   myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
@@ -100,17 +100,17 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
-  myScanCycleLabel = new StaticTextWidget(boss, lfont, "Scan Cycle");
+  myScanCycleLbl = new LabelWidget(boss, lfont, "Scan Cycle");
   myScanlineCycles = new EditTextWidget(boss, nfont, 1);
   myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
-  myPixelPosLabel = new StaticTextWidget(boss, lfont, "Pixel Pos");
+  myPixelPosLbl = new LabelWidget(boss, lfont, "Pixel Pos");
   myPixelPosition = new EditTextWidget(boss, nfont, 1);
   myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
-  myColorClockLabel = new StaticTextWidget(boss, lfont, "Color Clock");
+  myColorClockLbl = new LabelWidget(boss, lfont, "Color Clock");
   myColorClocks = new EditTextWidget(boss, nfont, 1);
   myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
@@ -118,9 +118,9 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Each label switches between a long and a short form as the width allows, so
   // it must take its width from whichever one it is currently showing
-  for(auto* l: {myFrameCyclesLabel, myWSyncCyclesLabel, myTimerCyclesLabel,
-                myTotalLabel, myDeltaLabel, myFrameCountLabel, myScanlineLabel,
-                myScanCycleLabel, myPixelPosLabel, myColorClockLabel})
+  for(auto* l: {myFrameCyclesLbl, myWSyncCyclesLbl, myTimerCyclesLbl,
+                myTotalLbl, myDeltaLbl, myFrameCountLbl, myScanlineLbl,
+                myScanCycleLbl, myPixelPosLbl, myColorClockLbl})
     l->setAutoResize(true);
 
   reflow();
@@ -138,19 +138,19 @@ void TiaInfoWidget::setArea(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::setLabels(bool longstr)
 {
-  const auto set = [&](StaticTextWidget* w, const RowLabel& l) {
+  const auto set = [&](LabelWidget* w, const RowLabel& l) {
     w->setLabel(longstr ? l.full : l.abbr);
   };
-  set(myFrameCyclesLabel, LEFT_LABELS[0]);
-  set(myWSyncCyclesLabel, LEFT_LABELS[1]);
-  set(myTimerCyclesLabel, LEFT_LABELS[2]);
-  set(myTotalLabel,       LEFT_LABELS[3]);
-  set(myDeltaLabel,       LEFT_LABELS[4]);
-  set(myFrameCountLabel,  RIGHT_LABELS[0]);
-  set(myScanlineLabel,    RIGHT_LABELS[1]);
-  set(myScanCycleLabel,   RIGHT_LABELS[2]);
-  set(myPixelPosLabel,    RIGHT_LABELS[3]);
-  set(myColorClockLabel,  RIGHT_LABELS[4]);
+  set(myFrameCyclesLbl, LEFT_LABELS[0]);
+  set(myWSyncCyclesLbl, LEFT_LABELS[1]);
+  set(myTimerCyclesLbl, LEFT_LABELS[2]);
+  set(myTotalLbl,       LEFT_LABELS[3]);
+  set(myDeltaLbl,       LEFT_LABELS[4]);
+  set(myFrameCountLbl,  RIGHT_LABELS[0]);
+  set(myScanlineLbl,    RIGHT_LABELS[1]);
+  set(myScanCycleLbl,   RIGHT_LABELS[2]);
+  set(myPixelPosLbl,    RIGHT_LABELS[3]);
+  set(myColorClockLbl,  RIGHT_LABELS[4]);
 
   myLongLabels = longstr;
 }
@@ -178,7 +178,7 @@ unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
   // A row stretches its label across whatever width the column has and anchors
   // its value field at the right, so that a column's fields all end flush, no
   // matter how wide its labels or how many characters each field holds
-  const auto row = [&](StaticTextWidget* label, Widget* value, int chars) {
+  const auto row = [&](LabelWidget* label, Widget* value, int chars) {
     auto [item, w] = field(value, chars);
     auto r = std::make_unique<BoxLayout>(Dir::Horizontal, space);
     r->addStretch(anchoredItem(label));
@@ -187,11 +187,11 @@ unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
   };
 
   auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
-  left->addAuto(row(myFrameCyclesLabel, myFrameCycles, CYCLE_CHARS));
-  left->addAuto(row(myWSyncCyclesLabel, myWSyncCylces, CYCLE_CHARS));
-  left->addAuto(row(myTimerCyclesLabel, myTimerCylces, CYCLE_CHARS));
-  left->addAuto(row(myTotalLabel, myTotalCycles, TOTAL_CHARS));
-  left->addAuto(row(myDeltaLabel, myDeltaCycles, TOTAL_CHARS));
+  left->addAuto(row(myFrameCyclesLbl, myFrameCycles, CYCLE_CHARS));
+  left->addAuto(row(myWSyncCyclesLbl, myWSyncCylces, CYCLE_CHARS));
+  left->addAuto(row(myTimerCyclesLbl, myTimerCylces, CYCLE_CHARS));
+  left->addAuto(row(myTotalLbl, myTotalCycles, TOTAL_CHARS));
+  left->addAuto(row(myDeltaLbl, myDeltaCycles, TOTAL_CHARS));
 
   // The scanline row shows the current and last-frame counts side by side
   auto counts = std::make_unique<BoxLayout>(Dir::Horizontal, SCAN_GAP);
@@ -202,15 +202,15 @@ unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
   }
 
   auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal, space);
-  scanRow->addStretch(anchoredItem(myScanlineLabel));
+  scanRow->addStretch(anchoredItem(myScanlineLbl));
   scanRow->addAuto(std::move(counts));
 
   auto right = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
-  right->addAuto(row(myFrameCountLabel, myFrameCount, CYCLE_CHARS));
+  right->addAuto(row(myFrameCountLbl, myFrameCount, CYCLE_CHARS));
   right->addAuto(std::move(scanRow));
-  right->addAuto(row(myScanCycleLabel, myScanlineCycles, COUNT_CHARS));
-  right->addAuto(row(myPixelPosLabel, myPixelPosition, COUNT_CHARS));
-  right->addAuto(row(myColorClockLabel, myColorClocks, COUNT_CHARS));
+  right->addAuto(row(myScanCycleLbl, myScanlineCycles, COUNT_CHARS));
+  right->addAuto(row(myPixelPosLbl, myPixelPosition, COUNT_CHARS));
+  right->addAuto(row(myColorClockLbl, myColorClocks, COUNT_CHARS));
 
   // The two columns and the gap between them start at the size their contents
   // need and share any surplus in the proportion 1 : 2 : 1, so the gap always

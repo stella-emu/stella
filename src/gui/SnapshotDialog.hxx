@@ -25,7 +25,7 @@ class ButtonWidget;
 class CheckboxWidget;
 class EditTextWidget;
 class SliderWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -56,9 +56,9 @@ class SnapshotDialog : public Dialog
     ButtonWidget* mySnapSaveButton{nullptr};
     EditTextWidget* mySnapSavePath{nullptr};
 
-    StaticTextWidget* myWhenLabel{nullptr};
+    LabelWidget* myWhenLbl{nullptr};
     CheckboxWidget* mySnapName{nullptr};
-    StaticTextWidget* mySnapIntervalLabel{nullptr};
+    LabelWidget* mySnapIntervalLbl{nullptr};
     SliderWidget* mySnapInterval{nullptr};
 
     CheckboxWidget* mySnapSingle{nullptr};

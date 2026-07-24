@@ -346,7 +346,7 @@ Rules of thumb:
   it built itself from the font. Only a **list** or an image — which have no
   height of their own — wants `widgetItem` and a stretching row.
 - **A checkbox indented under a group header** → `indentedItem(cb, indent())`.
-- **A separate label + control** (label is its own `StaticTextWidget`, control
+- **A separate label + control** (label is its own `LabelWidget`, control
   takes no label of its own — this includes `PopUpWidget` and `SliderWidget`) →
   `labeledRow(label, control, sharedLabelW)`. Filling a slider this way (the
   `fill=true` argument) stretches its *track*, not its label — see the sliders
@@ -369,7 +369,7 @@ Rules of thumb:
 - **Sliders that must end flush with the pop-up above them** →
   `GUI::alignTracks({s1, s2, …}, popup)` (add the indent as a third argument if the
   sliders sit a level in from it). A slider carries no label of its own — that is
-  a separate `StaticTextWidget` composed via `labeledRow`, same as a pop-up — but
+  a separate `LabelWidget` composed via `labeledRow`, same as a pop-up — but
   its **track** still isn't something a layout can size directly: a slider's
   width is track + value readout in one rect, and what has to line up down a form
   is the track, which is below the level a layout can see, since a layout only
@@ -495,7 +495,7 @@ class MyDialog : public Dialog
 
   private:
     // Promote to members ANY widget layout() must position.
-    StaticTextWidget* myModeLabel{nullptr};  // PopUpWidget isn't self-labeling
+    LabelWidget* myModeLbl{nullptr};  // PopUpWidget isn't self-labeling
     PopUpWidget*   myMode{nullptr};
     CheckboxWidget* myEnable{nullptr};
     // ... deleted copy/move ctors ...
@@ -518,7 +518,7 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
 
   // Create every widget with only what it cannot derive itself — no ctor
   // geometry anywhere in this tree any more.
-  myModeLabel = new StaticTextWidget(this, font, "Mode");
+  myModeLbl = new LabelWidget(this, font, "Mode");
   myMode = new PopUpWidget(this, font, items);
   wid.push_back(myMode);
 
@@ -537,14 +537,14 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
 > column to 1px and clip it away. Only a *filled* axis (`widgetItem`,
 > `stretchedItem`) overrides that width, which is why a placeholder is safe there
 > and nowhere else. So: **a label or a text field the layout does not stretch must
-> be built with its real, font-derived width** — for a `StaticTextWidget` that
+> be built with its real, font-derived width** — for a `LabelWidget` that
 > means the short ctor (which derives it from the text), and for an
 > `EditTextWidget`, its own ctor stated directly in characters (`chars`, not
 > pixels). Only the widget's *position*, and any size the layout will assign,
 > belong in `layout()`.
 >
 > This misbehaves *intermittently*, which makes it nasty: `refreshFontMetrics()`
-> recomputes a `StaticTextWidget`'s width from its label, so a clipped label
+> recomputes a `LabelWidget`'s width from its label, so a clipped label
 > springs back into view after any live font change and looks fine — until the
 > dialog is next opened from scratch.
 
@@ -566,7 +566,7 @@ constructor's closing brace):
 
 ```cpp
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myModeLabel = new StaticTextWidget(this, font, "Mode");
+  myModeLbl = new LabelWidget(this, font, "Mode");
   myMode = new PopUpWidget(this, font, items);
   wid.push_back(myMode);
   myEnable = new CheckboxWidget(this, font, "Enable feature");
@@ -599,10 +599,10 @@ void MyDialog::layout()
   _h = _th + VBORDER * 2 + 2 * (lineHeight + VGAP) + buttonHeight;
 
   // 2. Build a throwaway layout tree and apply it below the title bar.
-  //    myMode isn't self-labeling any more, so it's paired with myModeLabel
+  //    myMode isn't self-labeling any more, so it's paired with myModeLbl
   //    via labeledRow(); myEnable draws its own label, so it stays anchoredItem.
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
-  root->addAuto(labeledRow(myModeLabel, myMode));
+  root->addAuto(labeledRow(myModeLbl, myMode));
   root->addFixed(anchoredItem(myEnable), lineHeight);
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -707,10 +707,10 @@ myTab->setPaneWidget(tabID, pane);
 
 // this tab's controls are parented to the PANE, not to myTab.  Neither
 // PopUpWidget nor SliderWidget draws its own label any more — each gets an
-// ordinary sibling StaticTextWidget, paired up below by labeledRow()
-myModeLabel  = new StaticTextWidget(pane, _font, "Mode");
+// ordinary sibling LabelWidget, paired up below by labeledRow()
+myModeLbl  = new LabelWidget(pane, _font, "Mode");
 myMode       = new PopUpWidget(pane, _font, items, kModeChanged);
-mySpeedLabel = new StaticTextWidget(pane, _font, "Speed");
+mySpeedLbl = new LabelWidget(pane, _font, "Speed");
 mySpeed      = new SliderWidget(pane, _font, Dialog::fontWidth() * 10, kSpeedChanged);
 addToFocusList(wid, myTab, tabID);
 pane->setHelpAnchor("General");
@@ -722,11 +722,11 @@ pane->setLayout([this](GUI::BoxLayout& col) {
   const int VGAP = Dialog::vGap();
 
   // Line the two value boxes up under a shared label column
-  GUI::alignLabels({{myModeLabel}, {mySpeedLabel}});
+  GUI::alignLabels({{myModeLbl}, {mySpeedLbl}});
 
-  col.addAuto(labeledRow(myModeLabel, myMode));
+  col.addAuto(labeledRow(myModeLbl, myMode));
   col.addSpace(VGAP);
-  col.addAuto(labeledRow(mySpeedLabel, mySpeed));
+  col.addAuto(labeledRow(mySpeedLbl, mySpeed));
 });
 ```
 
@@ -881,7 +881,7 @@ Two corollaries:
   its width by the layout (`stretchedItem`, or `HAlign::Fill`), and built with no
   text at all. Never let it take its width from the text it happens to hold: that
   text is *data*, and the layout would then change shape with it — a long value
-  stretching a column, an empty one collapsing it, and a `StaticTextWidget`
+  stretching a column, an empty one collapsing it, and a `LabelWidget`
   re-deriving its width from its current label after any font change. Where the
   space such a value needs is wider than its heading, that width is the *dialog's*
   to state — from the model, not from a specimen widget:
@@ -932,7 +932,7 @@ the dialog font (Small ↔ Large) and confirm nothing clips or overlaps.
 
 `ComboDialog` (`src/gui/ComboDialog.cxx`) is the smallest fully-converted dialog
 — a vertical stack of eight labeled event popups over a button row, each popup
-paired with its own `StaticTextWidget` via `labeledRow`. Its `layout()` is the
+paired with its own `LabelWidget` via `labeledRow`. Its `layout()` is the
 canonical template:
 
 ```cpp

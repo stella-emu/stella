@@ -22,7 +22,7 @@ class DialogContainer;
 class CommandSender;
 class Widget;
 class ButtonWidget;
-class StaticTextWidget;
+class LabelWidget;
 class CheckListWidget;
 class EditTextWidget;
 class OptionsDialog;

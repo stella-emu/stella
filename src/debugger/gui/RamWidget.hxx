@@ -24,7 +24,7 @@ class DataGridWidget;
 class DataGridOpsWidget;
 class DataGridRamWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 class InputTextDialog;
 
 #include "Widget.hxx"
@@ -118,20 +118,20 @@ class RamWidget : public Widget, public CommandSender
 
     unique_ptr<InputTextDialog> myInputBox;
 
-    StaticTextWidget* myRamStart{nullptr};
-    std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
+    LabelWidget* myRamStart{nullptr};
+    std::array<LabelWidget*, 16> myRamLabels{nullptr};
 
     // Promoted from anonymous locals so the reflow can reposition them
-    std::array<StaticTextWidget*, 16> myColHeaders{nullptr};  // column headers 0..F
-    StaticTextWidget* myLabelText{nullptr};  // "Label"
-    StaticTextWidget* myDecPrefix{nullptr};  // "#"
-    StaticTextWidget* myBinPrefix{nullptr};  // "%"
+    std::array<LabelWidget*, 16> myColHeaders{nullptr};  // column headers 0..F
+    LabelWidget* myLabelText{nullptr};  // "Label"
+    LabelWidget* myDecPrefix{nullptr};  // "#"
+    LabelWidget* myBinPrefix{nullptr};  // "%"
 
     DataGridRamWidget* myRamGrid{nullptr};
     DataGridWidget* myHexValue{nullptr};
     DataGridWidget* myDecValue{nullptr};
     DataGridWidget* myBinValue{nullptr};
-    EditTextWidget* myLabel{nullptr};
+    EditTextWidget* myLbl{nullptr};
 
     ButtonWidget* myRevertButton{nullptr};
     ButtonWidget* myUndoButton{nullptr};

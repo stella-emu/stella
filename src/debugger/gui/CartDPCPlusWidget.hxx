@@ -68,14 +68,14 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
     };
 
     CartridgeDPCPlus& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
-    StaticTextWidget *myTopsLabel{nullptr}, *myBottomsLabel{nullptr},
-                     *myCountersLabel{nullptr}, *myFracCountersLabel{nullptr},
-                     *myFracIncrementsLabel{nullptr}, *myParameterLabel{nullptr},
-                     *myMusicCountersLabel{nullptr}, *myMusicFrequenciesLabel{nullptr},
-                     *myMusicWaveformsLabel{nullptr}, *myRandomLabel{nullptr};
+    LabelWidget *myTopsLbl{nullptr}, *myBottomsLbl{nullptr},
+                     *myCountersLbl{nullptr}, *myFracCountersLbl{nullptr},
+                     *myFracIncrementsLbl{nullptr}, *myParameterLbl{nullptr},
+                     *myMusicCountersLbl{nullptr}, *myMusicFrequenciesLbl{nullptr},
+                     *myMusicWaveformsLbl{nullptr}, *myRandomLbl{nullptr};
 
     DataGridWidget* myTops{nullptr};
     DataGridWidget* myBottoms{nullptr};

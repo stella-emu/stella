@@ -85,7 +85,7 @@ void MessageBox::createText(const GUI::Font& font, string_view text)
 {
   myText = StringParser(text).stringList();
   for(const auto& s: myText)
-    myTextWidgets.push_back(new StaticTextWidget(this, font, s,
+    myTextWidgets.push_back(new LabelWidget(this, font, s,
                                                  TextAlign::Left));
 }
 

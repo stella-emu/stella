@@ -48,7 +48,7 @@ class CartridgeE7Widget : public CartDebugWidget
   protected:
     CartridgeE7& myCart;
 
-    StaticTextWidget *myLower2KLabel{nullptr}, *myUpper256BLabel{nullptr};
+    LabelWidget *myLower2KLbl{nullptr}, *myUpper256BLbl{nullptr};
     PopUpWidget *myLower2K{nullptr}, *myUpper256B{nullptr};
 
     struct CartState

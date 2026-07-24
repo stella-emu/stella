@@ -142,23 +142,23 @@ void CartridgeEnhancedWidget::createPlusROM()
   if(!myCart.isPlusROM())
     return;
 
-  myPlusROMLabel = new StaticTextWidget(_boss, _font, "PlusROM:");
+  myPlusROMLbl = new LabelWidget(_boss, _font, "PlusROM:");
 
-  myPlusROMHostLabel = new StaticTextWidget(_boss, _font, "Host");
+  myPlusROMHostLbl = new LabelWidget(_boss, _font, "Host");
   myPlusROMHostWidget = new EditTextWidget(_boss, _font, 1,
                                            myCart.myPlusROM->getHost());
   myPlusROMHostWidget->setEditable(false);
 
-  myPlusROMPathLabel = new StaticTextWidget(_boss, _font, "Path");
+  myPlusROMPathLbl = new LabelWidget(_boss, _font, "Path");
   myPlusROMPathWidget = new EditTextWidget(_boss, _font, 1,
                                            myCart.myPlusROM->getPath());
   myPlusROMPathWidget->setEditable(false);
 
-  myPlusROMSendLabel = new StaticTextWidget(_boss, _font, "Send");
+  myPlusROMSendLbl = new LabelWidget(_boss, _font, "Send");
   myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 1);
   myPlusROMSendWidget->setEditable(false);
 
-  myPlusROMReceiveLabel = new StaticTextWidget(_boss, _font, "Receive");
+  myPlusROMReceiveLbl = new LabelWidget(_boss, _font, "Receive");
   myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 1);
   myPlusROMReceiveWidget->setEditable(false);
 
@@ -168,8 +168,8 @@ void CartridgeEnhancedWidget::createPlusROM()
   const int indent = _fontWidth * 2;
 
   myLabelColumn.insert(myLabelColumn.end(),
-                       {{myPlusROMHostLabel, indent}, {myPlusROMPathLabel, indent},
-                        {myPlusROMSendLabel, indent}, {myPlusROMReceiveLabel, indent}});
+                       {{myPlusROMHostLbl, indent}, {myPlusROMPathLbl, indent},
+                        {myPlusROMSendLbl, indent}, {myPlusROMReceiveLbl, indent}});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,11 +184,11 @@ void CartridgeEnhancedWidget::layoutPlusROM(GUI::BoxLayout& col) const
   // The labels were given their (indented) column when they joined myLabelColumn
   const int indent = _fontWidth * 2;
 
-  col.addAuto(anchoredItem(myPlusROMLabel));
-  col.addAuto(labeledRow(myPlusROMHostLabel, myPlusROMHostWidget, 0, indent, true));
-  col.addAuto(labeledRow(myPlusROMPathLabel, myPlusROMPathWidget, 0, indent, true));
-  col.addAuto(labeledRow(myPlusROMSendLabel, myPlusROMSendWidget, 0, indent, true));
-  col.addAuto(labeledRow(myPlusROMReceiveLabel, myPlusROMReceiveWidget, 0, indent, true));
+  col.addAuto(anchoredItem(myPlusROMLbl));
+  col.addAuto(labeledRow(myPlusROMHostLbl, myPlusROMHostWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMPathLbl, myPlusROMPathWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMSendLbl, myPlusROMSendWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMReceiveLbl, myPlusROMReceiveWidget, 0, indent, true));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,7 +233,7 @@ void CartridgeEnhancedWidget::createBankWidgets()
       ? std::format("Set bank for segment #{}", seg)
       : "Set bank";
 
-    myBankWidgetLabels[seg] = new StaticTextWidget(_boss, _font, label);
+    myBankWidgetLabels[seg] = new LabelWidget(_boss, _font, label);
     myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
     myBankWidgets[seg]->setTarget(this);
     myBankWidgets[seg]->setID(seg);

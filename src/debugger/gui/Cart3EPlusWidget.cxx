@@ -80,18 +80,18 @@ void Cartridge3EPlusWidget::createBankWidgets()
     VariantList items;
     const size_t bank_off = static_cast<size_t>(seg) * 2;
 
-    mySegLabel[seg] = new StaticTextWidget(_boss, _font,
+    mySegLbl[seg] = new LabelWidget(_boss, _font,
         std::format("Set segment {} as", seg));
 
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
                                       seg, items);
-    myBankWidgetLabel[seg] = new StaticTextWidget(_boss, _font, "Bank");
+    myBankWidgetLbl[seg] = new LabelWidget(_boss, _font, "Bank");
     myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
-    myBankTypeLabel[seg] = new StaticTextWidget(_boss, _font, "of");
+    myBankTypeLbl[seg] = new LabelWidget(_boss, _font, "of");
     myBankType[seg] = new PopUpWidget(_boss, _font, banktype, kRomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
@@ -106,12 +106,12 @@ void Cartridge3EPlusWidget::createBankWidgets()
 
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
-    myAddrLabel[bank_off] = new StaticTextWidget(_boss, _font,
+    myAddrLbl[bank_off] = new LabelWidget(_boss, _font,
         std::format("${}-${}", Base::hex4(addr1), Base::hex4(addr1 + 0x1FF)));
     myBankState[bank_off] = new EditTextWidget(_boss, _font, 1);
     myBankState[bank_off]->setEditable(false, true);
 
-    myAddrLabel[bank_off + 1] = new StaticTextWidget(_boss, _font,
+    myAddrLbl[bank_off + 1] = new LabelWidget(_boss, _font,
         std::format("${}-${}", Base::hex4(addr2), Base::hex4(addr2 + 0x1FF)));
     myBankState[bank_off + 1] = new EditTextWidget(_boss, _font, 1);
     myBankState[bank_off + 1]->setEditable(false, true);
@@ -130,11 +130,11 @@ void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
   // Each kind of control aligns down its own column: the bank and type pop-ups'
   // labels, and the address labels beside the state fields
   std::vector<LabeledControl> banks, types, addrs;
-  for(auto* label: myBankWidgetLabel)
+  for(auto* label: myBankWidgetLbl)
     banks.emplace_back(label);
-  for(auto* label: myBankTypeLabel)
+  for(auto* label: myBankTypeLbl)
     types.emplace_back(label);
-  for(auto* label: myAddrLabel)
+  for(auto* label: myAddrLbl)
     addrs.emplace_back(label);
   GUI::alignLabels(banks);
   GUI::alignLabels(types);
@@ -146,21 +146,21 @@ void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
 
     // The bank / type / commit controls along one row
     auto controls = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth);
-    controls->addAuto(labeledRow(myBankWidgetLabel[seg], myBankWidgets[seg]));
-    controls->addAuto(labeledRow(myBankTypeLabel[seg], myBankType[seg]));
+    controls->addAuto(labeledRow(myBankWidgetLbl[seg], myBankWidgets[seg]));
+    controls->addAuto(labeledRow(myBankTypeLbl[seg], myBankType[seg]));
     controls->addAuto(anchoredItem(myBankCommit[seg]));
 
     // The two address rows on the right, each an address label + filling field
     auto addrCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
-    addrCol->addAuto(labeledRow(myAddrLabel[off], myBankState[off], 0, 0, true));
-    addrCol->addAuto(labeledRow(myAddrLabel[off + 1], myBankState[off + 1], 0, 0, true));
+    addrCol->addAuto(labeledRow(myAddrLbl[off], myBankState[off], 0, 0, true));
+    addrCol->addAuto(labeledRow(myAddrLbl[off + 1], myBankState[off + 1], 0, 0, true));
 
     // The controls on the left (top row), address rows filling the right
     auto block = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 2);
     block->addAuto(std::move(controls));
     block->addStretch(std::move(addrCol));
 
-    col.addAuto(anchoredItem(mySegLabel[seg]));
+    col.addAuto(anchoredItem(mySegLbl[seg]));
     col.addAuto(std::move(block));
     col.addSpace(VGAP * 2);
   }

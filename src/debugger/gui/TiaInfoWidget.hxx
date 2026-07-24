@@ -20,7 +20,7 @@
 
 class GuiObject;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 class CheckboxWidget;
 
 #include "Widget.hxx"
@@ -92,16 +92,16 @@ class TiaInfoWidget : public Widget, public CommandSender
 
     // Labels promoted from anonymous locals so the reflow can switch each one
     // between its short and long text and reposition it
-    StaticTextWidget* myFrameCyclesLabel{nullptr};
-    StaticTextWidget* myWSyncCyclesLabel{nullptr};
-    StaticTextWidget* myTimerCyclesLabel{nullptr};
-    StaticTextWidget* myTotalLabel{nullptr};
-    StaticTextWidget* myDeltaLabel{nullptr};
-    StaticTextWidget* myFrameCountLabel{nullptr};
-    StaticTextWidget* myScanlineLabel{nullptr};
-    StaticTextWidget* myScanCycleLabel{nullptr};
-    StaticTextWidget* myPixelPosLabel{nullptr};
-    StaticTextWidget* myColorClockLabel{nullptr};
+    LabelWidget* myFrameCyclesLbl{nullptr};
+    LabelWidget* myWSyncCyclesLbl{nullptr};
+    LabelWidget* myTimerCyclesLbl{nullptr};
+    LabelWidget* myTotalLbl{nullptr};
+    LabelWidget* myDeltaLbl{nullptr};
+    LabelWidget* myFrameCountLbl{nullptr};
+    LabelWidget* myScanlineLbl{nullptr};
+    LabelWidget* myScanCycleLbl{nullptr};
+    LabelWidget* myPixelPosLbl{nullptr};
+    LabelWidget* myColorClockLbl{nullptr};
 
     // Which label form is currently on screen
     bool myLongLabels{false};

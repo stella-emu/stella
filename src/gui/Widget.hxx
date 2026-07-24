@@ -52,8 +52,8 @@ class Widget : public GuiObject
     int getAbsX() const override { return _x + _boss->getChildX(); }
     int getAbsY() const override { return _y + _boss->getChildY(); }
     virtual int getLeft() const { return _x; }
-    virtual int getTop() const { return _y; }
-    virtual int getRight() const { return _x + getWidth(); }
+    virtual int getTop() const  { return _y; }
+    virtual int getRight() const  { return _x + getWidth();  }
     virtual int getBottom() const { return _y + getHeight(); }
     virtual void setPosX(int x);
     virtual void setPosY(int y);
@@ -101,16 +101,16 @@ class Widget : public GuiObject
     /** Set/clear FLAG_ENABLED */
     virtual void setEnabled(bool e);
 
-    bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
-    bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
-    bool isHighlighted() const      { return _flags & FLAG_HILITED; }
-    bool hasMouseFocus() const      { return _flags & FLAG_MOUSE_FOCUS; }
-    virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
-    bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
-    bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
+    bool isEnabled() const          { return _flags & FLAG_ENABLED;       }
+    bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);  }
+    bool isHighlighted() const      { return _flags & FLAG_HILITED;       }
+    bool hasMouseFocus() const      { return _flags & FLAG_MOUSE_FOCUS;   }
+    virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;  }
+    bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;     }
+    bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA; }
 
     virtual void setID(uInt32 id) { _id = id;   }
-    uInt32 getID() const  { return _id; }
+    uInt32 getID() const          { return _id; }
 
     virtual const GUI::Font& font() const { return _font; }
 
@@ -195,15 +195,6 @@ class Widget : public GuiObject
 
     virtual void loadConfig() { }
 
-    /**
-      Record the height needed to display this widget's content, i.e. the
-      largest 'bottom' over the sibling widgets created under the same boss
-      (excluding this widget itself).  The debugger's content widgets place
-      their children on the boss directly, so this captures their fixed extent
-      while ignoring the container, which is sized to fill the whole tab area.
-      Used by resizeable dialogs to keep fixed tab content fully visible.
-    */
-
   protected:
     void drawChain() override;
 
@@ -277,8 +268,8 @@ class Widget : public GuiObject
     Widget& operator=(Widget&&) = delete;
 };
 
-/* StaticTextWidget */
-class StaticTextWidget : public Widget, public CommandSender
+/* LabelWidget */
+class LabelWidget : public Widget, public CommandSender
 {
   public:
     enum {
@@ -287,14 +278,12 @@ class StaticTextWidget : public Widget, public CommandSender
     };
 
   public:
-    StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                     int w, int h,
-                     string_view text = "", TextAlign align = TextAlign::Left,
-                     ColorId shadowColor = kNone);
-    StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                     string_view text = "", TextAlign align = TextAlign::Left,
-                     ColorId shadowColor = kNone);
-    ~StaticTextWidget() override = default;
+    LabelWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
+                string_view text = "", TextAlign align = TextAlign::Left,
+                ColorId shadowColor = kNone);
+    LabelWidget(GuiObject* boss, const GUI::Font& font, string_view text = "",
+                TextAlign align = TextAlign::Left, ColorId shadowColor = kNone);
+    ~LabelWidget() override = default;
 
     void setCmd(int cmd) { _cmd = cmd; }
 
@@ -343,19 +332,18 @@ class StaticTextWidget : public Widget, public CommandSender
 
   private:
     // Following constructors and assignment operators not supported
-    StaticTextWidget() = delete;
-    StaticTextWidget(const StaticTextWidget&) = delete;
-    StaticTextWidget(StaticTextWidget&&) = delete;
-    StaticTextWidget& operator=(const StaticTextWidget&) = delete;
-    StaticTextWidget& operator=(StaticTextWidget&&) = delete;
+    LabelWidget() = delete;
+    LabelWidget(const LabelWidget&) = delete;
+    LabelWidget(LabelWidget&&) = delete;
+    LabelWidget& operator=(const LabelWidget&) = delete;
+    LabelWidget& operator=(LabelWidget&&) = delete;
 };
 
 /* ButtonWidget */
-class ButtonWidget : public StaticTextWidget
+class ButtonWidget : public LabelWidget
 {
   public:
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int w, int h,
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
                  string_view label, int cmd = 0, bool repeat = false);
     /**
       Take this width, but size your own height.  For a button whose LABEL is not
@@ -363,8 +351,7 @@ class ButtonWidget : public StaticTextWidget
       — since it must be as wide as the widest label it can ever show, and would
       otherwise resize under the user.  Everything else uses the ctor below.
     */
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int w,
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, int w,
                  string_view label, int cmd = 0, bool repeat = false);
 
     /**
@@ -385,8 +372,7 @@ class ButtonWidget : public StaticTextWidget
       prev/next arrows, sized to the pop-up beside them).  An ICON belongs in one
       of the two below, which need no size at all.
     */
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int dw, int dh,
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
 
@@ -397,12 +383,10 @@ class ButtonWidget : public StaticTextWidget
       for a different one — a larger variant for a larger font, a different
       state — just calls setIcon(), and I re-size to it.
     */
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 const GUI::Icon& icon,
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
                  int cmd = 0, bool repeat = false);
-    ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 const GUI::Icon& icon, string_view label,
-                 int cmd = 0, bool repeat = false);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
+                 string_view label, int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
 
     bool handleEvent(Event::Type event) override;
@@ -433,7 +417,7 @@ class ButtonWidget : public StaticTextWidget
       A button (and so a checkbox, and a radio button) draws its label INSIDE
       itself, not in a column to its left, so it has no label column to align and
       GUI::alignButtons() is what sizes a group of them.  These undo the
-      StaticTextWidget behaviour we would otherwise inherit -- which would let
+      LabelWidget behaviour we would otherwise inherit -- which would let
       GUI::alignLabels() resize a button to the width of its label alone.
     */
     int naturalLabelWidth() const override { return 0; }
@@ -477,7 +461,6 @@ class ButtonWidget : public StaticTextWidget
     }
 
   public:
-
     // How tall a button is.  Unlike its width — which is its own business, and
     // which only GUI::alignButtons() ever overrides — a button's height is a unit
     // other things measure themselves against (a navigation bar is one button

@@ -89,24 +89,24 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Row-address label and column headers for the RAM grid.  Each is built with
   // a value of the length it always shows, so it owns its own width
-  myRamStart = new StaticTextWidget(_boss, lfont, "00xx");
+  myRamStart = new LabelWidget(_boss, lfont, "00xx");
 
   for(int col = 0; col < 16; ++col)
-    myColHeaders[col] = new StaticTextWidget(_boss, lfont,
+    myColHeaders[col] = new LabelWidget(_boss, lfont,
                           Common::Base::toString(col, Common::Base::Fmt::_16_1));
 
   for(uInt32 row = 0; row < myNumRows; ++row)
-    myRamLabels[row] = new StaticTextWidget(_boss, _font, "0");
+    myRamLabels[row] = new LabelWidget(_boss, _font, "0");
 
   // Detail row for the selected RAM cell (built from right to left originally,
   // but here just created; reflow() right-aligns the hex/dec/bin cluster)
-  myBinPrefix = new StaticTextWidget(boss, lfont, "%");
+  myBinPrefix = new LabelWidget(boss, lfont, "%");
   myBinValue = new DataGridWidget(boss, nfont, 1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setHelpAnchor(helpAnchor, true);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
-  myDecPrefix = new StaticTextWidget(boss, lfont, "#");
+  myDecPrefix = new LabelWidget(boss, lfont, "#");
   myDecValue = new DataGridWidget(boss, nfont, 1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setHelpAnchor(helpAnchor, true);
   myDecValue->setTarget(this);
@@ -121,9 +121,9 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myDecValue);
   addFocusWidget(myBinValue);
 
-  myLabelText = new StaticTextWidget(boss, lfont, "Label");
-  myLabel = new EditTextWidget(boss, nfont, 1);
-  myLabel->setEditable(false, true);
+  myLabelText = new LabelWidget(boss, lfont, "Label");
+  myLbl = new EditTextWidget(boss, nfont, 1);
+  myLbl->setEditable(false, true);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Inputbox which will pop up when searching RAM
@@ -225,7 +225,7 @@ unique_ptr<GUI::BoxLayout> RamWidget::buildLayout() const
   auto detail = std::make_unique<BoxLayout>(Dir::Horizontal);
   detail->addAuto(onBaseline(myLabelText));
   detail->addSpace(HGAP / 2);
-  detail->addStretch(alignedItem(myLabel, HAlign::Fill, VAlign::Baseline));
+  detail->addStretch(alignedItem(myLbl, HAlign::Fill, VAlign::Baseline));
   detail->addSpace(HGAP * 3 / 2);
   detail->addAuto(onBaseline(myHexValue));
   detail->addSpace(HGAP);
@@ -319,7 +319,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
       const bool changed = myRamGrid->getSelectedChanged();
 
-      myLabel->setText(getLabel(addr));
+      myLbl->setText(getLabel(addr));
       myHexValue->setValueInternal(0, value, changed);
       myDecValue->setValueInternal(0, value, changed);
       myBinValue->setValueInternal(0, value, changed);

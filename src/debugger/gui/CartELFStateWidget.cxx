@@ -72,40 +72,40 @@ void CartridgeELFStateWidget::initialize()
   // Everything is created at a placeholder position; layoutContent() places it.
   // The row labels carry no padding of their own: they join the tab's label
   // column, and GUI::alignLabels() (in the skeleton) supplies the column
-  myRegistersLabel = new StaticTextWidget(_boss, _font, "ARM registers:");
+  myRegistersLbl = new LabelWidget(_boss, _font, "ARM registers:");
 
   myArmRegisters = new DataGridWidget(_boss, _font, 4, 4, 8, 8,
                                       Common::Base::Fmt::_16_8);
   myArmRegisters->setEditable(false);
   for(uInt8 i = 0; i < 16; i++) myArmRegisters->setToolTip(i % 4, i / 4, registerName(i));
 
-  myFlagsLabel = new StaticTextWidget(_boss, _font, "ARM flags:");
+  myFlagsLbl = new LabelWidget(_boss, _font, "ARM flags:");
   myFlags = new ToggleBitWidget(_boss, _font, 4, 1, 1);
   myFlags->setEditable(false);
 
   static constexpr std::array<string_view, 4> flagNames = {"N", "Z", "C", "V"};
   for(size_t i = 0; i < myFlagLabels.size(); ++i)
-    myFlagLabels[i] = new StaticTextWidget(_boss, _font, flagNames[i]);
+    myFlagLabels[i] = new LabelWidget(_boss, _font, flagNames[i]);
 
   // The readouts are as wide as the value they hold, in characters
-  myTimeVcsLabel = new StaticTextWidget(_boss, _font, "Time VCS:");
+  myTimeVcsLbl = new LabelWidget(_boss, _font, "Time VCS:");
   myCurrentCyclesVcs = new EditTextWidget(_boss, _font, 16);
   myCurrentCyclesVcs->setEditable(false, true);
 
-  myTimeArmLabel = new StaticTextWidget(_boss, _font, "Time ARM:");
+  myTimeArmLbl = new LabelWidget(_boss, _font, "Time ARM:");
   myCurrentCyclesArm = new EditTextWidget(_boss, _font, 16);
   myCurrentCyclesArm->setEditable(false, true);
 
-  myQueueSizeLabel = new StaticTextWidget(_boss, _font, "Bus queue size:");
+  myQueueSizeLbl = new LabelWidget(_boss, _font, "Bus queue size:");
   myQueueSize = new EditTextWidget(_boss, _font, 4);
   myQueueSize->setEditable(false, true);
 
-  myNextTransaction = new StaticTextWidget(_boss, _font,
+  myNextTransaction = new LabelWidget(_boss, _font,
                           describeTransaction(0xffff, 0xffff, ~0LLU));
 
   myLabelColumn.insert(myLabelColumn.end(),
-                       {{myRegistersLabel}, {myFlagsLabel}, {myTimeVcsLabel},
-                        {myTimeArmLabel}, {myQueueSizeLabel}});
+                       {{myRegistersLbl}, {myFlagsLbl}, {myTimeVcsLbl},
+                        {myTimeArmLbl}, {myQueueSizeLbl}});
 
   reflow();
 }
@@ -127,12 +127,12 @@ void CartridgeELFStateWidget::layoutContent(GUI::BoxLayout& col) const
   const auto onBaseline = [](Widget* wid) {
     return alignedItem(wid, HAlign::Left, VAlign::Baseline);
   };
-  const auto labelCell = [](StaticTextWidget* l) { return l->getWidth(); };
+  const auto labelCell = [](LabelWidget* l) { return l->getWidth(); };
 
   // The 16 ARM registers, in a 4x4 grid beside its caption
   {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(onBaseline(myRegistersLabel), labelCell(myRegistersLabel));
+    row->addFixed(onBaseline(myRegistersLbl), labelCell(myRegistersLbl));
     row->addAuto(onBaseline(myArmRegisters));
     col.addAuto(std::move(row));
   }
@@ -149,16 +149,16 @@ void CartridgeELFStateWidget::layoutContent(GUI::BoxLayout& col) const
     flags->addAuto(anchoredItem(myFlags));
 
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
-    row->addFixed(alignedItem(myFlagsLabel, HAlign::Left, VAlign::Top),
-                  labelCell(myFlagsLabel));
+    row->addFixed(alignedItem(myFlagsLbl, HAlign::Left, VAlign::Top),
+                  labelCell(myFlagsLbl));
     row->addAuto(std::move(flags));
     col.addAuto(std::move(row));
   }
 
   // The cycle counts and the queue depth, each a read-only field beside its label
-  col.addAuto(labeledRow(myTimeVcsLabel, myCurrentCyclesVcs));
-  col.addAuto(labeledRow(myTimeArmLabel, myCurrentCyclesArm));
-  col.addAuto(labeledRow(myQueueSizeLabel, myQueueSize));
+  col.addAuto(labeledRow(myTimeVcsLbl, myCurrentCyclesVcs));
+  col.addAuto(labeledRow(myTimeArmLbl, myCurrentCyclesArm));
+  col.addAuto(labeledRow(myQueueSizeLbl, myQueueSize));
 
   // The pending bus transaction, spanning the tab on a line of its own
   col.addAuto(anchoredItem(myNextTransaction));

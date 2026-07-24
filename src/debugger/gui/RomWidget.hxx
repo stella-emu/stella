@@ -70,7 +70,7 @@ class RomWidget : public Widget, public CommandSender
   private:
     RomListWidget*   myRomList{nullptr};
     EditTextWidget*  myBank{nullptr};
-    StaticTextWidget* myInfoLabel{nullptr};
+    LabelWidget* myInfoLbl{nullptr};
 
     bool myListIsDirty{true};
 

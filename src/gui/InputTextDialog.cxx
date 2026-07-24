@@ -73,14 +73,14 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   // placeholder width would report that width and collapse the column
   for(const auto& label: labels)
   {
-    myLabel.push_back(new StaticTextWidget(this, lfont, label));
+    myLbl.push_back(new LabelWidget(this, lfont, label));
 
     auto* w = new EditTextWidget(this, nfont, 1);
     wid.push_back(w);
     myInput.push_back(w);
   }
 
-  myMessage = new StaticTextWidget(this, lfont);
+  myMessage = new LabelWidget(this, lfont);
   myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);
@@ -114,7 +114,7 @@ void InputTextDialog::layout()
   for(int i = 0; i < numRows; ++i)
   {
     grid->rowAuto(i);
-    grid->place(0, i, anchoredItem(myLabel[i]));
+    grid->place(0, i, anchoredItem(myLbl[i]));
 
     // A field with a character limit is only as wide as that many characters;
     // one without fills the rest of the row
@@ -237,8 +237,8 @@ void InputTextDialog::setMaxLen(int len, int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setToolTip(string_view str, int idx)
 {
-  if(static_cast<uInt32>(idx) < myLabel.size())
-    myLabel[idx]->setToolTip(str);
+  if(static_cast<uInt32>(idx) < myLbl.size())
+    myLbl[idx]->setToolTip(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

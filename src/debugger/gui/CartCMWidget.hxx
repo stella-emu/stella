@@ -63,11 +63,10 @@ class CartridgeCMWidget : public CartDebugWidget
     };
 
     CartridgeCM& myCart;
-    StaticTextWidget* myBankLabel{nullptr};
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
-    StaticTextWidget *mySWCHALabel{nullptr}, *myColumnLabel{nullptr},
-                     *myRAMLabel{nullptr};
+    LabelWidget *mySWCHALbl{nullptr}, *myColumnLbl{nullptr}, *myRAMLbl{nullptr};
     ToggleBitWidget* mySWCHA{nullptr};
     DataGridWidget* myColumn{nullptr};
     CheckboxWidget *myAudIn{nullptr}, *myAudOut{nullptr},

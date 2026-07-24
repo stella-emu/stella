@@ -512,9 +512,9 @@ void Widget::refreshFontMetricsInList(const WidgetList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   int w, int h, string_view text,
-                                   TextAlign align, ColorId shadowColor)
+LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
+                         int w, int h, string_view text,
+                         TextAlign align, ColorId shadowColor)
   : Widget(boss, font, w, h),
     CommandSender(boss),
     _label{text},
@@ -530,16 +530,16 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   string_view text, TextAlign align,
-                                   ColorId shadowColor)
-  : StaticTextWidget(boss, font, font.getStringWidth(text),
-                     font.getLineHeight(), text, align, shadowColor)
+LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
+                         string_view text, TextAlign align,
+                         ColorId shadowColor)
+  : LabelWidget(boss, font, font.getStringWidth(text),
+                font.getLineHeight(), text, align, shadowColor)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::refreshFontMetrics()
+void LabelWidget::refreshFontMetrics()
 {
   Widget::refreshFontMetrics();
 
@@ -551,13 +551,13 @@ void StaticTextWidget::refreshFontMetrics()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setValue(int value)
+void LabelWidget::setValue(int value)
 {
   setLabel(std::to_string(value));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setLabel(string_view label)
+void LabelWidget::setLabel(string_view label)
 {
   if(_label != label)
   {
@@ -569,7 +569,7 @@ void StaticTextWidget::setLabel(string_view label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setLink(size_t start, int len, bool underline)
+void LabelWidget::setLink(size_t start, int len, bool underline)
 {
   if(_linkStart != start || _linkLen != len || _linkUnderline != underline)
   {
@@ -582,8 +582,7 @@ void StaticTextWidget::setLink(size_t start, int len, bool underline)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StaticTextWidget::setUrl(string_view url, string_view label,
-                              string_view placeHolder)
+bool LabelWidget::setUrl(string_view url, string_view label, string_view placeHolder)
 {
   size_t start = string::npos, len = 0;
   const string_view text = !label.empty() ? label : url;
@@ -648,21 +647,21 @@ bool StaticTextWidget::setUrl(string_view url, string_view label,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseEntered()
+void LabelWidget::handleMouseEntered()
 {
   if(isEnabled())
     setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseLeft()
+void LabelWidget::handleMouseLeft()
 {
   if(isEnabled())
     clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+void LabelWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(_cmd && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -672,7 +671,7 @@ void StaticTextWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::drawWidget(bool hilite)
+void LabelWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
@@ -684,7 +683,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int w, int h, string_view label, int cmd, bool repeat)
-  : StaticTextWidget(boss, font, w, h, label, TextAlign::Center),
+  : LabelWidget(boss, font, w, h, label, TextAlign::Center),
     _repeat{repeat}
 {
   _cmd = cmd;
@@ -728,8 +727,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           const GUI::Icon& icon,
-                           int cmd, bool repeat)
+                           const GUI::Icon& icon, int cmd, bool repeat)
   : ButtonWidget(boss, font, icon.width() + iconGap(font), calcHeight(font),
                  icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
 {
@@ -756,7 +754,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::refreshFontMetrics()
 {
-  // Deliberately skips StaticTextWidget's recompute, which would shrink a button
+  // Deliberately skips LabelWidget's recompute, which would shrink a button
   // to its bare label width (and would be inherited by the checkbox, radio button
   // and slider below).
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
@@ -889,7 +887,8 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _w = font.getStringWidth(label) + _boxSize + font.getMaxCharWidth() * 0.75;
   alignBox(_boxSize);
 
-  setFill(CheckboxWidget::FillType::Normal);  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
+  setFill(CheckboxWidget::FillType::Normal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

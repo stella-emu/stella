@@ -23,7 +23,7 @@ class ButtonWidget;
 class EditTextWidget;
 class FileListWidget;
 class NavigationWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -149,7 +149,7 @@ class BrowserDialog : public Dialog
 
     FileListWidget*   _fileList{nullptr};
     NavigationWidget* _navigationBar{nullptr};
-    StaticTextWidget* _name{nullptr};
+    LabelWidget*      _name{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
     ButtonWidget*     _baseDirButton{nullptr};

@@ -32,9 +32,9 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   if(embedded)
   {
-    myP0Label = new StaticTextWidget(boss, font,
+    myP0Lbl = new LabelWidget(boss, font,
       leftport ? second ? "P1b" : "P1a" : second ? "P3b" : "P3a");
-    myP1Label = new StaticTextWidget(boss, font,
+    myP1Lbl = new LabelWidget(boss, font,
       leftport ? second ? "P2b" : "P2a" : second ? "P4b" : "P4a");
 
     myP0Resistance = new SliderWidget(boss, font);
@@ -46,9 +46,9 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   }
   else
   {
-    myP0Label = new StaticTextWidget(boss, font, leftport ? "P1 pot" : "P3 pot");
+    myP0Lbl = new LabelWidget(boss, font, leftport ? "P1 pot" : "P3 pot");
     myP0Resistance = new SliderWidget(boss, font, 0, kP0Changed);
-    myP1Label = new StaticTextWidget(boss, font, leftport ? "P2 pot" : "P4 pot");
+    myP1Lbl = new LabelWidget(boss, font, leftport ? "P2 pot" : "P4 pot");
     myP1Resistance = new SliderWidget(boss, font, 0, kP1Changed);
   }
   myP0Fire = new CheckboxWidget(boss, font, "Fire", kP0Fire);
@@ -88,19 +88,19 @@ void PaddleWidget::layoutContent(GUI::BoxLayout& col)
   if(myEmbedded)
   {
     // Just the pot label and its fire button, twice (the sliders are hidden)
-    col.addAuto(anchoredItem(myP0Label));
+    col.addAuto(anchoredItem(myP0Lbl));
     col.addAuto(anchoredItem(myP0Fire));
     col.addSpace(VGAP);
-    col.addAuto(anchoredItem(myP1Label));
+    col.addAuto(anchoredItem(myP1Lbl));
     col.addAuto(anchoredItem(myP1Fire));
   }
   else
   {
     // A resistance slider beside its label, with the fire button indented below
-    col.addAuto(labeledRow(myP0Label, myP0Resistance));
+    col.addAuto(labeledRow(myP0Lbl, myP0Resistance));
     col.addAuto(indentedItem(myP0Fire, INDENT));
     col.addSpace(VGAP);
-    col.addAuto(labeledRow(myP1Label, myP1Resistance));
+    col.addAuto(labeledRow(myP1Lbl, myP1Resistance));
     col.addAuto(indentedItem(myP1Fire, INDENT));
   }
 }

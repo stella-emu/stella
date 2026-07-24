@@ -37,15 +37,15 @@ void CartridgeARMWidget::createCycleWidgets()
   VariantList items;
 
   // Everything is created at a placeholder position; layoutContent() positions it
-  myArmCyclesLabel = new StaticTextWidget(_boss, _font, "ARM emulation cycles:");
-  myArmCyclesLabel->setToolTip("Cycle count enabled by developer settings.");
+  myArmCyclesLbl = new LabelWidget(_boss, _font, "ARM emulation cycles:");
+  myArmCyclesLbl->setToolTip("Cycle count enabled by developer settings.");
 
   myIncCycles = new CheckboxWidget(_boss, _font, "Increase 6507 cycles",
                                    kIncCyclesChanged);
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
   myIncCycles->setTarget(this);
 
-  myCycleFactorLabel = new StaticTextWidget(_boss, _font, "Cycle factor");
+  myCycleFactorLbl = new LabelWidget(_boss, _font, "Cycle factor");
   myCycleFactor = new SliderWidget(_boss, _font, 10, kFactorChanged, 4, "%");
   myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
   myCycleFactor->setTickmarkIntervals(4);
@@ -58,11 +58,11 @@ void CartridgeARMWidget::createCycleWidgets()
     grid->setToolTip(tip);
   };
 
-  myCyclesLabel = new StaticTextWidget(_boss, _font, "Cycles #");
+  myCyclesLbl = new LabelWidget(_boss, _font, "Cycles #");
   addCounter(myPrevThumbCycles, "Approximated CPU cycles of last but one ARM run.\n");
   addCounter(myThumbCycles,     "Approximated CPU cycles of last ARM run.\n");
 
-  myInstructionsLabel = new StaticTextWidget(_boss, _font, "Instructions #");
+  myInstructionsLbl = new LabelWidget(_boss, _font, "Instructions #");
   addCounter(myPrevThumbInstructions, "Instructions of last but one ARM run.\n");
   addCounter(myThumbInstructions,     "Instructions of last ARM run.\n");
 
@@ -71,7 +71,7 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<Int32>(Thumbulator::ChipType::LPC2104_OC));
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
   VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
-  myChipTypeLabel = new StaticTextWidget(_boss, _font, "Chip");
+  myChipTypeLbl = new LabelWidget(_boss, _font, "Chip");
   myChipType = new PopUpWidget(_boss, _font, items, kChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
   myChipType->setTarget(this);
@@ -110,13 +110,13 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   // "Chip", "Cycle factor" and the counter captions are each beside their own
   // control: the clearance from what follows comes from a group -- and each of
   // these has nothing to line up with, so each is a group of one
-  GUI::alignLabels({{myChipTypeLabel}});
-  GUI::alignLabels({{myCycleFactorLabel}});
-  GUI::alignLabels({{myCyclesLabel}});
-  GUI::alignLabels({{myInstructionsLabel}});
+  GUI::alignLabels({{myChipTypeLbl}});
+  GUI::alignLabels({{myCycleFactorLbl}});
+  GUI::alignLabels({{myCyclesLbl}});
+  GUI::alignLabels({{myInstructionsLbl}});
 
   // A pair of counters -- the previous run, then the last -- beside their label
-  const auto counters = [&](StaticTextWidget* label, DataGridWidget* prev,
+  const auto counters = [&](LabelWidget* label, DataGridWidget* prev,
                             DataGridWidget* last) {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth / 2);
     row->addAuto(anchoredItem(label));
@@ -142,11 +142,11 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   grid->rowAuto(2);
 
   grid->place(0, 0, anchoredItem(myIncCycles));
-  grid->place(1, 0, labeledRow(myCycleFactorLabel, myCycleFactor));
-  grid->place(0, 1, labeledRow(myChipTypeLabel, myChipType, 0, 0, true));
+  grid->place(1, 0, labeledRow(myCycleFactorLbl, myCycleFactor));
+  grid->place(0, 1, labeledRow(myChipTypeLbl, myChipType, 0, 0, true));
   grid->place(1, 1, std::move(mam));
-  grid->place(0, 2, counters(myCyclesLabel, myPrevThumbCycles, myThumbCycles));
-  grid->place(1, 2, counters(myInstructionsLabel, myPrevThumbInstructions,
+  grid->place(0, 2, counters(myCyclesLbl, myPrevThumbCycles, myThumbCycles));
+  grid->place(1, 2, counters(myInstructionsLbl, myPrevThumbInstructions,
                              myThumbInstructions));
 
   // The block is indented under its heading
@@ -155,7 +155,7 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   block->addAuto(std::move(grid));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(anchoredItem(myArmCyclesLabel));
+  col.addAuto(anchoredItem(myArmCyclesLbl));
   col.addAuto(std::move(block));
 }
 
@@ -244,7 +244,7 @@ void CartridgeARMWidget::handleChipType()
 {
   const bool devSettings = instance().settings().getBool("dev.settings");
 
-  myChipTypeLabel->setEnabled(devSettings);
+  myChipTypeLbl->setEnabled(devSettings);
   myChipType->setEnabled(devSettings);
 
   if(devSettings)
@@ -305,9 +305,9 @@ void CartridgeARMWidget::handleArmCycles()
   }
 
   myIncCycles->setEnabled(devSettings);
-  myCycleFactorLabel->setEnabled(devSettings);
+  myCycleFactorLbl->setEnabled(devSettings);
   myCycleFactor->setEnabled(devSettings);
-  myCyclesLabel->setEnabled(devSettings);
+  myCyclesLbl->setEnabled(devSettings);
   myThumbCycles->setEnabled(devSettings);
   myPrevThumbCycles->setEnabled(devSettings);
 
