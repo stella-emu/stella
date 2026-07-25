@@ -53,9 +53,11 @@ class PaletteHandler;
 
     2. SIGNAL TRANSPORT  (TVSignal → NTSC/PAL/SECAM) — "what do the wire and
        receiver do to it?"  Takes the adjusted palette and simulates the analog
-       encode → modulate → demodulate → comb → bandwidth chain per pixel; the
-       artifacts (dot crawl, fringing, colour loss) emerge from that physics.
-       Receiver-side controls live here: sharpness, comb blend, colour-killer.
+       encode → modulate → demodulate → comb → bandwidth chain per pixel, from
+       which fringing, cross-colour and bandwidth softening emerge.  Receiver
+       behaviour that is not a consequence of that chain — notably PAL colour
+       loss — is modelled explicitly alongside it.  Receiver-side controls live
+       here: sharpness, comb blend, colour-killer.
        Output: a decoded RGB frame, the input to stage 3.
 
     3. DISPLAY DEVICE  (PhosphorHandler + scanline surface + shade/mask) —

@@ -29,11 +29,14 @@ class Settings;
 
   Unlike a palette-based "fake TV" filter, this class models the real signal
   chain: it builds the analogue composite waveform a PAL TIA would emit, then
-  decodes it the way a PAL receiver would.  Every visible artifact (dot crawl,
-  colour fringing, bandwidth softening, Hanover-bar suppression, colour loss
-  on malformed fields) therefore falls out of the physics rather than being
-  hand-drawn.  The math below is standard analogue-television theory; the
-  specific numbers and their sources are called out so they can be checked.
+  decodes it the way a PAL receiver would.  Colour fringing, cross-colour on
+  sharp luma edges, bandwidth softening and the vertical chroma averaging of
+  the delay line all fall out of that chain rather than being hand-drawn.
+  Receiver *behaviour* that is not a consequence of the chain — colour loss on
+  malformed fields and the PAL-switch model behind it — is added explicitly
+  and is labelled as such where it appears.  The math below is standard
+  analogue-television theory; the specific numbers and their sources are
+  called out so they can be checked.
 
   SIGNAL MODEL — the 5/4 sample grid
   ─────────────────────────────────────────────────────────────────────────
@@ -53,12 +56,16 @@ class Settings;
       whole number of samples, so encode/decode never straddle a sample.
   The published fsc and 5/4·clock differ by only ~3e-5 % (crystal tolerance);
   on the real console the subcarrier is derived coherently from the colour
-  clock, so treating the ratio as exactly 5/4 costs us nothing visible.  The
-  artifacts therefore sit on a fixed integer grid and are spatially correct
-  but temporally static — which matches real PAL, where the subcarrier returns
-  to phase every frame and line alternation suppresses the crawling motion
-  seen on NTSC.  (The static grid is also why colour loss has to be added
-  explicitly — see render() — rather than emerging from grid arithmetic.)
+  clock, so treating the ratio as exactly 5/4 costs us nothing visible.
+
+  Artifacts therefore sit on a fixed integer grid: spatially correct, but
+  temporally static.  That matches the real console — its subcarrier is
+  coherent with the colour clock and returns to phase every line and every
+  frame, so nothing crawls.  (Broadcast PAL and NTSC do crawl, because there
+  the subcarrier is deliberately offset from a whole multiple of the line
+  rate.  The 2600 is not, on either standard.)  The static grid is also why
+  colour loss has to be added explicitly — see render() — rather than
+  emerging from grid arithmetic.
 
   COLOUR SPACE — BT.601 Y′UV
   ─────────────────────────────────────────────────────────────────────────
@@ -92,18 +99,43 @@ class Settings;
   cos (→ U) and −sin (→ V), which shifts the wanted sideband to baseband and
   the unwanted products to 2·fsc, then low-pass filter them away.  A one-line
   (PAL-D delay-line) comb then averages the current line against the previous
-  one.  Because the previous line carried −V, adding its same-axis filtered
-  chroma reinforces the signal and cancels the line-to-line phase error that
-  would otherwise show up as Hanover bars:
+  one.  The V-sign is already undone by the matched kernels, so both axes
+  simply add:
 
-      U_out = (U_current + U_previous) / 2     ← reinforces, removes noise
-      V_out = (V_current + V_previous) / 2     ← (V sign handled at encode)
+      U_out = (U_current + U_previous) / 2
+      V_out = (V_current + V_previous) / 2
 
-  Per-channel bandwidth is set by separate windowed-sinc low-pass filters at
-  PAL-B/G specifications:
+  In a real receiver this comb is what turns a line-to-line differential
+  phase error into a mild desaturation instead of the alternating hue error
+  known as Hanover bars.  This model has no such error to cancel — the grid
+  is exact and the kernels are matched per V-sign — so here the comb
+  contributes only its other, equally real effect: vertical chroma averaging.
+  That is why Composite resolves colour more softly in the vertical direction
+  than S-Video, which skips the comb entirely.
 
-      Luma bandwidth:   5.0 MHz  (PAL-B/G video baseband)
-      Chroma bandwidth: 1.3 MHz  (each colour-difference axis, ~U/V limit)
+  Luma on the composite path is the composite waveform itself, so before it
+  can be used as luminance the subcarrier has to be taken back out of it.
+  That is the job of the *chroma trap* (LUMA_TRAP below), the band-stop at
+  fsc that every real PAL receiver puts in its luma path.  Without it the
+  subcarrier survives into the picture as a full-amplitude mesh over every
+  coloured area — the classic cross-luminance artifact.  S-Video and RGB
+  carry chroma on their own wires, so their luma is trapped-free and keeps
+  the full low-pass bandwidth; this is the physical reason they look sharper
+  than composite, and it is modelled rather than asserted.
+
+  Per-channel bandwidth is set by separate windowed-sinc low-pass filters:
+
+      Luma:    5.0 MHz baseband (PAL-B/G), and on the composite path also
+               the trap, which dominates: −3 dB ≈ 1.5 MHz overall.  That
+               resolution loss is the documented price of a chroma trap,
+               not a shortcoming of the model.
+      Chroma:  −3 dB ≈ 1.2 MHz per colour-difference axis; ITU-R BT.470
+               gives the sidebands as +1.07/−1.30 MHz.
+
+  Kernel lengths matter as much as the cutoffs here: a windowed-sinc FIR only
+  realises its design cutoff if it is long enough, and a too-short kernel
+  silently lands somewhere much wider.  The tap counts below are chosen from
+  the measured response, not from the nominal cutoff.
 
   PERFORMANCE — precomputed per-colour kernels
   ─────────────────────────────────────────────────────────────────────────
@@ -116,24 +148,48 @@ class Settings;
   no per-pixel filtering.  This mirrors the approach used by AtariNTSC for
   the NTSC (Blargg) path.
 
-  ARTIFACTS (emergent, not special-cased)
+  WHAT THIS MODEL DOES AND DOES NOT PRODUCE
   ─────────────────────────────────────────────────────────────────────────
-    • Chroma/luma crosstalk (dot crawl, correctly offset from NTSC)
-    • Colour fringing at sharp horizontal edges
-    • Bandwidth softening on both luma and chroma
-    • PAL Hanover-bar suppression via the comb filter
+  Emerges from the signal chain:
+    • Colour fringing at sharp horizontal edges (band-limited chroma)
+    • Cross-colour — luma detail near fsc demodulating into chroma
+    • Bandwidth softening of luma and chroma; more of it on composite,
+      because the trap costs luma resolution
+    • Vertical chroma averaging from the 1-line comb
+
+  Added explicitly, because the chain cannot produce it:
     • Colour loss on a sustained odd scanline count, via a hysteretic
       colour-killer that ignores single malformed frames (see render())
+
+  Deliberately absent — do not "restore" these:
+    • Dot crawl and other temporal artifacts.  The 2600's subcarrier is
+      coherent with its colour clock on both standards, so a real console
+      does not crawl; adding motion would be a deliberate inaccuracy.
+    • Hanover bars.  These require a differential phase error, which this
+      model does not have — so there is also nothing for the comb to
+      suppress, and no claim should be made that it does.
+    • Cross-luminance (subcarrier visible as a mesh over coloured areas).
+      A real set traps it out and so do we; its presence would be a bug,
+      and once was — see LUMA_TRAP.
 
   OUTPUT
   ─────────────────────────────────────────────────────────────────────────
   render() emits the internal oversampled grid directly — SAMPLES_PER_CLOCK
-  output pixels per TIA colour clock (see outWidth()) — rather than box-
-  averaging back to 160.  The subcarrier-rate detail that carries the
-  artifacts lives above 1 sample/clock, so downsampling to 160 would average
-  it away and collapse Composite into S-Video; keeping the 5× grid preserves
-  it for the display.  A "sharpness" control adds aperture correction to the
-  luma channel, matching the peaking circuits in real PAL television sets.
+  output pixels per TIA colour clock (see outWidth()) — rather than resampling
+  back down.  The reason is *not* "to preserve subcarrier-rate detail": the
+  trap deliberately removes that, exactly as a real set does.  It is:
+    • The internal rate is pinned at 4 samples per subcarrier cycle, which on
+      the 5/4 grid means 5 per colour clock.  Only 1× and 5× are integer
+      decimations of that.  1× folds real luma content back into the picture
+      (|H| ≈ 0.64 at its Nyquist); anything in between needs a resampler.
+    • A display upscaler is not an ideal reconstruction filter, so a wider
+      source grid still looks better than a narrow one carrying identical
+      information.  This is also why AtariNTSC emits 568 rather than 160.
+
+  A "sharpness" control adds aperture correction to the luma channel, matching
+  the peaking circuits in real PAL television sets.  It is applied after the
+  trap, so it cannot resurrect the subcarrier: the null at fsc is exact, and
+  anything multiplied by zero stays zero.
 */
 class PALSignal
 {
@@ -249,9 +305,8 @@ class PALSignal
 
     // Output width for a given input width.  The output is the internal
     // oversampled grid itself (SAMPLES_PER_CLOCK output pixels per TIA colour
-    // clock), with no downsample, so the composite artifacts (dot crawl,
-    // subcarrier beat, fringing) survive to the display instead of being
-    // averaged away.
+    // clock), with no downsample.  See the OUTPUT section of the class
+    // comment for why the grid is not narrowed.
     static constexpr uInt32 outWidth(uInt32 inWidth) {
       return inWidth * SAMPLES_PER_CLOCK;
     }
@@ -259,14 +314,19 @@ class PALSignal
   private:
     // ── Frequency constants ───────────────────────────────────────────────
 
-    // PAL TIA colour clock (crystal frequency)
+    // PAL TIA colour clock (crystal frequency).  Documentation only — the
+    // model works entirely in ratios, so nothing reads this.
     static constexpr float TIA_FREQ    = 3'546'894.F;   // Hz
 
-    // PAL colour subcarrier = TIA_FREQ × 5/4
-    static constexpr float FSC         = 4'433'618.F;   // Hz  (= TIA_FREQ × 1.25)
+    // PAL colour subcarrier, the published 4'433'618.75 Hz to Hz precision.
+    // Note this is NOT bit-exactly TIA_FREQ × 5/4 (= 4'433'617.5): the three
+    // values — published fsc, 5/4·clock, and the constant below — sit within
+    // ~1e-5 % of each other.  That never matters, because every use is a
+    // ratio against SAMPLE_RATE, in which the scale cancels.
+    static constexpr float FSC         = 4'433'618.F;   // Hz
 
-    // Internal sample rate = 4 × fsc = 5 × TIA_FREQ
-    // → 4 samples/subcarrier cycle, 5 samples/TIA colour clock
+    // Internal sample rate: 4 samples per subcarrier cycle, which on the
+    // idealised 5/4 grid is 5 samples per TIA colour clock.
     static constexpr float SAMPLE_RATE = 4.F * FSC;     // 17,734,472 Hz
 
     // Samples per TIA colour clock at SAMPLE_RATE (exact integer = 5)
@@ -281,13 +341,42 @@ class PALSignal
 
     // ── Filter kernel lengths ─────────────────────────────────────────────
 
-    // Luma low-pass kernel half-length (samples at SAMPLE_RATE)
-    // 5 MHz cutoff → kernel length ≈ SAMPLE_RATE / (2 × 5e6) ≈ 1.77 → use 7-tap
+    // Luma low-pass kernel length (samples at SAMPLE_RATE).
+    // PAL-B/G luma baseband is nominally 5.0 MHz.  Used as-is by the S-Video
+    // and RGB paths.
     static constexpr uInt32 LUMA_TAPS   = 7;
 
-    // Chroma low-pass kernel half-length
-    // 1.3 MHz cutoff → kernel length ≈ SAMPLE_RATE / (2 × 1.3e6) ≈ 6.8 → use 7-tap
-    static constexpr uInt32 CHROMA_TAPS = 7;
+    // Low-pass length inside the composite luma cascade.  Shorter than
+    // LUMA_TAPS because the trap already supplies the rolloff, so a longer
+    // low-pass in front of it only buys stopband depth nothing needs:
+    // 5 taps measures −3 dB ≈ 1.50 MHz and |H| ≈ 0.065 at Nyquist (7 taps:
+    // 1.57 MHz, 0.005).  The null at fsc is exact either way — it comes from
+    // the trap alone — so this trades only near-Nyquist rejection for a
+    // narrower kernel.  Separate from LUMA_TAPS so S-Video/RGB stay put.
+    static constexpr uInt32 COMPOSITE_LUMA_LP_TAPS = 5;
+
+    // Chroma low-pass kernel length.  Target is ~1.1–1.2 MHz per axis; 11
+    // taps measures −3 dB ≈ 1.21 MHz.  (7 taps lands at 1.7 MHz — the design
+    // cutoff alone does not set the response.)  Free in SAMPLE_REACH below,
+    // where the trapped luma kernel is the binding constraint.
+    static constexpr uInt32 CHROMA_TAPS = 11;
+
+    // ── Chroma trap (composite luma path) ─────────────────────────────────
+    //
+    // The band-stop at fsc that keeps the subcarrier out of luma; see
+    // DECODING in the class comment for why a composite receiver must have
+    // one.  The internal grid is exactly 4 samples per subcarrier cycle, so
+    // samples two apart are 180° out of phase and the symmetric 3-tap-at-
+    // spacing-2 kernel [1, 0, 2, 0, 1]/4 has an EXACT zero at fsc while
+    // leaving DC untouched (taps sum to 1) — the standard 4fsc trap.
+    // Cascaded with the composite low-pass; composite path only.
+    static constexpr std::array<float, 5> LUMA_TRAP{
+      0.25F, 0.F, 0.5F, 0.F, 0.25F
+    };
+
+    // Composite luma kernel length = composite low-pass ⊛ trap
+    static constexpr uInt32 COMPOSITE_LUMA_TAPS =
+      COMPOSITE_LUMA_LP_TAPS + static_cast<uInt32>(LUMA_TRAP.size()) - 1;
 
     // ── Per-clock pre-computed tables ─────────────────────────────────────
 
@@ -309,7 +398,12 @@ class PALSignal
 
     // ── Filter kernels ────────────────────────────────────────────────────
 
+    // Baseband luma low-pass, used as-is by the S-Video and RGB paths
     std::array<float, LUMA_TAPS>   myLumaKernel{};
+
+    // Luma low-pass cascaded with the chroma trap, used by the composite path
+    std::array<float, COMPOSITE_LUMA_TAPS> myCompositeLumaKernel{};
+
     std::array<float, CHROMA_TAPS> myChromaKernel{};
 
     // Aperture correction kernel strength (3-tap: [−k/2, 1+k, −k/2])
@@ -325,13 +419,20 @@ class PALSignal
     // the line accumulators; no per-pixel filtering is performed.  See
     // buildCoeff() and expandKernels().
 
-    // Sample-domain reach of one clock's energy: the luma FIR half-width plus
-    // one for aperture correction, or the chroma FIR half-width, whichever is
-    // larger.  The FIRs have finite support, so beyond this there is exactly
-    // zero overlap — the kernel is not merely small but identically zero.
+    // Sample-domain reach of one clock's energy: the widest luma FIR (the
+    // trapped composite kernel) half-width plus one for aperture correction,
+    // or the chroma FIR half-width, whichever is larger.  The FIRs have
+    // finite support, so beyond this there is exactly zero overlap — the
+    // kernel is not merely small but identically zero.
+    // Widest luma kernel in play: the S-Video/RGB low-pass, or the composite
+    // low-pass ⊛ trap cascade.  Taken explicitly so that changing either one
+    // cannot silently leave the grid under-reaching.
+    static constexpr uInt32 MAX_LUMA_TAPS =
+      COMPOSITE_LUMA_TAPS > LUMA_TAPS ? COMPOSITE_LUMA_TAPS : LUMA_TAPS;
+
     static constexpr int SAMPLE_REACH =
-      (LUMA_TAPS / 2 + 1) > (CHROMA_TAPS / 2)
-        ? (LUMA_TAPS / 2 + 1) : (CHROMA_TAPS / 2);
+      (MAX_LUMA_TAPS / 2 + 1) > (CHROMA_TAPS / 2)
+        ? (MAX_LUMA_TAPS / 2 + 1) : (CHROMA_TAPS / 2);
 
     // Since the output is the oversampled grid itself, one clock contributes
     // to its own SAMPLES_PER_CLOCK output samples plus SAMPLE_REACH on each
@@ -522,7 +623,9 @@ class PALSignal
 
     // Apply the luma FIR then the aperture-correction (unsharp) pass to a
     // sample buffer in-place.  Used only while building coefficients.
-    void applyLumaFilter(float* buf, uInt32 n);
+    // `trap` selects the composite kernel (low-pass ⊛ chroma trap); pass
+    // false for the S-Video/RGB paths, whose luma carries no subcarrier.
+    void applyLumaFilter(float* buf, uInt32 n, bool trap);
 
     // Apply the chroma FIR to a sample buffer in-place (build-time only).
     void applyChromaFilter(float* buf, uInt32 n);

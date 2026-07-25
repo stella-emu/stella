@@ -230,13 +230,28 @@ void PALSignal::buildLumaKernel()
 {
   // PAL-B/G luma video baseband is nominally 5.0 MHz; band-limit luma there.
   buildFIR(5.0e6F / SAMPLE_RATE, LUMA_TAPS, myLumaKernel.data());
+
+  // Cascade a low-pass with the chroma trap for the composite path.  A
+  // low-pass alone is nowhere near enough: at 4.43 MHz a 5 MHz design still
+  // passes 62% of the subcarrier (−4.1 dB), which lands in the picture as a
+  // coloured mesh over every saturated area.  Convolving in LUMA_TRAP puts
+  // an exact null at fsc.  See the LUMA_TRAP comment in the header.
+  std::array<float, COMPOSITE_LUMA_LP_TAPS> lowPass{};
+  buildFIR(5.0e6F / SAMPLE_RATE, COMPOSITE_LUMA_LP_TAPS, lowPass.data());
+
+  std::ranges::fill(myCompositeLumaKernel, 0.F);
+  for(uInt32 i = 0; i < COMPOSITE_LUMA_LP_TAPS; ++i)
+    for(uInt32 t = 0; t < LUMA_TRAP.size(); ++t)
+      myCompositeLumaKernel[i + t] += lowPass[i] * LUMA_TRAP[t];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildChromaKernel()
 {
-  // PAL colour-difference bandwidth is ~1.3 MHz per axis (U and V share the
-  // same limit in PAL, unlike NTSC's asymmetric I/Q); band-limit chroma there.
+  // PAL colour-difference bandwidth is ~1.1-1.3 MHz per axis (U and V share
+  // the same limit in PAL, unlike NTSC's asymmetric I/Q); ITU-R BT.470 gives
+  // the sidebands as +1.07/−1.30 MHz.  With CHROMA_TAPS the kernel is long
+  // enough for the design cutoff to be the realised one (−3 dB ≈ 1.21 MHz).
   buildFIR(1.3e6F / SAMPLE_RATE, CHROMA_TAPS, myChromaKernel.data());
 }
 
@@ -290,7 +305,8 @@ void PALSignal::buildCoeff()
     }
     applyChromaFilter(myUBuf.data(), vis);
     applyChromaFilter(myVBuf.data(), vis);
-    applyLumaFilter(myYBuf.data(),  vis);
+    // Composite: luma is the raw composite signal, so it needs the chroma trap
+    applyLumaFilter(myYBuf.data(),  vis, true);
 
     const int base = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
     for(int t = 0; t < KERNEL_WIDTH; ++t)
@@ -366,10 +382,11 @@ void PALSignal::buildCoeff()
     constexpr int xref = 80;
     constexpr uInt32 base = static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
 
-    // Unit luma impulse through the luma FIR + aperture
+    // Unit luma impulse through the luma FIR + aperture.  No chroma trap:
+    // S-Video's luma wire never carried a subcarrier.
     std::ranges::fill(myYBuf, 0.F);
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myYBuf[base + s] = 1.F;
-    applyLumaFilter(myYBuf.data(), vis);
+    applyLumaFilter(myYBuf.data(), vis, false);
 
     // Unit chroma impulse through the chroma FIR
     std::ranges::fill(myUBuf, 0.F);
@@ -395,10 +412,11 @@ void PALSignal::buildCoeff()
     constexpr int xref = 80;
     constexpr uInt32 base = static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
 
-    // Unit luma impulse through the luma FIR + aperture (same as S-Video)
+    // Unit luma impulse through the luma FIR + aperture (same as S-Video,
+    // and likewise with no chroma trap)
     std::ranges::fill(myYBuf, 0.F);
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myYBuf[base + s] = 1.F;
-    applyLumaFilter(myYBuf.data(), vis);
+    applyLumaFilter(myYBuf.data(), vis, false);
 
     // Unit chroma impulse with NO FIR: full-bandwidth, so it stays a box
     std::ranges::fill(myUBuf, 0.F);
@@ -478,9 +496,11 @@ void PALSignal::convolve(SpanOf<float> kernel, const float* in, float* out,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PALSignal::applyLumaFilter(float* buf, uInt32 n)
+void PALSignal::applyLumaFilter(float* buf, uInt32 n, bool trap)
 {
-  convolve(myLumaKernel, buf, myFilterTmp.data(), n);
+  convolve(trap ? SpanOf<float>{myCompositeLumaKernel}
+                : SpanOf<float>{myLumaKernel},
+           buf, myFilterTmp.data(), n);
 
   // Aperture correction (sharpness): unsharp-mask with the 3-tap kernel
   // [-k/2, 1+k, -k/2].  Centre weight 1+k boosts the sample, the neighbour
@@ -601,15 +621,16 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
     // Convert the line to RGB.  S-Video carries Y and C on separate wires,
     // so there is no comb and the chroma passes straight through; Composite
     // applies the PAL 1-line comb blend with the previous line's chroma.
-    // (The previous line was encoded with the opposite V-sign, so adding its
-    // own-sign filtered chroma reinforces U and cancels chroma noise on V.)
+    // The matched kernels have already undone the V-sign, so both axes just
+    // average — which softens colour vertically, the comb's visible effect
+    // here (see the DECODING section in the header).
     if(colourKilled && composite && myColourLoss == ColourLoss::SaturationLoss)
     {
       // SaturationLoss model (composite modes only): the set's colour-killer
       // has cut chroma, so emit luma only.  S-Video and RGB are immune because
       // chroma is carried off the luma wire with no phase dependency.  The
-      // subcarrier residual still present in the luma channel shows as faint
-      // dot-crawl in the greyscale image, as on real hardware.
+      // greyscale comes out clean rather than patterned: the chroma trap sits
+      // in the luma path whatever the killer is doing, on a real set as here.
       for(uInt32 j = 0; j < outW; ++j)
         dst[j] = toRGB(myAccY[j], 0.F, 0.F);
     }

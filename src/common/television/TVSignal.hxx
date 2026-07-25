@@ -42,7 +42,9 @@
   PAL: Delegates to PALSignal, an analogue encode/decode model.  RGB carries
   chroma at full bandwidth with no 1-line comb (the crispest result);
   S-Video band-limits the chroma but still skips the comb; Composite/Custom
-  run the full comb, where an odd total scanline count phase-inverts the
+  run the full comb, and are also the only modes whose luma passes a chroma
+  trap — which is what makes composite the softest as well as the most
+  artifact-prone.  There, an odd total scanline count phase-inverts the
   V-axis and trips the colour-killer (the classic "colour-loss" effect).
 
   SECAM: Emulates the chroma delay-line present in SECAM televisions.  The
