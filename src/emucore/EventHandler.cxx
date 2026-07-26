@@ -2814,16 +2814,16 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::LeftJoystickLeft,        "Left Joystick Left"                    },
   { Event::LeftJoystickRight,       "Left Joystick Right"                   },
   { Event::LeftJoystickFire,        "Left Joystick Fire"                    },
-  { Event::LeftJoystickFire5,       "Left Top Booster Button, Button 'C'"   },
-  { Event::LeftJoystickFire9,       "Left Handle Grip Trigger, Button '3'"  },
+  { Event::LeftJoystickFire9,       "Left Top Booster Button, Button 'C'"   },
+  { Event::LeftJoystickFire5,       "Left Handle Grip Trigger, Button '3'"  },
 
   { Event::RightJoystickUp,         "Right Joystick Up"                     },
   { Event::RightJoystickDown,       "Right Joystick Down"                   },
   { Event::RightJoystickLeft,       "Right Joystick Left"                   },
   { Event::RightJoystickRight,      "Right Joystick Right"                  },
   { Event::RightJoystickFire,       "Right Joystick Fire"                   },
-  { Event::RightJoystickFire5,      "Right Top Booster Button, Button 'C'"  },
-  { Event::RightJoystickFire9,      "Right Handle Grip Trigger, Button '3'" },
+  { Event::RightJoystickFire9,      "Right Top Booster Button, Button 'C'"  },
+  { Event::RightJoystickFire5,      "Right Handle Grip Trigger, Button '3'" },
 
   { Event::QTJoystickThreeUp,       "QuadTari Joystick 3 Up"                },
   { Event::QTJoystickThreeDown,     "QuadTari Joystick 3 Down"              },
@@ -3159,9 +3159,9 @@ const Event::EventSet EventHandler::ConsoleEvents = {
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
 const Event::EventSet EventHandler::JoystickEvents = {
   Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
-  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
+  Event::LeftJoystickFire, Event::LeftJoystickFire9, Event::LeftJoystickFire5,
   Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
-  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
+  Event::RightJoystickFire, Event::RightJoystickFire9, Event::RightJoystickFire5,
   Event::QTJoystickThreeUp, Event::QTJoystickThreeDown, Event::QTJoystickThreeLeft, Event::QTJoystickThreeRight,
   Event::QTJoystickThreeFire,
   Event::QTJoystickFourUp, Event::QTJoystickFourDown, Event::QTJoystickFourLeft, Event::QTJoystickFourRight,
