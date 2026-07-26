@@ -140,6 +140,42 @@ class AbstractFrameManager : public Serializable
     }
 
     /**
+      Does the first rendered scanline of the last finished frame carry D'R
+      rather than D'B?
+
+      A SECAM encoder selects the component with a flip-flop clocked by line
+      sync, so the assignment belongs to the console's line counter and not to
+      wherever the visible area happens to begin.  Deriving it from the buffer
+      row instead would make the decoded colours shift whenever a ROM changed
+      its VBLANK height, which is why this exists.
+
+      The toggle restarts each frame rather than running free across the
+      boundary.  A broadcast encoder does free-run — the Verilog reference
+      (Slamy/fpga-composite-video, rtl/composite_video_encoder.sv) toggles on
+      newline alone and pointedly does not reset on newframe — but what is
+      being modelled here is a receiver, and a receiver has its own phase
+      reference: the line identification of ITU-R BT.470-6 Table 2 item 2.18,
+      carried either per line on the back porch or as the nine-line
+      field-blanking sequence, exists precisely so the decoder can re-establish
+      which line is which.
+
+      The two models diverge only on a frame with an odd scanline count, where
+      free-running would hand the next frame the opposite assignment and make
+      the picture flicker at half the frame rate.  That is a malformed
+      PAL/SECAM signal whose behaviour on real hardware nobody has measured,
+      the flicker is severe enough to read as a defect, and no phosphor
+      persistence — emulated or real — is fast enough to damp it.  Modelling
+      it is not worth guessing about; revisit if hardware data ever settles
+      what the console's daughterboard actually does.
+
+      The absolute value is unknowable — it depends on the console's state at
+      power-on — so only its transitions carry meaning, and it is deliberately
+      left out of the serialized state.  With the per-frame reset it is a pure
+      function of the frame geometry, so save/load is exact regardless.
+     */
+    bool chromaLineParity() const { return myChromaLineParity; }
+
+    /**
       The total number of frames rendered.
      */
     uInt32 frameCount() const { return myTotalFrames; }
@@ -310,6 +346,20 @@ class AbstractFrameManager : public Serializable
     void notifyFrameComplete();
 
     /**
+      Restart the SECAM component toggle.  Subclasses call this at the top of
+      the frame, which is the phase reference the decoder locks to (see
+      chromaLineParity()).
+     */
+    void resetChromaLineToggle() { myChromaLineToggle = false; }
+
+    /**
+      Capture the SECAM component toggle as the visible area starts.
+      Subclasses call this the moment they begin rendering; the toggle itself
+      keeps advancing over the blanking lines that follow.
+     */
+    void latchChromaLineParity() { myChromaLineParity = myChromaLineToggle; }
+
+    /**
       Internal setter to update the frame layout.
      */
     void layout(FrameLayout layout);
@@ -340,6 +390,12 @@ class AbstractFrameManager : public Serializable
 
     // Snapshot of the above for the last complete frame.
     uInt32 myChromaClocksLastFrame{0};
+
+    // The SECAM Db/Dr selector: a flip-flop clocked by line sync, restarted at
+    // the top of each frame, and its value latched as the visible area begins
+    // (see chromaLineParity()).  Not serialized — see that comment for why.
+    bool myChromaLineToggle{false};
+    bool myChromaLineParity{false};
 
     // Total frame count
     uInt32 myTotalFrames{0};

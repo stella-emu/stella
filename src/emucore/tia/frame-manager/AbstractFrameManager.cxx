@@ -34,6 +34,8 @@ void AbstractFrameManager::reset()
   myPreviousFrameFinalLines = 0;
   myCurrentFrameChromaClocks = 0;
   myChromaClocksLastFrame = 0;
+  myChromaLineToggle = false;
+  myChromaLineParity = false;
   myTotalFrames = 0;
 
   onReset();
@@ -44,6 +46,10 @@ void AbstractFrameManager::nextLine(uInt32 lineLength)
 {
   ++myCurrentFrameTotalLines;
   myCurrentFrameChromaClocks += lineLength;
+
+  // A SECAM component selector is clocked by line sync, so it advances on
+  // every line, blanking included (see chromaLineParity())
+  myChromaLineToggle = !myChromaLineToggle;
 
   onNextLine();
 }

@@ -15,15 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "PaletteHandler.hxx"
-#include "Settings.hxx"
+#include "TIAConstants.hxx"
 #include "TVSignal.hxx"
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TVSignal::TVSignal(const PaletteHandler& paletteHandler)
-  : myPaletteHandler{paletteHandler}
-{
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::setTiming(ConsoleTiming timing)
@@ -48,6 +41,12 @@ void TVSignal::setTiming(ConsoleTiming timing)
       myPALSignal.initialize(myTVMode);
     myPALSignal.setPalette(myRGBPalette);
   }
+  else if(myTiming == ConsoleTiming::secam)
+  {
+    if(myTVMode != TVMode::None)
+      mySECAMSignal.initialize(myTVMode);
+    mySECAMSignal.setPalette(myRGBPalette);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,6 +62,8 @@ void TVSignal::setPalette(const PaletteArray& tiaPalette,
     myNTSCSignal.setPalette(myRGBPalette);
   else if(myTiming == ConsoleTiming::pal)
     myPALSignal.setPalette(myRGBPalette);
+  else if(myTiming == ConsoleTiming::secam)
+    mySECAMSignal.setPalette(myRGBPalette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,6 +80,8 @@ void TVSignal::setTVMode(TVMode type)
     myNTSCSignal.initialize(type);
   else if(myTiming == ConsoleTiming::pal)
     myPALSignal.initialize(type);
+  else if(myTiming == ConsoleTiming::secam)
+    mySECAMSignal.initialize(type);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,7 +170,8 @@ void TVSignal::changeCurrentAdjustable(int direction,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                      uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted)
+                      uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted,
+                      bool lineParity)
 {
   switch(myTiming)
   {
@@ -180,7 +184,7 @@ void TVSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
       break;
 
     case ConsoleTiming::secam:
-      renderSECAM(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
+      renderSECAM(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, lineParity);
       break;
 
     default:
@@ -236,53 +240,18 @@ void TVSignal::renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TVSignal::renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                            uInt32* rgbDst, uInt32 dstPitch)
+                            uInt32* rgbDst, uInt32 dstPitch, bool lineParity)
 {
-  // Only None is the raw palette (the capture source).  Every colour mode
-  // (RGB, S-Video, Composite, Custom) runs the sequential delay line below:
-  // SECAM transmits only Db or Dr per line, so the delay line is the decoder
-  // itself — it is what recovers a full colour at all, blending adjacent
-  // colours as a side effect.  SECAM models neither chroma bandwidth nor Y/C
-  // separation, so the three colour connections render identically here; they
-  // differ only from None.
+  // None: raw palette lookup with no signal processing (capture source).
   if(myTVMode == TVMode::None)
   {
     renderPassthrough(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch);
     return;
   }
 
-  // Reset the delay line at the start of each frame; the first scanline
-  // always blends against a virtual "black" previous line.
-  myPrevLine.fill(0);
-
-  const auto& ydbdr = myPaletteHandler.secamYDbDrTable();
-
-  for(uInt32 y = 0; y < srcHeight; ++y)
-  {
-    const uInt8* src = tiaSrc + static_cast<size_t>(y) * srcWidth;
-    uInt32* dst      = rgbDst + static_cast<size_t>(y) * dstPitch;
-
-    // Even scanlines carry Db; the delay line provides Dr from the previous
-    // (odd) line.  Odd scanlines carry Dr; the delay line provides Db from
-    // the previous (even) line.
-    const bool evenLine = (y & 1) == 0;
-    const uInt8* dbLine = evenLine ? src : myPrevLine.data();
-    const uInt8* drLine = evenLine ? myPrevLine.data() : src;
-
-    for(uInt32 x = 0; x < srcWidth; ++x)
-      dst[x] = yDbDrToRGB(ydbdr[src[x]].y, ydbdr[dbLine[x]].db,
-                          ydbdr[drLine[x]].dr);
-
-    std::copy_n(src, srcWidth, myPrevLine.data());
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TVSignal::yDbDrToRGB(float y, float db, float dr)
-{
-  // SECAM inverse: R = Y - 0.526Dr; G = Y - 0.129Db + 0.268Dr; B = Y + 0.665Db
-  const int r = BSPF::clamp(static_cast<int>((y              - 0.526F * dr) * 255.F), 0, 255);
-  const int g = BSPF::clamp(static_cast<int>((y - 0.129F * db + 0.268F * dr) * 255.F), 0, 255);
-  const int b = BSPF::clamp(static_cast<int>((y + 0.665F * db             ) * 255.F), 0, 255);
-  return static_cast<uInt32>((r << 16) | (g << 8) | b);
+  // Every colour mode (RGB, S-Video, Composite, Custom) runs the delay line,
+  // because for SECAM it is the decoder rather than an effect layered on one.
+  // Neither chroma bandwidth nor Y/C separation is modelled, so the three
+  // colour connections render identically; they differ only from None.
+  mySECAMSignal.render(tiaSrc, srcWidth, srcHeight, rgbDst, dstPitch, lineParity);
 }

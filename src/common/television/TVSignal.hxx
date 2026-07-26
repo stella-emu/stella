@@ -20,9 +20,12 @@
 
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
+#include "FrameBufferConstants.hxx"
 #include "NTSCSignal.hxx"
 #include "PALSignal.hxx"
-#include "PaletteHandler.hxx"
+#include "SECAMSignal.hxx"
+
+class Settings;
 
 /**
   Converts raw TIA colour-index data into RGB pixels, applying the
@@ -47,19 +50,16 @@
   artifact-prone.  There, an odd total scanline count phase-inverts the
   V-axis and trips the colour-killer (the classic "colour-loss" effect).
 
-  SECAM: Emulates the chroma delay-line present in SECAM televisions.  The
-  signal alternates transmitting Db (even lines) and Dr (odd lines), so the
-  delay line — which holds the missing component from the previous line — is
-  the decoder itself: it is what recovers a full colour at all, and blending
-  two colours across adjacent scanlines produces colours beyond the 8-entry
-  SECAM palette.  Every colour mode (RGB, S-Video, Composite) therefore runs
-  the delay line; SECAM models neither chroma bandwidth nor Y/C separation,
-  so they render identically and differ only from None.
+  SECAM: Delegates to SECAMSignal, which runs the chroma delay line present
+  in SECAM televisions.  Because the delay line is the decoder rather than an
+  effect layered on one, every colour mode (RGB, S-Video, Composite) runs it;
+  SECAM models neither chroma bandwidth nor Y/C separation, so the three
+  render identically and differ only from None.
 */
 class TVSignal
 {
   public:
-    explicit TVSignal(const PaletteHandler& paletteHandler);
+    TVSignal() = default;
     ~TVSignal() = default;
 
     // Called whenever the console timing changes
@@ -105,11 +105,14 @@ class TVSignal
 
     // Process one complete TIA frame.  Reads raw TIA colour-index bytes from
     // tiaSrc and writes 32-bit 0x00RRGGBB pixels to rgbDst, dispatched by the
-    // active standard (NTSC/PAL/SECAM) and TVMode.  phaseInverted is the PAL
-    // chroma V-axis field phase, supplied by the frame manager (see
-    // AbstractFrameManager::chromaPhaseInverted()).
+    // active standard (NTSC/PAL/SECAM) and TVMode.  Both field-phase flags come
+    // from the frame manager: phaseInverted is the PAL chroma V-axis field
+    // phase (see AbstractFrameManager::chromaPhaseInverted()), and lineParity
+    // says whether the first scanline carries SECAM D'R rather than D'B (see
+    // AbstractFrameManager::chromaLineParity()).
     void render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
+                uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted,
+                bool lineParity);
 
   private:
     // Plain palette lookup with no signal processing (the TVMode::None path
@@ -123,20 +126,17 @@ class TVSignal
     void renderPAL(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
                    uInt32* rgbDst, uInt32 dstPitch, bool phaseInverted);
     void renderSECAM(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
-                     uInt32* rgbDst, uInt32 dstPitch);
+                     uInt32* rgbDst, uInt32 dstPitch, bool lineParity);
 
     // Returns the adjustable tag span for the currently active filter
     SpanOf<AdjustableTag> currentAdjustableTags() const;
 
-    // SECAM YDbDr → packed 0x00RRGGBB (values in linear [0..1])
-    static FORCE_INLINE uInt32 yDbDrToRGB(float y, float db, float dr);
-
   private:
-    const PaletteHandler& myPaletteHandler;
     ConsoleTiming myTiming{ConsoleTiming::ntsc};
 
-    NTSCSignal myNTSCSignal;
-    PALSignal  myPALSignal;
+    NTSCSignal  myNTSCSignal;
+    PALSignal   myPALSignal;
+    SECAMSignal mySECAMSignal;
     TVMode myTVMode{TVMode::None};
 
     // Index of the currently selected custom adjustable
@@ -145,16 +145,11 @@ class TVSignal
     // Display palette used for NTSC non-Blargg pixel lookup
     PaletteArray myPalette{};
 
-    // RGB palette for the engines' internal YIQ/YUV encoding; kept so
+    // RGB palette for the engines' internal YIQ/YUV/YDbDr encoding; kept so
     // setTiming() can replay it into a newly active engine
     PaletteArray myRGBPalette{};
 
-    // Delay-line buffer: TIA colour-index bytes for the previous scanline
-    static constexpr uInt32 MAX_LINE_WIDTH = 160;
-    std::array<uInt8, MAX_LINE_WIDTH> myPrevLine{};
-
   private:
-    TVSignal() = delete;
     TVSignal(const TVSignal&) = delete;
     TVSignal(TVSignal&&) = delete;
     TVSignal& operator=(const TVSignal&) = delete;

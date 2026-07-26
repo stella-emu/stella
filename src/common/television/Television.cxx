@@ -74,7 +74,7 @@ Television::Television(OSystem& system)
 
   myPaletteHandler = std::make_unique<PaletteHandler>(myOSystem);
   myPaletteHandler->loadConfig(myOSystem.settings());
-  myTVSignal = std::make_unique<TVSignal>(*myPaletteHandler);
+  myTVSignal = std::make_unique<TVSignal>();
   TVSignal::loadConfig(myOSystem.settings());
 }
 
@@ -471,7 +471,7 @@ void Television::render(bool shade)
   // palette was last built (see setPalette): its adjusted palette is baked
   // into the TVSignal engine, so per-frame rendering begins at the signal.
   myTVSignal->render(myTIA->frameBuffer(), width, height, out, outPitch,
-                     myTIA->chromaPhaseInverted());
+                     myTIA->chromaPhaseInverted(), myTIA->chromaLineParity());
 
   // Stage 3 (display device): phosphor persistence, then the scanline and
   // shade overlays that follow.

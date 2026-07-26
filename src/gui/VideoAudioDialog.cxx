@@ -1131,12 +1131,13 @@ void VideoAudioDialog::handleTVModeChange(TVMode preset)
   const bool isNTSC  = !isPAL && !isSECAM;
   const bool enable  = preset == TVMode::Custom;
 
-  myTVMode->setEnabled(!isSECAM);
-
   // Each standard's widget set is hidden outright (not merely disabled)
   // when inapplicable, keeping the tab clean; both sets start at the same
   // row, so whichever one is shown stacks with no gaps.  SECAM has no
-  // adjustables at all.
+  // adjustables at all — but it does have connection types, so the mode
+  // itself stays selectable: for SECAM they choose the chroma bandwidth,
+  // and Disabled is what turns the delay line off and drops the picture
+  // back to the flat 8-entry palette.
   const auto showSlider = [](SliderWidget* w, bool visible, bool editable)
   {
     if(visible) w->clearFlags(Widget::FLAG_INVISIBLE);

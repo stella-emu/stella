@@ -64,16 +64,6 @@ class PaletteHandler
       uInt32 hue{0}, saturation{0}, contrast{0}, brightness{0}, gamma{0};
     };
 
-    // Per-entry SECAM YDbDr decomposition used by the TVSignal processor's
-    // SECAM delay line.  Indexed by TIA colour byte (0..255); values are in
-    // linear [0..1] space.  (PAL/NTSC do not need a decomposition table here:
-    // the PALSignal/NTSCSignal engines derive their own YUV from the adjusted
-    // RGB palette internally.)
-    struct YDbDrEntry {
-      float y{0}, db{0}, dr{0}; // SECAM YDbDr
-    };
-    using SECAMYDbDrTable = std::array<YDbDrEntry, 256>;
-
   public:
     explicit PaletteHandler(OSystem& system);
     ~PaletteHandler() = default;
@@ -130,9 +120,6 @@ class PaletteHandler
       Sets the palette from current settings.
     */
     void setPalette();
-
-    const SECAMYDbDrTable& secamYDbDrTable() const { return mySecamYDbDrTable; }
-
 
   private:
     static constexpr char DEGREE = 0x1c;
@@ -264,11 +251,6 @@ class PaletteHandler
     */
     void loadUserPalette();
 
-    /**
-      Populate mySecamYDbDrTable from an adjusted RGB palette.
-    */
-    void buildSecamYDbDrTable(const PaletteArray& adjusted);
-
   private:
     static constexpr int NUM_ADJUSTABLES = 12;
 
@@ -320,9 +302,6 @@ class PaletteHandler
     // Indicates whether an external palette was found and
     // successfully loaded
     bool myUserPaletteDefined{false};
-
-    // SECAM decomposition table populated by buildSecamYDbDrTable()
-    SECAMYDbDrTable mySecamYDbDrTable{};
 
     // Table of RGB values for NTSC, PAL and SECAM
     static const PaletteArray ourNTSCPalette;

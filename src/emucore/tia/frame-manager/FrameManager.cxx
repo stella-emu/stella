@@ -188,6 +188,7 @@ void FrameManager::setState(FrameManager::State state)
 
   switch (myState) {
     case State::waitForFrameStart:
+      resetChromaLineToggle();
       notifyFrameComplete();
 
       if (myTotalFrames > Metrics::initialGarbageFrames)
@@ -202,6 +203,7 @@ void FrameManager::setState(FrameManager::State state)
     case State::frame:
       myVsyncLineCount = 0;
       myY = 0;
+      latchChromaLineParity();
       break;
 
     default:

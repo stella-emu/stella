@@ -333,6 +333,13 @@ class TIA : public Device
     bool chromaPhaseInverted() const { return myFrameManager->chromaPhaseInverted(); }
 
     /**
+      Does the first scanline in the frame buffer carry SECAM D'R rather than
+      D'B?  Comes from the console's line counter, so it is independent of
+      where the visible area starts.
+     */
+    bool chromaLineParity() const { return myFrameManager->chromaLineParity(); }
+
+    /**
       The same, but for the frame in the frame buffer.
      */
     uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }

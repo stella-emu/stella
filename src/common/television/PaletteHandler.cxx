@@ -337,9 +337,7 @@ void PaletteHandler::setPalette()
     if(paletteType == PaletteType::Custom)
       generateCustomPalette(timing);
 
-    const PaletteArray adjusted = adjustedPalette(*palette);
-    myOSystem.frameBuffer().setTIAPalette(adjusted);
-    buildSecamYDbDrTable(adjusted);
+    myOSystem.frameBuffer().setTIAPalette(adjustedPalette(*palette));
   }
 }
 
@@ -401,24 +399,6 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
   }
   return destPalette;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::buildSecamYDbDrTable(const PaletteArray& adjusted)
-{
-  constexpr float inv255 = 1.F / 255.F;
-
-  for(size_t i = 0; i < adjusted.size(); ++i)
-  {
-    const float r = static_cast<float>((adjusted[i] >> 16) & 0xff) * inv255;
-    const float g = static_cast<float>((adjusted[i] >>  8) & 0xff) * inv255;
-    const float b = static_cast<float>((adjusted[i] >>  0) & 0xff) * inv255;
-
-    // BT.601 RGB → YDbDr (SECAM delay-line operates in this space)
-    mySecamYDbDrTable[i].y  =  0.299F * r + 0.587F * g + 0.114F * b;
-    mySecamYDbDrTable[i].db = -0.450F * r - 0.883F * g + 1.333F * b;
-    mySecamYDbDrTable[i].dr = -1.333F * r + 1.116F * g + 0.217F * b;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
