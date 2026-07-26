@@ -821,6 +821,7 @@
     <ClCompile Include="..\..\common\television\AtariNTSC.cxx" />
     <ClCompile Include="..\..\common\television\NTSCSignal.cxx" />
     <ClCompile Include="..\..\common\television\PALSignal.cxx" />
+    <ClCompile Include="..\..\common\television\SECAMSignal.cxx" />
     <ClCompile Include="..\..\common\television\TVSignal.cxx" />
     <ClCompile Include="..\..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\..\common\TimerManager.cxx" />
@@ -2250,6 +2251,7 @@
     <ClInclude Include="..\..\common\television\AtariNTSC.hxx" />
     <ClInclude Include="..\..\common\television\NTSCSignal.hxx" />
     <ClInclude Include="..\..\common\television\PALSignal.hxx" />
+    <ClInclude Include="..\..\common\television\SECAMSignal.hxx" />
     <ClInclude Include="..\..\common\television\TVAdjustable.hxx" />
     <ClInclude Include="..\..\common\television\TVMode.hxx" />
     <ClInclude Include="..\..\common\television\TVSignal.hxx" />
