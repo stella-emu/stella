@@ -66,6 +66,7 @@ class VideoAudioDialog : public Dialog
     void handleFullScreenChange();
     void handleOverscanChange();
     void handlePhosphorChange();
+    void handleCurvatureChange();
     void handleBezelChange();
 
     void addPalette(int x, int y, int w, int h);
@@ -113,6 +114,10 @@ class VideoAudioDialog : public Dialog
     StaticTextWidget* myTVScanLabel{nullptr};
     SliderWidget*     myTVScanIntense{nullptr};
     PopUpWidget*      myTVScanMask{nullptr};
+
+    // Curvature of the simulated tube face
+    SliderWidget*     myTVCurvature{nullptr};
+    SliderWidget*     myTVCurvatureY{nullptr};
 
     // TV effects adjustables presets (custom mode)
     ButtonWidget*     myCloneComposite{nullptr};
@@ -186,6 +191,8 @@ class VideoAudioDialog : public Dialog
       kPhosphorChanged    = 'VDph',
       kPhosBlendChanged   = 'VDbl',
       kScanlinesChanged   = 'VDsc',
+      kCurvatureChanged   = 'VDcv',
+      kCurvatureYChanged  = 'VDcy',
 
       kBezelEnableChanged = 'BZen',
       kChooseBezelDirCmd  = 'BZsl',

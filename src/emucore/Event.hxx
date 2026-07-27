@@ -138,6 +138,8 @@ class Event
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
       PreviousScanlineMask, NextScanlineMask,
+      CurvatureDecrease, CurvatureIncrease,
+      VCurvatureDecrease, VCurvatureIncrease,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor,
       PhosphorModeDecrease, PhosphorModeIncrease, ToggleInter,
       ToggleDeveloperSet, JitterRecDecrease, JitterRecIncrease,
@@ -215,7 +217,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 9;
+    static constexpr Int32 VERSION = 10;
 
     using EventSet = std::unordered_set<Event::Type>;
 

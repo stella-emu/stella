@@ -781,6 +781,38 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
+    case Event::CurvatureDecrease:
+      if(pressed)
+      {
+        myOSystem.frameBuffer().television().changeCurvature(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::CURVATURE);
+      }
+      return;
+
+    case Event::CurvatureIncrease:
+      if(pressed)
+      {
+        myOSystem.frameBuffer().television().changeCurvature(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::CURVATURE);
+      }
+      return;
+
+    case Event::VCurvatureDecrease:
+      if(pressed)
+      {
+        myOSystem.frameBuffer().television().changeVCurvature(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VCURVATURE);
+      }
+      return;
+
+    case Event::VCurvatureIncrease:
+      if(pressed)
+      {
+        myOSystem.frameBuffer().television().changeVCurvature(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VCURVATURE);
+      }
+      return;
+
     case Event::ToggleInter:
       if(pressed && !repeated)
       {
@@ -2937,6 +2969,10 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ScanlinesIncrease,       "Increase scanlines"                    },
   { Event::PreviousScanlineMask,    "Switch to previous scanline mask"      },
   { Event::NextScanlineMask,        "Switch to next scanline mask"          },
+  { Event::CurvatureDecrease,       "Decrease screen curvature"             },
+  { Event::CurvatureIncrease,       "Increase screen curvature"             },
+  { Event::VCurvatureDecrease,      "Decrease vertical curvature"           },
+  { Event::VCurvatureIncrease,      "Increase vertical curvature"           },
   // Audio
   { Event::SoundToggle,             "Toggle sound"                          },
   { Event::VolumeDecrease,          "Decrease volume"                       },
@@ -3113,6 +3149,8 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PhosphorModeDecrease, Event::PhosphorModeIncrease,
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
   Event::PreviousScanlineMask, Event::NextScanlineMask,
+  Event::CurvatureDecrease, Event::CurvatureIncrease,
+  Event::VCurvatureDecrease, Event::VCurvatureIncrease,
   Event::ToggleInter,
 };
 

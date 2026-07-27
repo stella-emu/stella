@@ -92,6 +92,8 @@ Settings::Settings()
   setPermanent(PhosphorHandler::SETTING_BLEND, PhosphorHandler::DEFAULT_BLEND);
   setPermanent("tv.scanlines", "0");
   setPermanent("tv.scanmask", Television::SETTING_STANDARD);
+  setPermanent(TVGeometry::SETTING_CURVATURE, "0");
+  setPermanent(TVGeometry::SETTING_CURVATURE_Y, "100");
   // TV options when using 'custom' mode
   setPermanent("ntsc.sharpness", "0.0");
   setPermanent("ntsc.resolution", "0.0");
@@ -524,6 +526,10 @@ void Settings::usage()
     << "  -tv.scanmask  <standard|       Use the specified scanline mask\n"
     << "                 thin|pixel|\n"
     << "                 mame>\n"
+    << "  -tv.curvature <0-100>          Set curvature of the simulated tube\n"
+    << "                                  face (0 gives a flat screen)\n"
+    << "  -tv.curvature.y <0-100>        Set vertical curvature, as a percentage\n"
+    << "                                  of spherical (0 is vertically flat)\n"
     << "  -ntsc.sharpness  <-1.0 - 1.0>  Set NTSC custom sharpness\n"
     << "  -ntsc.resolution <-1.0 - 1.0>  Set NTSC custom resolution\n"
     << "  -ntsc.artifacts  <-1.0 - 1.0>  Set NTSC custom artifacts\n"

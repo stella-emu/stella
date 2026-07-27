@@ -31,6 +31,7 @@ class PaletteHandler;
 #include "NTSCSignal.hxx"
 #include "PALSignal.hxx"
 #include "PhosphorHandler.hxx"
+#include "TVGeometry.hxx"
 #include "TVMode.hxx"
 #include "TVSignal.hxx"
 #include "bspf.hxx"
@@ -182,6 +183,27 @@ class Television
     void cycleScanlineMask(int direction = +1);
 
     /**
+      Increase/decrease the curvature of the tube face by a relative amount.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void changeCurvature(int direction = +1);
+
+    /**
+      Increase/decrease the vertical curvature, as a percentage of the value
+      that makes the tube face spherical.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void changeVCurvature(int direction = +1);
+
+    /**
+      Geometry of the tube face, for anything that has to map between what is
+      on screen and where it would be on a flat one (see Lightgun).
+    */
+    const TVGeometry& geometry() const { return myGeometry; }
+
+    /**
       Enable/disable/query phosphor effect.
     */
     void enablePhosphor(bool enable, int blend = -1);
@@ -251,6 +273,22 @@ class Television
     // Convert scanline mask setting name into type
     ScanlineMask scanlineMaskType(int direction = 0);
 
+    // Read the tube's curvature from the current settings
+    void loadGeometryConfig();
+
+    /**
+      Render one frame of the TIA image.
+
+      @param shade   Darken the image, for stopped emulation
+      @param curved  Present through the tube's curvature.  False renders the
+                     image flat, as snapshots need: a curved image only partly
+                     covers the image rectangle that PNGLibrary reads back.
+    */
+    void renderFrame(bool shade, bool curved);
+
+    // Draw the image and the overlays belonging to it, in physical order
+    void drawSurfaces(bool shade);
+
   private:
     OSystem& myOSystem;
     FrameBuffer& myFB;
@@ -261,8 +299,14 @@ class Television
 
     /////////////////////////////////////////////////////////////
     // Pipeline stage 3 (display device): phosphor persistence (also reduces
-    // flicker on 30Hz screens), plus the scanline/shade surfaces above.
+    // flicker on 30Hz screens), plus the scanline/shade surfaces above and
+    // the shape of the tube face they are all presented through.
     PhosphorHandler myPhosphorHandler;
+
+    // Shape of the tube face.  Everything stage 3 draws is composited
+    // offscreen and then warped through this in one pass, so that the
+    // scanline and shade overlays stay registered with the image.
+    TVGeometry myGeometry;
 
     // Phosphor blend
     int myPBlend{0};

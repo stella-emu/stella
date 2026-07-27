@@ -214,6 +214,8 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool isPAL  = (timing == ConsoleTiming::pal);
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
+  const bool hasCurvature =
+    myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE) > 0;
   const bool isSoftwareRenderer =
     myOSystem.settings().getString("video") == "software";
   const bool allowBezel =
@@ -236,6 +238,8 @@ bool GlobalKeyHandler::skipAVSetting() const
       && mySetting <= Setting::PAL_BLEND
       && (!isCustomFilter || !isPAL))
     || (mySetting == Setting::SCANLINE_MASK && !hasScanlines)
+    || (mySetting == Setting::CURVATURE && isSoftwareRenderer)
+    || (mySetting == Setting::VCURVATURE && (isSoftwareRenderer || !hasCurvature))
     || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer)
     || (mySetting == Setting::BEZEL && !allowBezel);
 }
@@ -389,6 +393,8 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PHOSPHOR,               {true,  [this](int d) { myOSystem.console().changePhosphor(d); }}},
     {Setting::SCANLINES,              {true,  [this](int d) { myOSystem.frameBuffer().television().changeScanlineIntensity(d); }}},
     {Setting::SCANLINE_MASK,          {false, [this](int d) { myOSystem.frameBuffer().television().cycleScanlineMask(d); }}},
+    {Setting::CURVATURE,              {true,  [this](int d) { myOSystem.frameBuffer().television().changeCurvature(d); }}},
+    {Setting::VCURVATURE,             {true,  [this](int d) { myOSystem.frameBuffer().television().changeVCurvature(d); }}},
     {Setting::INTERPOLATION,          {false, [this](int d) { myOSystem.console().toggleInter(d); }}},
     {Setting::BEZEL,                  {false, [this](int d) { myOSystem.frameBuffer().toggleBezel(d); }}},
     // *** Input group ***

@@ -27,6 +27,7 @@
 
 #include "ThreadDebugging.hxx"
 #include "Television.hxx"
+#include "TVGeometry.hxx"
 #include "FBSurfaceSDL.hxx"
 #include "FBBackendSDL.hxx"
 
@@ -61,6 +62,7 @@ FBBackendSDL::~FBBackendSDL()
 {
   ASSERT_MAIN_THREAD;
 
+  freeGeometryTarget();
   if(myRenderer)
     SDL_DestroyRenderer(myRenderer);
   if(myWindow)
@@ -452,6 +454,8 @@ bool FBBackendSDL::createRenderer()
 
   if(recreate)
   {
+    // The offscreen target belongs to the renderer about to go away
+    freeGeometryTarget();
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
@@ -597,6 +601,193 @@ void FBBackendSDL::renderToScreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FBBackendSDL::createGeometryTarget()
+{
+  ASSERT_MAIN_THREAD;
+
+  // This runs every frame the tube is curved, so the common case -- nothing
+  // about the renderer output has changed -- is nothing but this compare
+  if(myGeometryTarget && myGeometryTargetW == myRenderW &&
+     myGeometryTargetH == myRenderH * myGeometryScaleY)
+    return true;
+
+  // The renderer's own limit caps how much we can supersample; on a large
+  // display the doubled height can be what pushes it over.  The limit is
+  // cached at renderer creation (see detectFeatures), since it can only
+  // change when the renderer itself does.
+  int scaleY = SUPERSAMPLE_Y;
+  if(myMaxTextureSize > 0)
+  {
+    if(std::cmp_greater(myRenderW, myMaxTextureSize))
+      return false;
+    while(scaleY > 1 && std::cmp_greater(myRenderH * scaleY, myMaxTextureSize))
+      --scaleY;
+  }
+
+  const int width = myRenderW, height = myRenderH * scaleY;
+  if(width <= 0 || height <= 0)
+    return false;
+
+  freeGeometryTarget();
+
+  myGeometryTarget = SDL_CreateTexture(myRenderer, myPixelFormat->format,
+      SDL_TEXTUREACCESS_TARGET, width, height);
+  if(myGeometryTarget == nullptr)
+  {
+    Logger::error(std::format(
+        "ERROR: Unable to create curvature render target: {}", SDL_GetError()));
+    return false;
+  }
+
+  // The composite is minified by the warp, so it must be filtered; nearest
+  // sampling here would undo the supersampling the target exists for
+  SDL_SetTextureScaleMode(myGeometryTarget, SDL_SCALEMODE_LINEAR);
+  SDL_SetTextureBlendMode(myGeometryTarget, SDL_BLENDMODE_NONE);
+
+  myGeometryTargetW = width;
+  myGeometryTargetH = height;
+  myGeometryScaleY = scaleY;
+  myGeometryMeshValid = false;
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::freeGeometryTarget()
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myGeometryTarget)
+  {
+    SDL_DestroyTexture(myGeometryTarget);
+    myGeometryTarget = nullptr;
+  }
+  myGeometryTargetW = myGeometryTargetH = 0;
+  myGeometryMeshValid = false;
+  myGeometryPassActive = false;
+
+  // The mesh is only meaningful alongside the target, so release it too
+  myGeometryVertices.clear();  myGeometryVertices.shrink_to_fit();
+  myGeometryIndices.clear();   myGeometryIndices.shrink_to_fit();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::updateGeometryMesh(const TVGeometry& geometry,
+                                      const Common::Rect& dst)
+{
+  if(myGeometryMeshValid && myGeometryGeneration == geometry.generation())
+    return;
+
+  myGeometryGeneration = geometry.generation();
+  myGeometryMeshValid = true;
+
+  // The mesh samples the image rectangle out of a target that covers the
+  // whole renderer.  Drawing used a vertical scale of myGeometryScaleY into a
+  // target that is taller by exactly that factor, so it cancels and the
+  // texture coordinates are just the rectangle normalised by the output size.
+  const float scaleU = 1.F / static_cast<float>(myRenderW),
+              scaleV = 1.F / static_cast<float>(myRenderH);
+  const float left = static_cast<float>(dst.x()),
+              top = static_cast<float>(dst.y()),
+              width = static_cast<float>(dst.w()),
+              height = static_cast<float>(dst.h());
+
+  myGeometryVertices.clear();
+  myGeometryVertices.reserve(geometry.vertices().size());
+  for(const auto& vertex: geometry.vertices())
+    myGeometryVertices.push_back(SDL_Vertex{
+      .position = { .x = vertex.x, .y = vertex.y },
+      .color = { .r = vertex.shade, .g = vertex.shade,
+                 .b = vertex.shade, .a = 1.F },
+      .tex_coord = { .x = (left + vertex.u * width) * scaleU,
+                     .y = (top + vertex.v * height) * scaleV }
+    });
+
+  myGeometryIndices.assign(geometry.indices().begin(), geometry.indices().end());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FBBackendSDL::beginGeometryPass(TVGeometry& geometry)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myRenderer == nullptr || !myRenderTargetSupport || !geometry.enabled())
+  {
+    // Curvature can be switched off while running, so give the offscreen
+    // target back instead of holding it for the rest of the session
+    if(myGeometryTarget)
+      freeGeometryTarget();
+    return false;
+  }
+
+  const Common::Rect& imageR = myOSystem.frameBuffer().imageRect();
+  const Common::Rect dst(
+    Common::Point(scaleX(imageR.x()), scaleY(imageR.y())),
+    scaleX(imageR.w()), scaleY(imageR.h())
+  );
+  if(dst.w() == 0 || dst.h() == 0)
+    return false;
+
+  if(!createGeometryTarget())
+    return false;
+
+  geometry.build(dst);
+  updateGeometryMesh(geometry, dst);
+  if(myGeometryIndices.empty())
+    return false;
+
+  myGeometryRect = dst;
+  myGeometryPassActive = true;
+
+  SDL_SetRenderTarget(myRenderer, myGeometryTarget);
+  SDL_SetRenderDrawColor(myRenderer, 0, 0, 0, 255);
+  SDL_RenderClear(myRenderer);
+
+  // Everything drawn from here on uses ordinary renderer coordinates; the
+  // scale is what lands it in the taller target
+  SDL_SetRenderScale(myRenderer, 1.F, static_cast<float>(myGeometryScaleY));
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::endGeometryPass()
+{
+  ASSERT_MAIN_THREAD;
+
+  if(!myGeometryPassActive)
+    return;
+
+  myGeometryPassActive = false;
+
+  SDL_SetRenderScale(myRenderer, 1.F, 1.F);
+  SDL_SetRenderTarget(myRenderer, nullptr);
+
+  // The mesh does not reach the corners of the image rectangle, and callers
+  // are free to skip clearing the screen; without this the corners would show
+  // whatever the back buffer happened to hold
+  const SDL_FRect frame{
+    .x = static_cast<float>(myGeometryRect.x()),
+    .y = static_cast<float>(myGeometryRect.y()),
+    .w = static_cast<float>(myGeometryRect.w()),
+    .h = static_cast<float>(myGeometryRect.h())
+  };
+  SDL_SetRenderDrawColor(myRenderer, 0, 0, 0, 255);
+  SDL_RenderFillRect(myRenderer, &frame);
+
+#if SDL_VERSION_ATLEAST(3, 4, 0)
+  // Clamp so that the edges of the image do not pick up the surrounding
+  // black, or wrap to the opposite edge, where the mesh samples near them
+  SDL_SetRenderTextureAddressMode(myRenderer,
+      SDL_TEXTURE_ADDRESS_CLAMP, SDL_TEXTURE_ADDRESS_CLAMP);
+#endif
+
+  SDL_RenderGeometry(myRenderer, myGeometryTarget,
+      myGeometryVertices.data(), static_cast<int>(myGeometryVertices.size()),
+      myGeometryIndices.data(), static_cast<int>(myGeometryIndices.size()));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBBackendSDL::setWindowIcon()
 {
 #ifndef BSPF_MACOS
@@ -729,6 +920,17 @@ void FBBackendSDL::detectFeatures()
 
   if(myRenderer && !myRenderTargetSupport)
     Logger::info("Render targets are not supported --- QIS not available");
+
+  // Cache the maximum texture size; it only changes with the renderer, and
+  // createGeometryTarget() would otherwise have to ask for it every frame
+  myMaxTextureSize = 0;
+  if(myRenderer)
+  {
+    const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
+    if(props != 0)
+      myMaxTextureSize = SDL_GetNumberProperty(props,
+          SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

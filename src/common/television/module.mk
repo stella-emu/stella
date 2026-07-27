@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/common/television/Television.o \
 	src/common/television/PaletteHandler.o \
 	src/common/television/PhosphorHandler.o \
+	src/common/television/TVGeometry.o \
 	src/common/television/TVSignal.o \
 	src/common/television/NTSCSignal.o \
 	src/common/television/PALSignal.o \

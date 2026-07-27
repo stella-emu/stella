@@ -18,6 +18,8 @@
 #include "Event.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
+#include "Television.hxx"
+#include "TVGeometry.hxx"
 
 #include "Lightgun.hxx"
 
@@ -90,11 +92,20 @@ bool Lightgun::read(DigitalPin pin)
         return false;
 
       const TIA& tia = mySystem.tia();
+
+      // Normalize mouse coordinates against the displayed image
+      float u = static_cast<float>(myEvent.get(Event::MouseAxisXValue) -
+                                   static_cast<Int32>(rect.x())) / rect.w();
+      float v = static_cast<float>(myEvent.get(Event::MouseAxisYValue) -
+                                   static_cast<Int32>(rect.y())) / rect.h();
+
+      // On a curved tube the pixel under the pointer is not the one a flat
+      // screen would have put there, so undo the warp before believing it
+      myFrameBuffer.television().geometry().unwarp(u, v);
+
       // scale mouse coordinates into TIA coordinates
-      const Int32 xMouse = (myEvent.get(Event::MouseAxisXValue) - rect.x())
-          * tia.width() / rect.w();
-      const Int32 yMouse = (myEvent.get(Event::MouseAxisYValue) - rect.y())
-          * tia.height() / rect.h();
+      const auto xMouse = static_cast<Int32>(u * tia.width());
+      const auto yMouse = static_cast<Int32>(v * tia.height());
 
       // get adjusted TIA coordinates
       Int32 xTia = tia.clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + myOfsX;

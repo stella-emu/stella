@@ -78,6 +78,8 @@ class GlobalKeyHandler
       PHOSPHOR,
       SCANLINES,
       SCANLINE_MASK,
+      CURVATURE,
+      VCURVATURE,
       INTERPOLATION,
       BEZEL,
       // *** Input group ***

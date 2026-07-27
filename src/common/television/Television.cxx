@@ -76,6 +76,15 @@ Television::Television(OSystem& system)
   myPaletteHandler->loadConfig(myOSystem.settings());
   myTVSignal = std::make_unique<TVSignal>();
   TVSignal::loadConfig(myOSystem.settings());
+  loadGeometryConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Television::loadGeometryConfig()
+{
+  myGeometry.setCurvature(
+    BSPF::clamp(myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE), 0, 100),
+    BSPF::clamp(myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE_Y), 0, 100));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,6 +238,32 @@ void Television::changeScanlineIntensity(int direction)
 
   myFB.showGaugeMessage("Scanline intensity",
     intensity ? std::format("{}%", intensity) : "Off", intensity);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Television::changeCurvature(int direction)
+{
+  const int curvature = BSPF::clamp<int>(
+      myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE) + direction * 2, 0, 100);
+
+  myOSystem.settings().setValue(TVGeometry::SETTING_CURVATURE, curvature);
+  loadGeometryConfig();
+
+  myFB.showGaugeMessage("Screen curvature",
+    curvature ? std::format("{}%", curvature) : "Off", curvature);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Television::changeVCurvature(int direction)
+{
+  const int curvature = BSPF::clamp<int>(
+      myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE_Y) + direction * 2, 0, 100);
+
+  myOSystem.settings().setValue(TVGeometry::SETTING_CURVATURE_Y, curvature);
+  loadGeometryConfig();
+
+  myFB.showGaugeMessage("Vertical curvature",
+    curvature ? std::format("{}%", curvature) : "Flat", curvature);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -452,6 +487,9 @@ string Television::effectsInfo() const
       mySLineSurface->blendLevel(),
       myOSystem.settings().getString("tv.scanmask"));
 
+  if(myGeometry.enabled())
+    buf += std::format(", curvature={}", myOSystem.settings().getInt(TVGeometry::SETTING_CURVATURE));
+
   buf += std::format(", inter={}, aspect correction={}, palette={}",
     myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled",
     correctAspect() ? "enabled" : "disabled",
@@ -462,6 +500,29 @@ string Television::effectsInfo() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Television::render(bool shade)
+{
+  renderFrame(shade, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Television::drawSurfaces(bool shade)
+{
+  // Draw TIA image
+  myTiaSurface->render();
+
+  // Draw overlaying scanlines
+  if(myScanlinesEnabled)
+    mySLineSurface->render();
+
+  if(shade)
+  {
+    myShadeSurface->setDstRect(myTiaSurface->dstRect());
+    myShadeSurface->render();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Television::renderFrame(bool shade, bool curved)
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
   uInt32 *out{nullptr}, outPitch{0};
@@ -488,18 +549,16 @@ void Television::render(bool shade)
           renderWidth);
   }
 
-  // Draw TIA image
-  myTiaSurface->render();
+  // The image and the overlays that belong to it are composited offscreen and
+  // then warped through the curvature of the tube face together, so that they
+  // stay registered with each other.  A flat face, or a backend that cannot
+  // do it, falls through to drawing them straight to the screen.
+  const bool geometryPass = curved && myFB.beginGeometryPass(myGeometry);
 
-  // Draw overlaying scanlines
-  if(myScanlinesEnabled)
-    mySLineSurface->render();
+  drawSurfaces(shade);
 
-  if(shade)
-  {
-    myShadeSurface->setDstRect(myTiaSurface->dstRect());
-    myShadeSurface->render();
-  }
+  if(geometryPass)
+    myFB.endGeometryPass();
 
   if(mySaveSnapFlag)
   {
@@ -529,17 +588,17 @@ void Television::renderForSnapshot()
                  myPrevRGBFramebuffer + static_cast<size_t>(y) * renderWidth,
                  renderWidth);
 
-    myTiaSurface->render();
-    if(myScanlinesEnabled)
-      mySLineSurface->render();
+    drawSurfaces(false);
   }
   else
-    render();
+    renderFrame(false, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Television::updateSurfaceSettings()
 {
+  loadGeometryConfig();
+
   if(myTiaSurface != nullptr)
     myTiaSurface->setScalingInterpolation(
       interpolationModeFromSettings(myOSystem.settings()));

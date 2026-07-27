@@ -22,6 +22,7 @@
 
 class OSystem;
 class FBSurfaceSDL;
+class TVGeometry;
 
 #include "bspf.hxx"
 #include "FBBackend.hxx"
@@ -208,6 +209,35 @@ class FBBackendSDL : public FBBackend
     void renderToScreen() override;
 
     /**
+      Redirect drawing into the offscreen target, and present it through the
+      curved mesh.  See FBBackend for the contract.
+    */
+    bool beginGeometryPass(TVGeometry& geometry) override;
+    void endGeometryPass() override;
+
+    /**
+      Create the offscreen target the geometry pass composites into, sized
+      for the current renderer output.  Answers false if it could not be
+      created, in which case the pass is skipped and the image is presented
+      flat.
+    */
+    bool createGeometryTarget();
+
+    /**
+      Rebuild the SDL vertex array from the mesh, when the mesh has changed.
+
+      @param geometry  Mesh to convert
+      @param dst       Image rectangle, in renderer coordinates
+    */
+    void updateGeometryMesh(const TVGeometry& geometry, const Common::Rect& dst);
+
+    /**
+      Release the offscreen target.  Must happen before the renderer that
+      owns it is destroyed.
+    */
+    void freeGeometryTarget();
+
+    /**
       Retrieve the current display's refresh rate, or 0 if no window.
     */
     int refreshRate() const override;
@@ -296,6 +326,41 @@ class FBBackendSDL : public FBBackend
     // Used by compositedSurface() when a surface representing the complete
     // renderer image is needed
     unique_ptr<FBSurface> myCompositedSurface;
+
+    /////////////////////////////////////////////////////////////
+    // Geometry pass (curved tube face); see beginGeometryPass()
+
+    // Offscreen target the TIA image and its overlays are composited into
+    SDL_Texture* myGeometryTarget{nullptr};
+
+    // Size of that target.  It is as wide as the renderer output and
+    // SUPERSAMPLE_Y times as tall, since the warp minifies vertically around
+    // the curved edges and the scanline pattern aliases badly without the
+    // extra samples to average.  Horizontal detail is already band-limited by
+    // the signal stage, so it needs no equivalent.
+    static constexpr int SUPERSAMPLE_Y = 2;
+    int myGeometryTargetW{0}, myGeometryTargetH{0};
+
+    // Vertical supersampling actually in use; drops to 1 when the target
+    // would exceed the renderer's maximum texture size
+    int myGeometryScaleY{1};
+
+    // Renderer's maximum texture size, cached by detectFeatures()
+    uInt64 myMaxTextureSize{0};
+
+    // Vertex data derived from the mesh, and the generation it was built
+    // from, so that it is rebuilt only when the mesh itself changes
+    std::vector<SDL_Vertex> myGeometryVertices;
+    std::vector<int> myGeometryIndices;
+    uInt32 myGeometryGeneration{0};
+    bool myGeometryMeshValid{false};
+
+    // Image rectangle in renderer coordinates, needed again at end of pass
+    Common::Rect myGeometryRect;
+
+    // Is a pass currently open?
+    bool myGeometryPassActive{false};
+    /////////////////////////////////////////////////////////////
 
   private:
     // Following constructors and assignment operators not supported

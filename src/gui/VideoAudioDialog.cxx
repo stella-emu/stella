@@ -405,22 +405,22 @@ void VideoAudioDialog::addTVEffectsTab()
   xpos = HBORDER;
   ypos = adjBottom + VGAP * 3;
 
-  // TV Phosphor effect
-  items.clear();
-  VarList::push_back(items, "by ROM", PhosphorHandler::VALUE_BYROM);
-  VarList::push_back(items, "always", PhosphorHandler::VALUE_ALWAYS);
-  VarList::push_back(items, "auto on", PhosphorHandler::VALUE_AUTO_ON);
-  VarList::push_back(items, "auto on/off", PhosphorHandler::VALUE_AUTO);
-  myTVPhosphor = new PopUpWidget(myTab, _font, xpos, ypos,
-                                 _font.getStringWidth("auto on/off"), lineHeight,
-                                 items, "Phosphor ", 0, kPhosphorChanged);
-  myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
-  wid.push_back(myTVPhosphor);
-  ypos += lineHeight + VGAP / 2;
+  // Curvature of the tube face.  The section head is the amount itself, with
+  // the vertical proportion subordinate to it, so both tracks end together.
+  myTVCurvature = createCustomSlider(wid, xpos, ypos, swidth + INDENT, lwidth,
+                                     "Curvature", kCurvatureChanged);
+  myTVCurvature->setToolTip("Curvature of the simulated tube face. The\n"
+                            "picture bows outward at the edges, and the\n"
+                            "image compresses toward them, as on a CRT.",
+                            Event::CurvatureDecrease, Event::CurvatureIncrease);
 
-  // TV Phosphor blend level
   xpos += INDENT;
-  myTVPhosLevel = createCustomSlider(wid, xpos, ypos, swidth, lwidth, "Blend", kPhosBlendChanged);
+  myTVCurvatureY = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
+                                      "Vertical", kCurvatureYChanged);
+  myTVCurvatureY->setToolTip("Vertical curvature, relative to a spherical\n"
+                             "tube face. 100% is spherical, 0% is curved\n"
+                             "horizontally only, as Trinitron sets were.",
+                             Event::VCurvatureDecrease, Event::VCurvatureIncrease);
   ypos += VGAP;
 
   // Scanline intensity and interpolation
@@ -466,6 +466,30 @@ void VideoAudioDialog::addTVEffectsTab()
   myCloneSvideo    = CREATE_CLONE_BUTTON("Clone S-Video", kCloneSvideoCmd);
   myCloneComposite = CREATE_CLONE_BUTTON("Clone Composite", kCloneCompositeCmd);
   myCloneCustom    = CREATE_CLONE_BUTTON("Revert", kCloneCustomCmd);
+
+  // TV Phosphor effect, below the preset buttons.  It is wider than they are,
+  // so it hangs further left; the space beside the adjustables is free.
+  items.clear();
+  VarList::push_back(items, "by ROM", PhosphorHandler::VALUE_BYROM);
+  VarList::push_back(items, "always", PhosphorHandler::VALUE_ALWAYS);
+  VarList::push_back(items, "auto on", PhosphorHandler::VALUE_AUTO_ON);
+  VarList::push_back(items, "auto on/off", PhosphorHandler::VALUE_AUTO);
+
+  pwidth = _font.getStringWidth("auto on/off");
+  xpos = _w - HBORDER - 2 * 2 - pwidth - PopUpWidget::dropDownWidth(_font)
+       - _font.getStringWidth("Phosphor ");
+  ypos += VGAP * 2;
+  myTVPhosphor = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
+                                 items, "Phosphor ", 0, kPhosphorChanged);
+  myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
+  wid.push_back(myTVPhosphor);
+  ypos += lineHeight + VGAP / 2;
+
+  // TV Phosphor blend level
+  xpos += INDENT;
+  myTVPhosLevel = createCustomSlider(wid, xpos, ypos,
+      _w - HBORDER - 2 * 2 - xpos - lwidth - fontWidth * 4, lwidth,
+      "Blend", kPhosBlendChanged);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -791,6 +815,11 @@ void VideoAudioDialog::loadConfig()
   myTVScanIntense->setValue(settings.getInt("tv.scanlines"));
   myTVScanMask->setSelected(settings.getString("tv.scanmask"), Television::SETTING_STANDARD);
 
+  // Tube face curvature
+  myTVCurvature->setValue(settings.getInt(TVGeometry::SETTING_CURVATURE));
+  myTVCurvatureY->setValue(settings.getInt(TVGeometry::SETTING_CURVATURE_Y));
+  handleCurvatureChange();
+
   /////////////////////////////////////////////////////////////////////////////
 #ifdef IMAGE_SUPPORT
   // Bezel tab
@@ -940,6 +969,10 @@ void VideoAudioDialog::saveConfig()
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
   settings.setValue("tv.scanmask", myTVScanMask->getSelectedTag());
 
+  // Tube face curvature
+  settings.setValue(TVGeometry::SETTING_CURVATURE, myTVCurvature->getValue());
+  settings.setValue(TVGeometry::SETTING_CURVATURE_Y, myTVCurvatureY->getValue());
+
   /////////////////////////////////////////////////////////////////////////////
 #ifdef IMAGE_SUPPORT
   // Bezel tab
@@ -1079,9 +1112,14 @@ void VideoAudioDialog::setDefaults()
       myTVScanIntense->setValue(0);
       myTVScanMask->setSelected(Television::SETTING_STANDARD);
 
+      // Tube face curvature
+      myTVCurvature->setValue(0);
+      myTVCurvatureY->setValue(100);
+
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(TVMode::None);
       handlePhosphorChange();
+      handleCurvatureChange();
       loadTVAdjustables(TVMode::Custom);
       break;
     }
@@ -1298,6 +1336,24 @@ void VideoAudioDialog::handlePhosphorChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handleCurvatureChange()
+{
+  const bool curved = myTVCurvature->getValue() > 0;
+
+  if(curved)
+    myTVCurvature->setValueUnit("%");
+  else
+  {
+    myTVCurvature->setValueLabel("Off");
+    myTVCurvature->setValueUnit("");
+  }
+
+  // Vertical curvature is a proportion of the overall amount, so it says
+  // nothing on a flat screen
+  myTVCurvatureY->setEnabled(curved);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleBezelChange()
 {
   const bool enable = myBezelEnableCheckbox->getState();
@@ -1407,6 +1463,11 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
         myTVScanIntense->setValueUnit("%");
         myTVScanMask->setEnabled(true);
       }
+      break;
+
+    case kCurvatureChanged:
+    case kCurvatureYChanged:
+      handleCurvatureChange();
       break;
 
     case kPhosphorChanged:

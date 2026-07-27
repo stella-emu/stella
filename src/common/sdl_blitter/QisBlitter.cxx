@@ -125,15 +125,27 @@ void QisBlitter::blitToIntermediate()
 {
   ASSERT_MAIN_THREAD;
 
+  SDL_Renderer* const renderer = myFB.renderer();
+
   SDL_FRect r{};
   SDL_RectToFRect(&mySrcRect, &r);
   r.x = r.y = 0.F;
 
-  SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
+  // Save and restore rather than reset to the defaults: this runs inside the
+  // geometry pass when the tube is curved, whose offscreen target has to
+  // survive, and whose scale must not be applied to the fixed-size
+  // intermediate being filled here
+  SDL_Texture* const prevTarget = SDL_GetRenderTarget(renderer);
+  float prevScaleX{1.F}, prevScaleY{1.F};
+  SDL_GetRenderScale(renderer, &prevScaleX, &prevScaleY);
 
-  SDL_RenderTexture(myFB.renderer(), mySrcTexture, &r, &myIntermediateFRect);
+  SDL_SetRenderTarget(renderer, myIntermediateTexture);
+  SDL_SetRenderScale(renderer, 1.F, 1.F);
 
-  SDL_SetRenderTarget(myFB.renderer(), nullptr);
+  SDL_RenderTexture(renderer, mySrcTexture, &r, &myIntermediateFRect);
+
+  SDL_SetRenderTarget(renderer, prevTarget);
+  SDL_SetRenderScale(renderer, prevScaleX, prevScaleY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -26,6 +26,7 @@ class Console;
 class Settings;
 class FBSurface;
 class Television;
+class TVGeometry;
 class Bezel;
 
 #ifdef GUI_SUPPORT
@@ -252,6 +253,22 @@ class FrameBuffer
     */
     const FBSurface& compositedSurface() {
       return myBackend->compositedSurface();
+    }
+
+    /**
+      Composite the TIA image and its overlays offscreen, then present them
+      through the curved mesh described by the given TVGeometry.  Used by
+      Television to wrap its stage 3 drawing; see FBBackend for why the warp
+      is applied to the composite rather than to each surface.
+
+      @return  True if an offscreen pass was started, in which case
+               endGeometryPass() must be called once drawing is done
+    */
+    bool beginGeometryPass(TVGeometry& geometry) {
+      return myBackend->beginGeometryPass(geometry);
+    }
+    void endGeometryPass() {
+      myBackend->endGeometryPass();
     }
 
     /**

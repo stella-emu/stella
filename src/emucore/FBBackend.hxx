@@ -19,6 +19,7 @@
 #define FB_BACKEND_HXX
 
 class FBSurface;
+class TVGeometry;
 
 #include <unordered_map>
 
@@ -120,6 +121,34 @@ class FBBackend
       that the buffers should be pushed to the physical screen.
     */
     virtual void renderToScreen() = 0;
+
+    /**
+      Begin a 'geometry pass': everything drawn between this call and
+      endGeometryPass() is composited offscreen, then presented through the
+      curved mesh described by the given TVGeometry, so that the TIA image
+      and the overlays belonging to it share one warp instead of each being
+      distorted separately.
+
+      Compositing first is what makes the overlays land correctly.  It also
+      gives the warp a supersampled source, without which minifying the
+      scanline pattern around the curved edges beats against the output grid.
+
+      Backends with no geometry support, or with curvature switched off,
+      return false here and render straight to the screen as before; a false
+      return means endGeometryPass() must not be called.
+
+      @param geometry  Mesh describing the shape of the tube face; rebuilt
+                       by this call if the image rectangle has changed
+
+      @return  True if an offscreen pass was started
+    */
+    virtual bool beginGeometryPass(TVGeometry&) { return false; }
+
+    /**
+      End the offscreen pass started by beginGeometryPass() and present its
+      result through the curved mesh.
+    */
+    virtual void endGeometryPass() { }
 
     /**
       Answers if the display is currently in fullscreen mode.
