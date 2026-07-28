@@ -50,6 +50,12 @@ namespace {
   // cutoffNorm: normalised cutoff = cutoff_Hz / SAMPLE_RATE
   // taps: total kernel length (should be odd so it is symmetric about n = 0)
   // kernel: output array of length taps, normalised to unit DC gain
+  // Nominal PAL field rate, used only to turn the crystal beat frequency
+  // into a per-frame phase advance.  The beat itself is uncertain by orders
+  // of magnitude (crystal tolerance), so nothing is gained by deriving the
+  // exact frame duration from the current scanline count.
+  constexpr float PAL_FIELD_RATE = 50.F;
+
   void buildFIR(float cutoffNorm, uInt32 taps, float* kernel)
   {
     const int half = static_cast<int>(taps) / 2;
@@ -85,10 +91,12 @@ PALSignal::PALSignal()
     myPrevU(VISIBLE_SAMPLES, 0.F),
     myPrevV(VISIBLE_SAMPLES, 0.F)
 {
-  // The FIR kernels depend only on compile-time constants, so they are
-  // built once here; applySetup() covers everything setup-dependent
+  // The FIR kernels and carrier tables depend only on compile-time
+  // constants, so they are built once here; applySetup() covers everything
+  // setup-dependent
   buildLumaKernel();
   buildChromaKernel();
+  buildCarrierTables();
   applySetup();
 }
 
@@ -111,6 +119,11 @@ void PALSignal::initialize(TVMode mode)
   myColourKilled = false;
   myKillerRun    = 0;
 
+  // Likewise the console's subcarrier phase: a power-up starts wherever it
+  // starts, and there is no more meaningful choice than the un-drifted grid.
+  myDriftPhase = 0.F;
+  myDriftStep  = 0;
+
   applySetup();
 }
 
@@ -127,12 +140,12 @@ void PALSignal::applySetup()
 {
   // Aperture (peaking) correction models the high-frequency boost circuit in
   // a real TV's luma path.  It is an unsharp-mask: a 3-tap [-k/2, 1+k, -k/2]
-  // kernel, which leaves DC untouched (taps sum to 1) but lifts edges.
-  // sharpness in [-1..1] maps to k = sharpness/2; positive sharpens, negative
-  // softens.  Applied after the low-pass in applyLumaFilter().
+  // kernel taken at APERTURE_SPACING, which leaves DC untouched (taps sum to
+  // 1) but lifts edges.  sharpness in [-1..1] maps to k = sharpness/2;
+  // positive sharpens, negative softens.  Applied after the low-pass in
+  // applyLumaFilter().
   myApertureK = mySetup.sharpness * 0.5F;
 
-  buildGammaLUT();
   buildCoeff();
   expandKernels();
 }
@@ -156,6 +169,7 @@ void PALSignal::loadConfig(const Settings& settings)
   myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("pal.sharpness"), -1.F, 1.F);
   myCustomSetup.blend     = BSPF::clamp(settings.getFloat("pal.blend"),     -1.F, 1.F);
   setColourLoss(settings.getInt("pal.colorloss"));
+  setDriftRate(settings.getFloat("pal.drift"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,6 +178,7 @@ void PALSignal::saveConfig(Settings& settings)
   settings.setValue("pal.sharpness", myCustomSetup.sharpness);
   settings.setValue("pal.blend",     myCustomSetup.blend);
   settings.setValue("pal.colorloss", static_cast<int>(myColourLoss));
+  settings.setValue("pal.drift",     myDriftRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,6 +186,16 @@ void PALSignal::setColourLoss(int model)
 {
   myColourLoss = static_cast<ColourLoss>(
       BSPF::clamp(model, 0, static_cast<int>(ColourLoss::NUM_MODELS) - 1));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::setDriftRate(float hz)
+{
+  // Past a few Hz the per-frame phase step is large enough that the motion
+  // stops reading as drift and starts aliasing into jitter (at the 50 Hz field
+  // rate it would fold completely at 25 Hz), so the range is capped where the
+  // effect is still what it claims to be.  This matches the dialog's slider.
+  myDriftRate = BSPF::clamp(hz, 0.F, 5.F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,27 +209,25 @@ void PALSignal::convertToAdjustable(Adjustable& adjustable, const Setup& setup)
 void PALSignal::setPalette(IntSpan palette)
 {
   // Denormalize [-1..1] setup fields to physical units before encoding.
-  // (saturation/hue/gamma are held neutral here; PaletteHandler owns those
+  // (saturation/hue are held neutral here; PaletteHandler owns those
   // dimensions for the user, but the mappings are kept for completeness.)
-  const float gamma  = mySetup.gamma * 0.75F + 1.75F; // → [1.0..2.5]
   const float sat    = mySetup.saturation + 1.F;      // → [0..2]
   const float hueRad = mySetup.hue * BSPF::PI_f;      // → [-π..+π]
   const float cosHue = std::cos(hueRad);
   const float sinHue = std::sin(hueRad);
 
-  // Convert each palette entry to linear-light BT.601 Y′UV.
-  // The palette is already display-gamma encoded, so we linearise with
-  // pow(value, gamma) before encoding and re-apply 1/gamma on decode
-  // (toRGB/myGammaLUT).  Filtering then averages light, not code values,
-  // which is what a real CRT does.
+  // Convert each palette entry to BT.601 Y′UV, working on the gamma-encoded
+  // code values themselves.  Those stand in for the composite VOLTAGE, which
+  // is the domain the whole chain models — see COLOUR SPACE in PALSignal.hxx
+  // for why linearising here would be wrong.
   const auto numColours =
     static_cast<uInt32>(std::min<size_t>(palette.size(), myClockTable.size()));
   for(uInt32 i = 0; i < numColours; ++i)
   {
-    // Unpack 0x00RRGGBB and linearise from display gamma
-    const float r = std::pow(((palette[i] >> 16) & 0xFF) / 255.F, gamma);
-    const float g = std::pow(((palette[i] >>  8) & 0xFF) / 255.F, gamma);
-    const float b = std::pow(( palette[i]        & 0xFF) / 255.F, gamma);
+    // Unpack 0x00RRGGBB
+    const float r = ((palette[i] >> 16) & 0xFF) / 255.F;
+    const float g = ((palette[i] >>  8) & 0xFF) / 255.F;
+    const float b = ( palette[i]        & 0xFF) / 255.F;
 
     // BT.601 luma weights (0.299 / 0.587 / 0.114)
     const float y =  0.299F * r + 0.587F * g + 0.114F * b;
@@ -221,28 +244,37 @@ void PALSignal::setPalette(IntSpan palette)
       .v = u * sinHue + v * cosHue
     };
   }
-  buildGammaLUT();
   expandKernels();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildLumaKernel()
 {
-  // PAL-B/G luma video baseband is nominally 5.0 MHz; band-limit luma there.
+  // The receiver's video bandwidth, nominally 5.0 MHz for PAL-B/G.  Every
+  // path uses this; the composite path removes its subcarrier by subtracting
+  // the recovered chroma instead (see buildCoeff), not by filtering it out,
+  // so this stays a plain low-pass rather than a trap cascade.
   buildFIR(5.0e6F / SAMPLE_RATE, LUMA_TAPS, myLumaKernel.data());
+}
 
-  // Cascade a low-pass with the chroma trap for the composite path.  A
-  // low-pass alone is nowhere near enough: at 4.43 MHz a 5 MHz design still
-  // passes 62% of the subcarrier (−4.1 dB), which lands in the picture as a
-  // coloured mesh over every saturated area.  Convolving in LUMA_TRAP puts
-  // an exact null at fsc.  See the LUMA_TRAP comment in the header.
-  std::array<float, COMPOSITE_LUMA_LP_TAPS> lowPass{};
-  buildFIR(5.0e6F / SAMPLE_RATE, COMPOSITE_LUMA_LP_TAPS, lowPass.data());
-
-  std::ranges::fill(myCompositeLumaKernel, 0.F);
-  for(uInt32 i = 0; i < COMPOSITE_LUMA_LP_TAPS; ++i)
-    for(uInt32 t = 0; t < LUMA_TRAP.size(); ++t)
-      myCompositeLumaKernel[i + t] += lowPass[i] * LUMA_TRAP[t];
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PALSignal::buildCarrierTables()
+{
+  // One quadrature table per drift step.  cos(2π(i/4 + phase)) still has
+  // period 4 in the sample index i for any phase offset, so each step needs
+  // only 4 entries and sample-time code never calls trig.  Step 0 reproduces
+  // the exact integer sequences {1,0,-1,0} / {0,1,0,-1}.
+  for(uInt32 step = 0; step < PHASE_STEPS; ++step)
+  {
+    const float phase = 2.F * BSPF::PI_f * static_cast<float>(step)
+                      / static_cast<float>(PHASE_STEPS);
+    for(uInt32 i = 0; i < 4; ++i)
+    {
+      const float angle = BSPF::PI_f * 0.5F * static_cast<float>(i) + phase;
+      myCarrierCos[step][i] = std::cos(angle);
+      myCarrierSin[step][i] = std::sin(angle);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -256,21 +288,6 @@ void PALSignal::buildChromaKernel()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PALSignal::buildGammaLUT()
-{
-  // Output stage: re-encode the linear-light result to display gamma, the
-  // inverse of the pow(value, gamma) linearisation done in setPalette().
-  // Precomputed over GAMMA_LUT_SIZE quantised linear levels so toRGB() is a
-  // table lookup instead of a per-pixel pow().
-  const float invGamma = 1.F / (mySetup.gamma * 0.75F + 1.75F);
-  for(uInt32 i = 0; i < GAMMA_LUT_SIZE; ++i)
-  {
-    const auto linear = static_cast<float>(i) / static_cast<float>(GAMMA_LUT_SIZE - 1);
-    myGammaLUT[i] = static_cast<uInt8>(std::lround(std::pow(linear, invGamma) * 255.F));
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PALSignal::buildCoeff()
 {
   // Generate the palette-independent linear decode coefficients by running
@@ -279,17 +296,38 @@ void PALSignal::buildCoeff()
   // it.  This costs a couple of dozen small decodes and is only repeated when
   // the filters change.
   constexpr uInt32 HBLANK_SAMPLES = 68 * SAMPLES_PER_CLOCK;
-  constexpr uInt32 vis = VISIBLE_SAMPLES;
 
-  // Decode the isolated composite waveform in myCurrentLine into KERNEL_WIDTH
-  // output samples around column xref (current-line only; the comb blend is
-  // applied separately at render time).  No downsample: the output grid is
-  // the oversampled grid itself.
-  const auto decodeComposite = [&](int xref, float vSign,
+  // The impulse is isolated, and every filter here has finite support, so the
+  // response is identically zero more than LUMA_REACH samples away from it.
+  // Running the filters over the whole scanline would be arithmetic on known
+  // zeros, and there are 4 column phases × 2 V-signs × 3 impulses × PHASE_STEPS
+  // of them to build.  This pad is several times the reach, so the windowed
+  // result is not an approximation — it is the same answer.
+  constexpr int WINDOW_PAD = 48;
+  static_assert(WINDOW_PAD > 2 * LUMA_REACH, "window must clear the filters");
+  constexpr uInt32 win = SAMPLES_PER_CLOCK + 2 * WINDOW_PAD;
+
+  // Decode the isolated composite waveform in myCurrentLine into the kernel
+  // window around column xref (current-line only; the comb blend is applied
+  // separately at render time).  No downsample: the output grid is the
+  // oversampled grid itself.  Luma and chroma are captured at their own
+  // widths, since the chroma FIR spreads them differently.
+  const auto decodeComposite = [&](uInt32 step, int xref, float vSign,
                                    float* oY, float* oU, float* oV)
   {
-    for(uInt32 i = 0; i < vis; ++i)
+    const auto& cosTab = myCarrierCos[step];
+    const auto& sinTab = myCarrierSin[step];
+
+    // Work only in a window around the impulse; see WINDOW_PAD.  Buffer
+    // indices stay absolute so that the capture offsets below are unchanged,
+    // and the carrier phase keeps coming from the true position on the line.
+    const auto base =
+      static_cast<uInt32>(xref * static_cast<int>(SAMPLES_PER_CLOCK)
+                          - WINDOW_PAD);
+
+    for(uInt32 k = 0; k < win; ++k)
     {
+      const uInt32 i       = base + k;
       const uInt32 lineIdx = HBLANK_SAMPLES + i;
       const uInt32 phase   = lineIdx & 3U;
       const float  curr    = myCurrentLine[lineIdx];
@@ -298,21 +336,37 @@ void PALSignal::buildCoeff()
       // the wanted sideband to baseband.  The ×2 restores unity gain, since a
       // product of matched carriers averages to ½ (cos²θ = ½(1+cos2θ)); the
       // 2·fsc term it leaves behind is removed by the chroma low-pass below.
-      // Luma is just the composite itself (its low-pass runs separately).
-      myUBuf[i] = curr * SUBCARRIER_COS[phase] * 2.F;
-      myVBuf[i] = curr * (-vSign * SUBCARRIER_SIN[phase]) * 2.F;
+      myUBuf[i] = curr * cosTab[phase] * 2.F;
+      myVBuf[i] = curr * (-vSign * sinTab[phase]) * 2.F;
       myYBuf[i] = curr;
     }
-    applyChromaFilter(myUBuf.data(), vis);
-    applyChromaFilter(myVBuf.data(), vis);
-    // Composite: luma is the raw composite signal, so it needs the chroma trap
-    applyLumaFilter(myYBuf.data(),  vis, true);
+    applyChromaFilter(myUBuf.data() + base, win);
+    applyChromaFilter(myVBuf.data() + base, win);
 
-    const int base = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
-    for(int t = 0; t < KERNEL_WIDTH; ++t)
+    // Composite luma: put the chroma just recovered back onto the subcarrier
+    // and subtract it from the composite.  What the chroma path took is
+    // exactly what leaves the luma path, so the subcarrier cancels to within
+    // 4e-4 without flattening the rest of the band the way a trap short
+    // enough to be a 5-tap FIR does.  See DECODING in PALSignal.hxx.
+    for(uInt32 k = 0; k < win; ++k)
     {
-      const auto idx = static_cast<uInt32>(base + t);
-      oY[t] = myYBuf[idx];
+      const uInt32 i     = base + k;
+      const uInt32 phase = (HBLANK_SAMPLES + i) & 3U;
+      myYBuf[i] -= myUBuf[i] * cosTab[phase]
+                 - vSign * myVBuf[i] * sinTab[phase];
+    }
+    applyLumaFilter(myYBuf.data() + base, win);
+
+    const int lumaBase =
+      xref * static_cast<int>(SAMPLES_PER_CLOCK) - LUMA_KERNEL_LEFT;
+    for(int t = 0; t < LUMA_KERNEL_WIDTH; ++t)
+      oY[t] = myYBuf[static_cast<uInt32>(lumaBase + t)];
+
+    const int chromaBase =
+      xref * static_cast<int>(SAMPLES_PER_CLOCK) - CHROMA_KERNEL_LEFT;
+    for(int t = 0; t < CHROMA_KERNEL_WIDTH; ++t)
+    {
+      const auto idx = static_cast<uInt32>(chromaBase + t);
       oU[t] = myUBuf[idx];
       oV[t] = myVBuf[idx];
     }
@@ -320,125 +374,159 @@ void PALSignal::buildCoeff()
 
   // Place a single unit clock (y, u, v) at column xref with V-sign vSign
   // into myCurrentLine, zeroing the rest.
-  const auto fillComposite = [&](int xref, float y, float u, float v,
-                                 float vSign)
+  const auto fillComposite = [&](uInt32 step, int xref, float y, float u,
+                                 float v, float vSign)
   {
     std::ranges::fill(myCurrentLine, 0.F);
+    const auto& cosTab = myCarrierCos[step];
+    const auto& sinTab = myCarrierSin[step];
     const uInt32 base = HBLANK_SAMPLES
                         + static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s)
     {
       const uInt32 phase = (base + s) & 3U;
       myCurrentLine[base + s] = y
-        + u * SUBCARRIER_COS[phase]
-        - vSign * v * SUBCARRIER_SIN[phase];
+        + u * cosTab[phase]
+        - vSign * v * sinTab[phase];
     }
   };
 
-  std::array<float, KERNEL_WIDTH> oY{}, oU{}, oV{};
+  std::array<float, LUMA_KERNEL_WIDTH>   oY{};
+  std::array<float, CHROMA_KERNEL_WIDTH> oU{}, oV{};
 
-  // Composite coefficients, per column phase and V-sign
-  for(uInt32 p = 0; p < 4; ++p)
-  {
-    const int xref = 80 + static_cast<int>(p);   // (xref & 3) == p, well-centred
+  // Composite coefficients, per drift step, column phase and V-sign
+  for(uInt32 step = 0; step < PHASE_STEPS; ++step)
+    for(uInt32 p = 0; p < 4; ++p)
+    {
+      const int xref = 80 + static_cast<int>(p);  // (xref & 3) == p, centred
+      for(uInt32 vi = 0; vi < 2; ++vi)
+      {
+        const float vSign = (vi == 0) ? 1.F : -1.F;
+        auto& lumaCoeff   = myLumaCoeff[step][p][vi];
+        auto& chromaCoeff = myChromaCoeff[step][p][vi];
+
+        // Response to a unit luma input
+        fillComposite(step, xref, 1.F, 0.F, 0.F, vSign);
+        decodeComposite(step, xref, vSign, oY.data(), oU.data(), oV.data());
+        for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
+          lumaCoeff[d].yy = oY[d];
+        for(int d = 0; d < CHROMA_KERNEL_WIDTH; ++d)
+        {
+          chromaCoeff[d].uy = oU[d];
+          chromaCoeff[d].vy = oV[d];
+        }
+        // Response to a unit U input
+        fillComposite(step, xref, 0.F, 1.F, 0.F, vSign);
+        decodeComposite(step, xref, vSign, oY.data(), oU.data(), oV.data());
+        for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
+          lumaCoeff[d].yu = oY[d];
+        for(int d = 0; d < CHROMA_KERNEL_WIDTH; ++d)
+        {
+          chromaCoeff[d].uu = oU[d];
+          chromaCoeff[d].vu = oV[d];
+        }
+        // Response to a unit V input
+        fillComposite(step, xref, 0.F, 0.F, 1.F, vSign);
+        decodeComposite(step, xref, vSign, oY.data(), oU.data(), oV.data());
+        for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
+          lumaCoeff[d].yv = oY[d];
+        for(int d = 0; d < CHROMA_KERNEL_WIDTH; ++d)
+        {
+          chromaCoeff[d].uv = oU[d];
+          chromaCoeff[d].vv = oV[d];
+        }
+      }
+  }
+
+  // Normalise the luma path to unity gain at DC.
+  //
+  // Demodulating a flat field puts its luma AT the subcarrier, where the
+  // chroma low-pass still passes 0.7% of it; re-modulating brings that back
+  // to DC, so the subtraction takes away slightly the wrong amount and a flat
+  // field comes out ~1.4% bright.  A real receiver's luma path is unity-gain
+  // at DC — its chroma take-off is a bandpass with no DC response at all — so
+  // this is an artefact of realising that bandpass as demodulate/filter/
+  // re-modulate, not a receiver behaviour worth keeping.  The correction is a
+  // uniform scale, so it moves no part of the frequency response relative to
+  // any other.
+  //
+  // Over one full column-phase cycle four clocks cover 4·SAMPLES_PER_CLOCK
+  // output samples, so a flat unit field wants their luma taps to total that.
+  for(uInt32 step = 0; step < PHASE_STEPS; ++step)
     for(uInt32 vi = 0; vi < 2; ++vi)
     {
-      const float vSign = (vi == 0) ? 1.F : -1.F;
+      float sum = 0.F;
+      for(uInt32 p = 0; p < 4; ++p)
+        for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
+          sum += myLumaCoeff[step][p][vi][d].yy;
 
-      // Response to a unit luma input
-      fillComposite(xref, 1.F, 0.F, 0.F, vSign);
-      decodeComposite(xref, vSign, oY.data(), oU.data(), oV.data());
-      for(int d = 0; d < KERNEL_WIDTH; ++d)
-      {
-        myCoeff[p][vi][d].yy = oY[d];
-        myCoeff[p][vi][d].uy = oU[d];
-        myCoeff[p][vi][d].vy = oV[d];
-      }
-      // Response to a unit U input
-      fillComposite(xref, 0.F, 1.F, 0.F, vSign);
-      decodeComposite(xref, vSign, oY.data(), oU.data(), oV.data());
-      for(int d = 0; d < KERNEL_WIDTH; ++d)
-      {
-        myCoeff[p][vi][d].yu = oY[d];
-        myCoeff[p][vi][d].uu = oU[d];
-        myCoeff[p][vi][d].vu = oV[d];
-      }
-      // Response to a unit V input
-      fillComposite(xref, 0.F, 0.F, 1.F, vSign);
-      decodeComposite(xref, vSign, oY.data(), oU.data(), oV.data());
-      for(int d = 0; d < KERNEL_WIDTH; ++d)
-      {
-        myCoeff[p][vi][d].yv = oY[d];
-        myCoeff[p][vi][d].uv = oU[d];
-        myCoeff[p][vi][d].vv = oV[d];
-      }
+      const float gain = sum / (4.F * static_cast<float>(SAMPLES_PER_CLOCK));
+      if(gain > 0.F)
+        for(uInt32 p = 0; p < 4; ++p)
+          for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
+            myLumaCoeff[step][p][vi][d].yy /= gain;
     }
-  }
 
-  // S-Video coefficients (Y and C carried separately, no subcarrier)
-  // Luma and chroma are independent here, so the only non-zero terms are
-  // the diagonal yy / uu / vv (V reuses the chroma kernel).
+  // Capture a luma/chroma impulse pair into a phase-independent coefficient
+  // set.  Shared by the S-Video and RGB paths, which differ only in whether
+  // the chroma impulse is band-limited.
+  const auto buildDirectCoeff = [&](bool filterChroma,
+                                    std::array<LumaCoeff, LUMA_KERNEL_WIDTH>& lumaOut,
+                                    std::array<ChromaCoeff, CHROMA_KERNEL_WIDTH>& chromaOut)
   {
     constexpr int xref = 80;
     constexpr uInt32 base = static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
+    constexpr uInt32 winBase = base - WINDOW_PAD;
 
-    // Unit luma impulse through the luma FIR + aperture.  No chroma trap:
-    // S-Video's luma wire never carried a subcarrier.
+    // Unit luma impulse through the luma FIR + aperture.  Nothing is
+    // subtracted: these wires never carried a subcarrier.
     std::ranges::fill(myYBuf, 0.F);
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myYBuf[base + s] = 1.F;
-    applyLumaFilter(myYBuf.data(), vis, false);
+    applyLumaFilter(myYBuf.data() + winBase, win);
 
-    // Unit chroma impulse through the chroma FIR
+    // Unit chroma impulse.  S-Video band-limits it; RGB carries it at full
+    // bandwidth, so there it stays a box — the crispest colour, and the
+    // source of RGB's "least artifacts" character.
     std::ranges::fill(myUBuf, 0.F);
     for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myUBuf[base + s] = 1.F;
-    applyChromaFilter(myUBuf.data(), vis);
+    if(filterChroma)
+      applyChromaFilter(myUBuf.data() + winBase, win);
 
-    constexpr int capBase = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
-    for(int t = 0; t < KERNEL_WIDTH; ++t)
+    constexpr int lumaBase =
+      xref * static_cast<int>(SAMPLES_PER_CLOCK) - LUMA_KERNEL_LEFT;
+    for(int t = 0; t < LUMA_KERNEL_WIDTH; ++t)
     {
-      const auto idx = static_cast<uInt32>(capBase + t);
-      mySVCoeff[t] = DecodeCoeff{};
-      mySVCoeff[t].yy = myYBuf[idx];   // luma channel
-      mySVCoeff[t].uu = myUBuf[idx];   // U reuses the chroma kernel
-      mySVCoeff[t].vv = myUBuf[idx];   // V reuses the chroma kernel
+      lumaOut[t] = LumaCoeff{};
+      lumaOut[t].yy = myYBuf[static_cast<uInt32>(lumaBase + t)];
     }
-  }
 
-  // RGB coefficients (3 separate channels, no subcarrier).  Luma matches
-  // S-Video (baseband FIR + aperture); chroma rides its own wires at full
-  // bandwidth, so it bypasses the chroma FIR and stays a unit box — the
-  // crispest colour and the source of RGB's "least artifacts" character.
-  {
-    constexpr int xref = 80;
-    constexpr uInt32 base = static_cast<uInt32>(xref) * SAMPLES_PER_CLOCK;
-
-    // Unit luma impulse through the luma FIR + aperture (same as S-Video,
-    // and likewise with no chroma trap)
-    std::ranges::fill(myYBuf, 0.F);
-    for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myYBuf[base + s] = 1.F;
-    applyLumaFilter(myYBuf.data(), vis, false);
-
-    // Unit chroma impulse with NO FIR: full-bandwidth, so it stays a box
-    std::ranges::fill(myUBuf, 0.F);
-    for(uInt32 s = 0; s < SAMPLES_PER_CLOCK; ++s) myUBuf[base + s] = 1.F;
-
-    constexpr int capBase = xref * static_cast<int>(SAMPLES_PER_CLOCK) - KERNEL_LEFT;
-    for(int t = 0; t < KERNEL_WIDTH; ++t)
+    constexpr int chromaBase =
+      xref * static_cast<int>(SAMPLES_PER_CLOCK) - CHROMA_KERNEL_LEFT;
+    for(int t = 0; t < CHROMA_KERNEL_WIDTH; ++t)
     {
-      const auto idx = static_cast<uInt32>(capBase + t);
-      myRGBCoeff[t] = DecodeCoeff{};
-      myRGBCoeff[t].yy = myYBuf[idx];   // luma channel
-      myRGBCoeff[t].uu = myUBuf[idx];   // U full-bandwidth
-      myRGBCoeff[t].vv = myUBuf[idx];   // V full-bandwidth
+      const auto idx = static_cast<uInt32>(chromaBase + t);
+      chromaOut[t] = ChromaCoeff{};
+      // Luma and chroma are independent here, so only the diagonal uu / vv
+      // terms are non-zero, and V reuses U's kernel.
+      chromaOut[t].uu = myUBuf[idx];
+      chromaOut[t].vv = myUBuf[idx];
     }
-  }
+  };
+
+  buildDirectCoeff(true,  mySVLumaCoeff,  mySVChromaCoeff);
+  buildDirectCoeff(false, myRGBLumaCoeff, myRGBChromaCoeff);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PALSignal::expandKernels()
+void PALSignal::expandKernels(bool compositeOnly)
 {
   // Combine the palette's per-colour YUV with the palette-independent decode
   // coefficients to produce the per-colour scatter kernels used at render.
+  // The composite set is taken at the current subcarrier drift step; the
+  // S-Video and RGB sets have no subcarrier, so a drift change skips them.
+  const auto& lumaCoeff   = myLumaCoeff[myDriftStep];
+  const auto& chromaCoeff = myChromaCoeff[myDriftStep];
+
   for(uInt32 c = 0; c < 256; ++c)
   {
     const float Y = myClockTable[c].y;
@@ -449,29 +537,35 @@ void PALSignal::expandKernels()
       for(uInt32 vi = 0; vi < 2; ++vi)
       {
         Kernel& k = myKernel[c][p][vi];
-        for(int d = 0; d < KERNEL_WIDTH; ++d)
+        for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
         {
-          const DecodeCoeff& co = myCoeff[p][vi][d];
+          const LumaCoeff& co = lumaCoeff[p][vi][d];
           k.y[d] = co.yy * Y + co.yu * U + co.yv * V;
+        }
+        for(int d = 0; d < CHROMA_KERNEL_WIDTH; ++d)
+        {
+          const ChromaCoeff& co = chromaCoeff[p][vi][d];
           k.u[d] = co.uy * Y + co.uu * U + co.uv * V;
           k.v[d] = co.vy * Y + co.vu * U + co.vv * V;
         }
       }
 
-    Kernel& sv = mySVKernel[c];
-    for(int d = 0; d < KERNEL_WIDTH; ++d)
-    {
-      sv.y[d] = mySVCoeff[d].yy * Y;
-      sv.u[d] = mySVCoeff[d].uu * U;
-      sv.v[d] = mySVCoeff[d].vv * V;
-    }
+    if(compositeOnly)
+      continue;
 
+    Kernel& sv = mySVKernel[c];
     Kernel& rgb = myRGBKernel[c];
-    for(int d = 0; d < KERNEL_WIDTH; ++d)
+    for(int d = 0; d < LUMA_KERNEL_WIDTH; ++d)
     {
-      rgb.y[d] = myRGBCoeff[d].yy * Y;
-      rgb.u[d] = myRGBCoeff[d].uu * U;
-      rgb.v[d] = myRGBCoeff[d].vv * V;
+      sv.y[d]  = mySVLumaCoeff[d].yy * Y;
+      rgb.y[d] = myRGBLumaCoeff[d].yy * Y;
+    }
+    for(int d = 0; d < CHROMA_KERNEL_WIDTH; ++d)
+    {
+      sv.u[d]  = mySVChromaCoeff[d].uu * U;
+      sv.v[d]  = mySVChromaCoeff[d].vv * V;
+      rgb.u[d] = myRGBChromaCoeff[d].uu * U;
+      rgb.v[d] = myRGBChromaCoeff[d].vv * V;
     }
   }
 }
@@ -496,23 +590,24 @@ void PALSignal::convolve(SpanOf<float> kernel, const float* in, float* out,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PALSignal::applyLumaFilter(float* buf, uInt32 n, bool trap)
+void PALSignal::applyLumaFilter(float* buf, uInt32 n)
 {
-  convolve(trap ? SpanOf<float>{myCompositeLumaKernel}
-                : SpanOf<float>{myLumaKernel},
-           buf, myFilterTmp.data(), n);
+  convolve(myLumaKernel, buf, myFilterTmp.data(), n);
 
   // Aperture correction (sharpness): unsharp-mask with the 3-tap kernel
-  // [-k/2, 1+k, -k/2].  Centre weight 1+k boosts the sample, the neighbour
-  // weights subtract a blurred estimate; the three sum to 1 so flat areas
-  // (DC) are unchanged and only edges are emphasised.  Endpoints have no
-  // pair of neighbours, so they pass through unmodified.
-  for(uInt32 i = 1; i < n - 1; ++i)
-    buf[i] = myFilterTmp[i] * (1.F + myApertureK)
-           - myApertureK * 0.5F * (myFilterTmp[i-1] + myFilterTmp[i+1]);
+  // [-k/2, 1+k, -k/2], its outer taps APERTURE_SPACING samples away rather
+  // than adjacent — see the APERTURE_SPACING comment for why the spacing is
+  // what makes this control do anything at all.  Centre weight 1+k boosts the
+  // sample, the outer weights subtract a blurred estimate; the three sum to 1
+  // so flat areas (DC) are unchanged and only edges are emphasised.
+  std::copy_n(myFilterTmp.data(), n, buf);
 
-  buf[0]   = myFilterTmp[0];
-  buf[n-1] = myFilterTmp[n-1];
+  // Samples nearer than APERTURE_SPACING to an end have no pair of
+  // neighbours, so they pass through unpeaked.
+  constexpr auto reach = static_cast<uInt32>(APERTURE_SPACING);
+  for(uInt32 i = reach; i + reach < n; ++i)
+    buf[i] = myFilterTmp[i] * (1.F + myApertureK)
+           - myApertureK * 0.5F * (myFilterTmp[i-reach] + myFilterTmp[i+reach]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -550,6 +645,30 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
   // comb (blend = 0); only Composite combs against the previous scanline.
   const float  blend  = composite ? (mySetup.blend * 0.5F + 0.5F) : 0.F;
   const uInt32 outW   = outWidth(srcWidth);   // oversampled output width
+
+  // Walk the subcarrier against the pixel grid.  The PAL console's two
+  // crystals are independent, so this phase is never stationary; only the
+  // composite path carries a subcarrier for it to affect.  See SUBCARRIER
+  // DRIFT in PALSignal.hxx.  Re-expanding the kernels is the whole cost, so
+  // it happens only when the quantised step actually changes.
+  if(composite)
+  {
+    uInt32 step = 0;
+    if(myDriftRate > 0.F)
+    {
+      myDriftPhase += myDriftRate / PAL_FIELD_RATE;
+      myDriftPhase -= std::floor(myDriftPhase);
+      step = static_cast<uInt32>(myDriftPhase * PHASE_STEPS) % PHASE_STEPS;
+    }
+    else
+      myDriftPhase = 0.F;
+
+    if(step != myDriftStep)
+    {
+      myDriftStep = step;
+      expandKernels(true);
+    }
+  }
 
   // PALSwitch colour-loss model: when the killer has tripped on a composite
   // mode, keep chroma but negate V (reflection about the U axis) on the lines
@@ -597,22 +716,32 @@ void PALSignal::render(const uInt8* tiaSrc, uInt32 srcWidth, uInt32 srcHeight,
 
     // Scatter each clock's precomputed kernel into the line accumulators.
     // A clock at input column x lands on output samples starting at x·5.
+    // Luma and chroma are scattered over their own widths (see the Kernel
+    // struct); both clamp their tap range to the visible region, which
+    // zero-pads the output at the line edges.
     for(uInt32 x = 0; x < srcWidth; ++x)
     {
       const Kernel& k = composite ? myKernel[src[x]][x & 3U][vi]
                       : (myPath == Path::RGB) ? myRGBKernel[src[x]]
                       :                         mySVKernel[src[x]];
+      const int start = static_cast<int>(x * SAMPLES_PER_CLOCK);
 
-      // First output sample this kernel touches, then clamp the tap range
-      // to the visible region (zero-padded output at the line edges).
-      const int base = static_cast<int>(x * SAMPLES_PER_CLOCK) - KERNEL_LEFT;
-      const int lo   = base < 0 ? -base : 0;
-      const int hiLim = static_cast<int>(outW) - 1 - base;
-      const int hi   = hiLim < KERNEL_WIDTH - 1 ? hiLim : KERNEL_WIDTH - 1;
-      for(int t = lo; t <= hi; ++t)
+      const int lumaBase = start - LUMA_KERNEL_LEFT;
+      const int lumaLo   = lumaBase < 0 ? -lumaBase : 0;
+      const int lumaLim  = static_cast<int>(outW) - 1 - lumaBase;
+      const int lumaHi   = lumaLim < LUMA_KERNEL_WIDTH - 1
+                         ? lumaLim : LUMA_KERNEL_WIDTH - 1;
+      for(int t = lumaLo; t <= lumaHi; ++t)
+        myAccY[static_cast<uInt32>(lumaBase + t)] += k.y[t];
+
+      const int chromaBase = start - CHROMA_KERNEL_LEFT;
+      const int chromaLo   = chromaBase < 0 ? -chromaBase : 0;
+      const int chromaLim  = static_cast<int>(outW) - 1 - chromaBase;
+      const int chromaHi   = chromaLim < CHROMA_KERNEL_WIDTH - 1
+                           ? chromaLim : CHROMA_KERNEL_WIDTH - 1;
+      for(int t = chromaLo; t <= chromaHi; ++t)
       {
-        const auto oj = static_cast<uInt32>(base + t);
-        myAccY[oj] += k.y[t];
+        const auto oj = static_cast<uInt32>(chromaBase + t);
         myAccU[oj] += k.u[t];
         myAccV[oj] += k.v[t];
       }
@@ -674,11 +803,11 @@ void PALSignal::convertLine(const float* yBuf, const float* uBuf,
                             uInt32 n, uInt32* dst)
 {
   const float invBlend = 1.F - blend;
-  constexpr auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
 
-  // Pass 1: comb blend, BT.601 inverse, clamp and LUT index — pure float
-  // math with no table lookups, so the compiler can vectorise it.  The
-  // arithmetic matches toRGB(); see there for the rounding rationale.
+  // Comb blend, BT.601 inverse, clamp and pack.  This is pure float math
+  // feeding an integer conversion, with no table lookups to serialise it, so
+  // the compiler can vectorise the whole loop.  The arithmetic matches
+  // toRGB(); see there for the rounding rationale.
   // NOLINTBEGIN(bugprone-incorrect-roundings)
   for(uInt32 j = 0; j < n; ++j)
   {
@@ -690,42 +819,32 @@ void PALSignal::convertLine(const float* yBuf, const float* uBuf,
     const float g = BSPF::clamp(y - 0.395F * u - 0.581F * v, 0.F, 1.F);
     const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);
 
-    myIdxR[j] = static_cast<Int32>(r * scale + 0.5F);
-    myIdxG[j] = static_cast<Int32>(g * scale + 0.5F);
-    myIdxB[j] = static_cast<Int32>(b * scale + 0.5F);
+    dst[j] = (static_cast<uInt32>(r * 255.F + 0.5F) << 16)
+           | (static_cast<uInt32>(g * 255.F + 0.5F) <<  8)
+           |  static_cast<uInt32>(b * 255.F + 0.5F);
   }
   // NOLINTEND(bugprone-incorrect-roundings)
-
-  // Pass 2: scalar gamma-LUT lookups and 0x00RRGGBB pack
-  for(uInt32 j = 0; j < n; ++j)
-  {
-    const uInt32 ri = myGammaLUT[myIdxR[j]];
-    const uInt32 gi = myGammaLUT[myIdxG[j]];
-    const uInt32 bi = myGammaLUT[myIdxB[j]];
-    dst[j] = (ri << 16) | (gi << 8) | bi;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 PALSignal::toRGB(float y, float u, float v) const
+uInt32 PALSignal::toRGB(float y, float u, float v)
 {
-  // Exact inverse of the BT.601 Y′UV matrix used in setPalette() (still in
-  // linear light): R = Y + 1.140·V, G = Y − 0.395·U − 0.581·V, B = Y + 2.032·U.
-  // Clamp to the legal gamut before the gamma re-encode.
+  // Exact inverse of the BT.601 Y′UV matrix used in setPalette():
+  // R = Y + 1.140·V, G = Y − 0.395·U − 0.581·V, B = Y + 2.032·U.  Both
+  // directions work on gamma-encoded code values, so this is the whole
+  // output stage — there is no gamma to undo (see COLOUR SPACE in the
+  // header).  Clamp to the legal gamut on the way out.
   const float r = BSPF::clamp(y              + 1.140F * v, 0.F, 1.F);
   const float g = BSPF::clamp(y - 0.395F * u - 0.581F * v, 0.F, 1.F);
   const float b = BSPF::clamp(y + 2.032F * u,              0.F, 1.F);
 
-  // LUT lookup: linear [0..1] → quantized index → gamma-encoded [0..255].
   // r/g/b are clamped non-negative above, so +0.5 truncation rounds
   // identically to std::lround, which GCC cannot inline here (no x86
   // instruction has its round-half-away-from-zero semantics) — that would
   // cost three libm calls per output pixel.
   // NOLINTBEGIN(bugprone-incorrect-roundings)
-  constexpr auto scale = static_cast<float>(GAMMA_LUT_SIZE - 1);
-  const uInt32 ri = myGammaLUT[static_cast<uInt32>(r * scale + 0.5F)];
-  const uInt32 gi = myGammaLUT[static_cast<uInt32>(g * scale + 0.5F)];
-  const uInt32 bi = myGammaLUT[static_cast<uInt32>(b * scale + 0.5F)];
+  return (static_cast<uInt32>(r * 255.F + 0.5F) << 16)
+       | (static_cast<uInt32>(g * 255.F + 0.5F) <<  8)
+       |  static_cast<uInt32>(b * 255.F + 0.5F);
   // NOLINTEND(bugprone-incorrect-roundings)
-  return (ri << 16) | (gi << 8) | bi;
 }

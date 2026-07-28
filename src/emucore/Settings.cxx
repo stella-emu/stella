@@ -102,6 +102,7 @@ Settings::Settings()
   setPermanent("ntsc.bleed", "0.0");
   setPermanent("pal.blend", "0.5");
   setPermanent("pal.colorloss", "0");
+  setPermanent("pal.drift", "0.0");
 
   setPermanent("detectpal60", "false");
   setPermanent("detectntsc50", "false");
@@ -536,7 +537,8 @@ void Settings::usage()
     << "  -ntsc.fringing   <-1.0 - 1.0>  Set NTSC custom fringing\n"
     << "  -ntsc.bleed      <-1.0 - 1.0>  Set NTSC custom bleed\n"
     << "  -pal.blend       <0.0 - 1.0>   Set PAL custom chroma blend\n"
-    << "  -pal.colorloss   <0|1>         PAL colour-loss model (0=saturation, 1=pal switch)\n\n"
+    << "  -pal.colorloss   <0|1>         PAL colour-loss model (0=saturation, 1=pal switch)\n"
+    << "  -pal.drift       <0.0 - 5.0>   PAL subcarrier drift rate in Hz (0=off)\n\n"
     << "  -cheat        <code>           Use the specified cheatcode (see manual for\n"
     << "                                  description)\n"
     << "  -loglevel     <0|1|2>          Set level of logging during application run\n\n"

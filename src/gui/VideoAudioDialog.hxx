@@ -67,6 +67,7 @@ class VideoAudioDialog : public Dialog
     void handleOverscanChange();
     void handlePhosphorChange();
     void handleCurvatureChange();
+    void handlePALDriftChange();
     void handleBezelChange();
 
     void addPalette(int x, int y, int w, int h);
@@ -94,8 +95,9 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myVSizeAdjust{nullptr};
 
     // TV effects adjustables (custom mode).  NTSC and PAL each get their own
-    // widget set (5 vs 2 adjustables) so that whichever one is shown stacks
-    // with no gaps; SECAM has no adjustables at all.
+    // widget set (5 vs 2 adjustables, plus PAL's drift and colour loss, which
+    // are console/receiver properties rather than TV presets) so that whichever
+    // one is shown stacks with no gaps; SECAM has no adjustables at all.
     PopUpWidget*      myTVMode{nullptr};
     SliderWidget*     myNTSCSharp{nullptr};
     SliderWidget*     myNTSCRes{nullptr};
@@ -104,6 +106,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myNTSCBleed{nullptr};
     SliderWidget*     myPALSharp{nullptr};
     SliderWidget*     myPALBlend{nullptr};
+    SliderWidget*     myPALDrift{nullptr};
     PopUpWidget*      myPALColorLoss{nullptr};
 
     // TV phosphor effect
@@ -184,6 +187,7 @@ class VideoAudioDialog : public Dialog
       kPaletteUpdated     = 'VDpu',
 
       kTVModeChanged      = 'VDtv',
+      kPALDriftChanged    = 'VDpd',
       kCloneCompositeCmd  = 'CLcp',
       kCloneSvideoCmd     = 'CLsv',
       kCloneRGBCmd        = 'CLrb',

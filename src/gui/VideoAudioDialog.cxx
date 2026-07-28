@@ -363,7 +363,7 @@ void VideoAudioDialog::addTVEffectsTab()
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo).  NTSC (5 adjustables) and PAL
-  // (2 adjustables + colour loss) each get their own widget set, both
+  // (2 adjustables + drift + colour loss) each get their own widget set, both
   // starting at the same row, so that whichever one is shown (see
   // handleTVModeChange) stacks top to bottom with no gaps.  SECAM has no
   // adjustables at all.  The taller NTSC set reserves the space that the
@@ -390,6 +390,25 @@ void VideoAudioDialog::addTVEffectsTab()
                                   "Sharpness ", 0);
   myPALBlend = createCustomSlider(wid, xpos, ypos, swidth, lwidth,
                                   "Blend ", 0);
+
+  // Subcarrier drift.  Not a TV adjustment like the two sliders above: it is
+  // a property of the PAL console, whose subcarrier and pixel clock come from
+  // two independent crystals, so the artifact pattern never sits still.  In
+  // hundredths of a Hz, since the nominal beat is 1.25 Hz.
+  myPALDrift = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+                                "Drift ", lwidth, kPALDriftChanged,
+                                fontWidth * 6);
+  myPALDrift->setMinValue(0);
+  myPALDrift->setMaxValue(500);
+  myPALDrift->setStepValue(5);
+  myPALDrift->setTickmarkIntervals(4);
+  myPALDrift->setToolTip("How fast the PAL subcarrier drifts against the\n"
+      "pixel grid, making cross-color and fringing shimmer.\n"
+      "1.25 Hz is the beat between the console's two crystals\n"
+      "at their nominal frequencies; real ones vary. Off pins\n"
+      "the phase, as an NTSC console's would be.");
+  wid.push_back(myPALDrift);
+  ypos += lineHeight + VGAP;
 
   items.clear();
   VarList::push_back(items, "Desaturation", 0);
@@ -803,7 +822,10 @@ void VideoAudioDialog::loadConfig()
   // TV Custom adjustables
   loadTVAdjustables(TVMode::Custom);
 
-  // PAL colour-loss model
+  // PAL subcarrier drift and colour-loss model
+  myPALDrift->setValue(
+      static_cast<int>(settings.getFloat("pal.drift") * 100.F + 0.5F));
+  handlePALDriftChange();
   myPALColorLoss->setSelected(settings.getString("pal.colorloss"), "0");
 
   // TV phosphor mode & blend
@@ -950,7 +972,9 @@ void VideoAudioDialog::saveConfig()
     PALSignal::setCustomAdjustables(palAdj);
   }
 
-  // PAL colour-loss model (global receiver choice, independent of timing)
+  // PAL subcarrier drift and colour-loss model (properties of the console and
+  // the receiver respectively, so both are global and independent of timing)
+  PALSignal::setDriftRate(myPALDrift->getValue() / 100.F);
   PALSignal::setColourLoss(myPALColorLoss->getSelectedTag().toInt());
 
   Logger::debug("Saving TV effects options ...");
@@ -1189,14 +1213,20 @@ void VideoAudioDialog::handleTVModeChange(TVMode preset)
   for(auto* w: {myPALSharp, myPALBlend})
     showSlider(w, isPAL, enable && isPAL);
 
-  // PAL colour loss sits directly under the PAL adjustables and is
-  // meaningless outside PAL.  It only affects the picture on the composite
-  // decode path (TVMode::Composite and Custom both use it; see myPath in
-  // PALSignal.cxx), so it's disabled for RGB/S-Video/Disabled.
+  // Subcarrier drift and colour loss sit under the PAL adjustables and are
+  // meaningless outside PAL.  Unlike those adjustables they are not part of a
+  // TV preset, so they stay editable outside Custom; but both only affect the
+  // picture on the composite decode path (TVMode::Composite and Custom both
+  // use it; see myPath in PALSignal.cxx), so they're disabled for
+  // RGB/S-Video/Disabled.
+  const bool composite = isPAL &&
+    (preset == TVMode::Composite || preset == TVMode::Custom);
+
+  showSlider(myPALDrift, isPAL, composite);
+
   if(isPAL) myPALColorLoss->clearFlags(Widget::FLAG_INVISIBLE);
   else      myPALColorLoss->setFlags(Widget::FLAG_INVISIBLE);
-  myPALColorLoss->setEnabled(isPAL &&
-    (preset == TVMode::Composite || preset == TVMode::Custom));
+  myPALColorLoss->setEnabled(composite);
 
   const bool showClones = !isSECAM;
   for(auto* b: {myCloneComposite, myCloneSvideo, myCloneRGB, myCloneCustom})
@@ -1259,6 +1289,19 @@ void VideoAudioDialog::handleShiftChanged(SliderWidget* widget)
 {
   widget->setValueLabel(std::format("{:4.1f}{}", 0.1 * widget->getValue(), DEGREE));
   handlePaletteUpdate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handlePALDriftChange()
+{
+  // Stored in hundredths of a Hz; zero pins the subcarrier phase rather than
+  // drifting it slowly, so it reads as off rather than as an amount.
+  const int value = myPALDrift->getValue();
+
+  if(value > 0)
+    myPALDrift->setValueLabel(std::format("{:4.2f}Hz", 0.01 * value));
+  else
+    myPALDrift->setValueLabel("Off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1468,6 +1511,10 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
     case kCurvatureChanged:
     case kCurvatureYChanged:
       handleCurvatureChange();
+      break;
+
+    case kPALDriftChanged:
+      handlePALDriftChange();
       break;
 
     case kPhosphorChanged:
