@@ -822,6 +822,7 @@
     <ClCompile Include="..\..\common\television\NTSCSignal.cxx" />
     <ClCompile Include="..\..\common\television\PALSignal.cxx" />
     <ClCompile Include="..\..\common\television\SECAMSignal.cxx" />
+    <ClCompile Include="..\..\common\television\TVGeometry.cxx" />
     <ClCompile Include="..\..\common\television\TVSignal.cxx" />
     <ClCompile Include="..\..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\..\common\TimerManager.cxx" />
@@ -2253,6 +2254,7 @@
     <ClInclude Include="..\..\common\television\PALSignal.hxx" />
     <ClInclude Include="..\..\common\television\SECAMSignal.hxx" />
     <ClInclude Include="..\..\common\television\TVAdjustable.hxx" />
+    <ClInclude Include="..\..\common\television\TVGeometry.hxx" />
     <ClInclude Include="..\..\common\television\TVMode.hxx" />
     <ClInclude Include="..\..\common\television\TVSignal.hxx" />
     <ClInclude Include="..\..\common\ThreadDebugging.hxx" />
