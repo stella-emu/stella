@@ -1281,6 +1281,9 @@
     <ClCompile Include="..\..\debugger\gui\NullControlWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartMVCWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\emucore\AtariVox.hxx">
@@ -2635,6 +2638,9 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\WrappedTextWidget.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartMVCWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
