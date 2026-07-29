@@ -234,7 +234,7 @@ string Dialog::getHelpURL() const
     const int activeTab = activeTabGroup->getActiveTab();
     const Widget* parentTab = activeTabGroup->parentWidget(activeTab);
 
-    if(parentTab->hasHelp())
+    if(parentTab && parentTab->hasHelp())
       return parentTab->getHelpURL();
 
     // 3. check active tab group

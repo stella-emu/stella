@@ -67,6 +67,7 @@ class TabWidget : public Widget, public CommandSender
     // pane is always registered with its tab (see also setParentWidget, for
     // composite content parented directly to us)
     void setPaneWidget(int tabID, TabPaneWidget* pane);
+    // A tab's content widget, or null if the dialog registered none for it
     Widget* parentWidget(int tabID);
 
     int getTabWidth() const  { return _tabWidth;  }
@@ -122,13 +123,10 @@ class TabWidget : public Widget, public CommandSender
       // The tab's widgets; while the tab is active they live in _children
       // instead (see setActiveTab), so this list is then empty
       WidgetList children;
+      // The tab's content, which the container lays out and sizes itself from.
+      // Null only between addTab() and the setParentWidget/setPaneWidget that
+      // registers it
       Widget* parentWidget{nullptr};
-      // TRANSITIONAL: true only when a real content widget was set via
-      // setParentWidget/setPaneWidget (vs the lazily-created 0-size dummy), so
-      // the container sizes only such content (see layoutContent).  Once every
-      // tab has a real content widget/pane (no more dummies), this flag and its
-      // checks — and the dummy itself — can be removed.  TODO: revisit
-      bool sizeContent{false};
       // True when the content is a TabPaneWidget, which parents the tab's
       // controls to itself.  Such a tab can be laid out while hidden; content
       // parented directly to us cannot (see layoutTabs)

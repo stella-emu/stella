@@ -23,6 +23,9 @@ class MovieCart;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartMVCWidget.hxx"
+#endif
 
 /**
   Implementation of MovieCart, a scheme for playing full-motion video on the
@@ -134,6 +137,18 @@ class CartridgeMVC : public Cartridge
       @param timing  Enum representing the new console type
     */
     void consoleChanged(ConsoleTiming timing) override;
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont) override
+    {
+      return new CartridgeMVCWidget(boss, lfont, nfont, *this);
+    }
+  #endif
 
   private:
     // Currently not used:

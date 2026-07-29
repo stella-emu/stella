@@ -369,15 +369,12 @@ class Cartridge : public Device
 
     /**
       Get debugger widget responsible for accessing the inner workings
-      of the cart.  This will need to be overridden and implemented by
-      each specific cart type, since the bankswitching/inner workings
-      of each cart type can be very different from each other.
+      of the cart.  This must be overridden and implemented by each specific
+      cart type, since the bankswitching/inner workings of each cart type can
+      be very different from each other.
     */
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                         const GUI::Font& nfont)
-    {
-      return nullptr;
-    }
+                                         const GUI::Font& nfont) = 0;
   #endif
 
   protected:

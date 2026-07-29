@@ -125,7 +125,7 @@ int TabWidget::getMaxContentHeight() const
   // that owns a layout tree answers from the tree, so this holds before anything
   // has been laid out.  Content that simply fills reports 0 (see naturalSize)
   for(const auto& tab: _tabs)
-    if(tab.sizeContent && tab.parentWidget != nullptr)
+    if(tab.parentWidget != nullptr)
       maxHeight = std::max(maxHeight,
                            static_cast<int>(tab.parentWidget->naturalSize().h));
 
@@ -179,12 +179,11 @@ void TabWidget::layoutContent(int tabID)
   if(tabID < 0)
     return;
 
-  // Only lay out tabs whose content was set via setParentWidget/setPaneWidget.
-  // Unconverted loose tabs keep a lazily-created 0-size dummy that the dialog
-  // lays around; sizing it would make it a large invisible click-blocker
-  if(!_tabs[tabID].sizeContent)
-    return;
+  // A tab's content is registered right after the tab is added, so there is
+  // none yet while addTab() activates the tab it just created
   Widget* content = _tabs[tabID].parentWidget;
+  if(content == nullptr)
+    return;
 
   // Size the content to fill the area below the tab bar, inset by a small frame
   // border.  Skip while the tab widget is still at its placeholder size (a
@@ -211,7 +210,7 @@ Common::Size TabWidget::naturalSize() const
   // SAY so by overriding naturalSize(), since the default reports its current
   // size, which for such a widget is merely what it was last given
   for(const auto& tab: _tabs)
-    if(tab.sizeContent && tab.parentWidget != nullptr)
+    if(tab.parentWidget != nullptr)
     {
       const Common::Size natural = tab.parentWidget->naturalSize();
       contentW = std::max(contentW, static_cast<int>(natural.w));
@@ -291,8 +290,6 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
   _tabs[tabID].parentWidget = parent;
-  // This is real content, so the container lays it out (see layoutContent)
-  _tabs[tabID].sizeContent = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,12 +304,6 @@ void TabWidget::setPaneWidget(int tabID, TabPaneWidget* pane)
 Widget* TabWidget::parentWidget(int tabID)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
-
-  if(!_tabs[tabID].parentWidget)
-    // Create a 0-size dummy if none exists.  It is deliberately NOT set via
-    // setParentWidget, so sizeContent stays false and layoutActivePane leaves
-    // it alone (sizing it would make it a large invisible click-blocker)
-    _tabs[tabID].parentWidget = new Widget(_boss, _font, 0, 0);
 
   return _tabs[tabID].parentWidget;
 }

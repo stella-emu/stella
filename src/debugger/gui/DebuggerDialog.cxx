@@ -719,7 +719,9 @@ void DebuggerDialog::addRomArea()
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
-  // The 'cart-specific' information tab (optional)
+  // The 'cart-specific' information tab (optional).  A tab is added BEFORE the
+  // content it will hold is created: a cart widget parents its children to us,
+  // and they join whichever tab is active at that moment (see setActiveTab)
   tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
   myCartInfo = instance().console().cartridge().infoWidget(myRomTab, *myLFont, *myNFont);
   if(myCartInfo != nullptr)
@@ -729,28 +731,23 @@ void DebuggerDialog::addRomArea()
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
   }
 
-  // The 'cart-specific' state tab
+  // The 'cart-specific' state tab, which every scheme has (Cartridge's
+  // debugWidget() is pure, so one cannot be added without it)
   myCartDebug = instance().console().cartridge().debugWidget(myRomTab, *myLFont, *myNFont);
-  if(myCartDebug)  // TODO - make this always non-null
-  {
-    myRomTab->setHelpAnchor("BankswitchInformation", true);
-    myRomTab->setParentWidget(tabID, myCartDebug);
-    addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
+  myRomTab->setHelpAnchor("BankswitchInformation", true);
+  myRomTab->setParentWidget(tabID, myCartDebug);
+  addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
 
-    // The cartridge RAM tab
-    if(myCartDebug->internalRamSize() > 0)
-    {
-      tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
-      myCartRam =
-        new CartRamWidget(myRomTab, *myLFont, *myNFont, *myCartDebug);
-      if(myCartRam)  // TODO - make this always non-null
-      {
-        myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
-        myRomTab->setParentWidget(tabID, myCartRam);
-        addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
-        myCartRam->setOpsWidget(myDataGridOps);
-      }
-    }
+  // The cartridge RAM tab
+  if(myCartDebug->internalRamSize() > 0)
+  {
+    tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
+    myCartRam =
+      new CartRamWidget(myRomTab, *myLFont, *myNFont, *myCartDebug);
+    myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
+    myRomTab->setParentWidget(tabID, myCartRam);
+    addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
+    myCartRam->setOpsWidget(myDataGridOps);
   }
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 

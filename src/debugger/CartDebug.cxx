@@ -129,8 +129,7 @@ const DebuggerState& CartDebug::getState()
   for(auto addr: myState.rport)
     myState.ram.push_back(myDebugger.peek(addr));
 
-  if(myDebugWidget)
-    myState.bank = myDebugWidget->bankState();
+  myState.bank = myDebugWidget->bankState();
 
   return myState;
 }
@@ -142,11 +141,8 @@ void CartDebug::saveOldState()
   for(auto addr: myOldState.rport)
     myOldState.ram.push_back(myDebugger.peek(addr));
 
-  if(myDebugWidget)
-  {
-    myOldState.bank = myDebugWidget->bankState();
-    myDebugWidget->saveOldState();
-  }
+  myOldState.bank = myDebugWidget->bankState();
+  myDebugWidget->saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

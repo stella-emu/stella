@@ -706,6 +706,15 @@ void DataGridWidget::setPos(const Common::Point& pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  // The (optional) scrollbar spans the grid's full height
+  if(_scrollBar)
+    _scrollBar->setHeight(_h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::refreshFontMetrics()
 {
   EditableWidget::refreshFontMetrics();
