@@ -425,10 +425,10 @@ void update_input()
 
     case Joy2BPlus:
     case BoosterGrip:
-      MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
+      MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
     case Genesis:
-      MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
+      MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
     case Joystick:
     default:
@@ -546,10 +546,10 @@ void update_input()
 
     case Joy2BPlus:
     case BoosterGrip:
-      MASK_EVENT(Event::RightJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
+      MASK_EVENT(Event::RightJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       [[fallthrough]];
     case Genesis:
-      MASK_EVENT(Event::RightJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
+      MASK_EVENT(Event::RightJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_A);
       [[fallthrough]];
     case Joystick:
     default:

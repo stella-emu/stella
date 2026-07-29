@@ -61,9 +61,9 @@ class Event
       ConsoleSelect, ConsoleReset,
 
       LeftJoystickUp, LeftJoystickDown, LeftJoystickLeft, LeftJoystickRight,
-      LeftJoystickFire, LeftJoystickFire5, LeftJoystickFire9,
+      LeftJoystickFire, LeftJoystickFire9, LeftJoystickFire5,
       RightJoystickUp, RightJoystickDown, RightJoystickLeft, RightJoystickRight,
-      RightJoystickFire, RightJoystickFire5, RightJoystickFire9,
+      RightJoystickFire, RightJoystickFire9, RightJoystickFire5,
 
       LeftPaddleADecrease, LeftPaddleAIncrease, LeftPaddleAAnalog,
       LeftPaddleAFire, LeftPaddleAButton1, LeftPaddleAButton2,
@@ -215,7 +215,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 8;
+    static constexpr Int32 VERSION = 9;
 
     using EventSet = std::unordered_set<Event::Type>;
 
@@ -463,7 +463,7 @@ class Event
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
 inline const Event::EventSet LeftJoystickEvents = {
   Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
-  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
+  Event::LeftJoystickFire, Event::LeftJoystickFire9, Event::LeftJoystickFire5,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
@@ -476,7 +476,7 @@ inline const Event::EventSet QTJoystick3Events = {
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
 inline const Event::EventSet RightJoystickEvents = {
   Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
-  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
+  Event::RightJoystickFire, Event::RightJoystickFire9, Event::RightJoystickFire5,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
