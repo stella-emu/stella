@@ -606,6 +606,8 @@
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
 		DCB5EA6E3010F1080080ED3E /* ControllerWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5EA6C3010F1080080ED3E /* ControllerWidget.cxx */; };
 		DCB5EA6F3010F1080080ED3E /* NullControlWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */; };
+		DCB5EA72301B8BC30080ED3E /* CartMVCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB5EA70301B8BC30080ED3E /* CartMVCWidget.hxx */; };
+		DCB5EA73301B8BC30080ED3E /* CartMVCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5EA71301B8BC30080ED3E /* CartMVCWidget.cxx */; };
 		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
 		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
 		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
@@ -1507,6 +1509,8 @@
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
 		DCB5EA6C3010F1080080ED3E /* ControllerWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerWidget.cxx; sourceTree = "<group>"; };
 		DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NullControlWidget.cxx; sourceTree = "<group>"; };
+		DCB5EA70301B8BC30080ED3E /* CartMVCWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartMVCWidget.hxx; sourceTree = "<group>"; };
+		DCB5EA71301B8BC30080ED3E /* CartMVCWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartMVCWidget.cxx; sourceTree = "<group>"; };
 		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
 		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
 		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
@@ -1948,6 +1952,8 @@
 				DC85734D2C10A371007AB2FE /* CartJANEWidget.cxx */,
 				DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */,
 				DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */,
+				DCB5EA70301B8BC30080ED3E /* CartMVCWidget.hxx */,
+				DCB5EA71301B8BC30080ED3E /* CartMVCWidget.cxx */,
 				DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */,
 				DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */,
 				DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */,
@@ -3268,6 +3274,7 @@
 				DCAAE5F31715887B0080BB82 /* CartUAWidget.hxx in Headers */,
 				DC676A421729A0B000E4E73D /* Cart3EWidget.hxx in Headers */,
 				E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */,
+				DCB5EA72301B8BC30080ED3E /* CartMVCWidget.hxx in Headers */,
 				DC676A441729A0B000E4E73D /* Cart4A50Widget.hxx in Headers */,
 				CFE3F6141E84A9CE00A8204E /* CartBUS.hxx in Headers */,
 				DC676A461729A0B000E4E73D /* CartARWidget.hxx in Headers */,
@@ -3537,6 +3544,7 @@
 				2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */,
 				2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */,
 				2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */,
+				DCB5EA73301B8BC30080ED3E /* CartMVCWidget.cxx in Sources */,
 				2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */,
 				DC3C9BD92469C9C700CF2D47 /* CartEnhancedWidget.cxx in Sources */,
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
