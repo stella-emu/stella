@@ -472,14 +472,14 @@ void HighScoresDialog::updateWidgets(bool init)
   {
     if(myScores.scores[r].score > 0)
     {
-      myRankWidgets[r]->clearFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[r]->clearFlags(Widget::FLAG_INVISIBLE);
+      myRankWidgets[r]->setVisible(true);
+      myDeleteButtons[r]->setVisible(true);
       myDeleteButtons[r]->setEnabled(true);
     }
     else
     {
-      myRankWidgets[r]->setFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[r]->setFlags(Widget::FLAG_INVISIBLE);
+      myRankWidgets[r]->setVisible(false);
+      myDeleteButtons[r]->setVisible(false);
       myDeleteButtons[r]->setEnabled(false);
     }
     myScoreWidgets[r]->setLabel(instance().highScores().formattedScore(myScores.scores[r].score,

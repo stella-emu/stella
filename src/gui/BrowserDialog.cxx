@@ -289,19 +289,19 @@ void BrowserDialog::show(string_view startpath,
   _navigationBar->setVisible(true);
   _fileList->setListMode(FSNode::ListMode::All);
   _fileList->setShowFileExtensions(true);
-  _goUpButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _goUpButton->setVisible(true);
   _goUpButton->setEnabled(true);
-  _baseDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _baseDirButton->setVisible(true);
   _baseDirButton->setEnabled(true);
-  _homeDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _homeDirButton->setVisible(true);
   _homeDirButton->setEnabled(true);
 
   // Common setup for all file-selection modes
   if(_mode != Mode::Directories)
   {
     _fileList->setNameFilter(namefilter);
-    _name->clearFlags(Widget::FLAG_INVISIBLE);
-    _selected->clearFlags(Widget::FLAG_INVISIBLE);
+    _name->setVisible(true);
+    _selected->setVisible(true);
     _selected->setEditable(false);
     _selected->setEnabled(false);
   }
@@ -312,7 +312,7 @@ void BrowserDialog::show(string_view startpath,
       _fileList->setListMode(FSNode::ListMode::All);
       // Show "save" checkbox
       _savePathBox->setEnabled(true);
-      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(true);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
       _okWidget->setLabel("Load");
       break;
@@ -325,13 +325,13 @@ void BrowserDialog::show(string_view startpath,
       _navigationBar->setEnabled(false);
       // Hide "save" checkbox
       _savePathBox->setEnabled(false);
-      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(false);
 
-      _goUpButton->setFlags(Widget::FLAG_INVISIBLE);
+      _goUpButton->setVisible(false);
       _goUpButton->setEnabled(false);
-      _baseDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _baseDirButton->setVisible(false);
       _baseDirButton->setEnabled(false);
-      _homeDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _homeDirButton->setVisible(false);
       _homeDirButton->setEnabled(false);
       _okWidget->setLabel("Select");
       break;
@@ -340,7 +340,7 @@ void BrowserDialog::show(string_view startpath,
       _fileList->setListMode(FSNode::ListMode::All);
       // Show "save" checkbox
       _savePathBox->setEnabled(true);
-      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(true);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
 
       _selected->setEditable(true);
@@ -355,10 +355,10 @@ void BrowserDialog::show(string_view startpath,
       _fileList->setNameFilter([](const FSNode&) { return true; });
       // Hide "save" checkbox
       _savePathBox->setEnabled(false);
-      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(false);
 
-      _name->setFlags(Widget::FLAG_INVISIBLE);
-      _selected->setFlags(Widget::FLAG_INVISIBLE);
+      _name->setVisible(false);
+      _selected->setVisible(false);
       _selected->setEditable(false);
       _selected->setEnabled(false);
       _okWidget->setLabel("OK");

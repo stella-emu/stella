@@ -77,11 +77,11 @@ void CheckListWidget::reflowCheckboxes()
     if(i < _rows)
     {
       _checkList[i]->setPos(_x + 2, ypos);
-      _checkList[i]->clearFlags(Widget::FLAG_INVISIBLE);
+      _checkList[i]->setVisible(true);
       ypos += _lineHeight;
     }
     else
-      _checkList[i]->setFlags(Widget::FLAG_INVISIBLE);
+      _checkList[i]->setVisible(false);
   }
 }
 

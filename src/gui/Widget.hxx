@@ -101,6 +101,12 @@ class Widget : public GuiObject
     /** Set/clear FLAG_ENABLED */
     virtual void setEnabled(bool e);
 
+    // Show or hide this widget.  Prefer this to setting FLAG_INVISIBLE by hand:
+    // a widget that goes invisible stops both drawing AND taking mouse events
+    // (see findWidgetInList), and the area it was covering has to be repainted
+    // by its boss, which only this knows to ask for
+    virtual void setVisible(bool visible);
+
     bool isEnabled() const          { return _flags & FLAG_ENABLED;       }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);  }
     bool isHighlighted() const      { return _flags & FLAG_HILITED;       }

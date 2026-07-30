@@ -264,6 +264,25 @@ void Widget::setEnabled(bool e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setVisible(bool visible)
+{
+  if(visible == isVisible())
+    return;
+
+  if(visible)
+    clearFlags(Widget::FLAG_INVISIBLE);
+  else
+  {
+    setFlags(Widget::FLAG_INVISIBLE);
+
+    // Going invisible leaves whatever we were covering unpainted: marking
+    // ourselves dirty only ever redraws US, and we now draw nothing.  So the
+    // boss has to repaint that area -- it is the one that owns the background
+    _boss->setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setToolTip(string_view text, Event::Type event1, EventMode mode)
 {
   setToolTip(text, event1, Event::Type::NoType, mode);
@@ -378,8 +397,13 @@ Widget* Widget::findWidgetInList(const WidgetList& list, int x, int y)
   // Search newest-first, so where widgets overlap the one added last wins
   for(const auto& w: std::views::reverse(list))
   {
-    // Stop as soon as we find a widget that contains the point (x,y)
-    if(x >= w->_x && x < w->_x + w->_w &&
+    // Stop as soon as we find a VISIBLE widget containing the point (x,y).  A
+    // hidden widget keeps its coordinates, so without this test it would go on
+    // taking the clicks meant for whatever it is covering -- and a dialog that
+    // hides part of itself would have to move the remains off-screen to be rid
+    // of them.  Nothing can want events while invisible: it cannot be aimed at
+    if(w->isVisible() &&
+       x >= w->_x && x < w->_x + w->_w &&
        y >= w->_y && y < w->_y + w->_h)
       return w->findWidget(x - w->_x, y - w->_y);
   }

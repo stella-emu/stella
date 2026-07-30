@@ -182,9 +182,9 @@ void Dialog::initHelp()
     layoutHelp();
 
     if(hasHelp())
-      _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
+      _helpWidget->setVisible(true);
     else
-      _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
+      _helpWidget->setVisible(false);
   }
 }
 

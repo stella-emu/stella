@@ -183,11 +183,11 @@ void RomListWidget::reflowCheckboxes()
     if(i < _rows)
     {
       myCheckList[i]->setPos(_x + 2, ypos);
-      myCheckList[i]->clearFlags(Widget::FLAG_INVISIBLE);
+      myCheckList[i]->setVisible(true);
       ypos += _lineHeight;
     }
     else
-      myCheckList[i]->setFlags(Widget::FLAG_INVISIBLE);
+      myCheckList[i]->setVisible(false);
   }
 }
 

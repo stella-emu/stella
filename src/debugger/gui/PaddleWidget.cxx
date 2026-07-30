@@ -39,10 +39,10 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
 
     myP0Resistance = new SliderWidget(boss, font);
     myP0Resistance->setEnabled(false);
-    myP0Resistance->setFlags(Widget::FLAG_INVISIBLE);
+    myP0Resistance->setVisible(false);
     myP1Resistance = new SliderWidget(boss, font);
     myP1Resistance->setEnabled(false);
-    myP1Resistance->setFlags(Widget::FLAG_INVISIBLE);
+    myP1Resistance->setVisible(false);
   }
   else
   {

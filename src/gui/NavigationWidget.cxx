@@ -146,33 +146,33 @@ void NavigationWidget::setVisible(bool isVisible)
 {
   if(isVisible)
   {
-    this->clearFlags(FLAG_INVISIBLE);
+    Widget::setVisible(true);
     this->setEnabled(true);
-    myHomeButton->clearFlags(FLAG_INVISIBLE);
+    myHomeButton->setVisible(true);
     myHomeButton->setEnabled(true);
-    myPrevButton->clearFlags(FLAG_INVISIBLE);
+    myPrevButton->setVisible(true);
     myPrevButton->setEnabled(true);
-    myNextButton->clearFlags(FLAG_INVISIBLE);
+    myNextButton->setVisible(true);
     myNextButton->setEnabled(true);
-    myUpButton->clearFlags(FLAG_INVISIBLE);
+    myUpButton->setVisible(true);
     myUpButton->setEnabled(true);
-    myPath->clearFlags(FLAG_INVISIBLE);
+    myPath->setVisible(true);
     myPath->setEnabled(true);
   }
   else
   {
-    this->setFlags(FLAG_INVISIBLE);
+    Widget::setVisible(false);
     this->setEnabled(false);
-    myHomeButton->setFlags(FLAG_INVISIBLE);
+    myHomeButton->setVisible(false);
     myHomeButton->setEnabled(false);
-    myPrevButton->setFlags(FLAG_INVISIBLE);
+    myPrevButton->setVisible(false);
     myPrevButton->setEnabled(false);
-    myNextButton->setFlags(FLAG_INVISIBLE);
+    myNextButton->setVisible(false);
     myNextButton->setEnabled(false);
-    myUpButton->setFlags(FLAG_INVISIBLE);
+    myUpButton->setVisible(false);
     myUpButton->setEnabled(false);
 
-    myPath->setFlags(FLAG_INVISIBLE);
+    myPath->setVisible(false);
     myPath->setEnabled(false);
     myPath->setPath("");
   }

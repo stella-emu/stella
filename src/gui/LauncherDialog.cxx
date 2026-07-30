@@ -316,25 +316,17 @@ void LauncherDialog::showRomWidgets(bool show)
 
   if(show)
   {
-    myRomImageWidget->clearFlags(Widget::FLAG_INVISIBLE);
-    myRomInfoWidget->clearFlags(Widget::FLAG_INVISIBLE);
+    myRomImageWidget->setVisible(true);
+    myRomInfoWidget->setVisible(true);
     if(myDivider)
-      myDivider->clearFlags(Widget::FLAG_INVISIBLE);
+      myDivider->setVisible(true);
   }
   else
   {
-    // Hiding them is not enough: findWidgetInList() is bounds-only and does not
-    // skip invisible widgets, so they would still take the clicks meant for the
-    // full-width list.  Move them off-screen too
-    myRomImageWidget->setPos(_w, 0);
-    myRomImageWidget->setFlags(Widget::FLAG_INVISIBLE);
-    myRomInfoWidget->setPos(_w, 0);
-    myRomInfoWidget->setFlags(Widget::FLAG_INVISIBLE);
+    myRomImageWidget->setVisible(false);
+    myRomInfoWidget->setVisible(false);
     if(myDivider)
-    {
-      myDivider->setPos(_w, 0);
-      myDivider->setFlags(Widget::FLAG_INVISIBLE);
-    }
+      myDivider->setVisible(false);
   }
 }
 
