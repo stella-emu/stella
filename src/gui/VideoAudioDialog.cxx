@@ -1563,8 +1563,9 @@ void VideoAudioDialog::createPaletteWidgets(TabPaneWidget* pane)
 
   for(int idx = 0; idx < NUM_CHROMA; ++idx)
   {
-    // The chroma's hex digit, put in as the palette loads
-    myColorLbl[idx] = new LabelWidget(pane, ifont, "");
+    // The chroma's hex digit; the real one is put in as the palette loads, so
+    // start out one digit wide
+    myColorLbl[idx] = new LabelWidget(pane, ifont, "1");
     for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
       myColor[idx][lum] = new ColorWidget(pane, _font, 1, 1, 0, false);
@@ -1626,10 +1627,13 @@ void VideoAudioDialog::colorPalette()
     }
   }
   else
-    // disable palette
-    for(const auto& row: myColor)
-      for(auto* w: row)
-        w->setEnabled(false);
+  {
+    // disable palette, and take its chroma digits away with it
+    for(auto* l: myColorLbl)
+      l->setLabel("");
+    for(auto* w: myColor | std::views::join)
+      w->setEnabled(false);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
