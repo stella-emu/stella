@@ -794,6 +794,14 @@ void OSystem::closeConsole()
     // If a previous console existed, save cheats before creating a new one
     myCheatManager->saveCheats(myConsole->properties().get(PropType::Cart_MD5));
   #endif
+  #ifdef DEBUGGER_SUPPORT
+    // The debugger lives on without a console (the launcher keeps it until the
+    // next ROM replaces it), so let it drop what points into this one.  The
+    // object itself must NOT be destroyed here: we can be reached from its own
+    // call stack, and freeing it would pull the ground out from under callers
+    if(myDebugger)
+      myDebugger->detach();
+  #endif
     myConsole.reset();
   }
 }
