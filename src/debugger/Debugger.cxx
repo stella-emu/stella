@@ -79,7 +79,14 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::~Debugger() = default;
+Debugger::~Debugger()
+{
+  // The static accessor must not outlive the object it hands out.  Only clear
+  // it if it still refers to us: on a new ROM the replacement debugger is
+  // constructed (claiming the static) before the old one is destroyed
+  if(myStaticDebugger == this)
+    myStaticDebugger = nullptr;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::changeFont() const
@@ -185,6 +192,15 @@ void Debugger::updateTime(uInt64 time)
 {
   DialogContainer::updateTime(time);
 
+  // The stack that asked to exit the ROM has unwound by now, so the console
+  // can safely be torn down
+  if(myExitRomPending)
+  {
+    myExitRomPending = false;
+    myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    return;
+  }
+
   // Live re-flow is normally applied straight from the event handler
   // (applyResize(), which also covers the Windows/macOS modal resize loop).
   // Here we catch any size the handler's throttle skipped — notably the final
@@ -244,7 +260,8 @@ void Debugger::quit()
 void Debugger::exit(bool exitrom)
 {
   if(exitrom)
-    myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    // Deferred; see myExitRomPending
+    myExitRomPending = true;
   else
   {
     myOSystem.eventHandler().leaveDebugMode();

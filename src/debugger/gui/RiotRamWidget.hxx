@@ -47,7 +47,9 @@ class RiotRamWidget : public RamWidget
     const ByteArray& currentRam(uInt32 start) const override;
 
   private:
-    CartDebug& myDbg;
+    // Fetched live rather than cached: the debugger's CartDebug is recreated
+    // for each ROM, so a reference bound here would not survive a ROM change
+    CartDebug& dbg() const;
 
   private:
     // Following constructors and assignment operators not supported

@@ -436,6 +436,15 @@ class Debugger : public DialogContainer
     // emulation-mode (phosphor) path against the live console
     bool myTiaWindowPending{false};
 
+    // Deferred ROM exit: 'exitRom' tears the console down, but it can be
+    // reached from call stacks that keep using that console after it returns
+    // -- a script run from the prompt's first-time load (which happens inside
+    // the dialog's loadConfig(), itself inside createConsole() under '-debug'),
+    // or DebuggerParser::run(), which touches its own members afterwards.  So
+    // record the request here and act on it from updateTime(), once the stack
+    // that asked for it has unwound
+    bool myExitRomPending{false};
+
     // Various builtin functions and operations
     struct BuiltinFunction {
       string name, defn, help;
