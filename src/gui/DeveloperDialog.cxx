@@ -801,7 +801,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
 #ifdef DEBUGGER_SUPPORT
   VariantList items;
-  const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   // font size
   items.clear();
@@ -822,25 +821,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerFontStyle = new PopUpWidget(pane, font, items);
   wid.push_back(myDebuggerFontStyle);
 
-  // Debugger width and height
-  myDebuggerWidthSliderLbl = new LabelWidget(pane, font, "Debugger width (*)");
-  myDebuggerWidthSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
-  myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
-  myDebuggerWidthSlider->setMaxValue(ds.w);
-  myDebuggerWidthSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myDebuggerWidthSlider->setTickmarkIntervals((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
-  wid.push_back(myDebuggerWidthSlider);
-
-  myDebuggerHeightSliderLbl = new LabelWidget(pane, font, "Debugger height (*)");
-  myDebuggerHeightSlider = new SliderWidget(pane, font, 0, 0, 6, "px");
-  myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
-  myDebuggerHeightSlider->setMaxValue(ds.h);
-  myDebuggerHeightSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myDebuggerHeightSlider->setTickmarkIntervals((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
-  wid.push_back(myDebuggerHeightSlider);
-
   myGhostReadsTrapWidget = new CheckboxWidget(pane, font, "Trap on 'ghost' reads");
   myGhostReadsTrapWidget->setToolTip("Traps will consider CPU 'ghost' reads too.");
   wid.push_back(myGhostReadsTrapWidget);
@@ -848,17 +828,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerInfo = new LabelWidget(pane, instance().frameBuffer().infoFont(),
                                         "(*) Change requires a ROM reload");
 
-#if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
-  // Debugger is only realistically available in windowed modes 800x600 or greater
-  // (and when it's actually been compiled into the app)
-  if(ds.w < 800 || ds.h < 600)  // TODO - maybe this logic can disappear?
-  {
-    myDebuggerWidthSliderLbl->clearFlags(Widget::FLAG_ENABLED);
-    myDebuggerWidthSlider->clearFlags(Widget::FLAG_ENABLED);
-    myDebuggerHeightSliderLbl->clearFlags(Widget::FLAG_ENABLED);
-    myDebuggerHeightSlider->clearFlags(Widget::FLAG_ENABLED);
-  }
-#endif
 #else
   myDebuggerInfo = new LabelWidget(pane, font, "Debugger support not included",
                                    TextAlign::Center);
@@ -879,19 +848,14 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #ifdef DEBUGGER_SUPPORT
     const int VGAP = Dialog::vGap();
 
-    // The two pop-ups and the two sliders each have a separate label; all
-    // four share one column, and the pop-ups take one shared box width
-    GUI::alignLabels({{myDebuggerFontSizeLbl}, {myDebuggerFontStyleLbl},
-                      {myDebuggerWidthSliderLbl}, {myDebuggerHeightSliderLbl}});
+    // The two pop-ups each have a separate label; both share one column, and
+    // the pop-ups take one shared box width
+    GUI::alignLabels({{myDebuggerFontSizeLbl}, {myDebuggerFontStyleLbl}});
     GUI::alignPopUps({myDebuggerFontSize, myDebuggerFontStyle});
 
     col.addAuto(labeledRow(myDebuggerFontSizeLbl, myDebuggerFontSize));
     col.addSpace(VGAP);
     col.addAuto(labeledRow(myDebuggerFontStyleLbl, myDebuggerFontStyle));
-    col.addSpace(VGAP * 4);
-    col.addAuto(labeledRow(myDebuggerWidthSliderLbl, myDebuggerWidthSlider));
-    col.addSpace(VGAP);
-    col.addAuto(labeledRow(myDebuggerHeightSliderLbl, myDebuggerHeightSlider));
     col.addSpace(VGAP * 4);
     col.addAuto(anchoredItem(myGhostReadsTrapWidget));
 
@@ -1056,13 +1020,6 @@ void DeveloperDialog::loadConfig()
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
 
 #ifdef DEBUGGER_SUPPORT
-  // Debugger size
-  const Common::Size& ds = instance().settings().getSize("dbg.res");
-  const int w = ds.w, h = ds.h;
-
-  myDebuggerWidthSlider->setValue(w);
-  myDebuggerHeightSlider->setValue(h);
-
   // Debugger font size
   const string size = instance().settings().getString("dbg.fontsize");
   myDebuggerFontSize->setSelected(size, "medium");
@@ -1073,8 +1030,6 @@ void DeveloperDialog::loadConfig()
 
   // Ghost reads trap
   myGhostReadsTrapWidget->setState(instance().settings().getBool("dbg.ghostreadstrap"));
-
-  handleFontSize();
 #endif
 
   myTab->loadConfig();
@@ -1106,10 +1061,6 @@ void DeveloperDialog::saveConfig()
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
                                  myDebuggerFontStyle->getSelectedTag().toString());
-  // Debugger size
-  instance().settings().setValue("dbg.res",
-                                 Common::Size(myDebuggerWidthSlider->getValue(),
-                                 myDebuggerHeightSlider->getValue()));
   // Debugger font size
   instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
 
@@ -1202,18 +1153,10 @@ void DeveloperDialog::setDefaults()
     case 4: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Debugger);
-
-      const uInt32 w = std::min(size.w, static_cast<uInt32>(DebuggerDialog::kMediumFontMinW));
-      const uInt32 h = std::min(size.h, static_cast<uInt32>(DebuggerDialog::kMediumFontMinH));
-      myDebuggerWidthSlider->setValue(w);
-      myDebuggerHeightSlider->setValue(h);
       myDebuggerFontSize->setSelected("medium");
       myDebuggerFontStyle->setSelected("0");
 
       myGhostReadsTrapWidget->setState(true);
-
-      handleFontSize();
 #endif
       break;
     }
@@ -1294,7 +1237,6 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
 #ifdef DEBUGGER_SUPPORT
     case kDFontSizeChanged:
-      handleFontSize();
       break;
 #endif
 
@@ -1701,38 +1643,3 @@ void DeveloperDialog::handleDebugColours(string_view colors)
   }
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleFontSize()
-{
-#ifdef DEBUGGER_SUPPORT
-  uInt32 minW = 0, minH = 0;
-  const int fontSize = myDebuggerFontSize->getSelected();
-
-  if(fontSize == 0)
-  {
-    minW = DebuggerDialog::kSmallFontMinW;
-    minH = DebuggerDialog::kSmallFontMinH;
-  }
-  else if(fontSize == 1)
-  {
-    minW = DebuggerDialog::kMediumFontMinW;
-    minH = DebuggerDialog::kMediumFontMinH;
-  }
-  else // large
-  {
-    minW = DebuggerDialog::kLargeFontMinW;
-    minH = DebuggerDialog::kLargeFontMinH;
-  }
-  const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Debugger);
-  minW = std::min(size.w, minW);
-  minH = std::min(size.h, minH);
-
-  myDebuggerWidthSlider->setMinValue(minW);
-  if(std::cmp_greater(minW, myDebuggerWidthSlider->getValue()))
-    myDebuggerWidthSlider->setValue(minW);
-
-  myDebuggerHeightSlider->setMinValue(minH);
-  if(std::cmp_greater(minH, myDebuggerHeightSlider->getValue()))
-    myDebuggerHeightSlider->setValue(minH);
-#endif
-}

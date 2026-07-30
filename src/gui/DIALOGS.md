@@ -182,7 +182,7 @@ BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0);
 | `addAuto(child)`                    | child gets what it *wants* along the main axis — **prefer this** |
 | `addFixed(child, px)`               | child gets exactly `px` along the main axis         |
 | `addStretch(child, weight=1, base=0)` | child gets `base`, then shares leftover (by weight) |
-| `addPercent(child, pct, max=0)`     | child gets `pct`% of the available length           |
+| `addPercent(child, pct, min=0, max=0)` | child gets `max(min, pct% of the available length)` |
 | `addSpace(px)`                      | an empty gap of `px`                                |
 | `addStretchSpace(weight=1, base=0)` | an empty gap of at least `base`, which also grows   |
 

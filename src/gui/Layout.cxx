@@ -21,6 +21,12 @@
 
 namespace GUI {
 
+namespace {
+  // A minimum must round UP: a box one pixel short of a percentage cell's
+  // share is a box its content does not fit in
+  int ceilDiv(int num, int den) { return (num + den - 1) / den; }
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size WidgetLayout::naturalSize() const
 {
@@ -129,7 +135,10 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
         ext[i] = it.value;
         break;
       case SizePolicy::Percent:
-        ext[i] = it.value * std::max(mainLen, 0) / 100;
+        // A percentage of what there is, but never below the floor the owner
+        // declared: so a cell can say "this share of the box, and at least
+        // this much" in one breath
+        ext[i] = std::max(it.minMain, it.value * std::max(mainLen, 0) / 100);
         break;
       case SizePolicy::Stretch:
         totalWeight += it.value;
@@ -226,7 +235,10 @@ Common::Size BoxLayout::naturalSize() const
 Common::Size BoxLayout::minSize() const
 {
   const bool horiz = myDir == Dir::Horizontal;
-  int mainMin = 0, crossMin = 0;
+  // A percentage cell does not add its length to the box's: it TAKES a share of
+  // whatever the box ends up being, so it makes the box bigger than the sum of
+  // its parts.  Tally the two kinds separately and combine them below
+  int mainMin = 0, crossMin = 0, pctTotal = 0, pctFloors = 0, pctDriven = 0;
   for(const auto& it: myItems)
   {
     const Common::Size cs = it.layout->minSize();
@@ -234,9 +246,11 @@ Common::Size BoxLayout::minSize() const
     const int childCross = static_cast<int>(horiz ? cs.h : cs.w);
     // A fixed cell can never be smaller than its fixed size — unless the
     // dialog declared a compression floor (minMain), promising to recompute
-    // the fixed value down to that floor as the available space shrinks
+    // the fixed value down to that floor as the available space shrinks.  A
+    // floor of zero is a real answer, and a different one from declaring none:
+    // it says the cell gives way entirely, so it holds nothing open
     if(it.policy == SizePolicy::Fixed)
-      childMain = std::max(childMain, it.minMain > 0 ? it.minMain : it.value);
+      childMain = std::max(childMain, it.minMain >= 0 ? it.minMain : it.value);
     else if(it.policy == SizePolicy::Stretch)
       childMain = std::max(childMain, it.minMain);
     else if(it.policy == SizePolicy::Auto)
@@ -249,12 +263,40 @@ Common::Size BoxLayout::minSize() const
       childMain = std::max(childMain,
                            static_cast<int>(horiz ? natural.w : natural.h));
     }
+    else if(it.policy == SizePolicy::Percent && it.value > 0)
+    {
+      pctTotal += it.value;
+      pctFloors += it.minMain;
+      // Its share must cover what the child needs.  Below the floor doLayout()
+      // hands it the floor instead, so only a child needing MORE than that
+      // drives the box
+      if(childMain > it.minMain)
+        pctDriven = std::max(pctDriven, ceilDiv(childMain * 100, it.value));
+      crossMin = std::max(crossMin, childCross);
+      continue;
+    }
     mainMin += childMain;
     crossMin = std::max(crossMin, childCross);
   }
   const int n = static_cast<int>(myItems.size());
   if(n > 0)
     mainMin += mySpacing * (n - 1);
+
+  if(pctTotal > 0)
+  {
+    // Everything that is NOT a percentage has to fit in the share left over,
+    // which gives the box's length directly.  Both regimes have to hold: the
+    // percentage cells sitting on their floors (so their lengths simply add),
+    // and them taking their share of a box grown large enough that what is left
+    // still holds the rest.  The larger is the true minimum -- the other regime
+    // does not apply at that size, and is always the smaller of the two
+    const int atFloors = mainMin + pctFloors;
+    const int atShare  = pctTotal < 100
+      ? ceilDiv(mainMin * 100, 100 - pctTotal)
+      : atFloors;  // fully committed: nothing is left to hold the rest
+
+    mainMin = std::max({atFloors, atShare, pctDriven});
+  }
 
   // Main axis gets that axis' margin; cross axis gets the other
   const int wMargin = 2 * myMarginH, hMargin = 2 * myMarginV;

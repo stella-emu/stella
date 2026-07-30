@@ -205,11 +205,21 @@ class BoxLayout : public Layout
     BoxLayout& add(unique_ptr<Layout> child, SizePolicy policy, int value,
                    int maxMain = 0, int minMain = 0);
 
-    // Convenience wrappers
-    BoxLayout& addFixed(unique_ptr<Layout> child, int px, int minPx = 0)
+    // Convenience wrappers.  addFixed's minPx says how far the dialog promises
+    // to recompute the fixed value down to as space shrinks: omit it and the
+    // cell cannot be squeezed below its value at all, give 0 and it can be
+    // squeezed away entirely (so it adds nothing to minSize) -- which is what a
+    // cell whose value the dialog derives from the OTHER axis has to say, since
+    // its value is no statement about how small it may be
+    BoxLayout& addFixed(unique_ptr<Layout> child, int px, int minPx = -1)
       { return add(std::move(child), SizePolicy::Fixed, px, 0, minPx); }
-    BoxLayout& addPercent(unique_ptr<Layout> child, int pct, int maxMain = 0)
-      { return add(std::move(child), SizePolicy::Percent, pct, maxMain); }
+    // A share of the box, and at least minPx of it: the cell is
+    // max(minPx, pct% of the length), and minSize() reports the length at which
+    // that share still holds everything else — so a proportional split states
+    // its floor once and the window minimum follows from it
+    BoxLayout& addPercent(unique_ptr<Layout> child, int pct, int minPx = 0,
+                          int maxMain = 0)
+      { return add(std::move(child), SizePolicy::Percent, pct, maxMain, minPx); }
     BoxLayout& addStretch(unique_ptr<Layout> child, int weight = 1, int basePx = 0)
       { return add(std::move(child), SizePolicy::Stretch, weight, 0, basePx); }
 

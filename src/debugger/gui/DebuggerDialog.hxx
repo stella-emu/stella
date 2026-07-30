@@ -40,26 +40,15 @@ class RiotWidget;
 class AudioWidget;
 class OptionsDialog;
 
-namespace Common {
-  struct Rect;
-}  // namespace Common
+namespace GUI {
+  class Layout;
+}  // namespace GUI
 
 #include "Dialog.hxx"
 
 class DebuggerDialog : public Dialog
 {
   public:
-    // Note: these sizes make sure that all major tabs are fully visible
-    //       cart dependend information (e.g. DPC+) may require more space
-    //       at these widths the TIA image gives up some of its 320 pixels to
-    //       the status area, with which it shares the half of the dialog left
-    //       of centre
-    enum: uInt16 {
-      kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
-      kMediumFontMinW = 1160, kMediumFontMinH = 770,
-      kLargeFontMinW  = 1160, kLargeFontMinH  = 870
-    };
-
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int w, int h);
     ~DebuggerDialog() override;
@@ -95,12 +84,12 @@ class DebuggerDialog : public Dialog
     void setPosition() override { positionAt(0); }
 
     /**
-      The minimum dialog height required so that no fixed-content tab (the
-      TIA/I/O/Audio tabs and the cart-specific info/state tabs) is clipped,
-      accounting for the TIA image and CPU/RAM areas laid out around them.
-      Returns 0 if no such constraint applies (e.g. before the tabs exist).
+      The smallest window in which nothing clips: answered by the layout tree
+      built in layout(), so it accounts for the proportional TIA band, the
+      centre split and whatever the current ROM's tabs ask for, without anyone
+      restating that geometry here.  Zero until the dialog has laid out once.
     */
-    int getMinHeight() const;
+    Common::Size minSize() const { return myMinSize; }
 
   protected:
     void layout() override;
@@ -128,21 +117,27 @@ class DebuggerDialog : public Dialog
     void addStatusArea();
     void addRomArea();
 
-    void layoutTiaArea();
-    void layoutTabArea();
-    void layoutStatusArea();
-    void layoutRomArea();
-
-    Common::Rect getTiaBounds() const;
-    Common::Rect getRomBounds() const;
-    Common::Rect getStatusBounds() const;
-    Common::Rect getTabBounds() const;
+    /**
+      The whole dialog as the engine sees it: the centre split, the TIA band
+      above the tabs, and the two areas' own columns.  Built without positioning
+      anything, so layout() and the window minimum are the same tree asked two
+      questions -- which is what keeps the minimum independent of the current
+      size, and of anyone's idea of where the areas are.
+    */
+    unique_ptr<GUI::Layout> buildLayout();
+    unique_ptr<GUI::Layout> buildTopBand();
+    unique_ptr<GUI::Layout> buildStatusArea();
+    unique_ptr<GUI::Layout> buildRomArea();
 
     /**
-      The narrowest the status area may become: the TIA image beside it is
-      clamped so that its fields always fit.
+      The TIA image band's height, and the image width its proportion then calls
+      for.  The band is declared to the tree as TIA_BAND_PERCENT with a floor of
+      TIA_BAND_MIN, so these two read the same law the tree enforces; the image
+      is the one leaf whose width follows from a height, which no cell policy can
+      state for it.
     */
-    int statusMinWidth() const;
+    int tiaBandHeight() const;
+    int tiaImageWidth() const;
 
   private:
     enum {
@@ -186,6 +181,13 @@ class DebuggerDialog : public Dialog
     unique_ptr<GUI::Font> myNFont;  // used for normal text
     Widget* myFocusedWidget{nullptr};
     bool myExitPressed{false};
+
+    // What the layout tree last reported it cannot be squeezed below
+    Common::Size myMinSize;
+
+    // The TIA image band's share of the dialog height, and the floor below which
+    // it does not shrink -- a full PAL frame, so the image is never scaled down
+    static constexpr int TIA_BAND_PERCENT = 35;
 
   private:
     // Following constructors and assignment operators not supported

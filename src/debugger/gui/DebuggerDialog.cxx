@@ -87,10 +87,9 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 
   setHelpAnchor(" ", true);
 
-  // Settle the geometry now, because Debugger::initialize() measures
-  // getMinHeight() before ever opening the dialog, and that reads back widget
-  // positions.  open() lays it out again, at whatever size the debugger has
-  // settled on by then
+  // Settle the geometry now, because Debugger::initialize() asks for minSize()
+  // before ever opening the dialog, and only laying out produces it.  open()
+  // lays it out again, at whatever size the debugger has settled on by then
   DebuggerDialog::layout();
 }
 
@@ -106,12 +105,89 @@ void DebuggerDialog::layout()
   _w = static_cast<int>(size.w);
   _h = static_cast<int>(size.h);
 
-  // The TIA image and the status area beside it share the half of the dialog
-  // left of centre, above the tabs; the ROM area has the half right of it
-  layoutTiaArea();
-  layoutStatusArea();
-  layoutTabArea();
-  layoutRomArea();
+  auto root = buildLayout();
+
+  // The window minimum is the same tree's answer to a different question, so it
+  // follows the font, the current ROM's tabs and the proportional band by
+  // construction -- and can never depend on the size we happen to be at
+  myMinSize = root->minSize();
+
+  root->doLayout(0, 0, _w, _h);
+
+  // Each tab widget lays its own active content out, once it has been sized
+  myTab->updateTabSizes();
+  myRomTab->updateTabSizes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> DebuggerDialog::buildLayout()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // Left of centre: the TIA band over the tab area.  The band takes its share of
+  // the height but never less than a full PAL frame, and the tabs take the rest
+  const Common::Size tabNatural = myTab->naturalSize();
+
+  auto left = std::make_unique<BoxLayout>(Dir::Vertical);
+  left->addPercent(buildTopBand(), TIA_BAND_PERCENT,
+                   FrameManager::Metrics::baseHeightPAL);
+  left->addSpace(1 + VBORDER);
+  left->addStretch(GUI::widgetItem(myTab, static_cast<int>(tabNatural.w),
+                                          static_cast<int>(tabNatural.h)));
+
+  // The two halves meet at the centre with the divider between them: the prompt
+  // gets exactly half the window and the disassembly the other half, whatever
+  // either of them holds.  Stating it as two halves rather than two equal
+  // stretches matters -- stretch cells share the LEFTOVER, so unequal content
+  // would put the divider off centre
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
+  root->addPercent(std::move(left), 50);
+  root->addSpace(1);
+  root->addStretch(buildRomArea());
+
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> DebuggerDialog::buildTopBand()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // The image is as wide as its own height calls for, so extra width goes to the
+  // status area beside it -- but it is also the one thing here that gives way,
+  // and this is where it does: a TALLER window makes the image want to be wider
+  // without making the window any wider, so unchecked it would squeeze the
+  // status column below what its fields need.  Its cell says it can be squeezed
+  // away entirely (a floor of 0), so the window minimum is decided by the status
+  // fields and the tabs alone -- what a small display can least afford to lose
+  const int available = _w / 2 - (1 + HBORDER) - myTiaInfo->minWidth();
+  const int imageWidth = std::max(0, std::min(tiaImageWidth(), available));
+
+  auto band = std::make_unique<BoxLayout>(Dir::Horizontal);
+  band->addFixed(GUI::widgetItem(myTiaOutput), imageWidth, 0);
+  band->addSpace(1 + HBORDER);
+  band->addStretch(buildStatusArea());
+
+  return band;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DebuggerDialog::tiaBandHeight() const
+{
+  return std::max<int>(FrameManager::Metrics::baseHeightPAL,
+                       _h * TIA_BAND_PERCENT / 100);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DebuggerDialog::tiaImageWidth() const
+{
+  // A cell can say "a share of the box" or "what my content wants", but not "as
+  // wide as my own height makes me": the image is the one leaf that needs the
+  // latter, so it reads the same band law the tree is given above
+  return tiaBandHeight() * TIAConstants::viewableWidth
+       / FrameManager::Metrics::baseHeightPAL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -507,15 +583,6 @@ void DebuggerDialog::addTiaArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutTiaArea()
-{
-  const Common::Rect& r = getTiaBounds();
-
-  // The widget fits the image within this area, keeping its proportion
-  myTiaOutput->setArea(r.x(), r.y(), r.w(), r.h());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
   // Every widget is created at a placeholder position/size; layoutTabArea()
@@ -560,17 +627,6 @@ void DebuggerDialog::addTabArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutTabArea()
-{
-  const Common::Rect& r = getTabBounds();
-
-  // The tab widget lays its own active content out (updateTabSizes -> the
-  // container's layoutActivePane), so there is nothing else to do here
-  myTab->setArea(r.x(), r.y() + VBORDER, r.w(), r.h() - VBORDER);
-  myTab->updateTabSizes();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addStatusArea()
 {
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
@@ -587,35 +643,31 @@ void DebuggerDialog::addStatusArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutStatusArea()
+unique_ptr<GUI::Layout> DebuggerDialog::buildStatusArea()
 {
   using GUI::BoxLayout;
-  using GUI::anchoredItem;
   using GUI::alignedItem;
   using GUI::HAlign;
   using GUI::VAlign;
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  const Common::Rect& r = getStatusBounds();
   const int vGap = myLFont->getLineHeight() / 3;
-  const int xpos = r.x() + HBORDER,
-            width = r.w() - HBORDER;
-
-  // The column reaches down to the tab area below it, leaving the message box
-  // in the gap directly above the tabs
-  const int height = getTabBounds().y() + VBORDER - r.y();
 
   // The info widget reports how tall its rows make it and spells its labels out
-  // only if the width allows, so give it the column's width and its own height.
-  // The zoom view takes whatever is left; never force the message box's height,
-  // which frames its own text
-  BoxLayout column(Dir::Vertical, vGap);
-  column.addAuto(alignedItem(myTiaInfo, HAlign::Fill, VAlign::Top));
-  column.addStretch(widgetItem(myTiaZoom));
-  column.addFixed(alignedItem(myMessageBox, HAlign::Fill, VAlign::Center),
-                  myMessageBox->getHeight());
-  column.doLayout(xpos, r.y(), width, height);
+  // only if the width allows, so it fills the column and keeps its own height --
+  // and states the width below which its short labels would no longer fit, which
+  // is what stops the TIA image beside it from crowding the column.  The zoom
+  // view takes whatever is left; never force the message box's height, which
+  // frames its own text
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, vGap);
+  column->addAuto(alignedItem(myTiaInfo, HAlign::Fill, VAlign::Top,
+                              myTiaInfo->minWidth()));
+  column->addStretch(widgetItem(myTiaZoom));
+  column->addFixed(alignedItem(myMessageBox, HAlign::Fill, VAlign::Center),
+                   myMessageBox->getHeight());
+
+  return column;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -755,7 +807,7 @@ void DebuggerDialog::addRomArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::layoutRomArea()
+unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
 {
   using GUI::BoxLayout;
   using GUI::GridLayout;
@@ -766,7 +818,6 @@ void DebuggerDialog::layoutRomArea()
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const Common::Rect& r = getRomBounds();
   const int fontWidth = myLFont->getMaxCharWidth(),
             bheight = myLFont->getLineHeight() + 2;
 
@@ -839,121 +890,21 @@ void DebuggerDialog::layoutRomArea()
   };
 
   // The RAM area spans the full width below the CPU and asks for the height its
-  // content comes to; the disassembly tab takes everything that is left
-  BoxLayout column(Dir::Vertical);
-  column.addSpace(HGAP);
-  column.addAuto(band(std::move(topRow), HBORDER, HGAP));
-  column.addSpace(SECTION_GAP);
-  column.addAuto(band(alignedItem(myRam, HAlign::Fill, VAlign::Top), HBORDER, 0));
-  column.addSpace(HGAP);
-  column.addStretch(band(widgetItem(myRomTab), VBORDER, 1));
-  column.addSpace(1);
-  column.doLayout(r.x(), r.y(), r.w(), r.h());
+  // content comes to; the disassembly tab takes everything that is left, and
+  // says what its widest cart tab needs so the window minimum accounts for it
+  const Common::Size romNatural = myRomTab->naturalSize();
 
-  // The tab widget lays its own active content out, once it has been sized
-  myRomTab->updateTabSizes();
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical);
+  column->addSpace(HGAP);
+  column->addAuto(band(std::move(topRow), HBORDER, HGAP));
+  column->addSpace(SECTION_GAP);
+  column->addAuto(band(alignedItem(myRam, HAlign::Fill, VAlign::Top), HBORDER, 0));
+  column->addSpace(HGAP);
+  column->addStretch(band(widgetItem(myRomTab, static_cast<int>(romNatural.w),
+                                               static_cast<int>(romNatural.h)),
+                          VBORDER, 1));
+  column->addSpace(1);
+
+  return column;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DebuggerDialog::statusMinWidth() const
-{
-  // Whatever the status area holds, the TIA info fields must still fit, if only
-  // in their short-label form
-  return myTiaInfo->minWidth() + HBORDER;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getTiaBounds() const
-{
-  // The area showing the TIA image (NTSC and PAL supported, up to 274 lines
-  // without scaling).  Its height follows the dialog, and its width follows its
-  // height, so that the image keeps its proportion as it grows.  Extra width
-  // therefore goes to the status area beside it, which the image never crowds
-  // below the width its fields need
-  const int h = std::max<int>(FrameManager::Metrics::baseHeightPAL, _h * 0.35);
-  const int w = std::min<int>(
-      h * TIAConstants::viewableWidth / FrameManager::Metrics::baseHeightPAL,
-      _w / 2 - statusMinWidth() - 1);
-
-  return {0, 0, static_cast<uInt32>(std::max(w, 1)), static_cast<uInt32>(h)};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getRomBounds() const
-{
-  // The ROM area is the full area right of the dialog's centre line
-  return {
-    static_cast<uInt32>(_w / 2 + 1), 0,
-    static_cast<uInt32>(_w), static_cast<uInt32>(_h)
-  };
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getStatusBounds() const
-{
-  // The status area fills the rest of the left half, right of the TIA image
-  const Common::Rect& tia = getTiaBounds();
-
-  return {
-      tia.x() + tia.w() + 1,
-      0,
-      static_cast<uInt32>(_w / 2),
-      tia.y() + tia.h()
-  };
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DebuggerDialog::getMinHeight() const
-{
-  int minHeight = 0;
-
-  // TIA-area tabs (TIA / I/O / Audio) sit below the TIA image, which takes
-  // max(274, 0.35 * _h).  Find the smallest _h whose remaining height fits the
-  // tallest tab content, covering both regimes (TIA image fixed at 274, or
-  // proportional at 0.35 * _h); the larger of the two is the true minimum.
-  if(myTab != nullptr)
-  {
-    const int tabReq = myTab->getMaxContentHeight();
-    if(tabReq > 0)
-    {
-      // What the tab content asks for, plus the chrome around it: the tab bar,
-      // the frame inset above and below it, the gap getTabBounds() leaves under
-      // the TIA image and the border layoutTabArea() insets it by.  The content's
-      // own margins are already in tabReq, since naturalSize() carries them
-      const int extra = tabReq + myTab->getTabHeight()
-                      + 2 * TabWidget::CONTENT_BORDER + VBORDER + 1;
-      const int caseFixed = extra + static_cast<int>(FrameManager::Metrics::baseHeightPAL);
-      const int caseProp  = (extra * 20 + 12) / 13;  // ceil(extra / 0.65)
-
-      minHeight = std::max({minHeight, caseFixed, caseProp});
-    }
-  }
-
-  // ROM-area cart tabs (info / state) fill the window height below the
-  // CPU/RAM area, so their relationship to _h is linear.
-  if(myRomTab != nullptr)
-  {
-    const int cartReq = myRomTab->getMaxContentHeight();
-    if(cartReq > 0)
-      // As above: the tab bar, the frame inset above and below the content, and
-      // the pixel layoutRomArea() leaves below the tab.  The cart column's own
-      // margins are already in cartReq
-      minHeight = std::max(minHeight,
-        cartReq + myRomTab->getTop() + myRomTab->getTabHeight()
-                + 2 * TabWidget::CONTENT_BORDER + 1);
-  }
-
-  return minHeight;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getTabBounds() const
-{
-  // The tab area is the full area below the TIA image, left of the centre line
-  const Common::Rect& tia = getTiaBounds();
-
-  return {
-    0, tia.y() + tia.h() + 1,
-    static_cast<uInt32>(_w / 2 + 1), static_cast<uInt32>(_h)
-  };
-}

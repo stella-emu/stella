@@ -174,10 +174,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
-    LabelWidget*        myDebuggerWidthSliderLbl{nullptr};
-    SliderWidget*       myDebuggerWidthSlider{nullptr};
-    LabelWidget*        myDebuggerHeightSliderLbl{nullptr};
-    SliderWidget*       myDebuggerHeightSlider{nullptr};
     LabelWidget*        myDebuggerFontSizeLbl{nullptr};
     PopUpWidget*        myDebuggerFontSize{nullptr};
     LabelWidget*        myDebuggerFontStyleLbl{nullptr};
@@ -214,7 +210,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void handleUncompressed();
     void handleInterval();
     void handleHorizon();
-    void handleFontSize();
 
   private:
     // Following constructors and assignment operators not supported

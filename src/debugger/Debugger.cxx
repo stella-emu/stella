@@ -82,21 +82,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 Debugger::~Debugger() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Size Debugger::fontMinSize() const
-{
-  const string& fontSize = myOSystem.settings().getString("dbg.fontsize");
-
-  if(fontSize == "large")
-    return Common::Size(static_cast<uInt32>(DebuggerDialog::kLargeFontMinW),
-                        static_cast<uInt32>(DebuggerDialog::kLargeFontMinH));
-  if(fontSize == "medium")
-    return Common::Size(static_cast<uInt32>(DebuggerDialog::kMediumFontMinW),
-                        static_cast<uInt32>(DebuggerDialog::kMediumFontMinH));
-  return Common::Size(static_cast<uInt32>(DebuggerDialog::kSmallFontMinW),
-                      static_cast<uInt32>(DebuggerDialog::kSmallFontMinH));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::changeFont() const
 {
   myDialog->changeFont(myOSystem.settings().getString("dbg.fontsize"),
@@ -112,15 +97,14 @@ void Debugger::changeFont() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size Debugger::dialogMinSize() const
 {
-  // Start from the font-based minimum, then make sure the window is tall
-  // enough that the current ROM's fixed tab content (which can exceed the
-  // font minimum, e.g. for DPC+) is never clipped
-  Common::Size size = fontMinSize();
-
+  // The dialog's layout tree answers this: it accounts for the debugger font,
+  // the proportional TIA band and whatever the current ROM's tabs ask for.  A
+  // floor of one pixel keeps a size a window can actually be given, for the
+  // moment before the dialog exists
   if(myDialog != nullptr)
-    size.h = std::max(size.h, static_cast<uInt32>(myDialog->getMinHeight()));
+    return myDialog->minSize();
 
-  return size;
+  return Common::Size(1, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,22 +113,17 @@ void Debugger::initialize()
   mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
 
-  // The debugger dialog is resizable, within certain bounds.  Clamp to the
-  // font-based minimum first; the content-based minimum needs an existing
-  // dialog to measure, so it is enforced just below.
-  Common::Size minSize = fontMinSize();
-  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+  // Only a laid-out dialog can say how small the window may be -- that is what
+  // its layout tree reports -- so build it at the saved size first, then clamp
+  // to what it asks for.  The dialog reads mySize back the next time it lays out
+  // (from open()), so there is nothing to rebuild here
+  mySize.clamp(FBMinimum::Width, d.w, FBMinimum::Height, d.h);
 
   myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this,
                                               mySize.w, mySize.h);
 
-  // Some cart types need more height than the font minimum; grow the window if
-  // the freshly-created dialog would clip its tab content.  The dialog reads
-  // mySize back the next time it lays out (from open()), so there is nothing to
-  // rebuild here
-  minSize = dialogMinSize();
-  if(mySize.h < minSize.h)
-    mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+  const Common::Size minSize = dialogMinSize();
+  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
 
   myOSystem.settings().setValue("dbg.res", mySize);
 

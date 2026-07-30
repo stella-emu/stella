@@ -393,11 +393,6 @@ class Debugger : public DialogContainer
     void updateSize();
 
     /**
-      The minimum debugger window size for the currently configured font size.
-    */
-    Common::Size fontMinSize() const;
-
-    /**
       The minimum debugger window size: the font-based minimum, raised if
       necessary so the current dialog's fixed tab content is not clipped.
     */
@@ -425,8 +420,7 @@ class Debugger : public DialogContainer
     FunctionDefMap myFunctionDefs;
 
     // Dimensions of the entire debugger window
-    Common::Size mySize{DebuggerDialog::kSmallFontMinW,
-                        DebuggerDialog::kSmallFontMinH};
+    Common::Size mySize{FBMinimum::Width, FBMinimum::Height};
 
     // Live window-resize handling: throttle the re-flow, and settle once the
     // user stops dragging (see applyResize()/updateTime())

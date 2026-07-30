@@ -40,7 +40,7 @@ static constexpr int CYCLE_CHARS = 5,  // a cycle count for this frame
 struct RowLabel { string_view full; string_view abbr; };
 
 static constexpr std::array<RowLabel, 5> LEFT_LABELS{{
-  {"Frame Cycles", "F. Cycls"},
+  {"Frame Cycles", "Frame C."},
   {"WSync Cycles", "WSync C."},
   {"Timer Cycles", "Timer C."},
   {"Total",        "Total"},

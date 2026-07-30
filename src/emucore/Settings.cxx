@@ -184,9 +184,9 @@ Settings::Settings()
 
   // UI-related options
 #ifdef DEBUGGER_SUPPORT
-  setPermanent("dbg.res",
-    Common::Size(DebuggerDialog::kMediumFontMinW,
-                 DebuggerDialog::kMediumFontMinH));
+  // Only a starting point: the debugger raises this to whatever its layout says
+  // it needs for the configured font and the loaded ROM (Debugger::initialize)
+  setPermanent("dbg.res", Common::Size(FBMinimum::Width, FBMinimum::Height));
   setPermanent("dbg.pos", Common::Point(50, 50));
   setPermanent("dbg.display", 0);
 #endif
