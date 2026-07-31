@@ -143,16 +143,22 @@ class Widget : public GuiObject
     }
 
     /**
-      A self-labeling control (SliderWidget, PopUpWidget) draws its own label in
-      a column to the left of its track/value box.  That column is inside the
-      widget, so no layout can line one up with another's: instead a group of
-      them is given ONE column, sized to the longest of their labels, by
-      GUI::alignLabels() — which is what these three are for.  Everything else
-      has no label of its own and reports nothing.
+      What GUI::alignLabels() uses to give a group of labels ONE column, sized to
+      the longest of them, so that the controls they name line up down the group.
 
-      naturalLabelWidth() is what my own label needs; labelWidth() is what I have
-      been given; setLabelWidth() re-partitions me, keeping my track the width it
-      already was.
+      Only LabelWidget answers meaningfully — it IS a label, so what it needs and
+      what it has been given are simply its text width and its own width (see its
+      overrides).  Everything else names nothing and reports 0, which is why a
+      control must never be handed to alignLabels() in place of its label: that
+      compiles and silently contributes nothing.
+
+      naturalLabelWidth() is what my text needs; labelWidth() is what I have been
+      given; setLabelWidth() resizes me to a column the layout has chosen.
+
+      Nothing self-labels any more: SliderWidget and PopUpWidget used to draw
+      their own label beside their track/value box, which no layout could line up
+      from outside; they were split into a plain control plus an ordinary sibling
+      LabelWidget, paired by GUI::labeledRow().
     */
     virtual int naturalLabelWidth() const { return 0; }
     virtual int labelWidth() const { return 0; }

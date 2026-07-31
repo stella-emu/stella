@@ -448,41 +448,49 @@ unique_ptr<Layout> indentedItem(Widget* widget, int indent, int minW = 0);
 // which is right when the row's own edge IS what it should meet.
 unique_ptr<Layout> indentedFill(Widget* widget, int indent, int width = 0);
 
-// A self-labeling control, plus any indent the layout gives the row it sits in.
+// One entry in a shared label column: the LABEL widget naming a control, plus
+// any indent the layout gives the row it sits in.  It stays a Widget*, so
+// handing it the control instead still compiles — see the warning on
+// alignLabels() below.
 struct LabeledControl {
-  Widget* control{nullptr};
+  Widget* label{nullptr};
   int indent{0};
 };
 
-// Give a group of self-labeling controls (SliderWidget, PopUpWidget — they draw
-// their own label, see Widget::naturalLabelWidth) ONE label column, as wide as
-// the longest of their labels plus a character of clearance.  Their tracks and
-// value boxes then line up down the group, and a control the layout indents says
-// so, so its column is narrowed to match and the tracks still meet.
+// Give a group of LABELS — each naming a control beside it — ONE column, as wide
+// as the longest of them plus a character of clearance.  The controls they name
+// then line up down the group, and a label the layout indents says so, so its
+// column is narrowed to match and the controls still meet.  Pair it with
+// labeledRow(), which puts each label and its control on a row.
 //
 // This is the width counterpart of BoxLayout::addAuto(): no one names a label in
 // a string literal to measure it, and adding a longer label simply widens the
 // column.  Call it from the layout (a pane's builder), so it follows the font.
 //
-// ⚠ A group is a column of controls STACKED VERTICALLY, and near enough to each
-// other to read as one.  Two controls sharing a ROW cannot be aligned by it (their
-// tracks begin at different places whatever the column is), and controls rows apart
+// ⚠ Pass the LABEL, never the control it names.  Only LabelWidget reports a real
+// Widget::naturalLabelWidth(); PopUpWidget and SliderWidget stopped labelling
+// themselves when they were split from their leading strings, and inherit 0.
+// One passed here compiles, contributes nothing, and quietly drops itself from
+// the column — with no warning from the compiler.
+//
+// ⚠ A group is a column of labels STACKED VERTICALLY, and near enough to each
+// other to read as one.  Two of them sharing a ROW cannot be aligned by it (their
+// controls begin at different places whatever the column is), and labels rows apart
 // gain no alignment the eye can see.  Either way the only effect is to pad every
 // shorter label out to the longest one, opening a gap between a label and its box.
-// A control with nothing to line up with belongs in a group of ITS OWN, for the
+// A label with nothing to line up with belongs in a group of ITS OWN, for the
 // clearance below.
 //
-// ⚠ The clearance comes from HERE.  A self-labeling control left out of a group
-// derives its own column from its label text alone, so its box sits flush
-// against it — which is why some labels still carry a trailing space to fake the
-// gap ("Rate ", "X "). Put such a control in a group of its own rather than
-// padding its label: the padding is alignment hidden in a string, and it breaks
-// silently when the label is reworded.
-void alignLabels(std::initializer_list<LabeledControl> controls);
+// ⚠ The clearance comes from HERE.  A label left out of a group keeps its own
+// text width, so the control beside it sits flush against it — which is why some
+// labels still carry a trailing space to fake the gap ("Rate ", "X "). Put such a
+// label in a group of its own rather than padding it: the padding is alignment
+// hidden in a string, and it breaks silently when the label is reworded.
+void alignLabels(std::initializer_list<LabeledControl> labels);
 // ...and the same for a group whose membership is only known once it is built:
 // a cart debug tab's column is its ROM info rows plus whichever fields and bank
 // selectors that particular cart has under them
-void alignLabels(std::span<const LabeledControl> controls);
+void alignLabels(std::span<const LabeledControl> labels);
 
 // Give a group of buttons ONE width — the widest of them — so a column or a row
 // of them is not ragged.  A button already knows how wide its own label needs it
@@ -568,8 +576,9 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
 // sits just to its right, after an optional left 'indent'.  With fill=false
 // (the default) the control keeps its natural width; with fill=true it stretches
 // to fill the rest of the row — for edit/list fields that should widen with the
-// dialog.  For label + PopUp/Slider/edit rows where the widget is not
-// self-labeling; pass a shared 'labelW' to align controls across several rows.
+// dialog.  This is how EVERY label + PopUp/Slider/edit row is built — no control
+// labels itself.  Pass a shared 'labelW' to align controls across several rows,
+// or let alignLabels() equalize the labels first and leave it 0.
 // Note that 'labelW' is a column width, not the label's: leave room in it for
 // some clearance before the control.
 // The row is as tall as the taller of the two, and both are centered in it, so

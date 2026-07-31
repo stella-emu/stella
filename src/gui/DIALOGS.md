@@ -698,6 +698,8 @@ does the tab wiring.
 
 ```cpp
 // ctor: create the tab widget — no ctor geometry anywhere in this tree
+WidgetArray wid;
+
 myTab = new TabWidget(this, font);
 addTabWidget(myTab);
 
@@ -705,13 +707,19 @@ const int tabID = myTab->addTab(" General ", TabWidget::AUTO_WIDTH);
 auto* pane = new TabPaneWidget(myTab, _font);
 myTab->setPaneWidget(tabID, pane);
 
-// this tab's controls are parented to the PANE, not to myTab.  Neither
+// This tab's controls are parented to the PANE, not to myTab.  Neither
 // PopUpWidget nor SliderWidget draws its own label any more — each gets an
-// ordinary sibling LabelWidget, paired up below by labeledRow()
+// ordinary sibling LabelWidget, paired up below by labeledRow().  A slider
+// states how long a track it wants in CHARACTERS, never in pixels; a label
+// takes no focus, so only the controls go into the focus list
 myModeLbl  = new LabelWidget(pane, _font, "Mode");
-myMode       = new PopUpWidget(pane, _font, items, kModeChanged);
+myMode     = new PopUpWidget(pane, _font, items, kModeChanged);
+wid.push_back(myMode);
+
 mySpeedLbl = new LabelWidget(pane, _font, "Speed");
-mySpeed      = new SliderWidget(pane, _font, Dialog::fontWidth() * 10, kSpeedChanged);
+mySpeed    = new SliderWidget(pane, _font, 10, kSpeedChanged);
+wid.push_back(mySpeed);
+
 addToFocusList(wid, myTab, tabID);
 pane->setHelpAnchor("General");
 

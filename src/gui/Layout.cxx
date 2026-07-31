@@ -308,25 +308,25 @@ Common::Size BoxLayout::minSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void alignLabels(std::span<const LabeledControl> controls)
+void alignLabels(std::span<const LabeledControl> labels)
 {
-  // The column has to hold the longest label, and an indented control's label
-  // starts that much further in
+  // The column has to hold the longest label, and an indented label starts that
+  // much further in
   int width = 0;
-  for(const auto& c: controls)
-    width = std::max(width, c.control->naturalLabelWidth()
-                            + c.control->font().getMaxCharWidth() + c.indent);
+  for(const auto& l: labels)
+    width = std::max(width, l.label->naturalLabelWidth()
+                            + l.label->font().getMaxCharWidth() + l.indent);
 
-  // Each control's column ends at the same place, so the tracks beside them
+  // Each label's column ends at the same place, so the controls beside them
   // start there too
-  for(const auto& c: controls)
-    c.control->setLabelWidth(width - c.indent);
+  for(const auto& l: labels)
+    l.label->setLabelWidth(width - l.indent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void alignLabels(std::initializer_list<LabeledControl> controls)
+void alignLabels(std::initializer_list<LabeledControl> labels)
 {
-  alignLabels(std::span{controls.begin(), controls.size()});
+  alignLabels(std::span{labels.begin(), labels.size()});
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
