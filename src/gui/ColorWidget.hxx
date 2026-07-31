@@ -35,9 +35,41 @@ class ColorWidget : public Widget, public CommandSender
   friend class ColorDialog;
 
   public:
+    /**
+      Take this size.  For a swatch that must match something beside it rather
+      than stand at its own natural size -- the developer dialog's sits at a
+      width of its own choosing, the TIA tab's is inset within its row.
+    */
     ColorWidget(GuiObject* boss, const GUI::Font& font,
                 int w, int h, int cmd = 0, bool framed = true);
+
+    /**
+      Size me from my own font (see calcWidth/calcHeight below), which is what a
+      swatch simply showing a colour wants -- so the dialog states no size at all.
+
+      ⚠ Everything I take after a size is an int and a bool, so this constructor
+      and the one above are told apart by ARGUMENT COUNT alone: two leading ints
+      are a size, one is a command.  Write 'framed' as true/false and never as
+      0/1, or 'cmd, 0' silently reads as 'w, h' instead.
+    */
+    ColorWidget(GuiObject* boss, const GUI::Font& font, int cmd = 0,
+                bool framed = true);
     ~ColorWidget() override = default;
+
+    /**
+      The shape a colour sample wants: a line of text tall, and half again as
+      wide as it is tall.  Named here so that a dialog sizing a swatch to
+      something else states its own multiple against the same height, rather
+      than each one re-deriving the house proportion from the font.
+    */
+    static int calcHeight(const GUI::Font& font)
+    {
+      return font.getLineHeight();
+    }
+    static int calcWidth(const GUI::Font& font)
+    {
+      return calcHeight(font) * 1.5;
+    }
 
     void setColor(ColorId color);
     ColorId getColor() const { return _color;  }

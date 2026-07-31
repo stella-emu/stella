@@ -34,7 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                      const GUI::Font& nfont)
-  : Widget(boss, lfont, 0, 0),
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
   const int lineHeight = lfont.getLineHeight();
@@ -65,11 +65,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myColorRegs->setID(kColorRegsID);
   addFocusWidget(myColorRegs);
 
-  // A colour swatch is half again as wide as it is tall; reflow() re-applies
-  // both, so they follow the font
+  // A colour swatch stands at the house proportion (ColorWidget::calcWidth) and
+  // is inset a little within its row; buildLayout() re-applies both, so they
+  // follow the font.  A swatch draws no text, so it carries the tab's own font --
+  // the one its size is derived from -- rather than the grids' narrow one
   const auto swatch = [&]() {
-    auto* c = new ColorWidget(boss, nfont,
-                              static_cast<uInt32>(1.5 * lineHeight), lineHeight - 4);
+    auto* c = new ColorWidget(boss, lfont,
+                              ColorWidget::calcWidth(lfont), lineHeight - 4);
     c->setTarget(this);
     return c;
   };
@@ -553,8 +555,8 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
   const auto onRow = [](Widget* wid) {
     return alignedItem(wid, HAlign::Left, VAlign::Center);
   };
-  // A colour swatch is half again as wide as it is tall
-  const auto swatchW = static_cast<int>(1.5 * lineHeight);
+  // The house proportion for a colour swatch, stated once by the widget itself
+  const auto swatchW = ColorWidget::calcWidth(_font);
 
   ////////////////////////////////////////////////////////////////////
   // Top band: colour registers | fixed debug colours | collisions

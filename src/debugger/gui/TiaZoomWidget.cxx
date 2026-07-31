@@ -33,7 +33,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
-  : Widget(boss, font, 16, 16),
+  : Widget(boss, font),
     CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |
@@ -42,9 +42,11 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
 
   addFocusWidget(this);
 
-  // Size the view and grid from the placeholder area; setArea() redoes this
-  // for the real one
-  recomputeGrid(_w, _h);
+  // A zoom view has no size of its own -- setArea() gives it the real one and
+  // redoes this.  Until then the grid still has to be counted from something,
+  // so use a placeholder area big enough to yield a sane row and column count
+  constexpr int PLACEHOLDER_AREA = 16;
+  recomputeGrid(PLACEHOLDER_AREA, PLACEHOLDER_AREA);
 
   // Create context menu for zoom levels
   VariantList l;

@@ -497,8 +497,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth();
+  const int fontWidth = Dialog::fontWidth();
   const int pwidth = fontWidth * 6;
   WidgetArray wid;
   VariantList items;
@@ -569,8 +568,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     myDbgColourLbl[idx] = new LabelWidget(pane, font, desc);
     myDbgColour[idx] = new PopUpWidget(pane, font, pwidth, items, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
-    myDbgColourSwatch[idx] = new ColorWidget(
-      pane, font, static_cast<uInt32>(2 * lineHeight), lineHeight);
+    myDbgColourSwatch[idx] = new ColorWidget(pane, font);
   };
 
   createDebugColourWidgets(0, "Player 0");

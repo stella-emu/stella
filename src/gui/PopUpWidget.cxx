@@ -26,8 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int w, int h, const VariantList& items, int cmd)
-  : EditableWidget(boss, font, w, h + 2)
+                         int w, const VariantList& items, int cmd)
+  : EditableWidget(boss, font, w, font.getLineHeight() + 2)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
     | Widget::FLAG_TRACK_MOUSE;
@@ -55,15 +55,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd)
-  : PopUpWidget(boss, font, calcWidth(font, items), font.getLineHeight(),
-                items, cmd)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int w, const VariantList& items, int cmd)
-  : PopUpWidget(boss, font, w, font.getLineHeight(), items, cmd)
+  : PopUpWidget(boss, font, calcWidth(font, items), items, cmd)
 {
 }
 

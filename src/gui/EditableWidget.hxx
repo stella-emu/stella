@@ -45,9 +45,18 @@ class EditableWidget : public Widget, public CommandSender
       kChangedCmd = 'EDch'
     };
 
-  public:
+  protected:
+    /**
+      Take this size.  Nothing builds a bare EditableWidget: it is the shared base
+      of the edit field, the lists, the data grid and the pop-up, each of which
+      derives its own size (from its character count, its items, its rows) and
+      passes the result down.  A subclass with no size of its own -- a list, which
+      is whatever the layout gives it -- passes none.
+    */
     EditableWidget(GuiObject* boss, const GUI::Font& font,
-                   int w, int h, string_view str = "");
+                   int w = 0, int h = 0, string_view str = "");
+
+  public:
     ~EditableWidget() override = default;
 
     virtual void setText(string_view str, bool changed = false);

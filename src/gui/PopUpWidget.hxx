@@ -36,9 +36,6 @@ class ContextMenu;
 class PopUpWidget : public EditableWidget
 {
   public:
-    PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int w, int h, const VariantList& items, int cmd = 0);
-
     /**
       Size me from my own items: the value box is as wide as the widest of them
       and I am as tall as my font — so a dialog with a list of things to offer

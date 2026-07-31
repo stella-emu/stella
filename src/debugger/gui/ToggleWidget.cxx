@@ -25,7 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
                            int cols, int rows, int shiftBits)
-  : Widget(boss, font, 16, 16),
+  : Widget(boss, font),
     CommandSender(boss),
     _rows{rows},
     _cols{cols},

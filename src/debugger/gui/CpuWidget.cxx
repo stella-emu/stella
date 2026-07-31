@@ -31,7 +31,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont)
-  : Widget(boss, lfont, 0, 0),
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
   const std::array<string, 4> labels = { "SP", "A", "X", "Y" };

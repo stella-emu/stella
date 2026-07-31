@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font, bool useScrollbar)
-  : EditableWidget(boss, font, 16, 16),
+  : EditableWidget(boss, font),
     _useScrollbar{useScrollbar}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;

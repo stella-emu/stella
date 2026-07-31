@@ -673,7 +673,10 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
-  static constexpr std::array<uInt32, 11> LEFT_ARROW = {
+  // Icons rather than raw bitmaps, so the buttons holding them size themselves
+  // NOLINTBEGIN(bugprone-throwing-static-initialization)
+  static const GUI::Icon LEFT_ARROW(7, 11,
+  {
     0b0000010,
     0b0000110,
     0b0001110,
@@ -685,8 +688,9 @@ void DebuggerDialog::addRomArea()
     0b0001110,
     0b0000110,
     0b0000010
-  };
-  static constexpr std::array<uInt32, 11> RIGHT_ARROW = {
+  });
+  static const GUI::Icon RIGHT_ARROW(7, 11,
+  {
     0b0100000,
     0b0110000,
     0b0111000,
@@ -698,7 +702,8 @@ void DebuggerDialog::addRomArea()
     0b0111000,
     0b0110000,
     0b0100000
-  };
+  });
+  // NOLINTEND(bugprone-throwing-static-initialization)
 
   WidgetArray wid1, wid2;
 
@@ -707,7 +712,7 @@ void DebuggerDialog::addRomArea()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto addStepButton = [&](size_t idx, string_view label, int cmd,
                                  string_view tip, bool repeat) {
-    auto* b = new ButtonWidget(this, *myLFont, 1, 1, label, cmd, repeat);
+    auto* b = new ButtonWidget(this, *myLFont, label, cmd, repeat);
     b->setToolTip(tip);
     b->setHelpAnchor("GlobalButtons", true);
     myStepButtons[idx] = b;
@@ -720,21 +725,21 @@ void DebuggerDialog::addRomArea()
   addStepButton(4, "Run",      kDDRunCmd,   "Escape", false);
 
   myRewindButton =
-    new ButtonWidget(this, *myLFont, 1, 1,
-                     LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
+    new ButtonWidget(this, *myLFont, LEFT_ARROW, kDDRewindCmd, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   myUnwindButton =
-    new ButtonWidget(this, *myLFont, 1, 1,
-                     RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
+    new ButtonWidget(this, *myLFont, RIGHT_ARROW, kDDUnwindCmd, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
-  myOptionsButton = new ButtonWidget(this, *myLFont, 1, 1,
+  myOptionsButton = new ButtonWidget(this, *myLFont,
                                      "Options" + ELLIPSIS, kDDOptionsCmd);
+  // It heads the operations column, so it is trimmed like the op buttons under it
+  myOptionsButton->setCompact();
   wid1.push_back(myOptionsButton);
   wid1.push_back(myRewindButton);
   wid1.push_back(myUnwindButton);
@@ -818,8 +823,7 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int fontWidth = myLFont->getMaxCharWidth(),
-            bheight = myLFont->getLineHeight() + 2;
+  const int bheight = myLFont->getLineHeight() + 2;
 
   // Every column in this band -- the register grids, the grid operations and the
   // step buttons -- ends level with the others.  The grids set the height, and
@@ -860,11 +864,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
   arrowCol->place(0, 0, bandButton(myRewindButton), 1, 5);
   arrowCol->place(0, 6, bandButton(myUnwindButton), 1, 3);
 
-  // The Options button heads the operations column.  It keeps its width across a
-  // font change, so size it here; its height is the row's, like every other
-  myOptionsButton->setWidth(myLFont->getStringWidth(myOptionsButton->getLabel())
-                            + fontWidth);
-
+  // The Options button heads the operations column; it sizes its own width from
+  // its label (so it follows a font change), and takes its height from the row
   auto opsCol = myDataGridOps->buildLayout(VGAP, HGAP);
   opsCol->place(0, 0, alignedItem(myOptionsButton, HAlign::Left, VAlign::Fill), 2);
 

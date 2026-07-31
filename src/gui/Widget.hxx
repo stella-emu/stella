@@ -46,7 +46,13 @@ class Widget : public GuiObject
   friend class Dialog;
 
   public:
-    Widget(GuiObject* boss, const GUI::Font& font, int w, int h);
+    /**
+      A widget starts out with no size at all: every widget derives its own (from
+      its font, its text, its item list, its row count), and the layout it sits in
+      assigns the rest.  A subclass whose size IS its own business sets _w/_h in
+      its body -- there is nothing the base could do with a size but store it.
+    */
+    Widget(GuiObject* boss, const GUI::Font& font);
     ~Widget() override = default;
 
     int getAbsX() const override { return _x + _boss->getChildX(); }
@@ -283,10 +289,20 @@ class LabelWidget : public Widget, public CommandSender
       kOpenUrlCmd = 'STou'
     };
 
-  public:
+  protected:
+    /**
+      Take this size.  A label derives its own from its text (the ctor below), so
+      nothing outside builds one this way -- it is here for ButtonWidget, whose
+      size is its own affair and which passes it down.
+    */
     LabelWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
                 string_view text = "", TextAlign align = TextAlign::Left,
                 ColorId shadowColor = kNone);
+
+  public:
+    /**
+      Size me from my own text, which is all a dialog ever states about a label.
+    */
     LabelWidget(GuiObject* boss, const GUI::Font& font, string_view text = "",
                 TextAlign align = TextAlign::Left, ColorId shadowColor = kNone);
     ~LabelWidget() override = default;

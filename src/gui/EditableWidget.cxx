@@ -29,12 +29,15 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
                                int w, int h, string_view str)
-  : Widget(boss, font, w, h),
+  : Widget(boss, font),
     CommandSender(boss),
     _editString{str},
     myUndoHandler{std::make_unique<UndoHandler>()},
     _filter{[](char c) { return isprint(c) && c != '\"'; }}
 {
+  _w = w;
+  _h = h;
+
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;

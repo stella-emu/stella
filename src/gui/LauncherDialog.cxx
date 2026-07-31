@@ -73,10 +73,14 @@ class DividerWidget : public Widget, public CommandSender
 {
   public:
     DividerWidget(GuiObject* boss, const GUI::Font& font, int w, int cmd)
-      : Widget(boss, font, w, 0),
+      : Widget(boss, font),
         CommandSender(boss),
         myCmd{cmd}
     {
+      // My width is the dialog's choice; my height is the area I divide, which
+      // the dialog's layout gives me
+      _w = w;
+
       // FLAG_TRACK_MOUSE is required for handleMouseMoved() to be delivered
       // (Dialog only forwards moves to widgets that request mouse tracking)
       _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
@@ -284,24 +288,25 @@ int LauncherDialog::addRomWidgets()
 void LauncherDialog::addButtonWidgets()
 {
   WidgetArray wid;
-  // Four equal-width buttons at the bottom; geometry assigned by layout()
+  // Four equal-width buttons at the bottom; each sizes itself from its label and
+  // layout() then stretches them to share the row
 #ifndef BSPF_MACOS
-  myStartButton   = new ButtonWidget(this, _font, 1, 1, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
-  myGoUpButton    = new ButtonWidget(this, _font, 1, 1, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
-  myOptionsButton = new ButtonWidget(this, _font, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-  myQuitButton    = new ButtonWidget(this, _font, 1, 1, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton    = new ButtonWidget(this, _font, 1, 1, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
-  myOptionsButton = new ButtonWidget(this, _font, 1, 1, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-  myGoUpButton    = new ButtonWidget(this, _font, 1, 1, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
-  myStartButton   = new ButtonWidget(this, _font, 1, 1, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");

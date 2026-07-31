@@ -34,7 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont)
-  : EditableWidget(boss, nfont, 16, 16),
+  : EditableWidget(boss, nfont),
     _lfont{lfont},
     _rows{0}
 {

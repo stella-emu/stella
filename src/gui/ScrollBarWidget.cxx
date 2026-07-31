@@ -29,12 +29,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
-  // My width is my own business -- it follows the font.  My position and height
-  // are the list's, which sets them whenever it moves or resizes
-  : Widget(boss, font, scrollBarWidth(font), 0),
+  : Widget(boss, font),
     CommandSender(boss),
     _scrollBarWidth{scrollBarWidth(font)}
 {
+  // My width is my own business -- it follows the font.  My position and height
+  // are the list's, which sets them whenever it moves or resizes
+  _w = _scrollBarWidth;
+
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;

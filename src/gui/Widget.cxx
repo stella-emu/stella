@@ -30,8 +30,8 @@
 #include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::Widget(GuiObject* boss, const GUI::Font& font, int w, int h)
-  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), w, h),
+Widget::Widget(GuiObject* boss, const GUI::Font& font)
+  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), 0, 0),
     _boss{boss},
     _font{font},
     _fontWidth{_font.getMaxCharWidth()},
@@ -539,11 +539,14 @@ void Widget::refreshFontMetricsInList(const WidgetList& list)
 LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
                          int w, int h, string_view text,
                          TextAlign align, ColorId shadowColor)
-  : Widget(boss, font, w, h),
+  : Widget(boss, font),
     CommandSender(boss),
     _label{text},
     _align{align}
 {
+  _w = w;
+  _h = h;
+
   _flags = Widget::FLAG_ENABLED | FLAG_CLEARBG;
 
   _bgcolor = kDlgColor;

@@ -171,10 +171,7 @@ void Dialog::initHelp()
       const string key = instance().eventHandler().getMappingDesc(
         Event::UIHelp, EventMode::kMenuMode);
 
-      const int helpWidth = static_cast<int>(std::lround(_font.getMaxCharWidth() *
-                                                         3.5));
-      _helpWidget = new ButtonWidget(this, _font,
-        helpWidth, buttonHeight(), "?", kHelpCmd);
+      _helpWidget = new ButtonWidget(this, _font, "?", kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");
@@ -194,10 +191,8 @@ void Dialog::layoutHelp()
   // The help button sits in the top-right corner of the title bar
   if(_helpWidget != nullptr)
   {
-    // Resize for the current font first (it was created once, at ctor-font
-    // size, so a live font change would otherwise leave it stale)
-    _helpWidget->setWidth(static_cast<int>(std::lround(_font.getMaxCharWidth() * 3.5)));
-    _helpWidget->setHeight(buttonHeight());
+    // It sizes itself from its own label, and follows a live font change by
+    // itself (see ButtonWidget::refreshFontMetrics), so only its corner is ours
     _helpWidget->setPos(_w - _helpWidget->getWidth(), 0);
   }
 }
