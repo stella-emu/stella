@@ -1181,6 +1181,7 @@
     <ClCompile Include="..\..\gui\EmulationDialog.cxx" />
     <ClCompile Include="..\..\gui\FavoritesManager.cxx" />
     <ClCompile Include="..\..\gui\FileListWidget.cxx" />
+    <ClCompile Include="..\..\gui\FontManager.cxx" />
     <ClCompile Include="..\..\gui\GuiObject.cxx" />
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\..\gui\LauncherFileListWidget.cxx" />
@@ -2648,6 +2649,7 @@
     <ClInclude Include="..\..\gui\EmulationDialog.hxx" />
     <ClInclude Include="..\..\gui\FavoritesManager.hxx" />
     <ClInclude Include="..\..\gui\FileListWidget.hxx" />
+    <ClInclude Include="..\..\gui\FontManager.hxx" />
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx" />
     <ClInclude Include="..\..\gui\Icon.hxx" />
     <ClInclude Include="..\..\gui\LauncherFileListWidget.hxx" />
