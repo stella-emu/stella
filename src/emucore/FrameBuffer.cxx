@@ -40,15 +40,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
-  #include "StellaFont.hxx"
-  #include "ConsoleMediumFont.hxx"
-  #include "ConsoleMediumBFont.hxx"
-  #include "StellaMediumFont.hxx"
-  #include "StellaLargeFont.hxx"
-  #include "Stella12x24tFont.hxx"
-  #include "Stella14x28tFont.hxx"
-  #include "Stella16x32tFont.hxx"
-  #include "ConsoleFont.hxx"
+  #include "FontManager.hxx"
   #include "Launcher.hxx"
   #include "DialogContainer.hxx"
   #include "TimeMachine.hxx"
@@ -107,7 +99,7 @@ void FrameBuffer::initialize()
   }
 
 #ifdef GUI_SUPPORT
-  setupFonts();
+  setupTIAMinZoom();
 #endif
 
   updateTheme();
@@ -145,85 +137,42 @@ uInt32 FrameBuffer::displayId(BufferType bufferType) const
 
 #ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setupFonts()
+const GUI::Font& FrameBuffer::font() const
 {
-  ////////////////////////////////////////////////////////////////////
-  // Create fonts to draw text
-  // NOTE: the logic determining appropriate font sizes is done here,
-  //       so that the UI classes can just use the font they expect,
-  //       and not worry about it
-  //       This logic should also take into account the size of the
-  //       framebuffer, and try to be intelligent about font sizes
-  //       We can probably add ifdefs to take care of corner cases,
-  //       but that means we've failed to abstract it enough ...
-  ////////////////////////////////////////////////////////////////////
+  return myOSystem.fonts().font();
+}
 
-  // This font is used in a variety of situations when a really small
-  // font is needed; we let the specific widget/dialog decide when to
-  // use it
-  mySmallFont = std::make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& FrameBuffer::infoFont() const
+{
+  return myOSystem.fonts().infoFont();
+}
 
-  const string_view dialogFont = myOSystem.settings().getString("dialogfont");
-  const FontDesc fd = getFontDesc(dialogFont);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& FrameBuffer::smallFont() const
+{
+  return myOSystem.fonts().smallFont();
+}
 
-  // The general font used in all UI elements
-  myFont = std::make_unique<GUI::Font>(fd);                                //  default: 9x18
-  // The info font used in all UI elements,
-  //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
-  myInfoFont = std::make_unique<GUI::Font>(infoFontDesc(fd));             //  default 8x13
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& FrameBuffer::launcherFont() const
+{
+  return myOSystem.fonts().launcherFont();
+}
 
-  // Determine minimal zoom level based on the default font
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setupTIAMinZoom()
+{
+  // Determine minimal zoom level based on the dialog font
   //  So what fits with default font should fit for any font.
   //  However, we have to make sure all Dialogs are sized using the fontsize.
-  const int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
-  const int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
+  const FontDesc& fd = myOSystem.fonts().font().desc();
+  const FontDesc& ref = FontManager::referenceDesc();
+  const int zoom_h = (fd.height * 4 * 2) / ref.height;
+  const int zoom_w = (fd.maxwidth * 4 * 2) / ref.maxwidth;
+
   // round to 25% steps, >= 200%
   myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4., 2.);
-
-  // The font used by the ROM launcher
-  const string_view lf = myOSystem.settings().getString("launcherfont");
-
-  myLauncherFont = std::make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FontDesc FrameBuffer::getFontDesc(string_view name)
-{
-  if(name == "small")
-    return GUI::consoleDesc;        //  8x13
-  else if(name == "low_medium")
-    return GUI::consoleMediumBDesc; //  9x15
-  else if(name == "medium")
-    return GUI::stellaMediumDesc;   //  9x18
-  else if(name == "large" || name == "large10")
-    return GUI::stellaLargeDesc;    // 10x20
-  else if(name == "large12")
-    return GUI::stella12x24tDesc;   // 12x24
-  else if(name == "large14")
-    return GUI::stella14x28tDesc;   // 14x28
-  else // "large16"
-    return GUI::stella16x32tDesc;   // 16x32
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FontDesc FrameBuffer::infoFontDesc(const FontDesc& fd)
-{
-  constexpr int NUM_FONTS = 7;
-  const FontDesc FONT_DESC[NUM_FONTS] = {
-    GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
-    GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
-    GUI::stella16x32tDesc};
-
-  int fontIdx = 0;
-  for(int i = 0; i < NUM_FONTS; ++i)
-  {
-    if(fd.height <= FONT_DESC[i].height * 1.4)
-    {
-      fontIdx = i;
-      break;
-    }
-  }
-  return FONT_DESC[fontIdx];
 }
 #endif  // GUI_SUPPORT
 

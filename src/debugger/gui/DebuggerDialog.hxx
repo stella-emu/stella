@@ -53,8 +53,8 @@ class DebuggerDialog : public Dialog
                    int w, int h);
     ~DebuggerDialog() override;
 
-    const GUI::Font& lfont() const     { return *myLFont;        }
-    const GUI::Font& nfont() const     { return *myNFont;        }
+    const GUI::Font& lfont() const;
+    const GUI::Font& nfont() const;
     PromptWidget& prompt() const       { return *myPrompt;       }
     TiaInfoWidget& a() const           { return *myTiaInfo;      }
     TiaOutputWidget& tiaOutput() const { return *myTiaOutput;    }
@@ -70,14 +70,13 @@ class DebuggerDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
 
-    // Swap the label/normal font descriptors in place (allocating them on
-    // first call, from the constructor), so every widget's reference to
-    // *myLFont/*myNFont picks up the new glyphs and metrics without being
-    // recreated.
+    // Ask the FontManager to swap the label/normal font descriptors in place,
+    // so every widget's reference to them picks up the new glyphs and metrics
+    // without being recreated.
     void changeFont(string_view fontSize, int fontStyle);
 
     // Refresh cached font-derived widget state and re-flow after changeFont()
-    // -- like Dialog::refreshFont(), but also re-fonts the tooltip to myNFont
+    // -- like Dialog::refreshFont(), but also re-fonts the tooltip to nfont()
     // (the debugger's own font, not the shared dialog font used by _font).
     void refreshFont() override;
 
@@ -177,8 +176,6 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<OptionsDialog>   myOptions;
 
-    unique_ptr<GUI::Font> myLFont;  // used for labels
-    unique_ptr<GUI::Font> myNFont;  // used for normal text
     Widget* myFocusedWidget{nullptr};
     bool myExitPressed{false};
 

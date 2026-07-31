@@ -40,11 +40,7 @@
 #include "MessageBox.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
-#include "ConsoleFont.hxx"
-#include "ConsoleBFont.hxx"
-#include "ConsoleMediumFont.hxx"
-#include "ConsoleMediumBFont.hxx"
-#include "StellaMediumFont.hxx"
+#include "FontManager.hxx"
 #include "OptionsDialog.hxx"
 #include "BrowserDialog.hxx"
 #include "StateManager.hxx"
@@ -73,7 +69,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                                int w, int h)
   : Dialog(osystem, parent, w, h)
 {
-  // Font is sized according to available space
+  // Font is sized according to available space; the tooltip follows it
   changeFont(instance().settings().getString("dbg.fontsize"),
              instance().settings().getInt("dbg.fontstyle"));
 
@@ -488,78 +484,33 @@ void DebuggerDialog::doExitRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& DebuggerDialog::lfont() const
+{
+  return instance().fonts().debuggerLabelFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& DebuggerDialog::nfont() const
+{
+  return instance().fonts().debuggerTextFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::changeFont(string_view fontSize, int fontStyle)
 {
-  FontDesc lDesc, nDesc;
+  // Every widget already references the same two Font objects, so the
+  // FontManager swaps their descriptors in place; the new glyphs and metrics
+  // are picked up without recreating anything (see refreshFont())
+  instance().fonts().changeDebuggerFont(fontSize, fontStyle);
 
-  if(fontSize == "large")
-  {
-    // Large font doesn't use fontStyle at all
-    lDesc = nDesc = GUI::stellaMediumDesc;
-  }
-  else if(fontSize == "medium")
-  {
-    switch(fontStyle)
-    {
-      case 1:
-        lDesc = GUI::consoleMediumBDesc;
-        nDesc = GUI::consoleMediumDesc;
-        break;
-      case 2:
-        lDesc = GUI::consoleMediumDesc;
-        nDesc = GUI::consoleMediumBDesc;
-        break;
-      case 3:
-        lDesc = nDesc = GUI::consoleMediumBDesc;
-        break;
-      default: // default to zero
-        lDesc = nDesc = GUI::consoleMediumDesc;
-        break;
-    }
-  }
-  else
-  {
-    switch(fontStyle)
-    {
-      case 1:
-        lDesc = GUI::consoleBDesc;
-        nDesc = GUI::consoleDesc;
-        break;
-      case 2:
-        lDesc = GUI::consoleDesc;
-        nDesc = GUI::consoleBDesc;
-        break;
-      case 3:
-        lDesc = nDesc = GUI::consoleBDesc;
-        break;
-      default: // default to zero
-        lDesc = nDesc = GUI::consoleDesc;
-        break;
-    }
-  }
-
-  if(myLFont == nullptr)
-  {
-    myLFont = std::make_unique<GUI::Font>(lDesc);
-    myNFont = std::make_unique<GUI::Font>(nDesc);
-  }
-  else
-  {
-    // Every widget already references *myLFont/*myNFont directly, so
-    // swapping the descriptors in place picks up the new glyphs and metrics
-    // without recreating anything (see refreshFont())
-    myLFont->changeDesc(lDesc);
-    myNFont->changeDesc(nDesc);
-  }
-
-  tooltip().setFont(*myNFont);
+  tooltip().setFont(nfont());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::refreshFont()
 {
   Dialog::refreshFont();
-  tooltip().setFont(*myNFont);
+  tooltip().setFont(nfont());
 
   // The Options dialog is a separate Dialog; only allocated on first use, so
   // it must forward explicitly rather than assume it will always be freshly
@@ -579,7 +530,7 @@ void DebuggerDialog::showFatalMessage(string_view msg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  myTiaOutput = new TiaOutputWidget(this, *myNFont);
+  myTiaOutput = new TiaOutputWidget(this, nfont());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -594,31 +545,31 @@ void DebuggerDialog::addTabArea()
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 0
-  myTab = new TabWidget(this, *myLFont);
+  myTab = new TabWidget(this, lfont());
   myTab->setID(0);
   addTabWidget(myTab);
 
   // The Prompt/console tab
   int tabID = myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, *myNFont);
+  myPrompt = new PromptWidget(myTab, nfont());
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  myTiaTab = new TiaWidget(myTab, *myLFont, *myNFont);
+  myTiaTab = new TiaWidget(myTab, lfont(), nfont());
   myTab->setParentWidget(tabID, myTiaTab);
   addToFocusList(myTiaTab->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
-  myRiotTab = new RiotWidget(myTab, *myLFont, *myNFont);
+  myRiotTab = new RiotWidget(myTab, lfont(), nfont());
   myTab->setParentWidget(tabID, myRiotTab);
   addToFocusList(myRiotTab->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  myAudioTab = new AudioWidget(myTab, *myLFont, *myNFont);
+  myAudioTab = new AudioWidget(myTab, lfont(), nfont());
   myTab->setParentWidget(tabID, myAudioTab);
   addToFocusList(myAudioTab->getFocusList(), myTab, tabID);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -630,12 +581,12 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::addStatusArea()
 {
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont);
+  myTiaInfo = new TiaInfoWidget(this, lfont(), nfont());
 
-  myTiaZoom = new TiaZoomWidget(this, *myNFont);
+  myTiaZoom = new TiaZoomWidget(this, nfont());
   addToFocusList(myTiaZoom->getFocusList());
 
-  myMessageBox = new EditTextWidget(this, *myLFont, 1);
+  myMessageBox = new EditTextWidget(this, lfont(), 1);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myMessageBox->setEditable(false, false);
   myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);
@@ -652,7 +603,7 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildStatusArea()
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  const int vGap = myLFont->getLineHeight() / 3;
+  const int vGap = lfont().getLineHeight() / 3;
 
   // The info widget reports how tall its rows make it and spells its labels out
   // only if the width allows, so it fills the column and keeps its own height --
@@ -712,7 +663,7 @@ void DebuggerDialog::addRomArea()
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto addStepButton = [&](size_t idx, string_view label, int cmd,
                                  string_view tip, bool repeat) {
-    auto* b = new ButtonWidget(this, *myLFont, label, cmd, repeat);
+    auto* b = new ButtonWidget(this, lfont(), label, cmd, repeat);
     b->setToolTip(tip);
     b->setHelpAnchor("GlobalButtons", true);
     myStepButtons[idx] = b;
@@ -725,18 +676,18 @@ void DebuggerDialog::addRomArea()
   addStepButton(4, "Run",      kDDRunCmd,   "Escape", false);
 
   myRewindButton =
-    new ButtonWidget(this, *myLFont, LEFT_ARROW, kDDRewindCmd, true);
+    new ButtonWidget(this, lfont(), LEFT_ARROW, kDDRewindCmd, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   myUnwindButton =
-    new ButtonWidget(this, *myLFont, RIGHT_ARROW, kDDUnwindCmd, true);
+    new ButtonWidget(this, lfont(), RIGHT_ARROW, kDDUnwindCmd, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
-  myOptionsButton = new ButtonWidget(this, *myLFont,
+  myOptionsButton = new ButtonWidget(this, lfont(),
                                      "Options" + ELLIPSIS, kDDOptionsCmd);
   // It heads the operations column, so it is trimmed like the op buttons under it
   myOptionsButton->setCompact();
@@ -744,15 +695,15 @@ void DebuggerDialog::addRomArea()
   wid1.push_back(myRewindButton);
   wid1.push_back(myUnwindButton);
 
-  myDataGridOps = new DataGridOpsWidget(this, *myLFont);
+  myDataGridOps = new DataGridOpsWidget(this, lfont());
 
-  myCpu = new CpuWidget(this, *myLFont, *myNFont);
+  myCpu = new CpuWidget(this, lfont(), nfont());
   addToFocusList(myCpu->getFocusList());
 
   addToFocusList(wid1);
   addToFocusList(wid2);
 
-  myRam = new RiotRamWidget(this, *myLFont, *myNFont);
+  myRam = new RiotRamWidget(this, lfont(), nfont());
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
@@ -765,13 +716,13 @@ void DebuggerDialog::addRomArea()
 
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 1
-  myRomTab = new TabWidget(this, *myLFont);
+  myRomTab = new TabWidget(this, lfont());
   myRomTab->setID(1);
   addTabWidget(myRomTab);
 
   // The main disassembly tab
   int tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
-  myRom = new RomWidget(myRomTab, *myLFont, *myNFont);
+  myRom = new RomWidget(myRomTab, lfont(), nfont());
   myRom->setHelpAnchor("Disassembly", true);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
@@ -780,7 +731,7 @@ void DebuggerDialog::addRomArea()
   // content it will hold is created: a cart widget parents its children to us,
   // and they join whichever tab is active at that moment (see setActiveTab)
   tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
-  myCartInfo = instance().console().cartridge().infoWidget(myRomTab, *myLFont, *myNFont);
+  myCartInfo = instance().console().cartridge().infoWidget(myRomTab, lfont(), nfont());
   if(myCartInfo != nullptr)
   {
     myRomTab->setParentWidget(tabID, myCartInfo);
@@ -790,7 +741,7 @@ void DebuggerDialog::addRomArea()
 
   // The 'cart-specific' state tab, which every scheme has (Cartridge's
   // debugWidget() is pure, so one cannot be added without it)
-  myCartDebug = instance().console().cartridge().debugWidget(myRomTab, *myLFont, *myNFont);
+  myCartDebug = instance().console().cartridge().debugWidget(myRomTab, lfont(), nfont());
   myRomTab->setHelpAnchor("BankswitchInformation", true);
   myRomTab->setParentWidget(tabID, myCartDebug);
   addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
@@ -800,7 +751,7 @@ void DebuggerDialog::addRomArea()
   {
     tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
     myCartRam =
-      new CartRamWidget(myRomTab, *myLFont, *myNFont, *myCartDebug);
+      new CartRamWidget(myRomTab, lfont(), nfont(), *myCartDebug);
     myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
     myRomTab->setParentWidget(tabID, myCartRam);
     addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
@@ -823,7 +774,7 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
   using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
-  const int bheight = myLFont->getLineHeight() + 2;
+  const int bheight = lfont().getLineHeight() + 2;
 
   // Every column in this band -- the register grids, the grid operations and the
   // step buttons -- ends level with the others.  The grids set the height, and
@@ -831,7 +782,7 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
   // fixed VGAP between each: the engine divides the same slack the same way in
   // every column, so they stay level at any font without anyone measuring anyone.
   // The rows take the slack rather than the gaps, so it goes into the buttons
-  const int bwidth = myLFont->getStringWidth("Frame +1 ");
+  const int bwidth = lfont().getStringWidth("Frame +1 ");
   const int lastRow = (DataGridOpsWidget::ROWS - 1) * 2;
 
   const auto bandRows = [&](int cols, int hGap) {

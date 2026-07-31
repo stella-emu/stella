@@ -55,6 +55,7 @@
 #include "TimerManager.hxx"
 #ifdef GUI_SUPPORT
   #include "HighScoresManager.hxx"
+  #include "FontManager.hxx"
 #endif
 #include "Version.hxx"
 #include "TIA.hxx"
@@ -144,6 +145,12 @@ bool OSystem::initialize(const Settings::Options& options)
     AsciiFold::toAscii(cheatFile().getShortPath()),
 #endif
     AsciiFold::toAscii(paletteFile().getShortPath())));
+
+#ifdef GUI_SUPPORT
+  // The fonts come first, since the framebuffer sizes itself from the
+  // dialog font.  Nothing here touches the video hardware
+  myFontManager = std::make_unique<FontManager>(*this);
+#endif
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware

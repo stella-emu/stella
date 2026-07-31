@@ -37,6 +37,7 @@ class AudioSettings;
   class Debugger;
 #endif
 #ifdef GUI_SUPPORT
+  class FontManager;
   class Launcher;
   class OverlayMenu;
   class TimeMachine;
@@ -155,6 +156,13 @@ class OSystem
       @return The highscore manager object
     */
     HighScoresManager& highScores() const { return *myHighScoresManager; }
+
+    /**
+      Get the font manager of the system, which owns every UI font.
+
+      @return The font manager object
+    */
+    FontManager& fonts() const { return *myFontManager; }
   #endif
 
     /**
@@ -568,6 +576,10 @@ class OSystem
   #ifdef GUI_SUPPORT
     // Pointer to the HighScoresManager object
     unique_ptr<HighScoresManager> myHighScoresManager;
+
+    // Pointer to the FontManager object, which owns every UI font.  It is
+    // created before the FrameBuffer, which asks it for the dialog font
+    unique_ptr<FontManager> myFontManager;
   #endif
 
     // Indicates whether ROM launcher was ever opened during this run

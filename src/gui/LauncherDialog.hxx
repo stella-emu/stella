@@ -186,9 +186,6 @@ class LauncherDialog : public Dialog, CommandSender
     unique_ptr<Dialog> myDialog;
     unique_ptr<ContextMenu> myContextMenu;
 
-    // automatically sized font for ROM info viewer
-    unique_ptr<GUI::Font> myROMInfoFont;
-
     ButtonWidget*   mySettingsButton{nullptr};
     LabelWidget*    myFilterLbl{nullptr};
     EditTextWidget* myPattern{nullptr};

@@ -32,7 +32,7 @@
 #include "Widget.hxx"
 #include "Layout.hxx"
 #include "Font.hxx"
-#include "StellaMediumFont.hxx"
+#include "FontManager.hxx"
 #include "LauncherDialog.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -88,13 +88,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Dialog font
   items.clear();
-  VarList::push_back(items, "Small", "small");            //  8x13
-  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
-  VarList::push_back(items, "Medium", "medium");          //  9x18
-  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
-  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
-  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
-  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
+  for(const auto& entry: FontManager::uiFonts())
+    VarList::push_back(items, entry.label, entry.name);
   myDialogFontLbl = new LabelWidget(lookPane, font, "Dialogs font");
   myDialogFontPopup = new PopUpWidget(lookPane, font, items, kDialogFont);
   wid.push_back(myDialogFontPopup);
@@ -258,13 +253,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Launcher font
   items.clear();
-  VarList::push_back(items, "Small", "small");            //  8x13
-  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
-  VarList::push_back(items, "Medium", "medium");          //  9x18
-  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
-  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
-  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
-  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
+  for(const auto& entry: FontManager::uiFonts())
+    VarList::push_back(items, entry.label, entry.name);
   myLauncherFontLbl = new LabelWidget(launchPane, font, "Launcher font");
   myLauncherFontPopup = new PopUpWidget(launchPane, font, items);
   wid.push_back(myLauncherFontPopup);
@@ -728,7 +718,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         // Change the dialog font in place, then re-font every open dialog.  A
         // dialog that no longer fits the window is detected + reported when it
         // (re)opens via Dialog::open() (see Dialog::exceedsScreen)
-        instance().frameBuffer().changeDialogFont(
+        instance().fonts().changeDialogFont(
             instance().settings().getString("dialogfont"));
         parent().refreshFont();
       }
@@ -811,12 +801,13 @@ void UIDialog::handleLauncherSize()
 {
   // Determine minimal launcher sizebased on the default font
   //  So what fits with default font should fit for any font.
-  const FontDesc& fd = FrameBuffer::getFontDesc(
+  const FontDesc& fd = FontManager::fontDesc(
       myDialogFontPopup->getSelectedTag().toString());
+  const FontDesc& ref = FontManager::referenceDesc();
   const int w = std::max(FBMinimum::Width, FBMinimum::Width *
-      fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
+      fd.maxwidth / ref.maxwidth);
   const int h = std::max(FBMinimum::Height, FBMinimum::Height *
-      fd.height / GUI::stellaMediumDesc.height);
+      fd.height / ref.height);
   const Common::Size& ds =
       instance().frameBuffer().desktopSize(BufferType::Launcher);
 

@@ -477,60 +477,14 @@ class FrameBuffer
 
   #ifdef GUI_SUPPORT
     /**
-      Get the font object(s) of the framebuffer
+      Get the font object(s) used by the UI.  The fonts are owned by the
+      FontManager; these are here because the UI classes reach their fonts
+      through the framebuffer
     */
-    const GUI::Font& font() const { return *myFont; }
-    const GUI::Font& infoFont() const { return *myInfoFont; }
-    const GUI::Font& smallFont() const { return *mySmallFont; }
-    const GUI::Font& launcherFont() const { return *myLauncherFont; }
-
-    /**
-      Change the launcher font at runtime.  The existing Font object is mutated
-      in place (rather than replaced) so that every widget's reference to it
-      stays valid and immediately picks up the new glyphs and metrics.  Callers
-      must afterwards refresh font-derived state cached by the launcher widgets
-      and re-run its layout (see LauncherDialog).
-
-      @param name  The settings name of the new launcher font
-    */
-    void changeLauncherFont(string_view name) {
-      myLauncherFont->changeDesc(getFontDesc(name));
-    }
-
-    /**
-      Change the dialog font at runtime.  Like changeLauncherFont(), the Font
-      objects are mutated in place so every widget's reference stays valid.
-      The dialog font drives both the general UI font and the (auto-sized) info
-      font, so both are updated.  Callers must afterwards refresh the cached
-      font-derived state of the affected dialogs and re-run their layout
-      (see DialogContainer::refreshFont / Dialog::refreshFont).
-
-      @param name  The settings name of the new dialog font
-    */
-    void changeDialogFont(string_view name) {
-      const FontDesc fd = getFontDesc(name);
-      myFont->changeDesc(fd);
-      myInfoFont->changeDesc(infoFontDesc(fd));
-    }
-
-    /**
-      Get the font description from the font name
-
-      @param name  The settings name of the font
-
-      @return  The description of the font
-    */
-    static FontDesc getFontDesc(string_view name);
-
-    /**
-      Determine the info-font description that pairs with a given dialog font,
-      aiming for roughly a 1 / 1.4 size ratio.
-
-      @param fd  The dialog font description
-
-      @return  The matching info font description
-    */
-    static FontDesc infoFontDesc(const FontDesc& fd);
+    const GUI::Font& font() const;
+    const GUI::Font& infoFont() const;
+    const GUI::Font& smallFont() const;
+    const GUI::Font& launcherFont() const;
   #endif  // GUI_SUPPORT
 
     /**
@@ -660,9 +614,10 @@ class FrameBuffer
 
   #ifdef GUI_SUPPORT
     /**
-      Setup the UI fonts
+      Determine the minimal TIA zoom level from the dialog font, so that what
+      fits with the reference font also fits with a larger one
     */
-    void setupFonts();
+    void setupTIAMinZoom();
   #endif  // GUI_SUPPORT
 
     /**
@@ -740,20 +695,6 @@ class FrameBuffer
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality
     VideoModeHandler myVidModeHandler;
-
-  #ifdef GUI_SUPPORT
-    // The font object to use for the normal in-game GUI
-    unique_ptr<GUI::Font> myFont;
-
-    // The info font object to use for the normal in-game GUI
-    unique_ptr<GUI::Font> myInfoFont;
-
-    // The font object to use when space is very limited
-    unique_ptr<GUI::Font> mySmallFont;
-
-    // The font object to use for the ROM launcher
-    unique_ptr<GUI::Font> myLauncherFont;
-  #endif  // GUI_SUPPORT
 
     // The TIASurface class takes responsibility for TIA rendering
     shared_ptr<TIASurface> myTIASurface;

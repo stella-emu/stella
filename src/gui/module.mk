@@ -18,6 +18,7 @@ MODULE_OBJS := \
         src/gui/FavoritesManager.o \
         src/gui/FileListWidget.o \
         src/gui/Font.o \
+        src/gui/FontManager.o \
         src/gui/GameInfoDialog.o \
         src/gui/GlobalPropsDialog.o \
         src/gui/GuiObject.o \

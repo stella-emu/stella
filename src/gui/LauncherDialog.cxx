@@ -49,15 +49,8 @@
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "Font.hxx"
+#include "FontManager.hxx"
 #include "Layout.hxx"
-#include "StellaFont.hxx"
-#include "ConsoleBFont.hxx"
-#include "ConsoleMediumBFont.hxx"
-#include "StellaMediumFont.hxx"
-#include "StellaLargeFont.hxx"
-#include "Stella12x24tFont.hxx"
-#include "Stella14x28tFont.hxx"
-#include "Stella16x32tFont.hxx"
 #include "Icons.hxx"
 #include "Version.hxx"
 #include "MediaFactory.hxx"
@@ -274,10 +267,11 @@ int LauncherDialog::addRomWidgets()
     setRomInfoFont(fontArea);
 
     // Now we have the correct font height
-    imageHeight = imageWidth + RomImageWidget::labelHeight(*myROMInfoFont);
-    myRomImageWidget = new RomImageWidget(this, *myROMInfoFont);
+    const GUI::Font& romInfoFont = instance().fonts().romInfoFont();
+    imageHeight = imageWidth + RomImageWidget::labelHeight(romInfoFont);
+    myRomImageWidget = new RomImageWidget(this, romInfoFont);
     wid.push_back(myRomImageWidget);
-    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont);
+    myRomInfoWidget = new RomInfoWidget(this, romInfoFont);
     // Draggable divider between the list and the ROM info column
     myDivider = new DividerWidget(this, _font, fontWidth, kRomWidthCmd);
   }
@@ -497,11 +491,12 @@ void LauncherDialog::layout()
       // The image cell and the column are fixed at the current (fraction- and
       // clamp-derived) width, but both compress as the window shrinks: declare
       // their floors so minSize() reports a size-independent minimum
-      const int labelHeight = RomImageWidget::labelHeight(*myROMInfoFont);
+      const GUI::Font& romInfoFont = instance().fonts().romInfoFont();
+      const int labelHeight = RomImageWidget::labelHeight(romInfoFont);
       auto romCol = std::make_unique<BoxLayout>(Dir::Vertical);
       romCol->addFixed(widgetItem(myRomImageWidget, minRomW),
                        imageWidth + labelHeight, minRomW + labelHeight);
-      romCol->addSpace(myROMInfoFont->getFontHeight() / 2);
+      romCol->addSpace(romInfoFont.getFontHeight() / 2);
       romCol->addStretch(widgetItem(myRomInfoWidget, minRomW, fontHeight * 2));
       row->addFixed(std::move(romCol), imageWidth, minRomW);
     }
@@ -804,28 +799,24 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
 {
   // TODO: Perhaps offer a setting to override the font used?
 
-  const FontDesc FONTS[7] = {
-    GUI::stella16x32tDesc, GUI::stella14x28tDesc, GUI::stella12x24tDesc,
-    GUI::stellaLargeDesc, GUI::stellaMediumDesc,
-    GUI::consoleMediumBDesc, GUI::consoleBDesc
-  };
-
-  // Try to pick a font that works best, based on the available area
-  for(const auto& font: FONTS)
+  // Try to pick a font that works best, based on the available area.  The
+  // candidates come from the font registry, but which of them fits is a
+  // question about this dialog's layout, so it is decided here
+  for(const FontDesc* font: FontManager::romInfoFonts())
   {
     // only use fonts <= launcher fonts
-    if(Dialog::fontHeight() >= font.height)
+    if(Dialog::fontHeight() >= font->height)
     {
       if(std::cmp_greater_equal(area.h,
-            MIN_ROMINFO_ROWS * font.height + 2 + MIN_ROMINFO_LINES * font.height)
-         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font.maxwidth))
+            MIN_ROMINFO_ROWS * font->height + 2 + MIN_ROMINFO_LINES * font->height)
+         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font->maxwidth))
       {
-        myROMInfoFont = std::make_unique<GUI::Font>(font);
+        instance().fonts().changeRomInfoFont(*font);
         return;
       }
     }
   }
-  myROMInfoFont = std::make_unique<GUI::Font>(GUI::stellaDesc);
+  instance().fonts().changeRomInfoFont(FontManager::smallestDesc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1237,7 +1228,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       // The launcher font was changed at runtime.  Swap it in place (every
       // widget references the same Font object), then refresh the cached
       // font-derived state and re-flow — no restart required.
-      instance().frameBuffer().changeLauncherFont(
+      instance().fonts().changeLauncherFont(
           instance().settings().getString("launcherfont"));
       refreshFont();
       // A larger font can raise the content minimum past the window's

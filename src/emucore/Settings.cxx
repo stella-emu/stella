@@ -27,6 +27,7 @@
 #include "CartELF.hxx"
 #ifdef GUI_SUPPORT
   #include "JitterEmulation.hxx"
+  #include "FontManager.hxx"
 #endif
 
 #ifdef DEBUGGER_SUPPORT
@@ -438,9 +439,19 @@ void Settings::validate()
                              static_cast<int>(Logger::Level::INFO));
   if(getInt("romviewer") < 0) setValue("romviewer", 0);
 
-  requireOneOf("launcherfont", {"small", "low_medium", "medium", "large",
-                                "large12", "large14", "large16"}, "medium");
+#ifdef GUI_SUPPORT
+  // The UI font names belong to the font registry, so they are checked
+  // against it rather than against a copy of the list
+  if(!FontManager::isUIFont(getString("launcherfont")))
+    setValue("launcherfont", "medium");
+  if(!FontManager::isUIFont(getString("dialogfont")))
+    setValue("dialogfont", "medium");
+#endif
+#ifdef DEBUGGER_SUPPORT
+  // The debugger picks its fonts by size, not by name; these are not the
+  // same fonts the general UI means by "medium" and "large"
   requireOneOf("dbg.fontsize", {"small", "medium", "large"}, "medium");
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
