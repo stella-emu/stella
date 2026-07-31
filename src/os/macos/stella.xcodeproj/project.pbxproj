@@ -665,6 +665,10 @@
 		DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
+		DCD595B8301D0348009AD867 /* SECAMSignal.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD595B4301D0348009AD867 /* SECAMSignal.hxx */; };
+		DCD595B9301D0348009AD867 /* TVGeometry.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD595B6301D0348009AD867 /* TVGeometry.hxx */; };
+		DCD595BA301D0348009AD867 /* SECAMSignal.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD595B5301D0348009AD867 /* SECAMSignal.cxx */; };
+		DCD595BB301D0348009AD867 /* TVGeometry.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD595B7301D0348009AD867 /* TVGeometry.cxx */; };
 		DCD6FC7011C281ED005DA767 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC5D11C281ED005DA767 /* png.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DCD6FC7111C281ED005DA767 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5E11C281ED005DA767 /* png.h */; };
 		DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5F11C281ED005DA767 /* pngconf.h */; };
@@ -1562,6 +1566,10 @@
 		DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Genesis.hxx; sourceTree = "<group>"; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Cart4A50.cxx; sourceTree = "<group>"; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Cart4A50.hxx; sourceTree = "<group>"; };
+		DCD595B4301D0348009AD867 /* SECAMSignal.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SECAMSignal.hxx; sourceTree = "<group>"; };
+		DCD595B5301D0348009AD867 /* SECAMSignal.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SECAMSignal.cxx; sourceTree = "<group>"; };
+		DCD595B6301D0348009AD867 /* TVGeometry.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TVGeometry.hxx; sourceTree = "<group>"; };
+		DCD595B7301D0348009AD867 /* TVGeometry.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TVGeometry.cxx; sourceTree = "<group>"; };
 		DCD6FC5D11C281ED005DA767 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = png.c; sourceTree = "<group>"; };
 		DCD6FC5E11C281ED005DA767 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		DCD6FC5F11C281ED005DA767 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
@@ -2663,9 +2671,13 @@
 				DCAE61E02FCDE63700D23847 /* PALSignal.cxx */,
 				DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */,
 				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
+				DCD595B4301D0348009AD867 /* SECAMSignal.hxx */,
+				DCD595B5301D0348009AD867 /* SECAMSignal.cxx */,
 				DC2AADAD194F389C0026C7A4 /* Television.hxx */,
 				DC2AADAC194F389C0026C7A4 /* Television.cxx */,
 				DCAE61E12FCDE63700D23847 /* TVAdjustable.hxx */,
+				DCD595B6301D0348009AD867 /* TVGeometry.hxx */,
+				DCD595B7301D0348009AD867 /* TVGeometry.cxx */,
 				DCAE61E22FCDE63700D23847 /* TVMode.hxx */,
 				DCAE61E32FCDE63700D23847 /* TVSignal.hxx */,
 				DCAE61E42FCDE63700D23847 /* TVSignal.cxx */,
@@ -3056,6 +3068,8 @@
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
 				DCC2FDFA2566AD8800FA5E81 /* DataGridRamWidget.hxx in Headers */,
 				DC1E89072C4033280033E15F /* ElfParser.hxx in Headers */,
+				DCD595B8301D0348009AD867 /* SECAMSignal.hxx in Headers */,
+				DCD595B9301D0348009AD867 /* TVGeometry.hxx in Headers */,
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
 				DC3C9BC62469C8F700CF2D47 /* PaletteHandler.hxx in Headers */,
 				2D91745A09BA90380026E9FF /* RamWidget.hxx in Headers */,
@@ -3639,6 +3653,8 @@
 				DC3EE8691E2C0E6D00905161 /* trees.c in Sources */,
 				E08FCD5623A037EB0051F59B /* BilinearBlitter.cxx in Sources */,
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
+				DCD595BA301D0348009AD867 /* SECAMSignal.cxx in Sources */,
+				DCD595BB301D0348009AD867 /* TVGeometry.cxx in Sources */,
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC1E89042C4033280033E15F /* ElfLinker.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
