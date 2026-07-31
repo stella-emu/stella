@@ -355,6 +355,8 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC4F3C11301D016C00F6323E /* FontManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4F3C0F301D016C00F6323E /* FontManager.hxx */; };
+		DC4F3C12301D016C00F6323E /* FontManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4F3C10301D016C00F6323E /* FontManager.cxx */; };
 		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC564F6028C10A8500177588 /* http_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC564F5E28C10A8500177588 /* http_lib.hxx */; };
 		DC564F6128C10A8500177588 /* httplib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC564F5F28C10A8500177588 /* httplib.h */; };
@@ -1257,6 +1259,8 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RiotWidget.hxx; sourceTree = "<group>"; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SaveKey.cxx; sourceTree = "<group>"; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SaveKey.hxx; sourceTree = "<group>"; };
+		DC4F3C0F301D016C00F6323E /* FontManager.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FontManager.hxx; sourceTree = "<group>"; };
+		DC4F3C10301D016C00F6323E /* FontManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FontManager.cxx; sourceTree = "<group>"; };
 		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC564F5E28C10A8500177588 /* http_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = http_lib.hxx; path = ../../lib/httplib/http_lib.hxx; sourceTree = "<group>"; };
 		DC564F5F28C10A8500177588 /* httplib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = httplib.h; path = ../../lib/httplib/httplib.h; sourceTree = "<group>"; };
@@ -2433,6 +2437,8 @@
 				DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */,
 				2D9217FC0857CC88001D664B /* Font.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
+				DC4F3C0F301D016C00F6323E /* FontManager.hxx */,
+				DC4F3C10301D016C00F6323E /* FontManager.cxx */,
 				2DDBEAB3084578BF00812C11 /* GameInfoDialog.hxx */,
 				2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */,
 				DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */,
@@ -3122,6 +3128,7 @@
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC70D8FD2F87DAF300484BD8 /* SpanStream.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
+				DC4F3C11301D016C00F6323E /* FontManager.hxx in Headers */,
 				DC0EF9512C5D4B900007F3B5 /* json.hpp in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
@@ -3602,6 +3609,7 @@
 				E08FCD5423A037EB0051F59B /* BlitterFactory.cxx in Sources */,
 				2D9174F909BA90380026E9FF /* DataGridWidget.cxx in Sources */,
 				DC2ABA7325A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.cxx in Sources */,
+				DC4F3C12301D016C00F6323E /* FontManager.cxx in Sources */,
 				2D9174FA09BA90380026E9FF /* DebuggerDialog.cxx in Sources */,
 				DCF3A6E91DFC75E3008A8AF3 /* Ball.cxx in Sources */,
 				2D9174FB09BA90380026E9FF /* PromptWidget.cxx in Sources */,
