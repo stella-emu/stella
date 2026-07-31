@@ -149,7 +149,7 @@ bool OSystem::initialize(const Settings::Options& options)
 #ifdef GUI_SUPPORT
   // The fonts come first, since the framebuffer sizes itself from the
   // dialog font.  Nothing here touches the video hardware
-  myFontManager = std::make_unique<FontManager>(*this);
+  myFontManager = std::make_unique<FontManager>(settings());
 #endif
 
   // NOTE: The framebuffer MUST be created before any other object!!!

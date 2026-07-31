@@ -41,6 +41,7 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "DebuggerDialog.hxx"
+  #include "FontManager.hxx"
 #endif
 #include "DeveloperDialog.hxx"
 
@@ -802,9 +803,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // font size
   items.clear();
-  VarList::push_back(items, "Small", "small");
-  VarList::push_back(items, "Medium", "medium");
-  VarList::push_back(items, "Large", "large");
+  for(const auto& entry: FontManager::debuggerFonts())
+    VarList::push_back(items, entry.label, entry.name);
   myDebuggerFontSizeLbl = new LabelWidget(pane, font, "Font size");
   myDebuggerFontSize = new PopUpWidget(pane, font, items, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
@@ -1019,8 +1019,11 @@ void DeveloperDialog::loadConfig()
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger font size
-  const string size = instance().settings().getString("dbg.fontsize");
-  myDebuggerFontSize->setSelected(size, "medium");
+  // One pop-up drives both debugger roles; the two settings can still be
+  // given different fonts by hand, and the text font is what shows here
+  const string size = instance().settings().getString(
+      FontManager::settingKey(FontManager::FontRole::DebuggerText));
+  myDebuggerFontSize->setSelected(size, "low_medium");
 
   // Debugger font style
   const int style = instance().settings().getInt("dbg.fontstyle");
@@ -1060,7 +1063,11 @@ void DeveloperDialog::saveConfig()
   instance().settings().setValue("dbg.fontstyle",
                                  myDebuggerFontStyle->getSelectedTag().toString());
   // Debugger font size
-  instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
+  const string dbgFont = myDebuggerFontSize->getSelectedTag().toString();
+  instance().settings().setValue(
+      FontManager::settingKey(FontManager::FontRole::DebuggerLabel), dbgFont);
+  instance().settings().setValue(
+      FontManager::settingKey(FontManager::FontRole::DebuggerText), dbgFont);
 
   // Ghost reads trap
   instance().settings().setValue("dbg.ghostreadstrap", myGhostReadsTrapWidget->getState());
@@ -1151,7 +1158,7 @@ void DeveloperDialog::setDefaults()
     case 4: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      myDebuggerFontSize->setSelected("medium");
+      myDebuggerFontSize->setSelected("low_medium");
       myDebuggerFontStyle->setSelected("0");
 
       myGhostReadsTrapWidget->setState(true);
@@ -1243,7 +1250,8 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
   #ifdef DEBUGGER_SUPPORT
       const bool informDebuggerFont = instance().hasConsole() &&
         (myDebuggerFontSize->getSelectedTag().toString() !=
-             instance().settings().getString("dbg.fontsize")
+             instance().settings().getString(
+                 FontManager::settingKey(FontManager::FontRole::DebuggerText))
          || myDebuggerFontStyle->getSelectedTag().toString() !=
              instance().settings().getString("dbg.fontstyle"));
   #endif

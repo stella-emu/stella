@@ -91,8 +91,7 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::changeFont() const
 {
-  myDialog->changeFont(myOSystem.settings().getString("dbg.fontsize"),
-                       myOSystem.settings().getInt("dbg.fontstyle"));
+  myDialog->changeFont();
   myDialog->refreshFont();
 
   // A larger font can raise the content minimum past the window's current

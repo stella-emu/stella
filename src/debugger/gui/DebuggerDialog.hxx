@@ -55,6 +55,7 @@ class DebuggerDialog : public Dialog
 
     const GUI::Font& lfont() const;
     const GUI::Font& nfont() const;
+    const GUI::Font& dfont() const;
     PromptWidget& prompt() const       { return *myPrompt;       }
     TiaInfoWidget& a() const           { return *myTiaInfo;      }
     TiaOutputWidget& tiaOutput() const { return *myTiaOutput;    }
@@ -73,7 +74,7 @@ class DebuggerDialog : public Dialog
     // Ask the FontManager to swap the label/normal font descriptors in place,
     // so every widget's reference to them picks up the new glyphs and metrics
     // without being recreated.
-    void changeFont(string_view fontSize, int fontStyle);
+    void changeFont();
 
     // Refresh cached font-derived widget state and re-flow after changeFont()
     // -- like Dialog::refreshFont(), but also re-fonts the tooltip to nfont()

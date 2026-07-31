@@ -3214,8 +3214,14 @@
     </tr>
 
     <tr>
-      <td><pre>-launcherfont &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
-      <td>Set the size of the font in the ROM launcher.</td>
+      <td><pre>-ui.font.launcher &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
+      <td>Set the font used in the ROM launcher.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ui.font.rominfo &lt;small|low_medium|medium|large|large12|large14|large16|auto&gt;</pre></td>
+      <td>Set the font used in the ROM info panel beside the launcher.  With
+      <b>auto</b>, the largest font that fits the space available is used.</td>
     </tr>
 
     <tr>
@@ -3277,8 +3283,21 @@
     </tr>
 
     <tr>
-      <td><pre>-dialogfont &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
-      <td>Set the size of the font in the dialogs.</td>
+      <td><pre>-ui.font.dialog &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
+      <td>Set the font used in the dialogs.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ui.font.info &lt;small|low_medium|medium|large|large12|large14|large16|auto&gt;</pre></td>
+      <td>Set the smaller font a dialog uses for notes and secondary text.
+      With <b>auto</b>, a font roughly 1/1.4 the size of the dialog font is
+      chosen.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ui.font.small &lt;small|low_medium|medium|large|large12|large14|large16|auto&gt;</pre></td>
+      <td>Set the font used where space is very limited.  With <b>auto</b>,
+      the smallest font available is used.</td>
     </tr>
 
     <tr>
@@ -3435,8 +3454,21 @@
     </tr>
 
     <tr>
-      <td><pre>-dbg.fontsize &lt;small|medium|large|&gt;</pre></td>
-      <td>Set the font size in the debugger window.</td>
+      <td><pre>-ui.font.debuggerlabel &lt;small|low_medium|medium&gt;</pre></td>
+      <td>Set the font used for the debugger's labels.  These name the same
+      fonts as <b>-ui.font.dialog</b> does, but the debugger offers only the
+      three smallest.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ui.font.debuggertext &lt;small|low_medium|medium&gt;</pre></td>
+      <td>Set the font used for the debugger's text.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ui.font.debuggerdisasm &lt;small|low_medium|medium|auto&gt;</pre></td>
+      <td>Set the font used for the disassembly listing.  With <b>auto</b>, it
+      follows <b>-ui.font.debuggertext</b>.</td>
     </tr>
 
     <tr>
@@ -4061,7 +4093,7 @@
           <tr><td>Light theme</td><td>Default theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
           <tr><td>Dark theme</td><td>Alternative theme to use for UI elements (see examples)</td><td>-uipalette2</td></tr>
 		  <tr><td>Auto theme</td><td>Enable for automatic switching between light and dark themes in sync with OS.</td><td>-autouipalette</td></tr>
-          <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-dialogfont</td></tr>
+          <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-ui.font.dialog</td></tr>
           <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
           <tr><td>Center windows</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
@@ -4812,7 +4844,7 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Font size</td><td>Self-explanatory</td><td>-dbg.fontsize</td></tr>
+          <tr><td>Font size</td><td>Sets both the debugger label and text fonts</td><td>-ui.font.debuggerlabel,<br>-ui.font.debuggertext</td></tr>
           <tr><td>Font style</td><td>Self-explanatory</td><td>-dbg.fontstyle</td></tr>
           <tr><td>Debugger width/height</td><td>Self-explanatory</td><td>-dbg.res</td></tr>
           <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap addresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>

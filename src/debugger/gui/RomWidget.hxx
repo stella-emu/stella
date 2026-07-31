@@ -35,7 +35,8 @@ class RomWidget : public Widget, public CommandSender
     };
 
   public:
-    RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
+    RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+              const GUI::Font& dfont);
     ~RomWidget() override = default;
 
     void loadConfig() override;

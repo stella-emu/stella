@@ -30,7 +30,8 @@
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont)
+RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont,
+                     const GUI::Font& nfont, const GUI::Font& dfont)
   : Widget(boss, lfont),
     CommandSender(boss)
 {
@@ -42,7 +43,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myBank = new EditTextWidget(boss, nfont, 1);
   myBank->setEditable(false);
 
-  myRomList = new RomListWidget(boss, lfont, nfont);
+  myRomList = new RomListWidget(boss, lfont, dfont);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myRomList->setTarget(this);
   addFocusWidget(myRomList);

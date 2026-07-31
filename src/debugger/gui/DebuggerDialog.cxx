@@ -70,8 +70,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, w, h)
 {
   // Font is sized according to available space; the tooltip follows it
-  changeFont(instance().settings().getString("dbg.fontsize"),
-             instance().settings().getInt("dbg.fontstyle"));
+  changeFont();
 
   addTiaArea();
   addTabArea();
@@ -496,12 +495,18 @@ const GUI::Font& DebuggerDialog::nfont() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::changeFont(string_view fontSize, int fontStyle)
+const GUI::Font& DebuggerDialog::dfont() const
 {
-  // Every widget already references the same two Font objects, so the
-  // FontManager swaps their descriptors in place; the new glyphs and metrics
-  // are picked up without recreating anything (see refreshFont())
-  instance().fonts().changeDebuggerFont(fontSize, fontStyle);
+  return instance().fonts().debuggerDisasmFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::changeFont()
+{
+  // Every widget already references the same Font objects, so the FontManager
+  // swaps their descriptors in place; the new glyphs and metrics are picked
+  // up without recreating anything (see refreshFont())
+  instance().fonts().loadConfig(instance().settings());
 
   tooltip().setFont(nfont());
 }
@@ -722,7 +727,7 @@ void DebuggerDialog::addRomArea()
 
   // The main disassembly tab
   int tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
-  myRom = new RomWidget(myRomTab, lfont(), nfont());
+  myRom = new RomWidget(myRomTab, lfont(), nfont(), dfont());
   myRom->setHelpAnchor("Disassembly", true);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);

@@ -475,7 +475,8 @@ void UIDialog::loadConfig()
   myFollowLauncherWidget->setState(settings.getBool("followlauncher"));
 
   // Launcher font
-  const string& launcherFont = settings.getString("launcherfont");
+  const string& launcherFont = settings.getString(
+      FontManager::settingKey(FontManager::FontRole::Launcher));
   myLauncherFontPopup->setSelected(launcherFont, "medium");
 
   myFavoritesWidget->setState(settings.getBool("favorites"));
@@ -502,7 +503,8 @@ void UIDialog::loadConfig()
   myAutoPalette->setState(settings.getBool("autouipalette"));
 
   // Dialog font
-  const string& dialogFont = settings.getString("dialogfont");
+  const string& dialogFont = settings.getString(
+      FontManager::settingKey(FontManager::FontRole::Dialog));
   myDialogFontPopup->setSelected(dialogFont, "medium");
 
   // Enable HiDPI mode
@@ -565,7 +567,7 @@ void UIDialog::saveConfig()
                  myLauncherHeightSlider->getValue()));
 
   // Launcher font
-  settings.setValue("launcherfont",
+  settings.setValue(FontManager::settingKey(FontManager::FontRole::Launcher),
                     myLauncherFontPopup->getSelectedTag().toString());
 
   // Track favorites
@@ -598,7 +600,7 @@ void UIDialog::saveConfig()
   instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
   // Dialog font
-  settings.setValue("dialogfont",
+  settings.setValue(FontManager::settingKey(FontManager::FontRole::Dialog),
                     myDialogFontPopup->getSelectedTag().toString());
 
   // Enable HiDPI mode
@@ -696,11 +698,13 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       const bool informRomViewer = myIsGlobal &&
         (myRomViewerSize->getValue() > 0) != (instance().settings().getFloat("romviewer") > 0.F);
       const bool informFont = myIsGlobal &&
-        myLauncherFontPopup->getSelectedTag().toString() != instance().settings().getString("launcherfont");
+        myLauncherFontPopup->getSelectedTag().toString() != instance().settings().getString(
+            FontManager::settingKey(FontManager::FontRole::Launcher));
       // The dialog font applies to every open dialog (not just the launcher),
       // so it is not gated on myIsGlobal
       const bool informDialogFont =
-        myDialogFontPopup->getSelectedTag().toString() != instance().settings().getString("dialogfont");
+        myDialogFontPopup->getSelectedTag().toString() != instance().settings().getString(
+            FontManager::settingKey(FontManager::FontRole::Dialog));
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
@@ -718,8 +722,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         // Change the dialog font in place, then re-font every open dialog.  A
         // dialog that no longer fits the window is detected + reported when it
         // (re)opens via Dialog::open() (see Dialog::exceedsScreen)
-        instance().fonts().changeDialogFont(
-            instance().settings().getString("dialogfont"));
+        instance().fonts().loadConfig(instance().settings());
         parent().refreshFont();
       }
       break;

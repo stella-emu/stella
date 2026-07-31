@@ -797,7 +797,12 @@ float LauncherDialog::getRomInfoZoom(int listHeight, float zoom) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::setRomInfoFont(const Common::Size& area)
 {
-  // TODO: Perhaps offer a setting to override the font used?
+  // The role may name a font of its own, in which case FontManager has
+  // already set it and there is nothing to fit
+  if(instance().settings().getString(
+        FontManager::settingKey(FontManager::FontRole::RomInfo))
+     != FontManager::AUTO_FONT)
+    return;
 
   // Try to pick a font that works best, based on the available area.  The
   // candidates come from the font registry, but which of them fits is a
@@ -1228,8 +1233,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       // The launcher font was changed at runtime.  Swap it in place (every
       // widget references the same Font object), then refresh the cached
       // font-derived state and re-flow — no restart required.
-      instance().fonts().changeLauncherFont(
-          instance().settings().getString("launcherfont"));
+      instance().fonts().loadConfig(instance().settings());
       refreshFont();
       // A larger font can raise the content minimum past the window's
       // current size; layout() (run by refreshFont() above) has already

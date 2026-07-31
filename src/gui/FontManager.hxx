@@ -18,7 +18,7 @@
 #ifndef FONT_MANAGER_HXX
 #define FONT_MANAGER_HXX
 
-class OSystem;
+class Settings;
 
 #include "Font.hxx"
 #include "bspf.hxx"
@@ -26,10 +26,6 @@ class OSystem;
 /**
   Owns every GUI::Font in Stella, plus the registry that maps the font names
   used in the settings to the built-in font data.
-
-  The fonts used to be spread over three owners (FrameBuffer, DebuggerDialog
-  and LauncherDialog), each with its own copy of the name lookup; they all
-  live here now, and those classes forward to this class.
 
   A Font is created once and never replaced.  Every widget holds its font as
   a 'const GUI::Font&' (see Widget::_font), so changing a font means pointing
@@ -50,7 +46,26 @@ class FontManager
       string_view label;
     };
 
-    explicit FontManager(OSystem& osystem);
+    // The parts of the UI that each get their own font; the accessors further
+    // down are thin wrappers over font(FontRole)
+    enum class FontRole: uInt8 {
+      Dialog,         // the general UI font
+      Info,           // the smaller font auto-sized to pair with it
+      Small,          // where space is very limited
+      Launcher,       // the ROM launcher list
+      RomInfo,        // the ROM info panel beside it
+      DebuggerLabel,  // the debugger's labels
+      DebuggerText,   // the debugger's normal text
+      DebuggerDisasm, // the disassembly listing
+      numRoles
+    };
+
+    // What a role's setting holds when the role works its own font out
+    // instead of naming one.  Only the roles with a derivation to fall back
+    // on accept it; see isRoleFont()
+    static constexpr string_view AUTO_FONT = "auto";
+
+    explicit FontManager(const Settings& settings);
     ~FontManager() = default;
 
     //////////////////////////////////////////////////////////////////////
@@ -72,12 +87,34 @@ class FontManager
       Get the fonts offered for the general UI (dialogs and launcher), in
       ascending size order.
     */
-    static std::span<const FontEntry> uiFonts();
+    static SpanOf<FontEntry> uiFonts();
 
     /**
       Is this the name of one of the uiFonts()?
     */
     static bool isUIFont(string_view name);
+
+    /**
+      Get the fonts offered for the debugger, in ascending size order.  They
+      are the smallest of the uiFonts(), under the very same names.
+    */
+    static SpanOf<FontEntry> debuggerFonts();
+
+    /**
+      Is this the name of one of the debuggerFonts()?
+    */
+    static bool isDebuggerFont(string_view name);
+
+    /**
+      Get the settings key a role reads.
+    */
+    static string_view settingKey(FontRole role);
+
+    /**
+      Is this a valid value for a role's setting -- AUTO_FONT where the role
+      has a derivation, or the name of a font the role is allowed to use?
+    */
+    static bool isRoleFont(FontRole role, string_view name);
 
     /**
       Get the font that layout minimums are measured against; whatever fits
@@ -105,80 +142,79 @@ class FontManager
       order.  Which one actually fits is up to the launcher, since the
       minimums it has to satisfy are part of its layout, not of the font.
     */
-    static std::span<const FontDesc* const> romInfoFonts();
+    static SpanOf<const FontDesc*> romInfoFonts();
 
     //////////////////////////////////////////////////////////////////////
     // The fonts themselves
     //////////////////////////////////////////////////////////////////////
 
+    /**
+      Get the font a part of the UI draws with.  This is the accessor; the
+      named ones below just spell a role out.
+
+      @param role  The part of the UI asking
+    */
+    const GUI::Font& font(FontRole role) const
+      { return myFonts[static_cast<size_t>(role)]; }
+
     // The general font used in all UI elements, and the smaller info font
     // that is auto-sized to pair with it
-    const GUI::Font& font() const { return myFont; }
-    const GUI::Font& infoFont() const { return myInfoFont; }
+    const GUI::Font& font() const { return font(FontRole::Dialog); }
+    const GUI::Font& infoFont() const { return font(FontRole::Info); }
 
     // Used in a variety of situations when a really small font is needed;
     // the specific widget/dialog decides when to use it
-    const GUI::Font& smallFont() const { return mySmallFont; }
+    const GUI::Font& smallFont() const { return font(FontRole::Small); }
 
     // The ROM launcher list, and the ROM info panel beside it
-    const GUI::Font& launcherFont() const { return myLauncherFont; }
-    const GUI::Font& romInfoFont() const { return myRomInfoFont; }
+    const GUI::Font& launcherFont() const { return font(FontRole::Launcher); }
+    const GUI::Font& romInfoFont() const { return font(FontRole::RomInfo); }
 
   #ifdef DEBUGGER_SUPPORT
-    // The debugger's labels, and its normal text
-    const GUI::Font& debuggerLabelFont() const { return myDebuggerLabelFont; }
-    const GUI::Font& debuggerTextFont() const { return myDebuggerTextFont; }
+    // The debugger's labels, its normal text, and its disassembly listing
+    const GUI::Font& debuggerLabelFont() const
+      { return font(FontRole::DebuggerLabel); }
+    const GUI::Font& debuggerTextFont() const
+      { return font(FontRole::DebuggerText); }
+    const GUI::Font& debuggerDisasmFont() const
+      { return font(FontRole::DebuggerDisasm); }
   #endif
 
     //////////////////////////////////////////////////////////////////////
-    // Changing a font.  Each of these mutates the existing Font object, so
-    // every reference to it stays valid (see the class comment)
+    // Changing a font.  Each of these mutates the existing Font objects, so
+    // every reference to them stays valid (see the class comment)
     //////////////////////////////////////////////////////////////////////
 
     /**
-      Change the dialog font, which drives both the general UI font and the
-      auto-sized info font.
+      Resolve every role from its setting.  A role naming a font gets it; a
+      role on AUTO_FONT works its font out instead -- the info font from the
+      dialog font, the disassembly font from the debugger's text font, and so
+      on.  Callers must afterwards refresh the widgets that cached metrics.
 
-      @param name  The settings name of the new dialog font
+      @param settings  The settings to read the roles from
     */
-    void changeDialogFont(string_view name);
-
-    /**
-      Change the ROM launcher font.
-
-      @param name  The settings name of the new launcher font
-    */
-    void changeLauncherFont(string_view name);
+    void loadConfig(const Settings& settings);
 
     /**
       Change the font of the ROM info panel to one of the romInfoFonts().
+      Only used while that role is on AUTO_FONT, since it is then the
+      launcher's area, not a setting, that decides.
 
       @param fd  The font data the launcher settled on
     */
     void changeRomInfoFont(const FontDesc& fd);
 
-  #ifdef DEBUGGER_SUPPORT
-    /**
-      Change the debugger fonts.  The debugger picks its fonts by size and
-      style rather than by name, and the two names it shares with the general
-      UI ("medium" and "large") do not mean the same fonts there.
-
-      @param size   The 'dbg.fontsize' setting
-      @param style  The 'dbg.fontstyle' setting
-    */
-    void changeDebuggerFont(string_view size, int style);
-  #endif
+  private:
+    // The mutable side of font(); the change* methods above are the only
+    // callers, since a role's Font is swapped in place and never replaced
+    GUI::Font& fontFor(FontRole role)
+      { return myFonts[static_cast<size_t>(role)]; }
 
   private:
-    GUI::Font myFont;
-    GUI::Font myInfoFont;
-    GUI::Font mySmallFont;
-    GUI::Font myLauncherFont;
-    GUI::Font myRomInfoFont;
-  #ifdef DEBUGGER_SUPPORT
-    GUI::Font myDebuggerLabelFont;
-    GUI::Font myDebuggerTextFont;
-  #endif
+    // One Font per role, indexed by FontRole.  The debugger's roles are here
+    // even in a build without it, which costs a descriptor each and keeps the
+    // role table the same shape everywhere
+    std::array<GUI::Font, static_cast<size_t>(FontRole::numRoles)> myFonts;
 
   private:
     // Following constructors and assignment operators not supported

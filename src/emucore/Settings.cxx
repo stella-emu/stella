@@ -169,7 +169,6 @@ Settings::Settings()
   setPermanent("launcherpos", Common::Point(50, 50));
   setPermanent("launcherdisplay", 0);
   setPermanent("launcherres", Common::Size(900, 600));
-  setPermanent("launcherfont", "medium");
   setPermanent("launchersubdirs", "false");
   setPermanent("launcherextensions", "false");
   setPermanent("launcherbuttons", "false");
@@ -202,10 +201,20 @@ Settings::Settings()
   setPermanent("ctrldelay", "400");
   setPermanent("ctrlrate", "20");
   setPermanent("basic_settings", false);
-  setPermanent("dialogfont", "medium");
   setPermanent("dialogpos", 0);
   setPermanent("confirmexit", false);
   setPermanent("autopause", false);
+
+  // One font per part of the UI.  "auto" leaves the role to work its own font
+  // out -- see FontManager::loadConfig()
+  setPermanent("ui.font.dialog", "medium");
+  setPermanent("ui.font.info", "auto");
+  setPermanent("ui.font.small", "auto");
+  setPermanent("ui.font.launcher", "medium");
+  setPermanent("ui.font.rominfo", "auto");
+  setPermanent("ui.font.debuggerlabel", "low_medium");
+  setPermanent("ui.font.debuggertext", "low_medium");
+  setPermanent("ui.font.debuggerdisasm", "auto");
 
   // Misc options
   setPermanent("loglevel", static_cast<int>(Logger::Level::INFO));
@@ -224,7 +233,6 @@ Settings::Settings()
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
-  setPermanent("dbg.fontsize", "medium");
   setPermanent("dbg.fontstyle", "0");
   setPermanent("dbg.uhex", "false");
   setPermanent("dbg.ghostreadstrap", "true");
@@ -440,17 +448,24 @@ void Settings::validate()
   if(getInt("romviewer") < 0) setValue("romviewer", 0);
 
 #ifdef GUI_SUPPORT
-  // The UI font names belong to the font registry, so they are checked
-  // against it rather than against a copy of the list
-  if(!FontManager::isUIFont(getString("launcherfont")))
-    setValue("launcherfont", "medium");
-  if(!FontManager::isUIFont(getString("dialogfont")))
-    setValue("dialogfont", "medium");
-#endif
-#ifdef DEBUGGER_SUPPORT
-  // The debugger picks its fonts by size, not by name; these are not the
-  // same fonts the general UI means by "medium" and "large"
-  requireOneOf("dbg.fontsize", {"small", "medium", "large"}, "medium");
+  // Which names a role accepts belongs to the font registry, so each is
+  // checked against it rather than against a copy of the list here.  The
+  // debugger's roles take a subset of the names the rest of the UI does
+  using FontRole = FontManager::FontRole;
+  auto requireFont = [&](FontRole role, string_view def) {
+    const string_view key = FontManager::settingKey(role);
+    if(!FontManager::isRoleFont(role, getString(key)))
+      setValue(key, def);
+  };
+
+  requireFont(FontRole::Dialog,         "medium");
+  requireFont(FontRole::Info,           "auto");
+  requireFont(FontRole::Small,          "auto");
+  requireFont(FontRole::Launcher,       "medium");
+  requireFont(FontRole::RomInfo,        "auto");
+  requireFont(FontRole::DebuggerLabel,  "low_medium");
+  requireFont(FontRole::DebuggerText,   "low_medium");
+  requireFont(FontRole::DebuggerDisasm, "auto");
 #endif
 }
 
@@ -604,11 +619,9 @@ void Settings::usage()
     << "                                  mode\n"
     << "  -launcherdisplay <number>      Sets the display for the ROM launcher\n"
     << "  -launcherres  <WxH>            The resolution to use in ROM launcher mode\n"
-    << "  -launcherfont <small|          Use the specified font in the ROM launcher\n"
-    << "                 low_medium|\n"
-    << "                 medium|large|\n"
-    << "                 large12|large14|\n"
-    << "                 large16>\n"
+    << "  -ui.font.launcher <FONT>       Use the specified font in the ROM launcher\n"
+    << "  -ui.font.rominfo  <FONT|auto>  Use the specified font in the ROM info panel\n"
+    << "                                  ('auto' fits one to the space there is)\n"
     << "  -romviewer    <float>          Show ROM info viewer at given zoom level in ROM\n"
     << "                                  launcher (use 0 for off)\n"
     << "  -launchersubdirs    <0|1>      Show files from subdirectories too\n"
@@ -635,11 +648,14 @@ void Settings::usage()
     << "  -autouipalette <0|1>           Switch GUI theme automatically\n"
 
     << "  -hidpi        <0|1>            Enable HiDPI mode\n"
-    << "  -dialogfont   <small|          Use the specified font in the dialogs\n"
-    << "                 low_medium|\n"
-    << "                 medium|large|\n"
-    << "                 large12|large14|\n"
-    << "                 large16>\n"
+    << "  -ui.font.dialog <FONT>         Use the specified font in the dialogs\n"
+    << "  -ui.font.info   <FONT|auto>    Use the specified font where a dialog wants a\n"
+    << "                                  smaller one ('auto' pairs it with the dialog\n"
+    << "                                  font)\n"
+    << "  -ui.font.small  <FONT|auto>    Use the specified font where space is very\n"
+    << "                                  limited ('auto' takes the smallest there is)\n"
+    << "                                 FONT is one of small, low_medium, medium,\n"
+    << "                                  large, large12, large14 or large16\n"
     << "  -dialogpos    <0..4>           Display all dialogs at given positions\n"
     << "  -confirmexit  <0|1>            Display a confirm dialog when exiting emulation\n"
     << "  -autopause    <0|1>            Pause/continue emulation when focus is lost/gained\n"
@@ -686,8 +702,12 @@ void Settings::usage()
     << "   -dbg.pos       <XxY>          Sets the window position in windowed debugger mode\n"
     << "   -dbg.display   <number>       Sets the display for the debugger\n"
     << "   -dbg.res       <WxH>          The resolution to use in debugger mode\n"
-    << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
-    << "                  large>\n"
+    << "   -ui.font.debuggerlabel  <DFONT>       Font for the debugger's labels\n"
+    << "   -ui.font.debuggertext   <DFONT>       Font for the debugger's text\n"
+    << "   -ui.font.debuggerdisasm <DFONT|auto>  Font for the disassembly listing\n"
+    << "                                          ('auto' follows the debugger's text)\n"
+    << "                                         DFONT is one of small, low_medium\n"
+    << "                                          or medium\n"
     << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs.\n"
     << "                                  normal)\n"
     << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"

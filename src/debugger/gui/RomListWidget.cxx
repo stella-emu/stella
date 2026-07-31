@@ -33,9 +33,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
-                             const GUI::Font& nfont)
-  : EditableWidget(boss, nfont),
-    _lfont{lfont},
+                             const GUI::Font& dfont)
+  : EditableWidget(boss, dfont),
     _rows{0}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
@@ -50,10 +49,12 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // Real dimensions arrive via setWidth()/setHeight(), which recompute the
   // visible row count and keep the scrollbar flush with our right edge
 
-  // Create scrollbar and attach to the list
+  // Create scrollbar and attach to the list.  It takes _font because the width
+  // reserved for it is scrollBarWidth(_font) (see setWidth/getWidth), which is
+  // also how ListWidget pairs the two
   // We want to initialize here, not in the member list
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myScrollBar = new ScrollBarWidget(boss, lfont);
+  myScrollBar = new ScrollBarWidget(boss, _font);
   myScrollBar->setTarget(this);
 
   // Add settings menu
@@ -152,6 +153,11 @@ void RomListWidget::refreshFontMetrics()
   // still clear the checkbox (mirrors the constructor)
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
 
+  // The columns are measured in _font too, so they are stale now as well.
+  // getWidth() is the footprint setWidth() is handed, which is what they scale
+  // against
+  recalcColumnWidths(getWidth());
+
   // Both are Dialogs, not Widgets, so no Widget-tree walk reaches them on
   // their own; their own children then refresh through Dialog::refreshFont
   myMenu->refreshFont();
@@ -166,7 +172,9 @@ void RomListWidget::reflowCheckboxes()
   // append (surplus rows are hidden below).
   while(std::cmp_less(myCheckList.size(), _rows))
   {
-    auto* t = new CheckboxWidget(_boss, _lfont, "",
+    // _font, because the row reserves boxSize(_font) for it -- in _lineHeight,
+    // in the column separator and in getLineRect (mirrors CheckListWidget)
+    auto* t = new CheckboxWidget(_boss, _font, "",
                                  CheckboxWidget::kCheckActionCmd);
     t->setTarget(this);
     t->setID(static_cast<int>(myCheckList.size()));
@@ -194,12 +202,13 @@ void RomListWidget::reflowCheckboxes()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::recalcColumnWidths(int w)
 {
-  // Take advantage of a wide debugger window when possible
-  const int fontWidth = _lfont.getMaxCharWidth(),
-            numchars = w / fontWidth;
+  // Take advantage of a wide debugger window when possible.  Every column here
+  // holds text drawn in _font (see drawWidget, which sizes the remaining ones
+  // with _fontWidth), so _font is what they are all measured in
+  const int numchars = w / _fontWidth;
 
-  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
-  _bytesWidth = 9 * fontWidth;
+  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * _fontWidth - 1;
+  _bytesWidth = 9 * _fontWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

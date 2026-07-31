@@ -49,7 +49,9 @@ class RomListWidget : public EditableWidget
     };
 
   public:
-    RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
+    // lfont is only for the pop-up dialogs this widget owns; dfont is the
+    // disassembly font, and everything in the list is drawn and measured in it
+    RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& dfont);
     ~RomListWidget() override = default;
 
     void setList(const CartDebug::Disassembly& disasm);
@@ -120,14 +122,10 @@ class RomListWidget : public EditableWidget
     void reflowCheckboxes();
 
     // (Re)compute the label and bytes column widths from the full footprint
-    // width and the list font (wider windows get wider label columns)
+    // width and the disassembly font (wider windows get wider label columns)
     void recalcColumnWidths(int w);
 
   private:
-    // The list font (the base Widget font is the narrower disassembly font);
-    // used for the scrollbar, checkboxes and label/bytes column widths
-    const GUI::Font& _lfont;
-
     unique_ptr<RomListSettings>    myMenu;
     unique_ptr<DisasmColorsDialog> myDisasmColorsDialog;
 
