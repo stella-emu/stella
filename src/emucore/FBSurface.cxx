@@ -24,6 +24,31 @@
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
+
+namespace {
+  /**
+    Blend 'coverage'/255 of an ink colour into a background pixel.
+
+    The four 8-bit lanes are interpolated independently, so this needn't know
+    which lane is which: both pixels are in the same 32-bit layout, and on an
+    opaque surface the alpha lane interpolates 255 -> 255.  Coverage 0 and 255
+    reproduce the background and the ink exactly.
+  */
+  uInt32 blendPixel(uInt32 dst, uInt32 src, uInt8 coverage)
+  {
+    uInt32 result = 0;
+
+    for(int shift = 0; shift < 32; shift += 8)
+    {
+      const int d = static_cast<int>((dst >> shift) & 0xFF);
+      const int s = static_cast<int>((src >> shift) & 0xFF);
+      const int v = d + ((s - d) * coverage / 255);
+
+      result |= static_cast<uInt32>(v & 0xFF) << shift;
+    }
+    return result;
+  }
+}  // namespace
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,51 +167,34 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     drawChar(font, chr, tx + 1, ty + 1, shadowColor);
   }
 
-  const FontDesc& desc = font.desc();
-
-  // If this character is not included in the font, use the default char.
-  if(std::cmp_less(chr, desc.firstchar) || chr >= desc.firstchar + desc.size)
-  {
-    if (chr == ' ') return;
-    chr = desc.defaultchar;
-  }
-  chr -= desc.firstchar;
-
-  // Get the bounding box of the character
-  int bbw = 0, bbh = 0, bbx = 0, bby = 0;
-  if(!desc.bbx)
-  {
-    bbw = desc.fbbw;
-    bbh = desc.fbbh;
-    bbx = desc.fbbx;
-    bby = desc.fbby;
-  }
-  else
-  {
-    bbw = desc.bbx[chr].w;
-    bbh = desc.bbx[chr].h;
-    bbx = desc.bbx[chr].x;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
-    bby = desc.bbx[chr].y;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
-  }
-
-  const uInt32 cx = tx + bbx;
-  const uInt32 cy = ty + desc.ascent - bby - bbh;
-
-  if(!checkBounds(cx , cy) || !checkBounds(cx + bbw - 1, cy + bbh - 1))
+  // The font hands out a coverage bitmap and where to put it, so how a glyph
+  // is stored -- and how wide it is -- stays the font's business, not ours
+  const GUI::Glyph glyph = font.glyph(chr);
+  if(glyph.coverage == nullptr)
     return;
 
-  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
+  const uInt32 cx = tx + glyph.dx;
+  const uInt32 cy = ty + glyph.dy;
+
+  if(!checkBounds(cx , cy) || !checkBounds(cx + glyph.w - 1, cy + glyph.h - 1))
+    return;
+
+  const uInt8* coverage = glyph.coverage;
   uInt32* buffer = myPixels + (cy * static_cast<size_t>(myPitch)) + cx;
+  const uInt32 ink = myPalette[color];
 
-  for(int y = 0; y < bbh; y++)
+  for(int y = 0; y < glyph.h; ++y)
   {
-    const uInt16 ptr = *tmp++;
-    uInt16 mask = 0x8000;
-
-    for(int x = 0; x < bbw; x++, mask >>= 1)
-      if(ptr & mask)
-        buffer[x] = myPalette[color];
-
+    for(int x = 0; x < glyph.w; ++x)
+    {
+      // A bitmap font covers a pixel either fully or not at all, so the
+      // blend only comes into play for an antialiased font's edge pixels
+      if(coverage[x] == 255)
+        buffer[x] = ink;
+      else if(coverage[x] != 0)
+        buffer[x] = blendPixel(buffer[x], ink, coverage[x]);
+    }
+    coverage += glyph.pitch;
     buffer += myPitch;
   }
 #endif

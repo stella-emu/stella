@@ -211,6 +211,11 @@ class FontManager
       { return myFonts[static_cast<size_t>(role)]; }
 
   private:
+    // The glyphs every font draws with, unpacked once per distinct font and
+    // shared by the roles naming the same one.  Declared before myFonts,
+    // which take it in their c'tor
+    GUI::GlyphCache myGlyphCache;
+
     // One Font per role, indexed by FontRole.  The debugger's roles are here
     // even in a build without it, which costs a descriptor each and keeps the
     // role table the same shape everywhere

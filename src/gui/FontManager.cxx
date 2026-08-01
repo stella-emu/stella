@@ -124,14 +124,14 @@ FontManager::FontManager(const Settings& settings)
   // Every role starts at the smallest font, and loadConfig() then resolves
   // each of them, exactly as it does for a later change
   : myFonts{{
-      GUI::Font{smallestDesc()},  // Dialog
-      GUI::Font{smallestDesc()},  // Info
-      GUI::Font{smallestDesc()},  // Small
-      GUI::Font{smallestDesc()},  // Launcher
-      GUI::Font{smallestDesc()},  // RomInfo
-      GUI::Font{smallestDesc()},  // DebuggerLabel
-      GUI::Font{smallestDesc()},  // DebuggerText
-      GUI::Font{smallestDesc()}   // DebuggerDisasm
+      GUI::Font{myGlyphCache, smallestDesc()},  // Dialog
+      GUI::Font{myGlyphCache, smallestDesc()},  // Info
+      GUI::Font{myGlyphCache, smallestDesc()},  // Small
+      GUI::Font{myGlyphCache, smallestDesc()},  // Launcher
+      GUI::Font{myGlyphCache, smallestDesc()},  // RomInfo
+      GUI::Font{myGlyphCache, smallestDesc()},  // DebuggerLabel
+      GUI::Font{myGlyphCache, smallestDesc()},  // DebuggerText
+      GUI::Font{myGlyphCache, smallestDesc()}   // DebuggerDisasm
     }}
 {
   loadConfig(settings);
