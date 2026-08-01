@@ -28,31 +28,33 @@
 
 #include "TiaInfoWidget.hxx"
 
-// Between the current and the last-frame scanline counts, which share a row
-static constexpr int SCAN_GAP = 2;
+namespace {
+  // Between the current and the last-frame scanline counts, which share a row
+  constexpr int SCAN_GAP = 2;
 
-// How many characters wide each kind of value field is
-static constexpr int CYCLE_CHARS = 5,  // a cycle count for this frame
-                     TOTAL_CHARS = 8,  // the session total, in E notation
-                     COUNT_CHARS = 3;  // a scanline, pixel or clock count
+  // How many characters wide each kind of value field is
+  constexpr int CYCLE_CHARS = 5,  // a cycle count for this frame
+               TOTAL_CHARS = 8,  // the session total, in E notation
+               COUNT_CHARS = 3;  // a scanline, pixel or clock count
 
-// The label of each row, in the two forms picked between by the width available
-struct RowLabel { string_view full; string_view abbr; };
+  // The label of each row, in the two forms picked between by the width available
+  struct RowLabel { string_view full; string_view abbr; };
 
-static constexpr std::array<RowLabel, 5> LEFT_LABELS{{
-  {"Frame Cycles", "Frame C."},
-  {"WSync Cycles", "WSync C."},
-  {"Timer Cycles", "Timer C."},
-  {"Total",        "Total"},
-  {"Delta",        "Delta"}
-}};
-static constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
-  {"Frame Cnt.",  "Frame"},
-  {"Scanline",    "Scn Ln"},
-  {"Scan Cycle",  "Scn Cycle"},
-  {"Pixel Pos",   "Pixel Pos"},
-  {"Color Clock", "Color Clk"}
-}};
+  constexpr std::array<RowLabel, 5> LEFT_LABELS{{
+    {"Frame Cycles", "Frame C."},
+    {"WSync Cycles", "WSync C."},
+    {"Timer Cycles", "Timer C."},
+    {"Total",        "Total"},
+    {"Delta",        "Delta"}
+  }};
+  constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
+    {"Frame Cnt.",  "Frame"},
+    {"Scanline",    "Scn Ln"},
+    {"Scan Cycle",  "Scn Cycle"},
+    {"Pixel Pos",   "Pixel Pos"},
+    {"Color Clock", "Color Clk"}
+  }};
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -237,6 +239,9 @@ int TiaInfoWidget::naturalWidthFor(bool longstr)
 {
   setLabels(longstr);
 
+  // Called from our own ctor via reflow(), but this dispatches to our own
+  // override regardless -- TiaInfoWidget has no subclasses to be incomplete
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
   return static_cast<int>(naturalSize().w);
 }
 

@@ -49,10 +49,12 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "6 ($FFFA)");
   VarList::push_back(items, "7 ($FFFB)");
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // The selector's box lines up with the info fields above it
   myLabelColumn.emplace_back(myBankLbl);

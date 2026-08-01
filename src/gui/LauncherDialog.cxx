@@ -261,14 +261,12 @@ int LauncherDialog::addRomWidgets()
   {
     // Choose the ROM info font for the (estimated) available area.  The image
     // is (roughly) the column width squared, plus a label
-    int imageHeight = imageWidth + RomImageWidget::labelHeight(_font);
+    const int imageHeight = imageWidth + RomImageWidget::labelHeight(_font);
     const Common::Size fontArea(imageWidth - fontWidth * 2,
                                 listHeight - imageHeight - VGAP * 4);
     setRomInfoFont(fontArea);
 
-    // Now we have the correct font height
     const GUI::Font& romInfoFont = instance().fonts().romInfoFont();
-    imageHeight = imageWidth + RomImageWidget::labelHeight(romInfoFont);
     myRomImageWidget = new RomImageWidget(this, romInfoFont);
     wid.push_back(myRomImageWidget);
     myRomInfoWidget = new RomInfoWidget(this, romInfoFont);

@@ -35,6 +35,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 {
   WidgetArray wid;
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myMessage = new LabelWidget(this, font, message,
                                    TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
@@ -42,6 +43,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider = new SliderWidget(this, font, 1, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   auto* b = new ButtonWidget(this, font, "Cancel", Event::UICancel);
   wid.push_back(b);

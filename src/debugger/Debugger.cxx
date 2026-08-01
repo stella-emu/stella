@@ -224,8 +224,11 @@ void Debugger::updateTime(uInt64 time)
     relayout();
     mySettleCountdown = 15;
   }
-  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
-    myOSystem.settings().setValue("dbg.res", mySize);
+  else if(mySettleCountdown > 0)
+  {
+    if(--mySettleCountdown == 0)
+      myOSystem.settings().setValue("dbg.res", mySize);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

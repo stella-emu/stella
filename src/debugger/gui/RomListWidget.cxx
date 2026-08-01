@@ -34,8 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& dfont)
-  : EditableWidget(boss, dfont),
-    _rows{0}
+  : EditableWidget(boss, dfont)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;

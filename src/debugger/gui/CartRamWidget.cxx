@@ -35,6 +35,7 @@ CartRamWidget::CartRamWidget(
 {
   // Everything is created at a placeholder position; reflow() positions and
   // sizes it, and the description re-wraps itself, whenever our area changes
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myRamSizeLbl = new LabelWidget(_boss, _font, "RAM size");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
@@ -53,6 +54,7 @@ CartRamWidget::CartRamWidget(
   // The RAM view fills whatever is left below the fields
   myRam = new InternalRamWidget(boss, lfont, nfont, cartDebug);
   addToFocusList(myRam->getFocusList());
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   reflow();
 }

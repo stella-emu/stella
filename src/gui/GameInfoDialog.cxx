@@ -315,8 +315,8 @@ void GameInfoDialog::addConsoleTab()
 
     const int VGAP = Dialog::vGap();
 
-    enum Col: int { LABEL, OPTION, COLS };
-    enum Row: int {
+    enum Col: uInt8 { LABEL, OPTION, COLS };
+    enum Row: uInt8 {
       TV_A, TV_B, GAP1, LEFT_A, LEFT_B, GAP2, RIGHT_A, RIGHT_B, ROWS
     };
     auto grid = std::make_unique<GridLayout>(COLS, ROWS,
@@ -484,8 +484,8 @@ void GameInfoDialog::addControllersTab()
     // so the three line up without anyone measuring a label.  What each port
     // detected goes in the control column too, which is what puts it under the
     // pop-up that reported it
-    enum Col: int { LABEL, CTRL, EXTRA, COLS };
-    enum Row: int { LEFT, LEFTDET, RIGHT, RIGHTDET, BREAK, EEPROM, ROWS };
+    enum Col: uInt8 { LABEL, CTRL, EXTRA, COLS };
+    enum Row: uInt8 { LEFT, LEFTDET, RIGHT, RIGHTDET, BREAK, EEPROM, ROWS };
 
     auto ports = std::make_unique<GridLayout>(COLS, ROWS, fontWidth, VGAP);
     ports->columnAuto(LABEL).columnAuto(CTRL).columnStretch(EXTRA);
@@ -641,8 +641,8 @@ void GameInfoDialog::addCartridgeTab()
     using GUI::HAlign;
     using GUI::VAlign;
 
-    enum Col: int { LABEL, FIELD, BUTTON, COLS };
-    enum Row: int {
+    enum Col: uInt8 { LABEL, FIELD, BUTTON, COLS };
+    enum Row: uInt8 {
       NAME, MD5, MANUFACTURER, MODEL, RARITY, NOTE, LINK,
 #ifdef IMAGE_SUPPORT
       BEZEL, BEZEL_DETECTED,
@@ -897,8 +897,8 @@ void GameInfoDialog::addHighScoresTab()
     // than the widest single row.  Rows alternate content and the gaps between
     // them, so each gap is stated where it falls rather than being one uniform
     // spacing
-    enum Col: int { FIELD, ADDR, BCD, OPT, COLS };
-    enum Row: int {
+    enum Col: uInt8 { FIELD, ADDR, BCD, OPT, COLS };
+    enum Row: uInt8 {
       VARS, GAP1, SCORE, GAP2, DIGITS, GAP3, ADDRS, GAP4, CURRENT, GAP5,
       SPECIAL, GAP6, NOTE, ROWS
     };

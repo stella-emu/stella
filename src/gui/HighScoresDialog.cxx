@@ -34,7 +34,7 @@ static constexpr int BUTTON_GFX_H_LARGE = 16;
 
 namespace {
   // The score table's columns
-  enum Column: int {
+  enum Column: uInt8 {
     COL_RANK, COL_SCORE, COL_SPECIAL, COL_NAME, COL_DATE, COL_DELETE, NUM_COLUMNS
   };
 

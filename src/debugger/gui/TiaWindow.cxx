@@ -22,19 +22,21 @@
 #include "TiaWindowDialog.hxx"
 #include "TiaWindow.hxx"
 
-// Border 'chrome' around the image: dialog (2px) + widget (1px) borders, so it
-// is never squeezed; room for on-screen controls will be added here later
-static constexpr uInt32 CHROME = 2 * (2 + 1);
+namespace {
+  // Border 'chrome' around the image: dialog (2px) + widget (1px) borders, so it
+  // is never squeezed; room for on-screen controls will be added here later
+  constexpr uInt32 CHROME = 2 * (2 + 1);
 
-// The window size that shows the ENTIRE TIA output buffer at the given zoom,
-// for the highest possible frame (hence any NTSC/PAL/custom layout).  The buffer
-// is frameBufferWidth x frameBufferHeight 'narrow' pixels (160 x 320);
-// horizontally the narrow pixels are always doubled for the correct aspect
-static constexpr Common::Size zoomedSize(uInt32 zoom)
-{
-  return Common::Size(TIAConstants::frameBufferWidth  * 2 * zoom + CHROME,
-                      TIAConstants::frameBufferHeight     * zoom + CHROME);
-}
+  // The window size that shows the ENTIRE TIA output buffer at the given zoom,
+  // for the highest possible frame (hence any NTSC/PAL/custom layout).  The buffer
+  // is frameBufferWidth x frameBufferHeight 'narrow' pixels (160 x 320);
+  // horizontally the narrow pixels are always doubled for the correct aspect
+  constexpr Common::Size zoomedSize(uInt32 zoom)
+  {
+    return Common::Size(TIAConstants::frameBufferWidth  * 2 * zoom + CHROME,
+                        TIAConstants::frameBufferHeight     * zoom + CHROME);
+  }
+}  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size TiaWindow::minSize()

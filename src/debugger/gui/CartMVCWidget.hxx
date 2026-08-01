@@ -29,7 +29,6 @@ class CartridgeMVCWidget : public CartDebugWidget
                        const GUI::Font& nfont, CartridgeMVC& cart);
     ~CartridgeMVCWidget() override = default;
 
-  private:
     // There are no banks to report: the 2600 always sees the same 1K window,
     // whose contents the streamed movie data replaces as it plays
     string bankState() override { return "streaming (non-bankswitched)"; }

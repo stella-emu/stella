@@ -49,6 +49,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "4 ($FFFA)");
   VarList::push_back(items, "5 ($FFFB)");
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
@@ -97,6 +98,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myIMLDA = new CheckboxWidget(boss, _font, "Immediate mode LDA");
   myIMLDA->setTarget(this);
   myIMLDA->setEditable(false);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   createCycleWidgets();
 

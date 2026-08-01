@@ -34,6 +34,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   // Previous, Next, Update and Close buttons.  Each sizes itself to its label;
   // layout() gives the two arrows one shared width
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
     new ButtonWidget(this, font, "<<", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
@@ -61,6 +62,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
     myDesc[i] = new LabelWidget(this, font);
     myDesc[i]->setID(i);
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addToFocusList(wid);
 }

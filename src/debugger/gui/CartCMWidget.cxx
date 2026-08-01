@@ -51,6 +51,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myBankLbl = new LabelWidget(boss, _font, "Set bank");
   myBank = new PopUpWidget(boss, _font, items, kBankChanged);
   myBank->setTarget(this);
@@ -70,6 +71,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   myColumn = new DataGridWidget(boss, _nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // The relevant pins of SWCHA, as two columns of read-only checkboxes
   const auto addPin = [&](CheckboxWidget*& box, string_view label) {

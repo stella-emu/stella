@@ -255,8 +255,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     GUI::alignLabels({{myConsoleWidgetLbl, INDENT}});
     GUI::alignLabels({{myArmSpeedWidgetLbl, INDENT}});
 
-    enum Col: int { MAIN, EXTRA, COLS };
-    enum Row: int {
+    enum Col: uInt8 { MAIN, EXTRA, COLS };
+    enum Row: uInt8 {
       PLR, DEV, STATS, ACCESS, CONSOLE, LOADING, BANK, RAM, CPU, HOTSPOTS, PINS,
 #ifdef DEBUGGER_SUPPORT
       PORTS,

@@ -34,6 +34,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
 
   // Previous, Next and Close buttons
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
     new ButtonWidget(this, font, "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
@@ -61,6 +62,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
     myDesc.push_back(s);
     myDescStr.emplace_back("");
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addToFocusList(wid);
 

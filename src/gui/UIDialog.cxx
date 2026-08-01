@@ -200,8 +200,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                       myControllerDelaySlider, myControllerRateSlider},
                      myPalette1Popup);
 
-    enum Col: int { MAIN, EXTRA, COLS };
-    enum Row: int {
+    enum Col: uInt8 { MAIN, EXTRA, COLS };
+    enum Row: uInt8 {
       THEME1, THEME2, FONT, POSITION, GAP, LIST, WHEEL, CLICK, DELAY, RATE, ROWS
     };
     auto grid = std::make_unique<GridLayout>(COLS, ROWS, fontWidth * 5, VGAP);
@@ -362,8 +362,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
       return row;
     };
 
-    enum Col: int { MAIN, EXTRA, COLS };
-    enum Row: int {
+    enum Col: uInt8 { MAIN, EXTRA, COLS };
+    enum Row: uInt8 {
       ROM_PATH, GAP1, FOLLOW, FONT, WIDTH, HEIGHT, GAP2, VIEWER, IMAGE_PATH,
       GAP3, EXIT, ROWS
     };

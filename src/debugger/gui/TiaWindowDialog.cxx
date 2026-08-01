@@ -29,6 +29,7 @@ TiaWindowDialog::TiaWindowDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, w, h)
 {
   // Created at a placeholder size; layout() fits it to the window
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myTiaDisplay = new TiaDisplayWidget(this, _font);
   addToFocusList(myTiaDisplay->getFocusList());
 

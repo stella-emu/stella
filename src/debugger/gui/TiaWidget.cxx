@@ -41,6 +41,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Create every widget; reflow() positions and sizes them for the area the
   // parent layout gives us
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   ////////////////////////////
   // VSync/VBlank
   ////////////////////////////
@@ -492,6 +493,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     myStrobeButtons[i]->setTarget(this);
     addFocusWidget(myStrobeButtons[i]);
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   setHelpAnchor("TIATab", true);
 

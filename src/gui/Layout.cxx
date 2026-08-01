@@ -418,7 +418,7 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
   // nullptr), and every readout but the LAST, which hangs past the end
   int overhead = spacing * (count - 1);
   int idx = 0;
-  auto label = labels.begin();
+  const auto* label = labels.begin();
 
   for(auto* s: sliders)
   {
