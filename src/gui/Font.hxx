@@ -57,30 +57,26 @@ namespace GUI {
 /**
   One character's glyph, ready to be drawn at a pen position.
 
-  The coverage is one byte per pixel: 0 where the glyph does not cover the
-  pixel at all, 255 where it covers it fully, and the values between for a
-  partially covered edge pixel.  Bitmap fonts only ever produce 0 or 255 --
-  the intermediate values are what an antialiased source supplies.
+  The mask is one bit per pixel, set where the glyph has ink, most significant
+  bit leftmost, each row padded out to a whole number of bytes.  'stride' says
+  how far apart the rows are, so the renderer needs to know none of that.
 
   This is deliberately the only shape the renderer sees, so that where the
   glyph came from, and how wide it is, are the font's business alone.
 */
 struct Glyph
 {
-  const uInt8* coverage{nullptr};  // h rows of w bytes, 'pitch' bytes apart
-  int w{0}, h{0};                  // size of the coverage bitmap
-  int pitch{0};                    // bytes from one row to the next
-  int dx{0}, dy{0};                // where it goes, relative to the pen
+  const uInt8* mask{nullptr};  // h rows of 'stride' bytes, one bit per pixel
+  int w{0}, h{0};              // size of the mask, in pixels
+  int stride{0};               // bytes from one row of the mask to the next
+  int dx{0}, dy{0};            // where it goes, relative to the pen
 };
 
 /**
   The unpacked glyphs of one font, shared by every Font that draws with it.
 
   Built once from a FontDesc, which is the only place the packed bitmap
-  layout is understood.  The coverage of each glyph is stored contiguously;
-  Glyph::pitch is carried separately so that a future backing store which
-  packs the glyphs into a 2D surface (the shape a GPU texture would want)
-  needs no change here or in the renderer.
+  layout is understood.
 */
 class GlyphSet
 {
@@ -94,22 +90,22 @@ class GlyphSet
       @param chr  The character to look up; one not in the font is replaced
                   by the font's default character
 
-      @return  The glyph, or one with a null coverage where there is nothing
+      @return  The glyph, or one with a null mask where there is nothing
                to draw
     */
     Glyph glyph(uInt8 chr) const;
 
   private:
-    // Where one glyph lives in myCoverage, and where it goes once drawn
+    // Where one glyph lives in myMask, and where it goes once drawn
     struct GlyphInfo
     {
-      uInt32 offset{0};  // start of this glyph's coverage bytes
-      Int16 w{0}, h{0};  // its size
+      uInt32 offset{0};  // byte offset of this glyph's mask
+      Int16 w{0}, h{0};  // its size, in pixels
       Int16 dx{0}, dy{0};
     };
 
-    // The coverage bytes of every glyph, back to back
-    vector<uInt8> myCoverage;
+    // Every glyph's mask, one bit per pixel, back to back
+    vector<uInt8> myMask;
 
     // Indexed by glyph number, i.e. character - myFirstChar
     vector<GlyphInfo> myGlyphs;
@@ -121,9 +117,8 @@ class GlyphSet
   Owns one GlyphSet per distinct font, so that the roles sharing a font
   share its unpacked glyphs instead of each holding a copy.
 
-  This is a CPU-side glyph cache, not a GPU atlas -- see FONT_REWORK_PLAN.md.
-  It is also where a font loaded at runtime will put its glyphs, which is why
-  the storage lives here rather than in Font.
+  The storage lives here rather than in Font because several roles routinely
+  name the same font, and a Font is swapped between fonts in place.
 */
 class GlyphCache
 {
@@ -142,8 +137,9 @@ class GlyphCache
 
   private:
     // Keyed by font name, which is what identifies a font to the settings.
-    // A node-based map, so that handing out references is safe as it grows
-    std::unordered_map<string, GlyphSet> mySets;
+    // Every name is a static string, so a view is safe to key on.  A
+    // node-based map, so that handing out references is safe as it grows
+    std::unordered_map<string_view, GlyphSet> mySets;
 
   private:
     // Following constructors and assignment operators not supported

@@ -23,9 +23,12 @@
 namespace GUI {
 
 namespace {
-  // A glyph row is packed MSB-first into 16-bit words, so it takes this many
-  // of them (the BITMAP_WORDS of src/tools/convbdf.c)
+  // A source glyph row is packed MSB-first into 16-bit words, so it takes
+  // this many of them (the BITMAP_WORDS of src/tools/convbdf.c)
   constexpr int wordsPerRow(int w) { return (w + 15) / 16; }
+
+  // Our own rows are padded out to whole bytes instead
+  constexpr int bytesPerRow(int w) { return (w + 7) / 8; }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,7 +40,8 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     return;
 
   myGlyphs.resize(desc.size);
-  myCoverage.reserve(static_cast<size_t>(desc.size) * desc.fbbw * desc.fbbh);
+  myMask.reserve(static_cast<size_t>(desc.size) * bytesPerRow(desc.fbbw) *
+                 desc.fbbh);
 
   for(int i = 0; i < desc.size; ++i)
   {
@@ -48,7 +52,7 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     const int bby = desc.bbx ? desc.bbx[i].y : desc.fbby;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
 
     GlyphInfo& info = myGlyphs[i];
-    info.offset = static_cast<uInt32>(myCoverage.size());
+    info.offset = static_cast<uInt32>(myMask.size());
     info.w = static_cast<Int16>(bbw);
     info.h = static_cast<Int16>(bbh);
     info.dx = static_cast<Int16>(bbx);
@@ -60,15 +64,23 @@ GlyphSet::GlyphSet(const FontDesc& desc)
         (desc.offset ? desc.offset[i]
                      : static_cast<uInt32>(i) * desc.fbbh * wordsPerRow(desc.fbbw));
 
-    // Unpack the rows.  Each is left-aligned in its words, most significant
-    // bit first, so nothing here cares how wide the glyph is
+    // Repack the rows from 16-bit words into byte-aligned ones.  Both are
+    // left-aligned and most significant bit first, so nothing here cares how
+    // wide the glyph is
     const int words = wordsPerRow(bbw);
+    const int stride = bytesPerRow(bbw);
+    const size_t base = myMask.size();
+
+    myMask.resize(base + (static_cast<size_t>(stride) * bbh));
+
     for(int y = 0; y < bbh; ++y)
       for(int x = 0; x < bbw; ++x)
       {
         const uInt16 word = bits[(y * words) + (x >> 4)];
 
-        myCoverage.push_back((word & (0x8000 >> (x & 15))) ? 255 : 0);
+        if(word & (0x8000 >> (x & 15)))
+          myMask[base + (static_cast<size_t>(y) * stride) + (x >> 3)] |=
+              0x80 >> (x & 7);
       }
   }
 }
@@ -94,10 +106,10 @@ Glyph GlyphSet::glyph(uInt8 chr) const
     return {};
 
   return {
-    .coverage = myCoverage.data() + info.offset,
+    .mask = myMask.data() + info.offset,
     .w = info.w,
     .h = info.h,
-    .pitch = info.w,
+    .stride = bytesPerRow(info.w),
     .dx = info.dx,
     .dy = info.dy
   };
@@ -106,11 +118,11 @@ Glyph GlyphSet::glyph(uInt8 chr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const GlyphSet& GlyphCache::glyphs(const FontDesc& desc)
 {
-  const auto iter = mySets.find(string{desc.name});
+  const auto iter = mySets.find(desc.name);
   if(iter != mySets.end())
     return iter->second;
 
-  return mySets.emplace(string{desc.name}, GlyphSet{desc}).first->second;
+  return mySets.emplace(desc.name, GlyphSet{desc}).first->second;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

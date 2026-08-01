@@ -24,31 +24,6 @@
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
-
-namespace {
-  /**
-    Blend 'coverage'/255 of an ink colour into a background pixel.
-
-    The four 8-bit lanes are interpolated independently, so this needn't know
-    which lane is which: both pixels are in the same 32-bit layout, and on an
-    opaque surface the alpha lane interpolates 255 -> 255.  Coverage 0 and 255
-    reproduce the background and the ink exactly.
-  */
-  uInt32 blendPixel(uInt32 dst, uInt32 src, uInt8 coverage)
-  {
-    uInt32 result = 0;
-
-    for(int shift = 0; shift < 32; shift += 8)
-    {
-      const int d = static_cast<int>((dst >> shift) & 0xFF);
-      const int s = static_cast<int>((src >> shift) & 0xFF);
-      const int v = d + ((s - d) * coverage / 255);
-
-      result |= static_cast<uInt32>(v & 0xFF) << shift;
-    }
-    return result;
-  }
-}  // namespace
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,10 +142,10 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     drawChar(font, chr, tx + 1, ty + 1, shadowColor);
   }
 
-  // The font hands out a coverage bitmap and where to put it, so how a glyph
+  // The font hands out the glyph's mask and where to put it, so how a glyph
   // is stored -- and how wide it is -- stays the font's business, not ours
   const GUI::Glyph glyph = font.glyph(chr);
-  if(glyph.coverage == nullptr)
+  if(glyph.mask == nullptr)
     return;
 
   const uInt32 cx = tx + glyph.dx;
@@ -179,22 +154,17 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   if(!checkBounds(cx , cy) || !checkBounds(cx + glyph.w - 1, cy + glyph.h - 1))
     return;
 
-  const uInt8* coverage = glyph.coverage;
+  const uInt8* mask = glyph.mask;
   uInt32* buffer = myPixels + (cy * static_cast<size_t>(myPitch)) + cx;
   const uInt32 ink = myPalette[color];
 
   for(int y = 0; y < glyph.h; ++y)
   {
     for(int x = 0; x < glyph.w; ++x)
-    {
-      // A bitmap font covers a pixel either fully or not at all, so the
-      // blend only comes into play for an antialiased font's edge pixels
-      if(coverage[x] == 255)
+      if(mask[x >> 3] & (0x80 >> (x & 7)))
         buffer[x] = ink;
-      else if(coverage[x] != 0)
-        buffer[x] = blendPixel(buffer[x], ink, coverage[x]);
-    }
-    coverage += glyph.pitch;
+
+    mask += glyph.stride;
     buffer += myPitch;
   }
 #endif
