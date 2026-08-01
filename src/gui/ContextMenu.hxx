@@ -156,9 +156,8 @@ class ContextMenu : public Dialog, public CommandSender
     int _maxWidth{0};
 
     int _textOfs{0};
-    int _arrowSize{0};
-    const uInt32* _upImg{nullptr};
-    const uInt32* _downImg{nullptr};
+    const GUI::Icon* _upImg{nullptr};
+    const GUI::Icon* _downImg{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

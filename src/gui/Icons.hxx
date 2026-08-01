@@ -26,16 +26,13 @@
 namespace GUI {
 
 /* Exported structure definition. */
-static constexpr IconDesc iconSmallDesc(14, 14);
-static constexpr IconDesc iconSmallWDesc(24, 14);
-static constexpr IconDesc iconLargeDesc(19, 20);
-static constexpr IconDesc iconLargeWDesc(32, 20);
+inline constexpr IconDesc iconSmallDesc(14, 14);
+inline constexpr IconDesc iconSmallWDesc(24, 14);
+inline constexpr IconDesc iconLargeDesc(19, 20);
+inline constexpr IconDesc iconLargeWDesc(32, 20);
 
 // Settings icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_settings_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_settings_small_bits = std::to_array<uInt32>({
     0b00000000000000,
     0b00011000110000,
     0b00111111111000,
@@ -51,12 +48,10 @@ static const Icon icon_settings_small(
     0b00111111111000,
     0b00011000110000
   });
+inline constexpr Icon icon_settings_small(iconSmallDesc, icon_settings_small_bits);
 
 // Up icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_up_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_up_small_bits = std::to_array<uInt32>({
     0b00000001000000,
     0b00000011100000,
     0b00000111110000,
@@ -72,12 +67,10 @@ static const Icon icon_up_small(
     0b00000011100000,
     0b00000011100000
   });
+inline constexpr Icon icon_up_small(iconSmallDesc, icon_up_small_bits);
 
 // Previous icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_prev_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_prev_small_bits = std::to_array<uInt32>({
     0b00000000000000,
     0b00000010000000,
     0b00000110000000,
@@ -93,12 +86,10 @@ static const Icon icon_prev_small(
     0b00000110000000,
     0b00000010000000
   });
+inline constexpr Icon icon_prev_small(iconSmallDesc, icon_prev_small_bits);
 
 // Next icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_next_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_next_small_bits = std::to_array<uInt32>({
     0b00000000000000,
     0b00000001000000,
     0b00000001100000,
@@ -114,12 +105,10 @@ static const Icon icon_next_small(
     0b00000001100000,
     0b00000001000000
   });
+inline constexpr Icon icon_next_small(iconSmallDesc, icon_next_small_bits);
 
 // Home icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_home_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_home_small_bits = std::to_array<uInt32>({
     0b00000001000000,
     0b00000011100000,
     0b00000110110000,
@@ -135,12 +124,10 @@ static const Icon icon_home_small(
     0b00011100011100,
     0b00011100011100
   });
+inline constexpr Icon icon_home_small(iconSmallDesc, icon_home_small_bits);
 
 // Reload icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_reload_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_reload_small_bits = std::to_array<uInt32>({
     0b00000000000000,
     0b00000111110001,
     0b00011111111111,
@@ -156,12 +143,10 @@ static const Icon icon_reload_small(
     0b00011111111100,
     0b00000111110000
   });
+inline constexpr Icon icon_reload_small(iconSmallDesc, icon_reload_small_bits);
 
 // Subdirs icons
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_subdirs_small_off(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_subdirs_small_off_bits = std::to_array<uInt32>({
     0b11110000000000,
     0b11111000000000,
     0b11111111111111,
@@ -177,10 +162,8 @@ static const Icon icon_subdirs_small_off(
     0b10000000000001,
     0b11111111111111
   });
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_subdirs_small_on(
-  iconSmallDesc,
-  {
+inline constexpr Icon icon_subdirs_small_off(iconSmallDesc, icon_subdirs_small_off_bits);
+inline constexpr auto icon_subdirs_small_on_bits = std::to_array<uInt32>({
     0b11100000000000,
     0b11110000000000,
     0b11111111110000,
@@ -196,12 +179,10 @@ static const Icon icon_subdirs_small_on(
     0b00001000000001,
     0b00001111111111
   });
+inline constexpr Icon icon_subdirs_small_on(iconSmallDesc, icon_subdirs_small_on_bits);
 
 // random ROM icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_random_small(
-  iconSmallWDesc,
-  {
+inline constexpr auto icon_random_small_bits = std::to_array<uInt32>({
     0b100000000000000000001100,
     0b110000000000000000000110,
     0b111000000011100000111111,
@@ -232,12 +213,10 @@ static const Icon icon_random_small(
     //0b110000000000100000011111,
     //0b100000000000000000111111
   });
+inline constexpr Icon icon_random_small(iconSmallWDesc, icon_random_small_bits);
 
 // Help icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_help_small(
-  iconSmallDesc,
-  {
+inline constexpr auto icon_help_small_bits = std::to_array<uInt32>({
     0b0000011100000,
     0b0001111111000,
     0b0011100011100,
@@ -253,13 +232,11 @@ static const Icon icon_help_small(
     0b0000011100000,
     0b0000011100000
   });
+inline constexpr Icon icon_help_small(iconSmallDesc, icon_help_small_bits);
 
 
 // Settings icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_settings_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_settings_large_bits = std::to_array<uInt32>({
     0b0000000000000000000,
     0b0000111000001110000,
     0b0001111111111111000,
@@ -281,12 +258,10 @@ static const Icon icon_settings_large(
     0b0001111111111111000,
     0b0000111000001110000
   });
+inline constexpr Icon icon_settings_large(iconLargeDesc, icon_settings_large_bits);
 
 // Up icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_up_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_up_large_bits = std::to_array<uInt32>({
     0b0000000001000000000,
     0b0000000011100000000,
     0b0000000111110000000,
@@ -308,12 +283,10 @@ static const Icon icon_up_large(
     0b0000000111110000000,
     0b0000000111110000000
   });
+inline constexpr Icon icon_up_large(iconLargeDesc, icon_up_large_bits);
 
 // Previous icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_prev_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_prev_large_bits = std::to_array<uInt32>({
     0b0000000000000000000,
     0b0000000001000000000,
     0b0000000011000000000,
@@ -335,12 +308,10 @@ static const Icon icon_prev_large(
     0b0000000011000000000,
     0b0000000001000000000
   });
+inline constexpr Icon icon_prev_large(iconLargeDesc, icon_prev_large_bits);
 
 // Next icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_next_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_next_large_bits = std::to_array<uInt32>({
     0b0000000000000000000,
     0b0000000001000000000,
     0b0000000001100000000,
@@ -362,12 +333,10 @@ static const Icon icon_next_large(
     0b0000000001100000000,
     0b0000000001000000000
   });
+inline constexpr Icon icon_next_large(iconLargeDesc, icon_next_large_bits);
 
 // Home icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_home_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_home_large_bits = std::to_array<uInt32>({
     0b0000000001000000000,
     0b0000000011100000000,
     0b0000000110110000000,
@@ -389,12 +358,10 @@ static const Icon icon_home_large(
     0b0001111000001111000,
     0b0001111000001111000
   });
+inline constexpr Icon icon_home_large(iconLargeDesc, icon_home_large_bits);
 
 // Reload icon
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_reload_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_reload_large_bits = std::to_array<uInt32>({
     0b0000000000000000000,
     0b0000001111111000001,
     0b0000111111111110011,
@@ -416,13 +383,11 @@ static const Icon icon_reload_large(
     0b0000111111111110000,
     0b0000001111111000000
   });
+inline constexpr Icon icon_reload_large(iconLargeDesc, icon_reload_large_bits);
 
 
 // Subdirs icons
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_subdirs_large_off(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_subdirs_large_off_bits = std::to_array<uInt32>({
     0b1111110000000000000,
     0b1111111000000000000,
     0b1111111100000000000,
@@ -444,10 +409,8 @@ static const Icon icon_subdirs_large_off(
     0b1000000000000000001,
     0b1111111111111111111
   });
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_subdirs_large_on(
-  iconLargeDesc,
-  {
+inline constexpr Icon icon_subdirs_large_off(iconLargeDesc, icon_subdirs_large_off_bits);
+inline constexpr auto icon_subdirs_large_on_bits = std::to_array<uInt32>({
     0b1111100000000000000,
     0b1111110000000000000,
     0b1111111000000000000,
@@ -469,11 +432,9 @@ static const Icon icon_subdirs_large_on(
     0b0000100000000000001,
     0b0000111111111111111
   });
+inline constexpr Icon icon_subdirs_large_on(iconLargeDesc, icon_subdirs_large_on_bits);
 
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_random_large(
-  iconLargeWDesc,
-  {
+inline constexpr auto icon_random_large_bits = std::to_array<uInt32>({
     0b00000000000000000000000000011000,
     0b10000000000000000000000000001100,
     0b11000000000000000000000000001110,
@@ -495,11 +456,9 @@ static const Icon icon_random_large(
     0b10000000000000000000000000001100,
     0b00000000000000000000000000011000,
   });
+inline constexpr Icon icon_random_large(iconLargeWDesc, icon_random_large_bits);
 
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization)
-static const Icon icon_help_large(
-  iconLargeDesc,
-  {
+inline constexpr auto icon_help_large_bits = std::to_array<uInt32>({
     0b0000000111110000000,
     0b0000011111111100000,
     0b0001111111111111000,
@@ -521,7 +480,8 @@ static const Icon icon_help_large(
     0b0000000011100000000,
     0b0000000011100000000
   });
+inline constexpr Icon icon_help_large(iconLargeDesc, icon_help_large_bits);
 
-} // namespace GUI
+}  // namespace GUI
 
 #endif  // ICONS_HXX

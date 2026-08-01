@@ -23,6 +23,7 @@ class TIASurface;
 
 namespace GUI {
   class Font;
+  class Icon;
 }  // namespace GUI
 namespace Common {
   struct Rect;
@@ -132,29 +133,16 @@ class FBSurface
                           ColorId color, ColorId shadowColor = kNone);
 
     /**
-      This method should be called to draw the bitmap image.
+      Draw an icon.  It carries its own size, so there is nothing to describe
+      to us about it beyond where it goes and what colour to use.
 
-      @param bitmap The data to draw
+      @param icon   The icon to draw
       @param x      The x coordinate
       @param y      The y coordinate
-      @param color  The color of the bitmap
-      @param h      The height of the data image
+      @param color  The color to draw it in
     */
-    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
-                            uInt32 h = 8);
-
-    /**
-      This method should be called to draw the bitmap image.
-
-      @param bitmap The data to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the bitmap
-      @param w      The width of the data image
-      @param h      The height of the data image
-    */
-    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
-                            uInt32 w, uInt32 h);
+    virtual void drawIcon(const GUI::Icon& icon, uInt32 x, uInt32 y,
+                          ColorId color);
 
     /**
       This method should be called to convert and copy a given row of pixel

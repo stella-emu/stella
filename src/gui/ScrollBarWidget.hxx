@@ -69,12 +69,11 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _sliderHeight{0};
     int _sliderPos{0};
     int _sliderDeltaMouseDownPos{0};
-    int _upDownWidth{0};
-    int _upDownHeight{0};
+
     int _upDownBoxHeight{0};
     int _scrollBarWidth{0};
-    const uInt32* _upImg{nullptr};
-    const uInt32* _downImg{nullptr};
+    const GUI::Icon* _upImg{nullptr};
+    const GUI::Icon* _downImg{nullptr};
 
     static inline int S_WHEEL_LINES = 4;
 

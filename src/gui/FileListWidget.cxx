@@ -474,21 +474,20 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
 {
   const bool smallIcon = iconWidth() < 24;
-  const Icon* icon = getIcon(i);
+  const GUI::Icon* icon = getIcon(i);
   const int iconGap = smallIcon ? 2 : 3;
   FBSurface& s = _boss->dialog().surface();
 
-  s.drawBitmap(icon->data(), x + 2 + iconGap,
-      y + (_lineHeight - static_cast<int>(icon->size())) / 2 - 1,
-      color, iconWidth() - iconGap * 2, static_cast<int>(icon->size()));
+  s.drawIcon(*icon, x + 2 + iconGap,
+             y + (_lineHeight - icon->height()) / 2 - 1, color);
 
   return iconWidth();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FileListWidget::Icon* FileListWidget::getIcon(int i) const
+const GUI::Icon* FileListWidget::getIcon(int i) const
 {
-  static const Icon unknown_small = {
+  static constexpr auto unknown_small_bits = std::to_array<uInt32>({
     0b00111111'11000000,
     0b00100000'01100000,
     0b00100000'01110000,
@@ -503,8 +502,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b00100000'00001000,
     0b00100000'00001000,
     0b00111111'11111000
-  };
-  static const Icon rom_small = {
+  });
+  static constexpr GUI::Icon unknown_small(16, 14, unknown_small_bits);
+  static constexpr auto rom_small_bits = std::to_array<uInt32>({
     0b00000000000000000,
     0b00001111'11100000,
     0b00001010'10100000,
@@ -519,8 +519,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b10001010'10100010,
     0b10011010'10110010,
     0b11110011'10011110
-  };
-  static const Icon directory_small = {
+  });
+  static constexpr GUI::Icon rom_small(16, 14, rom_small_bits);
+  static constexpr auto directory_small_bits = std::to_array<uInt32>({
     0b00000000000000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -535,8 +536,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b10000000'00000010,
     0b10000000'00000010,
     0b11111111'11111110
-  };
-  static const Icon zip_small = {
+  });
+  static constexpr GUI::Icon directory_small(16, 14, directory_small_bits);
+  static constexpr auto zip_small_bits = std::to_array<uInt32>({
     0b00000000000000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -551,8 +553,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b10001111'11100010,
     0b10000000'00000010,
     0b11111111'11111110
-  };
-  static const Icon cassette_small = {
+  });
+  static constexpr GUI::Icon zip_small(16, 14, zip_small_bits);
+  static constexpr auto cassette_small_bits = std::to_array<uInt32>({
     0b00000000000000000,
     0b00000000000000000,
 //    0b00000000000000000,
@@ -568,9 +571,10 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11101111'11101110,
     0b11011111'11110110,
     0b00000000000000000,
-  };
+  });
+  static constexpr GUI::Icon cassette_small(16, 15, cassette_small_bits);
 
-  static const Icon up_small = {
+  static constexpr auto up_small_bits = std::to_array<uInt32>({
     0b00000000000000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -585,9 +589,10 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b10000011'10000010,
     0b10000011'10000010,
     0b11111111'11111110
-  };
+  });
+  static constexpr GUI::Icon up_small(16, 14, up_small_bits);
 
-  static const Icon unknown_large = {
+  static constexpr auto unknown_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b00111111111'11110000000,
     0b00111111111'11111000000,
@@ -610,8 +615,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b00110000000'00000011000,
     0b00111111111'11111111000,
     0b00111111111'11111111000
-  };
-  static const Icon rom_large = {
+  });
+  static constexpr GUI::Icon unknown_large(24, 22, unknown_large_bits);
+  static constexpr auto rom_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b00000011111'11110000000,
     0b00000011111'11110000000,
@@ -634,8 +640,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b110001111101'1111000110,
     0b111111101111'1011111110,
     0b111111001111'1001111110
-  };
-  static const Icon directory_large = {
+  });
+  static constexpr GUI::Icon rom_large(24, 22, rom_large_bits);
+  static constexpr auto directory_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -658,8 +665,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon zip_large = {
+  });
+  static constexpr GUI::Icon directory_large(24, 22, directory_large_bits);
+  static constexpr auto zip_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -682,8 +690,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon cassette_large = {
+  });
+  static constexpr GUI::Icon zip_large(24, 22, zip_large_bits);
+  static constexpr auto cassette_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b00000000000'00000000000,
     0b00000000000'00000000000,
@@ -706,8 +715,9 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11101111111'11111101110,
     0b00000000000'00000000000,
     0b00000000000'00000000000,
-  };
-  static const Icon up_large = {
+  });
+  static constexpr GUI::Icon cassette_large(24, 22, cassette_large_bits);
+  static constexpr auto up_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -730,12 +740,13 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
+  });
+  static constexpr GUI::Icon up_large(24, 22, up_large_bits);
   constexpr int idx = static_cast<int>(IconType::numTypes);
-  static const Icon* const small_icons[idx] = {
+  static constexpr const GUI::Icon* small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &cassette_small, &up_small
   };
-  static const Icon* const large_icons[idx] = {
+  static constexpr const GUI::Icon* large_icons[idx] = {
     &unknown_large, &rom_large, &directory_large, &zip_large, &cassette_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;

@@ -132,7 +132,6 @@ class FileListWidget : public StringListWidget
       numLauncherTypes = popdir - numTypes + 1
     };
     using IconTypeList = std::vector<IconType>;
-    using Icon = uIntArray;
 
     FSNode _node;
     FSList _fileList;
@@ -144,7 +143,7 @@ class FileListWidget : public StringListWidget
     virtual void getChildren(const FSNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
     virtual IconType getIconType(const FSNode& node) const;
-    virtual const Icon* getIcon(int i) const;
+    virtual const GUI::Icon* getIcon(int i) const;
     virtual bool fullPathToolTip() const { return false; }
 
     int iconWidth() const { return (_lineHeight < 26) ? 16 + 4: 24 + 6; }

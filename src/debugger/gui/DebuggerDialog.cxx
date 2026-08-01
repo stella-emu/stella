@@ -630,9 +630,7 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildStatusArea()
 void DebuggerDialog::addRomArea()
 {
   // Icons rather than raw bitmaps, so the buttons holding them size themselves
-  // NOLINTBEGIN(bugprone-throwing-static-initialization)
-  static const GUI::Icon LEFT_ARROW(7, 11,
-  {
+  static constexpr auto leftArrowBits = std::to_array<uInt32>({
     0b0000010,
     0b0000110,
     0b0001110,
@@ -645,8 +643,7 @@ void DebuggerDialog::addRomArea()
     0b0000110,
     0b0000010
   });
-  static const GUI::Icon RIGHT_ARROW(7, 11,
-  {
+  static constexpr auto rightArrowBits = std::to_array<uInt32>({
     0b0100000,
     0b0110000,
     0b0111000,
@@ -659,7 +656,8 @@ void DebuggerDialog::addRomArea()
     0b0110000,
     0b0100000
   });
-  // NOLINTEND(bugprone-throwing-static-initialization)
+  static constexpr GUI::Icon LEFT_ARROW(7, 11, leftArrowBits);
+  static constexpr GUI::Icon RIGHT_ARROW(7, 11, rightArrowBits);
 
   WidgetArray wid1, wid2;
 

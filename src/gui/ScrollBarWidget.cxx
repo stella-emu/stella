@@ -48,7 +48,7 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
 void ScrollBarWidget::setArrows()
 {
   // Small up arrow
-  static constexpr std::array<uInt32, 6> up_arrow = {
+  static constexpr std::array<uInt32, 6> up_arrow_bits = {
     0b0001000,
     0b0011100,
     0b0111110,
@@ -56,8 +56,9 @@ void ScrollBarWidget::setArrows()
     0b1100011,
     0b1000001,
   };
+  static constexpr GUI::Icon up_arrow(7, 6, up_arrow_bits);
   // Small down arrow
-  static constexpr std::array<uInt32, 6> down_arrow = {
+  static constexpr std::array<uInt32, 6> down_arrow_bits = {
     0b1000001,
     0b1100011,
     0b1110111,
@@ -65,9 +66,10 @@ void ScrollBarWidget::setArrows()
     0b0011100,
     0b0001000
   };
+  static constexpr GUI::Icon down_arrow(7, 6, down_arrow_bits);
 
   // Large up arrow
-  static constexpr std::array<uInt32, 9> up_arrow_large = {
+  static constexpr std::array<uInt32, 9> up_arrow_large_bits = {
     0b00000100000,
     0b00001110000,
     0b00011111000,
@@ -78,8 +80,9 @@ void ScrollBarWidget::setArrows()
     0b11000000011,
     0b10000000001,
   };
+  static constexpr GUI::Icon up_arrow_large(11, 9, up_arrow_large_bits);
   // Large down arrow
-  static constexpr std::array<uInt32, 9> down_arrow_large = {
+  static constexpr std::array<uInt32, 9> down_arrow_large_bits = {
     0b10000000001,
     0b11000000011,
     0b11100000111,
@@ -90,23 +93,20 @@ void ScrollBarWidget::setArrows()
     0b00001110000,
     0b00000100000
   };
+  static constexpr GUI::Icon down_arrow_large(11, 9, down_arrow_large_bits);
 
 
   if(_font.isLarge())
   {
-    _upDownWidth = 11;
-    _upDownHeight = 9;
     _upDownBoxHeight = 27;
-    _upImg = up_arrow_large.data();
-    _downImg = down_arrow_large.data();
+    _upImg = &up_arrow_large;
+    _downImg = &down_arrow_large;
   }
   else
   {
-    _upDownWidth = 7;
-    _upDownHeight = 6;
     _upDownBoxHeight = 18;
-    _upImg = up_arrow.data();
-    _downImg = down_arrow.data();
+    _upImg = &up_arrow;
+    _downImg = &down_arrow;
   }
 }
 
@@ -299,20 +299,18 @@ void ScrollBarWidget::drawWidget(bool hilite)
   // Up arrow
   if(hilite && _part == Part::UpArrow)
     s.fillRect(_x + 1, _y + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
-  s.drawBitmap(_upImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
-               _y + (_upDownBoxHeight - _upDownHeight) / 2,
-               isSinglePage ? kColor
-                            : (hilite && _part == Part::UpArrow) ? kWidColor : kTextColor,
-               _upDownWidth, _upDownHeight);
+  s.drawIcon(*_upImg, _x + (_scrollBarWidth - _upImg->width()) / 2,
+             _y + (_upDownBoxHeight - _upImg->height()) / 2,
+             isSinglePage ? kColor
+                          : (hilite && _part == Part::UpArrow) ? kWidColor : kTextColor);
 
   // Down arrow
   if(hilite && _part == Part::DownArrow)
     s.fillRect(_x + 1, bottomY - _upDownBoxHeight + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
-  s.drawBitmap(_downImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
-               bottomY - _upDownBoxHeight + (_upDownBoxHeight - _upDownHeight) / 2,
-               isSinglePage ? kColor
-                            : (hilite && _part == Part::DownArrow) ? kWidColor : kTextColor,
-               _upDownWidth, _upDownHeight);
+  s.drawIcon(*_downImg, _x + (_scrollBarWidth - _downImg->width()) / 2,
+             bottomY - _upDownBoxHeight + (_upDownBoxHeight - _downImg->height()) / 2,
+             isSinglePage ? kColor
+                          : (hilite && _part == Part::DownArrow) ? kWidColor : kTextColor);
 
   // Slider
   if(!isSinglePage)

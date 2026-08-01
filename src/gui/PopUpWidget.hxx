@@ -134,9 +134,7 @@ class PopUpWidget : public EditableWidget
     bool   _changed{false};
 
     int _textOfs{0};
-    int _arrowWidth{0};
-    int _arrowHeight{0};
-    const uInt32* _arrowImg{nullptr};
+    const GUI::Icon* _arrowImg{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

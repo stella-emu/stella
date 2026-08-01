@@ -49,7 +49,7 @@ namespace {
   constexpr string_view PROPS_FIELD = "Props: 1234567890123456.";
 }  // namespace
 
-static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
+static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX_BITS = {
   0b0000110000,
   0b0000110000,
   0b0001111000,
@@ -61,8 +61,9 @@ static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
   0b1100000011,
   0b1100000011,
 };
+static constexpr GUI::Icon PREV_GFX(BUTTON_GFX_H, BUTTON_GFX_H, PREV_GFX_BITS);
 
-static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT_GFX = {
+static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT_GFX_BITS = {
   0b1100000011,
   0b1100000011,
   0b0110000110,
@@ -74,8 +75,9 @@ static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT_GFX = {
   0b0000110000,
   0b0000110000,
 };
+static constexpr GUI::Icon NEXT_GFX(BUTTON_GFX_H, BUTTON_GFX_H, NEXT_GFX_BITS);
 
-static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> PREV_GFX_LARGE = {
+static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> PREV_GFX_LARGE_BITS = {
   0b0000000110000000,
   0b0000000110000000,
   0b0000001111000000,
@@ -93,8 +95,9 @@ static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> PREV_GFX_LARGE = {
   0b1110000000000111,
   0b1110000000000111,
 };
+static constexpr GUI::Icon PREV_GFX_LARGE(BUTTON_GFX_H_LARGE, BUTTON_GFX_H_LARGE, PREV_GFX_LARGE_BITS);
 
-static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE = {
+static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE_BITS = {
   0b1110000000000111,
   0b1110000000000111,
   0b0111000000001110,
@@ -112,6 +115,7 @@ static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE = {
   0b0000000110000000,
   0b0000000110000000,
 };
+static constexpr GUI::Icon NEXT_GFX_LARGE(BUTTON_GFX_H_LARGE, BUTTON_GFX_H_LARGE, NEXT_GFX_LARGE_BITS);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
@@ -125,7 +129,6 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   const int fontWidth = Dialog::fontWidth();
   const int bWidth = fontWidth * 5;
   const bool largeFont = _font.isLarge();
-  const int buttonSize = largeFont ? BUTTON_GFX_H_LARGE : BUTTON_GFX_H;
   const int numRanks = static_cast<int>(NUM_RANKS);
   const VariantList items;
   WidgetArray wid;
@@ -142,12 +145,10 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
       fontWidth * HSM::MAX_VARIATION_DIGITS, items, kVariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
-      largeFont ? PREV_GFX_LARGE.data() : PREV_GFX.data(),
-      buttonSize, buttonSize, kPrevVariation);
+      largeFont ? PREV_GFX_LARGE : PREV_GFX, kPrevVariation);
   wid.push_back(myPrevVarButton);
   myNextVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
-      largeFont ? NEXT_GFX_LARGE.data() : NEXT_GFX.data(),
-      buttonSize, buttonSize, kNextVariation);
+      largeFont ? NEXT_GFX_LARGE : NEXT_GFX, kNextVariation);
   wid.push_back(myNextVarButton);
 
   // Score-table column headers.  The special value's heading is the game's own

@@ -741,22 +741,18 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
-                           const uInt32* bitmap, int bmw, int bmh, int cmd,
-                           bool repeat)
+                           const GUI::Icon& icon, int cmd, bool repeat)
   : ButtonWidget(boss, font, w, h, "", cmd, repeat)
 {
-  _useBitmap = true;
   _useText = false;
-  _bitmap = bitmap;
-  _bmw = bmw;
-  _bmh = bmh;
+  _icon = &icon;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            const GUI::Icon& icon, int cmd, bool repeat)
   : ButtonWidget(boss, font, icon.width() + iconGap(font), calcHeight(font),
-                 icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
+                 icon, cmd, repeat)
 {
   _autoSize = true;
 }
@@ -769,10 +765,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  icon.width() + iconGap(font) * 1.5 + font.getStringWidth(label),
                  calcHeight(font), label, cmd, repeat)
 {
-  _useBitmap = true;
-  _bitmap = icon.bitmap();
-  _bmw = icon.width();
-  _bmh = icon.height();
+  _icon = &icon;
   _bmx = iconGap(font);
   _align = TextAlign::Left;
   _autoSize = true;
@@ -851,20 +844,10 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
-{
-  _useBitmap = true;
-  _bitmap = bitmap;
-  _bmh = bmh;
-  _bmw = bmw;
-
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::setIcon(const GUI::Icon& icon)
 {
-  setBitmap(icon.bitmap(), icon.width(), icon.height());
+  _icon = &icon;
+  setDirty();
 
   // A button that sized itself around its icon re-sizes around the new one; one
   // whose width came from outside keeps it (the layout re-applies that)
@@ -880,14 +863,13 @@ void ButtonWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
   int x = _x;
-  if(_useBitmap)
+  if(_icon != nullptr)
   {
-    const int xb = _useText ? _x + _bmx / 2 : _x + (_w - _bmw) / 2;
-    s.drawBitmap(_bitmap, xb, _y + (_h - _bmh) / 2,
-                 !isEnabled() ? _textcolorlo :
-                 hilite ? _textcolorhi : _textcolor,
-                 _bmw, _bmh);
-    x = _x + _bmw + _bmx;
+    const int xb = _useText ? _x + _bmx / 2 : _x + (_w - _icon->width()) / 2;
+    s.drawIcon(*_icon, xb, _y + (_h - _icon->height()) / 2,
+               !isEnabled() ? _textcolorlo :
+               hilite ? _textcolorhi : _textcolor);
+    x = _x + _icon->width() + _bmx;
   }
   if(_useText)
     s.drawString(_font, _label, x, _y + firstTextY(), _w,
@@ -977,52 +959,57 @@ void CheckboxWidget::setFill(FillType type)
 {
   /* 10x10 checkbox bitmap */
   // small versions
-  static constexpr std::array<uInt32, 10> checked_img_active = {
+  static constexpr std::array<uInt32, 10> checked_img_active_bits = {
     0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,
     0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111
   };
+  static constexpr GUI::Icon checked_img_active(10, 10, checked_img_active_bits);
 
-  static constexpr std::array<uInt32, 10> checked_img_inactive = {
+  static constexpr std::array<uInt32, 10> checked_img_inactive_bits = {
     0b1111111111,  0b1111111111,  0b1111001111,  0b1110000111,  0b1100000011,
     0b1100000011,  0b1110000111,  0b1111001111,  0b1111111111,  0b1111111111
   };
+  static constexpr GUI::Icon checked_img_inactive(10, 10, checked_img_inactive_bits);
 
-  static constexpr std::array<uInt32, 10> checked_img_circle = {
+  static constexpr std::array<uInt32, 10> checked_img_circle_bits = {
     0b0001111000,  0b0111111110,  0b0111111110,  0b1111111111,  0b1111111111,
     0b1111111111,  0b1111111111,  0b0111111110,  0b0111111110,  0b0001111000
   };
+  static constexpr GUI::Icon checked_img_circle(10, 10, checked_img_circle_bits);
 
   /* 18x18 checkbox bitmap */
   // large versions
-  static constexpr std::array<uInt32, 18> checked_img_active_large = {
+  static constexpr std::array<uInt32, 18> checked_img_active_large_bits = {
     0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
     0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
     0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
     0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
     0b111111111111111111,  0b111111111111111111
   };
+  static constexpr GUI::Icon checked_img_active_large(18, 18, checked_img_active_large_bits);
 
-  static constexpr std::array<uInt32, 18> checked_img_inactive_large = {
+  static constexpr std::array<uInt32, 18> checked_img_inactive_large_bits = {
     0b111111111111111111, 0b111111111111111111, 0b111111111111111111,
     0b111111110011111111, 0b111111100001111111, 0b111111000000111111, 0b111110000000011111,
     0b111100000000001111, 0b111000000000000111, 0b111000000000000111, 0b111100000000001111,
     0b111110000000011111, 0b111111000000111111, 0b111111100001111111, 0b111111110011111111,
     0b111111111111111111, 0b111111111111111111, 0b111111111111111111
   };
+  static constexpr GUI::Icon checked_img_inactive_large(18, 18, checked_img_inactive_large_bits);
 
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      _img = _boxSize == 14 ? checked_img_active.data() : checked_img_active_large.data();
+      _img = _boxSize == 14 ? &checked_img_active : &checked_img_active_large;
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Inactive:
-      _img = _boxSize == 14 ? checked_img_inactive.data() : checked_img_inactive_large.data();
+      _img = _boxSize == 14 ? &checked_img_inactive : &checked_img_inactive_large;
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Circle:
       // only used in debugger which only has smaller fonts
-      _img = checked_img_circle.data();
+      _img = &checked_img_circle;
       _drawBox = false;
       break;
     default:
@@ -1054,8 +1041,9 @@ void CheckboxWidget::drawWidget(bool hilite)
   s.fillRect(_x + 1, _y + _boxY + 1, _boxSize - 2, _boxSize - 2,
       _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kDlgColor);
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
-                 : kColor, _boxSize - 4);
+    s.drawIcon(*_img, _x + 2, _y + _boxY + 2,
+               isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
+                           : kColor);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + prefixSize(_font), _y + firstTextY(), _w,

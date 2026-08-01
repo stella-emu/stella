@@ -395,14 +395,13 @@ class ButtonWidget : public LabelWidget
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  string_view label, int cmd = 0, bool repeat = false);
     /**
-      A raw bitmap, at a size you give me.  For the caller that draws its own
-      graphic and must match it to something else (the high scores dialog's
-      prev/next arrows, sized to the pop-up beside them).  An ICON belongs in one
-      of the two below, which need no size at all.
+      An icon, at a size you give me.  For the caller whose button must match
+      something else (the high scores dialog's prev/next arrows, sized to the
+      pop-up beside them).  A button free to size itself belongs in one of the
+      two below, which need no size at all.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, int dw, int dh,
-                 const uInt32* bitmap, int bmw, int bmh,
-                 int cmd = 0, bool repeat = false);
+                 const GUI::Icon& icon, int cmd = 0, bool repeat = false);
 
     /**
       Size me from my own icon, and from my label if I have one: I am laid out
@@ -419,8 +418,7 @@ class ButtonWidget : public LabelWidget
 
     bool handleEvent(Event::Type event) override;
 
-    /* Sets/changes the button's bitmap **/
-    void setBitmap(const uInt32* bitmap, int bmw, int bmh);
+    /* Sets/changes the button's icon **/
     void setIcon(const GUI::Icon& icon);
 
     // Trim the self-size margin so a small button (a debugger op button) is not
@@ -464,20 +462,21 @@ class ButtonWidget : public LabelWidget
 
   protected:
     // The width my content needs: an icon-and-label button is laid out around
-    // its bitmap -- a half-gap, the bitmap, a half-gap, then the label (see
-    // drawWidget); an icon-only one just centers its bitmap; a plain one is
+    // its icon -- a half-gap, the icon, a half-gap, then the label (see
+    // drawWidget); an icon-only one just centers its icon; a plain one is
     // sized by its label alone
     int autoWidth() const
     {
-      if(!_useBitmap)
+      if(_icon == nullptr)
         return _compact
           ? _font.getStringWidth(_label)
               + static_cast<int>(_font.getMaxCharWidth() * 1.25)
           : calcWidth(_font, _label);
 
       return _useText
-        ? _bmw + static_cast<int>(_bmx * 1.5) + _font.getStringWidth(_label)
-        : _bmw + iconGap(_font);
+        ? _icon->width() + static_cast<int>(_bmx * 1.5)
+            + _font.getStringWidth(_label)
+        : _icon->width() + iconGap(_font);
     }
 
     // The height my content needs.  A compact button keeps to its line and no
@@ -521,10 +520,11 @@ class ButtonWidget : public LabelWidget
   protected:
     bool _repeat{false}; // button repeats
     bool _useText{true};
-    bool _useBitmap{false};
     bool _compact{false}; // trim the self-size margin (a small op button)
-    const uInt32* _bitmap{nullptr};
-    int  _bmw{0}, _bmh{0}, _bmx{0};
+    // What I draw beside or instead of my label; null means label-only.  Icons
+    // are constexpr and outlive every button holding one
+    const GUI::Icon* _icon{nullptr};
+    int  _bmx{0};
     // Set only by the label-only ctor: I sized myself, so a font change re-sizes
     // me.  A button whose size came from elsewhere (an icon's extents, a width
     // the layout imposes) keeps it, and the layout re-applies it
@@ -586,9 +586,9 @@ class CheckboxWidget : public ButtonWidget
     bool _drawBox{true};
     bool _changed{false};
 
-    const uInt32* _outerCircle{nullptr};
-    const uInt32* _innerCircle{nullptr};
-    const uInt32* _img{nullptr};
+    const GUI::Icon* _outerCircle{nullptr};
+    const GUI::Icon* _innerCircle{nullptr};
+    const GUI::Icon* _img{nullptr};
     ColorId _fillColor{kColor};
     int _boxY{0};
     int _boxSize{14};

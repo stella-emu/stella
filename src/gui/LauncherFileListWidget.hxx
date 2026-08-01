@@ -63,7 +63,7 @@ class LauncherFileListWidget : public FileListWidget
     void getChildren(const FSNode::CancelCheck& isCancelled) override;
     void extendLists(StringList& list) override;
     IconType getIconType(const FSNode& node) const override;
-    const Icon* getIcon(int i) const override;
+    const GUI::Icon* getIcon(int i) const override;
     bool fullPathToolTip() const override { return myInVirtualDir; }
 
   private:

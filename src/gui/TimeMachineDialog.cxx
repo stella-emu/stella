@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "OSystem.hxx"
+#include "Icon.hxx"
 #include "Widget.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -42,7 +43,7 @@ static constexpr int BUTTON_W = 14, BUTTON_H = 14;
 static constexpr int H_BORDER = 6, V_BORDER = 4, BUTTON_GAP = 4;
 static constexpr int BUTTON_WIDTH = BUTTON_W + 10, BUTTON_HEIGHT = BUTTON_H + 10;
 
-static constexpr std::array<uInt32, BUTTON_H> RECORD = {
+static constexpr std::array<uInt32, BUTTON_H> RECORD_BITS = {
   0b00000111100000,
   0b00011111111000,
   0b00111111111100,
@@ -58,7 +59,8 @@ static constexpr std::array<uInt32, BUTTON_H> RECORD = {
   0b00011111111000,
   0b00000111100000
 };
-static constexpr std::array<uInt32, BUTTON_H> STOP = {
+static constexpr GUI::Icon RECORD(BUTTON_W, BUTTON_H, RECORD_BITS);
+static constexpr std::array<uInt32, BUTTON_H> STOP_BITS = {
   0b11111111111111,
   0b11111111111111,
   0b11111111111111,
@@ -74,7 +76,8 @@ static constexpr std::array<uInt32, BUTTON_H> STOP = {
   0b11111111111111,
   0b11111111111111
 };
-static constexpr std::array<uInt32, BUTTON_H> EXIT = {
+static constexpr GUI::Icon STOP(BUTTON_W, BUTTON_H, STOP_BITS);
+static constexpr std::array<uInt32, BUTTON_H> EXIT_BITS = {
   0b01100000000110,
   0b11110000001111,
   0b11111000011111,
@@ -90,8 +93,9 @@ static constexpr std::array<uInt32, BUTTON_H> EXIT = {
   0b11110000001111,
   0b01100000000110
 };
+static constexpr GUI::Icon EXIT(BUTTON_W, BUTTON_H, EXIT_BITS);
 
-static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
+static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL_BITS = {
   0,
   0b11000011000011,
   0b11000111000111,
@@ -107,7 +111,8 @@ static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
   0b11000011000011,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
+static constexpr GUI::Icon REWIND_ALL(BUTTON_W, BUTTON_H, REWIND_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> REWIND_1_BITS = {
   0,
   0b00000110001110,
   0b00001110001110,
@@ -123,7 +128,8 @@ static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
   0b00000110001110,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> PLAYBACK = {
+static constexpr GUI::Icon REWIND_1(BUTTON_W, BUTTON_H, REWIND_1_BITS);
+static constexpr std::array<uInt32, BUTTON_H> PLAYBACK_BITS = {
   0b11000000000000,
   0b11110000000000,
   0b11111100000000,
@@ -139,7 +145,8 @@ static constexpr std::array<uInt32, BUTTON_H> PLAYBACK = {
   0b11110000000000,
   0b11000000000000
 };
-static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
+static constexpr GUI::Icon PLAYBACK(BUTTON_W, BUTTON_H, PLAYBACK_BITS);
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_1_BITS = {
   0,
   0b01110001100000,
   0b01110001110000,
@@ -155,7 +162,8 @@ static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
   0b01110001100000,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL = {
+static constexpr GUI::Icon UNWIND_1(BUTTON_W, BUTTON_H, UNWIND_1_BITS);
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL_BITS = {
   0,
   0b11000011000011,
   0b11100011100011,
@@ -171,7 +179,8 @@ static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL = {
   0b11000011000011,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL = {
+static constexpr GUI::Icon UNWIND_ALL(BUTTON_W, BUTTON_H, UNWIND_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL_BITS = {
   0b00000111100000,
   0b00000111100000,
   0b00000111100000,
@@ -187,7 +196,8 @@ static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL = {
   0b11111111111111,
   0b11111111111111,
 };
-static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
+static constexpr GUI::Icon SAVE_ALL(BUTTON_W, BUTTON_H, SAVE_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL_BITS = {
   0b00000011000000,
   0b00000111100000,
   0b00001111110000,
@@ -203,6 +213,7 @@ static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
   0b11111111111111,
   0b11111111111111,
 };
+static constexpr GUI::Icon LOAD_ALL(BUTTON_W, BUTTON_H, LOAD_ALL_BITS);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -245,31 +256,31 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Buttons
   myToggleWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                    STOP.data(), BUTTON_W, BUTTON_H, kToggle);
+                                    STOP, kToggle);
   myToggleWidget->setToolTip("Toggle Time Machine mode.");
   myExitWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                  EXIT.data(), BUTTON_W, BUTTON_H, kExit);
+                                  EXIT, kExit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
   myRewindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                       REWIND_ALL.data(), BUTTON_W, BUTTON_H,
+                                       REWIND_ALL,
                                        kRewindAll);
   myRewind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1,
+                                     REWIND_1, kRewind1,
                                      true);
   myPlayBackWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                      PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
+                                      PLAYBACK, kPlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
   myUnwind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1,
+                                     UNWIND_1, kUnwind1,
                                      true);
   myUnwindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                       UNWIND_ALL.data(), BUTTON_W, BUTTON_H,
+                                       UNWIND_ALL,
                                        kUnwindAll);
   mySaveAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
+                                     SAVE_ALL, kSaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
   myLoadAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
+                                     LOAD_ALL, kLoadAll);
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
 
   // Message (fills the space between the buttons and the last-time readout)
@@ -586,6 +597,6 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleToggle()
 {
-  myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ?
-    RECORD.data() : STOP.data(), BUTTON_W, BUTTON_H);
+  myToggleWidget->setIcon(instance().state().mode() == StateManager::Mode::Off ?
+    RECORD : STOP);
 }

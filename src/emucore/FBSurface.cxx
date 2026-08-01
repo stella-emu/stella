@@ -24,6 +24,7 @@
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
+  #include "Icon.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,30 +172,29 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           ColorId color, uInt32 h)
+void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
+                         ColorId color)
 {
-  drawBitmap(bitmap, tx, ty, color, h, h);
-}
+#ifdef GUI_SUPPORT
+  const uInt32 w = icon.width(), h = icon.height();
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           ColorId color, uInt32 w, uInt32 h)
-{
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
     return;
 
+  const uInt32* rows = icon.bitmap();
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
 
   for(uInt32 y = 0; y < h; ++y)
   {
     uInt32 mask = 1 << (w - 1);
+
     for(uInt32 x = 0; x < w; ++x, mask >>= 1)
-      if(bitmap[y] & mask)
+      if(rows[y] & mask)
         buffer[x] = myPalette[color];
 
     buffer += myPitch;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
