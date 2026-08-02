@@ -46,7 +46,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _w = w + dropDownWidth(font);
 
   // vertically center the arrows (the text centers itself, see firstTextY())
-  myArrowsY = (_h - _arrowImg->height()) / 2;
+  myArrowsY = (_h - _arrowHeight) / 2;
 
   myMenu = std::make_unique<ContextMenu>(this, font, items, cmd,
                                     w + dropDownWidth(font));
@@ -95,7 +95,7 @@ void PopUpWidget::refreshFontMetrics()
   // is re-applied by the owning layout(), which runs straight after this
   if(myAutoWidth)
     setBoxWidth(calcWidth(_font, myMenu->entries()));
-  myArrowsY = (_h - _arrowImg->height()) / 2;
+  myArrowsY = (_h - _arrowHeight) / 2;
 
   // The dropdown menu is a separate Dialog, not part of this widget's
   // (Widget-tree-only) child list, so no walk ever reaches it on its own
@@ -264,42 +264,13 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setArrow()
 {
-  // Small down arrow
-  static constexpr std::array<uInt32, 7> down_arrow_bits = {
-    0b100000001,
-    0b110000011,
-    0b111000111,
-    0b011101110,
-    0b001111100,
-    0b000111000,
-    0b000010000,
-  };
-  static constexpr GUI::Icon down_arrow(9, 7, down_arrow_bits);
-  // Large down arrow
-  static constexpr std::array<uInt32, 10> down_arrow_large_bits = {
-    0b1000000000001,
-    0b1100000000011,
-    0b1110000000111,
-    0b1111000001111,
-    0b0111100011110,
-    0b0011110111100,
-    0b0001111111000,
-    0b0000111110000,
-    0b0000011100000,
-    0b0000001000000
-  };
-  static constexpr GUI::Icon down_arrow_large(13, 10, down_arrow_large_bits);
+  // The arrow is sized from the font, so it grows with the text instead of
+  // stepping.  At the default 9x18 this reproduces the old 9x7 bitmap
+  _arrowWidth = arrowWidth(_font);
+  _arrowHeight = _arrowWidth - 2;
+  _arrowThickness = ((_arrowWidth - 1) / 4) + 1;
 
-  if(_font.isLarge())
-  {
-    _textOfs = 5;
-    _arrowImg = &down_arrow_large;
-  }
-  else
-  {
-    _textOfs = 3;
-    _arrowImg = &down_arrow;
-  }
+  _textOfs = _font.isLarge() ? 5 : 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,17 +284,18 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
   if(isEnabled() && hilite)
-    s.frameRect(x + w - (_arrowImg->width() * 2 - 1), _y, (_arrowImg->width() * 2 - 1), _h, kWidColorHi);
+    s.frameRect(x + w - (_arrowWidth * 2 - 1), _y, (_arrowWidth * 2 - 1), _h, kWidColorHi);
 
   // Fill the background
   const ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
-  s.fillRect(x + 1, _y + 1, w - (_arrowImg->width() * 2 - 1), _h - 2,
+  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
              _changed ? kDbgChangedColor : bgCol);
-  s.fillRect(x + w - (_arrowImg->width() * 2 - 2), _y + 1, (_arrowImg->width() * 2 - 3), _h - 2,
+  s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
              isEnabled() && hilite ? kBtnColorHi : bgCol);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawIcon(*_arrowImg, x + w - (_arrowImg->width() * 1.5 - 1), _y + myArrowsY + 1,
-             !isEnabled() ? kColor : kTextColor);
+  s.drawArrow(x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
+              _arrowWidth, _arrowHeight, ArrowDirection::Down,
+              !isEnabled() ? kColor : kTextColor, _arrowThickness);
 
   // Draw the selected entry, if any
   const string& name = editString();

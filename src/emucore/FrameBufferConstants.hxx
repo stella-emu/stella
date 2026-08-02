@@ -155,4 +155,10 @@ enum class FrameStyle: uInt8 {
   Dashed
 };
 
+// Which way an arrow drawn by FBSurface::drawArrow() points
+enum class ArrowDirection: uInt8 {
+  Up,
+  Down
+};
+
 #endif  // FRAME_BUFFER_CONSTANTS_HXX

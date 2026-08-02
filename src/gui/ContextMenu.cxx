@@ -581,72 +581,10 @@ void ContextMenu::scrollDown(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setArrows()
 {
-  static constexpr std::array<uInt32, 8> up_arrow_bits = {
-    0b00011000,
-    0b00011000,
-    0b00111100,
-    0b00111100,
-    0b01111110,
-    0b01111110,
-    0b11111111,
-    0b11111111
-  };
-  static constexpr GUI::Icon up_arrow(8, 8, up_arrow_bits);
-  static constexpr std::array<uInt32, 8> down_arrow_bits = {
-    0b11111111,
-    0b11111111,
-    0b01111110,
-    0b01111110,
-    0b00111100,
-    0b00111100,
-    0b00011000,
-    0b00011000
-  };
-  static constexpr GUI::Icon down_arrow(8, 8, down_arrow_bits);
-
-  static constexpr std::array<uInt32, 12> up_arrow_large_bits = {
-    0b000001100000,
-    0b000001100000,
-    0b000011110000,
-    0b000011110000,
-    0b000111111000,
-    0b000111111000,
-    0b001111111100,
-    0b001111111100,
-    0b011111111110,
-    0b011111111110,
-    0b111111111111,
-    0b111111111111
-  };
-  static constexpr GUI::Icon up_arrow_large(12, 12, up_arrow_large_bits);
-  static constexpr std::array<uInt32, 12> down_arrow_large_bits = {
-    0b111111111111,
-    0b111111111111,
-    0b011111111110,
-    0b011111111110,
-    0b001111111100,
-    0b001111111100,
-    0b000111111000,
-    0b000111111000,
-    0b000011110000,
-    0b000011110000,
-    0b000001100000,
-    0b000001100000
-  };
-  static constexpr GUI::Icon down_arrow_large(12, 12, down_arrow_large_bits);
-
-  if(_font.isLarge())
-  {
-    _textOfs = 4;
-    _upImg = &up_arrow_large;
-    _downImg = &down_arrow_large;
-  }
-  else
-  {
-    _textOfs = 2;
-    _upImg = &up_arrow;
-    _downImg = &down_arrow;
-  }
+  // Filled triangles, sized from the font so they follow the text instead of
+  // stepping.  At the default 9x18 this reproduces the old 8x8 bitmap
+  _arrowSize = arrowSize(_font);
+  _textOfs = _font.isLarge() ? 4 : 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -670,7 +608,8 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y+_rowHeight-1, w+2, kColor);
-    s.drawIcon(*_upImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor);
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+                _arrowSize, _arrowSize, ArrowDirection::Up, _scrollUpColor);
     y += _rowHeight;
     offset--;
   }
@@ -689,7 +628,8 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y, w+2, kColor);
-    s.drawIcon(*_downImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor);
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+                _arrowSize, _arrowSize, ArrowDirection::Down, _scrollDnColor);
   }
 
   clearDirty();

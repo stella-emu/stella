@@ -106,8 +106,10 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 
   // NOLINTNEXTLINE(misc-const-correctness)
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  const uInt32 ink = myPalette[color];
+
   while(x++ <= x2)
-    *buffer++ = myPalette[color];
+    *buffer++ = ink;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,9 +119,11 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
     return;
 
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  const uInt32 ink = myPalette[color];
+
   while(y++ <= y2)
   {
-    *buffer = myPalette[color];
+    *buffer = ink;
     buffer += myPitch;
   }
 }
@@ -183,6 +187,7 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
 
   const uInt32* rows = icon.bitmap();
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  const uInt32 ink = myPalette[color];
 
   for(uInt32 y = 0; y < h; ++y)
   {
@@ -190,11 +195,48 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
 
     for(uInt32 x = 0; x < w; ++x, mask >>= 1)
       if(rows[y] & mask)
-        buffer[x] = myPalette[color];
+        buffer[x] = ink;
 
     buffer += myPitch;
   }
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
+                          ArrowDirection dir, ColorId color, uInt32 thickness)
+{
+  if(w == 0 || h == 0)
+    return;
+  if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
+    return;
+
+  const int aw = static_cast<int>(w), ah = static_cast<int>(h),
+            thick = static_cast<int>(thickness);
+  uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  const uInt32 ink = myPalette[color];
+
+  for(int y = 0; y < ah; ++y)
+  {
+    // How far down the arrow this row is, counting from the tip
+    const int t = (dir == ArrowDirection::Up) ? y : ah - 1 - y;
+
+    // The row's edges, measured in TWICE the distance from the centre line so
+    // that odd and even widths both come out exact with no rounding.  A filled
+    // arrow spans its box; a stroked one runs at 45 degrees and clips to it
+    const int outer = thick ? std::min(aw - 1, 2 * t)
+                            : (ah > 1 ? ((aw - 1) * t) / (ah - 1) : aw - 1);
+    const int inner = thick ? std::max(0, (2 * t) - (2 * (thick - 1))) : 0;
+
+    for(int x = 0; x < aw; ++x)
+    {
+      const int d = std::abs((2 * x) - (aw - 1));
+
+      if(d >= inner && d <= outer + 1)
+        buffer[x] = ink;
+    }
+    buffer += myPitch;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -40,8 +40,19 @@ class ScrollBarWidget : public Widget, public CommandSender
 
     static void setWheelLines(int lines) { S_WHEEL_LINES = lines; }
     static int  getWheelLines()          { return S_WHEEL_LINES;  }
+    /**
+      The arrow I draw at each end.  Odd, so it has a single-pixel tip, and
+      derived from the font so it grows with the text rather than stepping
+      between two hand-drawn bitmaps.  At the default 9x18 font this is 7,
+      which is the width the old small arrow bitmap had.
+    */
+    static int arrowWidth(const GUI::Font& font) {
+      return ((font.getMaxCharWidth() * 3 / 4) | 1);
+    }
+
     static int scrollBarWidth(const GUI::Font& font) {
-      return font.isLarge() ? 23 : 15;
+      // Wide enough for the arrow it must contain, with a margin either side
+      return arrowWidth(font) * 2 + 1;
     }
 
     // Re-pick the arrow images/box sizes and the (font-derived) bar width when
@@ -72,8 +83,9 @@ class ScrollBarWidget : public Widget, public CommandSender
 
     int _upDownBoxHeight{0};
     int _scrollBarWidth{0};
-    const GUI::Icon* _upImg{nullptr};
-    const GUI::Icon* _downImg{nullptr};
+    int _arrowWidth{0};
+    int _arrowHeight{0};
+    int _arrowThickness{0};
 
     static inline int S_WHEEL_LINES = 4;
 

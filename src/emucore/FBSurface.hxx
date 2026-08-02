@@ -145,6 +145,24 @@ class FBSurface
                           ColorId color);
 
     /**
+      Draw an arrow, sized by the caller rather than picked from a fixed set of
+      bitmaps -- so it follows the font instead of stepping.
+
+      @param x          The x coordinate
+      @param y          The y coordinate
+      @param w          The width of the arrow
+      @param h          The height of the arrow
+      @param dir        Which way it points
+      @param color      The color to draw it in
+      @param thickness  The width of the stroke, or 0 for a filled arrow.  A
+                        stroke runs at 45 degrees and is clipped to the box; a
+                        filled one is a triangle spanning the whole box
+    */
+    virtual void drawArrow(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           ArrowDirection dir, ColorId color,
+                           uInt32 thickness = 0);
+
+    /**
       This method should be called to convert and copy a given row of pixel
       data into a FrameBuffer surface.  The pixels must already be in the
       format used by the surface.
@@ -204,7 +222,6 @@ class FBSurface
       @param underline    Whether to underline the link
       @return       Number of lines drawn
     */
-
     virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
                            int w, int h, ColorId color,
                            TextAlign align = TextAlign::Left,
@@ -232,7 +249,6 @@ class FBSurface
       @param underline    Whether to underline the link
 
       @return    x coordinate of end of string
-
     */
     virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
                            int w, ColorId color, TextAlign align = TextAlign::Left,

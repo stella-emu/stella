@@ -123,6 +123,15 @@ class ContextMenu : public Dialog, public CommandSender
     void handleEvent(Event::Type e) override;
 
   private:
+    /**
+      The scroll arrows I draw at my ends: filled triangles, square, and
+      derived from the font so they follow the text.  At the default 9x18
+      font this is 8, the size the old small bitmap had.
+    */
+    static int arrowSize(const GUI::Font& font) {
+      return (font.getMaxCharWidth() * 8 / 9) & ~1;
+    }
+
     void setArrows();
 
     void recalc(const Common::Rect& image);
@@ -160,8 +169,7 @@ class ContextMenu : public Dialog, public CommandSender
     int _maxWidth{0};
 
     int _textOfs{0};
-    const GUI::Icon* _upImg{nullptr};
-    const GUI::Icon* _downImg{nullptr};
+    int _arrowSize{0};
 
   private:
     // Following constructors and assignment operators not supported

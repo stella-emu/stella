@@ -87,8 +87,19 @@ class PopUpWidget : public EditableWidget
     const Variant& getSelectedTag() const;
 
     bool wantsFocus() const override { return true; }
+    /**
+      The drop-down arrow I draw at my right-hand end.  Odd, so it has a
+      single-pixel tip, and derived from the font so it grows with the text
+      rather than stepping between two hand-drawn bitmaps.  At the default
+      9x18 font this is 9, the width the old small arrow bitmap had.
+    */
+    static int arrowWidth(const GUI::Font& font) {
+      return font.getMaxCharWidth() | 1;
+    }
+
     static int dropDownWidth(const GUI::Font& font) {
-      return font.isLarge() ? (13 * 2 + 7) : (9 * 2 + 3);
+      // The arrow's box, plus the margin the value box keeps from it
+      return arrowWidth(font) * 2 + 3;
     }
 
     /**
@@ -139,7 +150,9 @@ class PopUpWidget : public EditableWidget
     bool   _changed{false};
 
     int _textOfs{0};
-    const GUI::Icon* _arrowImg{nullptr};
+    int _arrowWidth{0};
+    int _arrowHeight{0};
+    int _arrowThickness{0};
 
   private:
     // Following constructors and assignment operators not supported
