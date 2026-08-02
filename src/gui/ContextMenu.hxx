@@ -54,6 +54,10 @@ class ContextMenu : public Dialog, public CommandSender
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);
 
+    /** The items I currently hold, so a PopUpWidget above me can re-derive
+        its width from them when the font changes. */
+    const VariantList& entries() const { return _entries; }
+
     /** Set the minimum menu width (the owning PopUpWidget's value-box width);
         the menu still grows to fit its widest entry. */
     void setMaxWidth(int width);

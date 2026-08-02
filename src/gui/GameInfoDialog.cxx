@@ -569,7 +569,6 @@ void GameInfoDialog::addCartridgeTab()
   // 4) Cartridge properties.  The tab's controls are parented to a content pane;
   // the pane lays them out (see setLayout below) whenever the tab is sized
   // The link button is a pair of chevrons, so it is sized as if it were one
-  const int bw = ButtonWidget::calcWidth(_font, ">");
   WidgetArray wid;
 
   const int tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
@@ -605,8 +604,7 @@ void GameInfoDialog::addCartridgeTab()
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
 
-  myUrlButton =
-    new ButtonWidget(pane, _font, bw, myUrl->getHeight(), ">>", kLinkPressed);
+  myUrlButton = new ButtonWidget(pane, _font, ">>", kLinkPressed);
   wid.push_back(myUrlButton);
 
 #ifdef IMAGE_SUPPORT
@@ -617,8 +615,7 @@ void GameInfoDialog::addCartridgeTab()
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
 
-  myBezelButton = new ButtonWidget(pane, _font, bw, myBezelName->getHeight(),
-                                   ELLIPSIS, kBezelFilePressed);
+  myBezelButton = new ButtonWidget(pane, _font, ELLIPSIS, kBezelFilePressed);
   wid.push_back(myBezelButton);
 
   myBezelDetected = new LabelWidget(pane, ifont,
@@ -640,6 +637,16 @@ void GameInfoDialog::addCartridgeTab()
     using GUI::alignedItem;
     using GUI::HAlign;
     using GUI::VAlign;
+
+    // A browse button is as wide as the dialog wants it, not as wide as its
+    // own label; re-applied here so it follows a live font change.  Its HEIGHT
+    // is the row's (see browseField), which is what keeps it level with the
+    // field beside it
+    const int browseWidth = ButtonWidget::calcWidth(_font, ">");
+    myUrlButton->setWidth(browseWidth);
+#ifdef IMAGE_SUPPORT
+    myBezelButton->setWidth(browseWidth);
+#endif
 
     enum Col: uInt8 { LABEL, FIELD, BUTTON, COLS };
     enum Row: uInt8 {
@@ -671,7 +678,7 @@ void GameInfoDialog::addCartridgeTab()
                                  EditTextWidget* edit, ButtonWidget* button) {
       grid->place(LABEL,  row, anchoredItem(label));
       grid->place(FIELD,  row, alignedItem(edit, HAlign::Fill, VAlign::Center));
-      grid->place(BUTTON, row, anchoredItem(button));
+      grid->place(BUTTON, row, alignedItem(button, HAlign::Left, VAlign::Fill));
     };
 
     field(NAME,         myCartLabels[0], myName);

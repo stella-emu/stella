@@ -724,13 +724,6 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w,
-                           string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, w, calcHeight(font), label, cmd, repeat)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            string_view label, int cmd, bool repeat)
   : ButtonWidget(boss, font, calcWidth(font, label), calcHeight(font),

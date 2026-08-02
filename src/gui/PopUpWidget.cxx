@@ -57,6 +57,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd)
   : PopUpWidget(boss, font, calcWidth(font, items), items, cmd)
 {
+  // Nobody chose that width but me, so nobody else will restore it
+  myAutoWidth = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,9 +88,13 @@ void PopUpWidget::refreshFontMetrics()
 
   // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
   // height and vertically re-center the arrows (mirrors the ctor).
-  // The overall width is dialog-chosen and re-applied by the owning layout().
   setArrow();
   _h = _font.getLineHeight() + 2;
+
+  // A width I derived from my own items is mine to restore; one a dialog chose
+  // is re-applied by the owning layout(), which runs straight after this
+  if(myAutoWidth)
+    setBoxWidth(calcWidth(_font, myMenu->entries()));
   myArrowsY = (_h - _arrowImg->height()) / 2;
 
   // The dropdown menu is a separate Dialog, not part of this widget's

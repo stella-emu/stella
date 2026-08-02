@@ -129,6 +129,11 @@ class PopUpWidget : public EditableWidget
 
   private:
     unique_ptr<ContextMenu> myMenu;
+
+    // Did I size myself from my own items (the c'tor that states no width)?
+    // If so my width is mine to re-derive on a font change; otherwise it is
+    // the dialog's, and its layout() re-applies it
+    bool myAutoWidth{false};
     int myArrowsY{0};
 
     bool   _changed{false};

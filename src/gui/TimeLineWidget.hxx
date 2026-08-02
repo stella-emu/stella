@@ -23,20 +23,17 @@
 class TimeLineWidget : public ButtonWidget
 {
   public:
-    /**
-      Take this width; my height is my own business.  I am a scrubber bar — half
-      a line of text, plus room for the handle to stand proud of it — and being
-      thin is what I am, not something the dialog holding me decides.
-    */
-    TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                   int w, int cmd = 0);
-
+    TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd = 0);
     ~TimeLineWidget() override = default;
 
     static int calcHeight(const GUI::Font& font)
     {
       return font.getLineHeight() / 2 + 6;
     }
+
+    // My height is mine (it follows my font); my WIDTH is the dialog's, and
+    // TimeMachineDialog's layout re-applies it with HAlign::Fill
+    void refreshFontMetrics() override;
 
     void setValue(int value) override;
     uInt32 getValue() const { return _value; }

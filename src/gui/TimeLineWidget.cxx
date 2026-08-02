@@ -27,9 +27,8 @@ static constexpr int HANDLE_W = 3;
 static constexpr int HANDLE_H = 3; // size above/below the slider
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                               int w, int cmd)
-  : ButtonWidget(boss, font, w, calcHeight(font), "", cmd)
+TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd)
+  : ButtonWidget(boss, font, 0, calcHeight(font), "", cmd)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE
     | Widget::FLAG_CLEARBG | Widget::FLAG_NOBG;
@@ -38,6 +37,16 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorhi = kDlgColor;
 
   _stepValue.reserve(100);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeLineWidget::refreshFontMetrics()
+{
+  ButtonWidget::refreshFontMetrics();
+
+  // ButtonWidget leaves the size of a button it did not size itself alone; my
+  // height is font-derived, so I restore it here (my width stays the layout's)
+  _h = calcHeight(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

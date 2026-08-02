@@ -371,17 +371,6 @@ class LabelWidget : public Widget, public CommandSender
 class ButtonWidget : public LabelWidget
 {
   public:
-    ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
-                 string_view label, int cmd = 0, bool repeat = false);
-    /**
-      Take this width, but size your own height.  For a button whose LABEL is not
-      final — the command menu re-labels its buttons as the console state changes
-      — since it must be as wide as the widest label it can ever show, and would
-      otherwise resize under the user.  Everything else uses the ctor below.
-    */
-    ButtonWidget(GuiObject* boss, const GUI::Font& font, int w,
-                 string_view label, int cmd = 0, bool repeat = false);
-
     /**
       Size me from my own label: as wide as it needs plus a comfortable margin,
       and a little taller than a line of text.  This is what a button standing on
@@ -461,6 +450,17 @@ class ButtonWidget : public LabelWidget
     }
 
   protected:
+    /**
+      Take a size from outside.  PROTECTED on purpose: a dialog must not bake a
+      button's geometry at construction — that size is never re-derived on a live
+      font change (Widget::refreshFontMetrics leaves _w/_h alone, and this c'tor
+      leaves _autoSize false), so it goes stale.  Size yourself from your label
+      or icon and let layout() say the rest.  Only a SUBCLASS that is a button
+      of its own kind (TimeLineWidget, the launcher's path button) uses this.
+    */
+    ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
+                 string_view label, int cmd = 0, bool repeat = false);
+
     // The width my content needs: an icon-and-label button is laid out around
     // its icon -- a half-gap, the icon, a half-gap, then the label (see
     // drawWidget); an icon-only one just centers its icon; a plain one is

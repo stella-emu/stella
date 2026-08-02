@@ -127,7 +127,6 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int fontWidth = Dialog::fontWidth();
-  const int bWidth = fontWidth * 5;
   const bool largeFont = _font.isLarge();
   const int numRanks = static_cast<int>(NUM_RANKS);
   const VariantList items;
@@ -144,10 +143,10 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myVariationPopup = new PopUpWidget(this, _font,
       fontWidth * HSM::MAX_VARIATION_DIGITS, items, kVariationChanged);
   wid.push_back(myVariationPopup);
-  myPrevVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
+  myPrevVarButton = new ButtonWidget(this, _font,
       largeFont ? PREV_GFX_LARGE : PREV_GFX, kPrevVariation);
   wid.push_back(myPrevVarButton);
-  myNextVarButton = new ButtonWidget(this, _font, bWidth, myVariationPopup->getHeight(),
+  myNextVarButton = new ButtonWidget(this, _font,
       largeFont ? NEXT_GFX_LARGE : NEXT_GFX, kNextVariation);
   wid.push_back(myNextVarButton);
 
@@ -177,8 +176,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new LabelWidget(this, _font, "");
-    myDeleteButtons[r] = new ButtonWidget(this, _font, fontWidth * 2,
-                                          Dialog::fontHeight(), "X", kDeleteSingle);
+    myDeleteButtons[r] = new ButtonWidget(this, _font, "X", kDeleteSingle);
     myDeleteButtons[r]->setID(r);
     myDeleteButtons[r]->setToolTip("Click to delete this high score.");
 
@@ -230,15 +228,28 @@ void HighScoresDialog::layout()
   // which is where its clearance from the pop-up comes from
   GUI::alignLabels({{myVariationLbl}});
 
+  // These widths are the dialog's choice rather than the widgets' own, so they
+  // are re-applied here and follow a live font change (neither PopUpWidget nor
+  // ButtonWidget re-derives its own width -- see their refreshFontMetrics).
+  // A pop-up takes setBoxWidth(), NOT setWidth(): its c'tor parameter is the
+  // VALUE BOX width and it adds the drop-down arrow itself, so setWidth() would
+  // hand it a total and swallow the arrow's room, clipping the text.
+  // Each button's HEIGHT comes from its row, keeping it level with its neighbour
+  myVariationPopup->setBoxWidth(fontWidth * HSM::MAX_VARIATION_DIGITS);
+  myPrevVarButton->setWidth(fontWidth * 5);
+  myNextVarButton->setWidth(fontWidth * 5);
+  for(auto* b: myDeleteButtons)
+    b->setWidth(fontWidth * 2);
+
   // Variation: the pop-up beside its label, and the prev/next buttons at the
   // far end of the row (i.e. at the end of the table below)
   auto varRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   varRow->addAuto(anchoredItem(myVariationLbl));
   varRow->addAuto(anchoredItem(myVariationPopup));
   varRow->addStretchSpace();
-  varRow->addAuto(anchoredItem(myPrevVarButton));
+  varRow->addAuto(alignedItem(myPrevVarButton, HAlign::Left, VAlign::Fill));
   varRow->addSpace(BUTTON_GAP);
-  varRow->addAuto(anchoredItem(myNextVarButton));
+  varRow->addAuto(alignedItem(myNextVarButton, HAlign::Left, VAlign::Fill));
 
   // The score table: a header row plus a row per rank.  A column is as wide as
   // the widest thing in it -- except where the FIELD it shows is wider than its
@@ -277,7 +288,8 @@ void HighScoresDialog::layout()
     table->place(COL_NAME, row, stretchedItem(myNameWidgets[r]));
     table->place(COL_NAME, row, stretchedItem(myEditNameWidgets[r]));
     table->place(COL_DATE, row, stretchedItem(myDateWidgets[r]));
-    table->place(COL_DELETE, row, anchoredItem(myDeleteButtons[r]));
+    table->place(COL_DELETE, row,
+                 alignedItem(myDeleteButtons[r], HAlign::Left, VAlign::Fill));
   }
 
   // How much of an MD5 to show is the dialog's choice, not the widgets': the

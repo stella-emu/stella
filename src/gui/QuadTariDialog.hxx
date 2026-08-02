@@ -49,6 +49,10 @@ class QuadTariDialog: public Dialog
       Controller::Jack jack, PopUpWidget* popup, LabelWidget* label, bool first = true);
 
   private:
+    // Kept so layout() can re-derive the pop-up width from the live font; the
+    // pop-ups do not re-derive it themselves (see PopUpWidget::refreshFontMetrics)
+    VariantList myCtrls;
+
     LabelWidget* myLeftPortLbl{nullptr};
     LabelWidget* myLeft1PortLbl{nullptr};
     PopUpWidget* myLeft1Port{nullptr};

@@ -38,7 +38,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   WidgetArray wid;
-  VariantList ctrls;
+  VariantList& ctrls = myCtrls;
 
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
@@ -61,7 +61,8 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
   // A couple of characters more than the items strictly need, which looks better
-  // overall -- so these state a width instead of taking the self-sizing ctor
+  // overall -- so these state a width instead of taking the self-sizing ctor.
+  // layout() re-applies it, so it follows a live font change
   const int pwidth = PopUpWidget::calcWidth(font, ctrls) + Dialog::fontWidth() * 2;
 
   // Widgets are only created here (at placeholder position); layout() assigns
@@ -115,6 +116,12 @@ void QuadTariDialog::layout()
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
+
+  // See the c'tor: the width is the dialog's choice, so it is re-applied here
+  // from the live font rather than left at whatever the c'tor computed
+  const int pwidth = PopUpWidget::calcWidth(_font, myCtrls) + fontWidth * 2;
+  for(auto* p: {myLeft1Port, myLeft2Port, myRight1Port, myRight2Port})
+    p->setBoxWidth(pwidth);
 
   // The four popups' labels ("P1".."P4") share one column, keeping their
   // value boxes the same width and in line across both ports

@@ -31,6 +31,11 @@ class DelayQueueWidget : public Widget
 
     void loadConfig() override;
 
+    // My size is derived from my font and my fixed line count, so I re-derive
+    // it myself rather than waiting for a layout to hand it back (my owner
+    // places me with anchoredItem(), which takes whatever size I report)
+    void refreshFontMetrics() override;
+
   protected:
     void drawWidget(bool hilite) override;
 
