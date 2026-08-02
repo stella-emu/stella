@@ -270,7 +270,7 @@ void PopUpWidget::setArrow()
   _arrowHeight = _arrowWidth - 2;
   _arrowThickness = ((_arrowWidth - 1) / 4) + 1;
 
-  _textOfs = _font.isLarge() ? 5 : 3;
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

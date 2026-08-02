@@ -29,14 +29,16 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
 {
   _bgcolorlo = kDlgColor;
 
-  if(_font.isLarge())
-  {
-    _textOfs = 5;
-  }
-  else
-  {
-    _textOfs = 3;
-  }
+  _textOfs = textInset(_font);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StringListWidget::refreshFontMetrics()
+{
+  ListWidget::refreshFontMetrics();
+
+  // My text inset is font-derived, so it has to follow a live font change
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

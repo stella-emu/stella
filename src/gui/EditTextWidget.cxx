@@ -32,10 +32,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 
   EditableWidget::startEditMode();  // We're always in edit mode
 
-  if(_font.isLarge())
-    _textOfs = 5;
-  else
-    _textOfs = 3;
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +51,7 @@ void EditTextWidget::refreshFontMetrics()
   // built to show; the width is dialog-chosen and re-applied by the owning
   // layout().
   _h = calcHeight(_font, _lines) + 2;
-  _textOfs = _font.isLarge() ? 5 : 3;
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

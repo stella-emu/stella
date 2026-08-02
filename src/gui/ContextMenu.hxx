@@ -132,6 +132,15 @@ class ContextMenu : public Dialog, public CommandSender
       return (font.getMaxCharWidth() * 8 / 9) & ~1;
     }
 
+    /**
+      The gap I keep between my frame and my entries' text -- tighter than a
+      text field's, which is what a menu wants.  At the default 9x18 font this
+      is 2, the value it used to hard-code.
+    */
+    static int textInset(const GUI::Font& font) {
+      return font.getMaxCharWidth() / 4;
+    }
+
     void setArrows();
 
     void recalc(const Common::Rect& image);

@@ -65,6 +65,16 @@ class EditableWidget : public Widget, public CommandSender
 
     bool isEditable() const	{ return _editable; }
     bool isChanged() { return editString() != backupString(); }
+    /**
+      The gap a framed text box keeps between its frame and its first glyph,
+      and so also the padding its width must allow either side.  Derived from
+      the font, so it grows with the text instead of stepping; at the default
+      9x18 font this is 3, the value these widgets used to hard-code.
+    */
+    static int textInset(const GUI::Font& font) {
+      return font.getMaxCharWidth() / 3;
+    }
+
     virtual void setEditable(bool editable, bool hiliteBG = false);
 
     bool handleText(char text) override;

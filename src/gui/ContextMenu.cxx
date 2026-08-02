@@ -584,7 +584,7 @@ void ContextMenu::setArrows()
   // Filled triangles, sized from the font so they follow the text instead of
   // stepping.  At the default 9x18 this reproduces the old 8x8 bitmap
   _arrowSize = arrowSize(_font);
-  _textOfs = _font.isLarge() ? 4 : 2;
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

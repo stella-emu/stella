@@ -950,13 +950,6 @@ void CheckboxWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setFill(FillType type)
 {
-  /* 10x10 checkbox bitmap */
-  // small versions
-  static constexpr std::array<uInt32, 10> checked_img_active_bits = {
-    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,
-    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111
-  };
-  static constexpr GUI::Icon checked_img_active(10, 10, checked_img_active_bits);
 
   static constexpr std::array<uInt32, 10> checked_img_inactive_bits = {
     0b1111111111,  0b1111111111,  0b1111001111,  0b1110000111,  0b1100000011,
@@ -970,16 +963,6 @@ void CheckboxWidget::setFill(FillType type)
   };
   static constexpr GUI::Icon checked_img_circle(10, 10, checked_img_circle_bits);
 
-  /* 18x18 checkbox bitmap */
-  // large versions
-  static constexpr std::array<uInt32, 18> checked_img_active_large_bits = {
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111
-  };
-  static constexpr GUI::Icon checked_img_active_large(18, 18, checked_img_active_large_bits);
 
   static constexpr std::array<uInt32, 18> checked_img_inactive_large_bits = {
     0b111111111111111111, 0b111111111111111111, 0b111111111111111111,
@@ -993,7 +976,8 @@ void CheckboxWidget::setFill(FillType type)
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      _img = _boxSize == 14 ? &checked_img_active : &checked_img_active_large;
+      // A solid square, which needs no bitmap -- drawWidget fills it
+      _img = nullptr;
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Inactive:
@@ -1034,9 +1018,18 @@ void CheckboxWidget::drawWidget(bool hilite)
   s.fillRect(_x + 1, _y + _boxY + 1, _boxSize - 2, _boxSize - 2,
       _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kDlgColor);
   if(_state)
-    s.drawIcon(*_img, _x + 2, _y + _boxY + 2,
-               isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
-                           : kColor);
+  {
+    const ColorId color = isEnabled()
+        ? hilite && isEditable() ? kWidColorHi : kCheckColor
+        : kColor;
+
+    // A plain tick is a solid square, so it is filled rather than blitted; the
+    // inactive and circle fills are hand-drawn and stay as icons
+    if(_img != nullptr)
+      s.drawIcon(*_img, _x + 2, _y + _boxY + 2, color);
+    else
+      s.fillRect(_x + 2, _y + _boxY + 2, _boxSize - 4, _boxSize - 4, color);
+  }
 
   // Finally draw the label
   s.drawString(_font, _label, _x + prefixSize(_font), _y + firstTextY(), _w,
