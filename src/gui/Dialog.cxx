@@ -50,6 +50,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   : GuiObject(instance, parent, *this, w, h),
     _font{font},
     _title{title},
+    _builtTitle{title},
     _renderCallback{[]() { return; }}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
@@ -115,9 +116,13 @@ void Dialog::open()
   setPosition();
 
   if(!_myTabList.empty())
-    // (Re)-build the focus list to use for all widgets of all tabs
+    // Re-select the tab this dialog was last left on, then (re)-build the
+    // focus list to use for all widgets of all tabs
     for(auto& tabfocus : _myTabList)
+    {
+      restoreActiveTab(tabfocus.widget);
       buildCurrentFocusList(tabfocus.widget->getID());
+    }
   else
     buildCurrentFocusList();
 
@@ -552,6 +557,48 @@ void Dialog::releaseFocus(const Widget* w)
 {
   if(w == _focusedWidget)
     _focusedWidget = Widget::setFocusForList(this, getFocusList(), _focusedWidget, +1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Dialog::tabStateKey(const TabWidget* tab) const
+{
+  // The title is what tells two dialogs apart (RTTI is disabled, so the class
+  // itself cannot be asked).  An untitled dialog gets no key, and so simply
+  // does not take part -- which is what the debugger, the one dialog whose tab
+  // count varies from ROM to ROM, relies on
+  if(_builtTitle.empty())
+    return {};
+
+  // A dialog may own more than one tab widget, so its id belongs in the key
+  return std::format("tab.{}.{}", _builtTitle, tab->getID());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::saveActiveTab(int tabID, int id)
+{
+  if(std::cmp_greater_equal(id, _myTabList.size()))
+    return;
+
+  const string key = tabStateKey(_myTabList[id].widget);
+  if(!key.empty())
+    // The key is never registered as a permanent setting, so this can only
+    // ever reach the temporary settings -- it is remembered for this run only
+    instance().settings().setValue(key, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::restoreActiveTab(TabWidget* tab)
+{
+  const string key = tabStateKey(tab);
+  if(key.empty())
+    return;
+
+  // An unset key reads back as 0, which is also the default tab, so there is
+  // nothing to register up front.  The range check matters for a dialog whose
+  // tab count can differ between two openings within the same run
+  const int tabID = instance().settings().getInt(key);
+  if(tabID > 0 && tabID < tab->getTabCount())
+    tab->setActiveTab(tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1009,8 +1056,17 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case TabWidget::kTabChangedCmd:
+      // Only a visible dialog can be reporting a tab the *user* chose.  While
+      // it is being built or opened this same command also arrives for tabs
+      // nobody selected -- activateTabs() announces every tab in turn, and
+      // TabWidget::loadConfig() re-announces the active one -- and remembering
+      // those would store whichever tab happened to be announced last
       if(_visible)
+      {
+        // Remember the choice, so reopening this dialog returns to it
+        saveActiveTab(data, id);
         buildCurrentFocusList(id);
+      }
       break;
 
     case GuiObject::kCloseCmd:

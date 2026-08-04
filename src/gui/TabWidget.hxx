@@ -73,6 +73,7 @@ class TabWidget : public Widget, public CommandSender
     int getTabWidth() const  { return _tabWidth;  }
     int getTabHeight() const { return _tabHeight; }
     int getActiveTab() const { return _activeTab; }
+    int getTabCount() const  { return static_cast<int>(_tabs.size()); }
 
     // The frame inset between us and our active tab's content.  Public because
     // a dialog deriving its own minimum from getMaxContentHeight() has to add

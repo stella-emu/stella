@@ -306,6 +306,20 @@ class Dialog : public GuiObject
     bool cycleTab(int direction);
     void openHelp();
 
+    /**
+      The settings key under which a tab widget's selected tab is remembered,
+      or the empty string for a dialog that cannot be identified (one built
+      without a title).  The value is deliberately never registered as a
+      permanent setting, so it lives only for this run.
+    */
+    string tabStateKey(const TabWidget* tab) const;
+
+    // Remember / re-select a tab widget's chosen tab across reopens of the
+    // dialog.  Owned by Dialog (rather than by each dialog that has tabs)
+    // because the tab widgets are already registered here, via addTabWidget()
+    void saveActiveTab(int tabID, int id);
+    void restoreActiveTab(TabWidget* tab);
+
   protected:
     const GUI::Font& _font;
 
@@ -352,6 +366,12 @@ class Dialog : public GuiObject
 
     Focus        _myFocus;    // focus for base dialog
     TabFocusList _myTabList;  // focus for each tab (if any)
+
+    // The title this dialog was *built* with, which is what identifies it to
+    // the tab memory.  Not _title, which setTitle() may rewrite while the
+    // dialog is open (GameInfoDialog retitles itself for the current ROM),
+    // leaving the saving and restoring halves looking at different keys
+    const string _builtTitle;
 
     WidgetArray _buttonGroup;
     shared_ptr<FBSurface> _surface;
