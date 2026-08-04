@@ -54,6 +54,7 @@ class LauncherDialog : public Dialog, CommandSender
       kExtChangedCmd       = 'extc',  // File extension display changed
       kRomViewerChangedCmd = 'rmvc',  // ROM info viewer enabled/disabled
       kFontChangedCmd      = 'fntc',  // Launcher font changed
+      kButtonsChangedCmd   = 'btnc',  // Bottom button row enabled/disabled
     };
 
   public:
@@ -132,6 +133,7 @@ class LauncherDialog : public Dialog, CommandSender
     // (horizontal) and the image + text fitting in the column (vertical)
     int clampRomInfoWidth(int imageWidth, int colHeight) const;
     void showRomWidgets(bool show);
+    void showButtonWidgets(bool show);
     void updateRomCount();
     // These create the widgets and their non-geometry state (tooltips, focus
     // order, structural choices); layout() assigns all geometry
@@ -158,6 +160,8 @@ class LauncherDialog : public Dialog, CommandSender
     void setRomInfoFont(const Common::Size& area);
     // Show/hide the ROM info viewer at runtime (without rebuilding the launcher)
     void setRomInfoEnabled(bool enable);
+    // Show/hide the bottom button row at runtime (without rebuilding the launcher)
+    void setButtonsEnabled(bool enable);
 
     void loadRom();
     void loadRomInfo();
@@ -225,6 +229,7 @@ class LauncherDialog : public Dialog, CommandSender
     int mySelectedItem{0};
 
     bool myShowRomInfo{false};
+    bool myShowButtons{false};
     bool myEventHandled{false};
     bool myPendingReload{false};
     uInt64 myReloadTime{0};

@@ -134,8 +134,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   mySelectedItem = addRomWidgets() - 2;  // Highlight 'Rom Listing'
-  if(instance().settings().getBool("launcherbuttons"))
-    addButtonWidgets();
+  addButtonWidgets();
   myNavigationBar->setList(myList);
 
   tooltip().setFont(_font);
@@ -210,15 +209,18 @@ void LauncherDialog::addPathWidgets()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int LauncherDialog::addRomWidgets()
 {
-  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   const int fontWidth = Dialog::fontWidth();
   const int HBORDER   = Dialog::hBorder();
   const int VGAP      = Dialog::vGap();
   WidgetArray wid;
 
+  // The bottom button row can be toggled on/off at runtime; we always create its
+  // widgets and just show/hide them in layout(), so toggling needs no rebuild
+  myShowButtons = instance().settings().getBool("launcherbuttons");
+
   // Estimate the list/column height the way layout() sizes the main row, so the
   // ROM info font (chosen once, here) is sized for the right area
-  const int fixedRows = bottomButtons ? 3 : 2;
+  const int fixedRows = myShowButtons ? 3 : 2;
   const int listHeight = (_h - 2 * Dialog::vBorder())
     - fixedRows * Dialog::buttonHeight() - fixedRows * (VGAP * 2);
 
@@ -328,6 +330,26 @@ void LauncherDialog::showRomWidgets(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::showButtonWidgets(bool show)
+{
+  if(!myStartButton || !myGoUpButton || !myOptionsButton || !myQuitButton)
+    return;
+
+  // Disabling (not just hiding) keeps a hidden button out of Tab/joystick
+  // focus cycling, which only skips disabled widgets (see setFocusForList)
+  myStartButton->setVisible(show);
+  myStartButton->setEnabled(show);
+  myOptionsButton->setVisible(show);
+  myOptionsButton->setEnabled(show);
+  myQuitButton->setVisible(show);
+  myQuitButton->setEnabled(show);
+  // Go Up additionally depends on whether there is a parent directory;
+  // updateUI() re-derives that half of its enabled state
+  myGoUpButton->setVisible(show);
+  myGoUpButton->setEnabled(show && myList->currentDir().hasParent());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateRomCount()
 {
   myRomCount->setLabel(std::format("{} items found",
@@ -398,7 +420,6 @@ void LauncherDialog::layout()
   const int rowGap       = Dialog::vGap() * 2;
   const int LBL_GAP      = fontWidth;
   const int BTN_GAP      = fontWidth / 4;
-  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
 
   // The icons come in two sizes; re-pick them here, since a live font change may
   // have crossed the threshold.  Each button re-sizes itself around the icon it
@@ -453,7 +474,7 @@ void LauncherDialog::layout()
   };
 
   // Bottom button row (optional): four equal-width buttons
-  const bool hasButtonRow = bottomButtons && myStartButton && myGoUpButton
+  const bool hasButtonRow = myShowButtons && myStartButton && myGoUpButton
                          && myOptionsButton && myQuitButton;
   const auto makeButtonRow = [&]() {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap(),
@@ -532,6 +553,7 @@ void LauncherDialog::layout()
   }
 
   showRomWidgets(imageWidth > 0);
+  showButtonWidgets(hasButtonRow);
 
   auto root = makeRoot(imageWidth);
   root->doLayout(0, 0, _w, _h);
@@ -696,9 +718,10 @@ void LauncherDialog::refreshFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateUI()
 {
-  // Only enable the 'up' button if there's a parent directory
+  // Only enable the 'up' button if there's a parent directory (and the
+  // button row is even shown -- showButtonWidgets() sets the other half)
   if(myGoUpButton)
-    myGoUpButton->setEnabled(myList->currentDir().hasParent());
+    myGoUpButton->setEnabled(myShowButtons && myList->currentDir().hasParent());
   // Only enable the navigation buttons if function is available
   myNavigationBar->updateUI();
 
@@ -838,6 +861,19 @@ void LauncherDialog::setRomInfoEnabled(bool enable)
     loadRomInfo();                  // load image/info for the current selection
   else if(myRomImageWidget)
     myRomImageWidget->clearProperties();  // stop rendering the image surface
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setButtonsEnabled(bool enable)
+{
+  if(enable == myShowButtons)
+    return;
+
+  myShowButtons = enable;
+
+  // Re-flow so the main row takes back/gives up the space, and the button
+  // row itself is shown/hidden
+  layout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1225,6 +1261,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomViewerChangedCmd:
       setRomInfoEnabled(instance().settings().getFloat("romviewer") > 0.F);
+      break;
+
+    case kButtonsChangedCmd:
+      setButtonsEnabled(instance().settings().getBool("launcherbuttons"));
       break;
 
     case kFontChangedCmd:

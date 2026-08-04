@@ -548,6 +548,13 @@ void Dialog::setFocus(const Widget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::releaseFocus(const Widget* w)
+{
+  if(w == _focusedWidget)
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(), _focusedWidget, +1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::buildCurrentFocusList(int tabID)
 {
   // Yes, this is hideously complex.  That's the price we pay for

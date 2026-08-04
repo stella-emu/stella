@@ -116,6 +116,14 @@ class Dialog : public GuiObject
     void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w;  }
     void setFocus(const Widget* w);
 
+    /**
+      If 'w' currently holds the dialog's focus, move focus to the next
+      enabled widget instead (the same forward cycle Tab navigation uses).
+      Called when a widget becomes hidden out from under the focus it
+      holds, so the focused-widget highlight isn't left drawn over it.
+    */
+    void releaseFocus(const Widget* w);
+
     /** Returns the base surface associated with this dialog. */
     FBSurface& surface() const { return *_surface; }
 

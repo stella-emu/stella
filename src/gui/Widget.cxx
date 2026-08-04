@@ -279,6 +279,13 @@ void Widget::setVisible(bool visible)
     // ourselves dirty only ever redraws US, and we now draw nothing.  So the
     // boss has to repaint that area -- it is the one that owns the background
     _boss->setDirty();
+
+    // Going invisible while holding the dialog's focus would otherwise leave
+    // Dialog::drawDialog()'s per-frame focus highlight drawn over us forever
+    // (it redraws at the focused widget's last position regardless of
+    // visibility) -- so hand focus to the next enabled widget instead
+    if(_hasFocus)
+      dialog().releaseFocus(this);
   }
 }
 

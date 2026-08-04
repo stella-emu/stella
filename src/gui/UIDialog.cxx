@@ -697,6 +697,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       const bool informRomViewer = myIsGlobal &&
         (myRomViewerSize->getValue() > 0) != (instance().settings().getFloat("romviewer") > 0.F);
+      const bool informButtons = myIsGlobal &&
+        myLauncherButtonsWidget->getState() != instance().settings().getBool("launcherbuttons");
       const bool informFont = myIsGlobal &&
         myLauncherFontPopup->getSelectedTag().toString() != instance().settings().getString(
             FontManager::settingKey(FontManager::FontRole::Launcher));
@@ -715,6 +717,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
       if(informRomViewer) // Let the boss know the ROM info viewer was toggled
         sendCommand(LauncherDialog::kRomViewerChangedCmd, 0, 0);
+      if(informButtons) // Let the boss know the bottom button row was toggled
+        sendCommand(LauncherDialog::kButtonsChangedCmd, 0, 0);
       if(informFont) // Let the boss know the launcher font changed
         sendCommand(LauncherDialog::kFontChangedCmd, 0, 0);
       if(informDialogFont)
