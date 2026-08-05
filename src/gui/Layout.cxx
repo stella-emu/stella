@@ -705,17 +705,23 @@ Common::Size GridLayout::minSize() const
   trackNaturals(false, rowNat);
 
   // A track can never be smaller than its own fixed size, nor one sized by its
-  // content smaller than that content, nor a stretching one than its base
+  // content smaller than that content, nor a stretching one than its base.
+  // A fixed track gives way only as far as the dialog declared a compression
+  // floor (minSize), promising to recompute the fixed value down to it as the
+  // space shrinks; a negative floor means none was declared, and zero is a
+  // real answer -- it says the track holds nothing open at all
   for(int c = 0; c < cols; ++c)
     if(myColumns[c].policy == SizePolicy::Fixed)
-      colMin[c] = myColumns[c].value;
+      colMin[c] = myColumns[c].minSize >= 0
+                ? myColumns[c].minSize : myColumns[c].value;
     else if(myColumns[c].policy == SizePolicy::Auto)
       colMin[c] = colNat[c];
     else if(myColumns[c].policy == SizePolicy::Stretch)
       colMin[c] = myColumns[c].minSize;
   for(int r = 0; r < rows; ++r)
     if(myRows[r].policy == SizePolicy::Fixed)
-      rowMin[r] = myRows[r].value;
+      rowMin[r] = myRows[r].minSize >= 0
+                ? myRows[r].minSize : myRows[r].value;
     else if(myRows[r].policy == SizePolicy::Auto)
       rowMin[r] = rowNat[r];
     else if(myRows[r].policy == SizePolicy::Stretch)

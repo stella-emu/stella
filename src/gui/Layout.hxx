@@ -293,6 +293,9 @@ class GridLayout : public Layout
     //          shared out.  A stretching column of fields has no size of its own,
     //          so this is where a dialog says how much room they need, and it is
     //          what lets the dialog's own width be derived rather than guessed.
+    //          On a Fixed track it means the compression floor instead, exactly
+    //          as BoxLayout's minMain does (see columnFixed below); a negative
+    //          value means none was declared.
     GridLayout& column(int idx, SizePolicy policy, int value, int maxSize = 0,
                        int minSize = 0);
     GridLayout& row(int idx, SizePolicy policy, int value, int maxSize = 0,
@@ -303,16 +306,24 @@ class GridLayout : public Layout
     // what makes a form's label column line up without anyone measuring labels
     GridLayout& columnAuto(int idx)
       { return column(idx, SizePolicy::Auto, 0); }
-    GridLayout& columnFixed(int idx, int px)
-      { return column(idx, SizePolicy::Fixed, px); }
+    // minPx says how far the dialog promises to recompute the fixed value down
+    // to as space shrinks, and is the counterpart of BoxLayout::addFixed()'s:
+    // omit it and the track cannot be squeezed below its value at all, give 0
+    // and it can be squeezed away entirely.  A track whose value the dialog
+    // derives from the WINDOW has to say this, or minSize() would report a
+    // minimum that tracks the current size — a floor that chases the window is
+    // what makes a drag-resize ratchet
+    GridLayout& columnFixed(int idx, int px, int minPx = -1)
+      { return column(idx, SizePolicy::Fixed, px, 0, minPx); }
     GridLayout& columnPercent(int idx, int pct, int maxSize = 0)
       { return column(idx, SizePolicy::Percent, pct, maxSize); }
     GridLayout& columnStretch(int idx, int weight = 1, int minPx = 0)
       { return column(idx, SizePolicy::Stretch, weight, 0, minPx); }
     GridLayout& rowAuto(int idx)
       { return row(idx, SizePolicy::Auto, 0); }
-    GridLayout& rowFixed(int idx, int px)
-      { return row(idx, SizePolicy::Fixed, px); }
+    // See columnFixed for what minPx means
+    GridLayout& rowFixed(int idx, int px, int minPx = -1)
+      { return row(idx, SizePolicy::Fixed, px, 0, minPx); }
     GridLayout& rowPercent(int idx, int pct, int maxSize = 0)
       { return row(idx, SizePolicy::Percent, pct, maxSize); }
     GridLayout& rowStretch(int idx, int weight = 1, int minPx = 0)
