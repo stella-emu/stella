@@ -10,6 +10,7 @@
     JNI_PATH: src/os/libretro
     MAKEFILE_PATH: src/os/libretro
     CORENAME: stella
+    OSX_BUILD_COMMIT: b52ccb02eea5e117c142421a2b5ba289f2c7c2c5
 
 # Inclusion templates, required for the build to work
 include:
@@ -77,6 +78,7 @@ libretro-build-windows-x64:
   extends:
     - .libretro-windows-x64-mingw-make-default
     - .core-defs
+  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe-win-cross-cores:gcc14
 
 # Linux 64-bit
 libretro-build-linux-x64:
@@ -85,8 +87,8 @@ libretro-build-linux-x64:
     - .core-defs
   image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:backports
   variables:
-    CC: /usr/bin/gcc-12
-    CXX: /usr/bin/g++-12
+    CC: /usr/bin/gcc-14
+    CXX: /usr/bin/g++-14
     CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
 # Linux ARM 64-bit
@@ -94,7 +96,10 @@ libretro-build-linux-aarch64:
   extends:
     - .libretro-linux-aarch64-make-default
     - .core-defs
+  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:backports
   variables:
+    CC: /usr/bin/gcc-14
+    CXX: /usr/bin/g++-14
     CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
 # MacOS 64-bit
@@ -104,6 +109,10 @@ libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
     - .core-defs
+  before_script:
+    - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+    - git fetch origin
+    - git checkout "$OSX_BUILD_COMMIT"
 
 # MacOS ARM 64-bit
 libretro-build-osx-arm64:
@@ -112,6 +121,10 @@ libretro-build-osx-arm64:
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
+  before_script:
+    - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+    - git fetch origin
+    - git checkout "$OSX_BUILD_COMMIT"
 
 ################################### CELLULAR #################################
 # Android ARMv7a
@@ -145,12 +158,20 @@ libretro-build-ios-arm64:
   extends:
     - .libretro-ios-arm64-make-default
     - .core-defs
+  before_script:
+    - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+    - git fetch origin
+    - git checkout "$OSX_BUILD_COMMIT"
 
 # tvOS
 libretro-build-tvos-arm64:
   extends:
     - .libretro-tvos-arm64-make-default
     - .core-defs
+  before_script:
+      - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+      - git fetch origin
+      - git checkout "$OSX_BUILD_COMMIT"
 
 ################################### CONSOLES #################################
 # Nintendo Switch
