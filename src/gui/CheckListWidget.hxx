@@ -46,7 +46,7 @@ class CheckListWidget : public ListWidget
     using ListWidget::setPos;
     void setPos(const Common::Point& pos) override;
     void setHeight(int h) override;
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

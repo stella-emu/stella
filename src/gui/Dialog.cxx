@@ -209,7 +209,7 @@ void Dialog::layoutHelp()
   if(_helpWidget != nullptr)
   {
     // It sizes itself from its own label, and follows a live font change by
-    // itself (see ButtonWidget::refreshFontMetrics), so only its corner is ours
+    // itself (see ButtonWidget::refreshFont), so only its corner is ours
     _helpWidget->setPos(_w - _helpWidget->getWidth(), 0);
   }
 }
@@ -434,7 +434,7 @@ void Dialog::refreshFont()
   // Refresh the cached font metrics of every widget (the font object itself was
   // already mutated in place), update the tooltip font, then re-flow.  Order
   // matters: metrics first, so layout() computes geometry from current values.
-  Widget::refreshFontMetricsInList(_children);
+  Widget::refreshFontInList(_children);
   tooltip().setFont(_font);
 
   // Recompute the title-bar height for the new font (setTitle only ran at

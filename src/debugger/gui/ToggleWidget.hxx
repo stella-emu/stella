@@ -67,7 +67,7 @@ class ToggleWidget : public Widget, public CommandSender
 
     // The grid's size is intrinsic: exactly what its rows and columns need.
     // Child classes derive _rowHeight/_colWidth from the font, then call this
-    // (from their constructor and their refreshFontMetrics())
+    // (from their constructor and their refreshFont())
     void recalcSize() {
       _w = _colWidth * _cols + 1;
       _h = _rowHeight * _rows + 1;

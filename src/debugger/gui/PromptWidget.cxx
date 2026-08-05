@@ -154,9 +154,9 @@ void PromptWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::refreshFontMetrics()
+void PromptWidget::refreshFont()
 {
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   _kConsoleCharWidth = _font.getMaxCharWidth();
   _kConsoleCharHeight = _font.getFontHeight();

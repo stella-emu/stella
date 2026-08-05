@@ -101,7 +101,7 @@ class TabWidget : public Widget, public CommandSender
     // so refresh those here too -- otherwise a live font change leaves a
     // hidden tab's content sized/positioned from the OLD font until it is
     // next activated and reflowed, while it already draws with the new one
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     void loadConfig() override;
 

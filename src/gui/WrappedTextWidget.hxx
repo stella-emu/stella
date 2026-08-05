@@ -50,7 +50,7 @@ class WrappedTextWidget : public StringListWidget
     ~WrappedTextWidget() override = default;
 
     void setWidth(int w) override;
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     /**
       How tall I want to be with none of my text hidden: as many lines as the

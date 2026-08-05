@@ -41,9 +41,9 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TogglePixelWidget::refreshFontMetrics()
+void TogglePixelWidget::refreshFont()
 {
-  ToggleWidget::refreshFontMetrics();
+  ToggleWidget::refreshFont();
 
   _rowHeight = _colWidth = _lineHeight;
   recalcSize();

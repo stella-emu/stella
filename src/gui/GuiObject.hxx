@@ -107,6 +107,14 @@ class GuiObject : public CommandReceiver
 
     virtual void tick() = 0;
 
+    /**
+      Re-read all state derived from the font, which has been changed in place
+      (see OSystem::refreshFonts).  What that means differs by kind, which is
+      why it lives here: a Widget re-reads its cached metrics, while a Dialog
+      does that for its whole widget tree and then re-runs its layout.
+    */
+    virtual void refreshFont() = 0;
+
     void setFlags(uInt32 flags, bool updateDirty = true)
     {
       const uInt32 oldFlags = _flags;

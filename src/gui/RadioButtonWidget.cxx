@@ -260,13 +260,13 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RadioButtonWidget::refreshFontMetrics()
+void RadioButtonWidget::refreshFont()
 {
   // Bypass CheckboxWidget's version: a radio button has its own button size and
   // outer/inner circle images that must be re-selected for the live font
   // (mirrors the ctor).
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   _buttonSize = buttonSize(_font);
   if(_buttonSize == 14)

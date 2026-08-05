@@ -33,9 +33,9 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StringListWidget::refreshFontMetrics()
+void StringListWidget::refreshFont()
 {
-  ListWidget::refreshFontMetrics();
+  ListWidget::refreshFont();
 
   // My text inset is font-derived, so it has to follow a live font change
   _textOfs = textInset(_font);

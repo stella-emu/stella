@@ -230,7 +230,7 @@ void HighScoresDialog::layout()
 
   // These widths are the dialog's choice rather than the widgets' own, so they
   // are re-applied here and follow a live font change (neither PopUpWidget nor
-  // ButtonWidget re-derives its own width -- see their refreshFontMetrics).
+  // ButtonWidget re-derives its own width -- see their refreshFont).
   // A pop-up takes setBoxWidth(), NOT setWidth(): its c'tor parameter is the
   // VALUE BOX width and it adds the drop-down arrow itself, so setWidth() would
   // hand it a total and swallow the arrow's room, clipping the text.

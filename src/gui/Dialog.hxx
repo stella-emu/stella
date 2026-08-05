@@ -94,7 +94,7 @@ class Dialog : public GuiObject
       subclasses carrying font-derived state of their own, outside the widget
       tree the base walks (ContextMenu's row height, DebuggerDialog's tooltip).
     */
-    virtual void refreshFont();
+    void refreshFont() override;
 
     /**
       Answers whether this dialog (at its current size and hidpi scaling) is

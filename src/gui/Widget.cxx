@@ -522,7 +522,7 @@ void Widget::setDirtyInList(const WidgetList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::refreshFontMetrics()
+void Widget::refreshFont()
 {
   _fontWidth = _font.getMaxCharWidth();
   _fontHeight = _font.getFontHeight();
@@ -531,14 +531,14 @@ void Widget::refreshFontMetrics()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::refreshFontMetricsInList(const WidgetList& list)
+void Widget::refreshFontInList(const WidgetList& list)
 {
   for(const auto& w: list)
   {
-    w->refreshFontMetrics();
+    w->refreshFont();
     // Composite widgets parent their children to themselves, forming separate
     // child lists that the boss-level walk does not reach; recurse into them
-    refreshFontMetricsInList(w->_children);
+    refreshFontInList(w->_children);
   }
 }
 
@@ -573,9 +573,9 @@ LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LabelWidget::refreshFontMetrics()
+void LabelWidget::refreshFont()
 {
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   // Recompute the natural (font + label derived) size, matching the short ctor.
   // Runs only during a live font-change broadcast; the owning dialog's layout()
@@ -772,13 +772,13 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::refreshFontMetrics()
+void ButtonWidget::refreshFont()
 {
   // Deliberately skips LabelWidget's recompute, which would shrink a button
   // to its bare label width (and would be inherited by the checkbox, radio button
   // and slider below).
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   // A button that sized itself from its content re-derives that size, so it
   // follows the font on its own.  Any other size came from outside — a width
@@ -911,9 +911,9 @@ void CheckboxWidget::alignBox(int boxSize)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::refreshFontMetrics()
+void CheckboxWidget::refreshFont()
 {
-  ButtonWidget::refreshFontMetrics();
+  ButtonWidget::refreshFont();
 
   // Recompute the box + label geometry from the live font (mirrors the ctor).
   // A checkbox is fully font + label derived, so this is the complete size.

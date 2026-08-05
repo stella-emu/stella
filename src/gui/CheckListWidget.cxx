@@ -45,9 +45,9 @@ void CheckListWidget::setHeight(int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::refreshFontMetrics()
+void CheckListWidget::refreshFont()
 {
-  ListWidget::refreshFontMetrics();
+  ListWidget::refreshFont();
   // The base reset _lineHeight to the plain font line height; the row must
   // still clear the checkbox (mirrors the constructor)
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));

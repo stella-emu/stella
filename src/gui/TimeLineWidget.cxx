@@ -40,9 +40,9 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::refreshFontMetrics()
+void TimeLineWidget::refreshFont()
 {
-  ButtonWidget::refreshFontMetrics();
+  ButtonWidget::refreshFont();
 
   // ButtonWidget leaves the size of a button it did not size itself alone; my
   // height is font-derived, so I restore it here (my width stays the layout's)

@@ -189,7 +189,7 @@ class Widget : public GuiObject
       here — the owning dialog's layout() repositions/resizes widgets after the
       refresh.
     */
-    virtual void refreshFontMetrics();
+    void refreshFont() override;
 
     void setTextColor(ColorId color)   { _textcolor = color;   setDirty(); }
     void setTextColorHi(ColorId color) { _textcolorhi = color; setDirty(); }
@@ -275,7 +275,7 @@ class Widget : public GuiObject
 
     // Refresh font-derived state for an entire widget list, recursing into the
     // child widgets owned by composite widgets (which form their own lists).
-    static void refreshFontMetricsInList(const WidgetList& list);
+    static void refreshFontInList(const WidgetList& list);
 
   private:
     // Following constructors and assignment operators not supported
@@ -342,7 +342,7 @@ class LabelWidget : public Widget, public CommandSender
     int labelWidth() const override { return _w; }
     void setLabelWidth(int w) override { setWidth(w); }
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void drawWidget(bool hilite) override;
@@ -375,7 +375,7 @@ class ButtonWidget : public LabelWidget
       Size me from my own label: as wide as it needs plus a comfortable margin,
       and a little taller than a line of text.  This is what a button standing on
       its own wants, so a dialog states nothing about it but the label — and I
-      follow a live font change by myself (see refreshFontMetrics).
+      follow a live font change by myself (see refreshFont).
 
       Buttons that must share ONE width (a column of them, an OK/Cancel group)
       are still built this way: no button can know what the widest of its
@@ -439,7 +439,7 @@ class ButtonWidget : public LabelWidget
     int labelWidth() const override { return 0; }
     void setLabelWidth(int) override { }
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   public:
     // The room a button leaves around its bitmap: an icon-only button centers
@@ -453,7 +453,7 @@ class ButtonWidget : public LabelWidget
     /**
       Take a size from outside.  PROTECTED on purpose: a dialog must not bake a
       button's geometry at construction — that size is never re-derived on a live
-      font change (Widget::refreshFontMetrics leaves _w/_h alone, and this c'tor
+      font change (Widget::refreshFont leaves _w/_h alone, and this c'tor
       leaves _autoSize false), so it goes stale.  Size yourself from your label
       or icon and let layout() say the rest.  Only a SUBCLASS that is a button
       of its own kind (TimeLineWidget, the launcher's path button) uses this.
@@ -560,7 +560,7 @@ class CheckboxWidget : public ButtonWidget
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     static int boxSize(const GUI::Font& font)
     {

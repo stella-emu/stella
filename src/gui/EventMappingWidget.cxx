@@ -149,7 +149,7 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   Widget::setHeight(h);
 
   // The buttons share one width; re-derived here so a live font change is picked
-  // up (each button first re-sizes itself to its own label, see refreshFontMetrics)
+  // up (each button first re-sizes itself to its own label, see refreshFont)
   GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
                      myResetButton, myComboButton}, dialog().standardButtonWidth());
 

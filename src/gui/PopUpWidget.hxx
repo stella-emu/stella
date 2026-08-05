@@ -124,7 +124,7 @@ class PopUpWidget : public EditableWidget
     int boxWidth() const { return _w - dropDownWidth(_font); }
     void setBoxWidth(int w);
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

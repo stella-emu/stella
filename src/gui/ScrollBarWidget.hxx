@@ -57,7 +57,7 @@ class ScrollBarWidget : public Widget, public CommandSender
 
     // Re-pick the arrow images/box sizes and the (font-derived) bar width when
     // the font changes at runtime, so the scrollbar grows/shrinks with it
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void drawWidget(bool hilite) override;

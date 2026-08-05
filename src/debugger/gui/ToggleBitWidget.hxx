@@ -36,7 +36,7 @@ class ToggleBitWidget : public ToggleWidget
 
     string getToolTip(const Common::Point& pos) const override;
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void drawWidget(bool hilite) override;

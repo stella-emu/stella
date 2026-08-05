@@ -101,9 +101,9 @@ void TabWidget::updateTabSizes()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::refreshFontMetrics()
+void TabWidget::refreshFont()
 {
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   // A caller's recursion over _children reaches only the active tab (see
   // setActiveTab); each hidden tab's widgets live in _tabs[i].children
@@ -113,7 +113,7 @@ void TabWidget::refreshFontMetrics()
   // hold correct sizes for the new font once it is later activated and reflowed
   for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
     if(i != _activeTab)
-      refreshFontMetricsInList(_tabs[i].children);
+      refreshFontInList(_tabs[i].children);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -145,9 +145,9 @@ int RomListWidget::getWidth() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::refreshFontMetrics()
+void RomListWidget::refreshFont()
 {
-  EditableWidget::refreshFontMetrics();
+  EditableWidget::refreshFont();
   // The base reset _lineHeight to the plain font line height; the row must
   // still clear the checkbox (mirrors the constructor)
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));

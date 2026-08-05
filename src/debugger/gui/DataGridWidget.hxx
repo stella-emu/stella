@@ -101,7 +101,7 @@ class DataGridWidget : public EditableWidget
 
     int colWidth() const { return _colWidth; }
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     // We are several rows of text in one box, not one line centered in it, so
     // report the inset of the FIRST row: that is the line a label beside us must

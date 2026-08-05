@@ -31,7 +31,7 @@ class Settings;
   a 'const GUI::Font&' (see Widget::_font), so changing a font means pointing
   the existing object at new glyph data via GUI::Font::changeDesc().  Callers
   must afterwards refresh the font-derived state their widgets have cached --
-  see Dialog::refreshFont() and Widget::refreshFontMetrics().
+  OSystem::refreshFonts() does both halves (this class, then every dialog).
 
   @author  Stephen Anthony
 */

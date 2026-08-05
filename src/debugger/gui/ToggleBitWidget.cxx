@@ -55,9 +55,9 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleBitWidget::refreshFontMetrics()
+void ToggleBitWidget::refreshFont()
 {
-  ToggleWidget::refreshFontMetrics();
+  ToggleWidget::refreshFont();
 
   _rowHeight = _lineHeight;
   _colWidth  = _colChars * _fontWidth + 8;

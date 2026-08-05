@@ -34,13 +34,13 @@ DelayQueueWidget::DelayQueueWidget(
 {
   _textcolor = kTextColor;
 
-  refreshFontMetrics();
+  refreshFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DelayQueueWidget::refreshFontMetrics()
+void DelayQueueWidget::refreshFont()
 {
-  Widget::refreshFontMetrics();
+  Widget::refreshFont();
 
   // Twenty characters wide, one row per line I show
   _w = 20 * _font.getMaxCharWidth() + 6;

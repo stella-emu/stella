@@ -39,7 +39,7 @@ class RadioButtonWidget : public CheckboxWidget
     void setState(bool state, bool send = true) override;
     void setFill(FillType type) override;
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void drawWidget(bool hilite) override;

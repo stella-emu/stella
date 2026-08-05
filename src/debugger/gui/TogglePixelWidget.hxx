@@ -41,7 +41,7 @@ class TogglePixelWidget : public ToggleWidget
 
     void setCrossed(bool enable);
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void drawWidget(bool hilite) override;

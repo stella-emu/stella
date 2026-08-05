@@ -161,8 +161,8 @@ class Font
     // its Font, so swapping the descriptor here makes all of them immediately
     // use the new glyphs and metrics without having to reseat any reference
     // (which a reference member cannot do anyway).  Callers must then refresh
-    // any font-derived state cached by the referrers (see
-    // Widget::refreshFontMetrics() and FrameBuffer::changeLauncherFont()).
+    // any font-derived state cached by the referrers, which is what
+    // OSystem::refreshFonts() does for the whole application.
     void changeDesc(const FontDesc& desc);
 
     // Get a character's glyph, positioned relative to the pen; the glyphs

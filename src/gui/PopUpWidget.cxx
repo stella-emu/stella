@@ -81,10 +81,10 @@ void PopUpWidget::setBoxWidth(int w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::refreshFontMetrics()
+void PopUpWidget::refreshFont()
 {
   // Also refreshes the inherited (right-click) mouse menu, if allocated
-  EditableWidget::refreshFontMetrics();
+  EditableWidget::refreshFont();
 
   // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
   // height and vertically re-center the arrows (mirrors the ctor).

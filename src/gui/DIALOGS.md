@@ -543,7 +543,7 @@ MyDialog::MyDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& f
 > pixels). Only the widget's *position*, and any size the layout will assign,
 > belong in `layout()`.
 >
-> This misbehaves *intermittently*, which makes it nasty: `refreshFontMetrics()`
+> This misbehaves *intermittently*, which makes it nasty: `refreshFont()`
 > recomputes a `LabelWidget`'s width from its label, so a clipped label
 > springs back into view after any live font change and looks fine — until the
 > dialog is next opened from scratch.

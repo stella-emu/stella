@@ -43,9 +43,9 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::refreshFontMetrics()
+void EditTextWidget::refreshFont()
 {
-  EditableWidget::refreshFontMetrics();
+  EditableWidget::refreshFont();
 
   // Restore the framed height for the live font and the number of lines I was
   // built to show; the width is dialog-chosen and re-applied by the owning

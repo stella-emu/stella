@@ -83,7 +83,7 @@ class RomListWidget : public EditableWidget
     // Reports the full footprint (list area + scrollbar), so setWidth() is its
     // inverse (mirrors ListWidget)
     int getWidth() const override;
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

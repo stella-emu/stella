@@ -43,7 +43,7 @@ class StringListWidget : public ListWidget
     // renderer silently ellipsizes it.  0 while I am still at a placeholder width
     int textWidth() const { return std::max(_w - 2 * _textOfs, 0); }
 
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     // display depends on _hasFocus so we have to redraw when focus changes
     void receivedFocusWidget() override { setDirty(); }

@@ -33,7 +33,7 @@ class TimeLineWidget : public ButtonWidget
 
     // My height is mine (it follows my font); my WIDTH is the dialog's, and
     // TimeMachineDialog's layout re-applies it with HAlign::Fill
-    void refreshFontMetrics() override;
+    void refreshFont() override;
 
     void setValue(int value) override;
     uInt32 getValue() const { return _value; }

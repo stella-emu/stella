@@ -37,9 +37,9 @@ void WrappedTextWidget::setWidth(int w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void WrappedTextWidget::refreshFontMetrics()
+void WrappedTextWidget::refreshFont()
 {
-  StringListWidget::refreshFontMetrics();
+  StringListWidget::refreshFont();
   rewrap();
 }
 

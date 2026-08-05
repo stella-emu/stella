@@ -715,9 +715,9 @@ void DataGridWidget::setHeight(int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::refreshFontMetrics()
+void DataGridWidget::refreshFont()
 {
-  EditableWidget::refreshFontMetrics();
+  EditableWidget::refreshFont();
 
   // The grid's size is intrinsic: it is exactly what its rows and columns need
   // for the current font, so recompute it here rather than leaving it stale for

@@ -637,7 +637,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     {
       // The pop-up width is the dialog's choice, not the pop-up's own, so it is
       // re-applied here and follows a live font change (PopUpWidget does not
-      // re-derive its width -- see its refreshFontMetrics)
+      // re-derive its width -- see its refreshFont)
       myDbgColour[i]->setBoxWidth(fontWidth * 6);
 
       auto colourRow = std::make_unique<BoxLayout>(Dir::Horizontal);
