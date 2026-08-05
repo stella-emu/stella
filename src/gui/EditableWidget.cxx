@@ -198,16 +198,6 @@ ContextMenu& EditableWidget::mouseMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-
-  // Only allocated on first right-click; nothing to refresh otherwise
-  if(myMouseMenu)
-    myMouseMenu->refreshFontMetrics();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   _isDragging = false;

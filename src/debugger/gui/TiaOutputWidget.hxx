@@ -44,11 +44,6 @@ class TiaOutputWidget : public Widget, public CommandSender
 
     bool wantsFocus() const override { return false; }
 
-    // The right-click context menu is a Dialog, not a Widget, so no Widget-tree
-    // walk reaches it on its own; forward explicitly (see
-    // ContextMenu::refreshFontMetrics)
-    void refreshFontMetrics() override;
-
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action
 // (fill to this scanline, etc).

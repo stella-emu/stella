@@ -442,6 +442,27 @@ FBInitStatus OSystem::createFrameBuffer()
   return fbstatus;
 }
 
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::refreshFonts()
+{
+  // Re-resolve every role; the font objects are mutated in place, so nothing
+  // holding a font reference has to be told about the new descriptor
+  myFontManager->loadConfig(settings());
+
+  // ...but every dialog's CACHED font-derived state (widget metrics, layout)
+  // is now stale, and each container knows only about its own dialogs
+  myLauncher->refreshFont();
+  myOverlayMenu->refreshFont();
+  myTimeMachine->refreshFont();
+#ifdef DEBUGGER_SUPPORT
+  // Only exists once a console has been created
+  if(myDebugger)
+    myDebugger->refreshFont();
+#endif
+}
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createSound()
 {

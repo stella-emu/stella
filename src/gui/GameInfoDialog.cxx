@@ -1297,16 +1297,6 @@ void GameInfoDialog::saveProperties()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::refreshFont()
-{
-  Dialog::refreshFont();
-
-  // Only allocated on first use; nothing to refresh otherwise
-  if(myQuadTariDialog)
-    myQuadTariDialog->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveConfig()
 {
   saveProperties();

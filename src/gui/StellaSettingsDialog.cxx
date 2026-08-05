@@ -549,16 +549,6 @@ void StellaSettingsDialog::openHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::refreshFont()
-{
-  Dialog::refreshFont();
-
-  // Only allocated on first use; nothing to refresh otherwise
-  if(myHelpDialog)
-    myHelpDialog->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::updateControllerStates()
 {
   ByteArray image;

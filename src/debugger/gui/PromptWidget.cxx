@@ -165,12 +165,6 @@ void PromptWidget::refreshFontMetrics()
   // A new character width means a new line width; the setArea() that follows
   // from the ensuing relayout() acts on the stale buffer this leaves behind
   recalcMetrics();
-
-  // The right-click menu is a Dialog, not a Widget, so no Widget-tree walk
-  // reaches it on its own; forward explicitly.  Only allocated on first
-  // right-click, so there may be nothing to refresh yet.
-  if(myMouseMenu)
-    myMouseMenu->refreshFontMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

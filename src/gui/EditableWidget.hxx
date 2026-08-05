@@ -91,13 +91,6 @@ class EditableWidget : public Widget, public CommandSender
     void handleMouseMoved(int x, int y) override;
     void tick() override;
 
-    // The right-click cut/copy/paste menu is a Dialog, not a Widget, so no
-    // Widget-tree walk reaches it on its own; forward explicitly (see
-    // ContextMenu::refreshFontMetrics).  A subclass overriding this must
-    // call EditableWidget::refreshFontMetrics(), not Widget::refreshFontMetrics(),
-    // or this is skipped.
-    void refreshFontMetrics() override;
-
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

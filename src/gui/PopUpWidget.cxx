@@ -96,10 +96,6 @@ void PopUpWidget::refreshFontMetrics()
   if(myAutoWidth)
     setBoxWidth(calcWidth(_font, myMenu->entries()));
   myArrowsY = (_h - _arrowHeight) / 2;
-
-  // The dropdown menu is a separate Dialog, not part of this widget's
-  // (Widget-tree-only) child list, so no walk ever reaches it on its own
-  myMenu->refreshFontMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

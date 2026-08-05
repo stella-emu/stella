@@ -251,16 +251,6 @@ Common::Size RamWidget::naturalSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-
-  // The search/compare box is a Dialog, not a Widget, so no Widget-tree walk
-  // reaches it on its own; refreshFont() refreshes its own children in turn
-  myInputBox->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::reflow()
 {
   buildLayout()->doLayout(_x, _y, _w, _h);

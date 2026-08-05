@@ -91,8 +91,11 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::changeFont() const
 {
-  myDialog->changeFont();
-  myDialog->refreshFont();
+  // Re-resolves the fonts and re-fonts every dialog in the application.  Our
+  // own separate Dialogs (the disassembly settings and colour dialogs, the
+  // RAM search box, the right-click menus) are reached because they register
+  // with us, so nothing here has to name them
+  myOSystem.refreshFonts();
 
   // A larger font can raise the content minimum past the window's current
   // size (dialogMinSize() reads the just-refreshed dialog, so this must

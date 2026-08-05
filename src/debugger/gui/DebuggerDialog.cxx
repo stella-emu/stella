@@ -515,13 +515,10 @@ void DebuggerDialog::changeFont()
 void DebuggerDialog::refreshFont()
 {
   Dialog::refreshFont();
-  tooltip().setFont(nfont());
 
-  // The Options dialog is a separate Dialog; only allocated on first use, so
-  // it must forward explicitly rather than assume it will always be freshly
-  // reconstructed before it goes stale
-  if(myOptions)
-    myOptions->refreshFont();
+  // The tooltip is not a Dialog, so the container's broadcast cannot reach
+  // it; it also wants the debugger's own font rather than the base's
+  tooltip().setFont(nfont());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

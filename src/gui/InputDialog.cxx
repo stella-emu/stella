@@ -542,16 +542,6 @@ void InputDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::refreshFont()
-{
-  Dialog::refreshFont();
-
-  // Only allocated on first use; nothing to refresh otherwise
-  if(myJoyDialog)
-    myJoyDialog->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::saveConfig()
 {
   Settings& settings = instance().settings();

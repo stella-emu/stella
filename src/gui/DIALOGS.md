@@ -817,10 +817,19 @@ dead parameters.
 
 ## Live font change (context — you don't implement this)
 
-An already-open dialog re-fonts *live* when the user changes the dialog font,
-with no restart. The base class handles this: `FrameBuffer::changeDialogFont`
-mutates the font in place, then `Dialog::refreshFont()` refreshes widget metrics
-and calls `relayout()` → your `layout()` runs again with the new font.
+A dialog re-fonts *live* when the user changes the dialog font, with no restart,
+and this is entirely handled for you. `OSystem::refreshFonts()` mutates the fonts
+in place and asks every container to re-font; each container reaches every dialog
+registered with it — a `Dialog` registers itself as it is constructed — so a
+cached or closed dialog is covered as well as an open one. `Dialog::refreshFont()`
+then refreshes widget metrics and calls `relayout()` → your `layout()` runs again
+with the new font.
+
+⚠️ **You do not forward this anywhere.** If your dialog owns another `Dialog`
+(a `ContextMenu`, a settings box), do *not* call `refreshFont()` on it — it is
+registered in its own right and would just be refreshed twice. Only override
+`refreshFont()` if your class caches font-derived state of its own *outside* its
+widget tree, and then only to refresh that state.
 
 Your only responsibility is the golden rule: **`layout()` must recompute every
 number from the current font**, and hold no state baked from a previous font.

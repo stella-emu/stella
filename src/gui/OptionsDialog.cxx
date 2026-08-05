@@ -194,19 +194,6 @@ void OptionsDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::refreshFont()
-{
-  Dialog::refreshFont();
-
-  // Only set once a panel has been chosen; nothing to refresh otherwise.
-  // Virtual dispatch reaches whichever concrete panel is currently active,
-  // including any Dialog-as-member it owns in turn (e.g. GameInfoDialog's
-  // QuadTari dialog)
-  if(myDialog)
-    myDialog->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
                                   int data, int id)
 {

@@ -723,11 +723,11 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         sendCommand(LauncherDialog::kFontChangedCmd, 0, 0);
       if(informDialogFont)
       {
-        // Change the dialog font in place, then re-font every open dialog.  A
-        // dialog that no longer fits the window is detected + reported when it
-        // (re)opens via Dialog::open() (see Dialog::exceedsScreen)
-        instance().fonts().loadConfig(instance().settings());
-        parent().refreshFont();
+        // Change the dialog font in place, then re-font every dialog in the
+        // application -- the font is global, so other containers' dialogs go
+        // stale too.  One that no longer fits the window is detected +
+        // reported when it (re)opens via Dialog::open() (see exceedsScreen)
+        instance().refreshFonts();
       }
       break;
     }

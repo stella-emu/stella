@@ -107,11 +107,6 @@ class FileListWidget : public StringListWidget
     ProgressDialog& progress();
     void incProgress();
 
-    // The progress dialog is a Dialog, not a Widget, so no Widget-tree walk
-    // reaches it on its own; forward explicitly (see
-    // ContextMenu::refreshFontMetrics for the same pattern)
-    void refreshFontMetrics() override;
-
     virtual bool isDirectory(const FSNode& node) const;
 
   protected:

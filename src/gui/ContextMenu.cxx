@@ -72,13 +72,13 @@ void ContextMenu::recalcWidth()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::refreshFontMetrics()
+void ContextMenu::refreshFont()
 {
-  // The font object was mutated in place by a live font change; this menu is
-  // a Dialog, not a Widget, so no Widget-tree walk reaches it -- the owning
-  // PopUpWidget calls this directly instead (see PopUpWidget::refreshFontMetrics)
+  Dialog::refreshFont();
+
+  // Our own cached font-derived state, which the base class knows nothing of
   _rowHeight = _font.getLineHeight();
-  setArrows();     // re-picks the arrow bitmap/_textOfs for the new font
+  setArrows();     // re-picks the arrow size/_textOfs for the new font
   recalcWidth();   // _textOfs feeds the per-entry width, so this must follow
   setDirty();
 }

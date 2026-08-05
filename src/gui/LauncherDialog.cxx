@@ -699,23 +699,6 @@ void LauncherDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::refreshFont()
-{
-  Dialog::refreshFont();
-
-  // The right-click context menu is a separate Dialog; only allocated on
-  // first right-click, so there may be nothing to refresh yet
-  if(myContextMenu)
-    myContextMenu->refreshFontMetrics();
-
-  // The active nested panel (Options/GameInfo/...) is also a separate Dialog;
-  // only set once one has been chosen.  Virtual dispatch reaches whichever
-  // concrete panel is currently active, forwarding further in turn
-  if(myDialog)
-    myDialog->refreshFont();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateUI()
 {
   // Only enable the 'up' button if there's a parent directory (and the
@@ -1271,8 +1254,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       // The launcher font was changed at runtime.  Swap it in place (every
       // widget references the same Font object), then refresh the cached
       // font-derived state and re-flow — no restart required.
-      instance().fonts().loadConfig(instance().settings());
-      refreshFont();
+      instance().refreshFonts();
       // A larger font can raise the content minimum past the window's
       // current size; layout() (run by refreshFont() above) has already
       // recomputed myMinSize for the new font, so grow the window to fit

@@ -64,14 +64,6 @@ TiaOutputWidget::~TiaOutputWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-
-  myMenu->refreshFontMetrics();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::loadConfig()
 {
   setEnabled(true);

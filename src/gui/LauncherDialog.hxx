@@ -104,11 +104,6 @@ class LauncherDialog : public Dialog, CommandSender
     void loadConfig() override;
     void saveConfig() override;
 
-    // The right-click context menu is a separate Dialog, so the base walk
-    // over _children never reaches it; forward explicitly (see
-    // ContextMenu::refreshFontMetrics)
-    void refreshFont() override;
-
     void setPosition() override { positionAt(0); }
 
     void tick() override;

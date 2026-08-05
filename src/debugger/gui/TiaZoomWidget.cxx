@@ -61,14 +61,6 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-
-  myMenu->refreshFontMetrics();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::loadConfig()
 {
   setDirty();

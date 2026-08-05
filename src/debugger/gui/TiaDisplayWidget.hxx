@@ -58,11 +58,6 @@ class TiaDisplayWidget : public Widget, public CommandSender
 
     bool wantsFocus() const override { return true; }
 
-    // The right-click context menu is a Dialog, not a Widget, so no Widget-tree
-    // walk reaches it on its own; forward explicitly (see
-    // ContextMenu::refreshFontMetrics)
-    void refreshFontMetrics() override;
-
   protected:
     void drawWidget(bool hilite) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

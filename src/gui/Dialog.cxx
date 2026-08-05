@@ -57,6 +57,13 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   setTitle(title);
 
   _toolTip = std::make_unique<ToolTip>(*this, font);
+
+  // Make ourselves known to the container from here on, the way a Widget adds
+  // itself to its boss's child list.  Every Dialog has a container (not every
+  // one has an owning Dialog or Widget), so this is the one hook that reaches
+  // all of them -- which is what lets a font change find a dialog nobody
+  // remembered to forward it to
+  parent.registerDialog(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,6 +76,11 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  // Drop out of the container's registry first, so nothing can reach a
+  // half-destroyed dialog.  This is the registration made in the c'tor being
+  // released, not work being done here
+  parent().deregisterDialog(this);
+
   if(instance().hasFrameBuffer())
   {
     instance().frameBuffer().deallocateSurface(_surface);

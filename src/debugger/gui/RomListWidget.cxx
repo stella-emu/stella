@@ -156,11 +156,6 @@ void RomListWidget::refreshFontMetrics()
   // getWidth() is the footprint setWidth() is handed, which is what they scale
   // against
   recalcColumnWidths(getWidth());
-
-  // Both are Dialogs, not Widgets, so no Widget-tree walk reaches them on
-  // their own; their own children then refresh through Dialog::refreshFont
-  myMenu->refreshFont();
-  myDisasmColorsDialog->refreshFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

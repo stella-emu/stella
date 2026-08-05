@@ -36,11 +36,6 @@ class AboutDialog : public Dialog
 
     void loadConfig() override { displayInfo(); }
 
-    // The what's-new dialog is a separate Dialog; only allocated on first
-    // use, so it must forward explicitly rather than assume it will always
-    // be freshly reconstructed before it goes stale
-    void refreshFont() override;
-
   protected:
     void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

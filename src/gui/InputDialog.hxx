@@ -41,11 +41,6 @@ class InputDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    // The joystick dialog is a separate Dialog; only allocated on first use,
-    // so it must forward explicitly rather than assume it will always be
-    // freshly reconstructed before it goes stale
-    void refreshFont() override;
-
   protected:
     void layout() override;
 

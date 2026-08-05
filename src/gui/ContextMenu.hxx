@@ -62,12 +62,11 @@ class ContextMenu : public Dialog, public CommandSender
         the menu still grows to fit its widest entry. */
     void setMaxWidth(int width);
 
-    /** Recompute cached font-derived state (row height, arrow bitmap, entry
-        widths) after the font object was mutated in place by a live font
-        change.  Called explicitly by the owning PopUpWidget -- see its own
-        refreshFontMetrics() -- since this menu is a Dialog, not a Widget, so
-        no Widget-tree walk ever reaches it. */
-    void refreshFontMetrics();
+    /** Also recompute our own cached font-derived state (row height, arrow
+        size, entry widths) after the font object was mutated in place by a
+        live font change.  Reached by the container's broadcast, like every
+        other Dialog -- no owner has to forward it here. */
+    void refreshFont() override;
 
     /** Enable or disable an item.  Disabled items are greyed out and
         cannot be selected. */

@@ -192,15 +192,13 @@ class DialogContainer
     void relayout();
 
     /**
-      Re-font every dialog in the stack after the dialog font has been changed
-      in place (see FrameBuffer::changeDialogFont).  Broadcasts refreshFont() to
-      the whole stack so all open dialogs re-font live, no restart.  Virtual so
-      a container that also caches dialogs OUTSIDE the stack (e.g. OverlayMenu,
-      which keeps one instance per EventHandlerState and only ever pushes the
-      active one) can refresh those too -- otherwise a font change while one is
-      inactive would leave it stale until reselected.
+      Re-font every dialog belonging to this container after the font has been
+      changed in place (see OSystem::refreshFonts), so they re-font live with
+      no restart.  Reaches every dialog registered with us, not just the open
+      stack: one that is merely cached (e.g. the menus OverlayMenu keeps per
+      EventHandlerState) would otherwise stay stale until next shown.
     */
-    virtual void refreshFont();
+    void refreshFont();
 
     /**
       Return (and possibly create) the bottom-most dialog of this container.
@@ -229,11 +227,25 @@ class DialogContainer
     */
     void removeDialog();
 
+    /**
+      Track every dialog built for this container, whether or not it is
+      currently on the stack.  A Dialog registers itself as it is constructed
+      and deregisters as it is destroyed, the way a Widget adds itself to its
+      boss's child list -- so nothing has to remember to do it by hand.
+    */
+    void registerDialog(Dialog* d);
+    void deregisterDialog(const Dialog* d);
+
   protected:
     OSystem& myOSystem;
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:
+    // Every dialog belonging to this container, in creation order and
+    // non-owning (each is owned by whatever created it).  A superset of
+    // myDialogStack, which holds only the currently open ones
+    vector<Dialog*> myAllDialogs;
+
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime{0};
 

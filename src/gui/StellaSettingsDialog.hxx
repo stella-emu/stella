@@ -40,12 +40,6 @@ class StellaSettingsDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    // The help dialog is a separate Dialog; only allocated on first use, and
-    // this dialog can itself be a long-lived cached singleton (see
-    // OverlayMenu::cached), so it must forward explicitly rather than assume
-    // it will always be freshly reconstructed before the help box is stale
-    void refreshFont() override;
-
   protected:
     void layout() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

@@ -163,6 +163,19 @@ class OSystem
       @return The font manager object
     */
     FontManager& fonts() const { return *myFontManager; }
+
+    /**
+      Re-resolve every UI font role from the current settings, then re-font
+      every dialog in the application.
+
+      A font role is global, so it is not enough to refresh whichever
+      container the change was made from: the dialogs another container is
+      holding on to (the menus cached over emulation, for instance) would
+      keep the old font's metrics and draw the new glyphs at the old
+      spacing.  Only this class owns both the fonts and every container, so
+      this is the one place that can reach all of them.
+    */
+    void refreshFonts();
   #endif
 
     /**

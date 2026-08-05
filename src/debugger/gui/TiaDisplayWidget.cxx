@@ -52,14 +52,6 @@ TiaDisplayWidget::TiaDisplayWidget(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaDisplayWidget::refreshFontMetrics()
-{
-  Widget::refreshFontMetrics();
-
-  myMenu->refreshFontMetrics();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaDisplayWidget::loadConfig()
 {
   setDirty();
