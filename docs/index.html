@@ -3306,8 +3306,13 @@
     </tr>
 
     <tr>
-      <td><pre>-hidpi &lt;0|1&gt;</pre></td>
-      <td>Enable the HiDPI mode which scales the UI by a factor of two.</td>
+      <td><pre>-hidpi &lt;auto|0|1&gt;</pre></td>
+      <td>Enable the HiDPI mode which scales the UI by a factor of two. With
+          'auto' (the default), it is enabled per display, on very high
+          resolution screens where the smallest UI Stella can build at the
+          current font would otherwise cover too little of the desktop to read
+          comfortably. Any scaling the OS itself applies is already accounted
+          for.</td>
     </tr>
 
     <tr>
@@ -4094,7 +4099,7 @@
           <tr><td>Dark theme</td><td>Alternative theme to use for UI elements (see examples)</td><td>-uipalette2</td></tr>
 		  <tr><td>Auto theme</td><td>Enable for automatic switching between light and dark themes in sync with OS.</td><td>-autouipalette</td></tr>
           <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-ui.font.dialog</td></tr>
-          <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
+          <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled; 'Auto' enables it on very high resolution screens where the UI would otherwise be too small</td><td>-hidpi</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
           <tr><td>Center windows</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
           <tr><td>List input delay</td><td>Maximum delay between keypresses in filelist-widgets before a search string resets. </td><td>-listdelay</td></tr>

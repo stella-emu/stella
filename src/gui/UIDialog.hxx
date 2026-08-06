@@ -81,7 +81,8 @@ class UIDialog : public Dialog, public CommandSender
     CheckboxWidget* myAutoPalette{nullptr};
     LabelWidget*    myDialogFontLbl{nullptr};
     PopUpWidget*    myDialogFontPopup{nullptr};
-    CheckboxWidget* myHidpiWidget{nullptr};
+    LabelWidget*    myHidpiLbl{nullptr};
+    PopUpWidget*    myHidpiPopup{nullptr};
     LabelWidget*    myPositionLbl{nullptr};
     PopUpWidget*    myPositionPopup{nullptr};
     CheckboxWidget* myCenter{nullptr};

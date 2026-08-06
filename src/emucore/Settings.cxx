@@ -194,7 +194,7 @@ Settings::Settings()
   setPermanent("uipalette2", "dark");
   setPermanent("altuipalette", "false");
   setPermanent("autouipalette", "false");
-  setPermanent("hidpi", "false");
+  setPermanent("hidpi", "auto");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
   setPermanent("mdouble", "500");
@@ -647,7 +647,8 @@ void Settings::usage()
     << "  -altuipalette  <0|1>           Enable alternative GUI theme\n"
     << "  -autouipalette <0|1>           Switch GUI theme automatically\n"
 
-    << "  -hidpi        <0|1>            Enable HiDPI mode\n"
+    << "  -hidpi        <auto|0|1>       Enable HiDPI mode ('auto' enables it on very\n"
+    << "                                  high resolution screens only)\n"
     << "  -ui.font.dialog <FONT>         Use the specified font in the dialogs\n"
     << "  -ui.font.info   <FONT|auto>    Use the specified font where a dialog wants a\n"
     << "                                  smaller one ('auto' pairs it with the dialog\n"

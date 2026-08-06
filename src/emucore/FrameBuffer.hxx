@@ -559,6 +559,14 @@ class FrameBuffer
     void savePosition(const FBBackend& backend, BufferType type) const;
 
     /**
+      Answer whether HiDPI mode is wanted on a desktop of the given size.  The
+      'hidpi' setting is either an explicit boolean, or 'auto': enabled on a
+      very high resolution screen, and then only while the smallest UI Stella
+      can build covers too little of it to read comfortably.
+    */
+    bool wantsHiDPI(const Common::Size& desktop) const;
+
+    /**
       The backend and state of the primary/secondary window, whichever of the
       two is currently the render target.  The primary backend exists from
       initialize() onwards; the secondary one is created lazily, so accessing it

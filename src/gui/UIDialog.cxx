@@ -95,9 +95,16 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(lookPane, font, "HiDPI mode (*)");
-  myHidpiWidget->setToolTip("Scale the UI by a factor of two when enabled.");
-  wid.push_back(myHidpiWidget);
+  items.clear();
+  VarList::push_back(items, "Auto", "auto");
+  VarList::push_back(items, "Enabled", "1");
+  VarList::push_back(items, "Disabled", "0");
+  myHidpiLbl = new LabelWidget(lookPane, font, "HiDPI mode (*)");
+  myHidpiPopup = new PopUpWidget(lookPane, font, items);
+  myHidpiPopup->setToolTip("Scale the UI by a factor of two when enabled;"
+                           " 'Auto' enables it on very high resolution"
+                           " screens only.");
+  wid.push_back(myHidpiPopup);
 
   // Dialog position
   items.clear();
@@ -189,20 +196,21 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     // The sliders and the pop-ups each have a separate label beside them; all
     // share one label column so their value boxes and tracks line up down the tab
     GUI::alignLabels({{myPalette1Lbl}, {myPalette2Lbl}, {myDialogFontLbl},
-                      {myPositionLbl}, {myListDelaySliderLbl}, {myWheelLinesSliderLbl},
-                      {myDoubleClickSliderLbl}, {myControllerDelaySliderLbl},
-                      {myControllerRateSliderLbl}});
+                      {myHidpiLbl}, {myPositionLbl}, {myListDelaySliderLbl},
+                      {myWheelLinesSliderLbl}, {myDoubleClickSliderLbl},
+                      {myControllerDelaySliderLbl}, {myControllerRateSliderLbl}});
     // The pop-ups size their own boxes to their items; one shared width keeps
     // them flush, and the sliders' tracks then span box and arrow alike
     GUI::alignPopUps({myPalette1Popup, myPalette2Popup, myDialogFontPopup,
-                      myPositionPopup});
+                      myHidpiPopup, myPositionPopup});
     GUI::alignTracks({myListDelaySlider, myWheelLinesSlider, myDoubleClickSlider,
                       myControllerDelaySlider, myControllerRateSlider},
                      myPalette1Popup);
 
     enum Col: uInt8 { MAIN, EXTRA, COLS };
     enum Row: uInt8 {
-      THEME1, THEME2, FONT, POSITION, GAP, LIST, WHEEL, CLICK, DELAY, RATE, ROWS
+      THEME1, THEME2, FONT, HIDPI, POSITION, GAP, LIST, WHEEL, CLICK, DELAY,
+      RATE, ROWS
     };
     auto grid = std::make_unique<GridLayout>(COLS, ROWS, fontWidth * 5, VGAP);
     grid->columnAuto(MAIN).columnStretch(EXTRA);
@@ -213,12 +221,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     grid->place(MAIN, THEME1,   labeledRow(myPalette1Lbl, myPalette1Popup));
     grid->place(MAIN, THEME2,   labeledRow(myPalette2Lbl, myPalette2Popup));
     grid->place(MAIN, FONT,     labeledRow(myDialogFontLbl, myDialogFontPopup));
+    grid->place(MAIN, HIDPI,    labeledRow(myHidpiLbl, myHidpiPopup));
     grid->place(MAIN, POSITION, labeledRow(myPositionLbl, myPositionPopup));
 
     // The auto-theme box governs both theme rows, so it is centered across them
     grid->place(EXTRA, THEME1,
                 alignedItem(myAutoPalette, HAlign::Left, VAlign::Center), 1, 2);
-    grid->place(EXTRA, FONT,     anchoredItem(myHidpiWidget));
     grid->place(EXTRA, POSITION, anchoredItem(myCenter));
 
     // The sliders have nothing beside them, so they take the whole row
@@ -510,12 +518,12 @@ void UIDialog::loadConfig()
   // Enable HiDPI mode
   if(!instance().frameBuffer().hidpiAllowed())
   {
-    myHidpiWidget->setState(false);
-    myHidpiWidget->setEnabled(false);
+    myHidpiPopup->setSelected("0");
+    myHidpiPopup->setEnabled(false);
   }
   else
   {
-    myHidpiWidget->setState(settings.getBool("hidpi"));
+    myHidpiPopup->setSelected(settings.getString("hidpi"), "auto");
   }
 
   // Dialog position
@@ -604,7 +612,7 @@ void UIDialog::saveConfig()
                     myDialogFontPopup->getSelectedTag().toString());
 
   // Enable HiDPI mode
-  settings.setValue("hidpi", myHidpiWidget->getState());
+  settings.setValue("hidpi", myHidpiPopup->getSelectedTag().toString());
 
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
@@ -647,7 +655,7 @@ void UIDialog::setDefaults()
       myPalette2Popup->setSelected("dark");
       myAutoPalette->setState(false);
       myDialogFontPopup->setSelected("medium", "");
-      myHidpiWidget->setState(false);
+      myHidpiPopup->setSelected("auto");
       myPositionPopup->setSelected("0");
       myCenter->setState(false);
       myListDelaySlider->setValue(300);

@@ -66,6 +66,12 @@ void FrameBuffer::initialize()
   // Get desktop resolution and supported renderers
   myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
 
+#ifdef GUI_SUPPORT
+  // The smallest UI the current font can build; 'hidpi' in 'auto' mode weighs
+  // each desktop against it, so it has to be known before the loop below
+  setupTIAMinZoom();
+#endif
+
   for(const auto& display: myWindowedDisplays)
   {
     uInt32 query_w = display.second.w, query_h = display.second.h;
@@ -86,7 +92,7 @@ void FrameBuffer::initialize()
     const bool hidpi = (((size.w / 2) >= FBMinimum::Width) &&
                         ((size.h / 2) >= FBMinimum::Height));
     myHiDPIAllowed[display.first] = hidpi;
-    myHiDPIEnabled[display.first] = hidpi && myOSystem.settings().getBool("hidpi");
+    myHiDPIEnabled[display.first] = hidpi && wantsHiDPI(size);
 
     // In HiDPI mode, the desktop resolution is essentially halved
     // Later, the output is scaled and rendered in 2x mode
@@ -98,10 +104,6 @@ void FrameBuffer::initialize()
     myDesktopSize[display.first] = size;
   }
 
-#ifdef GUI_SUPPORT
-  setupTIAMinZoom();
-#endif
-
   updateTheme();
   setUIPalette();
 
@@ -111,6 +113,40 @@ void FrameBuffer::initialize()
   myTIASurface = std::make_unique<TIASurface>(myOSystem);
   // Create a bezel surface for TIA overlays
   myBezel = std::make_unique<Bezel>(myOSystem);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::wantsHiDPI(const Common::Size& desktop) const
+{
+  const string& setting = myOSystem.settings().getString("hidpi");
+
+  if(setting != "auto")
+    return myOSystem.settings().getBool("hidpi");
+
+  // Only a high resolution screen is a candidate at all: on anything smaller a
+  // 2x UI is too big.  Since any scaling the OS applies is already divided out
+  // of what we see (see below), this reads as a density test, and the height
+  // does most of the work -- an ultrawide is broad at an ordinary density
+  static constexpr uInt32 HIDPI_AUTO_WIDTH = 3000, HIDPI_AUTO_HEIGHT = 1600;
+
+  if(desktop.w <= HIDPI_AUTO_WIDTH || desktop.h <= HIDPI_AUTO_HEIGHT)
+    return false;
+
+  // Whatever scaling the OS applies to our window on the user's behalf has
+  // already been divided out of the desktop size we see here -- Windows
+  // stretches us, since we ask it to treat us as DPI-unaware, and macOS and
+  // Wayland hand us points rather than pixels.  What is left is the room a 1x
+  // UI really has, so weigh the smallest UI the current font can build against
+  // it: the less of the desktop that UI covers, the smaller it reads, and past
+  // this point 2x serves the user better.  Measuring both dimensions keeps a
+  // wide but short desktop (an ultrawide) at 1x, where its height belongs
+  static constexpr double HIDPI_AUTO_COVERAGE = 0.38;
+
+  const double minW = TIAConstants::viewableWidth * myTIAMinZoom,
+               minH = TIAConstants::viewableHeight * myTIAMinZoom;
+
+  return minW <= desktop.w * HIDPI_AUTO_COVERAGE &&
+         minH <= desktop.h * HIDPI_AUTO_COVERAGE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
