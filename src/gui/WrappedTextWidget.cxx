@@ -21,10 +21,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WrappedTextWidget::WrappedTextWidget(GuiObject* boss, const GUI::Font& font,
-                                     string_view text, uInt16 maxLines)
+                                     string_view text, uInt16 maxLines,
+                                     uInt16 minLines)
   : StringListWidget(boss, font, false, true),
     myText{text},
-    myMaxLines{maxLines}
+    myMaxLines{maxLines},
+    myMinLines{minLines}
 {
   rewrap();
 }
@@ -69,7 +71,8 @@ Common::Size WrappedTextWidget::naturalSize() const
 {
   // As many lines as the text came to, never fewer than the floor we always
   // show and never more than the cap beyond which we scroll
-  const int shown = std::clamp(myLines, MIN_LINES, static_cast<int>(myMaxLines));
+  const int shown = std::clamp(myLines, static_cast<int>(myMinLines),
+                               static_cast<int>(myMaxLines));
 
   return Common::Size(std::max(_w, 0), heightForLines(shown));
 }

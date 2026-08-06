@@ -20,7 +20,7 @@
 
 #include "Dialog.hxx"
 
-class LabelWidget;
+class WrappedTextWidget;
 
 class WhatsNewDialog : public Dialog
 {
@@ -32,11 +32,8 @@ class WhatsNewDialog : public Dialog
     void layout() override;
 
   private:
-    void add(string_view text);
-
-  private:
-    std::vector<LabelWidget*> myLines;
-    std::vector<int> myLineAdvance;
+    // The bullet list, which wraps itself to whatever width layout() gives it
+    WrappedTextWidget* myText{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

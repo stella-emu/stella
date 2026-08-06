@@ -46,7 +46,8 @@ class WrappedTextWidget : public StringListWidget
 {
   public:
     WrappedTextWidget(GuiObject* boss, const GUI::Font& font,
-                      string_view text = "", uInt16 maxLines = 10);
+                      string_view text = "", uInt16 maxLines = 10,
+                      uInt16 minLines = 4);
     ~WrappedTextWidget() override = default;
 
     void setWidth(int w) override;
@@ -67,7 +68,7 @@ class WrappedTextWidget : public StringListWidget
       column holding me can be measured by before it has been laid out.  Use it
       as a stretching cell's base size.
     */
-    int minHeight() const { return heightForLines(MIN_LINES); }
+    int minHeight() const { return heightForLines(myMinLines); }
 
   private:
     // Re-wrap the text to the current width.  Note this does NOT resize us:
@@ -76,12 +77,12 @@ class WrappedTextWidget : public StringListWidget
 
     int heightForLines(int lines) const { return lines * _lineHeight + 2; }
 
-    // However tall we get, we always show at least this much of the text
-    static constexpr int MIN_LINES = 4;
-
-    // The raw, unwrapped text and the most lines to show before scrolling
+    // The raw, unwrapped text, and the most/least lines to show: past the one
+    // the text scrolls, and below the other it does not shrink -- squeezable
+    // content wants a floor, content a dialog sizes itself to does not
     string myText;
     uInt16 myMaxLines{10};
+    uInt16 myMinLines{4};
 
     // Lines the last wrap came to; 0 until we have been given a width
     int myLines{0};
