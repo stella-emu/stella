@@ -63,15 +63,43 @@ void ListWidget::setWidth(int w)
   // setWidth() must subtract the scrollbar again to stay its inverse
   // (mirrors the constructor); otherwise repeated resizes accumulate the
   // scrollbar width into the list
+  _fullWidth = w;
+
   if(_useScrollbar)
   {
     // The scrollbar sizes its own (font-derived) width; we just reserve room
-    // for it and keep it flush against the list's right edge
-    Widget::setWidth(w - ScrollBarWidget::scrollBarWidth(_font));
+    // for it and keep it flush against the list's right edge.  It only asks
+    // for that room while it is needed: with everything in view there is
+    // nothing to scroll, so it hides and the width is the list's to use
+    const bool needed = scrollBarNeeded();
+
+    _scrollBar->setVisible(needed);
+    Widget::setWidth(w - (needed ? ScrollBarWidget::scrollBarWidth(_font) : 1));
     _scrollBar->setPosX(_x + _w);
   }
   else
     Widget::setWidth(w - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ListWidget::scrollBarNeeded() const
+{
+  return _useScrollbar && std::cmp_greater(_list.size(), _rows);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::updateScrollBarRoom()
+{
+  // Nothing to re-split before we have been given a footprint.  The guard is
+  // for the subclass that re-wraps its text to the new width: that lands back
+  // in recalc(), and the answer there cannot change again -- a wider list
+  // never needs MORE lines -- so one pass is always enough
+  if(_fullWidth == 0 || _inScrollBarRoom)
+    return;
+
+  _inScrollBarRoom = true;
+  setWidth(_fullWidth);
+  _inScrollBarRoom = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,7 +207,12 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::getWidth() const
 {
-  return _w + ScrollBarWidget::scrollBarWidth(_font);
+  // Our footprint is what setWidth() was given, however we have since split it
+  // with the scrollbar -- a hidden bar must not shrink what we report, or the
+  // focus rect (and anything else measuring us) would no longer fit us
+  return _fullWidth != 0
+    ? _fullWidth
+    : _w + ScrollBarWidget::scrollBarWidth(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,7 +235,10 @@ void ListWidget::recalc()
   {
     _scrollBar->_numEntries = static_cast<int>(_list.size());
     _scrollBar->_entriesPerPage = _rows;
-    // disable scrollbar if no longer necessary
+    // hide the scrollbar if no longer necessary, which hands its room back to
+    // the list (and take it again once there is something to scroll)
+    if(_scrollBar->isVisible() != scrollBarNeeded())
+      updateScrollBarRoom();
     scrollBarRecalc();
   }
 

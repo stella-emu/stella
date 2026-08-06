@@ -97,6 +97,20 @@ class ListWidget : public EditableWidget
     void recalc();
     void scrollBarRecalc();
 
+    /**
+      Is there more in the list than fits the rows we have?  The scrollbar
+      shows only while there is, and takes its room out of our footprint only
+      while it shows.
+    */
+    bool scrollBarNeeded() const;
+
+    /**
+      Re-split our footprint between the list and the scrollbar, after the
+      answer above has changed.  Goes through setWidth(), so a subclass whose
+      content depends on its width (wrapped text) re-flows with it.
+    */
+    void updateScrollBarRoom();
+
     void startEditMode() override;
     void endEditMode() override;
     void abortEditMode() override;
@@ -114,6 +128,12 @@ class ListWidget : public EditableWidget
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
     bool _useScrollbar{true};
+
+    // The footprint setWidth() was last given, which the scrollbar's room is
+    // taken out of only while it is needed; and a guard against re-entering
+    // the re-split, since re-flowing wrapped text lands us back in recalc()
+    int  _fullWidth{0};
+    bool _inScrollBarRoom{false};
 
     ScrollBarWidget* _scrollBar{nullptr};
 
