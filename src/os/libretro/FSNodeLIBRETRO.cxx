@@ -70,9 +70,14 @@ bool FSNodeLIBRETRO::setFlags()
     }
     else
     {
-      _isDirectory = _isFile = false;
-      _size = 0;
-      return false;
+      // Not present on disk, but it may still be the in-memory ROM: either the
+      // path isn't directly readable (e.g. Android), or the frontend extracted
+      // the ROM from an archive and handed us an archive-relative path
+      // (e.g. 'game.zip#game.a26')
+      _isDirectory = false;
+      _isFile = _path == libretro_rom_path && libretro_get_rom_size() > 0;
+      _size = _isFile ? libretro_get_rom_size() : 0;
+      return _isFile;
     }
   }
   return false;
