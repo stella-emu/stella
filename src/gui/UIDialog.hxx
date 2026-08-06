@@ -98,7 +98,6 @@ class UIDialog : public Dialog, public CommandSender
     SliderWidget*   myDoubleClickSlider{nullptr};
 
     // Bottom-of-tab "(*) ..." info messages
-    LabelWidget* myLookFeelInfo{nullptr};
     LabelWidget* myLauncherInfo{nullptr};
 
     // Indicates if this dialog is used for global (vs. in-game) settings

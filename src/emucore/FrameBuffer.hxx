@@ -468,6 +468,13 @@ class FrameBuffer
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled.at(displayId()) ? 2 : 1; }
 
     /**
+      Re-evaluate the 'hidpi' setting for every attached display and, if the
+      scale factor of the current one has changed, rebuild the window and
+      re-flow the UI at the new scale.  Call after changing the setting.
+    */
+    void refreshHiDPI();
+
+    /**
       This method should be called to save the current settings of all
       its subsystems.  Note that the this may be called when the class
       hasn't been fully initialized, so we first need to check if the
@@ -557,6 +564,13 @@ class FrameBuffer
       settings keys.
     */
     void savePosition(const FBBackend& backend, BufferType type) const;
+
+    /**
+      Work out the desktop size of every attached display, along with whether
+      HiDPI mode is allowed and wanted there.  Runs at startup and again
+      whenever the 'hidpi' setting changes.
+    */
+    void computeDesktopSizes();
 
     /**
       Answer whether HiDPI mode is wanted on a desktop of the given size.  The

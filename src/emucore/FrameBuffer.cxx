@@ -72,6 +72,22 @@ void FrameBuffer::initialize()
   setupTIAMinZoom();
 #endif
 
+  computeDesktopSizes();
+
+  updateTheme();
+  setUIPalette();
+
+  myGrabMouse = myOSystem.settings().getBool("grabmouse");
+
+  // Create a TIA surface; we need it for rendering TIA images
+  myTIASurface = std::make_unique<TIASurface>(myOSystem);
+  // Create a bezel surface for TIA overlays
+  myBezel = std::make_unique<Bezel>(myOSystem);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::computeDesktopSizes()
+{
   for(const auto& display: myWindowedDisplays)
   {
     uInt32 query_w = display.second.w, query_h = display.second.h;
@@ -103,16 +119,36 @@ void FrameBuffer::initialize()
     }
     myDesktopSize[display.first] = size;
   }
+}
 
-  updateTheme();
-  setUIPalette();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::refreshHiDPI()
+{
+  const uInt32 oldScale = hidpiScaleFactor();
 
-  myGrabMouse = myOSystem.settings().getBool("grabmouse");
+  computeDesktopSizes();
 
-  // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = std::make_unique<TIASurface>(myOSystem);
-  // Create a bezel surface for TIA overlays
-  myBezel = std::make_unique<Bezel>(myOSystem);
+  if(hidpiScaleFactor() == oldScale)
+    return;
+
+  // Rebuild the window of whatever is on screen at the new scale.  The sizes
+  // the launcher and the debugger persist are logical, so they carry over
+  // unchanged; createDisplay() applies the new factor to them
+  myOSystem.createFrameBuffer();
+
+#ifdef GUI_SUPPORT
+  // Every open dialog scales its surface at layout time, so the stack has to
+  // re-flow; a dialog that is currently closed picks the new factor up by
+  // itself when it is next opened
+  myOSystem.relayoutDialogs();
+#endif
+
+#ifdef DEBUGGER_SUPPORT
+  // The debugger's companion window is a second backend with a window of its
+  // own, which the rebuild above does not reach
+  if(mySecondaryActive)
+    myOSystem.debugger().rescaleTiaWindow();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

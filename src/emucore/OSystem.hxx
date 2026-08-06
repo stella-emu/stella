@@ -176,6 +176,14 @@ class OSystem
       this is the one place that can reach all of them.
     */
     void refreshFonts();
+
+    /**
+      Re-flow the open dialogs of every container.  Like the fonts above, the
+      HiDPI scale factor is global: a dialog scales its surface at layout
+      time, so all of them go stale together when the factor changes, and
+      only this class can reach every container.
+    */
+    void relayoutDialogs();
   #endif
 
     /**

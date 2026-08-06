@@ -461,6 +461,19 @@ void OSystem::refreshFonts()
     myDebugger->refreshFont();
 #endif
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::relayoutDialogs()
+{
+  myLauncher->relayout();
+  myOverlayMenu->relayout();
+  myTimeMachine->relayout();
+#ifdef DEBUGGER_SUPPORT
+  // Only exists once a console has been created
+  if(myDebugger)
+    myDebugger->relayout();
+#endif
+}
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

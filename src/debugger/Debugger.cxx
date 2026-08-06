@@ -950,6 +950,12 @@ void Debugger::openTiaWindow()
   if(myTiaWindowOpen)
     return;
 
+  applyTiaWindowMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::applyTiaWindowMode()
+{
   if(myTiaWindow == nullptr)
     myTiaWindow = std::make_unique<TiaWindow>(myOSystem);
 
@@ -974,6 +980,22 @@ void Debugger::resizeTiaWindow(int width, int height)
   if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
     myOSystem.frameBuffer().renderSecondaryWindow(
       *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::rescaleTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // createDisplay() applies the scale factor to the (logical) size the window
+  // tracks, so the open path is what puts the new one into effect.  Closing
+  // only hides the window, leaving its backend and surfaces in place
+  // Re-run the open path with the window still shown: it tracks its size in
+  // logical units, and createDisplay() applies the current factor to that.
+  // Hiding it first would be wrong -- a resize applied to a hidden window
+  // does not survive being shown again
+  applyTiaWindowMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

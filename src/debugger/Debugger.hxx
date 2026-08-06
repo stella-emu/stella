@@ -136,6 +136,19 @@ class Debugger : public DialogContainer
     void resizeTiaWindow(int width, int height);
 
     /**
+      Re-apply the current HiDPI scale factor to the companion TIA window.
+      Its size is tracked in logical units, so re-running the open path is
+      what rescales it; the backend and its surfaces stay alive throughout.
+    */
+    void rescaleTiaWindow();
+
+    /**
+      Give the companion TIA window its video mode, at the size it currently
+      tracks.  Shared by the initial open and by a later rescale.
+    */
+    void applyTiaWindowMode();
+
+    /**
       Mark the companion TIA window as needing a redraw.  Called whenever the
       emulation state the window reflects may have changed (e.g. after a step,
       frame/scanline advance, or rewind), and when the OS asks the window to

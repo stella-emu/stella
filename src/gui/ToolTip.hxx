@@ -101,7 +101,6 @@ class ToolTip
     uInt32 myTextXOfs{0};
     uInt32 myTextYOfs{0};
     bool myTipShown{false};
-    uInt32 myScale{1};
     shared_ptr<FBSurface> mySurface;
 
   private:

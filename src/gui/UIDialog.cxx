@@ -99,7 +99,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Auto", "auto");
   VarList::push_back(items, "Enabled", "1");
   VarList::push_back(items, "Disabled", "0");
-  myHidpiLbl = new LabelWidget(lookPane, font, "HiDPI mode (*)");
+  myHidpiLbl = new LabelWidget(lookPane, font, "HiDPI mode");
   myHidpiPopup = new PopUpWidget(lookPane, font, items);
   myHidpiPopup->setToolTip("Scale the UI by a factor of two when enabled;"
                            " 'Auto' enables it on very high resolution"
@@ -171,9 +171,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myControllerRateSlider->setTickmarkIntervals(14);
   wid.push_back(myControllerRateSlider);
 
-  myLookFeelInfo = new LabelWidget(lookPane, ifont,
-                       "(*) Change requires an application restart");
-
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
 
@@ -237,9 +234,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     grid->place(MAIN, RATE,  labeledRow(myControllerRateSliderLbl, myControllerRateSlider), COLS - MAIN);
 
     col.addAuto(std::move(grid));
-    // Info message along the bottom of the tab
     col.addStretchSpace();
-    col.addAuto(anchoredItem(myLookFeelInfo));
   });
 
   //////////////////////////////////////////////////////////
@@ -715,6 +710,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       const bool informDialogFont =
         myDialogFontPopup->getSelectedTag().toString() != instance().settings().getString(
             FontManager::settingKey(FontManager::FontRole::Dialog));
+      // The HiDPI scale factor is global too, for the same reason
+      const bool informHiDPI =
+        myHidpiPopup->getSelectedTag().toString() !=
+            instance().settings().getString("hidpi");
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
@@ -736,6 +735,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         // stale too.  One that no longer fits the window is detected +
         // reported when it (re)opens via Dialog::open() (see exceedsScreen)
         instance().refreshFonts();
+      }
+      if(informHiDPI)
+      {
+        // Re-decide HiDPI mode for the new setting, rebuilding the window and
+        // re-flowing every open dialog if the scale factor actually changed
+        instance().frameBuffer().refreshHiDPI();
       }
       break;
     }
