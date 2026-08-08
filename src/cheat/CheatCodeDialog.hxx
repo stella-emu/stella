@@ -34,11 +34,15 @@ class OSystem;
 class CheatCodeDialog : public Dialog
 {
   public:
+    // Builds all child widgets at placeholder geometry; layout() sizes them
     CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font);
+                    const GUI::Font& font);
+    // Out-of-line: myCheatInput needs InputTextDialog's complete type here
     ~CheatCodeDialog() override;
 
+    // Populates the list from CheatManager and enables/disables buttons
     void loadConfig() override;
+    // Applies checkbox states back to the CheatManager
     void saveConfig() override;
 
     // The cheat input box is a separate Dialog; forward explicitly rather
@@ -46,25 +50,37 @@ class CheatCodeDialog : public Dialog
     void refreshFont() override;
 
   protected:
+    // Positions the list, action-button column, and OK/Cancel row
     void layout() override;
-
+    // Dispatches button/menu commands to the add/edit/remove helpers
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Opens the input dialog to create a new cheat
     void addCheat();
+    // Opens the input dialog pre-filled with the selected cheat
     void editCheat();
+    // Deletes the selected cheat and refreshes the list
     void removeCheat();
+    // Opens the input dialog to create a one-shot cheat
     void addOneShotCheat();
 
   private:
+    // Checklist of cheat names with enable/disable checkboxes
     CheckListWidget* myCheatList{nullptr};
+    // Popup dialog for entering/editing a cheat's name and code
     unique_ptr<InputTextDialog> myCheatInput;
 
+    // Opens the input dialog to add a cheat
     ButtonWidget* myAddButton{nullptr};
+    // Opens the input dialog to edit the selected cheat
     ButtonWidget* myEditButton{nullptr};
+    // Removes the selected cheat
     ButtonWidget* myRemoveButton{nullptr};
+    // Opens the input dialog to add a one-shot cheat
     ButtonWidget* myOneShotButton{nullptr};
 
+    // Command IDs used with handleCommand()
     enum {
       kAddCheatCmd       = 'CHTa',
       kEditCheatCmd      = 'CHTe',

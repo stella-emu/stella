@@ -165,7 +165,7 @@ void CheatCodeDialog::loadConfig()
   const CheatList& list = instance().cheat().list();
   for(const auto& c: list)
   {
-    l.push_back(c->name());
+    l.emplace_back(c->name());
     b.push_back(c->enabled());
   }
   myCheatList->setList(l, b);
@@ -217,8 +217,8 @@ void CheatCodeDialog::editCheat()
     return;
 
   const CheatList& list = instance().cheat().list();
-  const string& name = list[idx]->name();
-  const string& code = list[idx]->code();
+  const string_view name = list[idx]->name();
+  const string_view code = list[idx]->code();
 
   myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setText(name, 0);
