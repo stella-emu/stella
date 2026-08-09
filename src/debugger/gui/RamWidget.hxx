@@ -107,7 +107,7 @@ class RamWidget : public Widget, public CommandSender
     };
 
     // Widget IDs for the RAM grid
-    enum {
+    enum: uInt8 {
       kRamGridID,
       kRamHexID,
       kRamDecID,

@@ -75,6 +75,7 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
     case HAlign::Right:   ax = x + w - aw;        break;
     case HAlign::Fill:
     case HAlign::Left:                            break;
+    default: std::unreachable();
   }
   switch(myVAlign)
   {
@@ -83,6 +84,7 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
     case VAlign::Fill:
     case VAlign::Top:
     case VAlign::Baseline:                        break;
+    default: std::unreachable();
   }
 
   // setArea() forwards to the virtual setWidth()/setHeight() so composite
@@ -146,6 +148,7 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
         // for before any leftover is shared out
         used += it.minMain;
         continue;  // sized in the second pass
+      default: std::unreachable();
     }
     if(it.maxMain > 0)
       ext[i] = std::min(ext[i], it.maxMain);
@@ -607,6 +610,7 @@ void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
         // for before any leftover is shared out
         used += tracks[i].minSize;
         continue;  // sized in the second pass
+      default: std::unreachable();
     }
     if(tracks[i].maxSize > 0)
       ext[i] = std::min(ext[i], tracks[i].maxSize);

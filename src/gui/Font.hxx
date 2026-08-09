@@ -115,6 +115,13 @@ class GlyphSet
 
     // First character in the font, and the glyph substituted for one outside it
     int myFirstChar{0}, myDefaultChar{0};
+
+  private:
+    // Following constructors and assignment operators not supported
+    GlyphSet(const GlyphSet&) = delete;
+    GlyphSet(GlyphSet&&) = delete;
+    GlyphSet& operator=(const GlyphSet&) = delete;
+    GlyphSet& operator=(GlyphSet&&) = delete;
 };
 
 /**

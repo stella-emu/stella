@@ -50,6 +50,7 @@ SerialPortPOSIX::~SerialPortPOSIX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortPOSIX::openPort(const string& device)
 {
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
   myHandle = open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
   if(!isOpen())
     return false;
@@ -130,6 +131,7 @@ bool SerialPortPOSIX::isCTS()
   {
     int status{};
     // status stays 0 if ioctl fails; isCTS() will correctly return false
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ioctl(myHandle, TIOCMGET, &status);
     return status & TIOCM_CTS;
   }
@@ -144,6 +146,7 @@ StringList SerialPortPOSIX::portNames()
   // Check if port is valid; for now that means if it can be opened
   // Eventually we may extend this to do more intensive checks
   const auto isPortValid = [](const string& port) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     const int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     const bool valid = handle != INVALID_HANDLE_VALUE;
     if(valid)  close(handle);

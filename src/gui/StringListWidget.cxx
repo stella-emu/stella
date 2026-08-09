@@ -25,11 +25,10 @@
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
                                    bool hilite, bool useScrollbar)
   : ListWidget(boss, font, useScrollbar),
-    _hilite{hilite}
+    _hilite{hilite},
+    _textOfs{textInset(font)}
 {
   _bgcolorlo = kDlgColor;
-
-  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

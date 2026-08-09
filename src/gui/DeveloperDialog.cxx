@@ -498,8 +498,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
-  const int fontWidth = Dialog::fontWidth();
-  const int pwidth = fontWidth * 6;
+  const int pwidth = Dialog::fontWidth() * 6;
   WidgetArray wid;
   VariantList items;
 

@@ -122,7 +122,7 @@ const GlyphSet& GlyphCache::glyphs(const FontDesc& desc)
   if(iter != mySets.end())
     return iter->second;
 
-  return mySets.emplace(desc.name, GlyphSet{desc}).first->second;
+  return mySets.try_emplace(desc.name, desc).first->second;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -25,14 +25,13 @@
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int chars, int lines, string_view text)
   : EditableWidget(boss, font, calcWidth(font, chars), calcHeight(font, lines) + 2, text),
+    _textOfs{textInset(font)},
     _lines{std::max(1, lines)}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
     | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
 
   EditableWidget::startEditMode();  // We're always in edit mode
-
-  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
