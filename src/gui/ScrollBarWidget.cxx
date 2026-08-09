@@ -37,7 +37,7 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
   // are the list's, which sets them whenever it moves or resizes
   _w = _scrollBarWidth;
 
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
 

@@ -28,8 +28,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
     _textOfs{textInset(font)},
     _lines{std::max(1, lines)}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
-    | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG
+    | Widget::Flag::RetainFocus | Widget::Flag::TrackMouse;
 
   EditableWidget::startEditMode();  // We're always in edit mode
 }

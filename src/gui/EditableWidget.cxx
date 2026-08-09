@@ -99,12 +99,12 @@ void EditableWidget::setEditable(bool editable, bool hiliteBG)
   _editable = editable;
   if(_editable)
   {
-    setFlags(Widget::FLAG_WANTS_RAWDATA | Widget::FLAG_RETAIN_FOCUS);
+    setFlags(Widget::Flag::WantsRawData | Widget::Flag::RetainFocus);
     _bgcolor = kWidColor;
   }
   else
   {
-    clearFlags(Widget::FLAG_WANTS_RAWDATA | Widget::FLAG_RETAIN_FOCUS);
+    clearFlags(Widget::Flag::WantsRawData | Widget::Flag::RetainFocus);
     _bgcolor = hiliteBG ? kBGColorHi : kWidColor;
   }
 }

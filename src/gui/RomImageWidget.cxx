@@ -33,7 +33,7 @@
 RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font)
   : Widget(boss, font)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse; // | Flag::WantsRawData;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
 

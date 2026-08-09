@@ -53,7 +53,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _builtTitle{title},
     _renderCallback{[]() { return; }}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::Border | Widget::Flag::ClearBG;
   setTitle(title);
 
   _toolTip = std::make_unique<ToolTip>(*this, font);
@@ -478,7 +478,7 @@ void Dialog::addFocusWidget(Widget* w)
     return;
 
   // All focusable widgets should retain focus
-  w->setFlags(Widget::FLAG_RETAIN_FOCUS);
+  w->setFlags(Widget::Flag::RetainFocus);
 
   _myFocus.widget = w;
   _myFocus.list.push_back(w);
@@ -489,7 +489,7 @@ int Dialog::addToFocusList(const WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
-    w->setFlags(Widget::FLAG_RETAIN_FOCUS);
+    w->setFlags(Widget::Flag::RetainFocus);
 
   Vec::append(_myFocus.list, list);
   _focusList = _myFocus.list;
@@ -511,7 +511,7 @@ int Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabI
 
   // All focusable widgets should retain focus
   for(const auto& fw: list)
-    fw->setFlags(Widget::FLAG_RETAIN_FOCUS);
+    fw->setFlags(Widget::Flag::RetainFocus);
 
   // First get the appropriate focus list
   FocusList& focus = _myTabList[w->getID()].focus;
@@ -800,7 +800,7 @@ void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   if(_focusedWidget)
   {
     // Lose focus on mouseup unless the widget requested to retain the focus
-    if(! (_focusedWidget->getFlags() & Widget::FLAG_RETAIN_FOCUS ))
+    if(!_focusedWidget->hasFlag(Widget::Flag::RetainFocus))
       releaseFocus();
   }
 
@@ -872,7 +872,7 @@ void Dialog::handleMouseMoved(int x, int y)
     _mouseWidget = w;
   }
 
-  if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
+  if (w && w->hasFlag(Widget::Flag::TrackMouse))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 
   // Update mouse coordinates for tooltips

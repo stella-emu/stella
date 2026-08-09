@@ -104,7 +104,7 @@ void Widget::draw()
         x++; y++; w -= 2; h -= 2;
       }
       if(hasBackground())
-        s.fillRect(x, y, w, h, (_flags & Widget::FLAG_HILITED) && isEnabled()
+        s.fillRect(x, y, w, h, hasFlag(Flag::Hilited) && isEnabled()
                    ? _bgcolorhi : _bgcolor);
       else
         s.invalidateRect(x, y, w, h);
@@ -113,7 +113,7 @@ void Widget::draw()
     // Draw border
     if(hasBorder())
     {
-      s.frameRect(_x, _y, _w, _h, (_flags & Widget::FLAG_HILITED) && isEnabled()
+      s.frameRect(_x, _y, _w, _h, hasFlag(Flag::Hilited) && isEnabled()
                   ? kWidColorHi : kColor);
       _x += 4;
       _y += 4;
@@ -122,7 +122,7 @@ void Widget::draw()
     }
 
     // Now perform the actual widget draw
-    drawWidget((_flags & Widget::FLAG_HILITED) != 0);
+    drawWidget(hasFlag(Flag::Hilited));
 
     // Restore w/hy
     if(hasBorder())
@@ -224,14 +224,14 @@ void Widget::setArea(int x, int y, int w, int h)
 void Widget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,7 +241,7 @@ void Widget::receivedFocus()
     return;
 
   _hasFocus = true;
-  setFlags(Widget::FLAG_HILITED);
+  setFlags(Widget::Flag::Hilited);
   receivedFocusWidget();
 }
 
@@ -252,15 +252,15 @@ void Widget::lostFocus()
     return;
 
   _hasFocus = false;
-  clearFlags(Widget::FLAG_HILITED);
+  clearFlags(Widget::Flag::Hilited);
   lostFocusWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
-  if(e) setFlags(Widget::FLAG_ENABLED);
-  else  clearFlags(Widget::FLAG_ENABLED);
+  if(e) setFlags(Widget::Flag::Enabled);
+  else  clearFlags(Widget::Flag::Enabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,10 +270,10 @@ void Widget::setVisible(bool visible)
     return;
 
   if(visible)
-    clearFlags(Widget::FLAG_INVISIBLE);
+    clearFlags(Widget::Flag::Invisible);
   else
   {
-    setFlags(Widget::FLAG_INVISIBLE);
+    setFlags(Widget::Flag::Invisible);
 
     // Going invisible leaves whatever we were covering unpainted: marking
     // ourselves dirty only ever redraws US, and we now draw nothing.  So the
@@ -506,7 +506,7 @@ Widget* Widget::setFocusForList(const GuiObject* boss, WidgetArray& arr,
     tmp->receivedFocus();
   else {
     tmp->_hasFocus = true;
-    tmp->setFlags(Widget::FLAG_HILITED);
+    tmp->setFlags(Widget::Flag::Hilited);
   }
 
   s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
@@ -554,7 +554,7 @@ LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
   _w = w;
   _h = h;
 
-  _flags = Widget::FLAG_ENABLED | FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Flag::ClearBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
@@ -684,14 +684,14 @@ bool LabelWidget::setUrl(string_view url, string_view label, string_view placeHo
 void LabelWidget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LabelWidget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -699,7 +699,7 @@ void LabelWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(_cmd != GuiCmd::None && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
@@ -721,7 +721,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
     _repeat{repeat}
 {
   _cmd = cmd;
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _bgcolorlo = kColor;
@@ -796,14 +796,14 @@ void ButtonWidget::refreshFont()
 void ButtonWidget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -828,7 +828,7 @@ void ButtonWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
@@ -838,7 +838,7 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(!_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
@@ -884,7 +884,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                  font.isLarge() ? 24 : 16, label, cmd),
     _boxSize{boxSize(font)}
 {
-  _flags = Widget::FLAG_ENABLED;
+  _flags = Widget::Flag::Enabled;
   _bgcolor = _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
 
@@ -1056,7 +1056,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueLabelWidth{valueChars * font.getMaxCharWidth()},
     _forceLabelSign{forceLabelSign}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

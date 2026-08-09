@@ -232,7 +232,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
     myGroup{group},
     _buttonSize{buttonSize(font)} // 14 | 22
 {
-  _flags = Widget::FLAG_ENABLED;
+  _flags = Widget::Flag::Enabled;
   _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;

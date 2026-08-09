@@ -112,23 +112,23 @@ class Widget : public GuiObject
       return static_cast<int>(_focusList.size());
     }
 
-    /** Set/clear FLAG_ENABLED */
+    /** Set/clear Flag::Enabled */
     virtual void setEnabled(bool e);
 
-    // Show or hide this widget.  Prefer this to setting FLAG_INVISIBLE by hand:
+    // Show or hide this widget.  Prefer this to setting Flag::Invisible by hand:
     // a widget that goes invisible stops both drawing AND taking mouse events
     // (see findWidgetInList), and the area it was covering has to be repainted
     // by its boss, which only this knows to ask for
     virtual void setVisible(bool visible);
 
-    /** Individual FLAG_* queries */
-    bool isEnabled() const          { return _flags & FLAG_ENABLED;       }
-    bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);  }
-    bool isHighlighted() const      { return _flags & FLAG_HILITED;       }
-    bool hasMouseFocus() const      { return _flags & FLAG_MOUSE_FOCUS;   }
-    virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;  }
-    bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;     }
-    bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA; }
+    /** Individual Flag queries */
+    bool isEnabled() const          { return hasFlag(Flag::Enabled);      }
+    bool isVisible() const override { return !hasFlag(Flag::Invisible);   }
+    bool isHighlighted() const      { return hasFlag(Flag::Hilited);      }
+    bool hasMouseFocus() const      { return hasFlag(Flag::MouseFocus);   }
+    virtual bool wantsFocus() const { return hasFlag(Flag::RetainFocus);  }
+    bool wantsTab() const           { return hasFlag(Flag::WantsTab);     }
+    bool wantsRaw() const           { return hasFlag(Flag::WantsRawData); }
 
     /** A caller-assigned identifier used to distinguish widgets (not the command id) */
     virtual void setID(uInt32 id) { _id = id;   }

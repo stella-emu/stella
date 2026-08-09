@@ -136,8 +136,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
-  myCompareButton->clearFlags(Widget::FLAG_ENABLED);
-  myRestartButton->clearFlags(Widget::FLAG_ENABLED);
+  myCompareButton->clearFlags(Widget::Flag::Enabled);
+  myRestartButton->clearFlags(Widget::Flag::Enabled);
 
   reflow();
 }

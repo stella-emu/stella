@@ -31,8 +31,8 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _cols{cols},
     _shiftBits{shiftBits}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
-           Widget::FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus |
+           Widget::Flag::WantsRawData;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

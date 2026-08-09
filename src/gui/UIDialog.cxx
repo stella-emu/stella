@@ -406,7 +406,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // All ROM settings are disabled while in game mode
   if(!myIsGlobal)
   {
-    myRomButton->clearFlags(Widget::FLAG_ENABLED);
+    myRomButton->clearFlags(Widget::Flag::Enabled);
     myRomPath->setEditable(false);
   }
 
@@ -421,7 +421,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   setHelpAnchor("UserInterface");
 
 #ifndef WINDOWED_SUPPORT
-  myCenter->clearFlags(Widget::FLAG_ENABLED);
+  myCenter->clearFlags(Widget::Flag::Enabled);
 #endif
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }

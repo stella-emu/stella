@@ -1562,9 +1562,9 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 
   if(!instance().hasConsole())
   {
-    myDbgColourLbl[idx]->clearFlags(Widget::FLAG_ENABLED);
-    myDbgColour[idx]->clearFlags(Widget::FLAG_ENABLED);
-    myDbgColourSwatch[idx]->clearFlags(Widget::FLAG_ENABLED);
+    myDbgColourLbl[idx]->clearFlags(Widget::Flag::Enabled);
+    myDbgColour[idx]->clearFlags(Widget::Flag::Enabled);
+    myDbgColourSwatch[idx]->clearFlags(Widget::Flag::Enabled);
     return;
   }
 

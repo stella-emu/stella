@@ -36,8 +36,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
   : Widget(boss, font),
     CommandSender(boss)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |
-           Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG |
+           Widget::Flag::RetainFocus | Widget::Flag::TrackMouse;
   _bgcolor = _bgcolorhi = kDlgColor;
 
   addFocusWidget(this);

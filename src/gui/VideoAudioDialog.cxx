@@ -85,9 +85,9 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Disable certain functions when we know they aren't present
 #ifndef WINDOWED_SUPPORT
-  myFullscreen->clearFlags(Widget::FLAG_ENABLED);
-  myUseStretch->clearFlags(Widget::FLAG_ENABLED);
-  myTVOverscan->clearFlags(Widget::FLAG_ENABLED);
+  myFullscreen->clearFlags(Widget::Flag::Enabled);
+  myUseStretch->clearFlags(Widget::Flag::Enabled);
+  myTVOverscan->clearFlags(Widget::Flag::Enabled);
 #endif
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
@@ -1568,8 +1568,8 @@ void VideoAudioDialog::createPaletteWidgets(TabPaneWidget* pane)
     for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
       myColor[idx][lum] = new ColorWidget(pane, _font, false);
-      myColor[idx][lum]->clearFlags(FLAG_CLEARBG | FLAG_RETAIN_FOCUS
-                                    | FLAG_MOUSE_FOCUS | FLAG_BORDER);
+      myColor[idx][lum]->clearFlags(Flag::ClearBG | Flag::RetainFocus
+                                    | Flag::MouseFocus | Flag::Border);
     }
   }
 }

@@ -29,8 +29,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int w, const VariantList& items, GuiCmd::Code cmd)
   : EditableWidget(boss, font, w, font.getLineHeight() + 2)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
-    | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::RetainFocus
+    | Widget::Flag::TrackMouse;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;

@@ -79,7 +79,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
                                        "Cancel", Cmd::StopMap);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
-  myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
+  myCancelMapButton->clearFlags(Widget::Flag::Enabled);
   addFocusWidget(myCancelMapButton);
 
   myEraseButton = new ButtonWidget(boss, font,
@@ -111,7 +111,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
   myActionLbl = new LabelWidget(boss, font, "Action");
   myKeyMapping = new EditTextWidget(boss, font, 1, ACTION_LINES);
   myKeyMapping->setEditable(false, true);
-  myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  myKeyMapping->clearFlags(Widget::Flag::RetainFocus);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
@@ -266,7 +266,7 @@ void EventMappingWidget::startRemapping()
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
-  myActionsList->setFlags(Widget::FLAG_WANTS_RAWDATA);
+  myActionsList->setFlags(Widget::Flag::WantsRawData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,7 +310,7 @@ void EventMappingWidget::stopRemapping()
   drawKeyMapping();
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(Widget::FLAG_WANTS_RAWDATA);
+  myActionsList->clearFlags(Widget::Flag::WantsRawData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

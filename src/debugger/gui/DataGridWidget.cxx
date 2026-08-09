@@ -46,7 +46,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _bits{bits},
     _base{base}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::RetainFocus | Widget::Flag::WantsRawData;
   _editMode = false;
 
   // Make sure all lists contain some default values

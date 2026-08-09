@@ -120,14 +120,14 @@ class EditableWidget : public Widget, public CommandSender
     // Enter/leave text-entry mode; endEditMode() keeps the change (commit()),
     // abortEditMode() discards it (abort()) -- a subclass overrides either to
     // add its own effect (e.g. ListWidget writing the row back on commit)
-    virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
+    virtual void startEditMode() { setFlags(Widget::Flag::WantsRawData);   }
     virtual void endEditMode()   {
-      clearFlags(Widget::FLAG_WANTS_RAWDATA);
+      clearFlags(Widget::Flag::WantsRawData);
       commit();
     }
     virtual void abortEditMode()
     {
-      clearFlags(Widget::FLAG_WANTS_RAWDATA);
+      clearFlags(Widget::Flag::WantsRawData);
       abort();
     }
     // Accepts the current text as the new backup (kept on endEditMode())

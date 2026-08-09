@@ -41,9 +41,9 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font)
     _kConsoleCharHeight{font.getFontHeight()},
     _kConsoleLineHeight{_kConsoleCharHeight + 2}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
-           Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA |
-           Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus |
+           Widget::Flag::WantsTab | Widget::Flag::WantsRawData |
+           Widget::Flag::TrackMouse;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
   _bgcolorlo = kDlgColor;

@@ -226,9 +226,9 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // whatever the two rows turn out to need (see layout())
   _w = width;
 
-  this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
-  this->clearFlags(Widget::FLAG_BORDER);
-  this->setFlags(Widget::FLAG_NOBG);
+  this->clearFlags(Widget::Flag::ClearBG); // does only work combined with blending (0..100)!
+  this->clearFlags(Widget::Flag::Border);
+  this->setFlags(Widget::Flag::NoBG);
 
   // Widgets are only created here (at placeholder positions); layout() assigns
   // all geometry from the current font and dialog width.
@@ -237,9 +237,9 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Index info (current + last state index)
   myCurrentIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
-  myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myCurrentIdxWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myLastIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Right, kBGColor);
-  myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myLastIdxWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Timeline scrubber
@@ -248,10 +248,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Time info (current + last time)
   myCurrentTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Left, kBGColor);
-  myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myCurrentTimeWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
   myLastTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Right, kBGColor);
-  myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myLastTimeWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myLastTimeWidget->setTextColor(kColorInfo);
 
   // Buttons
@@ -285,7 +285,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Message (fills the space between the buttons and the last-time readout)
   myMessageWidget = new LabelWidget(this, font, "", TextAlign::Left, kBGColor);
-  myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myMessageWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myMessageWidget->setTextColor(kColorInfo);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }

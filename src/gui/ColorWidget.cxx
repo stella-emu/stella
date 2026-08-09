@@ -31,7 +31,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
   _w = w;
   _h = h;
 
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

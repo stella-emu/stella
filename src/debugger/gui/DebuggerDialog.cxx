@@ -591,7 +591,7 @@ void DebuggerDialog::addStatusArea()
   myMessageBox = new EditTextWidget(this, lfont(), 1);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myMessageBox->setEditable(false, false);
-  myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  myMessageBox->clearFlags(Widget::Flag::RetainFocus);
   myMessageBox->setTextColor(kTextColorEm);
 }
 
@@ -679,13 +679,13 @@ void DebuggerDialog::addRomArea()
     new ButtonWidget(this, lfont(), LEFT_ARROW, Cmd::Rewind, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
-  myRewindButton->clearFlags(Widget::FLAG_ENABLED);
+  myRewindButton->clearFlags(Widget::Flag::Enabled);
 
   myUnwindButton =
     new ButtonWidget(this, lfont(), RIGHT_ARROW, Cmd::Unwind, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
-  myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
+  myUnwindButton->clearFlags(Widget::Flag::Enabled);
 
   myOptionsButton = new ButtonWidget(this, lfont(),
                                      "Options" + ELLIPSIS, Cmd::Options);

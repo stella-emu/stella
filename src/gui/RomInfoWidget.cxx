@@ -32,7 +32,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font)
   : Widget(boss, font),
     CommandSender(boss)
 {
-  _flags = Widget::FLAG_ENABLED;
+  _flags = Widget::Flag::Enabled;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
 }
@@ -184,7 +184,7 @@ void RomInfoWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   if(isEnabled() && isHighlighted()
     && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED); // avoid double clicks and opened URLs
+    clearFlags(Widget::Flag::Hilited); // avoid double clicks and opened URLs
     sendCommand(Cmd::Clicked, 0, _id);
   }
 }

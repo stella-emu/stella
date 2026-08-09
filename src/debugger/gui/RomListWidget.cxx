@@ -36,7 +36,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& dfont)
   : EditableWidget(boss, dfont)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -212,12 +212,12 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
-    myCheckList[i]->setFlags(Widget::FLAG_ENABLED);
+    myCheckList[i]->setFlags(Widget::Flag::Enabled);
 
   // Then turn off any extras
   if(std::cmp_less(myDisasm->list.size(), _rows))
     for(int i = static_cast<int>(myDisasm->list.size()); i < _rows; ++i)
-      myCheckList[i]->clearFlags(Widget::FLAG_ENABLED);
+      myCheckList[i]->clearFlags(Widget::Flag::Enabled);
 
   recalc();
 }

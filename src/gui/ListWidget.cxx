@@ -29,7 +29,7 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font, bool useScrollbar
   : EditableWidget(boss, font),
     _useScrollbar{useScrollbar}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;

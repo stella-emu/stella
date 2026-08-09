@@ -30,8 +30,8 @@ static constexpr int HANDLE_H = 3; // size above/below the slider
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, GuiCmd::Code cmd)
   : ButtonWidget(boss, font, 0, calcHeight(font), "", cmd)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE
-    | Widget::FLAG_CLEARBG | Widget::FLAG_NOBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse
+    | Widget::Flag::ClearBG | Widget::Flag::NoBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;

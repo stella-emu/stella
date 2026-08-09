@@ -56,13 +56,13 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font)
 
   // We don't enable the buttons until the DataGridWidget is attached
   // Don't call setEnabled(false), since that does an immediate redraw
-  _zeroButton->clearFlags(Widget::FLAG_ENABLED);
-  _invButton->clearFlags(Widget::FLAG_ENABLED);
-  _negButton->clearFlags(Widget::FLAG_ENABLED);
-  _incButton->clearFlags(Widget::FLAG_ENABLED);
-  _decButton->clearFlags(Widget::FLAG_ENABLED);
-  _shiftLeftButton->clearFlags(Widget::FLAG_ENABLED);
-  _shiftRightButton->clearFlags(Widget::FLAG_ENABLED);
+  _zeroButton->clearFlags(Widget::Flag::Enabled);
+  _invButton->clearFlags(Widget::Flag::Enabled);
+  _negButton->clearFlags(Widget::Flag::Enabled);
+  _incButton->clearFlags(Widget::Flag::Enabled);
+  _decButton->clearFlags(Widget::Flag::Enabled);
+  _shiftLeftButton->clearFlags(Widget::Flag::Enabled);
+  _shiftRightButton->clearFlags(Widget::Flag::Enabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

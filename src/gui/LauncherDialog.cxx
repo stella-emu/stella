@@ -74,9 +74,9 @@ class DividerWidget : public Widget, public CommandSender
       // the dialog's layout gives me
       _w = w;
 
-      // FLAG_TRACK_MOUSE is required for handleMouseMoved() to be delivered
+      // Flag::TrackMouse is required for handleMouseMoved() to be delivered
       // (Dialog only forwards moves to widgets that request mouse tracking)
-      _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
+      _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse;
     }
     ~DividerWidget() override = default;
 
@@ -683,7 +683,7 @@ void LauncherDialog::loadConfig()
     myRomInfoWidget->reloadProperties(currentNode());
   }
 
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
+  myList->clearFlags(Widget::Flag::WantsRawData); // always reset this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1068,9 +1068,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   myEventHandled = false;
-  myList->setFlags(Widget::FLAG_WANTS_RAWDATA);   // allow handling long button press
+  myList->setFlags(Widget::Flag::WantsRawData);   // allow handling long button press
   Dialog::handleJoyDown(stick, button, longPress);
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // revert flag afterwards!
+  myList->clearFlags(Widget::Flag::WantsRawData); // revert flag afterwards!
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1086,7 +1086,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
   else if(!myEventHandled)
     Dialog::handleJoyUp(stick, button);
 
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // stop allowing to handle long button press
+  myList->clearFlags(Widget::Flag::WantsRawData); // stop allowing to handle long button press
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -89,7 +89,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, Cmd::Cheats,
     "Use and manage cheat codes.");
 #ifndef CHEATCODE_SUPPORT
-  myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
+  myCheatCodeButton->clearFlags(Widget::Flag::Enabled);
 #endif
   myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, Cmd::RomAudit,
     "Rename your ROMs according to Stella's internal database.");
@@ -112,9 +112,9 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   // Certain buttons are disabled depending on mode
   if(myMode == AppMode::launcher)
-    myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
+    myCheatCodeButton->clearFlags(Widget::Flag::Enabled);
   else
-    myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
+    myRomAuditButton->clearFlags(Widget::Flag::Enabled);
 
   setHelpAnchor("Options");
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -180,13 +180,13 @@ void OptionsDialog::loadConfig()
   switch(instance().eventHandler().state())
   {
     case EventHandlerState::EMULATION:
-      myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
+      myGameInfoButton->setFlags(Widget::Flag::Enabled);
       break;
     case EventHandlerState::LAUNCHER:
       if(!instance().launcher().selectedRomMD5().empty())
-        myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
+        myGameInfoButton->setFlags(Widget::Flag::Enabled);
       else
-        myGameInfoButton->clearFlags(Widget::FLAG_ENABLED);
+        myGameInfoButton->clearFlags(Widget::Flag::Enabled);
       break;
     default:
       break;

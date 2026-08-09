@@ -32,7 +32,7 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font)
 {
   _id = 0;  // For dialogs with multiple tab widgets, they should specifically
             // call ::setID to differentiate among them
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;

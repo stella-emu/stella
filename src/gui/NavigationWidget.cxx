@@ -313,7 +313,7 @@ NavigationWidget::PathWidget::FolderLinkWidget::FolderLinkWidget(
   : ButtonWidget(boss, font, 0, 0, text, NavigationWidget::Cmd::FolderClicked),
     myPath{path}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kBtnColorHi;

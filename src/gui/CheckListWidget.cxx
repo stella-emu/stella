@@ -95,12 +95,12 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
-    _checkList[i]->setFlags(Widget::FLAG_ENABLED);
+    _checkList[i]->setFlags(Widget::Flag::Enabled);
 
   // Then turn off any extras
   if(std::cmp_less(_stateList.size(), _rows))
     for(int i = static_cast<int>(_stateList.size()); i < _rows; ++i)
-      _checkList[i]->clearFlags(Widget::FLAG_ENABLED);
+      _checkList[i]->clearFlags(Widget::Flag::Enabled);
 
   ListWidget::recalc();
 }

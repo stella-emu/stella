@@ -173,7 +173,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myNameWidgets[r] = new LabelWidget(this, _font, "");
     myEditNameWidgets[r] = new EditTextWidget(this, _font,
         static_cast<int>(NAME_FIELD.size()));
-    myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+    myEditNameWidgets[r]->setFlags(EditTextWidget::Flag::Invisible);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new LabelWidget(this, _font, "");
     myDeleteButtons[r] = new ButtonWidget(this, _font, "X", Cmd::DeleteSingle);
@@ -509,8 +509,8 @@ void HighScoresDialog::updateWidgets(bool init)
 
     if (std::cmp_equal(r, myEditRank))
     {
-      myNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
+      myNameWidgets[r]->setFlags(EditTextWidget::Flag::Invisible);
+      myEditNameWidgets[r]->clearFlags(EditTextWidget::Flag::Invisible);
       myEditNameWidgets[r]->setEnabled(true);
       myEditNameWidgets[r]->setEditable(true);
       if (init)
@@ -518,8 +518,8 @@ void HighScoresDialog::updateWidgets(bool init)
     }
     else
     {
-      myNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+      myNameWidgets[r]->clearFlags(EditTextWidget::Flag::Invisible);
+      myEditNameWidgets[r]->setFlags(EditTextWidget::Flag::Invisible);
       myEditNameWidgets[r]->setEnabled(false);
       myEditNameWidgets[r]->setEditable(false);
     }

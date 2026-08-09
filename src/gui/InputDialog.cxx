@@ -410,7 +410,7 @@ void InputDialog::addMouseTab()
   myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
-  myCursorState->clearFlags(Widget::FLAG_ENABLED);
+  myCursorState->clearFlags(Widget::Flag::Enabled);
 #endif
 
   // Grab mouse (in windowed mode)
@@ -418,7 +418,7 @@ void InputDialog::addMouseTab()
   myGrabMouse->setToolTip(Event::ToggleGrabMouse);
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
-  myGrabMouse->clearFlags(Widget::FLAG_ENABLED);
+  myGrabMouse->clearFlags(Widget::Flag::Enabled);
 #endif
 
   // Add items for mouse

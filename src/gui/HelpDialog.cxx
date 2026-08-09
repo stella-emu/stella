@@ -37,7 +37,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
     new ButtonWidget(this, font, "<<", GuiObject::Cmd::Prev);
-  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+  myPrevButton->clearFlags(Widget::Flag::Enabled);
   wid.push_back(myPrevButton);
 
   myNextButton =
@@ -247,9 +247,9 @@ void HelpDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
     case GuiObject::Cmd::Next:
       ++myPage;
       if(myPage >= myNumPages)
-        myNextButton->clearFlags(Widget::FLAG_ENABLED);
+        myNextButton->clearFlags(Widget::Flag::Enabled);
       if(myPage >= 2)
-        myPrevButton->setFlags(Widget::FLAG_ENABLED);
+        myPrevButton->setFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
@@ -257,9 +257,9 @@ void HelpDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
     case GuiObject::Cmd::Prev:
       --myPage;
       if(myPage <= myNumPages)
-        myNextButton->setFlags(Widget::FLAG_ENABLED);
+        myNextButton->setFlags(Widget::Flag::Enabled);
       if(myPage <= 1)
-        myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+        myPrevButton->clearFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
