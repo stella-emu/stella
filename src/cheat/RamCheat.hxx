@@ -20,6 +20,12 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that pokes a fixed value into RAM every frame while enabled,
+  decoded from a 4-digit cheatcode.
+
+  @author  Stephen Anthony
+*/
 class RamCheat : public Cheat
 {
   public:

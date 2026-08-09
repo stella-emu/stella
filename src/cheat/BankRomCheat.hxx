@@ -20,6 +20,12 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that patches ROM bytes at a specific bankswitch address,
+  decoded from an 8-digit cheatcode.
+
+  @author  Stephen Anthony
+*/
 class BankRomCheat : public Cheat
 {
   public:

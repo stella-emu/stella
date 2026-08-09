@@ -20,6 +20,12 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that patches ROM bytes at a fixed address, decoded from a
+  6-digit Cheetah-style cheatcode.
+
+  @author  Stephen Anthony
+*/
 class CheetahCheat : public Cheat
 {
   public:

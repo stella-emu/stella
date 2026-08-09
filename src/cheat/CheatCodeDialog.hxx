@@ -31,6 +31,12 @@ class OSystem;
 
 #include "Dialog.hxx"
 
+/**
+  Dialog for viewing, adding, editing, and removing cheats, backed
+  by CheatManager.
+
+  @author  Stephen Anthony
+*/
 class CheatCodeDialog : public Dialog
 {
   public:

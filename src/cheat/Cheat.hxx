@@ -22,6 +22,12 @@ class OSystem;
 
 #include "bspf.hxx"
 
+/**
+  Abstract base class for a single cheat: holds its name/code and
+  enabled state, decoded and applied by each derived class.
+
+  @author  Stephen Anthony
+*/
 class Cheat
 {
   public:
