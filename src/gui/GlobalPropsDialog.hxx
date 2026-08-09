@@ -28,6 +28,13 @@ class OSystem;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for temporarily overriding a ROM's power-on properties
+  (bankswitch/difficulty/TV type, held buttons) without changing its
+  saved Properties.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class GlobalPropsDialog : public Dialog, public CommandSender
 {
   public:

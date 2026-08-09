@@ -21,6 +21,12 @@
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for editing UI settings: look & feel (theme, palette, fonts,
+  HiDPI) and launcher behavior, across two tabs.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class UIDialog : public Dialog, public CommandSender
 {
   public:

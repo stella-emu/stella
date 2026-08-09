@@ -25,6 +25,12 @@ class TimeLineWidget;
 
 #include "Dialog.hxx"
 
+/**
+  The Time Machine HUD: timeline scrubber, transport buttons (rewind/
+  unwind/play), and elapsed-time/state-index readouts.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class TimeMachineDialog : public Dialog
 {
   public:

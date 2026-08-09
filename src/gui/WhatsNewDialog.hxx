@@ -22,6 +22,11 @@
 
 class WrappedTextWidget;
 
+/**
+  Shows the bullet list of changes for the current Stella release.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class WhatsNewDialog : public Dialog
 {
   public:

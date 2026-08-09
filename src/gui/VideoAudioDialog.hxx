@@ -36,6 +36,12 @@ class OSystem;
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for editing video and audio settings across five tabs:
+  Display, Palettes, TV Effects, Bezels, and Audio.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class VideoAudioDialog : public Dialog
 {
   public:

@@ -25,6 +25,13 @@
 
 class TabPaneWidget;
 
+/**
+  A container managing a row of tabs and the single active tab's
+  content; hidden tabs keep their widgets off to the side until
+  reselected.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class TabWidget : public Widget, public CommandSender
 {
   public:

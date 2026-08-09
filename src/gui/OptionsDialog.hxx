@@ -25,6 +25,13 @@ class OSystem;
 
 #include "Dialog.hxx"
 
+/**
+  The Options menu: buttons opening each settings category's dialog
+  (Video, Audio, Input, UI, Snapshots, ROM Audit, Game Properties,
+  Cheats, Logs, Developer, Help, About).
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class OptionsDialog : public Dialog
 {
   public:

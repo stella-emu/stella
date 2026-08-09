@@ -23,6 +23,12 @@ class Properties;
 
 #include "Widget.hxx"
 
+/**
+  Shows a ROM's snapshot image(s) in the launcher, with navigation
+  between multiple matches and a zoom mode.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomImageWidget : public Widget
 {
   public:

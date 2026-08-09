@@ -29,6 +29,12 @@ class LabelWidget;
 #include "Command.hxx"
 #include "FSNode.hxx"
 
+/**
+  Dialog for auditing a ROM directory: renames files matching a known
+  MD5 to their properties name, reporting the results.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomAuditDialog : public Dialog
 {
   public:

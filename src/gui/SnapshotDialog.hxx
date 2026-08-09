@@ -30,6 +30,13 @@ class LabelWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 
+/**
+  Dialog for configuring snapshot saving: destination path, naming,
+  single-file overwrite, scale, cropping, and continuous-snapshot
+  interval.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class SnapshotDialog : public Dialog
 {
   public:

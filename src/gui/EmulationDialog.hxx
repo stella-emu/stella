@@ -25,6 +25,12 @@ class LabelWidget;
 
 #include "Dialog.hxx"
 
+/**
+  Dialog for editing general emulation settings: speed, threading,
+  auto-pause, and state-save behavior on entering/exiting emulation.
+
+  @author  Thomas Jentzsch
+*/
 class EmulationDialog : public Dialog
 {
   public:

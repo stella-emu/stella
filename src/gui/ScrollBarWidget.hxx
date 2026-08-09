@@ -24,6 +24,12 @@ class GuiObject;
 #include "Command.hxx"
 #include "bspf.hxx"
 
+/**
+  A vertical scrollbar: up/down arrows, a page track, and a draggable
+  slider sized to the visible fraction of the list.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class ScrollBarWidget : public Widget, public CommandSender
 {
   public:

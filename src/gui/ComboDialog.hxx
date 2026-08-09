@@ -25,6 +25,12 @@ class OSystem;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for assigning up to 8 events to one of the combo
+  (Combo1-Combo16) events.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class ComboDialog : public Dialog
 {
   public:

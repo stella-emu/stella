@@ -24,6 +24,12 @@ class OSystem;
 
 #include "Dialog.hxx"
 
+/**
+  The in-game command menu: one button per quick action (save/load
+  state, TV format, palette, phosphor, sound, ...).
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class CommandDialog : public Dialog
 {
   public:

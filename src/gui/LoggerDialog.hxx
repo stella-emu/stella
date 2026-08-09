@@ -27,6 +27,12 @@ class StringListWidget;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Shows accumulated log messages, with controls for log level and
+  console echo, and a save-to-disk option.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class LoggerDialog : public Dialog
 {
   public:

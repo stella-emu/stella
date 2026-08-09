@@ -24,6 +24,12 @@ class FBSurface;
 #include "Props.hxx"
 #include "Widget.hxx"
 
+/**
+  Shows a ROM's textual properties (and any PNG metadata) as wrapped
+  lines in the launcher, with a clickable link line.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomInfoWidget : public Widget, public CommandSender
 {
   public:

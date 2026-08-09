@@ -31,6 +31,12 @@ class LabelWidget;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for configuring input devices: event mapping, joystick/paddle/
+  trackball settings, and mouse control, across three tabs.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class InputDialog : public Dialog
 {
   public:

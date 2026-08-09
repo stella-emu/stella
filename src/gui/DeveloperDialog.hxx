@@ -37,6 +37,12 @@ namespace GUI {
 #include "Dialog.hxx"
 #include "DevSettingsHandler.hxx"
 
+/**
+  Dialog for editing developer/debug settings, with separate 'player'
+  and 'developer' setting sets, only one of which is active at a time.
+
+  @author  Thomas Jentzsch
+*/
 class DeveloperDialog : public Dialog, DevSettingsHandler
 {
   public:

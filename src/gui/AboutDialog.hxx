@@ -27,6 +27,12 @@ class WhatsNewDialog;
 
 #include "Dialog.hxx"
 
+/**
+  Shows paged information about Stella (credits, description, links),
+  and opens the What's New dialog on request.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class AboutDialog : public Dialog
 {
   public:

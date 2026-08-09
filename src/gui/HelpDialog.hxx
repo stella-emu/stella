@@ -27,6 +27,12 @@ class OSystem;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Shows the paged list of keyboard/controller shortcuts and their
+  current mappings.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class HelpDialog : public Dialog
 {
   public:

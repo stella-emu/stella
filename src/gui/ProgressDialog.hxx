@@ -26,6 +26,12 @@ class ButtonWidget;
 #include "bspf.hxx"
 #include "Dialog.hxx"
 
+/**
+  Shows progress (message + slider) for a long-running operation, with
+  a Cancel button the caller polls via isCancelled().
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class ProgressDialog : public Dialog
 {
   public:

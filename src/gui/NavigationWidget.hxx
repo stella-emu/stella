@@ -25,6 +25,12 @@ namespace GUI {
 
 #include "Widget.hxx"
 
+/**
+  The launcher/browser navigation bar: Home/Prev/Next/Up buttons plus
+  a clickable path breadcrumb, both driving an attached FileListWidget.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class NavigationWidget : public Widget
 {
   public:

@@ -30,6 +30,12 @@ class LabelWidget;
 #include "FSNode.hxx"
 #include "bspf.hxx"
 
+/**
+  A file/directory browser, invoked via one of its static show() methods
+  for loading, saving, or selecting a directory.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class BrowserDialog : public Dialog
 {
   public:

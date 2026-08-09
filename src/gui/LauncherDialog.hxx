@@ -43,6 +43,13 @@ namespace Common {
 #include "FSNode.hxx"
 #include "Variant.hxx"
 
+/**
+  The main ROM launcher: file listing, filtering/navigation, ROM info/
+  image preview, and the sub-dialogs it opens (settings, properties,
+  high scores, What's New).
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class LauncherDialog : public Dialog, CommandSender
 {
   public:

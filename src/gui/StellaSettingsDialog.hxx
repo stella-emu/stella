@@ -30,6 +30,12 @@ namespace GUI {
   class Font;
 }  // namespace GUI
 
+/**
+  A simplified settings dialog (UI theme/position, TV mode, controller
+  ports) for first-time/basic use, with a link to the advanced dialogs.
+
+  @author  Thomas Jentzsch
+*/
 class StellaSettingsDialog : public Dialog
 {
   public:

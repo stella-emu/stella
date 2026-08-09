@@ -26,6 +26,12 @@ class EditTextWidget;
 #include "Command.hxx"
 #include "EditableWidget.hxx"
 
+/**
+  A small dialog with one or more label+text-field rows, used to
+  prompt for free-form text input.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class InputTextDialog : public Dialog, public CommandSender
 {
   public:

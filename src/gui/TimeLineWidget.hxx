@@ -20,6 +20,12 @@
 
 #include "Widget.hxx"
 
+/**
+  A draggable scrubber/track control (like a slider, but with
+  unevenly-spaced steps) used for the Time Machine's rewind timeline.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class TimeLineWidget : public ButtonWidget
 {
   public:

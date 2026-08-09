@@ -34,6 +34,13 @@ class QuadTariDialog;
 #include "Props.hxx"
 #include "HighScoresManager.hxx"
 
+/**
+  Dialog for editing a ROM's properties (bankswitch type, TV format,
+  controllers, cartridge metadata, high-score definitions) across
+  five tabs.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class GameInfoDialog : public Dialog, public CommandSender
 {
   public:

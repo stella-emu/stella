@@ -32,6 +32,12 @@ class InputDialog;
 #include "Command.hxx"
 #include "bspf.hxx"
 
+/**
+  Widget for remapping keyboard/joystick input to game/menu events,
+  filtered by event group.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class EventMappingWidget : public Widget, public CommandSender
 {
   friend class InputDialog;

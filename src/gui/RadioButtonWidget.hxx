@@ -27,6 +27,12 @@
 class Dialog;
 class RadioButtonGroup;
 
+/**
+  One button in a mutually-exclusive RadioButtonGroup; selecting it
+  deselects the others.
+
+  @author  Thomas Jentzsch
+*/
 class RadioButtonWidget : public CheckboxWidget
 {
   public:
@@ -69,6 +75,12 @@ class RadioButtonWidget : public CheckboxWidget
     RadioButtonWidget& operator=(RadioButtonWidget&&) = delete;
 };
 
+/**
+  Tracks which RadioButtonWidget in a set is currently selected,
+  deselecting the rest when one is chosen.
+
+  @author  Thomas Jentzsch
+*/
 class RadioButtonGroup
 {
   public:

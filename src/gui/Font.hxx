@@ -153,6 +153,12 @@ class GlyphCache
     GlyphCache& operator=(GlyphCache&&) = delete;
 };
 
+/**
+  A single font: its glyphs (from the shared GlyphCache) plus the
+  description used to draw and measure text.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class Font
 {
   public:
