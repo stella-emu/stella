@@ -55,16 +55,20 @@ class Widget : public GuiObject
     Widget(GuiObject* boss, const GUI::Font& font);
     ~Widget() override = default;
 
+    /** Screen position: this widget's local position plus the boss's own child offset */
     int getAbsX() const override { return _x + _boss->getChildX(); }
     int getAbsY() const override { return _y + _boss->getChildY(); }
+    /** Edges, in the boss's local coordinate space */
     virtual int getLeft() const { return _x; }
     virtual int getTop() const  { return _y; }
     virtual int getRight() const  { return _x + getWidth();  }
     virtual int getBottom() const { return _y + getHeight(); }
+    /** Moves the widget, marking the dialog dirty if the position actually changed */
     virtual void setPosX(int x);
     virtual void setPosY(int y);
     virtual void setPos(int x, int y);
     virtual void setPos(const Common::Point& pos);
+    /** Resizes the widget, marking the dialog dirty if the size actually changed */
     void setWidth(int w) override;
     void setHeight(int h) override;
     virtual void setSize(int w, int h);
@@ -75,6 +79,7 @@ class Widget : public GuiObject
     // This is the single entry point the layout manager uses to place a widget.
     virtual void setArea(int x, int y, int w, int h);
 
+    /** Input event hooks; override to react, default is "not handled" / no-op */
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
     virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
@@ -93,9 +98,12 @@ class Widget : public GuiObject
 
     void tick() override;
 
+    /** Draws this widget's content, then recurses into its children (see drawChain) */
     void draw() override;
+    /** Marks this widget (or its children) dirty, and propagates dirtiness up to the boss */
     void setDirty() override;
     void setDirtyChain() override;
+    /** Called by the focus manager when this widget gains/loses the input focus */
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
@@ -113,6 +121,7 @@ class Widget : public GuiObject
     // by its boss, which only this knows to ask for
     virtual void setVisible(bool visible);
 
+    /** Individual FLAG_* queries */
     bool isEnabled() const          { return _flags & FLAG_ENABLED;       }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);  }
     bool isHighlighted() const      { return _flags & FLAG_HILITED;       }
@@ -121,9 +130,11 @@ class Widget : public GuiObject
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;     }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA; }
 
+    /** A caller-assigned identifier used to distinguish widgets (not the command id) */
     virtual void setID(uInt32 id) { _id = id;   }
     uInt32 getID() const          { return _id; }
 
+    /** The font this widget draws with */
     virtual const GUI::Font& font() const { return _font; }
 
     /**
@@ -191,12 +202,14 @@ class Widget : public GuiObject
     */
     void refreshFont() override;
 
+    /** Override the default/highlighted text, background, and shadow colors */
     void setTextColor(ColorId color)   { _textcolor = color;   setDirty(); }
     void setTextColorHi(ColorId color) { _textcolorhi = color; setDirty(); }
     void setBGColor(ColorId color)     { _bgcolor = color;     setDirty(); }
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
+    /** Sets the tooltip text and/or the hotkey event(s) shown alongside it */
     void setToolTip(string_view text,
       Event::Type event1 = Event::Type::NoType, EventMode = EventMode::kEmulationMode);
     void setToolTip(string_view text,
@@ -204,27 +217,37 @@ class Widget : public GuiObject
     void setToolTip(Event::Type event1, EventMode mode = EventMode::kEmulationMode);
     void setToolTip(Event::Type event1, Event::Type event2,
       EventMode mode = EventMode::kEmulationMode);
+    /** The tooltip text to show at 'pos', with any mapped hotkey(s) appended */
     virtual string getToolTip(const Common::Point& pos) const;
+    /** Whether the tooltip must be recomputed as the mouse moves within this widget
+        (e.g. a widget with several hover zones); the default never changes it */
     virtual bool changedToolTip(const Common::Point& oldPos,
                                 const Common::Point& newPos) const { return false; }
 
+    /** Registers this widget's context-help target: an anchor in the manual, or a full URL */
     void setHelpAnchor(string_view helpAnchor, bool debugger = false);
     void setHelpURL(string_view helpURL);
 
+    /** Re-reads this widget's state from the underlying settings; the default does nothing */
     virtual void loadConfig() { }
 
   protected:
+    /** Draws every child that needs it, then clears this widget's own dirty-chain flag */
     void drawChain() override;
 
+    /** The actual per-widget drawing; draw() calls this after handling background/border */
     virtual void drawWidget(bool hilite) { }
 
+    /** Hooks for a subclass to react to gaining/losing focus */
     virtual void receivedFocusWidget() { }
     virtual void lostFocusWidget() { }
 
+    /** Hit-tests (x,y), in this widget's own coordinates; a composite widget looks inside itself */
     virtual Widget* findWidget(int x, int y) { return this; }
 
     void releaseFocus() override { assert(_boss); _boss->releaseFocus(); }
 
+    /** Whether a tooltip should currently be shown / whether one is configured at all */
     virtual bool wantsToolTip() const { return hasMouseFocus() && hasToolTip(); }
     virtual bool hasToolTip() const;
 
@@ -232,17 +255,24 @@ class Widget : public GuiObject
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
+    /** The help URL, derived from _helpURL or _helpAnchor (see setHelpAnchor/setHelpURL) */
     string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }
 
   protected:
+    // The GuiObject that owns and positions this widget
     GuiObject*  _boss{nullptr};
+    // The font this widget draws with
     const GUI::Font& _font;
+    // Caller-assigned identifier (see setID/getID)
     uInt32      _id{0};
+    // True while this widget holds the input focus
     bool        _hasFocus{false};
+    // Cached font metrics, refreshed by refreshFont()
     int         _fontWidth{0};
     int         _fontHeight{0};
     int         _lineHeight{0};
+    // Background/text/shadow colors in their normal, highlighted, and (where used) low states
     ColorId     _bgcolor{kWidColor};
     ColorId     _bgcolorhi{kWidColor};
     ColorId     _bgcolorlo{kBGColorLo};
@@ -250,15 +280,19 @@ class Widget : public GuiObject
     ColorId     _textcolorhi{kTextColorHi};
     ColorId     _textcolorlo{kBGColorLo};
     ColorId     _shadowcolor{kShadowColor};
+    // Tooltip text and the hotkey event(s)/mode shown alongside it (see setToolTip)
     string      _toolTipText;
     Event::Type _toolTipEvent1{Event::NoType};
     Event::Type _toolTipEvent2{Event::NoType};
     EventMode   _toolTipMode{EventMode::kEmulationMode};
+    // Context-help target: an anchor into the manual, or a full URL; _debuggerHelp
+    // picks the debugger manual over the main one
     string      _helpAnchor;
     string      _helpURL;
     bool        _debuggerHelp{false};
 
   public:
+    /** Hit-tests (x,y) against every widget in 'list', newest first */
     static Widget* findWidgetInList(const WidgetList& list, int x, int y);
 
     /** Determine if 'find' is in the widget array */
@@ -290,6 +324,7 @@ class Widget : public GuiObject
 class LabelWidget : public Widget, public CommandSender
 {
   public:
+    // Command ids sendCommand()'d when a link is clicked / a URL link is clicked
     enum {
       kClickedCmd = 'STcl',
       kOpenUrlCmd = 'STou'
@@ -313,20 +348,28 @@ class LabelWidget : public Widget, public CommandSender
                 TextAlign align = TextAlign::Left, ColorId shadowColor = kNone);
     ~LabelWidget() override = default;
 
+    /** The command sendCommand() is called with when this label is clicked as a link */
     void setCmd(int cmd) { _cmd = cmd; }
 
+    /** Sets the label text to the given integer, formatted as a string */
     virtual void setValue(int value);
+    /** Sets the label text; also resizes to fit it if setAutoResize(true) was called */
     void setLabel(string_view label);
+    /** Whether setLabel() resizes this widget to fit its new text */
     void setAutoResize(bool state) { _autoResize = state; }
     void setAlign(TextAlign align) { _align = align; setDirty(); }
     const string& getLabel() const { return _label; }
+    /** Whether this control accepts interaction (set by editable subclasses like CheckboxWidget) */
     bool isEditable() const { return _editable; }
 
+    /** Marks label[start, start+len) as a link, optionally underlined; click sends kClickedCmd */
     void setLink(size_t start = string::npos, int len = 0, bool underline = false);
+    /** Turns (part of) the label into a clickable URL link; returns whether one was found/set */
     bool setUrl(string_view url = {}, string_view label = {},
                 string_view placeHolder = {});
     const string& getUrl() const { return _url; }
 
+    /** Hover/click handling for the label's link, if it has one */
     void handleMouseEntered() override;
     void handleMouseLeft() override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -342,20 +385,29 @@ class LabelWidget : public Widget, public CommandSender
     int labelWidth() const override { return _w; }
     void setLabelWidth(int w) override { setWidth(w); }
 
+    /** Re-derives this label's size from the live font, like the auto-size ctor */
     void refreshFont() override;
 
   protected:
+    /** Draws the label text (and its link underline/highlight, if any) */
     void drawWidget(bool hilite) override;
 
   protected:
+    // The text drawn
     string    _label;
+    // Whether this control accepts interaction (see isEditable())
     bool      _editable{false};
+    // Whether setLabel() resizes this widget to fit new text
     bool      _autoResize{false};
+    // Horizontal alignment of the text
     TextAlign _align{TextAlign::Left};
+    // Command sent (via CommandSender) on click; 0 means non-interactive
     int       _cmd{0};
+    // Byte range within _label rendered as a link (npos/0 = none), and whether underlined
     size_t    _linkStart{string::npos};
     int       _linkLen{0};
     bool      _linkUnderline{false};
+    // The URL a link points to, set by setUrl()
     string    _url;
 
   private:
@@ -405,6 +457,7 @@ class ButtonWidget : public LabelWidget
                  string_view label, int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
 
+    /** Fires the button on Event::UISelect (simulates a mouse click) */
     bool handleEvent(Event::Type event) override;
 
     /* Sets/changes the button's icon **/
@@ -422,6 +475,8 @@ class ButtonWidget : public LabelWidget
       }
     }
 
+    // A repeating button fires on mouse-down (and keeps firing via handleMouseClicks);
+    // a normal button fires once, on mouse-up
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -439,6 +494,8 @@ class ButtonWidget : public LabelWidget
     int labelWidth() const override { return 0; }
     void setLabelWidth(int) override { }
 
+    // Re-derives an auto-sized button's dimensions from its label/icon; a button
+    // sized from outside keeps its size (see the .cxx for the full rationale)
     void refreshFont() override;
 
   public:
@@ -515,15 +572,18 @@ class ButtonWidget : public LabelWidget
     }
 
   protected:
+    /** Draws the button's frame, then its icon and/or label */
     void drawWidget(bool hilite) override;
 
   protected:
     bool _repeat{false}; // button repeats
+    // Whether the label is drawn (an icon-only button leaves it false)
     bool _useText{true};
     bool _compact{false}; // trim the self-size margin (a small op button)
     // What I draw beside or instead of my label; null means label-only.  Icons
     // are constexpr and outlive every button holding one
     const GUI::Icon* _icon{nullptr};
+    // Gap between icon and label, in pixels (see iconGap()); 0 for an icon-only button
     int  _bmx{0};
     // Set only by the label-only ctor: I sized myself, so a font change re-sizes
     // me.  A button whose size came from elsewhere (an icon's extents, a width
@@ -544,6 +604,8 @@ class CheckboxWidget : public ButtonWidget
 {
   public:
     enum { kCheckActionCmd  = 'CBAC' };
+    // How the checked box is filled: a solid square, a "greyed out" cross
+    // (Inactive), or a filled circle (Circle, for a radio-button-like use)
     enum class FillType: uInt8 { Normal, Inactive, Circle };
 
   public:
@@ -551,27 +613,35 @@ class CheckboxWidget : public ButtonWidget
                    string_view label, int cmd = 0);
     ~CheckboxWidget() override = default;
 
+    /** Whether the box can be toggled by clicking; an uneditable one is greyed out */
     void setEditable(bool editable);
+    /** Chooses how a checked box is drawn (see FillType) */
     virtual void setFill(FillType type);
 
+    /** Sets the checked state; 'changed' additionally flags it as changed-from-default */
     virtual void setState(bool state, bool changed = false);
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
+    /** Toggles the state on click, if editable */
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
+    /** Re-derives the box size and label layout from the live font */
     void refreshFont() override;
 
+    /** Side length of the (square) checkbox for the given font */
     static int boxSize(const GUI::Font& font)
     {
       return font.isLarge() ? 22 : 14; // box is square
     }
+    /** Horizontal space the box plus its gap take up, before the label starts */
     static int prefixSize(const GUI::Font& font)
     {
       return boxSize(font) + font.getMaxCharWidth() * 0.75;
     }
 
   protected:
+    /** Draws the box (frame + fill/tick) and the label beside it */
     void drawWidget(bool hilite) override;
 
     // Compute the height and the box offset from the current font: the label is
@@ -581,15 +651,21 @@ class CheckboxWidget : public ButtonWidget
     void alignBox(int boxSize);
 
   protected:
+    // Whether the box is currently checked
     bool _state{false};
-    bool _holdFocus{true};
+    // Whether the box frame is drawn at all (false for FillType::Circle)
     bool _drawBox{true};
+    // Set by setState(..., true); drawn with kDbgChangedColor instead of the normal fill
     bool _changed{false};
 
+    // Outer/inner ring icons for the radio-button variant (see RadioButtonWidget);
+    // unused (null) for a plain checkbox
     const GUI::Icon* _outerCircle{nullptr};
     const GUI::Icon* _innerCircle{nullptr};
+    // The tick/fill icon drawn when checked, per setFill(); null means a plain
+    // filled square (FillType::Normal)
     const GUI::Icon* _img{nullptr};
-    ColorId _fillColor{kColor};
+    // Vertical offset of the box within the widget (see alignBox())
     int _boxY{0};
     int _boxSize{14};
 
@@ -622,6 +698,7 @@ class SliderWidget : public ButtonWidget
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;
 
+    /** Clamps to [min, max], updates the value label, and sends _cmd if it actually changed */
     void setValue(int value) override;
     int getValue() const { return BSPF::clamp(_value, _valueMin, _valueMax); }
 
@@ -629,14 +706,20 @@ class SliderWidget : public ButtonWidget
     int  getMinValue() const { return _valueMin; }
     void setMaxValue(int value);
     int  getMaxValue() const { return _valueMax; }
+    // The amount UIUp/UIDown (and friends) move the value by
     void setStepValue(int value);
     int  getStepValue() const { return _stepValue; }
+    /** The text shown in the value readout beside the track */
     void setValueLabel(string_view valueLabel);
+    /** Sets the value label from an integer, applying the +/- sign if forceLabelSign was set */
     void setValueLabel(int value);
     const string& getValueLabel() const { return _valueLabel; }
     void setValueUnit(string_view valueUnit);
+    /** Number of evenly-spaced tickmarks drawn along the track; 0 draws none */
     void setTickmarkIntervals(int numIntervals);
 
+    // Dragging (mouse down + move within the track) and the wheel/keyboard both
+    // just resolve to a new value via setValue()
     void handleMouseMoved(int x, int y) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -658,20 +741,29 @@ class SliderWidget : public ButtonWidget
     }
 
   protected:
+    /** Draws the track, filled bar, tickmarks, handle, and value readout */
     void drawWidget(bool hilite) override;
 
+    // Converts between a value in [_valueMin, _valueMax] and its pixel offset
+    // along the track; used to draw the handle and to interpret a drag/click
     int valueToPos(int value) const;
     int posToValue(int pos) const;
 
   protected:
+    // Current value, and the amount each step (keyboard/wheel) changes it by
     int    _value{-INT_MAX}, _stepValue{1};
     int    _valueMin{0}, _valueMax{100};
+    // True while the handle is being dragged
     bool   _isDragging{false};
+    // Text and unit suffix shown in the value readout beside the track
     string _valueLabel;
     string _valueUnit;
+    // Gap before the readout, and the readout's own width, in pixels
     int    _valueLabelGap{0};
     int    _valueLabelWidth{0};
+    // Whether a positive value label is prefixed with '+'
     bool   _forceLabelSign{false};
+    // Number of tickmark intervals drawn along the track (see setTickmarkIntervals)
     int    _numIntervals{0};
 
   private:

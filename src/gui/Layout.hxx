@@ -148,9 +148,12 @@ class WidgetLayout : public Layout
     bool onBaseline() const override { return myVAlign == VAlign::Baseline; }
 
   private:
+    // The widget this item positions; null makes it an empty spacer
     Widget* myWidget{nullptr};
+    // Alignment on each axis (see HAlign/VAlign above)
     HAlign myHAlign{HAlign::Fill};
     VAlign myVAlign{VAlign::Fill};
+    // Minimum usable size, as declared to the constructor
     int myMinW{0};
     int myMinH{0};
 
@@ -187,6 +190,7 @@ enum class SizePolicy: uInt8 { Auto, Fixed, Percent, Stretch };
 class BoxLayout : public Layout
 {
   public:
+    // Which axis the children stack along
     enum class Dir: uInt8 { Horizontal, Vertical };
 
     explicit BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0)
@@ -247,6 +251,7 @@ class BoxLayout : public Layout
     Common::Size naturalSize() const override;
 
   private:
+    // One child; fields mirror add()'s parameters
     struct Item {
       unique_ptr<Layout> layout;
       SizePolicy policy{SizePolicy::Fixed};
@@ -255,10 +260,13 @@ class BoxLayout : public Layout
       int minMain{0};
     };
 
+    // Which axis children stack along
     Dir myDir{Dir::Vertical};
+    // Gap between adjacent children, in pixels
     int mySpacing{0};
     int myMarginH{0};  // left/right inset
     int myMarginV{0};  // top/bottom inset
+    // The children, in layout order, each with its own sizing policy
     vector<Item> myItems;
 
   private:
@@ -319,6 +327,7 @@ class GridLayout : public Layout
       { return column(idx, SizePolicy::Percent, pct, maxSize); }
     GridLayout& columnStretch(int idx, int weight = 1, int minPx = 0)
       { return column(idx, SizePolicy::Stretch, weight, 0, minPx); }
+    // Row counterparts of the column* methods above
     GridLayout& rowAuto(int idx)
       { return row(idx, SizePolicy::Auto, 0); }
     // See columnFixed for what minPx means
@@ -339,12 +348,14 @@ class GridLayout : public Layout
     Common::Size naturalSize() const override;
 
   private:
+    // One column or row's sizing policy and resolved constraints (mirrors column()/row())
     struct Track {
       SizePolicy policy{SizePolicy::Fixed};
       int value{0};
       int maxSize{0};
       int minSize{0};
     };
+    // One placed child, at (col,row) and optionally spanning further cells
     struct Cell {
       unique_ptr<Layout> layout;
       int col{0}, row{0};
@@ -364,10 +375,12 @@ class GridLayout : public Layout
     static void growSpan(IntArray& mins, int start, int span, int need,
                          int spacing);
 
+    // Gap between adjacent columns/rows, in pixels
     int myHSpacing{0};
     int myVSpacing{0};
     int myMarginH{0};  // left/right inset
     int myMarginV{0};  // top/bottom inset
+    // Column/row tracks, and the widgets placed into their cells
     vector<Track> myColumns;
     vector<Track> myRows;
     vector<Cell> myCells;
@@ -464,7 +477,9 @@ unique_ptr<Layout> indentedFill(Widget* widget, int indent, int width = 0);
 // handing it the control instead still compiles — see the warning on
 // alignLabels() below.
 struct LabeledControl {
+  // The label naming a control
   Widget* label{nullptr};
+  // Indent given to the row it sits in (see alignLabels())
   int indent{0};
 };
 

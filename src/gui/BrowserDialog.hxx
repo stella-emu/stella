@@ -112,7 +112,12 @@ class BrowserDialog : public Dialog
 
   protected:
     void layout() override;
+    // Routes navigation keys to the file list first; the dialog only sees a
+    // key that the list doesn't handle itself
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
+    // OK/selection and Close invoke the stored callback and close(); the
+    // navigation buttons jump directories; edits/selection changes refresh
+    // the UI (see updateUI())
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -122,6 +127,8 @@ class BrowserDialog : public Dialog
     BrowserDialog(OSystem& osystem, DialogContainer& parent,
                   const GUI::Font& font, int max_w, int max_h);
 
+    // Creates all widgets; layout() derives their real geometry from
+    // max_w/max_h and the current font
     void initialize(int max_w, int max_h);
 
     /** Place the browser window onscreen, using the given attributes */
@@ -133,9 +140,12 @@ class BrowserDialog : public Dialog
     /** Get resulting file node (called after receiving kChooseCmd) */
     FSNode getResult() const;
 
+    // Refreshes the up button, nav bar and OK-enabled state; 'fileSelected'
+    // also fills in the selected-item field from the list's current entry
     void updateUI(bool fileSelected);
 
   private:
+    // Command ids dispatched in handleCommand()
     enum {
       kChooseCmd  = 'CHOS',
       kGoUpCmd    = 'GOUP',
@@ -147,17 +157,26 @@ class BrowserDialog : public Dialog
     // FSNode will be set to whatever is active (basically, getResult())
     Command _command;
 
+    // File listing
     FileListWidget*   _fileList{nullptr};
+    // Current-path display, kept in sync with _fileList
     NavigationWidget* _navigationBar{nullptr};
+    // Currently selected item: its label, and its editable name field
     LabelWidget*      _name{nullptr};
     EditTextWidget*   _selected{nullptr};
+    // Directory-navigation buttons
     ButtonWidget*     _goUpButton{nullptr};
     ButtonWidget*     _baseDirButton{nullptr};
     ButtonWidget*     _homeDirButton{nullptr};
+    // Saves the current path as the default when checked (FileLoad/FileSave
+    // modes only)
     CheckboxWidget*   _savePathBox{nullptr};
 
+    // Which show() mode is active; governs which controls are visible (see
+    // the instance show())
     BrowserDialog::Mode _mode{Mode::Directories};
 
+    // The single lazily-created instance behind the static show() methods
     static unique_ptr<BrowserDialog> ourBrowser;
 
   private:

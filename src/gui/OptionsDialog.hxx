@@ -28,31 +28,42 @@ class OSystem;
 class OptionsDialog : public Dialog
 {
   public:
+    // Builds the two columns of category buttons plus the Close button; some
+    // are disabled/enabled depending on 'mode' (launcher vs. in-game)
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   AppMode mode);
+    // Out-of-line: myDialog (unique_ptr<Dialog>) needs its complete type here
     ~OptionsDialog() override;
 
+    // Enables/disables the Game Properties button per the current ROM/state
     void loadConfig() override;
 
   protected:
+    // Opens the sub-dialog for the clicked category button; Close exits
+    // menu mode (emulator) or closes this dialog (launcher)
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void layout() override;
 
   private:
+    // The currently open category sub-dialog, if any
     unique_ptr<Dialog>           myDialog;
 
     // All buttons in grid order: the two columns top-to-bottom, then Close
     vector<ButtonWidget*> myButtons;
 
+    // Kept to enable/disable per-mode (see the ctor/loadConfig())
     ButtonWidget* myRomAuditButton{nullptr};
     ButtonWidget* myGameInfoButton{nullptr};
     ButtonWidget* myCheatCodeButton{nullptr};
 
+    // The dialog that opened us, passed through to sub-dialogs that need it
+    // (e.g. Game Properties)
     GuiObject* myBoss{nullptr};
     // Indicates if this dialog is used for global (vs. in-game) settings
     AppMode myMode{AppMode::emulator};
 
+    // Command ids for the category buttons, dispatched in handleCommand()
     enum {
       kVidCmd      = 'VIDO',
       kEmuCmd      = 'EMUO',

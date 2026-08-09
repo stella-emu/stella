@@ -35,13 +35,19 @@ class RomAuditDialog : public Dialog
     RomAuditDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~RomAuditDialog() override;
 
+    // Populates the audit path from the launcher's current directory (or
+    // 'romdir'), and clears the result fields
     void loadConfig() override;
 
   protected:
+    // Audit ("OK") confirms, then runs auditRoms() and reloads the launcher;
+    // the path button opens a directory browser
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void layout() override;
 
   private:
+    // Renames every ROM under the audit path that matches a known MD5 to its
+    // properties name, showing progress and reporting renamed/skipped counts
     void auditRoms();
 
   private:

@@ -30,16 +30,23 @@ class CommandDialog : public Dialog
     CommandDialog(OSystem& osystem, DialogContainer& parent);
     ~CommandDialog() override = default;
 
+    // Relabels the buttons whose text reflects live console/settings state
+    // (color mode, difficulty switches, TV format, palette, phosphor, sound, ...)
     void loadConfig() override;
 
   protected:
+    // Dispatches a button to its console/state event, then (for an immediate
+    // console command) leaves menu mode and applies it right away
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void layout() override;
 
+    // Relabel one button from current state; called from loadConfig() and
+    // again after the corresponding command fires
     void updateSlot(int slot);
     void updateTVFormat();
     void updatePalette();
+    // Leaves menu mode instead of closing (this dialog has no cancel widget)
     void processCancel() override;
 
     // All buttons in grid order (each column top-to-bottom)
@@ -60,6 +67,7 @@ class CommandDialog : public Dialog
     ButtonWidget* myPhosphorButton{nullptr};
     ButtonWidget* mySoundButton{nullptr};
 
+    // Column 1/2/3 button commands, dispatched in handleCommand()
     enum {
       kSelectCmd      = 'Csel',
       kResetCmd       = 'Cres',

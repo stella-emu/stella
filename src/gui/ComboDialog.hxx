@@ -28,23 +28,30 @@ class OSystem;
 class ComboDialog : public Dialog
 {
   public:
+    // 'combolist' is the set of events any of the 8 slots may be assigned
     ComboDialog(GuiObject* boss, const GUI::Font& font, const VariantList& combolist);
     ~ComboDialog() override = default;
 
     /** Place the dialog onscreen and center it */
     void show(Event::Type event, string_view name);
 
+    // Populates the 8 pop-ups from myComboEvent's current combo list
     void loadConfig() override;
+    // Writes the 8 pop-ups' selections back as myComboEvent's combo list
     void saveConfig() override;
+    // Resets all 8 slots to "None"
     void setDefaults() override;
 
   protected:
+    // OK saves and closes; Defaults resets every slot
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void layout() override;
 
   private:
+    // Which Combo1-Combo16 event this dialog is currently editing (see show())
     Event::Type myComboEvent{Event::NoType};
+    // The 8 label+pop-up rows for the combo's member events
     std::array<LabelWidget*, 8> myEventLabels{nullptr};
     std::array<PopUpWidget*, 8> myEvents{nullptr};
 

@@ -215,6 +215,8 @@ class DialogContainer
     }
 
   private:
+    // Clears all continuous-event tracking state (mouse/joy button/axis/hat down,
+    // last-click); called at construction and by reStack()
     void reset();
 
     /**
@@ -237,7 +239,9 @@ class DialogContainer
     void deregisterDialog(const Dialog* d);
 
   protected:
+    // Parent system, used to reach the frame buffer/event handler/settings
     OSystem& myOSystem;
+    // The currently open dialogs, bottom to top; the top one receives input
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:
@@ -249,6 +253,7 @@ class DialogContainer
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime{0};
 
+    // Input-repeat timing, in milliseconds; set via setDoubleClickDelay() etc.
     static inline uInt64 S_DOUBLE_CLICK_DELAY = 500;
     static inline uInt64 S_REPEAT_INITIAL_DELAY = 400;
     static inline uInt64 S_REPEAT_SUSTAIN_DELAY = 50;
@@ -261,6 +266,7 @@ class DialogContainer
       int y{0};
       MouseButton b{MouseButton::NONE};
     } myCurrentMouseDown;
+    // When the held mouse button next re-fires (see updateTime())
     uInt64 myClickRepeatTime{0};
 
     // For continuous 'joy button down' events
@@ -268,8 +274,11 @@ class DialogContainer
       int stick{-1};
       int button{-1};
     } myCurrentButtonDown;
+    // When the held joystick button next re-fires / triggers its long-press
     uInt64 myButtonRepeatTime{0};
     uInt64 myButtonLongPressTime{0};
+    // Set once a button has fired its long-press, so the eventual release
+    // isn't also reported as a (short) button-up
     bool myIgnoreButtonUp{false};
 
     // For continuous 'joy axis down' events
@@ -278,6 +287,7 @@ class DialogContainer
       JoyAxis axis{JoyAxis::NONE};
       JoyDir adir{JoyDir::NONE};
     } myCurrentAxisDown;
+    // When the held joystick axis next re-fires
     uInt64 myAxisRepeatTime{0};
 
     // For continuous 'joy hat' events
@@ -286,6 +296,7 @@ class DialogContainer
       int hat{-1};
       JoyHatDir hdir{JoyHatDir::CENTER};
     } myCurrentHatDown;
+    // When the held joystick hat next re-fires
     uInt64 myHatRepeatTime{0};
 
     // Position and time of last mouse click (used to detect double clicks)

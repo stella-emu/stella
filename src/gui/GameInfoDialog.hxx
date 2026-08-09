@@ -39,21 +39,42 @@ class GameInfoDialog : public Dialog, public CommandSender
   public:
     GameInfoDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss);
+    // Out-of-line: myQuadTariDialog, myLeftDiffGroup, myRightDiffGroup and
+    // myTVTypeGroup (unique_ptr<QuadTariDialog>/<RadioButtonGroup>) need
+    // their complete types here
     ~GameInfoDialog() override;
 
+    // Populates every tab from the current game properties, then sets the
+    // dialog's title
     void loadConfig() override;
+    // Writes every tab back into myGameProperties and the properties set,
+    // applying changes to a running console immediately
     void saveConfig() override;
+    // Resets the currently active tab to this ROM's default properties
     void setDefaults() override;
 
   protected:
     void layout() override;
+    // OK saves and exits; Defaults resets the active tab to this ROM's
+    // defaults; Export writes properties to disk; the remaining ids refresh
+    // detected-controller/link/high-scores state or open the QuadTari/bezel
+    // browsers
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Builds the 'Emulation' tab: bankswitch type, TV format, phosphor/
+    // blend, V-Center, sound
     void addEmulationTab();
+    // Builds the 'Console' tab: TV type and left/right difficulty switches
     void addConsoleTab();
+    // Builds the 'Controllers' tab: port selection, paddle/mouse settings,
+    // EEPROM erase
     void addControllersTab();
+    // Builds the 'Cartridge' tab: name/MD5/manufacturer/model/rarity/note/
+    // link/bezel fields
     void addCartridgeTab();
+    // Builds the 'High Scores' tab: variation/score/special-value
+    // definitions and their live readouts
     void addHighScoresTab();
 
     // load the properties for the 'Emulation' tab
@@ -66,7 +87,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadCartridgeProperties(const Properties& props);
     // load the properties for the 'High Scores' tab
     void loadHighScoresProperties(const Properties& props);
-    // load the properties of the 'High Scores' tab
+    // save the properties of the 'High Scores' tab
     void saveHighScoresProperties();
     // save properties from all tabs into the local properties object
     void saveProperties();
@@ -86,9 +107,13 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(const EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
+    // Writes the current properties (from all tabs) to a stand-alone .pro
+    // file at 'node'
     void exportCurrentPropertiesToDisk(const FSNode& node);
 
   private:
+    // Hosts the five property tabs (Emulation, Console, Controllers,
+    // Cartridge, High Scores)
     TabWidget* myTab{nullptr};
 
     // Emulation properties
@@ -167,6 +192,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // High Scores properties
     CheckboxWidget* myHighScores{nullptr};
 
+    // Number of game variations, and where that count is read from memory
     LabelWidget*    myVariationsLbl{nullptr};
     EditTextWidget* myVariations{nullptr};
     LabelWidget*    myVarAddressLbl{nullptr};
@@ -175,6 +201,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget* myVarsBCD{nullptr};
     CheckboxWidget* myVarsZeroBased{nullptr};
 
+    // Score format: digit count, trailing zero count, BCD encoding, and
+    // whether a lower score is better
     LabelWidget*    myScoreLbl{nullptr};
     LabelWidget*    myScoreDigitsLbl{nullptr};
     PopUpWidget*    myScoreDigits{nullptr};
@@ -183,12 +211,16 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget* myScoreBCD{nullptr};
     CheckboxWidget* myScoreInvert{nullptr};
 
+    // Memory addresses the score is read from, and the score they
+    // currently resolve to
     LabelWidget*    myScoreAddressesLbl{nullptr};
     EditTextWidget* myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
     EditTextWidget* myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
     LabelWidget*    myCurrentScoreLbl{nullptr};
     LabelWidget*    myCurrentScore{nullptr};
 
+    // The optional "special" value (the game's own word, e.g. Level/Wave/
+    // Round) and where it's read from memory
     LabelWidget*    mySpecialLbl{nullptr};
     EditTextWidget* mySpecialName{nullptr};
     LabelWidget*    mySpecialAddressLbl{nullptr};
@@ -197,9 +229,11 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget* mySpecialBCD{nullptr};
     CheckboxWidget* mySpecialZeroBased{nullptr};
 
+    // Free-text notes about this game's high-score properties
     LabelWidget*    myHighScoreNotesLbl{nullptr};
     EditTextWidget* myHighScoreNotes{nullptr};
 
+    // Command ids dispatched in handleCommand()
     enum {
       kBSTypeChanged    = 'Btch',
       kBSFilterChanged  = 'Bfch',
@@ -219,6 +253,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kBezelFilePressed = 'BFpr'
     };
 
+    // Widget id for myUrl, checked in handleCommand() to route its
+    // kChangedCmd to updateLink()
     enum: uInt8 { kLinkId };
 
     // Game properties for currently loaded ROM

@@ -41,6 +41,8 @@ class ContextMenu : public Dialog, public CommandSender
     };
 
   public:
+    // 'width' is a minimum (the menu still grows to fit its widest entry); 'cmd'
+    // is sent on selection, defaulting to kItemSelectedCmd when left at 0
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items = VariantList{},
                 int cmd = 0, int width = 0);
@@ -108,9 +110,15 @@ class ContextMenu : public Dialog, public CommandSender
     bool sendSelectionFirst();
     bool sendSelectionLast();
 
+    // Draws the frame, entries (highlighting the hovered/selected one), and
+    // scroll arrows if _showScroll; this dialog handles its own drawing
+    // rather than going through the usual widget-tree draw() path
     void drawDialog() override;
 
   protected:
+    // Click selects the item under the mouse (or a scroll arrow), or closes
+    // the menu if outside it; move/wheel update the hover highlight/scroll;
+    // keyboard/joystick route through handleEvent()
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
     bool handleMouseClicks(int x, int y, MouseButton b) override;
@@ -119,6 +127,7 @@ class ContextMenu : public Dialog, public CommandSender
     void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
+    // UI navigation events: move the selection, page, jump to an end, select, or cancel
     void handleEvent(Event::Type e) override;
 
   private:
@@ -140,42 +149,66 @@ class ContextMenu : public Dialog, public CommandSender
       return font.getMaxCharWidth() / 4;
     }
 
+    // Picks the arrow size and text inset from the current font
     void setArrows();
 
+    // Decides whether the menu must scroll (more entries than 'image' has room
+    // for) and sets _numEntries/_h/_showScroll accordingly
     void recalc(const Common::Rect& image);
+    // Re-derives _w from the widest entry (and _maxWidth, if larger)
     void recalcWidth();
 
+    // Row under (x,y), in this menu's own coordinates, or -1 if outside it
     int findItem(int x, int y) const;
+    // Updates the hover highlight to 'item' (row offset within the visible window)
     void drawCurrentSelection(int item);
 
+    // Move the highlighted row, scrolling the view as needed at either end
     void moveUp();
     void moveDown();
     void movePgUp();
     void movePgDown();
     void moveToFirst();
     void moveToLast();
+    // Scrolls so the current _selectedItem is in view
     void moveToSelected();
+    // Scrolls the view by 'distance' rows, clamped to the entry list's ends
     void scrollUp(int distance = 1);
     void scrollDown(int distance = 1);
+    // Closes the menu and sends _cmd (or kItemSelectedCmd) for the highlighted item
     void sendSelection();
 
   private:
+    // The items shown, as (label, tag) pairs
     VariantList _entries;
+    // Per-entry enabled state, parallel to _entries
     std::vector<bool> _enabled;
 
     int _rowHeight{0};
+    // Index of the first entry currently scrolled into view, and how many are shown
     int _firstEntry{0}, _numEntries{0};
+    // Highlighted row, relative to the visible window, and the selected
+    // entry's index into _entries (-1 for none)
     int _selectedOffset{0}, _selectedItem{-1};
+    // Whether there are more entries than fit, so scroll arrows are shown
     bool _showScroll{false};
+    // True while a mouse-down is held on a scroll arrow
     bool _isScrolling{false};
+    // Scroll arrow colors, greyed out at either end of the list
     ColorId _scrollUpColor{kColor}, _scrollDnColor{kColor};
 
+    // Command sent on selection; kItemSelectedCmd is used if this is 0
     int _cmd{0};
+    // The parent widget's id (see setID()), passed through to sent commands
     int _id{-1};
 
+    // Screen position the menu was opened at (see show())
     uInt32 _xorig{0}, _yorig{0};
+    // Minimum width imposed from outside (see setMaxWidth()); the menu still
+    // grows to fit its widest entry
     int _maxWidth{0};
 
+    // Font-derived dimensions (see setArrows())
     int _textOfs{0};
     int _arrowSize{0};
 

@@ -25,10 +25,13 @@ class WrappedTextWidget;
 class WhatsNewDialog : public Dialog
 {
   public:
+    // Builds the bullet list of this release's changes
     WhatsNewDialog(OSystem& osystem, DialogContainer& parent);
     ~WhatsNewDialog() override = default;
 
   protected:
+    // Sizes to a comfortable reading width (capped by the window), then
+    // asks myText how tall it wraps to at that width
     void layout() override;
 
   private:

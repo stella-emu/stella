@@ -37,6 +37,8 @@ class EventMappingWidget : public Widget, public CommandSender
   friend class InputDialog;
 
   public:
+    // Builds the filter pop-up, actions list, the five action buttons, and
+    // the selected-mapping readout
     EventMappingWidget(GuiObject* boss, const GUI::Font& font);
     ~EventMappingWidget() override = default;
 
@@ -49,9 +51,15 @@ class EventMappingWidget : public Widget, public CommandSender
     // column beside it.  We fill whatever height we are given, so we report none
     Common::Size naturalSize() const override;
 
+    // Selects the first filter entry on first use, cancels any stale remap
+    // left over from before, and refreshes the actions list
     void loadConfig() override;
+    // Resets the mapping for every event in the current filter group to its default
     void setDefaults();
 
+    // While remapping, records key/joystick input as the candidate mapping;
+    // press-and-release pairs (axis/hat) are captured on release, since only
+    // then is the direction known for certain (see the .cxx for the full detail)
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button, bool longPress = false) override;
@@ -60,9 +68,12 @@ class EventMappingWidget : public Widget, public CommandSender
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
 
   protected:
+    // Reacts to the filter pop-up, a list selection/double-click, the five
+    // action buttons, and the combo dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Command ids for the filter pop-up and the five action buttons
     enum {
       kFilterCmd   = 'filt',
       kStartMapCmd = 'map ',
@@ -79,27 +90,38 @@ class EventMappingWidget : public Widget, public CommandSender
 
     int listWidth() const { return dialog().fontWidth() * ACTION_CHARS; }
 
+    // Refills the actions list for the current filter group and refreshes
+    // the selection/mapping display
     void updateActions();
+    // Enter/leave remap mode for the selected action (see handleKeyDown() etc.)
     void startRemapping();
+    void stopRemapping();
+    // Erase/reset the selected action's mapping to empty/default
     void eraseRemapping();
     void resetRemapping();
-    void stopRemapping();
 
+    // Refreshes the read-only mapping display for the selected action
     void drawKeyMapping();
+    // Enables/disables the list and buttons together (false while remapping)
     void enableButtons(bool state);
 
   private:
+    // Map/Cancel/Erase/Reset/Combo action buttons, sharing one column width
     ButtonWidget*     myMapButton{nullptr};
     ButtonWidget*     myCancelMapButton{nullptr};
     ButtonWidget*     myEraseButton{nullptr};
     ButtonWidget*     myResetButton{nullptr};
     ButtonWidget*     myComboButton{nullptr};
+    // Filters the actions list to one Event::Group
     LabelWidget*      myFilterPopupLbl{nullptr};
     PopUpWidget*      myFilterPopup{nullptr};
+    // Every action in the current filter group, one per row
     StringListWidget* myActionsList{nullptr};
+    // The selected action's name, and its current (read-only) mapping display
     LabelWidget*      myActionLbl{nullptr};
     EditTextWidget*   myKeyMapping{nullptr};
 
+    // Popup for assigning a combo event's member events
     unique_ptr<ComboDialog> myComboDialog;
 
     // Since this widget can be used for different collections of events,
@@ -134,9 +156,11 @@ class EventMappingWidget : public Widget, public CommandSender
     // Saves the last *pressed* button
     int myLastButton{JOY_CTRL_NONE};
 
+    // True until loadConfig() has selected the initial filter entry once
     bool myFirstTime{true};
 
   private:
+    // Clears the in-progress candidate mapping (see the handle* methods above)
     void resetLastEvent() {
       myLastStick  = myLastHat = JOY_CTRL_NONE;
       myLastButton = JOY_CTRL_NONE;

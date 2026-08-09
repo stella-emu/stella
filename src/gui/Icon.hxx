@@ -24,6 +24,7 @@ namespace GUI {
 
 struct IconDesc
 {
+  // Icon size in pixels
   int width{0};
   int height{0};
 
@@ -47,17 +48,22 @@ class Icon
   public:
     constexpr Icon(IconDesc desc, SpanOf<uInt32> bitmap)
       : myIconDesc{desc}, myBitmap{bitmap} { }
+    // Convenience overload taking width/height directly instead of an IconDesc
     constexpr Icon(int width, int height, SpanOf<uInt32> bitmap)
       : Icon(IconDesc(width, height), bitmap) { }
     ~Icon() = default;
 
+    // Width and height as a single descriptor
     constexpr const IconDesc& desc() const { return myIconDesc; }
     constexpr int height() const { return myIconDesc.height; }
     constexpr int width() const { return myIconDesc.width; }
+    // First of 'height' rows, one uInt32 per row
     constexpr const uInt32* bitmap() const { return myBitmap.data(); }
 
   private:
+    // This icon's size
     IconDesc myIconDesc;
+    // The row data itself, owned elsewhere (see the class comment)
     SpanOf<uInt32> myBitmap;
 
   private:

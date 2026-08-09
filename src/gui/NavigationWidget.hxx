@@ -28,6 +28,7 @@ namespace GUI {
 class NavigationWidget : public Widget
 {
   public:
+    // Sent (via CommandSender) when a breadcrumb segment is clicked
     enum {
       kFolderClicked = 'flcl'
     };
@@ -36,6 +37,7 @@ class NavigationWidget : public Widget
     class PathWidget : public Widget
     {
       private:
+        // One clickable breadcrumb segment (a single path component)
         class FolderLinkWidget : public ButtonWidget
         {
           public:
@@ -43,10 +45,12 @@ class NavigationWidget : public Widget
               string_view text, string_view path);
             ~FolderLinkWidget() override = default;
 
+            // The full path this segment navigates to when clicked
             void setPath(string_view path) { myPath = path; }
             const string& getPath() const  { return myPath; }
 
           protected:
+            // Draws the label, framed when hovered
             void drawWidget(bool hilite) override;
 
           private:
@@ -66,15 +70,21 @@ class NavigationWidget : public Widget
           const GUI::Font& font);
         ~PathWidget() override = default;
 
+        // Rebuilds the breadcrumb for 'path', reusing/hiding FolderLinkWidgets
+        // as needed; no-ops if 'path' is unchanged (see refresh())
         void setPath(string_view path);
+        // The full path of the breadcrumb segment at 'idx'
         const string& getPath(int idx) const;
         // Force the folder-link widths to be recomputed (e.g. after a font
         // change) even though the path itself has not changed
         void refresh();
 
       private:
+        // The path setPath() last built the breadcrumb for
         string myLastPath;
+        // Pool of segment widgets, one per path component (grow-only; extras hidden)
         std::vector<FolderLinkWidget*> myFolderList;
+        // Receives kFolderClicked when a segment is clicked
         CommandReceiver* myTarget{nullptr};
 
       private:
@@ -87,17 +97,24 @@ class NavigationWidget : public Widget
     }; // PathWidget
 
   public:
+    // Builds the Home/Prev/Next/Up buttons and the path breadcrumb
     NavigationWidget(GuiObject* boss, const GUI::Font& font);
     ~NavigationWidget() override = default;
 
     Common::Size naturalSize() const override;
     void setWidth(int w) override;
+    // Repositions/resizes the widget, then re-flows its children (see layoutChildren())
     void setArea(int x, int y, int w, int h) override;
+    // The file list the nav buttons/breadcrumb act on
     void setList(FileListWidget* list);
+    // Shows/hides (and enables/disables) this widget and all its children
+    // together; hiding also clears the breadcrumb
     void setVisible(bool isVisible) override;
+    // Refreshes button enabled-state and the breadcrumb from the current list
     void updateUI();
 
   protected:
+    // A breadcrumb segment was clicked; selects that directory in myList
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -107,11 +124,14 @@ class NavigationWidget : public Widget
     void layoutChildren();
 
   private:
+    // The navigation buttons, in display order
     ButtonWidget*     myHomeButton{nullptr};
     ButtonWidget*     myPrevButton{nullptr};
     ButtonWidget*     myNextButton{nullptr};
     ButtonWidget*     myUpButton{nullptr};
+    // The current-directory breadcrumb
     PathWidget*       myPath{nullptr};
+    // The file list this navigation bar controls
     FileListWidget*   myList{nullptr};
 
   private:

@@ -32,15 +32,23 @@ class ProgressDialog : public Dialog
     ProgressDialog(GuiObject* boss, const GUI::Font& font, string_view message = "");
     ~ProgressDialog() override = default;
 
+    // Changes the message text and re-lays out (the dialog is sized to it)
     void setMessage(string_view message);
+    // Sets the value range; 'step' (0-100) is the percentage of it skipped
+    // before the slider starts visibly advancing
     void setRange(int start, int finish, int step);
+    // Resets the slider to 0 and clears the cancelled flag
     void resetProgress();
+    // Advances the slider, throttled to at most 10 updates/second; also pumps
+    // the frame buffer/event loop, since the caller is usually a tight loop
+    // that never otherwise yields back to it
     void setProgress(int progress);
     void incProgress();
     bool isCancelled() const { return myIsCancelled; }
 
   protected:
     void layout() override;
+    // The Cancel button sets myIsCancelled for the caller to notice
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -48,8 +56,11 @@ class ProgressDialog : public Dialog
     SliderWidget* mySlider{nullptr};
     string        myMessageText;
 
+    // Value range set by setRange(); myStep is the leading portion skipped
     int myStart{0}, myFinish{0}, myStep{0};
+    // Current progress value, advanced by incProgress()/setProgress()
     int myProgress{0};
+    // Last time the slider was actually updated, throttling setProgress()
     uInt64 myLastTick{0};
     bool myIsCancelled{false};
 

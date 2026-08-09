@@ -62,6 +62,7 @@ class OverlayMenu : public DialogContainer
 {
   public:
     explicit OverlayMenu(OSystem& osystem);
+    // Out-of-line: myCached/myTransientDialog need Dialog's complete type here
     ~OverlayMenu() override;
 
     // Take ownership of a transient dialog (deletes any previously held one)
@@ -81,11 +82,14 @@ class OverlayMenu : public DialogContainer
 
     // Return the cached dialog for 'id', creating it on first access
     Dialog& cached(Cached id);
+    // Constructs the concrete dialog for 'id'; called once per id, by cached()
     Dialog* createDialog(Cached id);
 
   private:
+    // One slot per Cached id, populated lazily by cached()
     std::array<unique_ptr<Dialog>,
                static_cast<size_t>(Cached::NumCached)> myCached;
+    // The transient dialog set via setDialog(), if any
     unique_ptr<Dialog> myTransientDialog;
 
   private:

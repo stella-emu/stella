@@ -52,16 +52,20 @@ class TabPaneWidget : public Widget
     TabPaneWidget(GuiObject* boss, const GUI::Font& font);
     ~TabPaneWidget() override = default;
 
+    // Sets the row builder (and optional post-layout hook) used by setArea()/naturalSize()
     void setLayout(const LayoutBuilder& builder, const PostLayout& post = {})
       { myBuilder = builder; myPostLayout = post; }
 
+    // Rebuilds the layout tree for the new area and lays out the pane's children
     void setArea(int x, int y, int w, int h) override;
 
     // The size the pane's rows add up to, asked of the layout itself
     Common::Size naturalSize() const override;
 
   protected:
+    // Re-dirties every child so a forced full redraw reaches them (see the .cxx)
     void drawWidget(bool hilite) override;
+    // Routes to the child under (x,y), since the pane itself draws nothing
     Widget* findWidget(int x, int y) override;
 
   private:
@@ -69,7 +73,9 @@ class TabPaneWidget : public Widget
     unique_ptr<GUI::BoxLayout> buildLayout() const;
 
   private:
+    // Fills the pane's layout tree with its rows (see setLayout())
     LayoutBuilder myBuilder;
+    // Optional hook run after the layout is resolved (see setLayout())
     PostLayout myPostLayout;
 
   private:

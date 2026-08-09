@@ -38,10 +38,13 @@ class SnapshotDialog : public Dialog
     ~SnapshotDialog() override = default;
 
     void loadConfig() override;
+    // Also flushes settings to disk and re-derives dependent config paths
     void saveConfig() override;
     void setDefaults() override;
 
   protected:
+    // OK saves and closes; Defaults resets; the path button opens a directory
+    // browser; the interval slider updates its own "second(s)" unit label
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void layout() override;
@@ -56,12 +59,17 @@ class SnapshotDialog : public Dialog
     ButtonWidget* mySnapSaveButton{nullptr};
     EditTextWidget* mySnapSavePath{nullptr};
 
+    // Header for the checkbox group below
     LabelWidget* myWhenLbl{nullptr};
+    // Name new snapshots after the ROM, rather than a sequential number
     CheckboxWidget* mySnapName{nullptr};
+    // How often continuous-snapshot mode saves
     LabelWidget* mySnapIntervalLbl{nullptr};
     SliderWidget* mySnapInterval{nullptr};
 
+    // Overwrite an existing file rather than adding a new one each time
     CheckboxWidget* mySnapSingle{nullptr};
+    // Save at 1x scale, skipping zoom/post-processing
     CheckboxWidget* mySnap1x{nullptr};
     CheckboxWidget* mySnapCrop{nullptr};
 

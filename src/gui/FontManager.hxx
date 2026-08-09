@@ -42,7 +42,9 @@ class FontManager
     // label shown for it in the UI
     struct FontEntry
     {
+      // The value stored in the settings
       string_view name;
+      // The label shown for it in the UI
       string_view label;
     };
 
@@ -65,6 +67,7 @@ class FontManager
     // on accept it; see isRoleFont()
     static constexpr string_view AUTO_FONT = "auto";
 
+    /** Every role starts at the smallest font; loadConfig() then resolves each from 'settings' */
     explicit FontManager(const Settings& settings);
     ~FontManager() = default;
 

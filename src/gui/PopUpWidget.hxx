@@ -61,12 +61,14 @@ class PopUpWidget : public EditableWidget
 
     ~PopUpWidget() override = default;
 
+    // Also sets the id on the underlying drop-down menu
     void setID(uInt32 id) override;
 
     // Set the total widget width (value box + drop-down arrow); also
     // resizes the drop-down menu so it tracks the value box
     void setWidth(int w) override;
 
+    // Nudged 1px down from the base to clear the frame this widget draws around itself
     int getTop() const override { return _y + 1; }
     int getBottom() const override { return _y + 1 + getHeight(); }
 
@@ -81,11 +83,14 @@ class PopUpWidget : public EditableWidget
     void setSelectedMax(bool changed = false);
     void clearSelection();
 
+    // Query/set the selection by index, name, or tag; forwarded to the menu
     int getSelected() const;
     const string& getSelectedName() const;
     void setSelectedName(string_view name);
     const Variant& getSelectedTag() const;
 
+    // Unlike EditableWidget's, always wants focus -- Tab must reach even a
+    // pop-up whose value box isn't otherwise editable
     bool wantsFocus() const override { return true; }
     /**
       The drop-down arrow I draw at my right-hand end.  Odd, so it has a
@@ -112,6 +117,8 @@ class PopUpWidget : public EditableWidget
     */
     static int calcWidth(const GUI::Font& font, const VariantList& items);
 
+    // Opens the drop-down menu (or, on its editable text, positions the caret);
+    // wheel/UI-navigation events move the selection up/down without opening it
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
@@ -124,32 +131,44 @@ class PopUpWidget : public EditableWidget
     int boxWidth() const { return _w - dropDownWidth(_font); }
     void setBoxWidth(int w);
 
+    // Re-picks the arrow bitmap/dimensions, restores the framed height, and
+    // (if auto-sized) re-derives the box width, all for the live font
     void refreshFont() override;
 
   protected:
+    // Redraws with the menu's current selection after it reports one was made
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     int caretOfs() const override { return _editScrollOffset; }
 
+    // Picks the arrow bitmap dimensions and text inset from the current font
     void setArrow();
+    // Draws the frame, value box, drop-down arrow, and selected entry's text
     void drawWidget(bool hilite) override;
 
+    // No-ops: a pop-up's value box is always in edit mode (see EditTextWidget
+    // for the same pattern); the drop-down menu has its own accept/cancel
     void endEditMode() override;
     void abortEditMode() override;
 
     Common::Rect getEditRect() const override;
 
   private:
+    // The drop-down menu itself
     unique_ptr<ContextMenu> myMenu;
 
     // Did I size myself from my own items (the c'tor that states no width)?
     // If so my width is mine to re-derive on a font change; otherwise it is
     // the dialog's, and its layout() re-applies it
     bool myAutoWidth{false};
+    // Vertical offset of the drop-down arrow, centered within the box
     int myArrowsY{0};
 
+    // Highlighted in drawWidget() when true; set via setSelectedIndex/setSelectedMax
     bool   _changed{false};
 
+    // Horizontal inset between the frame and the text (see EditableWidget::textInset)
     int _textOfs{0};
+    // Drop-down arrow dimensions, font-derived (see setArrow())
     int _arrowWidth{0};
     int _arrowHeight{0};
     int _arrowThickness{0};

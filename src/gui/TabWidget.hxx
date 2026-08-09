@@ -28,14 +28,19 @@ class TabPaneWidget;
 class TabWidget : public Widget, public CommandSender
 {
   public:
+    // Sentinel tabWidth values for addTab(): NO_WIDTH shares the common
+    // width, AUTO_WIDTH sizes the tab to its title
     static constexpr int NO_WIDTH = 0;
     static constexpr int AUTO_WIDTH = -1;
 
+    // Sent (via CommandSender) when the active tab changes
     enum {
       kTabChangedCmd = 'TBCH'
     };
 
   public:
+    // ID defaults to 0; a dialog with more than one tab widget must setID()
+    // each explicitly to tell them apart
     TabWidget(GuiObject* boss, const GUI::Font& font);
     ~TabWidget() override = default;
 
@@ -50,8 +55,12 @@ class TabWidget : public Widget, public CommandSender
     //void removeTab(int tabID);
 // Setting the active tab:
     void setActiveTab(int tabID, bool show = false);
+    // Enables/disables a tab; a disabled tab cannot be selected, but keeps its widgets
     void enableTab(int tabID, bool enable = true);
+    // Announces every tab's kTabChangedCmd in turn, e.g. so a dialog's
+    // handleCommand() sees each tab once while it is being built
     void activateTabs();
+    // Switches to the previous/next enabled tab, wrapping around
     void cycleTab(int direction);
 
     // Recompute the tab-bar geometry (height and per-tab widths) from the
@@ -62,6 +71,8 @@ class TabWidget : public Widget, public CommandSender
     void updateTabSizes();
 // setActiveTab moves the active tab's widgets into _children. This means
 // Widgets added afterwards will be added to the active tab.
+    // Registers 'parent' as this tab's content widget, for content parented
+    // directly to us (see setPaneWidget() for the TabPaneWidget case)
     void setParentWidget(int tabID, Widget* parent);
     // Set a tab's content pane.  Called by TabPaneWidget's constructor, so a
     // pane is always registered with its tab (see also setParentWidget, for
@@ -70,6 +81,7 @@ class TabWidget : public Widget, public CommandSender
     // A tab's content widget, or null if the dialog registered none for it
     Widget* parentWidget(int tabID);
 
+    // Current tab-bar dimensions/state
     int getTabWidth() const  { return _tabWidth;  }
     int getTabHeight() const { return _tabHeight; }
     int getActiveTab() const { return _activeTab; }
@@ -103,19 +115,27 @@ class TabWidget : public Widget, public CommandSender
     // next activated and reflowed, while it already draws with the new one
     void refreshFont() override;
 
+    // Activates the initial tab on first call, then loads the active tab's config
     void loadConfig() override;
 
+    // Switches to the tab clicked in the bar
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    // Doesn't highlight on hover, unlike a plain Widget
     void handleMouseEntered() override {}
     void handleMouseLeft() override {}
 
+    // Left/Right (or PgUp/PgDown) cycles tabs
     bool handleEvent(Event::Type event) override;
 
+    // Children sit below the tab bar, not at our own origin
     int getChildY() const override;
 
   protected:
+    // Redraws the tab bar; as a container, also re-dirties the active tab's children
     void drawWidget(bool hilite) override;
+    // A click in the tab bar hits us; below it, routes to the active tab's children
     Widget* findWidget(int x, int y) override;
+    // Forwards a tab content's command, unmodified, to our own target
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -144,12 +164,18 @@ class TabWidget : public Widget, public CommandSender
     // The tab bar's height for the current font (what _tabHeight caches)
     int tabBarHeight() const { return _font.getLineHeight() + 4; }
 
+    // One entry per tab, in display order
     TabList _tabs;
+    // Shared width for NO_WIDTH tabs (see updateTabSizes())
     int     _tabWidth{40};
+    // Tab-bar height for the current font (see tabBarHeight())
     int     _tabHeight{1};
+    // Index of the currently active tab, or -1 if none yet
     int     _activeTab{-1};
+    // True until loadConfig() has activated the initial tab once
     bool    _firstTime{true};
 
+    // Tab-bar layout constants, in pixels
     enum: uInt8 {
       kTabLeftOffset = 0,
       kTabSpacing = 1,
@@ -158,6 +184,7 @@ class TabWidget : public Widget, public CommandSender
     };
 
   private:
+    // Loads the active tab's content config; called after a tab switch
     void updateActiveTab();
     // Lay one tab's content widget out to fill the area below the tab bar.  The
     // tab widget is a container, so it owns this: a dialog just sizes the tab

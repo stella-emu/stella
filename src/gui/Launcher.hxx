@@ -39,6 +39,7 @@ class Launcher : public DialogContainer
       Create a new menu stack
     */
     explicit Launcher(OSystem& osystem);
+    // Out-of-line: myBaseDialog (unique_ptr<LauncherDialog>) needs its complete type here
     ~Launcher() override;
 
     /**
@@ -99,6 +100,7 @@ class Launcher : public DialogContainer
     void loadSize();
 
   private:
+    // The launcher's root dialog
     unique_ptr<LauncherDialog> myBaseDialog;
 
     // The dimensions of this dialog

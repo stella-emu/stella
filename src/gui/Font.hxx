@@ -27,8 +27,10 @@
 
 struct BBX
 {
+  // Glyph size in pixels
   uInt8 w;
   uInt8 h;
+  // Offset of the box's origin from the font's own bounding box
   Int8 x;
   Int8 y;
 };
@@ -81,6 +83,7 @@ struct Glyph
 class GlyphSet
 {
   public:
+    /** Unpacks every glyph in 'desc' up front */
     explicit GlyphSet(const FontDesc& desc);
     ~GlyphSet() = default;
 
@@ -110,6 +113,7 @@ class GlyphSet
     // Indexed by glyph number, i.e. character - myFirstChar
     vector<GlyphInfo> myGlyphs;
 
+    // First character in the font, and the glyph substituted for one outside it
     int myFirstChar{0}, myDefaultChar{0};
 };
 
@@ -152,9 +156,11 @@ class GlyphCache
 class Font
 {
   public:
+    // Unpacks (or reuses, if already cached) the glyphs of 'desc'
     Font(GlyphCache& cache, const FontDesc& desc);
     ~Font() = default;
 
+    // The raw font description this Font currently draws with
     const FontDesc& desc() const { return myFontDesc; }
 
     // Replace the font description in place.  Every widget holds a reference to
@@ -169,8 +175,10 @@ class Font
     // are the cache's, so this is a lookup and not an unpack
     Glyph glyph(uInt8 chr) const { return myGlyphs->glyph(chr); }
 
+    // Height of a glyph, and of a full text line (glyph height plus leading)
     int getFontHeight() const { return myFontDesc.height; }
     int getLineHeight() const { return myFontDesc.height + 2; }
+    // The widest a glyph in this font gets
     int getMaxCharWidth() const { return myFontDesc.maxwidth; }
 
     // Am I one of the large fonts?  The widgets draw the chrome around my text
@@ -182,11 +190,14 @@ class Font
     //        unified so the chrome follows the font instead of jumping at 24.
     bool isLarge() const { return myFontDesc.height >= 24; }
 
+    // Width of a single character, in pixels
     int getCharWidth(uInt8 chr) const;
 
+    // Width of a string, in pixels, as the sum of its characters' widths
     int getStringWidth(string_view str) const;
 
   private:
+    // The font description currently in effect (see changeDesc())
     FontDesc myFontDesc;
 
     // Where the glyphs come from, and this font's set within it.  Both stay

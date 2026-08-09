@@ -34,15 +34,20 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     GlobalPropsDialog(GuiObject* boss, const GUI::Font& font);
     ~GlobalPropsDialog() override = default;
 
+    // Populates all controls from settings
     void loadConfig() override;
+    // Writes all controls back to settings
     void saveConfig() override;
     void setDefaults() override;
 
   protected:
     void layout() override;
+    // OK saves, closes, and asks the launcher to load the ROM; Defaults
+    // resets every control and saves immediately
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Builds the joystick direction/fire checkboxes and the console Select/Reset ones
     void createHoldWidgets(const GUI::Font& font, WidgetArray& wid);
 
     // The three groups of buttons which can be held down at power-on: a
@@ -52,17 +57,21 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     unique_ptr<GUI::Layout> consoleLayout();
 
   private:
+    // Indices into myJoy/ourJoyState for each joystick's directions and fire button
     enum: uInt8 {
       kJ0Up, kJ0Down, kJ0Left, kJ0Right, kJ0Fire,
       kJ1Up, kJ1Down, kJ1Left, kJ1Right, kJ1Fire
     };
 
+    // Power-on option pop-ups, each labelled below
     PopUpWidget* myBSType{nullptr};
     PopUpWidget* myLeftDiff{nullptr};
     PopUpWidget* myRightDiff{nullptr};
     PopUpWidget* myTVType{nullptr};
 
+    // Direction/fire checkboxes for both joysticks, indexed by the enum above
     std::array<CheckboxWidget*, 10> myJoy{nullptr};
+    // Console Select/Reset checkboxes
     CheckboxWidget* myHoldSelect{nullptr};
     CheckboxWidget* myHoldReset{nullptr};
     CheckboxWidget* myDebug{nullptr};
@@ -79,6 +88,8 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     LabelWidget* myInfo1{nullptr};
     LabelWidget* myInfo2{nullptr};
 
+    // Single-letter codes stored in the holdjoy0/holdjoy1 settings, indexed
+    // the same as myJoy
     static constexpr std::array<string_view, 10> ourJoyState = {
       "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
     };

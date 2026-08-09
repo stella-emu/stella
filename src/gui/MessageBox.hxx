@@ -86,7 +86,10 @@ class MessageBox : public Dialog
     static void hide();
 
   protected:
+    // Sizes to the longest text line (never narrower than the button group)
     void layout() override;
+    // OK/Close runs myCallback(ok), then closes normally or leaves menu mode
+    // (if myTransient), before returning
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -99,14 +102,20 @@ class MessageBox : public Dialog
                string_view okText, string_view cancelText,
                string_view title, bool focusOKButton, bool transient);
 
+    // Splits 'text' into lines and creates one LabelWidget per line
     void createText(const GUI::Font& font, string_view text);
 
   private:
+    // The message, split into lines
     StringList myText;
+    // One LabelWidget per line of myText
     std::vector<LabelWidget*> myTextWidgets;
+    // Run with the user's answer once OK/Cancel is clicked
     std::function<void(bool ok)> myCallback;
+    // See the ctor's 'transient' parameter
     bool myTransient{false};
 
+    // The single instance created by confirm(); see hide()
     static unique_ptr<MessageBox> ourBox;
 
   private:

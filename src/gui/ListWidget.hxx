@@ -41,6 +41,8 @@ class ListWidget : public EditableWidget
     };
 
   public:
+    // Brings Widget's setPos(int,int)/setPos(Point) into scope alongside our
+    // own override below, which would otherwise hide them
     using Widget::setPos;
 
     ListWidget(GuiObject* boss, const GUI::Font& font,
@@ -49,20 +51,28 @@ class ListWidget : public EditableWidget
 
     int rows() const        { return _rows; }
     int currentPos() const  { return _currentPos; }
+    // Also moves the sibling scrollbar, which tracks the list's position
     void setPos(const Common::Point& pos) override;
+    // Reserves scrollbar room out of 'w' (only while the scrollbar is needed)
     void setWidth(int w) override;
+    // Recomputes _rows from the new height, then recalc()s
     void setHeight(int h) override;
 
     int getSelected() const { return _selectedItem; }
+    // Selects 'item' and scrolls it into view, centered where possible
     void setSelected(int item);
+    // Selects the first row equal to 'item' (or row 0 if none matches)
     void setSelected(string_view item);
 
     int getHighlighted() const     { return _highlightedItem; }
+    // Sets the highlighted (not necessarily selected) row, scrolling by a
+    // page once it would otherwise cross the view's edge
     void setHighlighted(int item);
 
     const StringList& getList()	const { return _list; }
     const string& getSelectedString() const;
 
+    // Scrolls so 'item' is the first visible row (clamped to the list's ends)
     void scrollTo(int item);
     void scrollToEnd() { scrollToCurrent(static_cast<int>(_list.size())); }
 
@@ -78,6 +88,8 @@ class ListWidget : public EditableWidget
       return rows * font.getLineHeight() + 2;
     }
 
+    // Selection/scrolling/edit-mode via mouse, wheel (forwarded to the
+    // scrollbar), joystick, and UI navigation events (see handleEvent())
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
@@ -88,13 +100,19 @@ class ListWidget : public EditableWidget
     bool handleEvent(Event::Type e) override;
 
   protected:
+    // Reacts to the scrollbar reporting a new position
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // A concrete list decides how its own rows are drawn and where their text sits
     void drawWidget(bool hilite) override  = 0;
     Common::Rect getEditRect() const override = 0;
 
+    // Maps a click at (x,y) to a row index (not bounds-checked against the list)
     int findItem(int x, int y) const;
+    // Revalidates _currentPos/_selectedItem and the scrollbar after the list
+    // (or the widget's size) changes, then aborts any in-progress edit
     void recalc();
+    // Pushes _currentPos to the scrollbar and reports the new position via kScrolledCmd
     void scrollBarRecalc();
 
     /**
@@ -111,22 +129,32 @@ class ListWidget : public EditableWidget
     */
     void updateScrollBarRoom();
 
+    // Enters/leaves in-place editing of the selected row's text
     void startEditMode() override;
+    // Writes the edited text back into the row and reports kDataChangedCmd
     void endEditMode() override;
     void abortEditMode() override;
 
     void lostFocusWidget() override;
+    // Scrolls the selected/highlighted row into view (see scrollToCurrent())
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 
   private:
+    // Scrolls the minimum amount needed to bring 'item' into the view, then
+    // clamps and pushes the result to the scrollbar
     void scrollToCurrent(int item);
 
   protected:
+    // Number of rows currently visible, derived from height / line height
     int  _rows{0};
+    // Index of the first visible row (scroll position)
     int  _currentPos{0};
+    // Index of the selected row, or -1 for none
     int  _selectedItem{-1};
+    // Index of the highlighted (not necessarily selected) row, or -1 for none
     int  _highlightedItem{-1};
+    // Whether this list has a scrollbar at all
     bool _useScrollbar{true};
 
     // The footprint setWidth() was last given, which the scrollbar's room is
@@ -135,8 +163,10 @@ class ListWidget : public EditableWidget
     int  _fullWidth{0};
     bool _inScrollBarRoom{false};
 
+    // Sibling scrollbar widget, if _useScrollbar
     ScrollBarWidget* _scrollBar{nullptr};
 
+    // The row strings shown
     StringList _list;
 
   private:

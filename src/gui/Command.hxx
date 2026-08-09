@@ -40,6 +40,7 @@ class CommandReceiver
     virtual ~CommandReceiver() = default;
 
   protected:
+    // Reacts to a command sent by 'sender'; the default does nothing
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
 
   private:
@@ -54,14 +55,18 @@ class CommandSender
 {
   public:
     CommandSender() = default;
+    // Creates a sender already wired to 'target'
     explicit CommandSender(CommandReceiver* target)
         : _target{target} { }
 
     virtual ~CommandSender() = default;
 
+    // Changes which receiver gets future commands
     virtual void setTarget(CommandReceiver* target) { _target = target; }
+    // Returns the current receiver, or nullptr if none is set
     virtual CommandReceiver* getTarget() const { return _target; }
 
+    // Dispatches (cmd, data, id) to the target's handleCommand(), if both are set
     virtual void sendCommand(int cmd, int data, int id)
     {
       if(_target && cmd)
@@ -69,6 +74,7 @@ class CommandSender
     }
 
   protected:
+    // The receiver that gets commands sent via sendCommand()
     CommandReceiver* _target{nullptr};
 
   private:

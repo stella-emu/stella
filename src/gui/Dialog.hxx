@@ -61,22 +61,35 @@ class Dialog : public GuiObject
            string_view title = "", int w = 0, int h = 0);
     ~Dialog() override;
 
+    /** Resets widget/focus/button-group state, ready to be rebuilt */
     void clear();
+    /** Lays out and shows the dialog: sizes/allocates its surface, builds the
+        focus list, calls loadConfig(), then pushes it onto the container's stack */
     void open();
+    /** Releases focus and pops this dialog off the container's stack */
     void close();
 
     bool isVisible() const override { return _visible; }
 
+    /** Positions the dialog's surface on screen, per the 'dialogpos' setting */
     virtual void setPosition();
+    /** Draws the dialog's own chrome (background/title/border), then its children */
     virtual void drawDialog();
+    /** Hooks a dialog overrides to read/write/reset its widgets from settings;
+        called by open()/handleCommand() respectively, defaults do nothing */
     virtual void loadConfig()  { }
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
+    // A Dialog draws via drawDialog()/drawChain() (see redraw()), not draw();
+    // this override keeps it out of the normal Widget draw chain
     void draw() override { }
+    // Unlike Widget's, these don't propagate to a boss -- a Dialog IS the top
     void setDirty() override;
     void setDirtyChain() override;
+    /** Redraws this dialog if visible, optionally forcing a full repaint */
     void redraw(bool force = false);
+    /** Presents this dialog's surface (and any shading below a modal one) */
     void render();
 
     /**
@@ -105,15 +118,23 @@ class Dialog : public GuiObject
 
     void tick() override;
 
+    // Register widgets so Tab/arrow navigation can reach them.  The tabId
+    // overload files a list under one tab of 'w', so it is only scanned while
+    // that tab is active; addBGroupToFocusList always goes last (see
+    // buildCurrentFocusList), so the standard buttons are reached after tab content
     void addFocusWidget(Widget* w) override;
     int addToFocusList(const WidgetArray& list) override;
     int addToFocusList(const WidgetArray& list, const TabWidget* w, int tabId);
     void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
+    /** Registers a top-level tab widget so its per-tab focus lists are tracked */
     void addTabWidget(TabWidget* w);
+    // Remember which button plays which standard role, for layoutButtonGroup()
+    // and for UIOK/UICancel navigation (see handleNavEvent)
     void addDefaultWidget(ButtonWidget* w) { _defaultWidget = w; }
     void addExtraWidget(ButtonWidget* w)   { _extraWidget = w;   }
     void addOKWidget(ButtonWidget* w)      { _okWidget = w;      }
     void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w;  }
+    /** Moves the input focus to 'w', if it isn't already there and wants focus */
     void setFocus(const Widget* w);
 
     /**
@@ -134,13 +155,19 @@ class Dialog : public GuiObject
     */
     void addRenderCallback(const RenderCallback& callback);
 
+    /** Sets the title text and re-derives the title-bar height (_th) from it */
     void setTitle(string_view title);
     bool hasTitle() { return !_title.empty(); }
 
+    /** Creates the title-bar '?' help button on first use, and shows/hides it
+        depending on whether this dialog currently has any help to offer */
     void initHelp();
+    /** Registers this dialog's own context-help target (see Widget::setHelpAnchor) */
     void setHelpAnchor(string_view helpAnchor, bool debugger = false);
     void setHelpURL(string_view helpURL);
 
+    // Whether a dialog below this one on the stack is darkened while this one
+    // is open (see render()); a non-modal-looking overlay (ContextMenu) says no
     virtual bool isShading() const { return true; }
 
     /**
@@ -171,8 +198,11 @@ class Dialog : public GuiObject
     */
     bool shouldResize(uInt32& w, uInt32& h) const;
 
+    /** This dialog's tooltip popup */
     ToolTip& tooltip() { return *_toolTip; }
 
+    // Font metrics, and the standard spacing/sizing constants layout() methods
+    // derive from them -- so every dialog measures itself the same way
     int lineHeight() const { return _font.getLineHeight(); }
     int fontHeight() const { return _font.getFontHeight(); }
     int fontWidth() const { return _font.getMaxCharWidth(); }
@@ -197,8 +227,13 @@ class Dialog : public GuiObject
       kHelpCmd = 'DlHp'
     };
 
+    // Remembers the focused widget's place in its tab(s) before it's released
     void releaseFocus() override;
 
+    // Low-level input, dispatched here from DialogContainer for the topmost
+    // dialog; the base routes to the focused widget (falling back to
+    // handleNavEvent()/findWidget() as appropriate), a subclass overrides to add
+    // dialog-specific behavior
     virtual void handleText(char text);
     virtual void handleKeyDown(StellaKey key, StellaMod modifiers, bool repeated = false);
     virtual void handleKeyUp(StellaKey key, StellaMod modifiers);
@@ -212,12 +247,15 @@ class Dialog : public GuiObject
     virtual void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button = JOY_CTRL_NONE);
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE);
     virtual void handleEvent(Event::Type event) {}
+    // Reacts to a tab change (remembering it) and to the title-bar help/close buttons
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     virtual Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button);
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
     void drawChain() override;
+    // Checked in order: the focused widget, the active tab (and its tab group),
+    // then this dialog's own anchor/URL; empty if none of those has help
     string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }
 
@@ -279,11 +317,14 @@ class Dialog : public GuiObject
     // layout() get it placed correctly.
     void layoutHelp();
 
+    // Lets UICancel close a dialog that has no cancel button of its own
     void processCancelWithoutWidget(bool state = true) { _processCancel = state; }
     virtual void processCancel() { close(); }
 
     /** Define the size (allowed) for the dialog. */
     void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);
+    // Sets the surface's on-screen position from a 'dialogpos' setting value
+    // (corner/center), staggering it by _layer so stacked dialogs don't overlap exactly
     void positionAt(uInt32 pos);
 
     /**
@@ -297,13 +338,22 @@ class Dialog : public GuiObject
     */
     virtual void layout() { }
 
+    // Whether a held joystick button/axis/hat repeats in this dialog; a
+    // dialog that consumes long-press itself (e.g. for its own repeat scheme) says no
     virtual bool repeatEnabled() { return true; }
 
   private:
+    // Rebuilds _focusList from _myFocus plus whichever tab's list is active
+    // (switching tabs if 'tabID' names one), then _buttonGroup last
     void buildCurrentFocusList(int tabID = -1);
+    // Tab/arrow/OK/Cancel/Help navigation, tried before a raw key/button reaches
+    // the focused widget; returns whether it handled the event
     bool handleNavEvent(Event::Type e, bool repeated = false);
+    // Updates _tabID to whichever top-level tab owns 'w', if any
     void getTabIdForWidget(const Widget* w);
+    // Switches the active top-level tab by 'direction' (-1/+1); false if none is active
     bool cycleTab(int direction);
+    // Opens getHelpURL() in the system browser
     void openHelp();
 
     /**
@@ -321,28 +371,44 @@ class Dialog : public GuiObject
     void restoreActiveTab(TabWidget* tab);
 
   protected:
+    // The font this dialog (and its widgets, by default) draws with
     const GUI::Font& _font;
 
+    // The widget currently under the mouse (receives entered/left/moved)
     Widget* _mouseWidget{nullptr};
+    // The widget currently holding the input focus
     Widget* _focusedWidget{nullptr};
+    // The widget a mouse-down originated in, while the button stays held
     Widget* _dragWidget{nullptr};
+    // The standard button-group members this dialog has, if any (see addOK*BGroup)
     ButtonWidget* _defaultWidget{nullptr};
     ButtonWidget* _extraWidget{nullptr};
     ButtonWidget* _okWidget{nullptr};
     ButtonWidget* _cancelWidget{nullptr};
 
+    // True while this dialog is open and on the container's stack
     bool    _visible{false};
+    // Whether UICancel closes this dialog even with no cancel button (see
+    // processCancelWithoutWidget)
     bool    _processCancel{false};
+    // Current title text; may be rewritten live by setTitle(), unlike _builtTitle
     string  _title;
+    // Title-bar height in pixels; 0 when untitled
     int     _th{0};
+    // This dialog's position in the container's stack, used to stagger stacked dialogs
     int     _layer{0};
+    // This dialog's tooltip popup
     unique_ptr<ToolTip> _toolTip;
+    // Context-help target: an anchor into the manual, or a full URL; _debuggerHelp
+    // picks the debugger manual over the main one
     string  _helpAnchor;
     string  _helpURL;
     bool    _debuggerHelp{false};
+    // The title-bar '?' help button, created lazily by initHelp()
     ButtonWidget* _helpWidget{nullptr};
 
   private:
+    // One focus list, and which of its widgets currently holds it
     struct Focus {
       Widget* widget{nullptr};
       WidgetArray list;
@@ -351,15 +417,21 @@ class Dialog : public GuiObject
     };
     using FocusList = vector<Focus>;
 
+    // A top-level tab widget, and a separate Focus per child tab so each
+    // remembers its own focused widget across tab switches
     struct TabFocus {
       TabWidget* widget{nullptr};
       FocusList focus;
+      // Which child tab 'focus' was last read for (see getNewFocus())
       uInt32 currentTab{0};
 
       explicit TabFocus(TabWidget* w = nullptr) : widget{w} { }
 
+      // Appends the active tab's focus list to 'lst' (see buildCurrentFocusList)
       void appendFocusList(WidgetArray& lst);
+      // Remembers 'w' as the active tab's focused widget, if 'w' belongs to it
       void saveCurrentFocus(Widget* w);
+      // Switches currentTab to the now-active tab and returns its remembered widget
       Widget* getNewFocus();
     };
     using TabFocusList = vector<TabFocus>;
@@ -373,14 +445,20 @@ class Dialog : public GuiObject
     // leaving the saving and restoring halves looking at different keys
     const string _builtTitle;
 
+    // The standard OK/Cancel/Defaults/Extra buttons, appended to the focus
+    // list last (see buildCurrentFocusList)
     WidgetArray _buttonGroup;
+    // This dialog's backing surface, and (while it is not the topmost dialog)
+    // the overlay that darkens it (see render())
     shared_ptr<FBSurface> _surface;
     shared_ptr<FBSurface> _shadeSurface;
 
+    // Index into _myTabList of the currently active top-level tab widget
     int _tabID{0};
     uInt32 _max_w{0}; // maximum wanted width
     uInt32 _max_h{0}; // maximum wanted height
 
+    // Extra draw hook run after this dialog renders (see addRenderCallback)
     RenderCallback _renderCallback;
 
   private:

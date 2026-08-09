@@ -30,8 +30,11 @@ class StringListWidget : public ListWidget
     ~StringListWidget() override = default;
 
     void setList(const StringList& list);
+    // Unlike EditableWidget's, always wants focus -- a plain (non-editable) list
+    // still takes keyboard/joystick navigation
     bool wantsFocus() const override { return true; }
 
+    // The hovered row's text, in full, when it doesn't fit its row (see getToolTipIndex)
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
@@ -43,6 +46,7 @@ class StringListWidget : public ListWidget
     // renderer silently ellipsizes it.  0 while I am still at a placeholder width
     int textWidth() const { return std::max(_w - 2 * _textOfs, 0); }
 
+    // My text inset is font-derived, so it has to follow a live font change
     void refreshFont() override;
 
     // display depends on _hasFocus so we have to redraw when focus changes
@@ -50,14 +54,20 @@ class StringListWidget : public ListWidget
     void lostFocusWidget() override { setDirty(); }
 
     bool hasToolTip() const override { return true; }
+    // Row index under 'pos' (in screen coordinates), or -1 if none
     int getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
+    // Draws an optional per-row icon before the text; returns the width it
+    // took up (0 by default -- a plain string list has none). Overridden by
+    // e.g. FileListWidget to draw folder/file icons
     virtual int drawIcon(int i, int x, int y, ColorId color) { return 0; }
     Common::Rect getEditRect() const override;
 
   protected:
+    // Whether the selected row is drawn highlighted (some lists just frame it)
     bool _hilite{false};
+    // Horizontal inset between the frame and row text (font-derived, see textInset())
     int  _textOfs{0};
 
   private:

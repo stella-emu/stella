@@ -30,7 +30,10 @@ class ScrollBarWidget : public Widget, public CommandSender
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font);
     ~ScrollBarWidget() override = default;
 
+    // Recomputes the slider's size/position from _numEntries/_entriesPerPage/_currentPos
     void recalc();
+    // Clicking an arrow steps by one, the track pages, and the slider drags;
+    // handleMouseClicks() lets the arrows/track keep firing while held
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
@@ -38,6 +41,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseLeft() override;
 
+    // Default lines scrolled per wheel notch, when a list doesn't set its own (_wheel_lines)
     static void setWheelLines(int lines) { S_WHEEL_LINES = lines; }
     static int  getWheelLines()          { return S_WHEEL_LINES;  }
     /**
@@ -60,33 +64,45 @@ class ScrollBarWidget : public Widget, public CommandSender
     void refreshFont() override;
 
   protected:
+    // Draws the frame, both arrows, and (unless everything fits on one page) the slider
     void drawWidget(bool hilite) override;
 
   private:
+    // Clamps _currentPos to [0, _numEntries - _entriesPerPage]; if it moved,
+    // recalcs and reports the new position via kSetPositionCmd
     void checkBounds(int old_pos);
+    // Re-derives the arrow/up-down-box dimensions from the current font
     void setArrows();
 
   public:  // TODO: these shouldn't be public
+    // Set by the owning list to describe what's being scrolled
     int _numEntries{0};
     int _entriesPerPage{0};
     int _currentPos{0};
+    // Per-list override of S_WHEEL_LINES; 0 means use the default
     int _wheel_lines{0};
 
   private:
+    // Which region of the bar an interaction refers to
     enum class Part: uInt8 { None, UpArrow, DownArrow, Slider, PageUp, PageDown };
 
+    // Region currently under the mouse (for hover highlight)
     Part _part{Part::None};
+    // Region a mouse-down started in, while the button stays held
     Part _draggingPart{Part::None};
     int _sliderHeight{0};
     int _sliderPos{0};
+    // Offset from the slider's top to where a drag grabbed it
     int _sliderDeltaMouseDownPos{0};
 
     int _upDownBoxHeight{0};
+    // Font-derived dimensions (see setArrows())
     int _scrollBarWidth{0};
     int _arrowWidth{0};
     int _arrowHeight{0};
     int _arrowThickness{0};
 
+    // Default wheel scroll amount (see setWheelLines())
     static inline int S_WHEEL_LINES = 4;
 
   private:

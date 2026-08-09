@@ -26,6 +26,7 @@ class TimeLineWidget : public ButtonWidget
     TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd = 0);
     ~TimeLineWidget() override = default;
 
+    // Height of the timeline track, including its handle overhang
     static int calcHeight(const GUI::Font& font)
     {
       return font.getLineHeight() / 2 + 6;
@@ -35,6 +36,7 @@ class TimeLineWidget : public ButtonWidget
     // TimeMachineDialog's layout re-applies it with HAlign::Fill
     void refreshFont() override;
 
+    // Clamps to [min, max] and sends _cmd if the value actually changed
     void setValue(int value) override;
     uInt32 getValue() const { return _value; }
 
@@ -49,22 +51,30 @@ class TimeLineWidget : public ButtonWidget
     */
     void setStepValues(const IntArray& steps);
 
+    // Dragging the handle (mouse down + move) and the wheel both resolve to a
+    // new value via setValue()
     void handleMouseMoved(int x, int y) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
 
   protected:
+    // Draws the track frame, filled bar, tickmarks, and handle
     void drawWidget(bool hilite) override;
 
+    // Converts between a step value and its pixel offset along the track,
+    // via the precomputed _stepValue table (steps are not evenly spaced)
     uInt32 valueToPos(uInt32 value) const;
     uInt32 posToValue(uInt32 pos) const;
 
   protected:
+    // Current value
     uInt32  _value{0};
     uInt32  _valueMin{0}, _valueMax{0};
+    // True while the handle is being dragged
     bool    _isDragging{false};
 
+    // Pixel offset of each step along the track, set by setStepValues()
     uIntArray _stepValue;
 
   private:

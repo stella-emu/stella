@@ -41,19 +41,13 @@ class ColorWidget : public Widget, public CommandSender
       width of its own choosing, the TIA tab's is inset within its row.
     */
     ColorWidget(GuiObject* boss, const GUI::Font& font,
-                int w, int h, int cmd = 0, bool framed = true);
+                int w, int h, bool framed = true);
 
     /**
       Size me from my own font (see calcWidth/calcHeight below), which is what a
       swatch simply showing a colour wants -- so the dialog states no size at all.
-
-      ⚠ Everything I take after a size is an int and a bool, so this constructor
-      and the one above are told apart by ARGUMENT COUNT alone: two leading ints
-      are a size, one is a command.  Write 'framed' as true/false and never as
-      0/1, or 'cmd, 0' silently reads as 'w, h' instead.
     */
-    ColorWidget(GuiObject* boss, const GUI::Font& font, int cmd = 0,
-                bool framed = true);
+    ColorWidget(GuiObject* boss, const GUI::Font& font, bool framed = true);
     ~ColorWidget() override = default;
 
     /**
@@ -62,31 +56,34 @@ class ColorWidget : public Widget, public CommandSender
       something else states its own multiple against the same height, rather
       than each one re-deriving the house proportion from the font.
     */
-    static int calcHeight(const GUI::Font& font)
-    {
+    static int calcHeight(const GUI::Font& font) {
       return font.getLineHeight();
     }
-    static int calcWidth(const GUI::Font& font)
-    {
+    static int calcWidth(const GUI::Font& font) {
       return calcHeight(font) * 1.5;
     }
 
     void setColor(ColorId color);
     ColorId getColor() const { return _color;  }
 
+    // Draws an X across the swatch (e.g. to mark "no color" in a grid)
     void setCrossed(bool enable);
 
+    // A swatch doesn't highlight on hover, unlike a plain Widget
     void handleMouseEntered() override { }
     void handleMouseLeft() override { }
 
   protected:
+    // Fills the swatch with _color (framed or not), then an X if _crossGrid
     void drawWidget(bool hilite) override;
 
   protected:
+    // The color currently shown
     ColorId _color{kNone};
+    // Whether a frame is drawn around the swatch
     bool _framed{true};
-    int	_cmd{0};
 
+    // Whether setCrossed() has marked this swatch
     bool _crossGrid{false};
 
   private:

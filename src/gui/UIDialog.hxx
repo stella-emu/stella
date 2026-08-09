@@ -28,19 +28,32 @@ class UIDialog : public Dialog, public CommandSender
              GuiObject* boss);
     ~UIDialog() override = default;
 
+    // Populates both tabs' controls from current settings
     void loadConfig() override;
+    // Writes both tabs' controls back to settings, applying palette/font/
+    // HiDPI changes immediately
     void saveConfig() override;
+    // Resets the currently active tab's controls to hardcoded defaults
     void setDefaults() override;
 
   protected:
+    // OK saves and exits, then informs the boss of the settings that changed
+    // (when global) and applies font/HiDPI changes immediately; Defaults
+    // resets the active tab; slider/pop-up ids update their own labels; the
+    // path buttons open browsers
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void layout() override;
 
   private:
+    // Derives the launcher's minimum width/height from the selected dialog
+    // font, clamping the sliders to it
     void handleLauncherSize();
+    // Updates the ROM-viewer slider's label/unit and enables/disables the
+    // image-path controls based on its value
     void handleRomViewer();
 
   private:
+    // Command ids dispatched in handleCommand()
     enum
     {
       kDialogFont           = 'UIDf',
@@ -52,6 +65,7 @@ class UIDialog : public Dialog, public CommandSender
       kChooseSnapLoadDirCmd = 'UIsl' // snapshot dir (load files)
     };
 
+    // Hosts the two option tabs (Look & Feel, Launcher)
     TabWidget* myTab{nullptr};
 
     // Launcher options

@@ -46,6 +46,7 @@ class GuiObject : public CommandReceiver
   friend class DialogContainer;
 
   public:
+    // Bits of _flags, controlling appearance/behavior
     enum : uInt16 {
       FLAG_ENABLED = 1 << 0,
       FLAG_INVISIBLE = 1 << 1,
@@ -72,17 +73,22 @@ class GuiObject : public CommandReceiver
     };
 
   public:
+    /** 'w'/'h' are the initial size; most subclasses resize themselves in layout() */
     GuiObject(OSystem& osystem, DialogContainer& parent, Dialog& dialog,
               int w, int h);
 
+    /** Out-of-line: Widget must be complete where _children (vector<unique_ptr<Widget>>) is destroyed */
     ~GuiObject() override;
 
+    /** The parent system, dialog stack, and owning dialog */
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }
     Dialog& dialog() const          { return myDialog;  }
 
+    /** Position/size in screen coordinates; a Dialog's are its own, a Widget's come from its boss */
     virtual int getAbsX() const     { return _x; }
     virtual int getAbsY() const     { return _y; }
+    /** Where this object's own children are placed, relative to the screen */
     virtual int getChildX() const   { return getAbsX(); }
     virtual int getChildY() const   { return getAbsY(); }
     virtual int getWidth() const    { return _w; }
@@ -91,10 +97,13 @@ class GuiObject : public CommandReceiver
     virtual void setWidth(int w)    { _w = w; }
     virtual void setHeight(int h)   { _h = h; }
 
+    /** Whether this object is currently shown (and not hidden by an ancestor) */
     virtual bool isVisible() const = 0;
 
     virtual void draw() = 0;
+    /** Marks this object as needing to be redrawn */
     virtual void setDirty() = 0;
+    /** Marks this object and everything drawn above it as needing to be redrawn */
     virtual void setDirtyChain() = 0;
     void clearDirty() { _dirty = false; }
     void clearDirtyChain() { _dirtyChain = false; }
@@ -105,6 +114,7 @@ class GuiObject : public CommandReceiver
     //  and then re-rendered
     virtual bool needsRedraw() { return isDirty() || isChainDirty(); }
 
+    /** Advance any time-based state (e.g. cursor blink, tooltip delay) */
     virtual void tick() = 0;
 
     /**
@@ -115,6 +125,7 @@ class GuiObject : public CommandReceiver
     */
     virtual void refreshFont() = 0;
 
+    /** Sets the given FLAG_* bits, marking this object dirty if they changed */
     void setFlags(uInt32 flags, bool updateDirty = true)
     {
       const uInt32 oldFlags = _flags;
@@ -123,6 +134,7 @@ class GuiObject : public CommandReceiver
       if(updateDirty && oldFlags != _flags)
         setDirty();
     }
+    /** Clears the given FLAG_* bits, marking this object dirty if they changed */
     void clearFlags(uInt32 flags, bool updateDirty = true)
     {
       const uInt32 oldFlags = _flags;
@@ -133,12 +145,14 @@ class GuiObject : public CommandReceiver
     }
     uInt32 getFlags() const { return _flags; }
 
+    /** The FLAG_BORDER/FLAG_CLEARBG/FLAG_NOBG bits, queried individually */
     bool hasBorder() const { return _flags & FLAG_BORDER; }
     bool clearsBackground() const { return _flags & FLAG_CLEARBG; }
     bool hasBackground() const { return !(_flags & FLAG_NOBG); }
 
     /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
+    /** Add every widget in 'list' to the focus list; returns the new focus list size */
     virtual int addToFocusList(const WidgetArray& list) = 0;
 
     /** Return focus list for this object */
@@ -152,26 +166,34 @@ class GuiObject : public CommandReceiver
     const string DEGREE = "\x1c";
 
   protected:
+    /** Gives up the input focus this object currently holds */
     virtual void releaseFocus() = 0;
+    /** Draws this object and everything drawn above it */
     virtual void drawChain() = 0;
 
+    /** URL of this object's context-help page, if any */
     virtual string getHelpURL() const = 0;
+    /** Whether getHelpURL() has anything to offer */
     virtual bool hasHelp() const = 0;
 
   private:
+    // Parent system, dialog stack, and owning dialog
     OSystem&         myOSystem;
     DialogContainer& myParent;
     Dialog&          myDialog;
 
   protected:
+    // Position and size in screen coordinates
     int         _x{0}, _y{0}, _w{0}, _h{0};
     bool        _dirty{false};
     bool        _dirtyChain{false};
+    // FLAG_* bits currently set
     uInt32      _flags{0};
 
     // The child widgets owned by this object; a Widget appends itself to its
     // boss's list at construction (see the Widget constructor)
     WidgetList  _children;
+    // Widgets that can take the input focus, in tab order
     WidgetArray _focusList;
 
   private:

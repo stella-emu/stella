@@ -50,7 +50,9 @@ class WrappedTextWidget : public StringListWidget
                       uInt16 minLines = 4);
     ~WrappedTextWidget() override = default;
 
+    // Re-wraps to the new width (see rewrap())
     void setWidth(int w) override;
+    // Re-wraps for the live font (line height and character widths both changed)
     void refreshFont() override;
 
     /**
@@ -75,6 +77,7 @@ class WrappedTextWidget : public StringListWidget
     // our height belongs to the layout (see the class comment)
     void rewrap();
 
+    // Pixel height of a box showing this many lines (mirrors ListWidget::calcHeight)
     int heightForLines(int lines) const { return lines * _lineHeight + 2; }
 
     // The raw, unwrapped text, and the most/least lines to show: past the one

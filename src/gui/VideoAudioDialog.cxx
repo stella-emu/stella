@@ -1568,7 +1568,7 @@ void VideoAudioDialog::createPaletteWidgets(TabPaneWidget* pane)
     myColorLbl[idx] = new LabelWidget(pane, ifont, "1");
     for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
-      myColor[idx][lum] = new ColorWidget(pane, _font, 0, false);
+      myColor[idx][lum] = new ColorWidget(pane, _font, false);
       myColor[idx][lum]->clearFlags(FLAG_CLEARBG | FLAG_RETAIN_FOCUS
                                     | FLAG_MOUSE_FOCUS | FLAG_BORDER);
     }

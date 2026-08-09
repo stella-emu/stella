@@ -38,24 +38,32 @@ class JoystickDialog : public Dialog
     JoystickDialog(GuiObject* boss, const GUI::Font& font);
     ~JoystickDialog() override = default;
 
+    // (Re)populates the list from the eventhandler's physical joystick database
     void loadConfig() override;
 
   protected:
     void layout() override;
+    // Reacts to a list selection, a port change, Remove, or Close
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // UIReload (e.g. a device plugged/unplugged) refreshes the list
     void handleEvent(Event::Type event) override;
 
   private:
+    // The known controllers, one row each
     StringListWidget* myJoyList{nullptr};
+    // Read-only controller-ID readout for the selected entry
     LabelWidget*      myIDLbl{nullptr};
     EditTextWidget*   myJoyText{nullptr};
+    // Default port assignment for the selected entry
     LabelWidget*      myJoyPortLbl{nullptr};
     PopUpWidget*      myJoyPort{nullptr};
 
     ButtonWidget* myRemoveBtn{nullptr};
     ButtonWidget* myCloseBtn{nullptr};
 
+    // Numeric device ID if currently plugged in (else negative), parallel to myJoyList
     IntArray myJoyIDs;
+    // Default port assignment, parallel to myJoyList
     IntArray myJoyPorts;
 
     enum {

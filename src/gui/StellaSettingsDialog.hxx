@@ -36,19 +36,33 @@ class StellaSettingsDialog : public Dialog
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent, AppMode mode);
     ~StellaSettingsDialog() override;
 
+    // Populates all controls from current settings and controller properties
     void loadConfig() override;
+    // Writes all controls back to settings, then re-inits the framebuffer
+    // and TIA surface so the changes take effect immediately
     void saveConfig() override;
+    // Resets UI/video controls to hardcoded defaults, and reloads this ROM's
+    // default controller properties
     void setDefaults() override;
 
   protected:
     void layout() override;
+    // OK saves and exits; Advanced/Help open their dialogs; slider changes
+    // update their value labels; controller pop-up changes refresh the
+    // detected-controller readouts
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Builds the UI theme and dialog-position pop-ups
     void createUIOptions(WidgetArray& wid);
+    // Builds the TV mode/scanline/phosphor/overscan controls
     void createVideoOptions(WidgetArray& wid);
+    // Builds the left/right controller-port pop-ups and their
+    // detected-controller labels
     void createGameOptions(WidgetArray& wid);
 
+    // Blanks the value label and unit when overscan is 0, else shows it as
+    // a percentage
     void handleOverscanChange();
 
     // switch to advanced settings after user confirmation
@@ -61,8 +75,11 @@ class StellaSettingsDialog : public Dialog
     static int levelToValue(int level);
     static int valueToLevel(int value);
 
+    // Opens (creating it if necessary) the basic-settings help dialog
     void openHelp();
 
+    // Refreshes the detected-controller labels for both ports, and enables/
+    // disables port selection (CompuMate has no selectable controllers)
     void updateControllerStates();
 
   private:
@@ -74,6 +91,7 @@ class StellaSettingsDialog : public Dialog
     // UI theme
     LabelWidget*  myThemePopupLbl{nullptr};
     PopUpWidget*  myThemePopup{nullptr};
+    // Dialog position
     LabelWidget*  myPositionPopupLbl{nullptr};
     PopUpWidget*  myPositionPopup{nullptr};
 
@@ -97,6 +115,8 @@ class StellaSettingsDialog : public Dialog
     // Controller properties
     LabelWidget*  myGameSettings{nullptr};
 
+    // Left/right controller-port pop-ups, and the auto-detected controller
+    // name shown beneath each (see updateControllerStates())
     LabelWidget*  myLeftPortLbl{nullptr};
     LabelWidget*  myRightPortLbl{nullptr};
     PopUpWidget*  myLeftPort{nullptr};
@@ -104,11 +124,13 @@ class StellaSettingsDialog : public Dialog
     PopUpWidget*  myRightPort{nullptr};
     LabelWidget*  myRightPortDetected{nullptr};
 
+    // Lazily created on the first Help click (see openHelp())
     unique_ptr<HelpDialog> myHelpDialog;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     AppMode myMode{AppMode::emulator};
 
+    // Command ids dispatched in handleCommand()
     enum {
       kAdvancedSettings = 'SSad',
       kHelp             = 'SShl',

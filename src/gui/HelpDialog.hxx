@@ -37,10 +37,15 @@ class HelpDialog : public Dialog
 
   protected:
     void layout() override;
+    // Pages via Prev/Next, opens the update-check URL, or opens a clicked link
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Fills myKeyStr/myDescStr (and 'title') with the given page's rows, pairing
+    // each event's current key/button mapping with a description
     void updateStrings(int page, int lines, string& title);
+    // Applies updateStrings()'s rows to myTitle/myKey/myDesc, auto-linking the
+    // one row that points at the Input remapping dialog
     void displayInfo();
 
   private:
@@ -50,14 +55,17 @@ class HelpDialog : public Dialog
     ButtonWidget* myUpdateButton{nullptr};
 
     LabelWidget* myTitle;
+    // Hotkey / description LabelWidgets, one row each, reused across pages
     std::array<LabelWidget*, LINES_PER_PAGE> myKey{nullptr};
     std::array<LabelWidget*, LINES_PER_PAGE> myDesc{nullptr};
+    // This page's raw text (see updateStrings())
     std::array<string, LINES_PER_PAGE> myKeyStr;
     std::array<string, LINES_PER_PAGE> myDescStr;
 
     int myPage{1};
     static constexpr int myNumPages{5};
 
+    // Sent by the "Check for Update" button
     enum { kUpdateCmd = 'upCm' };
 
   private:

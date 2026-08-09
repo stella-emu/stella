@@ -27,6 +27,7 @@ class FBSurface;
 class RomInfoWidget : public Widget, public CommandSender
 {
   public:
+    // Sent when the "Name:" line is clicked, if the ROM has a Cart_Url property
     enum {
       kClickedCmd = 'RIcl'
     };
@@ -35,19 +36,26 @@ class RomInfoWidget : public Widget, public CommandSender
     RomInfoWidget(GuiObject *boss, const GUI::Font& font);
     ~RomInfoWidget() override = default;
 
+    // Sets the properties to describe (parsed immediately if the launcher is active)
     void setProperties(const FSNode& node, const Properties& properties,
                        bool full = true);
+    // Clears the display; used when nothing (or an invalid ROM) is selected
     void clearProperties();
+    // Re-parses the current properties (e.g. after a change made in the ROM browser)
     void reloadProperties(const FSNode& node);
 
     const string& getUrl() const { return myUrl; }
 
+    // Fires kClickedCmd if the highlighted "Name:" link is clicked
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
+    // Draws as many lines of myRomInfo as fit, wrapping/eliding as needed
     void drawWidget(bool hilite) override;
 
   private:
+    // Builds myRomInfo (and myUrl) from myProperties; 'full' additionally runs
+    // controller/bankswitch auto-detection, which needs to open the ROM image
     void parseProperties(const FSNode& node, bool full = true);
 
   private:

@@ -43,8 +43,10 @@ class EditTextWidget : public EditableWidget
 
     ~EditTextWidget() override = default;
 
+    // As EditableWidget::setText(), additionally tracking 'changed' for drawWidget()
     void setText(string_view str, bool changed = false) override;
 
+    // Positions the caret at the clicked character before starting the drag-select
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
     // The frame insets the text by the same amount however tall the box is.  A
@@ -56,6 +58,8 @@ class EditTextWidget : public EditableWidget
       return (_font.getLineHeight() + 2 - _font.getFontHeight()) / 2;
     }
 
+    // Restores the framed height for the live font and the _lines this box
+    // was built to show; width is dialog-chosen and re-applied by layout()
     void refreshFont() override;
 
     // Get total width of widget
@@ -76,16 +80,24 @@ class EditTextWidget : public EditableWidget
     }
 
   protected:
+    // Draws the frame, the text (highlighted if _changed / greyed if not
+    // editable/enabled), and the caret/selection
     void drawWidget(bool hilite) override;
+    // Commits the current text so losing focus doesn't discard it
     void lostFocusWidget() override;
 
+    // No-ops: an EditTextWidget is always in edit mode (see the ctor), so
+    // there is no "leave edit mode" transition to make; endEditMode() keeps
+    // the text as-is, abortEditMode() still reverts it (see abort())
     void endEditMode() override;
     void abortEditMode() override;
 
     Common::Rect getEditRect() const override;
 
   protected:
+    // Highlighted in drawWidget() when true; set via setText(str, true)
     bool   _changed{false};
+    // Horizontal inset between the frame and the text (see EditableWidget::textInset)
     int    _textOfs{0};
     // Lines of text the box was built to show, so a font change can restore a
     // multi-line height rather than collapsing the box to a single line

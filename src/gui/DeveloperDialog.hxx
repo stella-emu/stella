@@ -42,17 +42,31 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                     const GUI::Font& font);
+    // Out-of-line: mySettingsGroupEmulation/mySettingsGroupTia/
+    // mySettingsGroupVideo/mySettingsGroupTM (unique_ptr<RadioButtonGroup>)
+    // need their complete type here
     ~DeveloperDialog() override;
 
+    // Loads both the player and developer setting sets, then shows
+    // whichever is currently active
     void loadConfig() override;
+    // Saves both setting sets and activates the one currently selected
     void saveConfig() override;
+    // Resets the currently active tab's settings (in the active set) to
+    // their player/developer default
     void setDefaults() override;
 
   protected:
     void layout() override;
+    // kPlrSettings/kDevSettings switch the active setting set; the TIA/
+    // console/jitter/state-buffer ids dispatch to their handle*() methods;
+    // the debug-colour ids keep the six swatches distinct; OK saves and
+    // exits (informing the debugger of a font change); Defaults resets
+    // the active tab
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    // Command ids dispatched in handleCommand()
     enum
     {
       kPlrSettings          = 'DVpl',
@@ -77,8 +91,11 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
   #endif
     };
 
+    // Number of TIA objects that get a fixed debug color (P0/M0/P1/M1/PF/BL)
     static constexpr int DEBUG_COLORS = 6;
 
+    // Hosts the five settings tabs (Emulation, TIA, Video, Time Machine,
+    // Debugger)
     TabWidget* myTab{nullptr};
     // Per-tab "Player/Developer settings" radio pairs + bottom info labels
     // (promoted from anonymous locals so layout() can position them)
@@ -181,34 +198,76 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myGhostReadsTrapWidget{nullptr};
 #endif
 
+    // True when the 'Developer settings' set is active (mirrors
+    // mySettingsGroup*'s selection)
     bool mySettings{false};
+    // Single-letter codes for the 5 CPU registers, as stored in the
+    // myRandomizeCPU setting string
     static constexpr std::array<string_view, 5> ourCPURegs = {
       "S", "A", "X", "Y", "P"
     };
 
   private:
+    // Builds the 'Emulation' tab: console info/PlusROM, startup
+    // randomization, undriven-pin/port-break behaviour, ARM speed limit
     void addEmulationTab(const GUI::Font& font);
+    // Builds the 'Time Machine' tab: enable, buffer size/uncompressed
+    // size, interval, horizon
     void addTimeMachineTab(const GUI::Font& font);
+    // Builds the 'TIA' tab: chip type, and the per-object timing/color
+    // quirks it can emulate
     void addTiaTab(const GUI::Font& font);
+    // Builds the 'Video' tab: TV jitter, PAL color-loss, and the six
+    // fixed debug colors
     void addVideoTab(const GUI::Font& font);
+    // Builds the 'Debugger' tab: font size/style and the ghost-reads trap
+    // (or a placeholder message when built without debugger support)
     void addDebuggerTab(const GUI::Font& font);
 
+    // Copies every tab's current widget values into the given setting set
     void getWidgetStates(SettingsSet set);
+    // Loads the given setting set's values into every tab's widgets, then
+    // refreshes their enabled state
     void setWidgetStates(SettingsSet set);
 
+    // Switches the active setting set (player/developer), saving the
+    // previous set's widget values first
     void handleSettings(bool devSettings);
+    // Enables the jitter sensitivity/recovery sliders only while jitter
+    // is on
     void handleTVJitterChange();
+    // Disables RAM randomization for the 7800, which lacks the RAM this
+    // randomizes
     void handleConsole();
 
+    // Enables the per-object quirk widgets only for 'Custom' chip type,
+    // and either restores their developer-set values or shows the fixed
+    // quirks a known faulty-chip type implies
     void handleTia();
 
+    // Sets debug-color 'idx' to 'color' (for the console's current TV
+    // timing), swapping it with whichever other index already used that
+    // color
     void handleDebugColours(int idx, int color);
+    // Applies a 6-character 'roygpb'-style color string, one call to the
+    // int overload per character
     void handleDebugColours(string_view colors);
 
+    // Enables the buffer-size/interval controls only while Time Machine
+    // is on, and the horizon control only when the buffer holds more
+    // than its uncompressed portion
     void handleTimeMachine();
+    // After a buffer-size change, shrinks uncompressed size to fit and
+    // finds the largest interval/horizon combination the new size supports
     void handleSize();
+    // After an uncompressed-size change, grows the buffer size to fit it
+    // if needed
     void handleUncompressed();
+    // After an interval change, shrinks the buffer size until the
+    // interval/horizon combination fits, then clamps uncompressed size to it
     void handleInterval();
+    // After a horizon change, shrinks the buffer size until the
+    // interval/horizon combination fits, then clamps uncompressed size to it
     void handleHorizon();
 
   private:
