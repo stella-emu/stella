@@ -25,20 +25,21 @@ namespace GUI {
   class GridLayout;
 }  // namespace GUI
 
-// DataGridWidget operations
-enum {
-  kDGZeroCmd   = 'DGze',
-  kDGInvertCmd = 'DGiv',
-  kDGNegateCmd = 'DGng',
-  kDGIncCmd    = 'DGic',
-  kDGDecCmd    = 'DGdc',
-  kDGShiftLCmd = 'DGls',
-  kDGShiftRCmd = 'DGrs'
-};
-
 class DataGridOpsWidget : public Widget, public CommandSender
 {
   public:
+    // DataGridWidget operations
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Zero       = GuiCmd::of("DataGridOpsWidget.Zero"),
+        Invert     = GuiCmd::of("DataGridOpsWidget.Invert"),
+        Negate     = GuiCmd::of("DataGridOpsWidget.Negate"),
+        Increment  = GuiCmd::of("DataGridOpsWidget.Increment"),
+        Decrement  = GuiCmd::of("DataGridOpsWidget.Decrement"),
+        ShiftLeft  = GuiCmd::of("DataGridOpsWidget.ShiftLeft"),
+        ShiftRight = GuiCmd::of("DataGridOpsWidget.ShiftRight");
+    };
+
     DataGridOpsWidget(GuiObject* boss, const GUI::Font& font);
     ~DataGridOpsWidget() override = default;
 

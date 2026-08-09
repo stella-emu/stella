@@ -55,9 +55,14 @@ class ProgressDialog : public Dialog
   protected:
     void layout() override;
     // The Cancel button sets myIsCancelled for the caller to notice
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Cancel = GuiCmd::of("ProgressDialog.Cancel");
+    };
+
     LabelWidget*  myMessage{nullptr};
     SliderWidget* mySlider{nullptr};
     string        myMessageText;

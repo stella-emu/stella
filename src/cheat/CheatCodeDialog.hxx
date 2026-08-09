@@ -59,7 +59,7 @@ class CheatCodeDialog : public Dialog
     // Positions the list, action-button column, and OK/Cancel row
     void layout() override;
     // Dispatches button/menu commands to the add/edit/remove helpers
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Opens the input dialog to create a new cheat
@@ -87,14 +87,15 @@ class CheatCodeDialog : public Dialog
     ButtonWidget* myOneShotButton{nullptr};
 
     // Command IDs used with handleCommand()
-    enum {
-      kAddCheatCmd       = 'CHTa',
-      kEditCheatCmd      = 'CHTe',
-      kAddOneShotCmd     = 'CHTo',
-      kCheatAdded        = 'CHad',
-      kCheatEdited       = 'CHed',
-      kOneShotCheatAdded = 'CHoa',
-      kRemCheatCmd       = 'CHTr'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        AddCheat          = GuiCmd::of("CheatCodeDialog.AddCheat"),
+        EditCheat         = GuiCmd::of("CheatCodeDialog.EditCheat"),
+        AddOneShot        = GuiCmd::of("CheatCodeDialog.AddOneShot"),
+        CheatAdded        = GuiCmd::of("CheatCodeDialog.CheatAdded"),
+        CheatEdited       = GuiCmd::of("CheatCodeDialog.CheatEdited"),
+        OneShotCheatAdded = GuiCmd::of("CheatCodeDialog.OneShotCheatAdded"),
+        RemoveCheat       = GuiCmd::of("CheatCodeDialog.RemoveCheat");
     };
 
   private:

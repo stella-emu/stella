@@ -29,7 +29,10 @@ using CheckboxArray = vector<CheckboxWidget*>;
 class CheckListWidget : public ListWidget
 {
   public:
-    enum { kListItemChecked = 'LIct' /* checkbox toggled on current line*/ };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ListItemChecked = GuiCmd::of("CheckListWidget.ListItemChecked");  // checkbox toggled on current line
+    };
 
   public:
     CheckListWidget(GuiObject* boss, const GUI::Font& font);
@@ -55,8 +58,8 @@ class CheckListWidget : public ListWidget
     void refreshFont() override;
 
   protected:
-    // Reacts to a row's checkbox being toggled (CheckboxWidget::kCheckActionCmd)
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // Reacts to a row's checkbox being toggled (CheckboxWidget::Cmd::CheckAction)
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
     Common::Rect getEditRect() const override;

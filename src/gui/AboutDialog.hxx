@@ -47,7 +47,7 @@ class AboutDialog : public Dialog
   protected:
     void layout() override;
     // Pages via Prev/Next, opens the What's New dialog, or opens a clicked link
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Fills myDescStr (and 'title') with the given page's text; each line may
@@ -76,8 +76,9 @@ class AboutDialog : public Dialog
     // Created lazily on first "What's New" click
     unique_ptr<WhatsNewDialog> myWhatsNewDialog;
 
-    enum {
-      kWhatsNew = 'ADWN'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        WhatsNew = GuiCmd::of("AboutDialog.WhatsNew");
     };
 
   private:

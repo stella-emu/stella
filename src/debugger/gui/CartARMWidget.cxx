@@ -41,12 +41,12 @@ void CartridgeARMWidget::createCycleWidgets()
   myArmCyclesLbl->setToolTip("Cycle count enabled by developer settings.");
 
   myIncCycles = new CheckboxWidget(_boss, _font, "Increase 6507 cycles",
-                                   kIncCyclesChanged);
+                                   Cmd::IncCyclesChanged);
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
   myIncCycles->setTarget(this);
 
   myCycleFactorLbl = new LabelWidget(_boss, _font, "Cycle factor");
-  myCycleFactor = new SliderWidget(_boss, _font, 10, kFactorChanged, 4, "%");
+  myCycleFactor = new SliderWidget(_boss, _font, 10, Cmd::FactorChanged, 4, "%");
   myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
   myCycleFactor->setTickmarkIntervals(4);
   myCycleFactor->setToolTip("Correct approximated ARM cycles by factor.");
@@ -72,11 +72,11 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
   VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
   myChipTypeLbl = new LabelWidget(_boss, _font, "Chip");
-  myChipType = new PopUpWidget(_boss, _font, items, kChipChanged);
+  myChipType = new PopUpWidget(_boss, _font, items, Cmd::ChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
   myChipType->setTarget(this);
 
-  myLockMamMode = new CheckboxWidget(_boss, _font, "MAM Mode", kMamLockChanged);
+  myLockMamMode = new CheckboxWidget(_boss, _font, "MAM Mode", Cmd::MamLockChanged);
   myLockMamMode->setToolTip("Check to lock Memory Accelerator Module (MAM) mode.");
   myLockMamMode->setTarget(this);
 
@@ -85,7 +85,7 @@ void CartridgeARMWidget::createCycleWidgets()
   VarList::push_back(items, "Partial (1)", static_cast<uInt32>(Thumbulator::MamModeType::mode1));
   VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
   VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
-  myMamMode = new PopUpWidget(_boss, _font, items, kMamModeChanged);
+  myMamMode = new PopUpWidget(_boss, _font, items, Cmd::MamModeChanged);
   myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
   myMamMode->setTarget(this);
 
@@ -212,25 +212,25 @@ void CartridgeARMWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeARMWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeARMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
   switch(cmd)
   {
-    case kChipChanged:
+    case Cmd::ChipChanged:
       handleChipType();
       break;
 
-    case kMamLockChanged:
+    case Cmd::MamLockChanged:
       handleMamLock();
       break;
 
-    case kMamModeChanged:
+    case Cmd::MamModeChanged:
       handleMamMode();
       break;
 
-    case kIncCyclesChanged:
-    case kFactorChanged:
+    case Cmd::IncCyclesChanged:
+    case Cmd::FactorChanged:
       handleArmCycles();
       break;
 

@@ -34,8 +34,9 @@ class RomInfoWidget : public Widget, public CommandSender
 {
   public:
     // Sent when the "Name:" line is clicked, if the ROM has a Cart_Url property
-    enum {
-      kClickedCmd = 'RIcl'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Clicked = GuiCmd::of("RomInfoWidget.Clicked");
     };
 
   public:
@@ -52,7 +53,7 @@ class RomInfoWidget : public Widget, public CommandSender
 
     const string& getUrl() const { return myUrl; }
 
-    // Fires kClickedCmd if the highlighted "Name:" link is clicked
+    // Fires Cmd::Clicked if the highlighted "Name:" link is clicked
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   protected:

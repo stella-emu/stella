@@ -172,11 +172,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
   myP0DiffLbl = new LabelWidget(boss, lfont, "Left Diff");
-  myP0Diff = new PopUpWidget(boss, lfont, items, kP0DiffChanged);
+  myP0Diff = new PopUpWidget(boss, lfont, items, Cmd::P0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
   myP1DiffLbl = new LabelWidget(boss, lfont, "Right Diff");
-  myP1Diff = new PopUpWidget(boss, lfont, items, kP1DiffChanged);
+  myP1Diff = new PopUpWidget(boss, lfont, items, Cmd::P1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
@@ -185,7 +185,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
   myTVTypeLbl = new LabelWidget(boss, lfont, "TV Type");
-  myTVType = new PopUpWidget(boss, lfont, items, kTVTypeChanged);
+  myTVType = new PopUpWidget(boss, lfont, items, Cmd::TVTypeChanged);
   myTVType->setToolTip("Atari 2600 Color/B&W switch.");
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
@@ -195,7 +195,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
   myConsoleLbl = new LabelWidget(boss, lfont, "Console");
-  myConsole = new PopUpWidget(boss, lfont, items, kConsoleID);
+  myConsole = new PopUpWidget(boss, lfont, items, Cmd::Console);
   myConsole->setTarget(this);
   myConsole->setToolTip("Emulated console.");
   addFocusWidget(myConsole);
@@ -203,7 +203,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // Select, Reset and Pause (beside the difficulty/TV pop-ups)
   const auto check = [&](string_view label, uInt8 id) {
     auto* cb = new CheckboxWidget(boss, lfont, label,
-                                  CheckboxWidget::kCheckActionCmd);
+                                  CheckboxWidget::Cmd::CheckAction);
     cb->setID(id);
     cb->setTarget(this);
     addFocusWidget(cb);
@@ -557,14 +557,15 @@ void RiotWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RiotWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                               int data, int id)
 {
   int value = -1;
   RiotDebug& riot = instance().debugger().riotDebug();
 
   switch(cmd)
   {
-    case DataGridWidget::kItemDataChangedCmd:
+    case DataGridWidget::Cmd::ItemDataChanged:
       if(id == kTimWriteID)
       {
         switch(myTimWrite->getSelectedAddr())
@@ -587,7 +588,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case ToggleWidget::kItemDataChangedCmd:
+    case ToggleWidget::Cmd::ItemDataChanged:
       switch(id)
       {
         case kSWCHABitsID:
@@ -637,7 +638,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kConsoleID:
+    case Cmd::Console:
     {
       Settings& settings = instance().settings();
       const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
@@ -647,7 +648,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case CheckboxWidget::kCheckActionCmd:
+    case CheckboxWidget::Cmd::CheckAction:
       switch(id)
       {
         case kSelectID:
@@ -664,15 +665,15 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kP0DiffChanged:
+    case Cmd::P0DiffChanged:
       riot.diffP0(myP0Diff->getSelectedTag().toString() != "b");
       break;
 
-    case kP1DiffChanged:
+    case Cmd::P1DiffChanged:
       riot.diffP1(myP1Diff->getSelectedTag().toString() != "b");
       break;
 
-    case kTVTypeChanged:
+    case Cmd::TVTypeChanged:
       handleConsole();
       break;
 

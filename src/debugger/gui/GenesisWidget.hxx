@@ -31,7 +31,7 @@ class GenesisWidget : public ControllerWidget
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layoutContent(GUI::BoxLayout& col) override;
 
   private:

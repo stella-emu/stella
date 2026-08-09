@@ -146,7 +146,7 @@ void CartDebugWidget::setArea(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebugWidget::invalidate()
 {
-  sendCommand(RomWidget::kInvalidateListing, -1, -1);
+  sendCommand(RomWidget::Cmd::InvalidateListing, -1, -1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -75,7 +75,7 @@ class ScrollBarWidget : public Widget, public CommandSender
 
   private:
     // Clamps _currentPos to [0, _numEntries - _entriesPerPage]; if it moved,
-    // recalcs and reports the new position via kSetPositionCmd
+    // recalcs and reports the new position via GuiObject::Cmd::SetPosition
     void checkBounds(int old_pos);
     // Re-derives the arrow/up-down-box dimensions from the current font
     void setArrows();

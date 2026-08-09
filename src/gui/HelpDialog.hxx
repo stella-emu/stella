@@ -44,7 +44,7 @@ class HelpDialog : public Dialog
   protected:
     void layout() override;
     // Pages via Prev/Next, opens the update-check URL, or opens a clicked link
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Fills myKeyStr/myDescStr (and 'title') with the given page's rows, pairing
@@ -72,7 +72,10 @@ class HelpDialog : public Dialog
     static constexpr int myNumPages{5};
 
     // Sent by the "Check for Update" button
-    enum { kUpdateCmd = 'upCm' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Update = GuiCmd::of("HelpDialog.Update");
+    };
 
   private:
     // Following constructors and assignment operators not supported

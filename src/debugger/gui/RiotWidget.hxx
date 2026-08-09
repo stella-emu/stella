@@ -46,7 +46,7 @@ class RiotWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Build the layout tree from the current font and position/size everything;
@@ -102,11 +102,19 @@ class RiotWidget : public Widget, public CommandSender
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        P0DiffChanged = GuiCmd::of("RiotWidget.P0DiffChanged"),
+        P1DiffChanged = GuiCmd::of("RiotWidget.P1DiffChanged"),
+        TVTypeChanged = GuiCmd::of("RiotWidget.TVTypeChanged"),
+        Console       = GuiCmd::of("RiotWidget.Console");
+    };
+
+    // Widget IDs, matched against the 'id' of an incoming command
     enum: uInt8 {
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
-      kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kSWCHARBitsID, kSWCHBRBitsID, kPauseID, kConsoleID
+      kSelectID, kResetID, kSWCHARBitsID, kSWCHBRBitsID, kPauseID
     };
 
   private:

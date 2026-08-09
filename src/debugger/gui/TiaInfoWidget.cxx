@@ -273,7 +273,8 @@ void TiaInfoWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaInfoWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaInfoWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
 }
 

@@ -156,6 +156,7 @@ class FrameBuffer
     */
     void update(UpdateMode mode = UpdateMode::NONE);
 
+  #ifdef GUI_SUPPORT
     /**
       Secondary-window support.  In addition to the primary window (launcher /
       emulation / main debugger), the FrameBuffer can drive one additional
@@ -193,6 +194,7 @@ class FrameBuffer
     */
     void renderSecondaryWindow(DialogContainer& container,
                                UpdateMode mode = UpdateMode::REDRAW);
+  #endif  // GUI_SUPPORT
 
     /**
       Hide the secondary window (its backend/surfaces are kept for re-open).
@@ -651,10 +653,12 @@ class FrameBuffer
     */
     void setRenderTarget(int target);
 
+  #ifdef GUI_SUPPORT
     /**
       Draw a DialogContainer into the current render target and present it.
     */
     void updateContainer(DialogContainer& container, UpdateMode mode);
+  #endif  // GUI_SUPPORT
 
   private:
     // The parent system for the framebuffer

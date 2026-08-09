@@ -45,11 +45,11 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // VSync/VBlank
   ////////////////////////////
-  myVSync = new CheckboxWidget(boss, lfont, "VSync", kVSyncCmd);
+  myVSync = new CheckboxWidget(boss, lfont, "VSync", Cmd::VSync);
   myVSync->setTarget(this);
   addFocusWidget(myVSync);
 
-  myVBlank = new CheckboxWidget(boss, lfont, "VBlank", kVBlankCmd);
+  myVBlank = new CheckboxWidget(boss, lfont, "VBlank", Cmd::VBlank);
   myVBlank->setTarget(this);
   addFocusWidget(myVBlank);
 
@@ -82,7 +82,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myCOLUBKColor = swatch();
 
   // Fixed debug colors
-  myFixedEnabled = new CheckboxWidget(boss, lfont, "Debug Colors", kDbgClCmd);
+  myFixedEnabled = new CheckboxWidget(boss, lfont, "Debug Colors", Cmd::DebugColors);
   myFixedEnabled->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
@@ -111,14 +111,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
       myCollision[idx] = new CheckboxWidget(boss, lfont, "",
-                                            CheckboxWidget::kCheckActionCmd);
+                                            CheckboxWidget::Cmd::CheckAction);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
     }
   }
 
   // Clear all collision bits
-  myCxclrButton = new ButtonWidget(boss, lfont, "CXCLR", kCxclrCmd);
+  myCxclrButton = new ButtonWidget(boss, lfont, "CXCLR", Cmd::Cxclr);
   myCxclrButton->setCompact();
   myCxclrButton->setTarget(this);
   addFocusWidget(myCxclrButton);
@@ -155,13 +155,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // P0 reflect
   myRefP0 = new CheckboxWidget(boss, lfont,
-                               "Reflect", CheckboxWidget::kCheckActionCmd);
+                               "Reflect", CheckboxWidget::Cmd::CheckAction);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
   // P0 reset
-  myResButtons[0] = new ButtonWidget(boss, lfont, "RESP0", kResP0Cmd);
+  myResButtons[0] = new ButtonWidget(boss, lfont, "RESP0", Cmd::ResetPlayer0);
   myResButtons[0]->setCompact();
   myResButtons[0]->setTarget(this);
   addFocusWidget(myResButtons[0]);
@@ -175,7 +175,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // P0 delay
   myDelP0 = new CheckboxWidget(boss, lfont,
-                               "VDel", CheckboxWidget::kCheckActionCmd);
+                               "VDel", CheckboxWidget::Cmd::CheckAction);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
@@ -222,13 +222,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // P1 reflect
   myRefP1 = new CheckboxWidget(boss, lfont,
-                               "Reflect", CheckboxWidget::kCheckActionCmd);
+                               "Reflect", CheckboxWidget::Cmd::CheckAction);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
   // P1 reset
-  myResButtons[1] = new ButtonWidget(boss, lfont, "RESP1", kResP1Cmd);
+  myResButtons[1] = new ButtonWidget(boss, lfont, "RESP1", Cmd::ResetPlayer1);
   myResButtons[1]->setCompact();
   myResButtons[1]->setTarget(this);
   addFocusWidget(myResButtons[1]);
@@ -242,7 +242,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // P1 delay
   myDelP1 = new CheckboxWidget(boss, lfont,
-                               "VDel", CheckboxWidget::kCheckActionCmd);
+                               "VDel", CheckboxWidget::Cmd::CheckAction);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
@@ -296,13 +296,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // M0 reset to player 0
   myResMP0 = new CheckboxWidget(boss, lfont,
-                                "Reset to P0", CheckboxWidget::kCheckActionCmd);
+                                "Reset to P0", CheckboxWidget::Cmd::CheckAction);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
 
   // M0 reset
-  myResButtons[2] = new ButtonWidget(boss, lfont, "RESM0", kResM0Cmd);
+  myResButtons[2] = new ButtonWidget(boss, lfont, "RESM0", Cmd::ResetMissile0);
   myResButtons[2]->setCompact();
   myResButtons[2]->setTarget(this);
   addFocusWidget(myResButtons[2]);
@@ -346,13 +346,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // M1 reset to player 1
   myResMP1 = new CheckboxWidget(boss, lfont,
-                                "Reset to P1", CheckboxWidget::kCheckActionCmd);
+                                "Reset to P1", CheckboxWidget::Cmd::CheckAction);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
 
   // M1 reset
-  myResButtons[3] = new ButtonWidget(boss, lfont, "RESM1", kResM1Cmd);
+  myResButtons[3] = new ButtonWidget(boss, lfont, "RESM1", Cmd::ResetMissile1);
   myResButtons[3]->setCompact();
   myResButtons[3]->setTarget(this);
   addFocusWidget(myResButtons[3]);
@@ -395,7 +395,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(mySizeBL);
 
   // Reset ball
-  myResButtons[4] = new ButtonWidget(boss, lfont, "RESBL", kResBLCmd);
+  myResButtons[4] = new ButtonWidget(boss, lfont, "RESBL", Cmd::ResetBall);
   myResButtons[4]->setCompact();
   myResButtons[4]->setTarget(this);
   addFocusWidget(myResButtons[4]);
@@ -409,7 +409,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Ball delay
   myDelBL = new CheckboxWidget(boss, lfont,
-                               "VDel", CheckboxWidget::kCheckActionCmd);
+                               "VDel", CheckboxWidget::Cmd::CheckAction);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
   addFocusWidget(myDelBL);
@@ -456,19 +456,19 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // PF reflect, score, priority
   myRefPF = new CheckboxWidget(boss, lfont,
-                               "Reflect", CheckboxWidget::kCheckActionCmd);
+                               "Reflect", CheckboxWidget::Cmd::CheckAction);
   myRefPF->setTarget(this);
   myRefPF->setID(kRefPFID);
   addFocusWidget(myRefPF);
 
   myScorePF = new CheckboxWidget(boss, lfont,
-                                 "Score", CheckboxWidget::kCheckActionCmd);
+                                 "Score", CheckboxWidget::Cmd::CheckAction);
   myScorePF->setTarget(this);
   myScorePF->setID(kScorePFID);
   addFocusWidget(myScorePF);
 
   myPriorityPF = new CheckboxWidget(boss, lfont,
-                                    "Priority", CheckboxWidget::kCheckActionCmd);
+                                    "Priority", CheckboxWidget::Cmd::CheckAction);
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
@@ -482,8 +482,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   static constexpr std::array<string_view, 4> strobeNames = {
     "WSYNC", "RSYNC", "HMOVE", "HMCLR"
   };
-  static constexpr std::array<int, 4> strobeCmds = {
-    kWsyncCmd, kRsyncCmd, kHmoveCmd, kHmclrCmd
+  static constexpr std::array<GuiCmd::Code, 4> strobeCmds = {
+    Cmd::Wsync, Cmd::Rsync, Cmd::Hmove, Cmd::Hmclr
   };
   for(int i = 0; i < 4; ++i)
   {
@@ -873,65 +873,66 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   TIADebug& tia = instance().debugger().tiaDebug();
 
   switch(cmd)
   {
-    case kWsyncCmd:
+    case Cmd::Wsync:
       tia.strobeWsync();
       break;
 
-    case kRsyncCmd:
+    case Cmd::Rsync:
       tia.strobeRsync();
       break;
 
-    case kResP0Cmd:
+    case Cmd::ResetPlayer0:
       tia.strobeResP0();
       break;
 
-    case kResP1Cmd:
+    case Cmd::ResetPlayer1:
       tia.strobeResP1();
       break;
 
-    case kResM0Cmd:
+    case Cmd::ResetMissile0:
       tia.strobeResM0();
       break;
 
-    case kResM1Cmd:
+    case Cmd::ResetMissile1:
       tia.strobeResM1();
       break;
 
-    case kResBLCmd:
+    case Cmd::ResetBall:
       tia.strobeResBL();
       break;
 
-    case kHmoveCmd:
+    case Cmd::Hmove:
       tia.strobeHmove();
       break;
 
-    case kHmclrCmd:
+    case Cmd::Hmclr:
       tia.strobeHmclr();
       break;
 
-    case kCxclrCmd:
+    case Cmd::Cxclr:
       tia.strobeCxclr();
       break;
 
-    case kDbgClCmd:
+    case Cmd::DebugColors:
       myFixedEnabled->setState(tia.tia().toggleFixedColors());
       break;
 
-    case kVSyncCmd:
+    case Cmd::VSync:
       tia.vsync((tia.vsyncAsInt() & ~0x02) | (myVSync->getState() ? 0x02 : 0x00));
       break;
 
-    case kVBlankCmd:
+    case Cmd::VBlank:
       tia.vblank((tia.vblankAsInt() & ~0x02) | (myVBlank->getState() ? 0x02 : 0x00));
       break;
 
-    case DataGridWidget::kItemDataChangedCmd:
+    case DataGridWidget::Cmd::ItemDataChanged:
       switch(id)
       {
         case kColorRegsID:
@@ -1006,7 +1007,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case ToggleWidget::kItemDataChangedCmd:
+    case ToggleWidget::Cmd::ItemDataChanged:
       switch(id)
       {
         case kGRP0ID:
@@ -1058,7 +1059,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case CheckboxWidget::kCheckActionCmd:
+    case CheckboxWidget::Cmd::CheckAction:
       switch(id)
       {
         case kP0_PFID:

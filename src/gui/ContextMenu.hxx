@@ -36,16 +36,17 @@
 class ContextMenu : public Dialog, public CommandSender
 {
   public:
-    enum {
-      kItemSelectedCmd = 'CMsl'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemSelected = GuiCmd::of("ContextMenu.ItemSelected");
     };
 
   public:
     // 'width' is a minimum (the menu still grows to fit its widest entry); 'cmd'
-    // is sent on selection, defaulting to kItemSelectedCmd when left at 0
+    // is sent on selection, defaulting to Cmd::ItemSelected when left at 0
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items = VariantList{},
-                int cmd = 0, int width = 0);
+                GuiCmd::Code cmd = GuiCmd::None, int width = 0);
     ~ContextMenu() override = default;
 
     bool isShading() const override { return false; }
@@ -175,7 +176,7 @@ class ContextMenu : public Dialog, public CommandSender
     // Scrolls the view by 'distance' rows, clamped to the entry list's ends
     void scrollUp(int distance = 1);
     void scrollDown(int distance = 1);
-    // Closes the menu and sends _cmd (or kItemSelectedCmd) for the highlighted item
+    // Closes the menu and sends _cmd (or Cmd::ItemSelected) for the highlighted item
     void sendSelection();
 
   private:
@@ -197,8 +198,8 @@ class ContextMenu : public Dialog, public CommandSender
     // Scroll arrow colors, greyed out at either end of the list
     ColorId _scrollUpColor{kColor}, _scrollDnColor{kColor};
 
-    // Command sent on selection; kItemSelectedCmd is used if this is 0
-    int _cmd{0};
+    // Command sent on selection; Cmd::ItemSelected is used if this is 0
+    GuiCmd::Code _cmd{GuiCmd::None};
     // The parent widget's id (see setID()), passed through to sent commands
     int _id{-1};
 

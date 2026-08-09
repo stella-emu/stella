@@ -28,10 +28,10 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   // Embedded in a QuadTari there is only room for short button labels
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myGrayUp = new ButtonWidget(boss, font,
-                              embedded ? "GC+" : "Gray code +", kGrayUpCmd);
+                              embedded ? "GC+" : "Gray code +", Cmd::GrayCodeUp);
   myGrayUp->setTarget(this);
   myGrayDown = new ButtonWidget(boss, font,
-                                embedded ? "GC-" : "Gray code -", kGrayDownCmd);
+                                embedded ? "GC-" : "Gray code -", Cmd::GrayCodeDown);
   myGrayDown->setTarget(this);
 
   myGrayValue = new DataGridWidget(boss, font, 1, 1, 2, 8,
@@ -39,7 +39,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);
 
-  myFire = new CheckboxWidget(boss, font, "Fire", kFireCmd);
+  myFire = new CheckboxWidget(boss, font, "Fire", Cmd::Fire);
   myFire->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
@@ -98,24 +98,24 @@ void DrivingWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DrivingWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void DrivingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
   switch(cmd)
   {
-    case kGrayUpCmd:
+    case Cmd::GrayCodeUp:
       myGrayIndex = (myGrayIndex + 1) % 4;
       setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
-    case kGrayDownCmd:
+    case Cmd::GrayCodeDown:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
       setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
-    case kFireCmd:
+    case Cmd::Fire:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
     default:

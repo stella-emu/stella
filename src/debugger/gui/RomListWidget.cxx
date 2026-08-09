@@ -169,7 +169,7 @@ void RomListWidget::reflowCheckboxes()
     // _font, because the row reserves boxSize(_font) for it -- in _lineHeight,
     // in the column separator and in getLineRect (mirrors CheckListWidget)
     auto* t = new CheckboxWidget(_boss, _font, "",
-                                 CheckboxWidget::kCheckActionCmd);
+                                 CheckboxWidget::Cmd::CheckAction);
     t->setTarget(this);
     t->setID(static_cast<int>(myCheckList.size()));
     t->setFill(CheckboxWidget::FillType::Circle);
@@ -490,17 +490,18 @@ bool RomListWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RomListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
   switch(cmd)
   {
-    case CheckboxWidget::kCheckActionCmd:
+    case CheckboxWidget::Cmd::CheckAction:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id, 0);
+      sendCommand(Cmd::BreakpointChanged, _currentPos+id, 0);
       break;
 
-    case GuiObject::kSetPositionCmd:
+    case GuiObject::Cmd::SetPosition:
       if(_currentPos != data)
       {
         _currentPos = data;
@@ -508,11 +509,11 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       }
       break;
 
-    case kDisasmColorsCmd:
+    case Cmd::DisasmColors:
       myDisasmColorsDialog->open();
       break;
 
-    case kDisasmColorsChangedCmd:
+    case Cmd::DisasmColorsChanged:
       loadDisasmColorMap();
       setDirty();
       break;
@@ -821,7 +822,7 @@ void RomListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   // The parent then calls getText() to get the newly entered data
   _editMode = false;
-  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, static_cast<int>(_base));
+  sendCommand(Cmd::RomChanged, _selectedItem, static_cast<int>(_base));
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

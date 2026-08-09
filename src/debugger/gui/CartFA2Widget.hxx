@@ -35,7 +35,7 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
     string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
     string description() override;
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // The Harmony flash controls, created (unpositioned) by the ctor
@@ -47,10 +47,11 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
     LabelWidget* myFlashLbl{nullptr};
     ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
-    enum {
-      kFlashErase  = 'flER',
-      kFlashLoad   = 'flLD',
-      kFlashSave   = 'flSV'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        FlashErase = GuiCmd::of("CartridgeFA2Widget.FlashErase"),
+        FlashLoad  = GuiCmd::of("CartridgeFA2Widget.FlashLoad"),
+        FlashSave  = GuiCmd::of("CartridgeFA2Widget.FlashSave");
     };
 
   private:

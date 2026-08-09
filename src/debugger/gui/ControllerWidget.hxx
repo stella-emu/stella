@@ -88,7 +88,7 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
       return (isLeftPort() ? "Left (" : "Right (") + controller().name() + ")";
     }
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override { }
 
   private:
     // The shared two-line header, laid out by reflow(): the controller name over

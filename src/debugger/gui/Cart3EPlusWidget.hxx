@@ -42,7 +42,7 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
     string description() override;
     void createBankWidgets() override;
     void layoutBankSelect(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void updateUIState();
 
@@ -57,9 +57,10 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};
 
-    enum {
-      kRomRamChanged = 'rrCh',
-      kChangeBank = 'chBk',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RomRamChanged = GuiCmd::of("Cartridge3EPlusWidget.RomRamChanged"),
+        ChangeBank    = GuiCmd::of("Cartridge3EPlusWidget.ChangeBank");
     };
 
   private:

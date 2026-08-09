@@ -251,14 +251,15 @@ void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CpuWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   int addr = -1, value = -1;
   CpuDebug& dbg = instance().debugger().cpuDebug();
 
   switch(cmd)
   {
-    case DataGridWidget::kItemDataChangedCmd:
+    case DataGridWidget::Cmd::ItemDataChanged:
       switch(id)
       {
         case kPCRegID:
@@ -326,7 +327,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case ToggleWidget::kItemDataChangedCmd:
+    case ToggleWidget::Cmd::ItemDataChanged:
     {
       const bool state = myPSRegister->getSelectedState();
 

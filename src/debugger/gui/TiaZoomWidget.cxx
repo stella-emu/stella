@@ -261,9 +261,10 @@ bool TiaZoomWidget::handleEvent(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaZoomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const uInt32 startLine = instance().console().tia().startLine();
     const string& rmb = myMenu->getSelectedTag().toString();

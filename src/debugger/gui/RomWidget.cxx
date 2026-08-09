@@ -119,42 +119,43 @@ void RomWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   switch(cmd)
   {
-    case RomListWidget::kBPointChangedCmd:
+    case RomListWidget::Cmd::BreakpointChanged:
       // 'data' is the line in the disassemblylist to be accessed
       toggleBreak(data);
       break;
 
-    case RomListWidget::kRomChangedCmd:
+    case RomListWidget::Cmd::RomChanged:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
       patchROM(data, myRomList->getText(), static_cast<Common::Base::Fmt>(id));
       break;
 
-    case RomListWidget::kSetPCCmd:
+    case RomListWidget::Cmd::SetPC:
       // 'data' is the line in the disassemblylist to be accessed
       setPC(data);
       break;
 
-    case RomListWidget::kRuntoPCCmd:
+    case RomListWidget::Cmd::RunToPC:
       // 'data' is the line in the disassemblylist to be accessed
       runtoPC(data);
       break;
 
-    case RomListWidget::kSetTimerCmd:
+    case RomListWidget::Cmd::SetTimer:
       // 'data' is the line in the disassemblylist to be accessed
       setTimer(data);
       break;
 
-    case RomListWidget::kDisassembleCmd:
+    case RomListWidget::Cmd::Disassemble:
       // 'data' is the line in the disassemblylist to be accessed
       disassemble(data);
       break;
 
-    case RomListWidget::kTentativeCodeCmd:
+    case RomListWidget::Cmd::TentativeCode:
     {
       // 'data' is the boolean value
       DiStella::settings.resolveCode = data;
@@ -164,7 +165,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case RomListWidget::kPCAddressesCmd:
+    case RomListWidget::Cmd::PCAddresses:
       // 'data' is the boolean value
       DiStella::settings.showAddresses = data;
       instance().settings().setValue("dis.showaddr",
@@ -172,7 +173,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       invalidate();
       break;
 
-    case RomListWidget::kGfxAsBinaryCmd:
+    case RomListWidget::Cmd::GfxAsBinary:
       // 'data' is the boolean value
       if(data)
       {
@@ -187,7 +188,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       invalidate();
       break;
 
-    case RomListWidget::kAddrRelocationCmd:
+    case RomListWidget::Cmd::AddressRelocation:
       // 'data' is the boolean value
       DiStella::settings.rFlag = data;
       instance().settings().setValue("dis.relocate",

@@ -29,15 +29,16 @@ class ScrollBarWidget;
 class ListWidget : public EditableWidget
 {
   public:
-    enum {
-      kDoubleClickedCmd    = 'LIdb',  // double click on item - 'data' will be item index
-      kLongButtonPressCmd  = 'LIlb',  // long button press
-      kActivatedCmd        = 'LIac',  // item activated by return/enter - 'data' will be item index
-      kDataChangedCmd      = 'LIch',  // item data changed - 'data' will be item index
-      kRClickedCmd         = 'LIrc',  // right click on item - 'data' will be item index
-      kSelectionChangedCmd = 'Lsch',  // selection changed - 'data' will be item index
-      kScrolledCmd         = 'Lscl',  // list scrolled - 'data' will be current position
-      kParentDirCmd        = 'Lpdr'   // request to go to parent list, if applicable
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        DoubleClicked    = GuiCmd::of("ListWidget.DoubleClicked"),
+        LongButtonPress  = GuiCmd::of("ListWidget.LongButtonPress"),
+        Activated        = GuiCmd::of("ListWidget.Activated"),
+        DataChanged      = GuiCmd::of("ListWidget.DataChanged"),
+        RightClicked     = GuiCmd::of("ListWidget.RightClicked"),
+        SelectionChanged = GuiCmd::of("ListWidget.SelectionChanged"),
+        Scrolled         = GuiCmd::of("ListWidget.Scrolled"),
+        ParentDir        = GuiCmd::of("ListWidget.ParentDir");
     };
 
   public:
@@ -101,7 +102,7 @@ class ListWidget : public EditableWidget
 
   protected:
     // Reacts to the scrollbar reporting a new position
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     // A concrete list decides how its own rows are drawn and where their text sits
     void drawWidget(bool hilite) override  = 0;
@@ -112,7 +113,7 @@ class ListWidget : public EditableWidget
     // Revalidates _currentPos/_selectedItem and the scrollbar after the list
     // (or the widget's size) changes, then aborts any in-progress edit
     void recalc();
-    // Pushes _currentPos to the scrollbar and reports the new position via kScrolledCmd
+    // Pushes _currentPos to the scrollbar and reports the new position via Cmd::Scrolled
     void scrollBarRecalc();
 
     /**
@@ -131,7 +132,7 @@ class ListWidget : public EditableWidget
 
     // Enters/leaves in-place editing of the selected row's text
     void startEditMode() override;
-    // Writes the edited text back into the row and reports kDataChangedCmd
+    // Writes the edited text back into the row and reports Cmd::DataChanged
     void endEditMode() override;
     void abortEditMode() override;
 

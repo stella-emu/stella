@@ -41,8 +41,9 @@ class TabWidget : public Widget, public CommandSender
     static constexpr int AUTO_WIDTH = -1;
 
     // Sent (via CommandSender) when the active tab changes
-    enum {
-      kTabChangedCmd = 'TBCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        TabChanged = GuiCmd::of("TabWidget.TabChanged");
     };
 
   public:
@@ -64,7 +65,7 @@ class TabWidget : public Widget, public CommandSender
     void setActiveTab(int tabID, bool show = false);
     // Enables/disables a tab; a disabled tab cannot be selected, but keeps its widgets
     void enableTab(int tabID, bool enable = true);
-    // Announces every tab's kTabChangedCmd in turn, e.g. so a dialog's
+    // Announces every tab's Cmd::TabChanged in turn, e.g. so a dialog's
     // handleCommand() sees each tab once while it is being built
     void activateTabs();
     // Switches to the previous/next enabled tab, wrapping around
@@ -143,7 +144,7 @@ class TabWidget : public Widget, public CommandSender
     // A click in the tab bar hits us; below it, routes to the active tab's children
     Widget* findWidget(int x, int y) override;
     // Forwards a tab content's command, unmodified, to our own target
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     struct Tab {

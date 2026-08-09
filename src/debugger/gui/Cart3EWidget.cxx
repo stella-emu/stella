@@ -76,7 +76,8 @@ void Cartridge3EWidget::createBankWidgets()
 
   bankList(myCart.romBankCount(), 0, items);
   myBankLbl = new LabelWidget(_boss, _font, "Set bank");
-  myBankWidgets[0] = new PopUpWidget(_boss, _font, items, kBankChanged);
+  myBankWidgets[0] = new PopUpWidget(_boss, _font, items,
+                                     CartridgeEnhancedWidget::Cmd::BankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
@@ -86,7 +87,7 @@ void Cartridge3EWidget::createBankWidgets()
   items.clear();
   bankList(myCart.ramBankCount(), 0, items);
   myRAMBankLbl = new LabelWidget(_boss, _font, "");
-  myBankWidgets[1] = new PopUpWidget(_boss, _font, items, kRAMBankChanged);
+  myBankWidgets[1] = new PopUpWidget(_boss, _font, items, Cmd::RamBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
@@ -145,11 +146,12 @@ void Cartridge3EWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void Cartridge3EWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
   uInt16 bank = 0;
 
-  if(cmd == kBankChanged)
+  if(cmd == CartridgeEnhancedWidget::Cmd::BankChanged)
   {
     if(myBankWidgets[0]->getSelected() < myCart.romBankCount())
     {
@@ -163,7 +165,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
       myBankWidgets[1]->setSelectedIndex(0);
     }
   }
-  else if(cmd == kRAMBankChanged)
+  else if(cmd == Cmd::RamBankChanged)
   {
     if(myBankWidgets[1]->getSelected() < myCart.ramBankCount())
     {

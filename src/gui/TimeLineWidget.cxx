@@ -27,7 +27,7 @@ static constexpr int HANDLE_W = 3;
 static constexpr int HANDLE_H = 3; // size above/below the slider
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd)
+TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, GuiCmd::Code cmd)
   : ButtonWidget(boss, font, 0, calcHeight(font), "", cmd)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE

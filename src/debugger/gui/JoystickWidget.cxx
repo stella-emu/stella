@@ -30,12 +30,12 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   for(int i = kJUp; i <= kJRight; ++i)
   {
     myPins[i] = new CheckboxWidget(boss, font, "",
-                                   CheckboxWidget::kCheckActionCmd);
+                                   CheckboxWidget::Cmd::CheckAction);
     myPins[i]->setID(i);
     myPins[i]->setTarget(this);
   }
   myPins[kJFire] = new CheckboxWidget(boss, font, "Fire",
-                                      CheckboxWidget::kCheckActionCmd);
+                                      CheckboxWidget::Cmd::CheckAction);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -85,9 +85,9 @@ void JoystickWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoystickWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void JoystickWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
-  if(cmd == CheckboxWidget::kCheckActionCmd)
+  if(cmd == CheckboxWidget::Cmd::CheckAction)
     setPin(ourPinNo[id], !myPins[id]->getState());
 }

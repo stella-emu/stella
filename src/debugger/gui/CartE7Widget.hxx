@@ -59,16 +59,16 @@ class CartridgeE7Widget : public CartDebugWidget
     };
     CartState myOldState;
 
-    enum
-    {
-      kLowerChanged = 'lwCH',
-      kUpperChanged = 'upCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        LowerChanged = GuiCmd::of("CartridgeE7Widget.LowerChanged"),
+        UpperChanged = GuiCmd::of("CartridgeE7Widget.UpperChanged");
     };
 
   protected:
     void initialize(GuiObject* boss, const CartridgeE7& cart, string_view info);
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     static string_view getSpotLower(int idx, int bankcount);

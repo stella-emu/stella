@@ -96,7 +96,7 @@ class DebuggerDialog : public Dialog
 
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void doStep();
@@ -140,15 +140,16 @@ class DebuggerDialog : public Dialog
     int tiaImageWidth() const;
 
   private:
-    enum {
-      kDDStepCmd      = 'DDst',
-      kDDTraceCmd     = 'DDtr',
-      kDDAdvCmd       = 'DDav',
-      kDDSAdvCmd      = 'DDsv',
-      kDDRewindCmd    = 'DDrw',
-      kDDUnwindCmd    = 'DDuw',
-      kDDRunCmd       = 'DDex',
-      kDDOptionsCmd   = 'DDop'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Step            = GuiCmd::of("DebuggerDialog.Step"),
+        Trace           = GuiCmd::of("DebuggerDialog.Trace"),
+        AdvanceFrame    = GuiCmd::of("DebuggerDialog.AdvanceFrame"),
+        AdvanceScanline = GuiCmd::of("DebuggerDialog.AdvanceScanline"),
+        Rewind          = GuiCmd::of("DebuggerDialog.Rewind"),
+        Unwind          = GuiCmd::of("DebuggerDialog.Unwind"),
+        Run             = GuiCmd::of("DebuggerDialog.Run"),
+        Options         = GuiCmd::of("DebuggerDialog.Options");
     };
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};

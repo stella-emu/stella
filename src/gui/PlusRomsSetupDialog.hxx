@@ -39,7 +39,7 @@ class PlusRomsSetupDialog: public InputTextDialog
 
   protected:
     // Accept saves and leaves menu mode; Close/Cancel just leaves menu mode
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

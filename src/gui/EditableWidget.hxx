@@ -39,10 +39,11 @@ class EditableWidget : public Widget, public CommandSender
         into the internal buffer */
     using TextFilter = std::function<bool(char)>;
 
-    enum {
-      kAcceptCmd  = 'EDac',
-      kCancelCmd  = 'EDcl',
-      kChangedCmd = 'EDch'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Accept  = GuiCmd::of("EditableWidget.Accept"),
+        Cancel  = GuiCmd::of("EditableWidget.Cancel"),
+        Changed = GuiCmd::of("EditableWidget.Changed");
     };
 
   protected:
@@ -102,7 +103,7 @@ class EditableWidget : public Widget, public CommandSender
 
   protected:
     // Reacts to a selection from the mouse context menu (cut/copy/paste)
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     // Horizontal scroll offset to subtract when mapping a caret position to
     // pixels; overridden by a subclass whose edit rect isn't at x=0

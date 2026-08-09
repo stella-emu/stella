@@ -57,7 +57,7 @@ class TimeMachineDialog : public Dialog
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     // Dispatches a transport button/timeline drag to handleWinds() or the
     // matching EventHandler action
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     /** initialize timeline bar */
@@ -72,23 +72,23 @@ class TimeMachineDialog : public Dialog
   private:
     // Command ids for the timeline and each transport button, dispatched in
     // handleCommand() (several are also reachable via hotkey, see handleKeyDown())
-    enum
-    {
-      kTimeline  = 'TMtl',
-      kToggle    = 'TMtg',
-      kExit      = 'TMex',
-      kPlayBack  = 'TMpb',
-      kRewindAll = 'TMra',
-      kRewind10  = 'TMr1',
-      kRewind1   = 'TMre',
-      kUnwindAll = 'TMua',
-      kUnwind10  = 'TMu1',
-      kUnwind1   = 'TMun',
-      kSaveAll   = 'TMsv',
-      kLoadAll   = 'TMld',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Timeline  = GuiCmd::of("TimeMachineDialog.Timeline"),
+        Toggle    = GuiCmd::of("TimeMachineDialog.Toggle"),
+        Exit      = GuiCmd::of("TimeMachineDialog.Exit"),
+        PlayBack  = GuiCmd::of("TimeMachineDialog.PlayBack"),
+        RewindAll = GuiCmd::of("TimeMachineDialog.RewindAll"),
+        Rewind10  = GuiCmd::of("TimeMachineDialog.Rewind10"),
+        Rewind1   = GuiCmd::of("TimeMachineDialog.Rewind1"),
+        UnwindAll = GuiCmd::of("TimeMachineDialog.UnwindAll"),
+        Unwind10  = GuiCmd::of("TimeMachineDialog.Unwind10"),
+        Unwind1   = GuiCmd::of("TimeMachineDialog.Unwind1"),
+        SaveAll   = GuiCmd::of("TimeMachineDialog.SaveAll"),
+        LoadAll   = GuiCmd::of("TimeMachineDialog.LoadAll");
     };
 
-    // The scrubber; dragging/paging it issues kTimeline
+    // The scrubber; dragging/paging it issues Cmd::Timeline
     TimeLineWidget* myTimeline{nullptr};
 
     // Transport buttons: record/stop toggle, exit, rewind (all/10/1), play back,

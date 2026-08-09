@@ -133,7 +133,7 @@ void VideoAudioDialog::addDisplayTab()
   myRendererLbl = new LabelWidget(pane, _font, "Renderer");
   myRenderer = new PopUpWidget(pane, _font,
                                instance().frameBuffer().supportedRenderers(),
-                               kRendererChanged);
+                               Cmd::RendererChanged);
   myRenderer->setToolTip("Select renderer used for displaying screen.");
   wid.push_back(myRenderer);
 
@@ -146,13 +146,13 @@ void VideoAudioDialog::addDisplayTab()
   // track width from the renderer pop-up beside them, in the layout below
   myTIAZoomLbl = new LabelWidget(pane, _font, "Zoom");
   myTIAZoom = new SliderWidget(pane, _font, 1,
-                               0, 4, "%");
+                                GuiCmd::None, 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
   myTIAZoom->setToolTip(Event::VidmodeDecrease, Event::VidmodeIncrease);
   wid.push_back(myTIAZoom);
 
   // Fullscreen
-  myFullscreen = new CheckboxWidget(pane, _font, "Fullscreen", kFullScreenChanged);
+  myFullscreen = new CheckboxWidget(pane, _font, "Fullscreen", Cmd::FullScreenChanged);
   myFullscreen->setToolTip(Event::ToggleFullScreen);
   wid.push_back(myFullscreen);
 
@@ -172,8 +172,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // FS overscan
   myTVOverscanLbl = new LabelWidget(pane, _font, "Overscan");
-  myTVOverscan = new SliderWidget(pane, _font, 1,
-                                  kOverscanChanged, 3, "%");
+  myTVOverscan = new SliderWidget(pane, _font, 1, Cmd::OverscanChanged, 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   myTVOverscan->setToolTip(Event::OverscanDecrease, Event::OverscanIncrease);
@@ -187,7 +186,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // Vertical size
   myVSizeAdjustLbl = new LabelWidget(pane, _font, "V-Size adjust");
-  myVSizeAdjust = new SliderWidget(pane, _font, 1, kVSizeChanged, 7, "%", 0, true);
+  myVSizeAdjust = new SliderWidget(pane, _font, 1, Cmd::VSizeChanged, 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.",
@@ -262,18 +261,18 @@ void VideoAudioDialog::addPaletteTab()
     VarList::push_back(items, "User", PaletteHandler::SETTING_USER);
   VarList::push_back(items, "Custom", PaletteHandler::SETTING_CUSTOM);
   myTIAPaletteLbl = new LabelWidget(pane, _font, "Palette");
-  myTIAPalette = new PopUpWidget(pane, _font, items, kPaletteChanged);
+  myTIAPalette = new PopUpWidget(pane, _font, items, Cmd::PaletteChanged);
   myTIAPalette->setToolTip(Event::PaletteDecrease, Event::PaletteIncrease);
   wid.push_back(myTIAPalette);
 
   // The phase shift and the R/G/B pairs are indented under the palette; every
   // track width is set in the layout below, from the pop-up they sit beneath
   myPhaseShiftLbl = new LabelWidget(pane, _font, "NTSC phase");
-  myPhaseShift = new SliderWidget(pane, _font, 1, kPhaseShiftChanged, 5);
+  myPhaseShift = new SliderWidget(pane, _font, 1, Cmd::PhaseShiftChanged, 5);
   wid.push_back(myPhaseShift);
 
   // Each R/G/B row is a saturation slider and a shift slider sharing the row
-  const auto scaleSlider = [&](int cmd, string_view tip) {
+  const auto scaleSlider = [&](GuiCmd::Code cmd, string_view tip) {
     auto* s = new SliderWidget(pane, _font, 1, cmd, 4, "%");
     s->setMinValue(0);
     s->setMaxValue(100);
@@ -282,7 +281,7 @@ void VideoAudioDialog::addPaletteTab()
     wid.push_back(s);
     return s;
   };
-  const auto shiftSlider = [&](int cmd, string_view tip) {
+  const auto shiftSlider = [&](GuiCmd::Code cmd, string_view tip) {
     auto* s = new SliderWidget(pane, _font, 1, cmd, 6);
     s->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
     s->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
@@ -293,26 +292,26 @@ void VideoAudioDialog::addPaletteTab()
   };
 
   myTVRedScaleLbl = new LabelWidget(pane, _font, "R");
-  myTVRedScale   = scaleSlider(kPaletteUpdated,
+  myTVRedScale   = scaleSlider(Cmd::PaletteUpdated,
                                "Adjust red saturation of 'Custom' palette.");
-  myTVRedShift   = shiftSlider(kRedShiftChanged,
+  myTVRedShift   = shiftSlider(Cmd::RedShiftChanged,
                                "Adjust red shift of 'Custom' palette.");
   myTVGreenScaleLbl = new LabelWidget(pane, _font, "G");
-  myTVGreenScale = scaleSlider(kPaletteUpdated,
+  myTVGreenScale = scaleSlider(Cmd::PaletteUpdated,
                                "Adjust green saturation of 'Custom' palette.");
-  myTVGreenShift = shiftSlider(kGreenShiftChanged,
+  myTVGreenShift = shiftSlider(Cmd::GreenShiftChanged,
                                "Adjust green shift of 'Custom' palette.");
   myTVBlueScaleLbl = new LabelWidget(pane, _font, "B");
-  myTVBlueScale  = scaleSlider(kPaletteUpdated,
+  myTVBlueScale  = scaleSlider(Cmd::PaletteUpdated,
                                "Adjust blue saturation of 'Custom' palette.");
-  myTVBlueShift  = shiftSlider(kBlueShiftChanged,
+  myTVBlueShift  = shiftSlider(Cmd::BlueShiftChanged,
                                "Adjust blue shift of 'Custom' palette.");
 
-  CREATE_CUSTOM_SLIDER(Hue, "Hue", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDER(Satur, "Saturation", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDER(Contrast, "Contrast", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDER(Bright, "Brightness", kPaletteUpdated)
-  CREATE_CUSTOM_SLIDER(Gamma, "Gamma", kPaletteUpdated)
+  CREATE_CUSTOM_SLIDER(Hue, "Hue", Cmd::PaletteUpdated)
+  CREATE_CUSTOM_SLIDER(Satur, "Saturation", Cmd::PaletteUpdated)
+  CREATE_CUSTOM_SLIDER(Contrast, "Contrast", Cmd::PaletteUpdated)
+  CREATE_CUSTOM_SLIDER(Bright, "Brightness", Cmd::PaletteUpdated)
+  CREATE_CUSTOM_SLIDER(Gamma, "Gamma", Cmd::PaletteUpdated)
 
   myAutodetectLbl = new LabelWidget(pane, _font, "Autodetection");
 
@@ -438,16 +437,16 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
   VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
   myTVModeLbl = new LabelWidget(pane, _font, "TV mode");
-  myTVMode = new PopUpWidget(pane, _font, items, kTVModeChanged);
+  myTVMode = new PopUpWidget(pane, _font, items, Cmd::TvModeChanged);
   myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
   wid.push_back(myTVMode);
 
   // Custom adjustables
-  CREATE_CUSTOM_SLIDER(Sharp, "Sharpness", 0)
-  CREATE_CUSTOM_SLIDER(Res, "Resolution", 0)
-  CREATE_CUSTOM_SLIDER(Artifacts, "Artifacts", 0)
-  CREATE_CUSTOM_SLIDER(Fringe, "Fringing", 0)
-  CREATE_CUSTOM_SLIDER(Bleed, "Bleeding", 0)
+  CREATE_CUSTOM_SLIDER(Sharp, "Sharpness", GuiCmd::None)
+  CREATE_CUSTOM_SLIDER(Res, "Resolution", GuiCmd::None)
+  CREATE_CUSTOM_SLIDER(Artifacts, "Artifacts", GuiCmd::None)
+  CREATE_CUSTOM_SLIDER(Fringe, "Fringing", GuiCmd::None)
+  CREATE_CUSTOM_SLIDER(Bleed, "Bleeding", GuiCmd::None)
 
   // TV Phosphor effect
   items.clear();
@@ -456,17 +455,17 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "auto on", PhosphorHandler::VALUE_AUTO_ON);
   VarList::push_back(items, "auto on/off", PhosphorHandler::VALUE_AUTO);
   myTVPhosphorLbl = new LabelWidget(pane, _font, "Phosphor");
-  myTVPhosphor = new PopUpWidget(pane, _font, items, kPhosphorChanged);
+  myTVPhosphor = new PopUpWidget(pane, _font, items, Cmd::PhosphorChanged);
   myTVPhosphor->setToolTip(Event::PhosphorModeDecrease, Event::PhosphorModeIncrease);
   wid.push_back(myTVPhosphor);
 
   // TV Phosphor blend level
-  CREATE_CUSTOM_SLIDER(PhosLevel, "Blend", kPhosBlendChanged)
+  CREATE_CUSTOM_SLIDER(PhosLevel, "Blend", Cmd::PhosphorBlendChanged)
 
   // Scanline intensity and interpolation
   myTVScanLbl = new LabelWidget(pane, _font, "Scanlines:");
 
-  CREATE_CUSTOM_SLIDER(ScanIntense, "Intensity", kScanlinesChanged)
+  CREATE_CUSTOM_SLIDER(ScanIntense, "Intensity", Cmd::ScanlinesChanged)
   myTVScanIntense->setToolTip(Event::ScanlinesDecrease, Event::ScanlinesIncrease);
 
   items.clear();
@@ -483,7 +482,7 @@ void VideoAudioDialog::addTVEffectsTab()
   // Adjustable presets, in a column of their own
 #define CREATE_CLONE_BUTTON(obj, desc)                        \
   myClone ## obj =                                            \
-    new ButtonWidget(pane, _font, desc, kClone ## obj ##Cmd); \
+    new ButtonWidget(pane, _font, desc, Cmd::Clone ## obj); \
   wid.push_back(myClone ## obj);
 
   CREATE_CLONE_BUTTON(RGB, "Clone RGB")
@@ -590,13 +589,13 @@ void VideoAudioDialog::addBezelTab()
 
   // Enable bezels
   myBezelEnableCheckbox =
-    new CheckboxWidget(pane, _font, "Enable bezels", kBezelEnableChanged);
+    new CheckboxWidget(pane, _font, "Enable bezels", Cmd::BezelEnableChanged);
   myBezelEnableCheckbox->setToolTip(Event::ToggleBezel);
   wid.push_back(myBezelEnableCheckbox);
 
   // Bezel path
   myOpenBrowserButton =
-    new ButtonWidget(pane, _font, "Bezel path" + ELLIPSIS, kChooseBezelDirCmd);
+    new ButtonWidget(pane, _font, "Bezel path" + ELLIPSIS, Cmd::ChooseBezelDir);
   myOpenBrowserButton->setToolTip("Select path for bezels.");
   wid.push_back(myOpenBrowserButton);
 
@@ -610,12 +609,12 @@ void VideoAudioDialog::addBezelTab()
 
   // Disable auto borders
   myManualWindow =
-    new CheckboxWidget(pane, _font, "Manual emulation window", kAutoWindowChanged);
+    new CheckboxWidget(pane, _font, "Manual emulation window", Cmd::AutoWindowChanged);
   myManualWindow->setToolTip("Enable if automatic window detection fails.");
   wid.push_back(myManualWindow);
 
   const auto winSlider = [&]() {
-    auto* s = new SliderWidget(pane, _font, 1, 0, 4, "%");
+    auto* s = new SliderWidget(pane, _font, 1,  GuiCmd::None, 4, "%");
     s->setMinValue(0);
     s->setMaxValue(40);
     s->setTickmarkIntervals(4);
@@ -688,14 +687,14 @@ void VideoAudioDialog::addAudioTab()
 
   // Enable sound
   mySoundEnableCheckbox =
-    new CheckboxWidget(pane, _font, "Enable sound", kSoundEnableChanged);
+    new CheckboxWidget(pane, _font, "Enable sound", Cmd::SoundEnableChanged);
   mySoundEnableCheckbox->setToolTip(Event::SoundToggle);
   wid.push_back(mySoundEnableCheckbox);
 
   // Volume: it sizes its own track (it is not one of the controls that must end
   // flush with the Mode pop-up below)
   myVolumeSliderLbl = new LabelWidget(pane, _font, "Volume");
-  myVolumeSlider = new SliderWidget(pane, _font, 0, 0, 4, "%");
+  myVolumeSlider = new SliderWidget(pane, _font, 0,  GuiCmd::None, 4, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   myVolumeSlider->setTickmarkIntervals(4);
   myVolumeSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
@@ -709,7 +708,7 @@ void VideoAudioDialog::addAudioTab()
   VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
   VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
   myModePopupLbl = new LabelWidget(pane, _font, "Mode");
-  myModePopup = new PopUpWidget(pane, _font, items, kModeChanged);
+  myModePopup = new PopUpWidget(pane, _font, items, Cmd::ModeChanged);
   wid.push_back(myModePopup);
 
   // Output frequency
@@ -732,7 +731,7 @@ void VideoAudioDialog::addAudioTab()
 
   // Param 1
   myHeadroomSliderLbl = new LabelWidget(pane, _font, "Headroom");
-  myHeadroomSlider = new SliderWidget(pane, _font, 1, kHeadroomChanged, 10);
+  myHeadroomSlider = new SliderWidget(pane, _font, 1, Cmd::HeadroomChanged, 10);
   myHeadroomSlider->setMinValue(0);
   myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   myHeadroomSlider->setTickmarkIntervals(5);
@@ -740,7 +739,7 @@ void VideoAudioDialog::addAudioTab()
 
   // Param 2
   myBufferSizeSliderLbl = new LabelWidget(pane, _font, "Buffer size");
-  myBufferSizeSlider = new SliderWidget(pane, _font, 1, kBufferSizeChanged, 10);
+  myBufferSizeSlider = new SliderWidget(pane, _font, 1, Cmd::BufferSizeChanged, 10);
   myBufferSizeSlider->setMinValue(0);
   myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   myBufferSizeSlider->setTickmarkIntervals(5);
@@ -751,7 +750,7 @@ void VideoAudioDialog::addAudioTab()
   wid.push_back(myStereoSoundCheckbox);
 
   myDpcPitchLbl = new LabelWidget(pane, _font, "Pitfall II music pitch");
-  myDpcPitch = new SliderWidget(pane, _font, 1, 0, 5);
+  myDpcPitch = new SliderWidget(pane, _font, 1,  GuiCmd::None, 5);
   myDpcPitch->setMinValue(10000);
   myDpcPitch->setMaxValue(30000);
   myDpcPitch->setStepValue(100);
@@ -1401,57 +1400,57 @@ void VideoAudioDialog::handleBezelChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
+void VideoAudioDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                      int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       // restore palette settings
       instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(myPaletteAdj);
       instance().frameBuffer().tiaSurface().paletteHandler().setPalette(myPalette);
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kPaletteChanged:
+    case Cmd::PaletteChanged:
       handlePaletteChange();
       handlePaletteUpdate();
       break;
 
-    case kPaletteUpdated:
+    case Cmd::PaletteUpdated:
       handlePaletteUpdate();
       break;
 
-    case kPhaseShiftChanged:
+    case Cmd::PhaseShiftChanged:
       handleShiftChanged(myPhaseShift);
       break;
 
-    case kRedShiftChanged:
+    case Cmd::RedShiftChanged:
       handleShiftChanged(myTVRedShift);
       break;
 
-    case kGreenShiftChanged:
+    case Cmd::GreenShiftChanged:
       handleShiftChanged(myTVGreenShift);
       break;
 
-    case kBlueShiftChanged:
+    case Cmd::BlueShiftChanged:
       handleShiftChanged(myTVBlueShift);
       break;
 
-    case kRendererChanged:
+    case Cmd::RendererChanged:
       handleRendererChanged();
       break;
 
-    case kVSizeChanged:
+    case Cmd::VSizeChanged:
     {
       const int adjust = myVSizeAdjust->getValue();
 
@@ -1464,30 +1463,30 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
         myVSizeAdjust->setValueUnit("%");
       break;
     }
-    case kFullScreenChanged:
+    case Cmd::FullScreenChanged:
       handleFullScreenChange();
       break;
 
-    case kOverscanChanged:
+    case Cmd::OverscanChanged:
       handleOverscanChange();
       break;
 
-    case kTVModeChanged:
+    case Cmd::TvModeChanged:
       handleTVModeChange(static_cast<NTSCFilter::Preset>(myTVMode->getSelectedTag().toInt()));
       break;
 
-    case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::Preset::COMPOSITE);
+    case Cmd::CloneComposite: loadTVAdjustables(NTSCFilter::Preset::COMPOSITE);
       break;
-    case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::Preset::SVIDEO);
+    case Cmd::CloneSvideo: loadTVAdjustables(NTSCFilter::Preset::SVIDEO);
       break;
-    case kCloneRGBCmd: loadTVAdjustables(NTSCFilter::Preset::RGB);
+    case Cmd::CloneRGB: loadTVAdjustables(NTSCFilter::Preset::RGB);
       break;
-    case kCloneBadCmd: loadTVAdjustables(NTSCFilter::Preset::BAD);
+    case Cmd::CloneBad: loadTVAdjustables(NTSCFilter::Preset::BAD);
       break;
-    case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
+    case Cmd::CloneCustom: loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
       break;
 
-    case kScanlinesChanged:
+    case Cmd::ScanlinesChanged:
       if(myTVScanIntense->getValue() == 0)
       {
         myTVScanIntense->setValueLabel("Off");
@@ -1503,11 +1502,11 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case kPhosphorChanged:
+    case Cmd::PhosphorChanged:
       handlePhosphorChange();
       break;
 
-    case kPhosBlendChanged:
+    case Cmd::PhosphorBlendChanged:
       if(myTVPhosLevel->getValue() == 0)
       {
         myTVPhosLevel->setValueLabel("Off");
@@ -1517,12 +1516,12 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
         myTVPhosLevel->setValueUnit("%");
       break;
 
-    case kBezelEnableChanged:
-    case kAutoWindowChanged:
+    case Cmd::BezelEnableChanged:
+    case Cmd::AutoWindowChanged:
       handleBezelChange();
       break;
 
-    case kChooseBezelDirCmd:
+    case Cmd::ChooseBezelDir:
       BrowserDialog::show(this, _font, "Select Bezel Directory",
                           myBezelPath->getText(),
                           BrowserDialog::Mode::Directories,
@@ -1531,21 +1530,21 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
                           });
       break;
 
-    case kSoundEnableChanged:
+    case Cmd::SoundEnableChanged:
       updateAudioEnabledState();
       break;
 
-    case kModeChanged:
+    case Cmd::ModeChanged:
       updatePreset();
       updateAudioEnabledState();
       break;
 
-    case kHeadroomChanged:
+    case Cmd::HeadroomChanged:
       myHeadroomSlider->setValueLabel(
         std::format("{:.1f} frames", 0.5 * myHeadroomSlider->getValue()));
       break;
 
-    case kBufferSizeChanged:
+    case Cmd::BufferSizeChanged:
       myBufferSizeSlider->setValueLabel(
         std::format("{:.1f} frames", 0.5 * myBufferSizeSlider->getValue()));
       break;

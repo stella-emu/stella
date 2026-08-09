@@ -66,7 +66,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // defaults; Export writes properties to disk; the remaining ids refresh
     // detected-controller/link/high-scores state or open the QuadTari/bezel
     // browsers
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Builds the 'Emulation' tab: bankswitch type, TV format, phosphor/
@@ -241,27 +241,28 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget* myHighScoreNotes{nullptr};
 
     // Command ids dispatched in handleCommand()
-    enum {
-      kBSTypeChanged    = 'Btch',
-      kBSFilterChanged  = 'Bfch',
-      kVCenterChanged   = 'Vcch',
-      kPhosphorChanged  = 'PPch',
-      kPPBlendChanged   = 'PBch',
-      kLeftCChanged     = 'LCch',
-      kRightCChanged    = 'RCch',
-      kQuadTariPressed  = 'QTpr',
-      kMCtrlChanged     = 'MCch',
-      kEEButtonPressed  = 'EEgb',
-      kHiScoresChanged  = 'HSch',
-      kPXCenterChanged  = 'Pxch',
-      kPYCenterChanged  = 'Pych',
-      kExportPressed    = 'Expr',
-      kLinkPressed      = 'Lkpr',
-      kBezelFilePressed = 'BFpr'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankswitchTypeChanged   = GuiCmd::of("GameInfoDialog.BankswitchTypeChanged"),
+        BankswitchFilterChanged = GuiCmd::of("GameInfoDialog.BankswitchFilterChanged"),
+        VCenterChanged          = GuiCmd::of("GameInfoDialog.VCenterChanged"),
+        PhosphorChanged         = GuiCmd::of("GameInfoDialog.PhosphorChanged"),
+        PhosphorBlendChanged    = GuiCmd::of("GameInfoDialog.PhosphorBlendChanged"),
+        LeftControllerChanged   = GuiCmd::of("GameInfoDialog.LeftControllerChanged"),
+        RightControllerChanged  = GuiCmd::of("GameInfoDialog.RightControllerChanged"),
+        QuadTariPressed         = GuiCmd::of("GameInfoDialog.QuadTariPressed"),
+        MouseControlChanged     = GuiCmd::of("GameInfoDialog.MouseControlChanged"),
+        EraseEeprom             = GuiCmd::of("GameInfoDialog.EraseEeprom"),
+        HighScoresChanged       = GuiCmd::of("GameInfoDialog.HighScoresChanged"),
+        PaddleXCenterChanged    = GuiCmd::of("GameInfoDialog.PaddleXCenterChanged"),
+        PaddleYCenterChanged    = GuiCmd::of("GameInfoDialog.PaddleYCenterChanged"),
+        Export                  = GuiCmd::of("GameInfoDialog.Export"),
+        Link                    = GuiCmd::of("GameInfoDialog.Link"),
+        BezelFile               = GuiCmd::of("GameInfoDialog.BezelFile");
     };
 
     // Widget id for myUrl, checked in handleCommand() to route its
-    // kChangedCmd to updateLink()
+    // EditableWidget::Cmd::Changed to updateLink()
     enum: uInt8 { kLinkId };
 
     // Game properties for currently loaded ROM

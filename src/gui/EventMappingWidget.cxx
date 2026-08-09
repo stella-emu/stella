@@ -60,7 +60,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myFilterPopupLbl = new LabelWidget(boss, font, "Events");
-  myFilterPopup = new PopUpWidget(boss, font, items, kFilterCmd);
+  myFilterPopup = new PopUpWidget(boss, font, items, Cmd::Filter);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
 
@@ -71,31 +71,31 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
 
   // Remap, cancel, erase, reset and combo buttons (font-derived fixed width)
   myMapButton = new ButtonWidget(boss, font,
-                                 "Map" + ELLIPSIS, kStartMapCmd);
+                                 "Map" + ELLIPSIS, Cmd::StartMap);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
   myCancelMapButton = new ButtonWidget(boss, font,
-                                       "Cancel", kStopMapCmd);
+                                       "Cancel", Cmd::StopMap);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
   myEraseButton = new ButtonWidget(boss, font,
-                                   "Erase", kEraseCmd);
+                                   "Erase", Cmd::Erase);
   myEraseButton->setTarget(this);
   myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
   myResetButton = new ButtonWidget(boss, font,
-                                   "Reset", kResetCmd);
+                                   "Reset", Cmd::Reset);
   myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
   myComboButton = new ButtonWidget(boss, font,
-                                   "Combo" + ELLIPSIS, kComboCmd);
+                                   "Combo" + ELLIPSIS, Cmd::Combo);
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
@@ -475,16 +475,16 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
+void EventMappingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                        int data, int id)
 {
   switch(cmd)
   {
-    case kFilterCmd:
+    case Cmd::Filter:
       updateActions();
       break;
 
-    case ListWidget::kSelectionChangedCmd:
+    case ListWidget::Cmd::SelectionChanged:
       if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
         myActionSelected = sel;
@@ -493,7 +493,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case ListWidget::kDoubleClickedCmd:
+    case ListWidget::Cmd::DoubleClicked:
       if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
         myActionSelected = sel;
@@ -501,23 +501,23 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case kStartMapCmd:
+    case Cmd::StartMap:
       startRemapping();
       break;
 
-    case kStopMapCmd:
+    case Cmd::StopMap:
       stopRemapping();
       break;
 
-    case kEraseCmd:
+    case Cmd::Erase:
       eraseRemapping();
       break;
 
-    case kResetCmd:
+    case Cmd::Reset:
       resetRemapping();
       break;
 
-    case kComboCmd:
+    case Cmd::Combo:
       if(myComboDialog)
         myComboDialog->show(
           EventHandler::eventAtIndex(myActionSelected, myEventGroup),

@@ -124,7 +124,7 @@ class BrowserDialog : public Dialog
     // OK/selection and Close invoke the stored callback and close(); the
     // navigation buttons jump directories; edits/selection changes refresh
     // the UI (see updateUI())
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // No point calling these directly: the result can't be gotten back
@@ -143,7 +143,7 @@ class BrowserDialog : public Dialog
               const Command& command,
               const FSNode::NameFilter& namefilter);
 
-    /** Get resulting file node (called after receiving kChooseCmd) */
+    /** Get resulting file node (called after receiving Cmd::Choose) */
     FSNode getResult() const;
 
     // Refreshes the up button, nav bar and OK-enabled state; 'fileSelected'
@@ -152,11 +152,12 @@ class BrowserDialog : public Dialog
 
   private:
     // Command ids dispatched in handleCommand()
-    enum {
-      kChooseCmd  = 'CHOS',
-      kGoUpCmd    = 'GOUP',
-      kBaseDirCmd = 'BADR',
-      kHomeDirCmd = 'HODR'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Choose  = GuiCmd::of("BrowserDialog.Choose"),
+        GoUp    = GuiCmd::of("BrowserDialog.GoUp"),
+        BaseDir = GuiCmd::of("BrowserDialog.BaseDir"),
+        HomeDir = GuiCmd::of("BrowserDialog.HomeDir");
     };
 
     // Called when the user selects OK (bool is true) or Cancel (bool is false)

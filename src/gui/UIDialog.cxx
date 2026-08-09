@@ -91,7 +91,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   for(const auto& entry: FontManager::uiFonts())
     VarList::push_back(items, entry.label, entry.name);
   myDialogFontLbl = new LabelWidget(lookPane, font, "Dialogs font");
-  myDialogFontPopup = new PopUpWidget(lookPane, font, items, kDialogFont);
+  myDialogFontPopup = new PopUpWidget(lookPane, font, items, Cmd::DialogFont);
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
@@ -127,7 +127,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // given their shared width yet, so layout() sets the real track width
   const int swidth = 1;
   myListDelaySliderLbl = new LabelWidget(lookPane, font, "List input delay");
-  myListDelaySlider = new SliderWidget(lookPane, font, swidth, kListDelay, 8);
+  myListDelaySlider = new SliderWidget(lookPane, font, swidth, Cmd::ListDelay, 8);
   myListDelaySlider->setMinValue(0);
   myListDelaySlider->setMaxValue(1000);
   myListDelaySlider->setStepValue(50);
@@ -138,7 +138,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Number of lines a mouse wheel will scroll
   myWheelLinesSliderLbl = new LabelWidget(lookPane, font, "Mouse wheel scroll");
-  myWheelLinesSlider = new SliderWidget(lookPane, font, swidth, kMouseWheel, 8);
+  myWheelLinesSlider = new SliderWidget(lookPane, font, swidth, Cmd::MouseWheel, 8);
   myWheelLinesSlider->setMinValue(1);
   myWheelLinesSlider->setMaxValue(10);
   myWheelLinesSlider->setTickmarkIntervals(3);
@@ -146,7 +146,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Mouse double click speed
   myDoubleClickSliderLbl = new LabelWidget(lookPane, font, "Double-click speed");
-  myDoubleClickSlider = new SliderWidget(lookPane, font, swidth, 0, 6, " ms");
+  myDoubleClickSlider = new SliderWidget(lookPane, font, swidth,  GuiCmd::None, 6, " ms");
   myDoubleClickSlider->setMinValue(100);
   myDoubleClickSlider->setMaxValue(900);
   myDoubleClickSlider->setStepValue(50);
@@ -155,7 +155,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Initial delay before controller input will start repeating
   myControllerDelaySliderLbl = new LabelWidget(lookPane, font, "Controller repeat delay");
-  myControllerDelaySlider = new SliderWidget(lookPane, font, swidth, kControllerDelay, 8);
+  myControllerDelaySlider = new SliderWidget(lookPane, font, swidth, Cmd::ControllerDelay, 8);
   myControllerDelaySlider->setMinValue(200);
   myControllerDelaySlider->setMaxValue(1000);
   myControllerDelaySlider->setStepValue(100);
@@ -164,7 +164,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Controller repeat rate
   myControllerRateSliderLbl = new LabelWidget(lookPane, font, "Controller repeat rate");
-  myControllerRateSlider = new SliderWidget(lookPane, font, swidth, 0, 12, " repeats/s");
+  myControllerRateSlider = new SliderWidget(lookPane, font, swidth,  GuiCmd::None, 12, " repeats/s");
   myControllerRateSlider->setMinValue(2);
   myControllerRateSlider->setMaxValue(30);
   myControllerRateSlider->setStepValue(1);
@@ -245,7 +245,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setPaneWidget(tabID, launchPane);
 
   // ROM path
-  myRomButton = new ButtonWidget(launchPane, font, "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  myRomButton = new ButtonWidget(launchPane, font, "ROM path" + ELLIPSIS, Cmd::ChooseRomDir);
   wid.push_back(myRomButton);
   myRomPath = new EditTextWidget(launchPane, font, 1);
   wid.push_back(myRomPath);
@@ -264,13 +264,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Launcher width and height
   myLauncherWidthSliderLbl = new LabelWidget(launchPane, font, "Launcher width");
-  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0, 0, 6, "px");
+  myLauncherWidthSlider = new SliderWidget(launchPane, font, 0,  GuiCmd::None, 6, "px");
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
 
   myLauncherHeightSliderLbl = new LabelWidget(launchPane, font, "Launcher height");
-  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0, 0, 6, "px");
+  myLauncherHeightSlider = new SliderWidget(launchPane, font, 0,  GuiCmd::None, 6, "px");
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
@@ -291,7 +291,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM launcher info/snapshot viewer
   myRomViewerSizeLbl = new LabelWidget(launchPane, font, "ROM info width");
-  myRomViewerSize = new SliderWidget(launchPane, font, 0, kRomViewer, 6, "%");
+  myRomViewerSize = new SliderWidget(launchPane, font, 0, Cmd::RomViewer, 6, "%");
   myRomViewerSize->setMinValue(0);
   myRomViewerSize->setMaxValue(100);
   myRomViewerSize->setStepValue(2);
@@ -301,7 +301,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot path (load files)
   myOpenBrowserButton =
-    new ButtonWidget(launchPane, font, "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
+    new ButtonWidget(launchPane, font, "Image path" + ELLIPSIS, Cmd::ChooseSnapLoadDir);
   myOpenBrowserButton->setToolTip("Select path for images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
@@ -685,11 +685,12 @@ void UIDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void UIDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                             int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
     {
       const bool informPath = myIsGlobal &&
         (myRomPath->getText() != instance().settings().getString("romdir")
@@ -717,17 +718,17 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
-        sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::RomDirChosen, 0, 0);
       if(informFav) // Let the boss know the favaorites tracking has changed
-        sendCommand(LauncherDialog::kFavChangedCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::FavouritesChanged, 0, 0);
       if(informExt) // Let the boss know the file extension display setting has changed
-        sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::ExtensionsChanged, 0, 0);
       if(informRomViewer) // Let the boss know the ROM info viewer was toggled
-        sendCommand(LauncherDialog::kRomViewerChangedCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::RomViewerChanged, 0, 0);
       if(informButtons) // Let the boss know the bottom button row was toggled
-        sendCommand(LauncherDialog::kButtonsChangedCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::ButtonsChanged, 0, 0);
       if(informFont) // Let the boss know the launcher font changed
-        sendCommand(LauncherDialog::kFontChangedCmd, 0, 0);
+        sendCommand(LauncherDialog::Cmd::FontChanged, 0, 0);
       if(informDialogFont)
       {
         // Change the dialog font in place, then re-font every dialog in the
@@ -744,15 +745,15 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
     }
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kDialogFont:
+    case Cmd::DialogFont:
       handleLauncherSize();
       break;
 
-    case kListDelay:
+    case Cmd::ListDelay:
       if(myListDelaySlider->getValue() == 0)
       {
         myListDelaySlider->setValueLabel("Off");
@@ -769,14 +770,14 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kMouseWheel:
+    case Cmd::MouseWheel:
       if(myWheelLinesSlider->getValue() == 1)
         myWheelLinesSlider->setValueUnit(" line");
       else
         myWheelLinesSlider->setValueUnit(" lines");
       break;
 
-    case kControllerDelay:
+    case Cmd::ControllerDelay:
       if(myControllerDelaySlider->getValue() == 1000)
       {
         myControllerDelaySlider->setValueLabel("1");
@@ -788,7 +789,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kChooseRomDirCmd:
+    case Cmd::ChooseRomDir:
       BrowserDialog::show(this, _font, "Select ROM Directory",
                           myRomPath->getText(),
                           BrowserDialog::Mode::Directories,
@@ -797,11 +798,11 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
                           });
       break;
 
-    case kRomViewer:
+    case Cmd::RomViewer:
       handleRomViewer();
       break;
 
-    case kChooseSnapLoadDirCmd:
+    case Cmd::ChooseSnapLoadDir:
       BrowserDialog::show(this, _font, "Select ROM Info Viewer Image Directory",
                           mySnapLoadPath->getText(),
                           BrowserDialog::Mode::Directories,

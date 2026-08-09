@@ -65,7 +65,7 @@ namespace {
 class DividerWidget : public Widget, public CommandSender
 {
   public:
-    DividerWidget(GuiObject* boss, const GUI::Font& font, int w, int cmd)
+    DividerWidget(GuiObject* boss, const GUI::Font& font, int w, GuiCmd::Code cmd)
       : Widget(boss, font),
         CommandSender(boss),
         myCmd{cmd}
@@ -109,7 +109,7 @@ class DividerWidget : public Widget, public CommandSender
 
   private:
     bool myDragging{false};
-    int  myCmd{0};
+    GuiCmd::Code myCmd{GuiCmd::None};
 
   private:
     DividerWidget() = delete;
@@ -152,7 +152,7 @@ void LauncherDialog::addFilteringWidgets()
   WidgetArray wid;
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myReloadButton = new ButtonWidget(this, _font,
-                                    GUI::icon_reload_small, kReloadCmd);
+                                    GUI::icon_reload_small, Cmd::Reload);
   myReloadButton->setToolTip("Reload listing (Ctrl+R)");
   wid.push_back(myReloadButton);
 
@@ -164,14 +164,14 @@ void LauncherDialog::addFilteringWidgets()
   wid.push_back(myPattern);
 
   mySubDirsButton = new ButtonWidget(this, _font,
-                                     GUI::icon_reload_small, kSubDirsCmd);
+                                     GUI::icon_reload_small, Cmd::SubDirs);
   mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
   wid.push_back(mySubDirsButton);
 
   myRomCount = new LabelWidget(this, _font, "", TextAlign::Right);
 
   myRandomRomButton = new ButtonWidget(this, _font,
-                                       GUI::icon_random_small, kLoadRndRomCmd);
+                                       GUI::icon_random_small, Cmd::LoadRandomRom);
 #ifndef BSPF_MACOS
   myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
 #else
@@ -180,7 +180,7 @@ void LauncherDialog::addFilteringWidgets()
   wid.push_back(myRandomRomButton);
 
   mySettingsButton = new ButtonWidget(this, _font,
-    GUI::icon_settings_small, "Options" + ELLIPSIS, kOptionsCmd);
+    GUI::icon_settings_small, "Options" + ELLIPSIS, Cmd::Options);
   mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
   wid.push_back(mySettingsButton);
 
@@ -198,7 +198,7 @@ void LauncherDialog::addPathWidgets()
 
   // Help icon (variant/size re-picked in layout())
   myHelpButton = new ButtonWidget(this, _font,
-                                  GUI::icon_help_small, kHelpCmd);
+                                  GUI::icon_help_small, Dialog::Cmd::Help);
   myHelpButton->setToolTip(std::format("Click for help. ({})",
     instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
   myHelpButton->setEnabled(true);
@@ -273,7 +273,7 @@ int LauncherDialog::addRomWidgets()
     wid.push_back(myRomImageWidget);
     myRomInfoWidget = new RomInfoWidget(this, romInfoFont);
     // Draggable divider between the list and the ROM info column
-    myDivider = new DividerWidget(this, _font, fontWidth, kRomWidthCmd);
+    myDivider = new DividerWidget(this, _font, fontWidth, Cmd::RomWidthChanged);
   }
   return addToFocusList(wid);
 }
@@ -285,22 +285,22 @@ void LauncherDialog::addButtonWidgets()
   // Four equal-width buttons at the bottom; each sizes itself from its label and
   // layout() then stretches them to share the row
 #ifndef BSPF_MACOS
-  myStartButton   = new ButtonWidget(this, _font, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", Cmd::LoadROM);
   wid.push_back(myStartButton);
-  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::Cmd::ParentDir);
   wid.push_back(myGoUpButton);
-  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, Cmd::Options);
   wid.push_back(myOptionsButton);
-  myQuitButton    = new ButtonWidget(this, _font, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", Cmd::Quit);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton    = new ButtonWidget(this, _font, "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", Cmd::Quit);
   wid.push_back(myQuitButton);
-  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, Cmd::Options);
   wid.push_back(myOptionsButton);
-  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::Cmd::ParentDir);
   wid.push_back(myGoUpButton);
-  myStartButton   = new ButtonWidget(this, _font, "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", Cmd::LoadROM);
   wid.push_back(myStartButton);
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
@@ -969,9 +969,9 @@ void LauncherDialog::handleContextMenu()
   else if(cmd == "sorting")
     toggleSorting();
   else if(cmd == "subdirs")
-    sendCommand(kSubDirsCmd, 0, 0);
+    sendCommand(Cmd::SubDirs, 0, 0);
   else if(cmd == "homedir")
-    sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
+    sendCommand(FileListWidget::Cmd::HomeDir, 0, 0);
   else if(cmd == "highscores")
     openHighScores();
   else if(cmd == "reload")
@@ -1006,7 +1006,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       switch(key)
       {
         case StellaKey::D:
-          sendCommand(kSubDirsCmd, 0, 0);
+          sendCommand(Cmd::SubDirs, 0, 0);
           break;
 
         case StellaKey::E:
@@ -1126,12 +1126,12 @@ void LauncherDialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
+void LauncherDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case kRomWidthCmd:
+    case Cmd::RomWidthChanged:
     {
       // The divider was dragged: 'data' is the dialog-relative cursor x.
       // The ROM info column spans from there to the right border.
@@ -1147,11 +1147,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kSubDirsCmd:
+    case Cmd::SubDirs:
       toggleSubDirs();
       break;
 
-    case kLoadROMCmd:
+    case Cmd::LoadROM:
       if(myList->isDirectory(myList->selected()))
       {
         if(myList->selected().getName() == "..")
@@ -1161,43 +1161,43 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         break;
       }
       [[fallthrough]];
-    case FileListWidget::ItemActivated:
+    case FileListWidget::Cmd::ItemActivated:
       loadRom();
       break;
 
-    case kLoadRndRomCmd:
+    case Cmd::LoadRandomRom:
       loadRandomRom();
       break;
 
-    case ListWidget::kParentDirCmd:
+    case ListWidget::Cmd::ParentDir:
       myList->selectParent();
       break;
 
-    case kOptionsCmd:
+    case Cmd::Options:
       openSettings();
       break;
 
-    case kReloadCmd:
+    case Cmd::Reload:
       reload();
       break;
 
-    case FileListWidget::ItemChanged:
+    case FileListWidget::Cmd::ItemChanged:
       updateUI();
       break;
 
-    case ListWidget::kLongButtonPressCmd:
+    case ListWidget::Cmd::LongButtonPress:
       if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
         openContextMenu();
       myEventHandled = true;
       break;
 
-    case EditableWidget::kChangedCmd:
-    case EditableWidget::kAcceptCmd:
+    case EditableWidget::Cmd::Changed:
+    case EditableWidget::Cmd::Accept:
     {
       const bool subDirs = instance().settings().getBool("launchersubdirs");
 
       myList->setIncludeSubDirs(subDirs);
-      if(subDirs && cmd == EditableWidget::kChangedCmd)
+      if(subDirs && cmd == EditableWidget::Cmd::Changed)
       {
         // delay (potentially slow) subdirectories reloads until user stops typing
         myReloadTime = TimerManager::getTicks() / 1000 +
@@ -1209,11 +1209,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kQuitCmd:
+    case Cmd::Quit:
       handleQuit();
       break;
 
-    case kRomDirChosenCmd:
+    case Cmd::RomDirChosen:
     {
       string_view romDir = instance().settings().getString("romdir");
 
@@ -1234,23 +1234,23 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kFavChangedCmd:
+    case Cmd::FavouritesChanged:
       handleFavoritesChanged();
       break;
 
-    case kExtChangedCmd:
+    case Cmd::ExtensionsChanged:
       reload();
       break;
 
-    case kRomViewerChangedCmd:
+    case Cmd::RomViewerChanged:
       setRomInfoEnabled(instance().settings().getFloat("romviewer") > 0.F);
       break;
 
-    case kButtonsChangedCmd:
+    case Cmd::ButtonsChanged:
       setButtonsEnabled(instance().settings().getBool("launcherbuttons"));
       break;
 
-    case kFontChangedCmd:
+    case Cmd::FontChanged:
       // The launcher font was changed at runtime.  Swap it in place (every
       // widget references the same Font object), then refresh the cached
       // font-derived state and re-flow — no restart required.
@@ -1261,11 +1261,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       instance().frameBuffer().growWindowTo(myMinSize);
       break;
 
-    case ContextMenu::kItemSelectedCmd:
+    case ContextMenu::Cmd::ItemSelected:
       handleContextMenu();
       break;
 
-    case RomInfoWidget::kClickedCmd:
+    case RomInfoWidget::Cmd::Clicked:
     {
       const string& url = myRomInfoWidget->getUrl();
 

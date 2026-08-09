@@ -48,7 +48,7 @@ class CartridgeARMWidget : public CartDebugWidget
     // its own rows in layoutContent(), calls this base to put them underneath
     void createCycleWidgets();
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void handleChipType();
@@ -82,12 +82,13 @@ class CartridgeARMWidget : public CartDebugWidget
 
     CartState myOldState;
 
-    enum {
-      kChipChanged      = 'chCh',
-      kMamLockChanged   = 'mlCh',
-      kMamModeChanged   = 'mmCh',
-      kIncCyclesChanged = 'inCH',
-      kFactorChanged    = 'fcCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ChipChanged      = GuiCmd::of("CartridgeARMWidget.ChipChanged"),
+        MamLockChanged   = GuiCmd::of("CartridgeARMWidget.MamLockChanged"),
+        MamModeChanged   = GuiCmd::of("CartridgeARMWidget.MamModeChanged"),
+        IncCyclesChanged = GuiCmd::of("CartridgeARMWidget.IncCyclesChanged"),
+        FactorChanged    = GuiCmd::of("CartridgeARMWidget.FactorChanged");
     };
 
   private:

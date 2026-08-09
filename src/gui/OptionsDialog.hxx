@@ -48,7 +48,7 @@ class OptionsDialog : public Dialog
   protected:
     // Opens the sub-dialog for the clicked category button; Close exits
     // menu mode (emulator) or closes this dialog (launcher)
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 
@@ -71,20 +71,21 @@ class OptionsDialog : public Dialog
     AppMode myMode{AppMode::emulator};
 
     // Command ids for the category buttons, dispatched in handleCommand()
-    enum {
-      kVidCmd      = 'VIDO',
-      kEmuCmd      = 'EMUO',
-      kInptCmd     = 'INPT',
-      kUsrIfaceCmd = 'URIF',
-      kSnapCmd     = 'SNAP',
-      kAuditCmd    = 'RAUD',
-      kInfoCmd     = 'INFO',
-      kCheatCmd    = 'CHET',
-      kLoggerCmd   = 'LOGG',
-      kDevelopCmd  = 'DEVL',
-      kHelpCmd     = 'HELP',
-      kAboutCmd    = 'ABOU',
-      kExitCmd     = 'EXIM'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Video         = GuiCmd::of("OptionsDialog.Video"),
+        Emulation     = GuiCmd::of("OptionsDialog.Emulation"),
+        Input         = GuiCmd::of("OptionsDialog.Input"),
+        UserInterface = GuiCmd::of("OptionsDialog.UserInterface"),
+        Snapshots     = GuiCmd::of("OptionsDialog.Snapshots"),
+        RomAudit      = GuiCmd::of("OptionsDialog.RomAudit"),
+        GameInfo      = GuiCmd::of("OptionsDialog.GameInfo"),
+        Cheats        = GuiCmd::of("OptionsDialog.Cheats"),
+        Logger        = GuiCmd::of("OptionsDialog.Logger"),
+        Developer     = GuiCmd::of("OptionsDialog.Developer"),
+        Help          = GuiCmd::of("OptionsDialog.Help"),
+        About         = GuiCmd::of("OptionsDialog.About"),
+        Exit          = GuiCmd::of("OptionsDialog.Exit");
     };
 
   private:

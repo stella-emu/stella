@@ -47,12 +47,12 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   else
   {
     myP0Lbl = new LabelWidget(boss, font, leftport ? "P1 pot" : "P3 pot");
-    myP0Resistance = new SliderWidget(boss, font, 0, kP0Changed);
+    myP0Resistance = new SliderWidget(boss, font, 0, Cmd::Paddle0Changed);
     myP1Lbl = new LabelWidget(boss, font, leftport ? "P2 pot" : "P4 pot");
-    myP1Resistance = new SliderWidget(boss, font, 0, kP1Changed);
+    myP1Resistance = new SliderWidget(boss, font, 0, Cmd::Paddle1Changed);
   }
-  myP0Fire = new CheckboxWidget(boss, font, "Fire", kP0Fire);
-  myP1Fire = new CheckboxWidget(boss, font, "Fire", kP1Fire);
+  myP0Fire = new CheckboxWidget(boss, font, "Fire", Cmd::Paddle0Fire);
+  myP1Fire = new CheckboxWidget(boss, font, "Fire", Cmd::Paddle1Fire);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   for(auto* s: {myP0Resistance, myP1Resistance})
@@ -117,23 +117,23 @@ void PaddleWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void PaddleWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                 int data, int id)
 {
   switch(cmd)
   {
-    case kP0Changed:
+    case Cmd::Paddle0Changed:
       setPin(Controller::AnalogPin::Five,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP0Resistance->getValue()));
       break;
-    case kP1Changed:
+    case Cmd::Paddle1Changed:
       setPin(Controller::AnalogPin::Nine,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP1Resistance->getValue()));
       break;
-    case kP0Fire:
+    case Cmd::Paddle0Fire:
       setPin(Controller::DigitalPin::Four, !myP0Fire->getState());
       break;
-    case kP1Fire:
+    case Cmd::Paddle1Fire:
       setPin(Controller::DigitalPin::Three, !myP1Fire->getState());
       break;
     default:

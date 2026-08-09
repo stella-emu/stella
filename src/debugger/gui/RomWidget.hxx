@@ -29,9 +29,10 @@ class RomListWidget;
 class RomWidget : public Widget, public CommandSender
 {
   public:
-    // This enum needs to be seen outside the class
-    enum {
-      kInvalidateListing  = 'INli'
+    // These commands need to be seen outside the class
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        InvalidateListing = GuiCmd::of("RomWidget.InvalidateListing");
     };
 
   public:
@@ -53,7 +54,7 @@ class RomWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override { return {}; }
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Position the bank display and the disassembly listing within the area

@@ -219,16 +219,17 @@ void EditableWidget::handleMouseMoved(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void EditableWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const string_view rmb = mouseMenu().getSelectedTag().toString();
 
     if(rmb == "cut")
     {
       if(cutSelectedText())
-        sendCommand(EditableWidget::kChangedCmd, 0, _id);
+        sendCommand(Cmd::Changed, 0, _id);
     }
     else if(rmb == "copy")
     {
@@ -243,7 +244,7 @@ void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int
     else if(rmb == "paste")
     {
       if(pasteSelectedText())
-        sendCommand(EditableWidget::kChangedCmd, 0, _id);
+        sendCommand(Cmd::Changed, 0, _id);
     }
     setDirty();
   }
@@ -278,7 +279,7 @@ bool EditableWidget::handleText(char text)
   if(tryInsertChar(text, _caretPos))
   {
     setCaretPos(_caretPos + 1);
-    sendCommand(EditableWidget::kChangedCmd, 0, _id);
+    sendCommand(Cmd::Changed, 0, _id);
     setDirty();
     return true;
   }
@@ -368,7 +369,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::Delete:
@@ -376,37 +377,37 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteLeftWord:
       handled = killWord(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteRightWord:
       handled = killWord(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteEnd:
       handled = killLine(+1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::DeleteHome:
       handled = killLine(-1);
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::Cut:
       handled = cutSelectedText();
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::Copy:
@@ -416,7 +417,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::Paste:
       handled = pasteSelectedText();
       if(handled)
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       break;
 
     case Event::Undo:
@@ -437,7 +438,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
         UndoHandler::lastDiff(_editString, oldString);
         setCaretPos(UndoHandler::lastDiff(_editString, oldString));
         _selectSize = 0;
-        sendCommand(EditableWidget::kChangedCmd, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
       }
       break;
     }
@@ -445,13 +446,13 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::EndEdit:
       // confirm edit and exit editmode
       endEditMode();
-      sendCommand(EditableWidget::kAcceptCmd, 0, _id);
+      sendCommand(Cmd::Accept, 0, _id);
       break;
 
     case Event::AbortEdit:
       handled = isChanged();
       abortEditMode();
-      sendCommand(EditableWidget::kCancelCmd, 0, _id);
+      sendCommand(Cmd::Cancel, 0, _id);
       break;
 
     default:

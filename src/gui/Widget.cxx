@@ -610,7 +610,7 @@ void LabelWidget::setLink(size_t start, int len, bool underline)
     _linkStart = start;
     _linkLen = len;
     _linkUnderline = underline;
-    setCmd(len ? kClickedCmd : 0);
+    setCmd(len ? Cmd::Clicked : GuiCmd::None);
     setDirty();
   }
 }
@@ -669,7 +669,7 @@ bool LabelWidget::setUrl(string_view url, string_view label, string_view placeHo
   if(len)
   {
     setLink(start, static_cast<int>(len), true);
-    setCmd(kOpenUrlCmd);
+    setCmd(Cmd::OpenUrl);
     return true;
   }
   else
@@ -697,7 +697,7 @@ void LabelWidget::handleMouseLeft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LabelWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(_cmd && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if(_cmd != GuiCmd::None && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     clearFlags(Widget::FLAG_HILITED);
     sendCommand(_cmd, 0, _id);
@@ -716,7 +716,7 @@ void LabelWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int w, int h, string_view label, int cmd, bool repeat)
+                           int w, int h, string_view label, GuiCmd::Code cmd, bool repeat)
   : LabelWidget(boss, font, w, h, label, TextAlign::Center),
     _repeat{repeat}
 {
@@ -732,7 +732,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           string_view label, int cmd, bool repeat)
+                           string_view label, GuiCmd::Code cmd, bool repeat)
   : ButtonWidget(boss, font, calcWidth(font, label), calcHeight(font),
                  label, cmd, repeat)
 {
@@ -741,7 +741,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
-                           const GUI::Icon& icon, int cmd, bool repeat)
+                           const GUI::Icon& icon, GuiCmd::Code cmd, bool repeat)
   : ButtonWidget(boss, font, w, h, "", cmd, repeat)
 {
   _useText = false;
@@ -750,7 +750,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           const GUI::Icon& icon, int cmd, bool repeat)
+                           const GUI::Icon& icon, GuiCmd::Code cmd, bool repeat)
   : ButtonWidget(boss, font, icon.width() + iconGap(font), calcHeight(font),
                  icon, cmd, repeat)
 {
@@ -760,7 +760,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            const GUI::Icon& icon, string_view label,
-                           int cmd, bool repeat)
+                           GuiCmd::Code cmd, bool repeat)
   : ButtonWidget(boss, font,
                  icon.width() + iconGap(font) * 1.5 + font.getStringWidth(label),
                  calcHeight(font), label, cmd, repeat)
@@ -879,7 +879,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
-                               string_view label, int cmd)
+                               string_view label, GuiCmd::Code cmd)
   : ButtonWidget(boss, font, font.isLarge() ? 24 : 16,
                  font.isLarge() ? 24 : 16, label, cmd),
     _boxSize{boxSize(font)}
@@ -1045,7 +1045,7 @@ void CheckboxWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int trackChars, int cmd, int valueChars,
+                           int trackChars, GuiCmd::Code cmd, int valueChars,
                            string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
   : ButtonWidget(boss, font,

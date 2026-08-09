@@ -233,9 +233,10 @@ void AudioWidget::handleVolume()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void AudioWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
-  if(cmd == DataGridWidget::kItemDataChangedCmd)
+  if(cmd == DataGridWidget::Cmd::ItemDataChanged)
   {
     switch(id)
     {

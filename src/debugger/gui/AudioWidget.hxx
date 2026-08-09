@@ -41,7 +41,7 @@ class AudioWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Build the layout tree from the current font and position/size the

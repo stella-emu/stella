@@ -36,8 +36,9 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
     string bankState() override;
 
   private:
-    enum {
-      kRAMBankChanged = 'raCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RamBankChanged = GuiCmd::of("Cartridge3EWidget.RamBankChanged");
     };
 
     LabelWidget* myROMTypeLbl{nullptr};
@@ -52,7 +53,7 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
     void createBankWidgets() override;
     void layoutBankSelect(GUI::BoxLayout& col) const override;
     uInt16 bankSegs() const override { return 1; }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

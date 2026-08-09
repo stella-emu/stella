@@ -74,7 +74,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Speed
   mySpeedLbl = new LabelWidget(this, _font, "Emulation speed");
-  mySpeed = new SliderWidget(this, _font, 10, kSpeedupChanged, 5, "%");
+  mySpeed = new SliderWidget(this, _font, 10, Cmd::SpeedupChanged, 5, "%");
   mySpeed->setMinValue(MIN_SPEED);
   mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
@@ -133,7 +133,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // State directory
   myStatePathButton =
-    new ButtonWidget(this, font, "State path" + ELLIPSIS, kChooseStateDir);
+    new ButtonWidget(this, font, "State path" + ELLIPSIS, Cmd::ChooseStateDir);
   myStatePathButton->setToolTip("Select the directory to load/save state files from/to.");
   wid.push_back(myStatePathButton);
   myStatePath = new EditTextWidget(this, font, 1);
@@ -141,7 +141,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Save/load states in the ROM directory
   myStateWithRom =
-    new CheckboxWidget(this, font, "Load/save states in ROM directory", kStateWithRom);
+    new CheckboxWidget(this, font, "Load/save states in ROM directory", Cmd::StateWithRom);
   myStateWithRom->setToolTip("Use the current ROM's directory for state files.");
   wid.push_back(myStateWithRom);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -367,25 +367,25 @@ void EmulationDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationDialog::handleCommand(CommandSender* sender, int cmd,
+void EmulationDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kSpeedupChanged:
+    case Cmd::SpeedupChanged:
       mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));
       break;
 
-    case kChooseStateDir:
+    case Cmd::ChooseStateDir:
       BrowserDialog::show(this, _font, "Select State Directory",
                           myStatePath->getText(),
                           BrowserDialog::Mode::Directories,
@@ -394,7 +394,7 @@ void EmulationDialog::handleCommand(CommandSender* sender, int cmd,
                           });
       break;
 
-    case kStateWithRom:
+    case Cmd::StateWithRom:
       updateStatePathEnabled();
       break;
 

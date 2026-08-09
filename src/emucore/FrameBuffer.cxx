@@ -654,6 +654,7 @@ void FrameBuffer::setRenderTarget(int target)
   myRenderTarget = target;
 }
 
+#ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
                                               string_view title, BufferType type,
@@ -714,6 +715,7 @@ void FrameBuffer::renderSecondaryWindow(DialogContainer& container, UpdateMode m
   updateContainer(container, mode);
   setRenderTarget(0);
 }
+#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::closeSecondaryWindow()
@@ -740,6 +742,7 @@ uInt32 FrameBuffer::secondaryWindowId() const
   return mySecondaryCreated ? secondaryBackend().windowId() : 0;
 }
 
+#ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::updateContainer(DialogContainer& container, UpdateMode mode)
 {
@@ -759,6 +762,7 @@ void FrameBuffer::updateContainer(DialogContainer& container, UpdateMode mode)
   if(redraw || rerender)
     myBackend->renderToScreen();
 }
+#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::updateInEmulationMode(float framesPerSecond)

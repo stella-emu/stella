@@ -32,11 +32,12 @@ class DataGridWidget : public EditableWidget
 {
   public:
     // Commands emitted by this commandsender
-    enum {
-      kItemDoubleClickedCmd = 'DGdb',
-      kItemActivatedCmd     = 'DGac',
-      kItemDataChangedCmd   = 'DGch',
-      kSelectionChangedCmd  = 'DGsc'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemDoubleClicked = GuiCmd::of("DataGridWidget.ItemDoubleClicked"),
+        ItemActivated     = GuiCmd::of("DataGridWidget.ItemActivated"),
+        ItemDataChanged   = GuiCmd::of("DataGridWidget.ItemDataChanged"),
+        SelectionChanged  = GuiCmd::of("DataGridWidget.SelectionChanged");
     };
 
   public:
@@ -141,7 +142,7 @@ class DataGridWidget : public EditableWidget
     bool hasToolTip() const override { return true; }
     int getToolTipIndex(const Common::Point& pos) const;
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   protected:
     int   _rows{0};

@@ -252,7 +252,7 @@ class Widget : public GuiObject
     virtual bool hasToolTip() const;
 
     // By default, delegate unhandled commands to the boss
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
     /** The help URL, derived from _helpURL or _helpAnchor (see setHelpAnchor/setHelpURL) */
@@ -325,9 +325,10 @@ class LabelWidget : public Widget, public CommandSender
 {
   public:
     // Command ids sendCommand()'d when a link is clicked / a URL link is clicked
-    enum {
-      kClickedCmd = 'STcl',
-      kOpenUrlCmd = 'STou'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Clicked = GuiCmd::of("LabelWidget.Clicked"),
+        OpenUrl = GuiCmd::of("LabelWidget.OpenUrl");
     };
 
   protected:
@@ -349,7 +350,7 @@ class LabelWidget : public Widget, public CommandSender
     ~LabelWidget() override = default;
 
     /** The command sendCommand() is called with when this label is clicked as a link */
-    void setCmd(int cmd) { _cmd = cmd; }
+    void setCmd(GuiCmd::Code cmd) { _cmd = cmd; }
 
     /** Sets the label text to the given integer, formatted as a string */
     virtual void setValue(int value);
@@ -362,7 +363,7 @@ class LabelWidget : public Widget, public CommandSender
     /** Whether this control accepts interaction (set by editable subclasses like CheckboxWidget) */
     bool isEditable() const { return _editable; }
 
-    /** Marks label[start, start+len) as a link, optionally underlined; click sends kClickedCmd */
+    /** Marks label[start, start+len) as a link, optionally underlined; click sends Cmd::Clicked */
     void setLink(size_t start = string::npos, int len = 0, bool underline = false);
     /** Turns (part of) the label into a clickable URL link; returns whether one was found/set */
     bool setUrl(string_view url = {}, string_view label = {},
@@ -402,7 +403,7 @@ class LabelWidget : public Widget, public CommandSender
     // Horizontal alignment of the text
     TextAlign _align{TextAlign::Left};
     // Command sent (via CommandSender) on click; 0 means non-interactive
-    int       _cmd{0};
+    GuiCmd::Code _cmd{GuiCmd::None};
     // Byte range within _label rendered as a link (npos/0 = none), and whether underlined
     size_t    _linkStart{string::npos};
     int       _linkLen{0};
@@ -434,7 +435,7 @@ class ButtonWidget : public LabelWidget
       neighbours needs, so the LAYOUT equalizes them — see GUI::alignButtons().
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 string_view label, int cmd = 0, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
     /**
       An icon, at a size you give me.  For the caller whose button must match
       something else (the high scores dialog's prev/next arrows, sized to the
@@ -442,7 +443,7 @@ class ButtonWidget : public LabelWidget
       two below, which need no size at all.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, int dw, int dh,
-                 const GUI::Icon& icon, int cmd = 0, bool repeat = false);
+                 const GUI::Icon& icon, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
 
     /**
       Size me from my own icon, and from my label if I have one: I am laid out
@@ -452,9 +453,9 @@ class ButtonWidget : public LabelWidget
       state — just calls setIcon(), and I re-size to it.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
-                 int cmd = 0, bool repeat = false);
+                 GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
-                 string_view label, int cmd = 0, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
     ~ButtonWidget() override = default;
 
     /** Fires the button on Event::UISelect (simulates a mouse click) */
@@ -516,7 +517,7 @@ class ButtonWidget : public LabelWidget
       of its own kind (TimeLineWidget, the launcher's path button) uses this.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
-                 string_view label, int cmd = 0, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
 
     // The width my content needs: an icon-and-label button is laid out around
     // its icon -- a half-gap, the icon, a half-gap, then the label (see
@@ -603,14 +604,17 @@ class ButtonWidget : public LabelWidget
 class CheckboxWidget : public ButtonWidget
 {
   public:
-    enum { kCheckActionCmd  = 'CBAC' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        CheckAction = GuiCmd::of("LabelWidget.CheckAction");
+    };
     // How the checked box is filled: a solid square, a "greyed out" cross
     // (Inactive), or a filled circle (Circle, for a radio-button-like use)
     enum class FillType: uInt8 { Normal, Inactive, Circle };
 
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font,
-                   string_view label, int cmd = 0);
+                   string_view label, GuiCmd::Code cmd = GuiCmd::None);
     ~CheckboxWidget() override = default;
 
     /** Whether the box can be toggled by clicking; an uneditable one is greyed out */
@@ -688,12 +692,10 @@ class SliderWidget : public ButtonWidget
       default), and how many characters wide the value readout beside it must be
       (0 = none).  I turn those into pixels from the font.  How long a track the
       dialog wants is its own decision; how tall a slider is never was, so there
-      is no height -- and there is no bare 'no width' overload either: a real
-      count and a bald int cmd are otherwise indistinguishable to the overload
-      resolver once neither is a label.
+      is no height.
     */
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int trackChars = 0, int cmd = 0,
+                 int trackChars = 0, GuiCmd::Code cmd = GuiCmd::None,
                  int valueChars = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;

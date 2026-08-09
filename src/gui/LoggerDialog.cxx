@@ -69,7 +69,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // 'Save log to disk' occupies the left (Defaults) slot of the button group,
   // with OK/Cancel on the right
   addDefaultWidget(new ButtonWidget(this, font,
-                   "Save log to disk" + ELLIPSIS, GuiObject::kDefaultsCmd));
+                   "Save log to disk" + ELLIPSIS, GuiObject::Cmd::Defaults));
   wid.push_back(_defaultWidget);
   addOKCancelBGroup(wid, font);
 
@@ -159,17 +159,17 @@ void LoggerDialog::saveLogFile(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
+void LoggerDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       BrowserDialog::show(this, _font, "Save Log as",
                           instance().userDir().getPath() + "stella.log",
                           BrowserDialog::Mode::FileSave,

@@ -69,7 +69,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void setToolTip(string_view str, int idx = 0);
 
     // Command sent (via CommandSender) when OK/Enter accepts the input
-    void setEmitSignal(int cmd) { myCmd = cmd; }
+    void setEmitSignal(GuiCmd::Code cmd) { myCmd = cmd; }
     // Shows an error/status message below the fields, cleared on the next edit
     void setMessage(string_view title);
 
@@ -83,7 +83,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void layout() override;
     // OK/Enter sends myCmd (leaving the parent to close/validate); editing
     // after an error clears the message
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // One label per row
@@ -103,7 +103,7 @@ class InputTextDialog : public Dialog, public CommandSender
     // Set by setMessage(), cleared on the next edit (see handleCommand())
     bool myErrorFlag{false};
     // Command sent on accept (see setEmitSignal())
-    int myCmd{0};
+    GuiCmd::Code myCmd{GuiCmd::None};
 
     // Screen position from the (x,y) overload of show() (see setPosition())
     uInt32 myXOrig{0}, myYOrig{0};

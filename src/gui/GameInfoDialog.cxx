@@ -78,7 +78,7 @@ GameInfoDialog::GameInfoDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsExtraOKCancelBGroup(wid, font, "Export" + ELLIPSIS, kExportPressed);
+  addDefaultsExtraOKCancelBGroup(wid, font, "Export" + ELLIPSIS, Cmd::Export);
   _extraWidget->setToolTip("Export the current ROM's properties\n"
                            "into the default directory.");
   addBGroupToFocusList(wid);
@@ -137,9 +137,9 @@ void GameInfoDialog::addEmulationTab()
   // same list, rather than measuring a copy of its widest entry
   for(const auto& [name, desc]: Bankswitch::BSList)
     VarList::push_back(items, desc, name);
-  myBSType = new PopUpWidget(pane, _font, items, kBSTypeChanged);
+  myBSType = new PopUpWidget(pane, _font, items, Cmd::BankswitchTypeChanged);
   wid.push_back(myBSType);
-  myBSFilter = new CheckboxWidget(pane, _font, "Filter", kBSFilterChanged);
+  myBSFilter = new CheckboxWidget(pane, _font, "Filter", Cmd::BankswitchFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
   wid.push_back(myBSFilter);
 
@@ -171,12 +171,13 @@ void GameInfoDialog::addEmulationTab()
 
   // Phosphor
   myPhosphor = new CheckboxWidget(pane, _font,
-                                  "Phosphor (auto-enabled/disabled for all ROMs)", kPhosphorChanged);
+                                  "Phosphor (auto-enabled/disabled for all ROMs)",
+                                  Cmd::PhosphorChanged);
   myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
   myPPBlendLbl = new LabelWidget(pane, _font, "Blend");
-  myPPBlend = new SliderWidget(pane, _font, 0, kPPBlendChanged, 4, "%");
+  myPPBlend = new SliderWidget(pane, _font, 0, Cmd::PhosphorBlendChanged, 4, "%");
   myPPBlend->setMinValue(0);
   myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
@@ -184,7 +185,7 @@ void GameInfoDialog::addEmulationTab()
   wid.push_back(myPPBlend);
 
   myVCenterLbl = new LabelWidget(pane, _font, "V-Center");
-  myVCenter = new SliderWidget(pane, _font, 0, kVCenterChanged, 7, "px", 0, true);
+  myVCenter = new SliderWidget(pane, _font, 0, Cmd::VCenterChanged, 7, "px", 0, true);
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
   myVCenter->setTickmarkIntervals(4);
@@ -375,14 +376,14 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "QuadTari", "QUADTARI");
 
   myLeftPortLbl = new LabelWidget(pane, _font, "Left port");
-  myLeftPort = new PopUpWidget(pane, _font, items, kLeftCChanged);
+  myLeftPort = new PopUpWidget(pane, _font, items, Cmd::LeftControllerChanged);
   myLeftPort->setToolTip(Event::PreviousLeftPort, Event::NextLeftPort);
   wid.push_back(myLeftPort);
 
   myLeftPortDetected = new LabelWidget(pane, ifont, "Sega Genesis detected");
 
   myRightPortLbl = new LabelWidget(pane, _font, "Right port");
-  myRightPort = new PopUpWidget(pane, _font, items, kRightCChanged);
+  myRightPort = new PopUpWidget(pane, _font, items, Cmd::RightControllerChanged);
   myRightPort->setToolTip(Event::PreviousRightPort, Event::NextRightPort);
   wid.push_back(myRightPort);
 
@@ -393,13 +394,13 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(mySwapPorts);
 
   myQuadTariButton =
-    new ButtonWidget(pane, _font, " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
+    new ButtonWidget(pane, _font, " QuadTari" + ELLIPSIS + " ", Cmd::QuadTariPressed);
   wid.push_back(myQuadTariButton);
 
   // EEPROM erase button for left/right controller
   myEraseEEPROMLbl = new LabelWidget(pane, _font, "AtariVox/SaveKey");
   myEraseEEPROMButton =
-    new ButtonWidget(pane, _font, "Erase EEPROM", kEEButtonPressed);
+    new ButtonWidget(pane, _font, "Erase EEPROM", Cmd::EraseEeprom);
   wid.push_back(myEraseEEPROMButton);
   myEraseEEPROMInfo = new LabelWidget(pane, ifont, "(for this game only)");
 
@@ -411,7 +412,7 @@ void GameInfoDialog::addControllersTab()
   myPaddlesCenter = new LabelWidget(pane, _font, "Paddles center:");
 
   myPaddleXCenterLbl = new LabelWidget(pane, _font, "X");
-  myPaddleXCenter = new SliderWidget(pane, _font, 0, kPXCenterChanged, 6, "px", 0 , true);
+  myPaddleXCenter = new SliderWidget(pane, _font, 0, Cmd::PaddleXCenterChanged, 6, "px", 0 , true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleXCenter->setTickmarkIntervals(4);
@@ -419,7 +420,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myPaddleXCenter);
 
   myPaddleYCenterLbl = new LabelWidget(pane, _font, "Y");
-  myPaddleYCenter = new SliderWidget(pane, _font, 0, kPYCenterChanged, 6, "px", 0 , true);
+  myPaddleYCenter = new SliderWidget(pane, _font, 0, Cmd::PaddleYCenterChanged, 6, "px", 0 , true);
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleYCenter->setTickmarkIntervals(4);
@@ -427,7 +428,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myPaddleYCenter);
 
   // Mouse
-  myMouseControl = new CheckboxWidget(pane, _font, "Specific mouse axes", kMCtrlChanged);
+  myMouseControl = new CheckboxWidget(pane, _font, "Specific mouse axes", Cmd::MouseControlChanged);
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
@@ -449,7 +450,7 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseY);
 
   myMouseRangeLbl = new LabelWidget(pane, _font, "Mouse axes range");
-  myMouseRange = new SliderWidget(pane, _font, 0, 0, 4, "%");
+  myMouseRange = new SliderWidget(pane, _font, 0, GuiCmd::None, 4, "%");
   myMouseRange->setMinValue(1);
   myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
@@ -604,7 +605,7 @@ void GameInfoDialog::addCartridgeTab()
   myUrl->setID(kLinkId);
   wid.push_back(myUrl);
 
-  myUrlButton = new ButtonWidget(pane, _font, ">>", kLinkPressed);
+  myUrlButton = new ButtonWidget(pane, _font, ">>", Cmd::Link);
   wid.push_back(myUrlButton);
 
 #ifdef IMAGE_SUPPORT
@@ -615,7 +616,7 @@ void GameInfoDialog::addCartridgeTab()
   myBezelName->setToolTip("Define the name of the bezel file.");
   wid.push_back(myBezelName);
 
-  myBezelButton = new ButtonWidget(pane, _font, ELLIPSIS, kBezelFilePressed);
+  myBezelButton = new ButtonWidget(pane, _font, ELLIPSIS, Cmd::BezelFile);
   wid.push_back(myBezelButton);
 
   myBezelDetected = new LabelWidget(pane, ifont,
@@ -725,7 +726,7 @@ void GameInfoDialog::addHighScoresTab()
   };
 
   myHighScores = new CheckboxWidget(pane, _font, "Enable High Scores",
-                                    kHiScoresChanged);
+                                    Cmd::HighScoresChanged);
 
   // Variations
   myVariationsLbl = new LabelWidget(pane, _font, "Variations");
@@ -745,10 +746,10 @@ void GameInfoDialog::addHighScoresTab()
   myVarAddressVal = new EditTextWidget(pane, _font, 3);
   myVarAddressVal->setEditable(false);
 
-  myVarsBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
+  myVarsBCD = new CheckboxWidget(pane, _font, "BCD", Cmd::HighScoresChanged);
   myVarsBCD->setToolTip("Check when the variation number is stored as BCD.");
   wid.push_back(myVarsBCD);
-  myVarsZeroBased = new CheckboxWidget(pane, _font, "0-based", kHiScoresChanged);
+  myVarsZeroBased = new CheckboxWidget(pane, _font, "0-based", Cmd::HighScoresChanged);
   myVarsZeroBased->setToolTip("Check when the variation number is stored zero-based.");
   wid.push_back(myVarsZeroBased);
 
@@ -759,7 +760,7 @@ void GameInfoDialog::addHighScoresTab()
   for(uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   myScoreDigitsLbl = new LabelWidget(pane, _font, "Digits");
-  myScoreDigits = new PopUpWidget(pane, _font, items, kHiScoresChanged);
+  myScoreDigits = new PopUpWidget(pane, _font, items, Cmd::HighScoresChanged);
   myScoreDigits->setToolTip("Select the number of score digits displayed.");
   wid.push_back(myScoreDigits);
 
@@ -767,11 +768,11 @@ void GameInfoDialog::addHighScoresTab()
   for(uInt32 i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   myTrailingZeroesLbl = new LabelWidget(pane, _font, "0-digits");
-  myTrailingZeroes = new PopUpWidget(pane, _font, items, kHiScoresChanged);
+  myTrailingZeroes = new PopUpWidget(pane, _font, items, Cmd::HighScoresChanged);
   myTrailingZeroes->setToolTip("Select the number of trailing score digits which are fixed to 0.");
   wid.push_back(myTrailingZeroes);
 
-  myScoreBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
+  myScoreBCD = new CheckboxWidget(pane, _font, "BCD", Cmd::HighScoresChanged);
   myScoreBCD->setToolTip("Check when the score is stored as BCD.");
   wid.push_back(myScoreBCD);
   myScoreInvert = new CheckboxWidget(pane, _font, "Invert");
@@ -815,10 +816,10 @@ void GameInfoDialog::addHighScoresTab()
   mySpecialAddressVal = new EditTextWidget(pane, _font, 3);
   mySpecialAddressVal->setEditable(false);
 
-  mySpecialBCD = new CheckboxWidget(pane, _font, "BCD", kHiScoresChanged);
+  mySpecialBCD = new CheckboxWidget(pane, _font, "BCD", Cmd::HighScoresChanged);
   mySpecialBCD->setToolTip("Check when the special number is stored as BCD.");
   wid.push_back(mySpecialBCD);
-  mySpecialZeroBased = new CheckboxWidget(pane, _font, "0-based", kHiScoresChanged);
+  mySpecialZeroBased = new CheckboxWidget(pane, _font, "0-based", Cmd::HighScoresChanged);
   mySpecialZeroBased->setToolTip("Check when the special number is stored zero-based.");
   wid.push_back(mySpecialZeroBased);
 
@@ -1755,21 +1756,21 @@ void GameInfoDialog::exportCurrentPropertiesToDisk(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
+void GameInfoDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kExportPressed:
+    case Cmd::Export:
       BrowserDialog::show(this, _font, "Export Properties as",
                           instance().userDir().getPath() +
                             myGameFile.getNameWithExt(".pro"),
@@ -1779,7 +1780,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                           });
       break;
 
-    case TabWidget::kTabChangedCmd:
+    case TabWidget::Cmd::TabChanged:
       if(data == 2)  // 'Controllers' tab selected
         updateControllerStates();
 
@@ -1787,12 +1788,12 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
 
-    case kLeftCChanged:
-    case kRightCChanged:
+    case Cmd::LeftControllerChanged:
+    case Cmd::RightControllerChanged:
       updateControllerStates();
       break;
 
-    case kQuadTariPressed:
+    case Cmd::QuadTariPressed:
     {
       const bool enableLeft =
         BSPF::startsWithIgnoreCase(myLeftPort->getSelectedTag().toString(), "QUADTARI") ||
@@ -1809,26 +1810,26 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       myQuadTariDialog->show(enableLeft, enableRight);
       break;
     }
-    case kEEButtonPressed:
+    case Cmd::EraseEeprom:
       eraseEEPROM();
       break;
 
-    case kBSTypeChanged:
+    case Cmd::BankswitchTypeChanged:
       updateMultiCart();
       break;
 
-    case kBSFilterChanged:
+    case Cmd::BankswitchFilterChanged:
       updateBSTypes();
       break;
 
-    case kPhosphorChanged:
+    case Cmd::PhosphorChanged:
     {
       const bool status = myPhosphor->getState();
       myPPBlend->setEnabled(status);
       break;
     }
 
-    case kPPBlendChanged:
+    case Cmd::PhosphorBlendChanged:
       if(myPPBlend->getValue() == 0)
       {
         myPPBlend->setValueLabel("Off");
@@ -1838,7 +1839,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
         myPPBlend->setValueUnit("%");
       break;
 
-    case kVCenterChanged:
+    case Cmd::VCenterChanged:
       if(myVCenter->getValue() == 0)
       {
         myVCenter->setValueLabel("Default");
@@ -1848,15 +1849,15 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
         myVCenter->setValueUnit("px");
       break;
 
-    case kPXCenterChanged:
+    case Cmd::PaddleXCenterChanged:
       myPaddleXCenter->setValueLabel(myPaddleXCenter->getValue() * 5);
       break;
 
-    case kPYCenterChanged:
+    case Cmd::PaddleYCenterChanged:
       myPaddleYCenter->setValueLabel(myPaddleYCenter->getValue() * 5);
       break;
 
-    case kMCtrlChanged:
+    case Cmd::MouseControlChanged:
     {
       const bool state = myMouseControl->getState();
       myMouseXLbl->setEnabled(state);
@@ -1866,12 +1867,12 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kLinkPressed:
+    case Cmd::Link:
       MediaFactory::openURL(myUrl->getText());
       break;
 
 #ifdef IMAGE_SUPPORT
-    case kBezelFilePressed:
+    case Cmd::BezelFile:
       BrowserDialog::show(this, _font, "Select bezel image",
                           instance().bezelDir().getPath() + myBezelName->getText(),
                           BrowserDialog::Mode::FileLoadNoDirs,
@@ -1888,14 +1889,14 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 #endif
 
-    case EditTextWidget::kChangedCmd:
+    case EditableWidget::Cmd::Changed:
       if(id == kLinkId)
       {
         updateLink();
         break;
       }
       [[fallthrough]];
-    case kHiScoresChanged:
+    case Cmd::HighScoresChanged:
       updateHighScoresWidgets();
       break;
 

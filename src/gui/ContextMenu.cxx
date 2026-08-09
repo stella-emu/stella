@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, int cmd, int width)
+                         const VariantList& items, GuiCmd::Code cmd, int width)
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
     _rowHeight{font.getLineHeight()},
@@ -239,7 +239,7 @@ bool ContextMenu::sendSelectionUp()
     return false;
 
   _selectedItem--;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -250,7 +250,7 @@ bool ContextMenu::sendSelectionDown()
     return false;
 
   _selectedItem++;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -261,7 +261,7 @@ bool ContextMenu::sendSelectionFirst()
     return false;
 
   _selectedItem = 0;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -272,7 +272,7 @@ bool ContextMenu::sendSelectionLast()
     return false;
 
   _selectedItem = static_cast<int>(_entries.size()) - 1;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -445,7 +445,7 @@ void ContextMenu::sendSelection()
 
   // Send any command associated with the selection
   _selectedItem = item;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

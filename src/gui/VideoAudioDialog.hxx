@@ -62,7 +62,7 @@ class VideoAudioDialog : public Dialog
     // what was loaded (see myPalette/myPaletteAdj); Defaults resets the
     // active tab; the remaining ids update slider/pop-up labels and enabled
     // state, or open the bezel-path browser
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Builds the 'Display' tab: renderer, zoom, fullscreen/stretch,
@@ -256,39 +256,36 @@ class VideoAudioDialog : public Dialog
     PaletteHandler::Adjustable myPaletteAdj;
 
     // Command ids dispatched in handleCommand()
-    enum {
-      kRendererChanged    = 'VDRe',
-      kZoomChanged        = 'VDZo',
-      kVSizeChanged       = 'VDVs',
-      kFullScreenChanged  = 'VDFs',
-      kOverscanChanged    = 'VDOv',
-
-      kPaletteChanged     = 'VDpl',
-      kPhaseShiftChanged  = 'VDps',
-      kRedShiftChanged    = 'VDrs',
-      kGreenShiftChanged  = 'VDgs',
-      kBlueShiftChanged   = 'VDbs',
-      kPaletteUpdated     = 'VDpu',
-
-      kTVModeChanged      = 'VDtv',
-      kCloneCompositeCmd  = 'CLcp',
-      kCloneSvideoCmd     = 'CLsv',
-      kCloneRGBCmd        = 'CLrb',
-      kCloneBadCmd        = 'CLbd',
-      kCloneCustomCmd     = 'CLcu',
-      kPhosphorChanged    = 'VDph',
-      kPhosBlendChanged   = 'VDbl',
-      kScanlinesChanged   = 'VDsc',
-
-      kBezelEnableChanged = 'BZen',
-      kChooseBezelDirCmd  = 'BZsl',
-      kAutoWindowChanged  = 'BZab',
-
-      kSoundEnableChanged = 'ADse',
-      kDeviceChanged      = 'ADdc',
-      kModeChanged        = 'ADmc',
-      kHeadroomChanged    = 'ADhc',
-      kBufferSizeChanged  = 'ADbc'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RendererChanged      = GuiCmd::of("VideoAudioDialog.RendererChanged"),
+        ZoomChanged          = GuiCmd::of("VideoAudioDialog.ZoomChanged"),
+        VSizeChanged         = GuiCmd::of("VideoAudioDialog.VSizeChanged"),
+        FullScreenChanged    = GuiCmd::of("VideoAudioDialog.FullScreenChanged"),
+        OverscanChanged      = GuiCmd::of("VideoAudioDialog.OverscanChanged"),
+        PaletteChanged       = GuiCmd::of("VideoAudioDialog.PaletteChanged"),
+        PhaseShiftChanged    = GuiCmd::of("VideoAudioDialog.PhaseShiftChanged"),
+        RedShiftChanged      = GuiCmd::of("VideoAudioDialog.RedShiftChanged"),
+        GreenShiftChanged    = GuiCmd::of("VideoAudioDialog.GreenShiftChanged"),
+        BlueShiftChanged     = GuiCmd::of("VideoAudioDialog.BlueShiftChanged"),
+        PaletteUpdated       = GuiCmd::of("VideoAudioDialog.PaletteUpdated"),
+        TvModeChanged        = GuiCmd::of("VideoAudioDialog.TvModeChanged"),
+        CloneComposite       = GuiCmd::of("VideoAudioDialog.CloneComposite"),
+        CloneSvideo          = GuiCmd::of("VideoAudioDialog.CloneSvideo"),
+        CloneRGB             = GuiCmd::of("VideoAudioDialog.CloneRGB"),
+        CloneBad             = GuiCmd::of("VideoAudioDialog.CloneBad"),
+        CloneCustom          = GuiCmd::of("VideoAudioDialog.CloneCustom"),
+        PhosphorChanged      = GuiCmd::of("VideoAudioDialog.PhosphorChanged"),
+        PhosphorBlendChanged = GuiCmd::of("VideoAudioDialog.PhosphorBlendChanged"),
+        ScanlinesChanged     = GuiCmd::of("VideoAudioDialog.ScanlinesChanged"),
+        BezelEnableChanged   = GuiCmd::of("VideoAudioDialog.BezelEnableChanged"),
+        ChooseBezelDir       = GuiCmd::of("VideoAudioDialog.ChooseBezelDir"),
+        AutoWindowChanged    = GuiCmd::of("VideoAudioDialog.AutoWindowChanged"),
+        SoundEnableChanged   = GuiCmd::of("VideoAudioDialog.SoundEnableChanged"),
+        DeviceChanged        = GuiCmd::of("VideoAudioDialog.DeviceChanged"),
+        ModeChanged          = GuiCmd::of("VideoAudioDialog.ModeChanged"),
+        HeadroomChanged      = GuiCmd::of("VideoAudioDialog.HeadroomChanged"),
+        BufferSizeChanged    = GuiCmd::of("VideoAudioDialog.BufferSizeChanged");
     };
 
   private:

@@ -29,7 +29,7 @@
 class TimeLineWidget : public ButtonWidget
 {
   public:
-    TimeLineWidget(GuiObject* boss, const GUI::Font& font, int cmd = 0);
+    TimeLineWidget(GuiObject* boss, const GUI::Font& font, GuiCmd::Code cmd = GuiCmd::None);
     ~TimeLineWidget() override = default;
 
     // Height of the timeline track, including its handle overhang

@@ -157,11 +157,12 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaOutputWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                    int data, int id)
 {
   const uInt32 startLine = instance().console().tia().startLine();
 
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const string& rmb = myMenu->getSelectedTag().toString();
 

@@ -26,9 +26,10 @@ class ToggleWidget : public Widget, public CommandSender
 {
   public:
     // Commands emitted by this commandsender
-    enum {
-      kItemDataChangedCmd   = 'TWch',
-      kSelectionChangedCmd  = 'TWsc'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemDataChanged  = GuiCmd::of("ToggleWidget.ItemDataChanged"),
+        SelectionChanged = GuiCmd::of("ToggleWidget.SelectionChanged");
     };
 
   public:
@@ -63,7 +64,7 @@ class ToggleWidget : public Widget, public CommandSender
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;
     void drawWidget(bool hilite) override = 0;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     // The grid's size is intrinsic: exactly what its rows and columns need.
     // Child classes derive _rowHeight/_colWidth from the font, then call this

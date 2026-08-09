@@ -138,7 +138,8 @@ void CartRamWidget::setArea(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartRamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CartRamWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
   myRam->handleCommand(sender, cmd, data, id);
 }

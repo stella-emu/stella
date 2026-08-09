@@ -52,14 +52,15 @@ class SnapshotDialog : public Dialog
   protected:
     // OK saves and closes; Defaults resets; the path button opens a directory
     // browser; the interval slider updates its own "second(s)" unit label
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 
   private:
-    enum {
-      kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
-      kSnapshotInterval     = 'SnIn'  // snap chosen (load files)
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ChooseSnapSaveDir = GuiCmd::of("SnapshotDialog.ChooseSnapSaveDir"),
+        SnapshotInterval  = GuiCmd::of("SnapshotDialog.SnapshotInterval");
     };
 
     // Config paths

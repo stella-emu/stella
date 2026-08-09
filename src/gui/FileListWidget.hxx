@@ -45,12 +45,13 @@ class ProgressDialog;
 class FileListWidget : public StringListWidget
 {
   public:
-    enum {
-      ItemChanged   = 'FLic',  // Entry in the list is changed (single-click, etc)
-      ItemActivated = 'FLac',  // Entry in the list is activated (double-click, etc)
-      kHomeDirCmd   = 'homc',  // go to Home directory
-      kPrevDirCmd   = 'prvc',  // go back in history to previous directory
-      kNextDirCmd   = 'nxtc'   // go back in history to next directory
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemChanged   = GuiCmd::of("FileListWidget.ItemChanged"),
+        ItemActivated = GuiCmd::of("FileListWidget.ItemActivated"),
+        HomeDir       = GuiCmd::of("FileListWidget.HomeDir"),
+        PrevDir       = GuiCmd::of("FileListWidget.PrevDir"),
+        NextDir       = GuiCmd::of("FileListWidget.NextDir");
     };
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font);
@@ -160,7 +161,7 @@ class FileListWidget : public StringListWidget
     int drawIcon(int i, int x, int y, ColorId color) override;
 
     // Reacts to the Home/Prev/Next directory-navigation commands
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     /** Very similar to setInitialDirectory(), but also updates selection history */

@@ -40,9 +40,9 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myAdvancedButton = new ButtonWidget(this, _font,
-    "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
+    "Use Advanced Settings" + ELLIPSIS, Cmd::AdvancedSettings);
   wid.push_back(myAdvancedButton);
-  myHelpButton = new ButtonWidget(this, _font, "Help" + ELLIPSIS, kHelp);
+  myHelpButton = new ButtonWidget(this, _font, "Help" + ELLIPSIS, Cmd::Help);
   wid.push_back(myHelpButton);
 
   myGlobalLbl = new LabelWidget(this, _font, "Global settings:");
@@ -111,21 +111,21 @@ void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
 
   // Scanline intensity
   myTVScanIntenseLbl = new LabelWidget(this, _font, "Scanline intensity");
-  myTVScanIntense = new SliderWidget(this, _font, swidth, kScanlinesChanged, 3);
+  myTVScanIntense = new SliderWidget(this, _font, swidth, Cmd::ScanlinesChanged, 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
 
   // TV Phosphor blend level
   myTVPhosLevelLbl = new LabelWidget(this, _font, "Phosphor blend");
-  myTVPhosLevel = new SliderWidget(this, _font, swidth, kPhosphorChanged, 3);
+  myTVPhosLevel = new SliderWidget(this, _font, swidth, Cmd::PhosphorChanged, 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
 
   // FS overscan
   myTVOverscanLbl = new LabelWidget(this, _font, "Overscan (*)");
-  myTVOverscan = new SliderWidget(this, _font, swidth, kOverscanChanged, 3);
+  myTVOverscan = new SliderWidget(this, _font, swidth, Cmd::OverscanChanged, 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
@@ -154,12 +154,12 @@ void StellaSettingsDialog::createGameOptions(WidgetArray& wid)
 
   // Both port popups offer this same (fixed) list, so they size themselves to it
   myLeftPortLbl = new LabelWidget(this, _font, "Left port");
-  myLeftPort = new PopUpWidget(this, _font, ctrls, kLeftCChanged);
+  myLeftPort = new PopUpWidget(this, _font, ctrls, Cmd::LeftControllerChanged);
   wid.push_back(myLeftPort);
   myLeftPortDetected = new LabelWidget(this, ifont, "Sega Genesis detected");
 
   myRightPortLbl = new LabelWidget(this, _font, "Right port");
-  myRightPort = new PopUpWidget(this, _font, ctrls, kRightCChanged);
+  myRightPort = new PopUpWidget(this, _font, ctrls, Cmd::RightControllerChanged);
   wid.push_back(myRightPort);
   myRightPortDetected = new LabelWidget(this, ifont, "Sega Genesis detected");
 }
@@ -379,49 +379,49 @@ void StellaSettingsDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
-  int data, int id)
+void StellaSettingsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                         int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       [[fallthrough]];
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
       break;
 
-    case kAdvancedSettings:
+    case Cmd::AdvancedSettings:
       switchSettingsMode();
       break;
 
-    case kHelp:
+    case Cmd::Help:
       openHelp();
       break;
 
-    case kScanlinesChanged:
+    case Cmd::ScanlinesChanged:
       if(myTVScanIntense->getValue() == 0)
         myTVScanIntense->setValueLabel("Off");
       break;
 
-    case kPhosphorChanged:
+    case Cmd::PhosphorChanged:
       if(myTVPhosLevel->getValue() == 0)
         myTVPhosLevel->setValueLabel("Off");
       break;
 
-    case kOverscanChanged:
+    case Cmd::OverscanChanged:
       handleOverscanChange();
       break;
 
-    case kLeftCChanged:
-    case kRightCChanged:
+    case Cmd::LeftControllerChanged:
+    case Cmd::RightControllerChanged:
       updateControllerStates();
       break;
 

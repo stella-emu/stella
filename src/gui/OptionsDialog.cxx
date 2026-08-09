@@ -57,7 +57,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // Widgets are only created here (at placeholder geometry); layout() positions
   // them via a GridLayout.  myButtons keeps them in grid order for that pass.
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  const auto ADD_OD_BUTTON = [&](string_view label, int cmd, string_view toolTip = {})
+  const auto ADD_OD_BUTTON = [&](string_view label, GuiCmd::Code cmd, string_view toolTip = {})
   {
     auto* bw = new ButtonWidget(this, _font, label, cmd);
     bw->setToolTip(toolTip);
@@ -67,43 +67,43 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   };
 
   // First column
-  ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd,
+  ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, Cmd::Video,
     "Change display modes, colors, TV effects,\n"
     "volume, stereo mode" + ELLIPSIS);
-  ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd,
+  ADD_OD_BUTTON("Emulation" + ELLIPSIS, Cmd::Emulation,
     "Change emulation speed, save state settings" + ELLIPSIS);
-  ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd,
+  ADD_OD_BUTTON("Input" + ELLIPSIS, Cmd::Input,
     "Map and configure keyboard, mouse and controllers.");
-  ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd,
+  ADD_OD_BUTTON("User Interface" + ELLIPSIS, Cmd::UserInterface,
     "Change themes, fonts, launcher layout\n"
     "and paths for ROMs and images.");
-  ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd,
+  ADD_OD_BUTTON("Snapshots" + ELLIPSIS, Cmd::Snapshots,
     "Define snapshot save location, format" + ELLIPSIS);
-  ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd,
+  ADD_OD_BUTTON("Developer" + ELLIPSIS, Cmd::Developer,
     "Change options which support programming Atari 2600 games.");
 
   // Second column
-  myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd,
+  myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, Cmd::GameInfo,
     "Change game-specific info and options (TV format,\n"
     "console switches, controllers" + ELLIPSIS + ")");
-  myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd,
+  myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, Cmd::Cheats,
     "Use and manage cheat codes.");
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
 #endif
-  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd,
+  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, Cmd::RomAudit,
     "Rename your ROMs according to Stella's internal database.");
-  ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd,
+  ADD_OD_BUTTON("System Logs" + ELLIPSIS, Cmd::Logger,
     "Configure, view and save Stella's system log.");
-  ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd,
+  ADD_OD_BUTTON("Help" + ELLIPSIS, Cmd::Help,
     "Display Stella's essential keyboard commands.");
-  ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd,
+  ADD_OD_BUTTON("About" + ELLIPSIS, Cmd::About,
     "Display info about the installed Stella version.");
 
   // Centered Close button on its own row spanning both columns.  The padding is
   // its own: a button centers its text, so a roomier label simply makes a roomier
   // button, and it still sizes itself
-  auto* closeButton = new ButtonWidget(this, _font, "   Close   ", kExitCmd);
+  auto* closeButton = new ButtonWidget(this, _font, "   Close   ", Cmd::Exit);
   myButtons.push_back(closeButton);
   wid.push_back(closeButton);
   addCancelWidget(closeButton);
@@ -194,12 +194,12 @@ void OptionsDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
+void OptionsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                   int data, int id)
 {
   switch(cmd)
   {
-    case kVidCmd:
+    case Cmd::Video:
     {
       uInt32 w = 0, h = 0;
 
@@ -208,47 +208,47 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       myDialog->open();
       break;
     }
-    case kEmuCmd:
+    case Cmd::Emulation:
       myDialog = std::make_unique<EmulationDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    case kInptCmd:
+    case Cmd::Input:
       myDialog = std::make_unique<InputDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
-    case kUsrIfaceCmd:
+    case Cmd::UserInterface:
       myDialog = std::make_unique<UIDialog>(instance(), parent(), _font, myBoss);
       myDialog->open();
       break;
 
-    case kSnapCmd:
+    case Cmd::Snapshots:
       myDialog = std::make_unique<SnapshotDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
-    case kDevelopCmd:
+    case Cmd::Developer:
       myDialog = std::make_unique<DeveloperDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
-    case kInfoCmd:
+    case Cmd::GameInfo:
       myDialog = std::make_unique<GameInfoDialog>(instance(), parent(), _font, this);
       myDialog->open();
       break;
 
 #ifdef CHEATCODE_SUPPORT
-    case kCheatCmd:
+    case Cmd::Cheats:
       myDialog = std::make_unique<CheatCodeDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 #endif
 
-    case kAuditCmd:
+    case Cmd::RomAudit:
       myDialog = std::make_unique<RomAuditDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
-    case kLoggerCmd:
+    case Cmd::Logger:
     {
       uInt32 w = 0, h = 0;
       const bool uselargefont = getDynamicBounds(w, h);
@@ -258,17 +258,17 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kHelpCmd:
+    case Cmd::Help:
       myDialog = std::make_unique<HelpDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
-    case kAboutCmd:
+    case Cmd::About:
       myDialog = std::make_unique<AboutDialog>(instance(), parent(), _font);
       myDialog->open();
       break;
 
-    case kExitCmd:
+    case Cmd::Exit:
       if(myMode != AppMode::emulator)
         close();
       else

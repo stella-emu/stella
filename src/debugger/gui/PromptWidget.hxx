@@ -104,7 +104,7 @@ class PromptWidget : public Widget, public CommandSender
     bool autoComplete(int direction);
     void resetFunctions();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void lostFocusWidget() override
     {
       _selectSize = 0;

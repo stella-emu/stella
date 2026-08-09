@@ -48,7 +48,7 @@ class PopUpWidget : public EditableWidget
       dialog can still say it in items rather than pixels — see calcWidth().
     */
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                const VariantList& items, int cmd = 0);
+                const VariantList& items, GuiCmd::Code cmd = GuiCmd::None);
 
     /**
       Take this value-box width, but size your own height.  For the pop-up whose
@@ -57,7 +57,7 @@ class PopUpWidget : public EditableWidget
       the user if it tried, so the DIALOG says how wide an entry it will show.
     */
     PopUpWidget(GuiObject* boss, const GUI::Font& font, int w,
-                const VariantList& items, int cmd = 0);
+                const VariantList& items, GuiCmd::Code cmd = GuiCmd::None);
 
     ~PopUpWidget() override = default;
 
@@ -137,7 +137,7 @@ class PopUpWidget : public EditableWidget
 
   protected:
     // Redraws with the menu's current selection after it reports one was made
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     int caretOfs() const override { return _editScrollOffset; }
 
     // Picks the arrow bitmap dimensions and text inset from the current font

@@ -36,7 +36,7 @@ class Cartridge4A50Widget : public CartDebugWidget
 
   protected:
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // One region: a heading, with its ROM and RAM selectors indented beneath it
@@ -54,13 +54,14 @@ class Cartridge4A50Widget : public CartDebugWidget
     PopUpWidget *myROMMiddle{nullptr}, *myRAMMiddle{nullptr};
     PopUpWidget *myROMHigh{nullptr}, *myRAMHigh{nullptr};
 
-    enum {
-      kROMLowerChanged  = 'rmLW',
-      kRAMLowerChanged  = 'raLW',
-      kROMMiddleChanged = 'rmMD',
-      kRAMMiddleChanged = 'raMD',
-      kROMHighChanged   = 'rmHI',
-      kRAMHighChanged   = 'raHI'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RomLowerChanged  = GuiCmd::of("Cartridge4A50Widget.RomLowerChanged"),
+        RamLowerChanged  = GuiCmd::of("Cartridge4A50Widget.RamLowerChanged"),
+        RomMiddleChanged = GuiCmd::of("Cartridge4A50Widget.RomMiddleChanged"),
+        RamMiddleChanged = GuiCmd::of("Cartridge4A50Widget.RamMiddleChanged"),
+        RomHighChanged   = GuiCmd::of("Cartridge4A50Widget.RomHighChanged"),
+        RamHighChanged   = GuiCmd::of("Cartridge4A50Widget.RamHighChanged");
     };
 
   private:

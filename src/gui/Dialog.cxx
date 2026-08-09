@@ -188,7 +188,7 @@ void Dialog::initHelp()
       const string key = instance().eventHandler().getMappingDesc(
         Event::UIHelp, EventMode::kMenuMode);
 
-      _helpWidget = new ButtonWidget(this, _font, "?", kHelpCmd);
+      _helpWidget = new ButtonWidget(this, _font, "?", Cmd::Help);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");
@@ -1063,11 +1063,12 @@ bool Dialog::cycleTab(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void Dialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                           int data, int id)
 {
   switch(cmd)
   {
-    case TabWidget::kTabChangedCmd:
+    case TabWidget::Cmd::TabChanged:
       // Only a visible dialog can be reporting a tab the *user* chose.  While
       // it is being built or opened this same command also arrives for tabs
       // nobody selected -- activateTabs() announces every tab in turn, and
@@ -1081,11 +1082,11 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       close();
       break;
 
-    case kHelpCmd:
+    case Cmd::Help:
       openHelp();
       break;
 
@@ -1110,7 +1111,7 @@ void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
 {
   // Created at a placeholder position; the button sizes itself to its label and
   // layoutButtonGroup() places it
-  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::Cmd::Close));
   wid.push_back(_okWidget);
 
   _w = std::max(buttonGroupWidth(), _w);
@@ -1124,9 +1125,9 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 {
   // Created at placeholder positions; each button sizes itself to its label, and
   // layoutButtonGroup() gives the group one width and positions it
-  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::kOKCmd));
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::Cmd::OK));
   addCancelWidget(new ButtonWidget(this, font, cancelText,
-                                   GuiObject::kCloseCmd));
+                                   GuiObject::Cmd::Close));
 
   _w = std::max(buttonGroupWidth(), _w);
   layoutButtonGroup();
@@ -1268,7 +1269,7 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        bool focusOKButton)
 {
   addDefaultWidget(new ButtonWidget(this, font, defaultsText,
-                                    GuiObject::kDefaultsCmd));
+                                    GuiObject::Cmd::Defaults));
   wid.push_back(_defaultWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
@@ -1277,12 +1278,12 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsExtraOKCancelBGroup(
       WidgetArray& wid, const GUI::Font& font,
-      string_view extraText, int extraCmd,
+      string_view extraText, GuiCmd::Code extraCmd,
       string_view okText, string_view cancelText, string_view defaultsText,
       bool focusOKButton)
 {
   addDefaultWidget(new ButtonWidget(this, font, defaultsText,
-                                    GuiObject::kDefaultsCmd));
+                                    GuiObject::Cmd::Defaults));
   wid.push_back(_defaultWidget);
 
   addExtraWidget(new ButtonWidget(this, font, extraText, extraCmd));

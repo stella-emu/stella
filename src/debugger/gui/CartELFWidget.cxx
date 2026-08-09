@@ -50,7 +50,7 @@ void CartridgeELFWidget::initialize()
   myLog->setEnabled(true);
 
   mySaveImageButton = new ButtonWidget(_boss, _font,
-                                       "Save ARM image" + ELLIPSIS, kSaveArmImageCmd);
+                                       "Save ARM image" + ELLIPSIS, Cmd::SaveArmImage);
   mySaveImageButton->setTarget(this);
   addFocusWidget(mySaveImageButton);
 
@@ -96,9 +96,10 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CartridgeELFWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kSaveArmImageCmd)
+  if(cmd == Cmd::SaveArmImage)
     BrowserDialog::show(
       instance().debugger().baseDialog(),
       "Save ARM image",

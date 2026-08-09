@@ -44,7 +44,7 @@ class JoystickDialog : public Dialog
   protected:
     void layout() override;
     // Reacts to a list selection, a port change, Remove, or Close
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     // UIReload (e.g. a device plugged/unplugged) refreshes the list
     void handleEvent(Event::Type event) override;
 
@@ -66,9 +66,10 @@ class JoystickDialog : public Dialog
     // Default port assignment, parallel to myJoyList
     IntArray myJoyPorts;
 
-    enum {
-      kRemoveCmd = 'JDrm',
-      kPortCmd   = 'JDpt'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Remove = GuiCmd::of("JoystickDialog.Remove"),
+        Port   = GuiCmd::of("JoystickDialog.Port");
     };
 
   private:

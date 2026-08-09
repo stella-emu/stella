@@ -354,53 +354,53 @@ void DebuggerDialog::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
+void DebuggerDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   // We reload the tabs in the cases where the actions could possibly
   // change their contents
   switch(cmd)
   {
-    case kDDStepCmd:
+    case Cmd::Step:
       doStep();
       break;
 
-    case kDDTraceCmd:
+    case Cmd::Trace:
       doTrace();
       break;
 
-    case kDDAdvCmd:
+    case Cmd::AdvanceFrame:
       doAdvance();
       break;
 
-    case kDDSAdvCmd:
+    case Cmd::AdvanceScanline:
       doScanlineAdvance();
       break;
 
-    case kDDRewindCmd:
+    case Cmd::Rewind:
       doRewind();
       break;
 
-    case kDDUnwindCmd:
+    case Cmd::Unwind:
       doUnwind();
       break;
 
-    case kDDRunCmd:
+    case Cmd::Run:
       doExitDebugger();
       break;
 
-    case kDDOptionsCmd:
+    case Cmd::Options:
       saveConfig();
 
       if(myOptions == nullptr)
         myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this,
-                                               AppMode::debugger);
+                                                    AppMode::debugger);
       myOptions->open();
 
       loadConfig();
       break;
 
-    case RomWidget::kInvalidateListing:
+    case RomWidget::Cmd::InvalidateListing:
       // Only do a full redraw if the disassembly tab is actually showing
       myRom->invalidate(myRomTab->getActiveTab() == 0);
       break;
@@ -661,7 +661,7 @@ void DebuggerDialog::addRomArea()
   // Every widget is created at a placeholder position/size; layoutRomArea()
   // sizes and positions them
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  const auto addStepButton = [&](size_t idx, string_view label, int cmd,
+  const auto addStepButton = [&](size_t idx, string_view label, GuiCmd::Code cmd,
                                  string_view tip, bool repeat) {
     auto* b = new ButtonWidget(this, lfont(), label, cmd, repeat);
     b->setToolTip(tip);
@@ -669,26 +669,26 @@ void DebuggerDialog::addRomArea()
     myStepButtons[idx] = b;
     wid2.push_back(b);
   };
-  addStepButton(0, "Step",     kDDStepCmd,  "Ctrl+S", true);
-  addStepButton(1, "Trace",    kDDTraceCmd, "Ctrl+T", true);
-  addStepButton(2, "Scan +1",  kDDSAdvCmd,  "Ctrl+L", true);
-  addStepButton(3, "Frame +1", kDDAdvCmd,   "Ctrl+F", true);
-  addStepButton(4, "Run",      kDDRunCmd,   "Escape", false);
+  addStepButton(0, "Step",     Cmd::Step,            "Ctrl+S", true);
+  addStepButton(1, "Trace",    Cmd::Trace,           "Ctrl+T", true);
+  addStepButton(2, "Scan +1",  Cmd::AdvanceScanline, "Ctrl+L", true);
+  addStepButton(3, "Frame +1", Cmd::AdvanceFrame,    "Ctrl+F", true);
+  addStepButton(4, "Run",      Cmd::Run,             "Escape", false);
 
   myRewindButton =
-    new ButtonWidget(this, lfont(), LEFT_ARROW, kDDRewindCmd, true);
+    new ButtonWidget(this, lfont(), LEFT_ARROW, Cmd::Rewind, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   myUnwindButton =
-    new ButtonWidget(this, lfont(), RIGHT_ARROW, kDDUnwindCmd, true);
+    new ButtonWidget(this, lfont(), RIGHT_ARROW, Cmd::Unwind, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
   myOptionsButton = new ButtonWidget(this, lfont(),
-                                     "Options" + ELLIPSIS, kDDOptionsCmd);
+                                     "Options" + ELLIPSIS, Cmd::Options);
   // It heads the operations column, so it is trimmed like the op buttons under it
   myOptionsButton->setCompact();
   wid1.push_back(myOptionsButton);
@@ -859,4 +859,3 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
 
   return column;
 }
-

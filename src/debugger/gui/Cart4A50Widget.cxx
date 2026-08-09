@@ -58,9 +58,9 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // Every widget is created at a placeholder position; reflow() positions them
   const auto addRegion = [&](LabelWidget*& label, string_view heading,
                              LabelWidget*& romLabel, PopUpWidget*& rom,
-                             const VariantList& romItems, int romCmd,
+                             const VariantList& romItems, GuiCmd::Code romCmd,
                              LabelWidget*& ramLabel, PopUpWidget*& ram,
-                             const VariantList& ramItems, int ramCmd) {
+                             const VariantList& ramItems, GuiCmd::Code ramCmd) {
     label = new LabelWidget(_boss, _font, heading);
 
     romLabel = new LabelWidget(_boss, _font, "ROM");
@@ -75,14 +75,14 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   };
 
   addRegion(myLowerLbl,  "Set lower 2K region ($F000 - $F7FF):",
-            myROMLowerLbl,  myROMLower,  items32,  kROMLowerChanged,
-            myRAMLowerLbl,  myRAMLower,  items16,  kRAMLowerChanged);
+            myROMLowerLbl,  myROMLower,  items32,  Cmd::RomLowerChanged,
+            myRAMLowerLbl,  myRAMLower,  items16,  Cmd::RamLowerChanged);
   addRegion(myMiddleLbl, "Set middle 1.5K region ($F800 - $FDFF):",
-            myROMMiddleLbl, myROMMiddle, items32,  kROMMiddleChanged,
-            myRAMMiddleLbl, myRAMMiddle, items16,  kRAMMiddleChanged);
+            myROMMiddleLbl, myROMMiddle, items32,  Cmd::RomMiddleChanged,
+            myRAMMiddleLbl, myRAMMiddle, items16,  Cmd::RamMiddleChanged);
   addRegion(myHighLbl,   "Set high 256B region ($FE00 - $FEFF):",
-            myROMHighLbl,   myROMHigh,   items256, kROMHighChanged,
-            myRAMHighLbl,   myRAMHigh,   items128, kRAMHighChanged);
+            myROMHighLbl,   myROMHigh,   items256, Cmd::RomHighChanged,
+            myRAMHighLbl,   myRAMHigh,   items128, Cmd::RamHighChanged);
 
   reflow();
 }
@@ -146,14 +146,14 @@ void Cartridge4A50Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50Widget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+void Cartridge4A50Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                        int data, int id)
 {
   myCart.unlockHotspots();
 
   switch(cmd)
   {
-    case kROMLowerChanged:
+    case Cmd::RomLowerChanged:
       if(myROMLower->getSelected() < 32)
       {
         myCart.bankROMLower(myROMLower->getSelected());
@@ -167,7 +167,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       }
       break;
 
-    case kRAMLowerChanged:
+    case Cmd::RamLowerChanged:
       if(myRAMLower->getSelected() < 16)
       {
         myROMLower->setSelectedMax();
@@ -181,7 +181,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       }
       break;
 
-    case kROMMiddleChanged:
+    case Cmd::RomMiddleChanged:
       if(myROMMiddle->getSelected() < 32)
       {
         myCart.bankROMMiddle(myROMMiddle->getSelected());
@@ -195,7 +195,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       }
       break;
 
-    case kRAMMiddleChanged:
+    case Cmd::RamMiddleChanged:
       if(myRAMMiddle->getSelected() < 16)
       {
         myROMMiddle->setSelectedMax();
@@ -209,7 +209,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       }
       break;
 
-    case kROMHighChanged:
+    case Cmd::RomHighChanged:
       if(myROMHigh->getSelected() < 256)
       {
         myCart.bankROMHigh(myROMHigh->getSelected());
@@ -223,7 +223,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       }
       break;
 
-    case kRAMHighChanged:
+    case Cmd::RamHighChanged:
       if(myRAMHigh->getSelected() < 128)
       {
         myROMHigh->setSelectedMax();

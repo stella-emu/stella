@@ -54,14 +54,22 @@ class LauncherDialog : public Dialog, CommandSender
 {
   public:
     // These must be accessible from dialogs created by this class
-    enum {
-      kLoadROMCmd          = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd     = 'romc',  // ROM dir chosen
-      kFavChangedCmd       = 'favc',  // Favorite tracking changed
-      kExtChangedCmd       = 'extc',  // File extension display changed
-      kRomViewerChangedCmd = 'rmvc',  // ROM info viewer enabled/disabled
-      kFontChangedCmd      = 'fntc',  // Launcher font changed
-      kButtonsChangedCmd   = 'btnc',  // Bottom button row enabled/disabled
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        LoadROM           = GuiCmd::of("LauncherDialog.LoadROM"),
+        RomDirChosen      = GuiCmd::of("LauncherDialog.RomDirChosen"),
+        FavouritesChanged = GuiCmd::of("LauncherDialog.FavouritesChanged"),
+        ExtensionsChanged = GuiCmd::of("LauncherDialog.ExtensionsChanged"),
+        RomViewerChanged  = GuiCmd::of("LauncherDialog.RomViewerChanged"),
+        FontChanged       = GuiCmd::of("LauncherDialog.FontChanged"),
+        ButtonsChanged    = GuiCmd::of("LauncherDialog.ButtonsChanged"),
+        // The rest are dispatched only within handleCommand()
+        SubDirs           = GuiCmd::of("LauncherDialog.SubDirs"),
+        LoadRandomRom     = GuiCmd::of("LauncherDialog.LoadRandomRom"),
+        Options           = GuiCmd::of("LauncherDialog.Options"),
+        Quit              = GuiCmd::of("LauncherDialog.Quit"),
+        Reload            = GuiCmd::of("LauncherDialog.Reload"),
+        RomWidthChanged   = GuiCmd::of("LauncherDialog.RomWidthChanged");
     };
 
   public:
@@ -134,12 +142,12 @@ class LauncherDialog : public Dialog, CommandSender
     // Right-click inside the list opens the context menu; everything else
     // goes to the base class
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    // kRomWidthCmd resizes the ROM-info column as the divider is dragged;
+    // Cmd::RomWidthChanged resizes the ROM-info column as the divider is dragged;
     // item/directory selection loads the ROM or reloads the directory; the
     // remaining ids toggle subdirs/reload/settings/favorites/extensions/
     // font, or dispatch context-menu and ROM-info-link clicks
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    // Lets the list see a long button press (ListWidget::kLongButtonPressCmd)
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    // Lets the list see a long button press (ListWidget::Cmd::LongButtonPress)
     // before restoring its normal flags
     void handleJoyDown(int stick, int button, bool longPress) override;
     // Opens power-on options / settings on the 2nd/4th button when nothing
@@ -336,16 +344,6 @@ class LauncherDialog : public Dialog, CommandSender
     // and loadRomInfo()/loadPendingRomInfo())
     bool myPendingRomInfo{false};
     uInt64 myRomInfoTime{0};
-
-    // Command ids dispatched in handleCommand()
-    enum {
-      kSubDirsCmd    = 'lred',
-      kLoadRndRomCmd = 'lrnd',  // load random ROM
-      kOptionsCmd    = 'OPTI',
-      kQuitCmd       = 'QUIT',
-      kReloadCmd     = 'relc',
-      kRomWidthCmd   = 'lrwd'
-    };
 
   private:
     // Following constructors and assignment operators not supported

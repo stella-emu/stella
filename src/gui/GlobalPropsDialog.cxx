@@ -104,19 +104,19 @@ void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wi
 {
   // Left joystick
   myLeftJoyLbl    = new LabelWidget(this, font, "Left joy");
-  myJoy[kJ0Up]    = new CheckboxWidget(this, font, "", kJ0Up);
-  myJoy[kJ0Down]  = new CheckboxWidget(this, font, "", kJ0Down);
-  myJoy[kJ0Left]  = new CheckboxWidget(this, font, "", kJ0Left);
-  myJoy[kJ0Right] = new CheckboxWidget(this, font, "", kJ0Right);
-  myJoy[kJ0Fire]  = new CheckboxWidget(this, font, "Fire", kJ0Fire);
+  myJoy[kJ0Up]    = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Down]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Left]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Right] = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Fire]  = new CheckboxWidget(this, font, "Fire");
 
   // Right joystick
   myRightJoyLbl   = new LabelWidget(this, font, "Right joy");
-  myJoy[kJ1Up]    = new CheckboxWidget(this, font, "", kJ1Up);
-  myJoy[kJ1Down]  = new CheckboxWidget(this, font, "", kJ1Down);
-  myJoy[kJ1Left]  = new CheckboxWidget(this, font, "", kJ1Left);
-  myJoy[kJ1Right] = new CheckboxWidget(this, font, "", kJ1Right);
-  myJoy[kJ1Fire]  = new CheckboxWidget(this, font, "Fire", kJ1Fire);
+  myJoy[kJ1Up]    = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Down]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Left]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Right] = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Fire]  = new CheckboxWidget(this, font, "Fire");
 
   // Console Select/Reset
   myConsoleLbl = new LabelWidget(this, font, "Console");
@@ -345,19 +345,19 @@ void GlobalPropsDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
+void GlobalPropsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                       int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       // Inform parent to load the ROM
-      sendCommand(LauncherDialog::kLoadROMCmd, 0, 0);
+      sendCommand(LauncherDialog::Cmd::LoadROM, 0, 0);
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       saveConfig();
       break;

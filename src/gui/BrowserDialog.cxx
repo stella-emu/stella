@@ -76,23 +76,23 @@ void BrowserDialog::initialize(int max_w, int max_h)
   addFocusWidget(_selected);
 
   // Directory-navigation buttons
-  _goUpButton = new ButtonWidget(this, _font, "Go up", kGoUpCmd);
+  _goUpButton = new ButtonWidget(this, _font, "Go up", Cmd::GoUp);
   addFocusWidget(_goUpButton);
-  _baseDirButton = new ButtonWidget(this, _font, "Base Dir", kBaseDirCmd);
+  _baseDirButton = new ButtonWidget(this, _font, "Base Dir", Cmd::BaseDir);
   _baseDirButton->setToolTip("Go to Stella's base directory.");
   addFocusWidget(_baseDirButton);
-  _homeDirButton = new ButtonWidget(this, _font, "Home Dir", kHomeDirCmd);
+  _homeDirButton = new ButtonWidget(this, _font, "Home Dir", Cmd::HomeDir);
   _homeDirButton->setToolTip("Go to user's home directory.");
   addFocusWidget(_homeDirButton);
 
   // OK and Cancel; the platform-specific left/right ordering is handled by
   // Dialog::layoutButtonGroup()
   auto* okButton = new ButtonWidget(this, _font,
-                                    "OK", kChooseCmd);
+                                    "OK", Cmd::Choose);
   addFocusWidget(okButton);
   addOKWidget(okButton);
   auto* cancelButton = new ButtonWidget(this, _font, "Cancel",
-                                        GuiObject::kCloseCmd);
+                                        GuiObject::Cmd::Close);
   addFocusWidget(cancelButton);
   addCancelWidget(cancelButton);
 
@@ -393,13 +393,13 @@ void BrowserDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
+void BrowserDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                   int data, int id)
 {
   switch (cmd)
   {
-    case kChooseCmd:
-    case FileListWidget::ItemActivated:
+    case Cmd::Choose:
+    case FileListWidget::Cmd::ItemActivated:
       // Send a signal to the calling class that a selection has been made
       if(_mode != Mode::Directories)
       {
@@ -413,30 +413,30 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       break;
 
-    case kCloseCmd:
+    case GuiObject::Cmd::Close:
       // Send a signal to the calling class that the dialog was closed without selection
       if(_command) _command(false, getResult());
       close();
       break;
 
-    case kGoUpCmd:
+    case Cmd::GoUp:
       _fileList->selectParent();
       break;
 
-    case kBaseDirCmd:
+    case Cmd::BaseDir:
       _fileList->selectDirectory(FSNode(instance().baseDir()));
       break;
 
-    case kHomeDirCmd:
+    case Cmd::HomeDir:
       _fileList->selectDirectory(FSNode(instance().homeDir()));
       break;
 
-    case EditableWidget::kChangedCmd:
+    case EditableWidget::Cmd::Changed:
       Dialog::handleCommand(sender, cmd, data, 0);
       updateUI(false);
       break;
 
-    case FileListWidget::ItemChanged:
+    case FileListWidget::Cmd::ItemChanged:
       updateUI(true);
       break;
 

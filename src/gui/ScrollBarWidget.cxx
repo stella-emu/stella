@@ -194,7 +194,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
   {
     recalc();
     setDirty();
-    sendCommand(GuiObject::kSetPositionCmd, _currentPos, _id);
+    sendCommand(GuiObject::Cmd::SetPosition, _currentPos, _id);
   }
 }
 

@@ -653,10 +653,10 @@ ContextMenu& PromptWidget::mouseMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::handleCommand(CommandSender* sender, int cmd,
+void PromptWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const string_view sel = mouseMenu().getSelectedTag().toString();
     if(sel == "cut")
@@ -667,7 +667,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
       textPaste();
     setDirty();
   }
-  else if(cmd == GuiObject::kSetPositionCmd)
+  else if(cmd == GuiObject::Cmd::SetPosition)
   {
     const int newPos = data + _linesPerPage - 1 + _firstLineInBuffer;
     if (newPos != _scrollLine)

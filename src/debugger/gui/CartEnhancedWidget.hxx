@@ -56,7 +56,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
   protected:
     // Create then lay out all of this widget's content; called by each leaf ctor
     void initialize();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     virtual size_t size();
     virtual string manufacturer() = 0;
@@ -82,7 +82,10 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual void layoutBankSelect(GUI::BoxLayout& col) const;
 
   protected:
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeEnhancedWidget.BankChanged");
+    };
 
     struct CartState {
       ByteArray internalRam;

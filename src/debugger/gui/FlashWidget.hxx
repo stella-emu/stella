@@ -34,11 +34,14 @@ class FlashWidget : public ControllerWidget
 
   protected:
     void init(GuiObject* boss, const GUI::Font& font, bool embedded);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layoutContent(GUI::BoxLayout& col) override;
 
   private:
-    enum { kEEPROMEraseCurrent = 'eeEC' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        EraseCurrent = GuiCmd::of("FlashWidget.EraseCurrent");
+    };
 
     bool myEmbedded{false};
     LabelWidget* myPagesLbl{nullptr};

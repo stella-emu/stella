@@ -32,7 +32,7 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
   {
     myBankLocked = new CheckboxWidget(_boss, _font,
                                       "Bankswitching is locked",
-                                      kBankLocked);
+                                      Cmd::BankLocked);
     myBankLocked->setTarget(this);
     addFocusWidget(myBankLocked);
   }
@@ -85,10 +85,10 @@ void CartridgeTVBoyWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeTVBoyWidget::handleCommand(CommandSender* sender,
-                                         int cmd, int data, int id)
+void CartridgeTVBoyWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                         int data, int id)
 {
-  if(cmd == kBankLocked)
+  if(cmd == Cmd::BankLocked)
   {
     myCartTVBoy.myBankingDisabled = myBankLocked->getState();
     myBankWidgetLabels[0]->setEnabled(!myCartTVBoy.myBankingDisabled);

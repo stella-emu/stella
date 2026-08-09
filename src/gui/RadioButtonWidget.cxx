@@ -227,7 +227,7 @@ static constexpr GUI::Icon radio_img_inactive_large(18, 18, radio_img_inactive_l
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                                      const string& label,
-                                     RadioButtonGroup* group, int cmd)
+                                     RadioButtonGroup* group, GuiCmd::Code cmd)
   : CheckboxWidget(boss, font, label, cmd),
     myGroup{group},
     _buttonSize{buttonSize(font)} // 14 | 22

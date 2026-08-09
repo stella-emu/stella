@@ -255,17 +255,17 @@ void InputTextDialog::setEditable(bool editable, int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
+void InputTextDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
-    case EditableWidget::kAcceptCmd:
+    case GuiObject::Cmd::OK:
+    case EditableWidget::Cmd::Accept:
     {
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(myCmd)
+      if(myCmd != GuiCmd::None)
         sendCommand(myCmd, 0, 0);
 
       // We don't close, but leave the parent to do it
@@ -273,7 +273,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case EditableWidget::kChangedCmd:
+    case EditableWidget::Cmd::Changed:
       // Erase the invalid message once editing is restarted
       if(myErrorFlag)
       {

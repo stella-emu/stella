@@ -127,11 +127,12 @@ void MessageBox::layout()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void MessageBox::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                               int data, int id)
 {
-  if(cmd == GuiObject::kOKCmd || cmd == GuiObject::kCloseCmd)
+  if(cmd == GuiObject::Cmd::OK || cmd == GuiObject::Cmd::Close)
   {
-    const bool ok = cmd == GuiObject::kOKCmd;
+    const bool ok = cmd == GuiObject::Cmd::OK;
 
     if(myTransient)
       // Over TIA mode with no boss to return to: leaving menu mode (which

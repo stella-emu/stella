@@ -55,7 +55,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     Common::Point getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void zoom(int level);

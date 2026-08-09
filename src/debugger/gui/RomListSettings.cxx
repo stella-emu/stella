@@ -37,34 +37,34 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Action buttons
   mySetPC = new ButtonWidget(this, font,
-                             "Set PC @ current line", RomListWidget::kSetPCCmd);
+                             "Set PC @ current line", RomListWidget::Cmd::SetPC);
   wid.push_back(mySetPC);
   myRuntoPC = new ButtonWidget(this, font,
-                               "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
+                               "RunTo PC @ current line", RomListWidget::Cmd::RunToPC);
   wid.push_back(myRuntoPC);
   mySetTimer = new ButtonWidget(this, font,
-                                "Set timer @ current line", RomListWidget::kSetTimerCmd);
+                                "Set timer @ current line", RomListWidget::Cmd::SetTimer);
   wid.push_back(mySetTimer);
   myDisassemble = new ButtonWidget(this, font,
-                                   "Disassemble @ current line", RomListWidget::kDisassembleCmd);
+                                   "Disassemble @ current line", RomListWidget::Cmd::Disassemble);
   wid.push_back(myDisassemble);
 
   // Settings for Distella
   myShowTentative = new CheckboxWidget(this, font,
-                                       "Show tentative code", RomListWidget::kTentativeCodeCmd);
+                                       "Show tentative code", RomListWidget::Cmd::TentativeCode);
   myShowTentative->setToolTip("Check to differentiate between tentative code\n"
                               "vs. data sections via static code analysis.");
   wid.push_back(myShowTentative);
   myShowAddresses = new CheckboxWidget(this, font,
-                                       "Show PC addresses", RomListWidget::kPCAddressesCmd);
+                                       "Show PC addresses", RomListWidget::Cmd::PCAddresses);
   myShowAddresses->setToolTip("Check to show program counter addresses as labels.");
   wid.push_back(myShowAddresses);
   myShowGFXBinary = new CheckboxWidget(this, font,
-                                       "Show GFX as binary", RomListWidget::kGfxAsBinaryCmd);
+                                       "Show GFX as binary", RomListWidget::Cmd::GfxAsBinary);
   myShowGFXBinary->setToolTip("Check to allow editing GFX sections in binary format.");
   wid.push_back(myShowGFXBinary);
   myUseRelocation = new CheckboxWidget(this, font,
-                                       "Use address relocation", RomListWidget::kAddrRelocationCmd);
+                                       "Use address relocation", RomListWidget::Cmd::AddressRelocation);
   myUseRelocation->setToolTip("Check to relocate calls out of address range.");
   wid.push_back(myUseRelocation);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -162,7 +162,8 @@ void RomListSettings::handleMouseDown(int x, int y, MouseButton b, int clickCoun
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RomListSettings::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                    int data, int id)
 {
   // We remove the dialog when the user has selected an item
   // Make sure the dialog is removed before sending any commands,
@@ -172,30 +173,30 @@ void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, in
 
   switch(cmd)
   {
-    case RomListWidget::kSetPCCmd:
-    case RomListWidget::kRuntoPCCmd:
-    case RomListWidget::kSetTimerCmd:
-    case RomListWidget::kDisassembleCmd:
+    case RomListWidget::Cmd::SetPC:
+    case RomListWidget::Cmd::RunToPC:
+    case RomListWidget::Cmd::SetTimer:
+    case RomListWidget::Cmd::Disassemble:
     {
       sendCommand(cmd, _item, -1);
       break;
     }
-    case RomListWidget::kTentativeCodeCmd:
+    case RomListWidget::Cmd::TentativeCode:
     {
       sendCommand(cmd, myShowTentative->getState(), -1);
       break;
     }
-    case RomListWidget::kPCAddressesCmd:
+    case RomListWidget::Cmd::PCAddresses:
     {
       sendCommand(cmd, myShowAddresses->getState(), -1);
       break;
     }
-    case RomListWidget::kGfxAsBinaryCmd:
+    case RomListWidget::Cmd::GfxAsBinary:
     {
       sendCommand(cmd, myShowGFXBinary->getState(), -1);
       break;
     }
-    case RomListWidget::kAddrRelocationCmd:
+    case RomListWidget::Cmd::AddressRelocation:
     {
       sendCommand(cmd, myUseRelocation->getState(), -1);
       break;

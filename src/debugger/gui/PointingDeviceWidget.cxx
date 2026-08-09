@@ -34,18 +34,18 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
     g->setEditable(false);
     return g;
   };
-  const auto button = [&](string_view label, int cmd) {
+  const auto button = [&](string_view label, GuiCmd::Code cmd) {
     auto* b = new ButtonWidget(boss, font, label, cmd);
     b->setTarget(this);
     return b;
   };
   myGrayValueV = grayValue();
-  myGrayUp     = button("+", kTBUp);
-  myGrayLeft   = button("-", kTBLeft);
-  myGrayRight  = button("+", kTBRight);
+  myGrayUp     = button("+", Cmd::Up);
+  myGrayLeft   = button("-", Cmd::Left);
+  myGrayRight  = button("+", Cmd::Right);
   myGrayValueH = grayValue();
-  myGrayDown   = button("-", kTBDown);
-  myFire = new CheckboxWidget(boss, font, "Fire", kTBFire);
+  myGrayDown   = button("-", Cmd::Down);
+  myFire       = new CheckboxWidget(boss, font, "Fire", Cmd::TrackBallFire);
   myFire->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
@@ -107,7 +107,8 @@ void PointingDeviceWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void PointingDeviceWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                         int data, int id)
 {
   // Since the PointingDevice uses its own, internal state (not reading the
   // controller), we have to communicate directly with it
@@ -115,27 +116,27 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 
   switch(cmd)
   {
-    case kTBLeft:
+    case Cmd::Left:
       ++pDev.myCountH;
       pDev.myTrackBallLeft = false;
       setGrayCodeH();
       break;
-    case kTBRight:
+    case Cmd::Right:
       --pDev.myCountH;
       pDev.myTrackBallLeft = true;
       setGrayCodeH();
       break;
-    case kTBUp:
+    case Cmd::Up:
       ++pDev.myCountV;
       pDev.myTrackBallDown = true;
       setGrayCodeV();
       break;
-    case kTBDown:
+    case Cmd::Down:
       --pDev.myCountV;
       pDev.myTrackBallDown = false;
       setGrayCodeV();
       break;
-    case kTBFire:
+    case Cmd::TrackBallFire:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
     default:

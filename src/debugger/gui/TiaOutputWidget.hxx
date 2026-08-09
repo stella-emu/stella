@@ -59,7 +59,7 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;
     void drawWidget(bool hilite) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Copy the current (palette + phosphor processed, horizontally doubled) TIA

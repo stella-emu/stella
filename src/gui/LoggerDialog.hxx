@@ -48,7 +48,7 @@ class LoggerDialog : public Dialog
 
   protected:
     // OK saves and closes; Defaults ("Save log to disk") opens a save-file browser
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 

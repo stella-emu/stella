@@ -54,7 +54,7 @@ class HighScoresDialog : public Dialog
   protected:
     // OK saves and exits menu mode/closes; Reset clears the variation;
     // a delete button removes its rank; variation change reloads its scores
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 
@@ -81,11 +81,12 @@ class HighScoresDialog : public Dialog
 
     // Command ids for the variation controls and delete buttons, dispatched
     // in handleCommand()
-    enum {
-      kVariationChanged = 'Vach',
-      kPrevVariation    = 'PrVr',
-      kNextVariation    = 'NxVr',
-      kDeleteSingle     = 'DeSi'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        VariationChanged = GuiCmd::of("HighScoresDialog.VariationChanged"),
+        PrevVariation    = GuiCmd::of("HighScoresDialog.PrevVariation"),
+        NextVariation    = GuiCmd::of("HighScoresDialog.NextVariation"),
+        DeleteSingle     = GuiCmd::of("HighScoresDialog.DeleteSingle");
     };
 
   private:

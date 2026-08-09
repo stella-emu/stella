@@ -90,7 +90,7 @@ class MessageBox : public Dialog
     void layout() override;
     // OK/Close runs myCallback(ok), then closes normally or leaves menu mode
     // (if myTransient), before returning
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // 'transient' is true only for the boss-less TIA-overlay case: there is

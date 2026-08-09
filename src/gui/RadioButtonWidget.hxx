@@ -40,7 +40,7 @@ class RadioButtonWidget : public CheckboxWidget
     // the group's first member
     RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                       const string& label, RadioButtonGroup* group,
-                      int cmd = 0);
+                      GuiCmd::Code cmd = GuiCmd::None);
     ~RadioButtonWidget() override = default;
 
     // Selects this button on click (radio buttons don't toggle off by clicking)

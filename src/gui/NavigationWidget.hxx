@@ -35,8 +35,9 @@ class NavigationWidget : public Widget
 {
   public:
     // Sent (via CommandSender) when a breadcrumb segment is clicked
-    enum {
-      kFolderClicked = 'flcl'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        FolderClicked = GuiCmd::of("NavigationWidget.FolderClicked");
     };
 
   private:
@@ -90,7 +91,7 @@ class NavigationWidget : public Widget
         string myLastPath;
         // Pool of segment widgets, one per path component (grow-only; extras hidden)
         std::vector<FolderLinkWidget*> myFolderList;
-        // Receives kFolderClicked when a segment is clicked
+        // Receives Cmd::FolderClicked when a segment is clicked
         CommandReceiver* myTarget{nullptr};
 
       private:
@@ -121,7 +122,7 @@ class NavigationWidget : public Widget
 
   protected:
     // A breadcrumb segment was clicked; selects that directory in myList
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // (Re)position and (re)size the child buttons and path field from the

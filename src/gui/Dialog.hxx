@@ -223,8 +223,9 @@ class Dialog : public GuiObject
     int indent() const { return fontWidth() * 2; }
 
   protected:
-    enum {
-      kHelpCmd = 'DlHp'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Help = GuiCmd::of("Dialog.Help");
     };
 
     // Remembers the focused widget's place in its tab(s) before it's released
@@ -248,7 +249,7 @@ class Dialog : public GuiObject
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE);
     virtual void handleEvent(Event::Type event) {}
     // Reacts to a tab change (remembering it) and to the title-bar help/close buttons
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     virtual Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button);
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
@@ -278,7 +279,7 @@ class Dialog : public GuiObject
     // NOTE: This method, and the three above it, are due to be refactored at some
     //       point, since the parameter list is kind of getting ridiculous
     void addDefaultsExtraOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                                        string_view extraText, int extraCmd,
+                                        string_view extraText, GuiCmd::Code extraCmd,
                                         string_view okText = "OK",
                                         string_view cancelText = "Cancel",
                                         string_view defaultsText = "Defaults",

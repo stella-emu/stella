@@ -36,7 +36,7 @@ class CartridgeELFWidget: public CartDebugWidget
 
   protected:
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void initialize();
@@ -51,7 +51,10 @@ class CartridgeELFWidget: public CartDebugWidget
     WrappedTextWidget* myLog{nullptr};
     ButtonWidget* mySaveImageButton{nullptr};
 
-    enum { kSaveArmImageCmd = 'sarm' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        SaveArmImage = GuiCmd::of("CartridgeELFWidget.SaveArmImage");
+    };
 
   private:
     CartridgeELFWidget() = delete;

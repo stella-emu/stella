@@ -40,12 +40,12 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                    TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  mySlider = new SliderWidget(this, font, 1, 0);
+  mySlider = new SliderWidget(this, font, 1);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  auto* b = new ButtonWidget(this, font, "Cancel", Event::UICancel);
+  auto* b = new ButtonWidget(this, font, "Cancel", Cmd::Cancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);
@@ -142,10 +142,10 @@ void ProgressDialog::incProgress()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ProgressDialog::handleCommand(CommandSender* sender, int cmd,
+void ProgressDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
-  if(cmd == Event::UICancel)
+  if(cmd == Cmd::Cancel)
     myIsCancelled = true;
   else
     Dialog::handleCommand(sender, cmd, data, 0);

@@ -64,37 +64,35 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
 
   protected:
     void layout() override;
-    // kPlrSettings/kDevSettings switch the active setting set; the TIA/
+    // Cmd::PlayerSettings/Cmd::DeveloperSettings switch the active setting set; the TIA/
     // console/jitter/state-buffer ids dispatch to their handle*() methods;
     // the debug-colour ids keep the six swatches distinct; OK saves and
     // exits (informing the debugger of a font change); Defaults resets
     // the active tab
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Command ids dispatched in handleCommand()
-    enum
-    {
-      kPlrSettings          = 'DVpl',
-      kDevSettings          = 'DVdv',
-      kConsole              = 'DVco',
-      kArmSpeedChanged      = 'DVas',
-      kTIAType              = 'DVtt',
-      kTVJitter             = 'DVjt',
-      kTimeMachine          = 'DTtm',
-      kSizeChanged          = 'DTsz',
-      kUncompressedChanged  = 'DTuc',
-      kIntervalChanged      = 'DTin',
-      kHorizonChanged       = 'DThz',
-      kP0ColourChangedCmd   = 'GOp0',
-      kM0ColourChangedCmd   = 'GOm0',
-      kP1ColourChangedCmd   = 'GOp1',
-      kM1ColourChangedCmd   = 'GOm1',
-      kPFColourChangedCmd   = 'GOpf',
-      kBLColourChangedCmd   = 'GObl',
-  #ifdef DEBUGGER_SUPPORT
-      kDFontSizeChanged     = 'UIfs',
-  #endif
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        PlayerSettings          = GuiCmd::of("DeveloperDialog.PlayerSettings"),
+        DeveloperSettings       = GuiCmd::of("DeveloperDialog.DeveloperSettings"),
+        Console                 = GuiCmd::of("DeveloperDialog.Console"),
+        ArmSpeedChanged         = GuiCmd::of("DeveloperDialog.ArmSpeedChanged"),
+        TiaType                 = GuiCmd::of("DeveloperDialog.TiaType"),
+        TvJitter                = GuiCmd::of("DeveloperDialog.TvJitter"),
+        TimeMachine             = GuiCmd::of("DeveloperDialog.TimeMachine"),
+        SizeChanged             = GuiCmd::of("DeveloperDialog.SizeChanged"),
+        UncompressedChanged     = GuiCmd::of("DeveloperDialog.UncompressedChanged"),
+        IntervalChanged         = GuiCmd::of("DeveloperDialog.IntervalChanged"),
+        HorizonChanged          = GuiCmd::of("DeveloperDialog.HorizonChanged"),
+        Player0ColourChanged    = GuiCmd::of("DeveloperDialog.Player0ColourChanged"),
+        Missile0ColourChanged   = GuiCmd::of("DeveloperDialog.Missile0ColourChanged"),
+        Player1ColourChanged    = GuiCmd::of("DeveloperDialog.Player1ColourChanged"),
+        Missile1ColourChanged   = GuiCmd::of("DeveloperDialog.Missile1ColourChanged"),
+        PlayfieldColourChanged  = GuiCmd::of("DeveloperDialog.PlayfieldColourChanged"),
+        BallColourChanged       = GuiCmd::of("DeveloperDialog.BallColourChanged"),
+        DebuggerFontSizeChanged = GuiCmd::of("DeveloperDialog.DebuggerFontSizeChanged");
     };
 
     // Number of TIA objects that get a fixed debug color (P0/M0/P1/M1/PF/BL)

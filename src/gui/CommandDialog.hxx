@@ -43,7 +43,7 @@ class CommandDialog : public Dialog
   protected:
     // Dispatches a button to its console/state event, then (for an immediate
     // console command) leaves menu mode and applies it right away
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 
@@ -74,23 +74,24 @@ class CommandDialog : public Dialog
     ButtonWidget* mySoundButton{nullptr};
 
     // Column 1/2/3 button commands, dispatched in handleCommand()
-    enum {
-      kSelectCmd      = 'Csel',
-      kResetCmd       = 'Cres',
-      kColorCmd       = 'Ccol',
-      kLeftDiffCmd    = 'Cldf',
-      kRightDiffCmd   = 'Crdf',
-      kSaveStateCmd   = 'Csst',
-      kStateSlotCmd   = 'Ccst',
-      kLoadStateCmd   = 'Clst',
-      kSnapshotCmd    = 'Csnp',
-      kTimeMachineCmd = 'Ctim',
-      kFormatCmd      = 'Cfmt',
-      kPaletteCmd     = 'Cpal',
-      kPhosphorCmd    = 'Cpho',
-      kSoundCmd       = 'Csnd',
-      kReloadRomCmd   = 'Crom',
-      kExitCmd        = 'Clex'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Select          = GuiCmd::of("CommandDialog.Select"),
+        Reset           = GuiCmd::of("CommandDialog.Reset"),
+        Color           = GuiCmd::of("CommandDialog.Color"),
+        LeftDifficulty  = GuiCmd::of("CommandDialog.LeftDifficulty"),
+        RightDifficulty = GuiCmd::of("CommandDialog.RightDifficulty"),
+        SaveState       = GuiCmd::of("CommandDialog.SaveState"),
+        StateSlot       = GuiCmd::of("CommandDialog.StateSlot"),
+        LoadState       = GuiCmd::of("CommandDialog.LoadState"),
+        Snapshot        = GuiCmd::of("CommandDialog.Snapshot"),
+        TimeMachine     = GuiCmd::of("CommandDialog.TimeMachine"),
+        Format          = GuiCmd::of("CommandDialog.Format"),
+        Palette         = GuiCmd::of("CommandDialog.Palette"),
+        Phosphor        = GuiCmd::of("CommandDialog.Phosphor"),
+        Sound           = GuiCmd::of("CommandDialog.Sound"),
+        ReloadRom       = GuiCmd::of("CommandDialog.ReloadRom"),
+        Exit            = GuiCmd::of("CommandDialog.Exit");
     };
 
   private:

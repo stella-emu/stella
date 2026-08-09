@@ -50,7 +50,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   }
   // Every widget is created at a placeholder position; reflow() positions them
   myBankLbl = new LabelWidget(boss, _font, "Set bank");
-  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   myLabelColumn.emplace_back(myBankLbl);
@@ -426,10 +426,10 @@ void CartridgeCDFWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDFWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeCDFWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBank->getSelected());

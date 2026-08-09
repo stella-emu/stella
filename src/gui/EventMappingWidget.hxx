@@ -76,17 +76,18 @@ class EventMappingWidget : public Widget, public CommandSender
   protected:
     // Reacts to the filter pop-up, a list selection/double-click, the five
     // action buttons, and the combo dialog
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Command ids for the filter pop-up and the five action buttons
-    enum {
-      kFilterCmd   = 'filt',
-      kStartMapCmd = 'map ',
-      kStopMapCmd  = 'smap',
-      kEraseCmd    = 'eras',
-      kResetCmd    = 'rest',
-      kComboCmd    = 'cmbo'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Filter   = GuiCmd::of("EventMappingWidget.Filter"),
+        StartMap = GuiCmd::of("EventMappingWidget.StartMap"),
+        StopMap  = GuiCmd::of("EventMappingWidget.StopMap"),
+        Erase    = GuiCmd::of("EventMappingWidget.Erase"),
+        Reset    = GuiCmd::of("EventMappingWidget.Reset"),
+        Combo    = GuiCmd::of("EventMappingWidget.Combo");
     };
 
     // The actions list shows an event's description, so it needs room for one.

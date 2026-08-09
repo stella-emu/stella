@@ -68,7 +68,7 @@ void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
-    sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::ItemDataChanged, _selectedItem, _id);
     setDirty();
   }
 }
@@ -182,7 +182,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];
-      sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
+      sendCommand(Cmd::ItemDataChanged, _selectedItem, _id);
       dialog().tooltip().hide();
     }
 
@@ -193,10 +193,10 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
+void ToggleWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
-  if(cmd == GuiObject::kSetPositionCmd)
+  if(cmd == GuiObject::Cmd::SetPosition)
   {
     if(_selectedItem != data)
     {

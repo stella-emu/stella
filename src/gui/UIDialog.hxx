@@ -47,7 +47,7 @@ class UIDialog : public Dialog, public CommandSender
     // (when global) and applies font/HiDPI changes immediately; Defaults
     // resets the active tab; slider/pop-up ids update their own labels; the
     // path buttons open browsers
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layout() override;
 
   private:
@@ -60,15 +60,15 @@ class UIDialog : public Dialog, public CommandSender
 
   private:
     // Command ids dispatched in handleCommand()
-    enum
-    {
-      kDialogFont           = 'UIDf',
-      kListDelay            = 'UILd',
-      kMouseWheel           = 'UIMw',
-      kControllerDelay      = 'UIcd',
-      kChooseRomDirCmd      = 'LOrm', // rom select
-      kRomViewer            = 'UIRv',
-      kChooseSnapLoadDirCmd = 'UIsl' // snapshot dir (load files)
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        DialogFont        = GuiCmd::of("UIDialog.DialogFont"),
+        ListDelay         = GuiCmd::of("UIDialog.ListDelay"),
+        MouseWheel        = GuiCmd::of("UIDialog.MouseWheel"),
+        ControllerDelay   = GuiCmd::of("UIDialog.ControllerDelay"),
+        ChooseRomDir      = GuiCmd::of("UIDialog.ChooseRomDir"),
+        RomViewer         = GuiCmd::of("UIDialog.RomViewer"),
+        ChooseSnapLoadDir = GuiCmd::of("UIDialog.ChooseSnapLoadDir");
     };
 
     // Hosts the two option tabs (Look & Feel, Launcher)

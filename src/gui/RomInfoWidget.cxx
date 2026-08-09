@@ -185,7 +185,7 @@ void RomInfoWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
     && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     clearFlags(Widget::FLAG_HILITED); // avoid double clicks and opened URLs
-    sendCommand(kClickedCmd, 0, _id);
+    sendCommand(Cmd::Clicked, 0, _id);
   }
 }
 

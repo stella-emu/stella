@@ -38,14 +38,14 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
   mySnapSaveButton =
-    new ButtonWidget(this, font, "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
+    new ButtonWidget(this, font, "Save path" + ELLIPSIS, Cmd::ChooseSnapSaveDir);
   wid.push_back(mySnapSaveButton);
   mySnapSavePath = new EditTextWidget(this, font, 1);
   wid.push_back(mySnapSavePath);
 
   // Snapshot interval (continuous mode)
   mySnapIntervalLbl = new LabelWidget(this, font, "Continuous snapshot interval");
-  mySnapInterval = new SliderWidget(this, font, 0, kSnapshotInterval, 10);
+  mySnapInterval = new SliderWidget(this, font, 0, Cmd::SnapshotInterval, 10);
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
   mySnapInterval->setTickmarkIntervals(3);
@@ -180,21 +180,21 @@ void SnapshotDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
+void SnapshotDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kChooseSnapSaveDirCmd:
+    case Cmd::ChooseSnapSaveDir:
       BrowserDialog::show(this, _font, "Select Snapshot Save Directory",
                           mySnapSavePath->getText(),
                           BrowserDialog::Mode::Directories,
@@ -203,7 +203,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
                           });
       break;
 
-    case kSnapshotInterval:
+    case Cmd::SnapshotInterval:
       if(mySnapInterval->getValue() == 1)
         mySnapInterval->setValueUnit(" second");
       else

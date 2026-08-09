@@ -234,7 +234,7 @@ void CartridgeEnhancedWidget::createBankWidgets()
       : "Set bank";
 
     myBankWidgetLabels[seg] = new LabelWidget(_boss, _font, label);
-    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, Cmd::BankChanged);
     myBankWidgets[seg]->setTarget(this);
     myBankWidgets[seg]->setID(seg);
     addFocusWidget(myBankWidgets[seg]);
@@ -357,10 +357,10 @@ void CartridgeEnhancedWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
-                                            int cmd, int data, int id)
+void CartridgeEnhancedWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                            int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBankWidgets[id]->getSelected(), id);

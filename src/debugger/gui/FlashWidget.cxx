@@ -45,7 +45,7 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
     myPage[page] = new LabelWidget(boss, font, page ? "" : "none");
   myEEPROMEraseCurrent = new ButtonWidget(boss, font,
                                           embedded ? "Erase" : "Erase used pages",
-                                          kEEPROMEraseCurrent);
+                                          Cmd::EraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
@@ -74,9 +74,10 @@ void FlashWidget::layoutContent(GUI::BoxLayout& col)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
+void FlashWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
-  if(cmd == kEEPROMEraseCurrent)
+  if(cmd == Cmd::EraseCurrent)
     eraseCurrent();
 }
 

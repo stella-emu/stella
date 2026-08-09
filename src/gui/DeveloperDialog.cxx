@@ -119,11 +119,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   // settings set
   mySettingsGroupEmulation = std::make_unique<RadioButtonGroup>();
   myEmuSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
-                                           mySettingsGroupEmulation.get(), kPlrSettings);
+                                           mySettingsGroupEmulation.get(), Cmd::PlayerSettings);
   myEmuSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[0]);
   myEmuSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
-                                           mySettingsGroupEmulation.get(), kDevSettings);
+                                           mySettingsGroupEmulation.get(), Cmd::DeveloperSettings);
   myEmuSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myEmuSettings[1]);
 
@@ -147,7 +147,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
   myConsoleWidgetLbl = new LabelWidget(pane, font, "Console");
-  myConsoleWidget = new PopUpWidget(pane, font, items, kConsole);
+  myConsoleWidget = new PopUpWidget(pane, font, items, Cmd::Console);
   myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
                               "page RAM initialization differently.");
   wid.push_back(myConsoleWidget);
@@ -216,7 +216,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myThumbExceptionWidget);
 
   myArmSpeedWidgetLbl = new LabelWidget(pane, font, "Limit ARM speed (*)");
-  myArmSpeedWidget = new SliderWidget(pane, font, 10, kArmSpeedChanged, 9, " MIPS");
+  myArmSpeedWidget = new SliderWidget(pane, font, 10, Cmd::ArmSpeedChanged, 9, " MIPS");
   myArmSpeedWidget->setMinValue(CartridgeELF::MIPS_MIN);
   myArmSpeedWidget->setMaxValue(CartridgeELF::MIPS_MAX);
   myArmSpeedWidget->setStepValue(2);
@@ -345,11 +345,11 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   // settings set
   mySettingsGroupTia = std::make_unique<RadioButtonGroup>();
   myTiaSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
-                                           mySettingsGroupTia.get(), kPlrSettings);
+                                           mySettingsGroupTia.get(), Cmd::PlayerSettings);
   myTiaSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[0]);
   myTiaSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
-                                           mySettingsGroupTia.get(), kDevSettings);
+                                           mySettingsGroupTia.get(), Cmd::DeveloperSettings);
   myTiaSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTiaSettings[1]);
 
@@ -367,7 +367,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Glitched Jr. missiles", "juniorbug");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidgetLbl = new LabelWidget(pane, font, "Chip type");
-  myTIATypeWidget = new PopUpWidget(pane, font, items, kTIAType);
+  myTIATypeWidget = new PopUpWidget(pane, font, items, Cmd::TiaType);
   myTIATypeWidget->setToolTip("Select which TIA chip type to emulate.\n"
                               "Some types cause defined glitches.");
   wid.push_back(myTIATypeWidget);
@@ -510,21 +510,21 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   // settings set
   mySettingsGroupVideo = std::make_unique<RadioButtonGroup>();
   myVideoSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
-                                             mySettingsGroupVideo.get(), kPlrSettings);
+                                             mySettingsGroupVideo.get(), Cmd::PlayerSettings);
   myVideoSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[0]);
   myVideoSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
-                                             mySettingsGroupVideo.get(), kDevSettings);
+                                             mySettingsGroupVideo.get(), Cmd::DeveloperSettings);
   myVideoSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myVideoSettings[1]);
 
   // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(pane, font, "Jitter/roll effect", kTVJitter);
+  myTVJitterWidget = new CheckboxWidget(pane, font, "Jitter/roll effect", Cmd::TvJitter);
   myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
 
   myTVJitterSenseWidgetLbl = new LabelWidget(pane, font, "Sensitivity");
-  myTVJitterSenseWidget = new SliderWidget(pane, font, 10, 0, 2);
+  myTVJitterSenseWidget = new SliderWidget(pane, font, 10, GuiCmd::None, 2);
   myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
   myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
   myTVJitterSenseWidget->setTickmarkIntervals(3);
@@ -533,7 +533,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.push_back(myTVJitterSenseWidget);
 
   myTVJitterRecWidgetLbl = new LabelWidget(pane, font, "Recovery");
-  myTVJitterRecWidget = new SliderWidget(pane, font, 10, 0, 2);
+  myTVJitterRecWidget = new SliderWidget(pane, font, 10, GuiCmd::None, 2);
   myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
   myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
   myTVJitterRecWidget->setTickmarkIntervals(5);
@@ -559,9 +559,9 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   VarList::push_back(items, "Purple", "p");
   VarList::push_back(items, "Blue", "b");
 
-  static constexpr std::array<int, DEBUG_COLORS> dbg_cmds = {
-    kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
-    kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
+  static constexpr std::array<GuiCmd::Code, DEBUG_COLORS> dbg_cmds = {
+    Cmd::Player0ColourChanged,  Cmd::Missile0ColourChanged,  Cmd::Player1ColourChanged,
+    Cmd::Missile1ColourChanged,  Cmd::PlayfieldColourChanged,  Cmd::BallColourChanged
   };
 
   const auto createDebugColourWidgets = [&](int idx, string_view desc)
@@ -690,20 +690,20 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   // settings set
   mySettingsGroupTM = std::make_unique<RadioButtonGroup>();
   myTMSettings[0] = new RadioButtonWidget(pane, font, "Player settings",
-                                          mySettingsGroupTM.get(), kPlrSettings);
+                                          mySettingsGroupTM.get(), Cmd::PlayerSettings);
   myTMSettings[0]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[0]);
   myTMSettings[1] = new RadioButtonWidget(pane, font, "Developer settings",
-                                          mySettingsGroupTM.get(), kDevSettings);
+                                          mySettingsGroupTM.get(), Cmd::DeveloperSettings);
   myTMSettings[1]->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(myTMSettings[1]);
 
-  myTimeMachineWidget = new CheckboxWidget(pane, font, "Time Machine", kTimeMachine);
+  myTimeMachineWidget = new CheckboxWidget(pane, font, "Time Machine", Cmd::TimeMachine);
   myTimeMachineWidget->setToolTip(Event::ToggleTimeMachine);
   wid.push_back(myTimeMachineWidget);
 
   myStateSizeWidgetLbl = new LabelWidget(pane, font, "Buffer size (*)");
-  myStateSizeWidget = new SliderWidget(pane, font, 0, kSizeChanged, lwidth, " states");
+  myStateSizeWidget = new SliderWidget(pane, font, 0, Cmd::SizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(RewindManager::MIN_BUF_SIZE);
   myStateSizeWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myStateSizeWidget->setStepValue(20);
@@ -712,7 +712,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myStateSizeWidget);
 
   myUncompressedWidgetLbl = new LabelWidget(pane, font, "Uncompressed size");
-  myUncompressedWidget = new SliderWidget(pane, font, 0, kUncompressedChanged, lwidth, " states");
+  myUncompressedWidget = new SliderWidget(pane, font, 0, Cmd::UncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(RewindManager::MAX_BUF_SIZE);
   myUncompressedWidget->setStepValue(20);
@@ -726,7 +726,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   for(int i = 0; i < RewindManager::NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], RewindManager::INT_SETTINGS[i]);
   myStateIntervalWidgetLbl = new LabelWidget(pane, font, "Interval");
-  myStateIntervalWidget = new PopUpWidget(pane, font, items, kIntervalChanged);
+  myStateIntervalWidget = new PopUpWidget(pane, font, items, Cmd::IntervalChanged);
   myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
   wid.push_back(myStateIntervalWidget);
 
@@ -734,7 +734,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   for(int i = 0; i < RewindManager::NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], RewindManager::HOR_SETTINGS[i]);
   myStateHorizonWidgetLbl = new LabelWidget(pane, font, "Horizon");
-  myStateHorizonWidget = new PopUpWidget(pane, font, items, kHorizonChanged);
+  myStateHorizonWidget = new PopUpWidget(pane, font, items, Cmd::HorizonChanged);
   myStateHorizonWidget->setToolTip("Define how far the Time Machine\n"
                                    "will allow moving back in time.");
   wid.push_back(myStateHorizonWidget);
@@ -811,7 +811,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   for(const auto& entry: FontManager::debuggerFonts())
     VarList::push_back(items, entry.label, entry.name);
   myDebuggerFontSizeLbl = new LabelWidget(pane, font, "Font size");
-  myDebuggerFontSize = new PopUpWidget(pane, font, items, kDFontSizeChanged);
+  myDebuggerFontSize = new PopUpWidget(pane, font, items, Cmd::DebuggerFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
 
   // Font style (bold label vs. text, etc)
@@ -1177,80 +1177,81 @@ void DeveloperDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void DeveloperDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                    int data, int id)
 {
   switch(cmd)
   {
-    case kPlrSettings:
+    case Cmd::PlayerSettings:
       handleSettings(false);
       break;
 
-    case kDevSettings:
+    case Cmd::DeveloperSettings:
       handleSettings(true);
       break;
 
-    case kTIAType:
+    case Cmd::TiaType:
       handleTia();
       break;
 
-    case kConsole:
+    case Cmd::Console:
       handleConsole();
       break;
 
-    case kTVJitter:
+    case Cmd::TvJitter:
       handleTVJitterChange();
       break;
 
-    case kTimeMachine:
+    case Cmd::TimeMachine:
       handleTimeMachine();
       break;
 
-    case kSizeChanged:
+    case Cmd::SizeChanged:
       handleSize();
       break;
 
-    case kUncompressedChanged:
+    case Cmd::UncompressedChanged:
       handleUncompressed();
       break;
 
-    case kIntervalChanged:
+    case Cmd::IntervalChanged:
       handleInterval();
       break;
 
-    case kHorizonChanged:
+    case Cmd::HorizonChanged:
       handleHorizon();
       break;
 
-    case kP0ColourChangedCmd:
+    case Cmd::Player0ColourChanged:
       handleDebugColours(0, myDbgColour[0]->getSelected());
       break;
 
-    case kM0ColourChangedCmd:
+    case Cmd::Missile0ColourChanged:
       handleDebugColours(1, myDbgColour[1]->getSelected());
       break;
 
-    case kP1ColourChangedCmd:
+    case Cmd::Player1ColourChanged:
       handleDebugColours(2, myDbgColour[2]->getSelected());
       break;
 
-    case kM1ColourChangedCmd:
+    case Cmd::Missile1ColourChanged:
       handleDebugColours(3, myDbgColour[3]->getSelected());
       break;
 
-    case kPFColourChangedCmd:
+    case Cmd::PlayfieldColourChanged:
       handleDebugColours(4, myDbgColour[4]->getSelected());
       break;
 
-    case kBLColourChangedCmd:
+    case Cmd::BallColourChanged:
       handleDebugColours(5, myDbgColour[5]->getSelected());
       break;
 
 #ifdef DEBUGGER_SUPPORT
-    case kDFontSizeChanged:
+    case Cmd::DebuggerFontSizeChanged:
       break;
 #endif
 
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
     {
   #ifdef DEBUGGER_SUPPORT
       const bool informDebuggerFont = instance().hasConsole() &&
@@ -1269,12 +1270,12 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       break;
     }
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       // Revert changes made to event mapping
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 

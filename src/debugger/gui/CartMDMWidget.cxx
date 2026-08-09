@@ -32,7 +32,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   {
     myBankDisabled = new CheckboxWidget(_boss, _font,
                                         "Bankswitching is locked/disabled",
-                                        kBankDisabled);
+                                        Cmd::BankDisabled);
     myBankDisabled->setTarget(this);
     addFocusWidget(myBankDisabled);
   }
@@ -84,10 +84,10 @@ void CartridgeMDMWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeMDMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kBankDisabled)
+  if(cmd == Cmd::BankDisabled)
   {
     myCartMDM.myBankingDisabled = myBankDisabled->getState();
     myBankWidgetLabels[0]->setEnabled(!myCartMDM.myBankingDisabled);

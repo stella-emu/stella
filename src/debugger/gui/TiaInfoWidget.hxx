@@ -107,7 +107,7 @@ class TiaInfoWidget : public Widget, public CommandSender
     bool myLongLabels{false};
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

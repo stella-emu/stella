@@ -51,7 +51,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myBankLbl = new LabelWidget(boss, _font, "Set bank");
-  myBank = new PopUpWidget(boss, _font, items, kBankChanged);
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
@@ -291,10 +291,10 @@ void CartridgeDPCPlusWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender,
-                                           int cmd, int data, int id)
+void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                           int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBank->getSelected());

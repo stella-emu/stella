@@ -28,7 +28,7 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto pin = [&](int id, string_view label) {
     myPins[id] = new CheckboxWidget(boss, font, label,
-                                    CheckboxWidget::kCheckActionCmd);
+                                    CheckboxWidget::Cmd::CheckAction);
     myPins[id]->setID(id);
     myPins[id]->setTarget(this);
   };
@@ -85,10 +85,10 @@ void GenesisWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GenesisWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void GenesisWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
-  if(cmd == CheckboxWidget::kCheckActionCmd)
+  if(cmd == CheckboxWidget::Cmd::CheckAction)
   {
     switch(id)
     {

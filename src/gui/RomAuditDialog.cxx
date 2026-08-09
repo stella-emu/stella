@@ -46,7 +46,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Audit path
   myRomButton = new ButtonWidget(this, font,
-      "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
+      "Audit path" + ELLIPSIS, Cmd::ChooseAuditDir);
   wid.push_back(myRomButton);
   myRomPath = new EditTextWidget(this, font, 1);
   wid.push_back(myRomPath);
@@ -205,12 +205,12 @@ void RomAuditDialog::auditRoms()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
+void RomAuditDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       GUI::MessageBox::confirm(this,
         "This operation cannot be undone.  Your ROMs\n"
         "will be modified, and as such there is a chance\n"
@@ -228,7 +228,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         "ROM Audit");
       break;
 
-    case kChooseAuditDirCmd:
+    case Cmd::ChooseAuditDir:
       BrowserDialog::show(this, _font, "Select ROM Directory to Audit",
                           myRomPath->getText(),
                           BrowserDialog::Mode::Directories,

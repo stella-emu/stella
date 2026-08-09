@@ -48,7 +48,7 @@ class RomAuditDialog : public Dialog
   protected:
     // Audit ("OK") confirms, then runs auditRoms() and reloads the launcher;
     // the path button opens a directory browser
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layout() override;
 
   private:
@@ -57,8 +57,9 @@ class RomAuditDialog : public Dialog
     void auditRoms();
 
   private:
-    enum {
-      kChooseAuditDirCmd = 'RAsl' // audit dir select
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ChooseAuditDir = GuiCmd::of("RomAuditDialog.ChooseAuditDir");  // audit dir select
     };
 
     // ROM audit path

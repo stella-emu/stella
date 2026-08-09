@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int w, const VariantList& items, int cmd)
+                         int w, const VariantList& items, GuiCmd::Code cmd)
   : EditableWidget(boss, font, w, font.getLineHeight() + 2)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
@@ -54,7 +54,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, int cmd)
+                         const VariantList& items, GuiCmd::Code cmd)
   : PopUpWidget(boss, font, calcWidth(font, items), items, cmd)
 {
   // Nobody chose that width but me, so nobody else will restore it
@@ -246,7 +246,8 @@ bool PopUpWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void PopUpWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
   // Intercept all events sent through the PromptWidget
   // They're likely from our ContextMenu, indicating a redraw is required

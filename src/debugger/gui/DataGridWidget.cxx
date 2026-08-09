@@ -122,7 +122,7 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   if(dirty)
   {
     // Send item selected signal for starting with cell 0
-    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
 
     setDirty();
   }
@@ -210,7 +210,7 @@ void DataGridWidget::setValue(int position, int value, bool changed,
     _valueList[position] = value;
 
     if(emitSignal)
-      sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
+      sendCommand(Cmd::ItemDataChanged, position, _id);
 
     setDirty();
   }
@@ -244,7 +244,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
 
-    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
     setDirty();
   }
 }
@@ -256,7 +256,7 @@ void DataGridWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   // send the double click command
   if(clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(DataGridWidget::kItemDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(Cmd::ItemDoubleClicked, _selectedItem, _id);
 
     // Start edit mode
     if(isEditable() && !_editMode)
@@ -471,7 +471,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
     _selectedItem = _currentRow*_cols + _currentCol;
 
     if(_selectedItem != oldItem)
-      sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+      sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
 
     setDirty();
     dialog().tooltip().hide();
@@ -511,41 +511,41 @@ void DataGridWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
+void DataGridWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kSetPositionCmd:
+    case GuiObject::Cmd::SetPosition:
       // Chain access; pass to parent
-      sendCommand(GuiObject::kSetPositionCmd, data, _id);
+      sendCommand(GuiObject::Cmd::SetPosition, data, _id);
       break;
 
-    case kDGZeroCmd:
+    case DataGridOpsWidget::Cmd::Zero:
       zeroCell();
       break;
 
-    case kDGInvertCmd:
+    case DataGridOpsWidget::Cmd::Invert:
       invertCell();
       break;
 
-    case kDGNegateCmd:
+    case DataGridOpsWidget::Cmd::Negate:
       negateCell();
       break;
 
-    case kDGIncCmd:
+    case DataGridOpsWidget::Cmd::Increment:
       incrementCell();
       break;
 
-    case kDGDecCmd:
+    case DataGridOpsWidget::Cmd::Decrement:
       decrementCell();
       break;
 
-    case kDGShiftLCmd:
+    case DataGridOpsWidget::Cmd::ShiftLeft:
       lshiftCell();
       break;
 
-    case kDGShiftRCmd:
+    case DataGridOpsWidget::Cmd::ShiftRight:
       rshiftCell();
       break;
 

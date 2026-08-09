@@ -64,7 +64,7 @@ class InputDialog : public Dialog
     void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Build one tab's controls and layout; called once from the ctor
@@ -85,22 +85,23 @@ class InputDialog : public Dialog
   private:
     // Command ids for the sliders/pop-ups/buttons across both tabs, dispatched
     // in handleCommand()
-    enum {
-      kDDeadzoneChanged   = 'DDch',
-      kADeadzoneChanged   = 'ADch',
-      kPSpeedChanged      = 'Ppch',
-      kDejitterAvChanged  = 'JAch',
-      kDejitterReChanged  = 'JRch',
-      kDPSpeedChanged     = 'DSch',
-      kAutoFireChanged    = 'AFch',
-      kAutoFireRate       = 'AFra',
-      kTBSpeedChanged     = 'TBch',
-      kDCSpeedChanged     = 'DCch',
-      kDBButtonPressed    = 'DBbp',
-      kEEButtonPressed    = 'EEbp',
-      kMouseCtrlChanged   = 'MCch',
-      kCursorStateChanged = 'CSch',
-      kMPSpeedChanged     = 'PMch',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        DigitalDeadzoneChanged    = GuiCmd::of("InputDialog.DigitalDeadzoneChanged"),
+        AnalogDeadzoneChanged     = GuiCmd::of("InputDialog.AnalogDeadzoneChanged"),
+        PaddleSpeedChanged        = GuiCmd::of("InputDialog.PaddleSpeedChanged"),
+        DejitterBaseChanged       = GuiCmd::of("InputDialog.DejitterBaseChanged"),
+        DejitterDiffChanged       = GuiCmd::of("InputDialog.DejitterDiffChanged"),
+        DigitalPaddleSpeedChanged = GuiCmd::of("InputDialog.DigitalPaddleSpeedChanged"),
+        AutoFireChanged           = GuiCmd::of("InputDialog.AutoFireChanged"),
+        AutoFireRate              = GuiCmd::of("InputDialog.AutoFireRate"),
+        TrackBallSpeedChanged     = GuiCmd::of("InputDialog.TrackBallSpeedChanged"),
+        DrivingSpeedChanged       = GuiCmd::of("InputDialog.DrivingSpeedChanged"),
+        ControllerDatabase        = GuiCmd::of("InputDialog.ControllerDatabase"),
+        EraseEeprom               = GuiCmd::of("InputDialog.EraseEeprom"),
+        MouseControlChanged       = GuiCmd::of("InputDialog.MouseControlChanged"),
+        CursorStateChanged        = GuiCmd::of("InputDialog.CursorStateChanged"),
+        MousePaddleSpeedChanged   = GuiCmd::of("InputDialog.MousePaddleSpeedChanged");
     };
 
     TabWidget* myTab{nullptr};

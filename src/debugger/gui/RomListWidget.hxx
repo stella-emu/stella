@@ -31,21 +31,20 @@ class DisasmColorsDialog;
 class RomListWidget : public EditableWidget
 {
   public:
-    enum {
-      kBPointChangedCmd  = 'RLbp',  // 'data' will be disassembly line number,
-                                    // 'id' will be the checkbox state
-      kRomChangedCmd     = 'RLpr',  // 'data' will be disassembly line number
-                                    // 'id' will be the Base::Format of the data
-      kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
-      kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
-      kSetTimerCmd       = 'STtm',
-      kDisassembleCmd    = 'REds',
-      kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
-      kPCAddressesCmd    = 'PCad',  // 'data' will be boolean
-      kGfxAsBinaryCmd    = 'GFXb',  // 'data' will be boolean
-      kAddrRelocationCmd      = 'ADre',  // 'data' will be boolean
-      kDisasmColorsCmd        = 'DCop',  // open disasm colours dialog
-      kDisasmColorsChangedCmd = 'DCch'   // disasm colour map updated; reload and redraw
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BreakpointChanged   = GuiCmd::of("RomListWidget.BreakpointChanged"),
+        RomChanged          = GuiCmd::of("RomListWidget.RomChanged"),
+        SetPC               = GuiCmd::of("RomListWidget.SetPC"),
+        RunToPC             = GuiCmd::of("RomListWidget.RunToPC"),
+        SetTimer            = GuiCmd::of("RomListWidget.SetTimer"),
+        Disassemble         = GuiCmd::of("RomListWidget.Disassemble"),
+        TentativeCode       = GuiCmd::of("RomListWidget.TentativeCode"),
+        PCAddresses         = GuiCmd::of("RomListWidget.PCAddresses"),
+        GfxAsBinary         = GuiCmd::of("RomListWidget.GfxAsBinary"),
+        AddressRelocation   = GuiCmd::of("RomListWidget.AddressRelocation"),
+        DisasmColors        = GuiCmd::of("RomListWidget.DisasmColors"),
+        DisasmColorsChanged = GuiCmd::of("RomListWidget.DisasmColorsChanged");
     };
 
   public:
@@ -86,7 +85,7 @@ class RomListWidget : public EditableWidget
     void refreshFont() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
     Common::Rect getLineRect() const;

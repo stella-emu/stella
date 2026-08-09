@@ -36,20 +36,20 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   // layout() gives the two arrows one shared width
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
-    new ButtonWidget(this, font, "<<", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, "<<", GuiObject::Cmd::Prev);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, ">>", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, ">>", GuiObject::Cmd::Next);
   wid.push_back(myNextButton);
 
   myUpdateButton =
-    new ButtonWidget(this, font, "Check for Update" + ELLIPSIS, kUpdateCmd);
+    new ButtonWidget(this, font, "Check for Update" + ELLIPSIS, Cmd::Update);
   myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
-  auto* b = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   wid.push_back(b);
   addCancelWidget(b);
 
@@ -239,12 +239,12 @@ void HelpDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HelpDialog::handleCommand(CommandSender* sender, int cmd,
+void HelpDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kNextCmd:
+    case GuiObject::Cmd::Next:
       ++myPage;
       if(myPage >= myNumPages)
         myNextButton->clearFlags(Widget::FLAG_ENABLED);
@@ -254,7 +254,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
       displayInfo();
       break;
 
-    case GuiObject::kPrevCmd:
+    case GuiObject::Cmd::Prev:
       --myPage;
       if(myPage <= myNumPages)
         myNextButton->setFlags(Widget::FLAG_ENABLED);
@@ -264,12 +264,12 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
       displayInfo();
       break;
 
-    case kUpdateCmd:
+    case Cmd::Update:
       MediaFactory::openURL("https://stella-emu.github.io/downloads.html?version="
                             + instance().settings().getString("stella.version"));
       break;
 
-    case LabelWidget::kOpenUrlCmd:
+    case LabelWidget::Cmd::OpenUrl:
     {
       const string& url = myDesc[id]->getUrl();
 

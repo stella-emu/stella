@@ -243,7 +243,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Timeline scrubber
-  myTimeline = new TimeLineWidget(this, font, kTimeline);
+  myTimeline = new TimeLineWidget(this, font, Cmd::Timeline);
   myTimeline->setMinValue(0);
 
   // Time info (current + last time)
@@ -256,31 +256,31 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Buttons
   myToggleWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                    STOP, kToggle);
+                                    STOP, Cmd::Toggle);
   myToggleWidget->setToolTip("Toggle Time Machine mode.");
   myExitWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                  EXIT, kExit);
+                                  EXIT, Cmd::Exit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
   myRewindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        REWIND_ALL,
-                                       kRewindAll);
+                                       Cmd::RewindAll);
   myRewind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     REWIND_1, kRewind1,
+                                     REWIND_1, Cmd::Rewind1,
                                      true);
   myPlayBackWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                      PLAYBACK, kPlayBack);
+                                      PLAYBACK, Cmd::PlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
   myUnwind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     UNWIND_1, kUnwind1,
+                                     UNWIND_1, Cmd::Unwind1,
                                      true);
   myUnwindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
                                        UNWIND_ALL,
-                                       kUnwindAll);
+                                       Cmd::UnwindAll);
   mySaveAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     SAVE_ALL, kSaveAll);
+                                     SAVE_ALL, Cmd::SaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
   myLoadAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
-                                     LOAD_ALL, kLoadAll);
+                                     LOAD_ALL, Cmd::LoadAll);
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
 
   // Message (fills the space between the buttons and the last-time readout)
@@ -373,41 +373,41 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
   switch(event)
   {
     case Event::ExitMode:
-      handleCommand(nullptr, kExit, 0, 0);
+      handleCommand(nullptr, Cmd::Exit, 0, 0);
       break;
 
     case Event::Rewind1Menu:
-      handleCommand(nullptr, kRewind1, 0, 0);
+      handleCommand(nullptr, Cmd::Rewind1, 0, 0);
       break;
 
     case Event::Rewind10Menu:
-      handleCommand(nullptr, kRewind10, 0, 0);
+      handleCommand(nullptr, Cmd::Rewind10, 0, 0);
       break;
 
     case Event::RewindAllMenu:
-      handleCommand(nullptr, kRewindAll, 0, 0);
+      handleCommand(nullptr, Cmd::RewindAll, 0, 0);
       break;
 
     case Event::Unwind1Menu:
-      handleCommand(nullptr, kUnwind1, 0, 0);
+      handleCommand(nullptr, Cmd::Unwind1, 0, 0);
       break;
 
     case Event::Unwind10Menu:
-      handleCommand(nullptr, kUnwind10, 0, 0);
+      handleCommand(nullptr, Cmd::Unwind10, 0, 0);
       break;
 
     case Event::UnwindAllMenu:
-      handleCommand(nullptr, kUnwindAll, 0, 0);
+      handleCommand(nullptr, Cmd::UnwindAll, 0, 0);
       break;
 
     case Event::LoadAllStates:
       if(!repeated)
-        handleCommand(nullptr, kLoadAll, 0, 0);
+        handleCommand(nullptr, Cmd::LoadAll, 0, 0);
       break;
 
     case Event::SaveAllStates:
       if(!repeated)
-        handleCommand(nullptr, kSaveAll, 0, 0);
+        handleCommand(nullptr, Cmd::SaveAll, 0, 0);
       break;
 
     // Hotkey only commands (no button available)
@@ -415,9 +415,16 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
     case Event::PreviousState:
     case Event::NextState:
     case Event::LoadState:
+      if(!repeated)
+        instance().eventHandler().handleEvent(event);
+      break;
+
     case Event::TakeSnapshot:
       if(!repeated)
-        handleCommand(nullptr, event, 0, 0);
+      {
+        instance().eventHandler().handleEvent(Event::TakeSnapshot);
+        instance().frameBuffer().setPendingRender();
+      }
       break;
 
     default:
@@ -435,18 +442,18 @@ void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
     instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
   if(event == Event::TogglePlayBackMode || key == StellaKey::SPACE)
-    handleCommand(nullptr, kPlayBack, 0, 0);
+    handleCommand(nullptr, Cmd::PlayBack, 0, 0);
   else
     Dialog::handleKeyUp(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
+void TimeMachineDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                       int data, int id)
 {
   switch(cmd)
   {
-    case kTimeline:
+    case Cmd::Timeline:
     {
       const Int32 winds = myTimeline->getValue() -
           instance().state().rewindManager().getCurrentIdx() + 1;
@@ -454,64 +461,52 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kToggle:
+    case Cmd::Toggle:
       instance().toggleTimeMachine();
       handleToggle();
       break;
 
-    case kExit:
+    case Cmd::Exit:
       instance().eventHandler().leaveMenuMode();
       break;
 
-    case kRewind1:
+    case Cmd::Rewind1:
       handleWinds(-1);
       break;
 
-    case kRewind10:
+    case Cmd::Rewind10:
       handleWinds(-10);
       break;
 
-    case kRewindAll:
+    case Cmd::RewindAll:
       handleWinds(-1000);
       break;
 
-    case kPlayBack:
+    case Cmd::PlayBack:
       instance().eventHandler().enterPlayBackMode();
       break;
 
-    case kUnwind1:
+    case Cmd::Unwind1:
       handleWinds(1);
       break;
 
-    case kUnwind10:
+    case Cmd::Unwind10:
       handleWinds(10);
       break;
 
-    case kUnwindAll:
+    case Cmd::UnwindAll:
       handleWinds(1000);
       break;
 
-    case kSaveAll:
+    case Cmd::SaveAll:
       instance().eventHandler().handleEvent(Event::SaveAllStates);
       break;
 
-    case kLoadAll:
+    case Cmd::LoadAll:
       instance().eventHandler().handleEvent(Event::LoadAllStates);
       initBar();
       break;
 
-    // Hotkey only commands (no button available)
-    case Event::SaveState:
-    case Event::PreviousState:
-    case Event::NextState:
-    case Event::LoadState:
-      instance().eventHandler().handleEvent(static_cast<Event::Type>(cmd));
-      break;
-
-    case Event::TakeSnapshot:
-      instance().eventHandler().handleEvent(Event::TakeSnapshot);
-      instance().frameBuffer().setPendingRender();
-      break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

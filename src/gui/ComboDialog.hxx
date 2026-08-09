@@ -50,7 +50,7 @@ class ComboDialog : public Dialog
 
   protected:
     // OK saves and closes; Defaults resets every slot
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 

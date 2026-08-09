@@ -55,31 +55,31 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Action buttons to the right of the RAM grid; each sizes itself to its own
   // label, and reflow() gives the group one width
-  myUndoButton = new ButtonWidget(boss, lfont, "Undo", kUndoCmd);
+  myUndoButton = new ButtonWidget(boss, lfont, "Undo", Cmd::Undo);
   myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
-  myRevertButton = new ButtonWidget(boss, lfont, "Revert", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, "Revert", Cmd::Revert);
   myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
   mySearchButton = new ButtonWidget(boss, lfont,
-                                    "Search" + ELLIPSIS, kSearchCmd);
+                                    "Search" + ELLIPSIS, Cmd::Search);
   mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
   myCompareButton = new ButtonWidget(boss, lfont,
-                                     "Compare" + ELLIPSIS, kCmpCmd);
+                                     "Compare" + ELLIPSIS, Cmd::Compare);
   myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
-  myRestartButton = new ButtonWidget(boss, lfont, "Reset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, "Reset", Cmd::Restart);
   myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
@@ -260,7 +260,8 @@ void RamWidget::reflow()
 RamWidget::~RamWidget() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RamWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   // We simply change the values in the DataGridWidget
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
@@ -269,7 +270,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
   switch(cmd)
   {
-    case DataGridWidget::kItemDataChangedCmd:
+    case DataGridWidget::Cmd::ItemDataChanged:
     {
       switch(id)
       {
@@ -313,7 +314,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case DataGridWidget::kSelectionChangedCmd:
+    case DataGridWidget::Cmd::SelectionChanged:
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
@@ -326,31 +327,31 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case kRevertCmd:
+    case Cmd::Revert:
       for(uInt32 i = 0; i < myOldValueList.size(); ++i)
         setValue(i, myOldValueList[i]);
       fillGrid(true);
       break;
 
-    case kUndoCmd:
+    case Cmd::Undo:
       setValue(myUndoAddress, myUndoValue);
       myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
 
-    case kSearchCmd:
-      showInputBox(kSValEntered);
+    case Cmd::Search:
+      showInputBox(Cmd::SearchValueEntered);
       break;
 
-    case kCmpCmd:
-      showInputBox(kCValEntered);
+    case Cmd::Compare:
+      showInputBox(Cmd::CompareValueEntered);
       break;
 
-    case kRestartCmd:
+    case Cmd::Restart:
       doRestart();
       break;
 
-    case kSValEntered:
+    case Cmd::SearchValueEntered:
     {
       const string_view result = doSearch(myInputBox->getResult());
       if(!result.empty())
@@ -360,7 +361,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case kCValEntered:
+    case Cmd::CompareValueEntered:
     {
       const string_view result = doCompare(myInputBox->getResult());
       if(!result.empty())
@@ -370,7 +371,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case GuiObject::kSetPositionCmd:
+    case GuiObject::Cmd::SetPosition:
       myCurrentRamBank = data;
       showSearchResults();
       fillGrid(false);
@@ -436,7 +437,7 @@ void RamWidget::fillGrid(bool updateOld)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamWidget::showInputBox(int cmd)
+void RamWidget::showInputBox(GuiCmd::Code cmd)
 {
   // Add inputbox in the middle of the RAM widget
   const uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
@@ -445,12 +446,12 @@ void RamWidget::showInputBox(int cmd)
   myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");
   myInputBox->setMessage("");
-  myInputBox->setToolTip(cmd == kSValEntered
+  myInputBox->setToolTip(cmd == Cmd::SearchValueEntered
                          ? "Enter search value (leave blank for all)."
                          : "Enter relative or absolute value\nto compare with searched values.");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);
-  myInputBox->setTitle(cmd == kSValEntered ? "Search" : "Compare");
+  myInputBox->setTitle(cmd == Cmd::SearchValueEntered ? "Search" : "Compare");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

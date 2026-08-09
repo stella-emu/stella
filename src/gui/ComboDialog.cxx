@@ -148,17 +148,17 @@ void ComboDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ComboDialog::handleCommand(CommandSender* sender, int cmd,
+void ComboDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                 int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 

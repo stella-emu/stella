@@ -47,7 +47,7 @@ class CartRamWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     // Lay the tab out for its current area/font: the RAM size and description
     // fields widen with it (the description re-wrapping itself), and the RAM view

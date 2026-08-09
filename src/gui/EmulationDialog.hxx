@@ -52,7 +52,7 @@ class EmulationDialog : public Dialog
     // OK saves and exits; Defaults resets to hardcoded values; the speed
     // slider updates its own label; the state-path button opens a browser;
     // toggling 'load/save in ROM directory' enables/disables the path controls
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void layout() override;
 
@@ -89,10 +89,11 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myStateWithRom{nullptr};
 
     // Command ids dispatched in handleCommand()
-    enum {
-      kSpeedupChanged = 'EDSp',
-      kChooseStateDir = 'EDsd',
-      kStateWithRom   = 'EDsr',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        SpeedupChanged = GuiCmd::of("EmulationDialog.SpeedupChanged"),
+        ChooseStateDir = GuiCmd::of("EmulationDialog.ChooseStateDir"),
+        StateWithRom   = GuiCmd::of("EmulationDialog.StateWithRom");
     };
 
   private:

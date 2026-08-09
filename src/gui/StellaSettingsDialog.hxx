@@ -56,7 +56,7 @@ class StellaSettingsDialog : public Dialog
     // OK saves and exits; Advanced/Help open their dialogs; slider changes
     // update their value labels; controller pop-up changes refresh the
     // detected-controller readouts
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Builds the UI theme and dialog-position pop-ups
@@ -137,14 +137,15 @@ class StellaSettingsDialog : public Dialog
     AppMode myMode{AppMode::emulator};
 
     // Command ids dispatched in handleCommand()
-    enum {
-      kAdvancedSettings = 'SSad',
-      kHelp             = 'SShl',
-      kScanlinesChanged = 'SSsc',
-      kPhosphorChanged  = 'SSph',
-      kOverscanChanged  = 'SSov',
-      kLeftCChanged     = 'LCch',
-      kRightCChanged    = 'RCch',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        AdvancedSettings       = GuiCmd::of("StellaSettingsDialog.AdvancedSettings"),
+        Help                   = GuiCmd::of("StellaSettingsDialog.Help"),
+        ScanlinesChanged       = GuiCmd::of("StellaSettingsDialog.ScanlinesChanged"),
+        PhosphorChanged        = GuiCmd::of("StellaSettingsDialog.PhosphorChanged"),
+        OverscanChanged        = GuiCmd::of("StellaSettingsDialog.OverscanChanged"),
+        LeftControllerChanged  = GuiCmd::of("StellaSettingsDialog.LeftControllerChanged"),
+        RightControllerChanged = GuiCmd::of("StellaSettingsDialog.RightControllerChanged");
     };
 
     // Game properties for currently loaded ROM

@@ -42,7 +42,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   // Widgets are only created here (at placeholder geometry); layout() positions
   // them via a GridLayout.  myButtons keeps them in grid order (column-major).
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
+  const auto ADD_CD_BUTTON = [&](string_view label, GuiCmd::Code cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
     auto* b = new ButtonWidget(this, _font, label, cmd);
@@ -53,28 +53,28 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   };
 
   // Column 1
-  ADD_CD_BUTTON(GUI::SELECT, kSelectCmd, Event::ConsoleSelect);
-  ADD_CD_BUTTON("Reset", kResetCmd, Event::ConsoleReset);
-  myColorButton = ADD_CD_BUTTON("", kColorCmd, Event::ConsoleColor, Event::ConsoleBlackWhite);
-  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd,
+  ADD_CD_BUTTON(GUI::SELECT, Cmd::Select, Event::ConsoleSelect);
+  ADD_CD_BUTTON("Reset", Cmd::Reset, Event::ConsoleReset);
+  myColorButton = ADD_CD_BUTTON("", Cmd::Color, Event::ConsoleColor, Event::ConsoleBlackWhite);
+  myLeftDiffButton = ADD_CD_BUTTON("", Cmd::LeftDifficulty,
     Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB);
-  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd,
+  myRightDiffButton = ADD_CD_BUTTON("", Cmd::RightDifficulty,
     Event::ConsoleRightDiffA, Event::ConsoleRightDiffB);
 
   // Column 2
-  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd, Event::SaveState);
-  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd, Event::NextState);
-  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd, Event::LoadState);
-  ADD_CD_BUTTON("Snapshot", kSnapshotCmd, Event::TakeSnapshot);
-  myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd, Event::TimeMachineMode);
-  ADD_CD_BUTTON("Exit Game", kExitCmd, Event::ExitMode);
+  mySaveStateButton = ADD_CD_BUTTON("", Cmd::SaveState, Event::SaveState);
+  myStateSlotButton = ADD_CD_BUTTON("Change Slot", Cmd::StateSlot, Event::NextState);
+  myLoadStateButton = ADD_CD_BUTTON("", Cmd::LoadState, Event::LoadState);
+  ADD_CD_BUTTON("Snapshot", Cmd::Snapshot, Event::TakeSnapshot);
+  myTimeMachineButton = ADD_CD_BUTTON("", Cmd::TimeMachine, Event::TimeMachineMode);
+  ADD_CD_BUTTON("Exit Game", Cmd::Exit, Event::ExitMode);
 
   // Column 3
-  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd, Event::FormatIncrease);
-  myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd, Event::PaletteIncrease);
-  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd, Event::TogglePhosphor);
-  mySoundButton = ADD_CD_BUTTON("", kSoundCmd, Event::SoundToggle);
-  ADD_CD_BUTTON("Reload ROM", kReloadRomCmd, Event::ReloadConsole);
+  myTVFormatButton = ADD_CD_BUTTON("", Cmd::Format, Event::FormatIncrease);
+  myPaletteButton = ADD_CD_BUTTON("", Cmd::Palette, Event::PaletteIncrease);
+  myPhosphorButton = ADD_CD_BUTTON("", Cmd::Phosphor, Event::TogglePhosphor);
+  mySoundButton = ADD_CD_BUTTON("", Cmd::Sound, Event::SoundToggle);
+  ADD_CD_BUTTON("Reload ROM", Cmd::ReloadRom, Event::ReloadConsole);
 
   addToFocusList(wid);
 
@@ -155,7 +155,7 @@ void CommandDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CommandDialog::handleCommand(CommandSender* sender, int cmd,
+void CommandDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                   int data, int id)
 {
   bool consoleCmd = false, stateCmd = false;
@@ -164,87 +164,87 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     // Column 1
-    case kSelectCmd:
+    case Cmd::Select:
       event = Event::ConsoleSelect;
       consoleCmd = true;
       break;
 
-    case kResetCmd:
+    case Cmd::Reset:
       event = Event::ConsoleReset;
       consoleCmd = true;
       break;
 
-    case kColorCmd:
+    case Cmd::Color:
       event = Event::ConsoleColorToggle;
       consoleCmd = true;
       break;
 
-    case kLeftDiffCmd:
+    case Cmd::LeftDifficulty:
       event = Event::ConsoleLeftDiffToggle;
       consoleCmd = true;
       break;
 
-    case kRightDiffCmd:
+    case Cmd::RightDifficulty:
       event = Event::ConsoleRightDiffToggle;
       consoleCmd = true;
       break;
 
     // Column 2
-    case kSaveStateCmd:
+    case Cmd::SaveState:
       event = Event::SaveState;
       consoleCmd = true;
       break;
 
-    case kStateSlotCmd:
+    case Cmd::StateSlot:
     {
       event = Event::NextState;
       stateCmd = true;
       updateSlot((instance().state().currentSlot() + 1) % 10);
       break;
     }
-    case kLoadStateCmd:
+    case Cmd::LoadState:
       event = Event::LoadState;
       consoleCmd = true;
       break;
 
-    case kSnapshotCmd:
+    case Cmd::Snapshot:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::TakeSnapshot);
       break;
 
-    case kTimeMachineCmd:
+    case Cmd::TimeMachine:
       instance().eventHandler().leaveMenuMode();
       instance().toggleTimeMachine();
       break;
 
-    case kExitCmd:
+    case Cmd::Exit:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::ExitGame);
       break;
 
     // Column 3
-    case kFormatCmd:
+    case Cmd::Format:
       instance().console().selectFormat();
       updateTVFormat();
       break;
 
-    case kPaletteCmd:
+    case Cmd::Palette:
       instance().frameBuffer().tiaSurface().paletteHandler().cyclePalette();
       updatePalette();
       break;
 
-    case kPhosphorCmd:
+    case Cmd::Phosphor:
       instance().eventHandler().leaveMenuMode();
       instance().console().togglePhosphor();
       break;
 
-    case kSoundCmd:
+    case Cmd::Sound:
     {
       instance().eventHandler().leaveMenuMode();
       instance().sound().toggleMute();
       break;
     }
-    case kReloadRomCmd:
+    case Cmd::ReloadRom:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::ReloadConsole);
       break;

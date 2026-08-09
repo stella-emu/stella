@@ -141,13 +141,13 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   // The list is filled per ROM in loadConfig(), so the pop-up cannot size its
   // box to it; the widest variation there can be is what it must show
   myVariationPopup = new PopUpWidget(this, _font,
-      fontWidth * HSM::MAX_VARIATION_DIGITS, items, kVariationChanged);
+      fontWidth * HSM::MAX_VARIATION_DIGITS, items, Cmd::VariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font,
-      largeFont ? PREV_GFX_LARGE : PREV_GFX, kPrevVariation);
+      largeFont ? PREV_GFX_LARGE : PREV_GFX, Cmd::PrevVariation);
   wid.push_back(myPrevVarButton);
   myNextVarButton = new ButtonWidget(this, _font,
-      largeFont ? NEXT_GFX_LARGE : NEXT_GFX, kNextVariation);
+      largeFont ? NEXT_GFX_LARGE : NEXT_GFX, Cmd::NextVariation);
   wid.push_back(myNextVarButton);
 
   // Score-table column headers.  The special value's heading is the game's own
@@ -176,7 +176,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new LabelWidget(this, _font, "");
-    myDeleteButtons[r] = new ButtonWidget(this, _font, "X", kDeleteSingle);
+    myDeleteButtons[r] = new ButtonWidget(this, _font, "X", Cmd::DeleteSingle);
     myDeleteButtons[r]->setID(r);
     myDeleteButtons[r]->setToolTip("Click to delete this high score.");
 
@@ -414,39 +414,40 @@ void HighScoresDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void HighScoresDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                     int data, int id)
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       [[fallthrough]];
-    case kCloseCmd:
+    case GuiObject::Cmd::Close:
       if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
       break;
 
-    case kVariationChanged:
+    case Cmd::VariationChanged:
       handleVariation();
       break;
-    case kPrevVariation:
+    case Cmd::PrevVariation:
       myVariationPopup->setSelected(myScores.variation - 1);
       handleVariation();
       break;
 
-    case kNextVariation:
+    case Cmd::NextVariation:
       myVariationPopup->setSelected(myScores.variation + 1);
       handleVariation();
       break;
 
-    case kDeleteSingle:
+    case Cmd::DeleteSingle:
       deleteRank(id);
       updateWidgets();
       break;
 
-    case GuiObject::kDefaultsCmd: // "Reset" button
+    case GuiObject::Cmd::Defaults: // "Reset" button
       for (int r = NUM_RANKS - 1; r >= 0; --r)
         deleteRank(r);
       updateWidgets();

@@ -36,15 +36,15 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   // Previous, Next and Close buttons
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
-    new ButtonWidget(this, font, "Previous", GuiObject::kPrevCmd);
+    new ButtonWidget(this, font, "Previous", GuiObject::Cmd::Prev);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   myNextButton =
-    new ButtonWidget(this, font, "Next", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, "Next", GuiObject::Cmd::Next);
   wid.push_back(myNextButton);
 
-  auto* b = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   wid.push_back(b);
   addCancelWidget(b);
 
@@ -52,7 +52,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   myTitle->setTextColor(kTextColorEm);
 
   myWhatsNewButton =
-    new ButtonWidget(this, font, "What's New" + ELLIPSIS, kWhatsNew);
+    new ButtonWidget(this, font, "What's New" + ELLIPSIS, Cmd::WhatsNew);
   wid.push_back(myWhatsNewButton);
 
   for(int i = 0; i < myLinesPerPage; i++)
@@ -284,11 +284,12 @@ void AboutDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void AboutDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kNextCmd:
+    case GuiObject::Cmd::Next:
       myPage++;
       if(myPage >= myNumPages)
         myNextButton->clearFlags(Widget::FLAG_ENABLED);
@@ -298,7 +299,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
       displayInfo();
       break;
 
-    case GuiObject::kPrevCmd:
+    case GuiObject::Cmd::Prev:
       myPage--;
       if(myPage <= myNumPages)
         myNextButton->setFlags(Widget::FLAG_ENABLED);
@@ -308,13 +309,13 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
       displayInfo();
       break;
 
-    case kWhatsNew:
+    case Cmd::WhatsNew:
       if(myWhatsNewDialog == nullptr)
         myWhatsNewDialog = std::make_unique<WhatsNewDialog>(instance(), parent());
       myWhatsNewDialog->open();
       break;
 
-    case LabelWidget::kOpenUrlCmd:
+    case LabelWidget::Cmd::OpenUrl:
     {
       const string& url = myDesc[id]->getUrl();
 

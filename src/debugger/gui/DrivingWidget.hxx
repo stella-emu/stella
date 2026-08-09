@@ -35,14 +35,15 @@ class DrivingWidget : public ControllerWidget
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layoutContent(GUI::BoxLayout& col) override;
 
   private:
-    enum {
-      kGrayUpCmd   = 'DWup',
-      kGrayDownCmd = 'DWdn',
-      kFireCmd     = 'DWfr'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        GrayCodeUp   = GuiCmd::of("DrivingWidget.GrayCodeUp"),
+        GrayCodeDown = GuiCmd::of("DrivingWidget.GrayCodeDown"),
+        Fire         = GuiCmd::of("DrivingWidget.Fire");
     };
     ButtonWidget *myGrayUp{nullptr}, *myGrayDown{nullptr};
     DataGridWidget* myGrayValue{nullptr};

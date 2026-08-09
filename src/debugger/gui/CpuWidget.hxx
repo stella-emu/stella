@@ -50,7 +50,7 @@ class CpuWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Lay the registers out within the area the parent layout gave us; shared

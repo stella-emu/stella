@@ -29,7 +29,7 @@
   Built-in named themes pre-populate the entire map at once.
 
   On OK the dialog writes the chosen indices to Settings ("dis.color"
-  for N = 1..14) and sends kDisasmColorsChangedCmd to its boss so that
+  for N = 1..14) and sends RomListWidget::Cmd::DisasmColorsChanged to its boss so that
   RomListWidget reloads its cached colour map.
 */
 class DisasmColorsDialog : public Dialog, public CommandSender
@@ -42,7 +42,7 @@ class DisasmColorsDialog : public Dialog, public CommandSender
     void saveConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

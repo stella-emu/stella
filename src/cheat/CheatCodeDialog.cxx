@@ -48,19 +48,19 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myCheatList);
 
   myAddButton = new ButtonWidget(this, font,
-                                 "Add" + ELLIPSIS, kAddCheatCmd);
+                                 "Add" + ELLIPSIS, Cmd::AddCheat);
   wid.push_back(myAddButton);
 
   myEditButton = new ButtonWidget(this, font,
-                                  "Edit" + ELLIPSIS, kEditCheatCmd);
+                                  "Edit" + ELLIPSIS, Cmd::EditCheat);
   wid.push_back(myEditButton);
 
   myRemoveButton = new ButtonWidget(this, font,
-                                    "Remove", kRemCheatCmd);
+                                    "Remove", Cmd::RemoveCheat);
   wid.push_back(myRemoveButton);
 
   myOneShotButton = new ButtonWidget(this, font,
-                                     "One shot" + ELLIPSIS, kAddOneShotCmd);
+                                     "One shot" + ELLIPSIS, Cmd::AddOneShot);
   wid.push_back(myOneShotButton);
 
   // Inputbox which will pop up when adding/editing a cheat
@@ -206,7 +206,7 @@ void CheatCodeDialog::addCheat()
   myCheatInput->setText("", 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(0);
-  myCheatInput->setEmitSignal(kCheatAdded);
+  myCheatInput->setEmitSignal(Cmd::CheatAdded);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,7 +225,7 @@ void CheatCodeDialog::editCheat()
   myCheatInput->setText(code, 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
-  myCheatInput->setEmitSignal(kCheatEdited);
+  myCheatInput->setEmitSignal(Cmd::CheatEdited);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,37 +243,37 @@ void CheatCodeDialog::addOneShotCheat()
   myCheatInput->setText("", 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
-  myCheatInput->setEmitSignal(kOneShotCheatAdded);
+  myCheatInput->setEmitSignal(Cmd::OneShotCheatAdded);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
+void CheatCodeDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       close();
       break;
 
-    case ListWidget::kDoubleClickedCmd:
+    case ListWidget::Cmd::DoubleClicked:
       editCheat();
       break;
 
-    case kAddCheatCmd:
+    case Cmd::AddCheat:
       addCheat();
       break;
 
-    case kEditCheatCmd:
+    case Cmd::EditCheat:
       editCheat();
       break;
 
-    case kCheatAdded:
+    case Cmd::CheatAdded:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
@@ -288,7 +288,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kCheatEdited:
+    case Cmd::CheatEdited:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
@@ -305,15 +305,15 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kRemCheatCmd:
+    case Cmd::RemoveCheat:
       removeCheat();
       break;
 
-    case kAddOneShotCmd:
+    case Cmd::AddOneShot:
       addOneShotCheat();
       break;
 
-    case kOneShotCheatAdded:
+    case Cmd::OneShotCheatAdded:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);

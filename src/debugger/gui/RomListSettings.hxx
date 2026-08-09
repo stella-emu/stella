@@ -48,7 +48,7 @@ class RomListSettings : public Dialog, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layout() override;
 
   private:

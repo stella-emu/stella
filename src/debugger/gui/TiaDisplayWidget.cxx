@@ -246,9 +246,10 @@ void TiaDisplayWidget::handleMouseMoved(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaDisplayWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaDisplayWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                     int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const string& tag = myMenu->getSelectedTag().toString();
     const int cx = _w / 2, cy = _h / 2;  // zoom about the widget centre

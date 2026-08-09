@@ -37,13 +37,16 @@ class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
     string manufacturer() override { return "Akor"; }
     string description() override;
     void layoutBankSelect(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     CartridgeTVBoy& myCartTVBoy;
     CheckboxWidget* myBankLocked{nullptr};
 
-    enum { kBankLocked = 'bkLO' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankLocked = GuiCmd::of("CartridgeTVBoyWidget.BankLocked");
+    };
 
   private:
     // Following constructors and assignment operators not supported

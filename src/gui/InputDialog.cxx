@@ -131,7 +131,7 @@ void InputDialog::addDevicePortTab()
 
   // Add digital dead zone setting
   myDigitalDeadzoneLbl = new LabelWidget(pane, _font, "Digital dead zone size");
-  myDigitalDeadzone = new SliderWidget(pane, _font, swidth, kDDeadzoneChanged, 3, "%");
+  myDigitalDeadzone = new SliderWidget(pane, _font, swidth, Cmd::DigitalDeadzoneChanged, 3, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
   myDigitalDeadzone->setTickmarkIntervals(5);
@@ -141,7 +141,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog dead zone
   myAnalogDeadzoneLbl = new LabelWidget(pane, _font, "Analog dead zone size");
-  myAnalogDeadzone = new SliderWidget(pane, _font, swidth, kADeadzoneChanged, 3, "%");
+  myAnalogDeadzone = new SliderWidget(pane, _font, swidth, Cmd::AnalogDeadzoneChanged, 3, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
   myAnalogDeadzone->setTickmarkIntervals(5);
@@ -153,7 +153,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle sensitivity
   myPaddleSpeedLbl = new LabelWidget(pane, _font, "Sensitivity");
-  myPaddleSpeed = new SliderWidget(pane, _font, swidth, kPSpeedChanged, 4, "%");
+  myPaddleSpeed = new SliderWidget(pane, _font, swidth, Cmd::PaddleSpeedChanged, 4, "%");
   myPaddleSpeed->setMinValue(0);
   myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
   myPaddleSpeed->setTickmarkIntervals(3);
@@ -162,7 +162,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle linearity
   myPaddleLinearityLbl = new LabelWidget(pane, _font, "Linearity");
-  myPaddleLinearity = new SliderWidget(pane, _font, swidth, 0, 4, "%");
+  myPaddleLinearity = new SliderWidget(pane, _font, swidth, GuiCmd::None, 4, "%");
   myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
   myPaddleLinearity->setStepValue(5);
@@ -173,7 +173,7 @@ void InputDialog::addDevicePortTab()
 
   // Add dejitter (analog paddles)
   myDejitterBaseLbl = new LabelWidget(pane, _font, "Dejitter averaging");
-  myDejitterBase = new SliderWidget(pane, _font, swidth, kDejitterAvChanged, 3);
+  myDejitterBase = new SliderWidget(pane, _font, swidth, Cmd::DejitterBaseChanged, 3);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(5);
@@ -183,7 +183,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterBase);
 
   myDejitterDiffLbl = new LabelWidget(pane, _font, "Dejitter reaction");
-  myDejitterDiff = new SliderWidget(pane, _font, swidth, kDejitterReChanged, 3);
+  myDejitterDiff = new SliderWidget(pane, _font, swidth, Cmd::DejitterDiffChanged, 3);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(5);
@@ -193,19 +193,19 @@ void InputDialog::addDevicePortTab()
 
   // Add paddle speed (digital emulation)
   myDPaddleSpeedLbl = new LabelWidget(pane, _font, "Digital paddle sensitivity");
-  myDPaddleSpeed = new SliderWidget(pane, _font, swidth, kDPSpeedChanged, 4, "%");
+  myDPaddleSpeed = new SliderWidget(pane, _font, swidth, Cmd::DigitalPaddleSpeedChanged, 4, "%");
   myDPaddleSpeed->setMinValue(1);
   myDPaddleSpeed->setMaxValue(20);
   myDPaddleSpeed->setTickmarkIntervals(4);
   myDPaddleSpeed->setToolTip(Event::DecDigitalSense, Event::IncDigitalSense);
   wid.push_back(myDPaddleSpeed);
 
-  myAutoFire = new CheckboxWidget(pane, _font, "Autofire", kAutoFireChanged);
+  myAutoFire = new CheckboxWidget(pane, _font, "Autofire", Cmd::AutoFireChanged);
   myAutoFire->setToolTip(Event::ToggleAutoFire);
   wid.push_back(myAutoFire);
 
   myAutoFireRateLbl = new LabelWidget(pane, _font, "Rate");
-  myAutoFireRate = new SliderWidget(pane, _font, swidth, kAutoFireRate, 5, "Hz");
+  myAutoFireRate = new SliderWidget(pane, _font, swidth, Cmd::AutoFireRate, 5, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
   myAutoFireRate->setToolTip(Event::DecreaseAutoFire, Event::IncreaseAutoFire);
@@ -231,17 +231,17 @@ void InputDialog::addDevicePortTab()
 
   // Show joystick database
   myJoyDlgButton = new ButtonWidget(pane, _font,
-                                    "Controller Database" + ELLIPSIS, kDBButtonPressed);
+                                    "Controller Database" + ELLIPSIS, Cmd::ControllerDatabase);
   wid.push_back(myJoyDlgButton);
 
   // Erase EEPROM (right column, labelled by the heading above it)
   myEraseEEPROMButton = new ButtonWidget(pane, _font,
-                                         "Erase EEPROM", kEEButtonPressed);
+                                         "Erase EEPROM", Cmd::EraseEeprom);
   wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
   myAVoxPortLbl = new LabelWidget(pane, _font, "AtariVox serial port");
-  myAVoxPort = new PopUpWidget(pane, _font, 1, VariantList{}, kCursorStateChanged);
+  myAVoxPort = new PopUpWidget(pane, _font, 1, VariantList{}, Cmd::CursorStateChanged);
   myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
 
@@ -364,7 +364,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
   myMouseControlLbl = new LabelWidget(pane, _font, "Use mouse as a controller");
-  myMouseControl = new PopUpWidget(pane, _font, items, kMouseCtrlChanged);
+  myMouseControl = new PopUpWidget(pane, _font, items, Cmd::MouseControlChanged);
   myMouseControl->setToolTip(Event::PrevMouseAsController, Event::NextMouseAsController);
   wid.push_back(myMouseControl);
 
@@ -373,7 +373,7 @@ void InputDialog::addMouseTab()
   // Add paddle speed (mouse emulation); the sensitivity sliders are indented, so
   // their reduced label widths keep the tracks aligned with the popups above
   myMPaddleSpeedLbl = new LabelWidget(pane, _font, "Paddle");
-  myMPaddleSpeed = new SliderWidget(pane, _font, swidth, kMPSpeedChanged, 4, "%");
+  myMPaddleSpeed = new SliderWidget(pane, _font, swidth, Cmd::MousePaddleSpeedChanged, 4, "%");
   myMPaddleSpeed->setMinValue(1);
   myMPaddleSpeed->setMaxValue(20);
   myMPaddleSpeed->setTickmarkIntervals(4);
@@ -382,7 +382,7 @@ void InputDialog::addMouseTab()
 
   // Add trackball speed
   myTrackBallSpeedLbl = new LabelWidget(pane, _font, "Trackball");
-  myTrackBallSpeed = new SliderWidget(pane, _font, swidth, kTBSpeedChanged, 4, "%");
+  myTrackBallSpeed = new SliderWidget(pane, _font, swidth, Cmd::TrackBallSpeedChanged, 4, "%");
   myTrackBallSpeed->setMinValue(1);
   myTrackBallSpeed->setMaxValue(20);
   myTrackBallSpeed->setTickmarkIntervals(4);
@@ -391,7 +391,7 @@ void InputDialog::addMouseTab()
 
   // Add driving controller speed
   myDrivingSpeedLbl = new LabelWidget(pane, _font, "Driving controller");
-  myDrivingSpeed = new SliderWidget(pane, _font, swidth, kDCSpeedChanged, 4, "%");
+  myDrivingSpeed = new SliderWidget(pane, _font, swidth, Cmd::DrivingSpeedChanged, 4, "%");
   myDrivingSpeed->setMinValue(1);
   myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
@@ -406,7 +406,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
   myCursorStateLbl = new LabelWidget(pane, _font, "Mouse cursor visibility");
-  myCursorState = new PopUpWidget(pane, _font, items, kCursorStateChanged);
+  myCursorState = new PopUpWidget(pane, _font, items, Cmd::CursorStateChanged);
   myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
@@ -794,74 +794,74 @@ void InputDialog::eraseEEPROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleCommand(CommandSender* sender, int cmd,
+void InputDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                 int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       // Revert changes made to event mapping
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kDDeadzoneChanged:
+    case Cmd::DigitalDeadzoneChanged:
       myDigitalDeadzone->setValueLabel(std::round(
           Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) *
           100.F / (Paddles::ANALOG_RANGE / 2.F)));
       break;
 
-    case kADeadzoneChanged:
+    case Cmd::AnalogDeadzoneChanged:
       myAnalogDeadzone->setValueLabel(std::round(
           Controller::analogDeadZoneValue(myAnalogDeadzone->getValue()) *
           100.F / (Paddles::ANALOG_RANGE / 2.F)));
       break;
 
-    case kPSpeedChanged:
+    case Cmd::PaddleSpeedChanged:
       myPaddleSpeed->setValueLabel(std::round(Paddles::setAnalogSensitivity(
           myPaddleSpeed->getValue()) * 100.F));
       break;
 
-    case kDejitterAvChanged:
+    case Cmd::DejitterBaseChanged:
       updateDejitterAveraging();
       break;
 
-    case kDejitterReChanged:
+    case Cmd::DejitterDiffChanged:
       updateDejitterReaction();
       break;
 
-    case kDPSpeedChanged:
+    case Cmd::DigitalPaddleSpeedChanged:
       myDPaddleSpeed->setValueLabel(myDPaddleSpeed->getValue() * 10);
       break;
 
-    case kDCSpeedChanged:
+    case Cmd::DrivingSpeedChanged:
       myDrivingSpeed->setValueLabel(myDrivingSpeed->getValue() * 10);
       break;
 
-    case kTBSpeedChanged:
+    case Cmd::TrackBallSpeedChanged:
       myTrackBallSpeed->setValueLabel(myTrackBallSpeed->getValue() * 10);
       break;
 
-    case kAutoFireChanged:
-    case kAutoFireRate:
+    case Cmd::AutoFireChanged:
+    case Cmd::AutoFireRate:
       updateAutoFireRate();
       break;
 
-    case kDBButtonPressed:
+    case Cmd::ControllerDatabase:
       if(!myJoyDialog)
         myJoyDialog = std::make_unique<JoystickDialog>(this, instance().frameBuffer().font());
       myJoyDialog->open();
       break;
 
-    case kEEButtonPressed:
+    case Cmd::EraseEeprom:
       GUI::MessageBox::confirm(this,
         "This operation cannot be undone.\n"
         "All data stored on your AtariVox\n"
@@ -873,16 +873,16 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
         "Erase EEPROM");
       break;
 
-    case kMouseCtrlChanged:
+    case Cmd::MouseControlChanged:
       handleMouseControlState();
       handleCursorState();
       break;
 
-    case kCursorStateChanged:
+    case Cmd::CursorStateChanged:
       handleCursorState();
       break;
 
-    case kMPSpeedChanged:
+    case Cmd::MousePaddleSpeedChanged:
       myMPaddleSpeed->setValueLabel(myMPaddleSpeed->getValue() * 10);
       break;
 

@@ -37,15 +37,15 @@ void CartridgeFA2Widget::createFlashWidgets()
   // Each button sizes itself to its label; layoutContent() gives the group one width
   myFlashLbl = new LabelWidget(_boss, _font, "Harmony flash memory");
 
-  myFlashErase = new ButtonWidget(_boss, _font, "Erase", kFlashErase);
+  myFlashErase = new ButtonWidget(_boss, _font, "Erase", Cmd::FlashErase);
   myFlashErase->setTarget(this);
   addFocusWidget(myFlashErase);
 
-  myFlashLoad = new ButtonWidget(_boss, _font, "Load", kFlashLoad);
+  myFlashLoad = new ButtonWidget(_boss, _font, "Load", Cmd::FlashLoad);
   myFlashLoad->setTarget(this);
   addFocusWidget(myFlashLoad);
 
-  myFlashSave = new ButtonWidget(_boss, _font, "Save", kFlashSave);
+  myFlashSave = new ButtonWidget(_boss, _font, "Save", Cmd::FlashSave);
   myFlashSave->setTarget(this);
   addFocusWidget(myFlashSave);
 }
@@ -84,20 +84,20 @@ string CartridgeFA2Widget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeFA2Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
   switch(cmd)
   {
-    case kFlashErase:
+    case Cmd::FlashErase:
       myCartFA2.flash(0);
       break;
 
-    case kFlashLoad:
+    case Cmd::FlashLoad:
       myCartFA2.flash(1);
       break;
 
-    case kFlashSave:
+    case Cmd::FlashSave:
       myCartFA2.flash(2);
       break;
 

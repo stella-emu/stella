@@ -45,7 +45,7 @@ class QuadTariDialog: public Dialog
 
   protected:
     // OK saves, closes, and asks the launcher to load the ROM; Defaults resets
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void layout() override;
 
   private:

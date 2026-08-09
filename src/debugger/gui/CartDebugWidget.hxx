@@ -91,7 +91,7 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual string tabLabel() { return " Cartridge RAM "; }
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override { }
 
     // Create the ROM size / manufacturer / description fields, at a placeholder
     // position: reflow() is what positions them.  Call this from the ctor

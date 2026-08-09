@@ -62,7 +62,7 @@ void CheckListWidget::reflowCheckboxes()
   while(std::cmp_less(_checkList.size(), _rows))
   {
     auto* t = new CheckboxWidget(_boss, _font, "",
-                                 CheckboxWidget::kCheckActionCmd);
+                                 CheckboxWidget::Cmd::CheckAction);
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(static_cast<int>(_checkList.size()));
@@ -206,17 +206,17 @@ bool CheckListWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
+void CheckListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
-  if(cmd == CheckboxWidget::kCheckActionCmd)
+  if(cmd == CheckboxWidget::Cmd::CheckAction)
   {
     // Figure out which line has been checked
     const int line = _currentPos + id;
     _stateList[line] = static_cast<bool>(data);
 
     // Let the boss know about it
-    sendCommand(CheckListWidget::kListItemChecked, line, _id);
+    sendCommand(Cmd::ListItemChecked, line, _id);
   }
   else
     ListWidget::handleCommand(sender, cmd, data, id);

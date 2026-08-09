@@ -60,7 +60,7 @@ class TiaDisplayWidget : public Widget, public CommandSender
 
   protected:
     void drawWidget(bool hilite) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Current TIA frame dimensions (native, indexed-pixel space)

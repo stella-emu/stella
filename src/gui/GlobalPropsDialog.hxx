@@ -51,7 +51,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     void layout() override;
     // OK saves, closes, and asks the launcher to load the ROM; Defaults
     // resets every control and saves immediately
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Builds the joystick direction/fire checkboxes and the console Select/Reset ones

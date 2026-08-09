@@ -51,15 +51,15 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
   myJoyPortLbl = new LabelWidget(this, font, "Port");
-  myJoyPort = new PopUpWidget(this, font, ports, kPortCmd);
+  myJoyPort = new PopUpWidget(this, font, ports, Cmd::Port);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
   // Buttons at bottom
-  myCloseBtn = new ButtonWidget(this, font, "Close", GuiObject::kCloseCmd);
+  myCloseBtn = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
-  myRemoveBtn = new ButtonWidget(this, font, "Remove", kRemoveCmd);
+  myRemoveBtn = new ButtonWidget(this, font, "Remove", Cmd::Remove);
   myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
 
   // Now we can finally add the widgets to the focus list
@@ -150,28 +150,29 @@ void JoystickDialog::handleEvent(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void JoystickDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       close();
       break;
 
-    case kPortCmd:
+    case Cmd::Port:
       myJoyPorts[myJoyList->getSelected()] = myJoyPort->getSelected();
       instance().eventHandler().setPhysicalJoystickPortInDatabase(
           myJoyList->getSelectedString(),
           static_cast<PhysicalJoystick::Port>(myJoyPort->getSelected()));
       break;
 
-    case kRemoveCmd:
+    case Cmd::Remove:
       instance().eventHandler().removePhysicalJoystickFromDatabase(
           myJoyList->getSelectedString());
       loadConfig();
       break;
 
-    case ListWidget::kSelectionChangedCmd:
+    case ListWidget::Cmd::SelectionChanged:
     {
       const bool isPlugged = myJoyIDs[data] >= 0;
       if(isPlugged)

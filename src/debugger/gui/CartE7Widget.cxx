@@ -66,12 +66,12 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
     VarList::push_back(items1, getSpotUpper(i));
 
   myLower2KLbl = new LabelWidget(boss, _font, "Set bank for lower 2K segment");
-  myLower2K = new PopUpWidget(boss, _font, items0, kLowerChanged);
+  myLower2K = new PopUpWidget(boss, _font, items0, Cmd::LowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
 
   myUpper256BLbl = new LabelWidget(boss, _font, "Set bank for upper 256B segment");
-  myUpper256B = new PopUpWidget(boss, _font, items1, kUpperChanged);
+  myUpper256B = new PopUpWidget(boss, _font, items1, Cmd::UpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);
 
@@ -114,17 +114,17 @@ void CartridgeE7Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7Widget::handleCommand(CommandSender* sender,
-                                            int cmd, int data, int id)
+void CartridgeE7Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
   myCart.unlockHotspots();
 
   switch(cmd)
   {
-    case kLowerChanged:
+    case Cmd::LowerChanged:
       myCart.bank(myLower2K->getSelected());
       break;
-    case kUpperChanged:
+    case Cmd::UpperChanged:
       myCart.bankRAM(myUpper256B->getSelected());
       break;
     default:

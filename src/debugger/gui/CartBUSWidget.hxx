@@ -49,7 +49,7 @@ class CartridgeBUSWidget : public CartridgeARMWidget
 
   protected:
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // The datastream table: the pointer and increment grids side by side, with the
@@ -98,7 +98,10 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     std::array<LabelWidget*, 8> myDatastreamLabels{nullptr};
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeBUSWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

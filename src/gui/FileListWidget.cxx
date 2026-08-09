@@ -316,23 +316,23 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     switch(key)
     {
       case StellaKey::HOME:
-        sendCommand(kHomeDirCmd, 0, 0);
+        sendCommand(Cmd::HomeDir, 0, 0);
         break;
 
       case StellaKey::LEFT:
-        sendCommand(kPrevDirCmd, 0, 0);
+        sendCommand(Cmd::PrevDir, 0, 0);
         break;
 
       case StellaKey::RIGHT:
-        sendCommand(kNextDirCmd, 0, 0);
+        sendCommand(Cmd::NextDir, 0, 0);
         break;
 
       case StellaKey::UP:
-        sendCommand(kParentDirCmd, 0, 0);
+        sendCommand(ListWidget::Cmd::ParentDir, 0, 0);
         break;
 
       case StellaKey::DOWN:
-        sendCommand(kActivatedCmd, _selected, 0);
+        sendCommand(ListWidget::Cmd::Activated, _selected, 0);
         break;
 
       default:
@@ -391,40 +391,41 @@ bool FileListWidget::handleText(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void FileListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
   switch(cmd)
   {
-    case FileListWidget::kHomeDirCmd:
+    case Cmd::HomeDir:
       // Do not let the boss know
       selectHomeDir();
       return;
 
-    case FileListWidget::kPrevDirCmd:
+    case Cmd::PrevDir:
       // Do not let the boss know
       selectPrevHistory();
       return;
 
-    case FileListWidget::kNextDirCmd:
+    case Cmd::NextDir:
       // Do not let the boss know
       selectNextHistory();
       return;
 
-    case ListWidget::kParentDirCmd:
+    case ListWidget::Cmd::ParentDir:
       selectParent();
       // Do not let the boss know
       return;
 
-    case ListWidget::kSelectionChangedCmd:
+    case ListWidget::Cmd::SelectionChanged:
       _selected = data;
       if(std::cmp_less(data, _list.size()))
         _selectionHistory[_node.getPath()] = _list[data];
-      cmd = ItemChanged;
+      cmd = Cmd::ItemChanged;
       break;
 
-    case ListWidget::kActivatedCmd:
+    case ListWidget::Cmd::Activated:
       [[fallthrough]];
-    case ListWidget::kDoubleClickedCmd:
+    case ListWidget::Cmd::DoubleClicked:
       _selected = data;
       if(std::cmp_less(data, _list.size()))
         _selectionHistory[_node.getPath()] = _list[data];
@@ -434,17 +435,17 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
           selectParent();
         else
         {
-          cmd = ItemChanged;
+          cmd = Cmd::ItemChanged;
           selectDirectory();
         }
       }
       else
       {
-        cmd = ItemActivated;
+        cmd = Cmd::ItemActivated;
       }
       break;
 
-    case ListWidget::kLongButtonPressCmd:
+    case ListWidget::Cmd::LongButtonPress:
       // do nothing, let boss handle this one
       break;
 

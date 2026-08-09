@@ -154,7 +154,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 
   // Let parent know about the tab change
   if(show)
-    sendCommand(TabWidget::kTabChangedCmd, _activeTab, _id);
+    sendCommand(Cmd::TabChanged, _activeTab, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -251,7 +251,7 @@ void TabWidget::updateActiveTab()
 void TabWidget::activateTabs()
 {
   for(uInt32 i = 0; i <_tabs.size(); ++i)
-    sendCommand(TabWidget::kTabChangedCmd, i-1, _id);
+    sendCommand(Cmd::TabChanged, i-1, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,7 +337,8 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TabWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   // Command is not inspected; simply forward it to the caller
   sendCommand(cmd, data, _id);

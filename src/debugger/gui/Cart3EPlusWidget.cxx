@@ -86,20 +86,21 @@ void Cartridge3EPlusWidget::createBankWidgets()
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
                                       seg, items);
     myBankWidgetLbl[seg] = new LabelWidget(_boss, _font, "Bank");
-    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, kBankChanged);
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items,
+                                         CartridgeEnhancedWidget::Cmd::BankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
     myBankTypeLbl[seg] = new LabelWidget(_boss, _font, "of");
-    myBankType[seg] = new PopUpWidget(_boss, _font, banktype, kRomRamChanged);
+    myBankType[seg] = new PopUpWidget(_boss, _font, banktype, Cmd::RomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
 
     // add "Commit" button (why required?)
     myBankCommit[seg] = new ButtonWidget(_boss, _font,
-                                         "Commit", kChangeBank);
+                                         "Commit", Cmd::ChangeBank);
     myBankCommit[seg]->setID(seg);
     myBankCommit[seg]->setTarget(this);
     addFocusWidget(myBankCommit[seg]);
@@ -174,15 +175,15 @@ void Cartridge3EPlusWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
-                                          int cmd, int data, int id)
+void Cartridge3EPlusWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                          int data, int id)
 {
   const uInt16 segment = id;
 
   switch(cmd)
   {
-    case kBankChanged:
-    case kRomRamChanged:
+    case CartridgeEnhancedWidget::Cmd::BankChanged:
+    case Cmd::RomRamChanged:
     {
       const bool isROM = myBankType[segment]->getSelectedTag() == "ROM";
       const int bank = myBankWidgets[segment]->getSelected();
@@ -192,7 +193,7 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
         (!isROM && std::cmp_less(bank, myCart.ramBankCount())));
       break;
     }
-    case kChangeBank:
+    case Cmd::ChangeBank:
     {
       // Ignore bank if either number or type hasn't been selected
       if(myBankWidgets[segment]->getSelected() < 0 ||

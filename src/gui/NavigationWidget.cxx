@@ -41,19 +41,19 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font)
   const string altKey = "Cmd";
 #endif
 
-  myHomeButton = new ButtonWidget(boss, _font, homeIcon, FileListWidget::kHomeDirCmd);
+  myHomeButton = new ButtonWidget(boss, _font, homeIcon, FileListWidget::Cmd::HomeDir);
   myHomeButton->setToolTip("Go back to initial directory. (" + altKey + "+Pos1)");
   boss->addFocusWidget(myHomeButton);
 
-  myPrevButton = new ButtonWidget(boss, _font, prevIcon, FileListWidget::kPrevDirCmd);
+  myPrevButton = new ButtonWidget(boss, _font, prevIcon, FileListWidget::Cmd::PrevDir);
   myPrevButton->setToolTip("Go back in directory history. (" + altKey + "+Left)");
   boss->addFocusWidget(myPrevButton);
 
-  myNextButton = new ButtonWidget(boss, _font, nextIcon, FileListWidget::kNextDirCmd);
+  myNextButton = new ButtonWidget(boss, _font, nextIcon, FileListWidget::Cmd::NextDir);
   myNextButton->setToolTip("Go forward in directory history. (" + altKey + "+Right)");
   boss->addFocusWidget(myNextButton);
 
-  myUpButton = new ButtonWidget(boss, _font, upIcon, ListWidget::kParentDirCmd);
+  myUpButton = new ButtonWidget(boss, _font, upIcon, ListWidget::Cmd::ParentDir);
   myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
   boss->addFocusWidget(myUpButton);
 
@@ -193,10 +193,10 @@ void NavigationWidget::updateUI()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
-                                     int id)
+void NavigationWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                     int data, int id)
 {
-  if(cmd == kFolderClicked)
+  if(cmd == Cmd::FolderClicked)
   {
     const FSNode node(myPath->getPath(id));
     myList->selectDirectory(node);
@@ -310,7 +310,7 @@ const string& NavigationWidget::PathWidget::getPath(int idx) const
 NavigationWidget::PathWidget::FolderLinkWidget::FolderLinkWidget(
     GuiObject* boss, const GUI::Font& font,
     string_view text, string_view path)
-  : ButtonWidget(boss, font, 0, 0, text, kFolderClicked),
+  : ButtonWidget(boss, font, 0, 0, text, NavigationWidget::Cmd::FolderClicked),
     myPath{path}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;

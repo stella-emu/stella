@@ -58,7 +58,7 @@ class RamWidget : public Widget, public CommandSender
     virtual string getLabel(int addr) const = 0;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Lay the widgets out within the area the parent layout gave us; shared by
@@ -84,7 +84,7 @@ class RamWidget : public Widget, public CommandSender
   private:
     void fillGrid(bool updateOld);
 
-    void showInputBox(int cmd);
+    void showInputBox(GuiCmd::Code cmd);
     string_view doSearch(string_view str);
     string_view doCompare(string_view str);
     void doRestart();
@@ -95,14 +95,19 @@ class RamWidget : public Widget, public CommandSender
     const GUI::Font& _nfont;
 
   private:
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Undo                = GuiCmd::of("RamWidget.Undo"),
+        Revert              = GuiCmd::of("RamWidget.Revert"),
+        Search              = GuiCmd::of("RamWidget.Search"),
+        Compare             = GuiCmd::of("RamWidget.Compare"),
+        Restart             = GuiCmd::of("RamWidget.Restart"),
+        SearchValueEntered  = GuiCmd::of("RamWidget.SearchValueEntered"),
+        CompareValueEntered = GuiCmd::of("RamWidget.CompareValueEntered");
+    };
+
+    // Widget IDs for the RAM grid
     enum {
-      kUndoCmd     = 'RWud',
-      kRevertCmd   = 'RWrv',
-      kSearchCmd   = 'RWse',
-      kCmpCmd      = 'RWcp',
-      kRestartCmd  = 'RWrs',
-      kSValEntered = 'RWsv',
-      kCValEntered = 'RWcv',
       kRamGridID,
       kRamHexID,
       kRamDecID,

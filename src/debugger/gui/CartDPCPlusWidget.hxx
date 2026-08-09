@@ -49,7 +49,7 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
 
   protected:
     void layoutContent(GUI::BoxLayout& col) const override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     struct CartState {
@@ -92,7 +92,10 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
 
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeDPCPlusWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

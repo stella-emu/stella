@@ -51,7 +51,7 @@ class TiaWidget : public Widget, public CommandSender
     Common::Size naturalSize() const override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Build the layout tree from the current font and position/size everything;
@@ -179,21 +179,21 @@ class TiaWidget : public Widget, public CommandSender
     };
 
     // Strobe button and misc commands
-    enum {
-      kWsyncCmd = 'Swsy',
-      kRsyncCmd = 'Srsy',
-      kResP0Cmd = 'Srp0',
-      kResP1Cmd = 'Srp1',
-      kResM0Cmd = 'Srm0',
-      kResM1Cmd = 'Srm1',
-      kResBLCmd = 'Srbl',
-      kHmoveCmd = 'Shmv',
-      kHmclrCmd = 'Shmc',
-      kCxChgCmd = 'Sccc',
-      kCxclrCmd = 'Scxl',
-      kDbgClCmd = 'DBGc',
-      kVSyncCmd = 'Cvsn',
-      kVBlankCmd = 'Cvbl'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Wsync         = GuiCmd::of("TiaWidget.Wsync"),
+        Rsync         = GuiCmd::of("TiaWidget.Rsync"),
+        ResetPlayer0  = GuiCmd::of("TiaWidget.ResetPlayer0"),
+        ResetPlayer1  = GuiCmd::of("TiaWidget.ResetPlayer1"),
+        ResetMissile0 = GuiCmd::of("TiaWidget.ResetMissile0"),
+        ResetMissile1 = GuiCmd::of("TiaWidget.ResetMissile1"),
+        ResetBall     = GuiCmd::of("TiaWidget.ResetBall"),
+        Hmove         = GuiCmd::of("TiaWidget.Hmove"),
+        Hmclr         = GuiCmd::of("TiaWidget.Hmclr"),
+        Cxclr         = GuiCmd::of("TiaWidget.Cxclr"),
+        DebugColors   = GuiCmd::of("TiaWidget.DebugColors"),
+        VSync         = GuiCmd::of("TiaWidget.VSync"),
+        VBlank        = GuiCmd::of("TiaWidget.VBlank");
     };
 
     // Color registers
