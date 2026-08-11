@@ -197,10 +197,9 @@ class Font
     // Am I one of the large fonts?  The widgets draw the chrome around my text
     // (a checkbox's box, a scroll bar, a drop-down arrow, a field's inset) in one
     // of two hand-drawn sizes, and this is what picks between them.
-    // FIXME: this is a step, not a scale, and the widgets are really asking which
-    //        BITMAP set to draw -- the numbers beside them are tuned to match.
-    //        Revisit with the font rework, where fonts and bitmaps should be
-    //        unified so the chrome follows the font instead of jumping at 24.
+    // Arrows and text insets now scale with the font instead of stepping; what's
+    // left here is hand-drawn artwork (checkbox/radio circles, pictorial icons)
+    // kept on this two-bucket switch deliberately, not pending further work.
     bool isLarge() const { return myFontDesc.height >= 24; }
 
     // Width of a single character, in pixels
