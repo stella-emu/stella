@@ -1380,7 +1380,10 @@ void PromptWidget::drawCaret()
                           x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth,
                           y = _y + displayLine * _kConsoleLineHeight;
 
-  const char c = buffer(_currentPos); //FIXME: int to char??
+  // buffer() packs char (bits 0-7) + color + inverse into one int; truncating to
+  // char here and back to uInt8 in drawChar() below round-trips the same bits as
+  // an explicit & 0xff would.
+  const char c = buffer(_currentPos);
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
