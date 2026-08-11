@@ -95,11 +95,13 @@ void Properties::set(PropType key, string_view value)
       break;
     }
 
+    case PropType::Bezel_Name:
     case PropType::Cart_Name:
       // The cart name is concatenated into save-state, snapshot and
-      // disassembly paths.  Neutralize path separators here, at the single
-      // point where the value is stored, so a name from a (possibly shared or
-      // imported) properties entry can't escape its intended directory.
+      // disassembly paths; the bezel name into a bezel-image path.
+      // Neutralize path separators here, at the single point where the
+      // value is stored, so a name from a (possibly shared or imported)
+      // properties entry can't escape its intended directory.
       myProperties[pos] = BSPF::sanitizeFilename(myProperties[pos]);
       break;
 

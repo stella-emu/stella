@@ -31,6 +31,15 @@ void CartridgeE7::initialize(ByteSpan image)
 {
   // Allocate array for the ROM image and copy it in
   myImage.assign(image.size(), 0);
+
+  // E7 assumes the 8K/12K/16K layouts (4/6/8 2K banks) it was designed for;
+  // below 3 banks the hardcoded hotspot-page offset in install() lands past
+  // the end of myRomAccessBase/myRomAccessCounter, and romBankCount() == 0
+  // divides by zero in bank(). A forced E7 type (extension/properties/-bs)
+  // bypasses CartDetector's size gate, so this must be checked here.
+  if(romBankCount() < 3)  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+    throw std::runtime_error("CartridgeE7: invalid image size");
+
   std::copy_n(image.data(), std::min<size_t>(romSize(), image.size()), myImage.data());
   createRomAccessArrays(romSize() + myRAM.size());
 

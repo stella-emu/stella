@@ -336,9 +336,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
               // using myDisplayImage[] instead of myProgramImage[] because waveforms
               // can be modified during runtime.
-              const uInt32 i = myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+              const uInt32 i = waveformSample(0) + waveformSample(1) + waveformSample(2);
 
               result = static_cast<uInt8>(i);
               break;
@@ -386,10 +384,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           {
             // using myDisplayImage[] instead of myProgramImage[] because waveforms
             // can be modified during runtime.
-            const uInt32 i =
-                myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+            const uInt32 i = waveformSample(0) + waveformSample(1) + waveformSample(2);
 
             peekvalue = static_cast<uInt8>(i);
           }
@@ -797,7 +792,7 @@ bool CartridgeBUS::bank(uInt16 bank, uInt16)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 28_KB];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -812,7 +807,9 @@ uInt16 CartridgeBUS::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeBUS::romBankCount() const
 {
-  return 7;
+  // BUS0's access arrays are sized for 24K (createRomAccessArrays above), so
+  // it only has 6 banks; BUS1+ use the full 28K/7-bank layout
+  return myBUSSubtype == BUSSubtype::BUS0 ? 6 : 7;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1043,6 +1040,20 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
     result = 0;
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeBUS::waveformSample(uInt8 index) const
+{
+  // myMusicCounters/myMusicWaveformSize can grow or be corrupted (via save
+  // states, or a driver that simply doesn't reset the counter often enough)
+  // beyond what getWaveform()'s own bounding accounts for. Real hardware
+  // would alias into the Harmony RAM chip rather than fault, so wrap into
+  // myDisplayImage rather than fabricate a value; the shift is also
+  // clamped since 32+ is UB.
+  const uInt8 shift = std::min<uInt8>(myMusicWaveformSize[index], 31);
+  const uInt64 idx = static_cast<uInt64>(getWaveform(index)) + (myMusicCounters[index] >> shift);
+  return myDisplayImage[idx % myDisplayImage.size()];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

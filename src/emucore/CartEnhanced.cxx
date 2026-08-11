@@ -177,7 +177,11 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     return peekRAM(myRAM[address - myWriteOffset], peekAddress);
   }
 
-  return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
+  // myCurrentSegOffset (the base romAddressSegmentOffset() reads) is restored
+  // unvalidated from save states; a corrupted, non-bank-aligned entry can
+  // otherwise push this index past myImage
+  const uInt32 romIdx = romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask);
+  return romIdx < myImage.size() ? myImage[romIdx] : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

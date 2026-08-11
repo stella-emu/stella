@@ -261,6 +261,11 @@ string RewindManager::loadAllStates()
         compressStates();
 
       const uInt32 stateSize = in.getInt();
+      // A single state can never legitimately exceed the file it came
+      // from; without this, a crafted size field drives an allocation of
+      // up to ~4GB before the mismatched read below would even fail
+      if(stateSize > in.size())
+        return "Corrupt all states file";
 
       myStateList.addLast();
       RewindState& state = myStateList.current();

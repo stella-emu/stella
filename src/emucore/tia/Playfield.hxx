@@ -300,7 +300,13 @@ void Playfield::tick(uInt32 x)
   } else if (x < TIAConstants::H_PIXEL / 2 - 1) {
       currentPixel = myEffectivePattern & (1 << (x >> 2));
   } else if (myRefp) {
-      currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
+      // x is normally < 160, giving x >> 2 <= 39, but RSYNC strobed at the
+      // last color clock(s) of a scanline can briefly push it further (see
+      // TIA::applyRsync()'s negative myHctrDelta); 39 - (x >> 2) would
+      // underflow and shift by an out-of-range amount, so treat that as no
+      // pixel rather than reaching into undefined behavior
+      const uInt32 col = x >> 2;
+      currentPixel = (col <= 39) ? (myEffectivePattern & (1 << (39 - col))) : 0;
   } else {
       currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
   }

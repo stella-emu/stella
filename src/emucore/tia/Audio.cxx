@@ -135,9 +135,27 @@ bool Audio::load(Serializer& in)
     if (!myChannel0.load(in)) return false;
     if (!myChannel1.load(in)) return false;
 
-    mySumChannel0 = in.getInt();
-    mySumChannel1 = in.getInt();
-    mySumCt = in.getInt();
+    const uInt32 sumChannel0 = in.getInt();
+    const uInt32 sumChannel1 = in.getInt();
+    const uInt32 sumCt = in.getInt();
+
+    // createSample() divides mySumChannelN by mySumCt and uses the result to
+    // index the mixing tables (max legal value 15); this also rejects a
+    // value crafted to wrap to 0 on the very next tick's mySumCt += chunk
+    // and divide-by-zero there
+    //
+    // MAX_SUM_CT: createSample() resets mySumCt to 0 at every phase1 event
+    // (tick()'s counter == 38 or 150), twice per 228-clock scanline, so a
+    // legitimate mySumCt is never more than ~116 (the longer of the two
+    // reset intervals); 256 gives a clean rounding margin above that
+    static constexpr uInt32 MAX_SUM_CT = 256;
+    if (sumCt == 0 || sumCt > MAX_SUM_CT ||
+        sumChannel0 / sumCt > 15 || sumChannel1 / sumCt > 15)
+      return false;
+
+    mySumChannel0 = sumChannel0;
+    mySumChannel1 = sumChannel1;
+    mySumCt = sumCt;
   }
   catch(...)
   {
