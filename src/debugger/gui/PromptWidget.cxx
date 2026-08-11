@@ -1314,9 +1314,9 @@ void PromptWidget::updateScrollBuffer()
     _firstLineInBuffer = firstline;
   }
 
-  _scrollBar->_numEntries = numlines;
-  _scrollBar->_currentPos = _scrollBar->_numEntries - (line - _scrollLine + _linesPerPage);
-  _scrollBar->_entriesPerPage = _linesPerPage;
+  _scrollBar->setNumEntries(numlines);
+  _scrollBar->setCurrentPos(numlines - (line - _scrollLine + _linesPerPage));
+  _scrollBar->setEntriesPerPage(_linesPerPage);
   _scrollBar->recalc();
 }
 

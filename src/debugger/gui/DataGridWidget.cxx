@@ -68,10 +68,10 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   {
     _scrollBar = new ScrollBarWidget(boss, font);
     _scrollBar->setTarget(this);
-    _scrollBar->_numEntries = 1;
-    _scrollBar->_currentPos = 0;
-    _scrollBar->_entriesPerPage = 1;
-    _scrollBar->_wheel_lines = 1;
+    _scrollBar->setNumEntries(1);
+    _scrollBar->setCurrentPos(0);
+    _scrollBar->setEntriesPerPage(1);
+    _scrollBar->setWheelLineCount(1);
   }
 
   // Add filtering
@@ -176,7 +176,7 @@ void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
 void DataGridWidget::setNumRows(int rows)
 {
   if(_scrollBar)
-    _scrollBar->_numEntries = rows;
+    _scrollBar->setNumEntries(rows);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

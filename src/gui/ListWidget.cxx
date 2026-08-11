@@ -233,8 +233,8 @@ void ListWidget::recalc()
 
   if(_useScrollbar)
   {
-    _scrollBar->_numEntries = static_cast<int>(_list.size());
-    _scrollBar->_entriesPerPage = _rows;
+    _scrollBar->setNumEntries(static_cast<int>(_list.size()));
+    _scrollBar->setEntriesPerPage(_rows);
     // hide the scrollbar if no longer necessary, which hands its room back to
     // the list (and take it again once there is something to scroll)
     if(_scrollBar->isVisible() != scrollBarNeeded())
@@ -253,7 +253,7 @@ void ListWidget::scrollBarRecalc()
 {
   if(_useScrollbar)
   {
-    _scrollBar->_currentPos = _currentPos;
+    _scrollBar->setCurrentPos(_currentPos);
     _scrollBar->recalc();
     sendCommand(Cmd::Scrolled, _currentPos, _id);
   }
@@ -483,8 +483,8 @@ void ListWidget::scrollToCurrent(int item)
 
   if(_useScrollbar)
   {
-    const int oldScrollPos = _scrollBar->_currentPos;
-    _scrollBar->_currentPos = _currentPos;
+    const int oldScrollPos = _scrollBar->currentPos();
+    _scrollBar->setCurrentPos(_currentPos);
     _scrollBar->recalc();
 
     setDirty();

@@ -128,8 +128,8 @@ void StringListWidget::drawWidget(bool hilite)
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode &&
      (!_useScrollbar ||
-     ((_selectedItem >= _scrollBar->_currentPos) &&
-      (_selectedItem < _scrollBar->_currentPos + _rows))))
+     ((_selectedItem >= _scrollBar->currentPos()) &&
+      (_selectedItem < _scrollBar->currentPos() + _rows))))
     drawCaretSelection();
 }
 

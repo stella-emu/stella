@@ -20,13 +20,6 @@
 #include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
 
-/*
- * TODO:
- * - Allow for a horizontal scrollbar, too?
- * - If there are less items than fit on one pages, no scrolling can be done
- *   and we thus should not highlight the arrows/slider.
- */
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
   : Widget(boss, font),

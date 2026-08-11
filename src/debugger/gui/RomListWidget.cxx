@@ -280,8 +280,8 @@ void RomListWidget::recalc()
 
   _editMode = false;
 
-  myScrollBar->_numEntries     = static_cast<int>(myDisasm->list.size());
-  myScrollBar->_entriesPerPage = _rows;
+  myScrollBar->setNumEntries(static_cast<int>(myDisasm->list.size()));
+  myScrollBar->setEntriesPerPage(_rows);
 
   // Reset to normal data entry
   abortEditMode();
@@ -310,7 +310,7 @@ void RomListWidget::scrollToCurrent(int item)
   else if(_currentPos + _rows > size)
     _currentPos = size - _rows;
 
-  myScrollBar->_currentPos = _currentPos;
+  myScrollBar->setCurrentPos(_currentPos);
   myScrollBar->recalc();
 
   setDirty();

@@ -36,6 +36,15 @@ class ScrollBarWidget : public Widget, public CommandSender
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font);
     ~ScrollBarWidget() override = default;
 
+    // Configure what's being scrolled; called by the owning list whenever its
+    // contents or visible range change
+    void setNumEntries(int numEntries)         { _numEntries = numEntries; }
+    void setEntriesPerPage(int entriesPerPage) { _entriesPerPage = entriesPerPage; }
+    void setCurrentPos(int pos)                { _currentPos = pos; }
+    int  currentPos() const                    { return _currentPos; }
+    // Per-list override of the class-wide default (see setWheelLines()); 0 means use it
+    void setWheelLineCount(int lines)          { _wheel_lines = lines; }
+
     // Recomputes the slider's size/position from _numEntries/_entriesPerPage/_currentPos
     void recalc();
     // Clicking an arrow steps by one, the track pages, and the slider drags;
@@ -80,15 +89,13 @@ class ScrollBarWidget : public Widget, public CommandSender
     // Re-derives the arrow/up-down-box dimensions from the current font
     void setArrows();
 
-  public:  // TODO: these shouldn't be public
-    // Set by the owning list to describe what's being scrolled
+    // What's being scrolled; set via setNumEntries()/setEntriesPerPage()/setCurrentPos()
     int _numEntries{0};
     int _entriesPerPage{0};
     int _currentPos{0};
     // Per-list override of S_WHEEL_LINES; 0 means use the default
     int _wheel_lines{0};
 
-  private:
     // Which region of the bar an interaction refers to
     enum class Part: uInt8 { None, UpArrow, DownArrow, Slider, PageUp, PageDown };
 
