@@ -1865,9 +1865,9 @@ void DebuggerParser::executeLoadState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogBreaks()
 {
-  const bool enable = !debugger.mySystem.m6502().getLogBreaks();
+  const bool enable = !debugger.mySystem->m6502().getLogBreaks();
 
-  debugger.mySystem.m6502().setLogBreaks(enable);
+  debugger.mySystem->m6502().setLogBreaks(enable);
   settings.setValue("dbg.logbreaks", enable);
   commandResult << "logBreaks " << (enable ? "enabled" : "disabled");
 }
@@ -1884,9 +1884,9 @@ void DebuggerParser::executeLogExec()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogTrace()
 {
-  const bool enable = !debugger.mySystem.m6502().getLogTrace();
+  const bool enable = !debugger.mySystem->m6502().getLogTrace();
 
-  debugger.mySystem.m6502().setLogTrace(enable);
+  debugger.mySystem->m6502().setLogTrace(enable);
   settings.setValue("dbg.logtrace", enable);
   commandResult << "logTrace " << (enable ? "enabled" : "disabled");
 }

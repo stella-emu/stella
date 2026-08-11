@@ -262,6 +262,14 @@ bool FrameManager::onLoad(Serializer& in)
   myY = in.getInt();
   myLastY = in.getInt();
 
+  // Reject a corrupt save state before myY/myLastY can drive TIA::nextLine()
+  // or TIA::onFrameComplete() to build a row pointer or fill_n span that
+  // reaches past myBackBuffer
+  if (myState > State::frame ||
+      myY >= TIAConstants::frameBufferHeight ||
+      myLastY >= TIAConstants::frameBufferHeight)
+    throw std::runtime_error("frame manager: invalid save state");
+
   myVcenter = in.getInt();
   myVSizeAdjust = in.getInt();
 

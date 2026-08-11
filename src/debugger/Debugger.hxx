@@ -86,6 +86,16 @@ class Debugger : public DialogContainer
     void initialize();
 
     /**
+      Release everything that points into the console, which is about to be
+      destroyed while this object lives on (the launcher keeps the debugger
+      around until the next ROM replaces it).  Called by OSystem::closeConsole()
+      while that console is still alive.  Nothing may use the debugger between
+      here and the next console; the states that could are the ones that cannot
+      be reached without one.
+    */
+    void detach();
+
+    /**
       Initialize the video subsystem wrt this class.
     */
     FBInitStatus initializeVideo();
@@ -338,8 +348,10 @@ class Debugger : public DialogContainer
     void loadAllStates();
 
   private:
-    Console& myConsole;
-    System&  mySystem;
+    // Non-owning, and null while detached: the debugger outlives the console
+    // in the launcher, so these cannot be references (see detach())
+    Console* myConsole{nullptr};
+    System*  mySystem{nullptr};
 
     DebuggerDialog* myDialog{nullptr};
     unique_ptr<DebuggerParser> myParser;

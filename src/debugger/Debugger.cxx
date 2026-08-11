@@ -57,17 +57,17 @@ Debugger* Debugger::myStaticDebugger = nullptr;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
-    myConsole{console},
-    mySystem{console.system()}
+    myConsole{&console},
+    mySystem{&console.system()}
 {
   // Init parser
   myParser = std::make_unique<DebuggerParser>(*this, osystem.settings());
 
   // Create debugger subsystems
-  myCpuDebug  = std::make_unique<CpuDebug>(*this, myConsole);
-  myCartDebug = std::make_unique<CartDebug>(*this, myConsole, osystem);
-  myRiotDebug = std::make_unique<RiotDebug>(*this, myConsole);
-  myTiaDebug  = std::make_unique<TIADebug>(*this, myConsole);
+  myCpuDebug  = std::make_unique<CpuDebug>(*this, console);
+  myCartDebug = std::make_unique<CartDebug>(*this, console, osystem);
+  myRiotDebug = std::make_unique<RiotDebug>(*this, console);
+  myTiaDebug  = std::make_unique<TIADebug>(*this, console);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -101,6 +101,20 @@ void Debugger::initialize()
   myCartDebug->setDebugWidget(myDialog->cartDebug());
 
   saveOldState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::detach()
+{
+  // The subsystems hold their own references to the console and its system,
+  // and describe one ROM only; they are rebuilt with the next console
+  myCpuDebug.reset();
+  myCartDebug.reset();
+  myRiotDebug.reset();
+  myTiaDebug.reset();
+
+  myConsole = nullptr;
+  mySystem  = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,19 +223,19 @@ string Debugger::autoExec(StringList* history)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BreakpointMap& Debugger::breakPoints() const
 {
-  return mySystem.m6502().breakPoints();
+  return mySystem->m6502().breakPoints();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::readTraps() const
 {
-  return mySystem.m6502().readTraps();
+  return mySystem->m6502().readTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::writeTraps() const
 {
-  return mySystem.m6502().writeTraps();
+  return mySystem->m6502().writeTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,7 +261,7 @@ string Debugger::invIfChanged(int reg, int oldReg)
 void Debugger::reset()
 {
   unlockSystem();
-  mySystem.reset();
+  mySystem->reset();
   lockSystem();
 }
 
@@ -263,7 +277,7 @@ string Debugger::setRAM(const IntArray& args)
   const size_t count = args.size(), written = count - 1;
   int address = args[0];
   for(auto i = 1UZ; i < count; ++i)
-    mySystem.pokeOob(address++, args[i]);
+    mySystem->pokeOob(address++, args[i]);
 
   return std::format("changed {} {}", written,
     written == 1 ? "location" : "locations");
@@ -289,7 +303,7 @@ void Debugger::saveAllStates()
 void Debugger::loadState(int state)
 {
   // We're loading a new state, so we start with a clean slate
-  mySystem.clearDirtyPages();
+  mySystem->clearDirtyPages();
 
   // State loading could initiate a bankswitch, so we allow it temporarily
   unlockSystem();
@@ -301,7 +315,7 @@ void Debugger::loadState(int state)
 void Debugger::loadAllStates()
 {
   // We're loading new states, so we start with a clean slate
-  mySystem.clearDirtyPages();
+  mySystem->clearDirtyPages();
 
   // State loading could initiate a bankswitch, so we allow it temporarily
   unlockSystem();
@@ -315,7 +329,7 @@ int Debugger::step(bool save)
   if(save)
     saveOldState();
 
-  const uInt64 startCycle = mySystem.cycles();
+  const uInt64 startCycle = mySystem->cycles();
 
   unlockSystem();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
@@ -323,7 +337,7 @@ int Debugger::step(bool save)
 
   if(save)
     addState("step");
-  return static_cast<int>(mySystem.cycles() - startCycle);
+  return static_cast<int>(mySystem->cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,11 +353,11 @@ int Debugger::step(bool save)
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem.peekOob(myCpuDebug->pc()) == 32)
+  if(mySystem->peekOob(myCpuDebug->pc()) == 32)
   {
     saveOldState();
 
-    const uInt64 startCycle = mySystem.cycles();
+    const uInt64 startCycle = mySystem->cycles();
     const int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
@@ -355,12 +369,12 @@ int Debugger::trace()
     }
 
     unlockSystem();
-    mySystem.m6502().execute(11900000); // max. ~10 seconds
+    mySystem->m6502().execute(11900000); // max. ~10 seconds
     myOSystem.console().tia().flushLineCache();
     lockSystem();
 
     addState("trace");
-    return static_cast<int>(mySystem.cycles() - startCycle);
+    return static_cast<int>(mySystem->cycles() - startCycle);
   }
   else
     return step();
@@ -515,11 +529,11 @@ void Debugger::log(string_view triggerMsg)
 
   // First find the lines in the range, and determine the longest string
   const auto& disasm = myCartDebug->disassembly();
-  const uInt16 start = pc & mySystem.addressMask();
+  const uInt16 start = pc & mySystem->addressMask();
 
   for(const auto& tag: disasm.list)
   {
-    if((tag.address & mySystem.addressMask()) >= start)
+    if((tag.address & mySystem->addressMask()) >= start)
     {
       const string pcStr = Base::hex4(pc);
       msg += std::format("{} {:<8} {}", pcStr, tag.bytes, tag.disasm.substr(0, 7));
@@ -537,57 +551,57 @@ void Debugger::log(string_view triggerMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(addr, flags);
+  return mySystem->peekOob(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
-  return static_cast<uInt16>(mySystem.peekOob(addr, flags) |
-                            (mySystem.peekOob(addr+1, flags) << 8));
+  return static_cast<uInt16>(mySystem->peekOob(addr, flags) |
+                            (mySystem->peekOob(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
-  mySystem.pokeOob(addr, value, flags);
+  mySystem->pokeOob(addr, value, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502& Debugger::m6502() const
 {
-  return mySystem.m6502();
+  return mySystem->m6502();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(static_cast<uInt16>(addr), flags);
+  return mySystem->peekOob(static_cast<uInt16>(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(static_cast<uInt16>(addr), flags) |
-      (mySystem.peekOob(static_cast<uInt16>(addr+1), flags) << 8);
+  return mySystem->peekOob(static_cast<uInt16>(addr), flags) |
+      (mySystem->peekOob(static_cast<uInt16>(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags Debugger::getAccessFlags(uInt16 addr) const
 {
-  return mySystem.getAccessFlags(addr);
+  return mySystem->getAccessFlags(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
-  mySystem.setAccessFlags(addr, flags);
+  mySystem->setAccessFlags(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessCounter Debugger::getAccessCounter(uInt16 addr) const
 {
-  return mySystem.getAccessCounter(addr);
+  return mySystem->getAccessCounter(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -741,14 +755,14 @@ int Debugger::stringToValue(string_view stringval)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(uInt16 addr, uInt8 value)
 {
-  return myConsole.cartridge().patch(addr, value);
+  return myConsole->cartridge().patch(addr, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveOldState(bool clearDirtyPages)
 {
   if(clearDirtyPages)
-    mySystem.clearDirtyPages();
+    mySystem->clearDirtyPages();
 
   lockSystem();
   myCartDebug->saveOldState();
@@ -798,7 +812,7 @@ void Debugger::setQuitState()
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  mySystem.m6502().execute(1);
+  mySystem->m6502().execute(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -920,15 +934,15 @@ void Debugger::getCompletions(string_view in, StringList& list) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::lockSystem()
 {
-  mySystem.lockDataBus();
-  myConsole.cartridge().lockHotspots();
+  mySystem->lockDataBus();
+  myConsole->cartridge().lockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::unlockSystem()
 {
-  mySystem.unlockDataBus();
-  myConsole.cartridge().unlockHotspots();
+  mySystem->unlockDataBus();
+  myConsole->cartridge().unlockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

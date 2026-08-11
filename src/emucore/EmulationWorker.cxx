@@ -54,7 +54,22 @@ EmulationWorker::~EmulationWorker()
 
   myThread.join();
 
-  handlePossibleException();
+  // A pending exception here was never surfaced by a normal start()/end()
+  // cycle before the app began shutting down. Destructors must not throw --
+  // rethrowing would call std::terminate() and skip main()'s save-on-exit,
+  // cheat-database and settings writes -- so report it and move on instead
+  try
+  {
+    handlePossibleException();
+  }
+  catch(const std::exception& e)
+  {
+    Logger::error(std::format("ERROR: EmulationWorker: {}", e.what()));
+  }
+  catch(...)
+  {
+    Logger::error("ERROR: EmulationWorker: unknown exception");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cstring>
+#include <limits>
 #include <unordered_map>
 
 #include "ElfUtil.hxx"
@@ -45,6 +46,18 @@ namespace {
 
   constexpr bool checkSegmentOverlap(uInt32 segmentBase1, uInt32 segmentSize1, uInt32 segmentBase2, uInt32 segmentSize2) {
     return !(segmentBase1 + segmentSize1 <= segmentBase2 || segmentBase2 + segmentSize2 <= segmentBase1);
+  }
+
+  // Add `delta` to `size`, rejecting via ElfLinkError instead of silently
+  // wrapping -- a crafted ELF (e.g. an oversized .bss) can otherwise wrap this
+  // to a tiny value while copySections()/copyInitArrays() still copy the full,
+  // un-wrapped byte count into the undersized allocation that value produces
+  uInt32 checkedAdd(uInt32 size, uInt32 delta) {
+    const uInt64 sum = static_cast<uInt64>(size) + delta;
+    if (sum > std::numeric_limits<uInt32>::max())
+      ElfLinker::ElfLinkError::raise("elf segment too large");
+
+    return static_cast<uInt32>(sum);
   }
 }  // namespace
 
@@ -244,10 +257,10 @@ void ElfLinker::relocateSections()
     // crafted ELF that would otherwise trigger a divide-by-zero here
     const uInt32 align = section.align ? section.align : 1;
     if (segmentSize % align)
-      segmentSize = (segmentSize / align + 1) * align;
+      segmentSize = checkedAdd(segmentSize / align * align, align);
 
     myRelocatedSections[i] = {*segmentType, segmentSize};
-    segmentSize += section.size;
+    segmentSize = checkedAdd(segmentSize, section.size);
   }
 
   // relocate all .bss sections
@@ -257,10 +270,10 @@ void ElfLinker::relocateSections()
     if (section.type == ElfFile::SHT_NOBITS) {
       const uInt32 align = section.align ? section.align : 1;
       if (myDataSize % align)
-        myDataSize = (myDataSize / align + 1) * align;
+        myDataSize = checkedAdd(myDataSize / align * align, align);
 
       myRelocatedSections[i] = {SegmentType::data, myDataSize};
-      myDataSize += section.size;
+      myDataSize = checkedAdd(myDataSize, section.size);
     }
   }
 
@@ -327,7 +340,7 @@ void ElfLinker::relocateInitArrays()
         if (section.size % 4) ElfLinkError::raise("invalid init array");
 
         relocatedInitArrays[i] = initArraySize;
-        initArraySize += section.size;
+        initArraySize = checkedAdd(initArraySize, section.size);
 
         break;
 
@@ -335,7 +348,7 @@ void ElfLinker::relocateInitArrays()
         if (section.size % 4) ElfLinkError::raise("invalid preinit array");
 
         relocatedPreinitArrays[i] = preinitArraySize;
-        preinitArraySize += section.size;
+        preinitArraySize = checkedAdd(preinitArraySize, section.size);
 
         break;
 

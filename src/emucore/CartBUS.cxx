@@ -797,7 +797,7 @@ bool CartridgeBUS::bank(uInt16 bank, uInt16)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 28_KB];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -812,7 +812,9 @@ uInt16 CartridgeBUS::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeBUS::romBankCount() const
 {
-  return 7;
+  // BUS0's access arrays are sized for 24K (createRomAccessArrays above), so
+  // it only has 6 banks; BUS1+ use the full 28K/7-bank layout
+  return myBUSSubtype == BUSSubtype::BUS0 ? 6 : 7;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
