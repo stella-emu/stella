@@ -336,9 +336,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
               // using myDisplayImage[] instead of myProgramImage[] because waveforms
               // can be modified during runtime.
-              const uInt32 i = myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+              const uInt32 i = waveformSample(0) + waveformSample(1) + waveformSample(2);
 
               result = static_cast<uInt8>(i);
               break;
@@ -386,10 +384,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           {
             // using myDisplayImage[] instead of myProgramImage[] because waveforms
             // can be modified during runtime.
-            const uInt32 i =
-                myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+            const uInt32 i = waveformSample(0) + waveformSample(1) + waveformSample(2);
 
             peekvalue = static_cast<uInt8>(i);
           }
@@ -1045,6 +1040,20 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
     result = 0;
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeBUS::waveformSample(uInt8 index) const
+{
+  // myMusicCounters/myMusicWaveformSize can grow or be corrupted (via save
+  // states, or a driver that simply doesn't reset the counter often enough)
+  // beyond what getWaveform()'s own bounding accounts for. Real hardware
+  // would alias into the Harmony RAM chip rather than fault, so wrap into
+  // myDisplayImage rather than fabricate a value; the shift is also
+  // clamped since 32+ is UB.
+  const uInt8 shift = std::min<uInt8>(myMusicWaveformSize[index], 31);
+  const uInt64 idx = static_cast<uInt64>(getWaveform(index)) + (myMusicCounters[index] >> shift);
+  return myDisplayImage[idx % myDisplayImage.size()];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

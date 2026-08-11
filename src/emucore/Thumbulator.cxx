@@ -340,15 +340,22 @@ FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
+      // isInvalidROM() checks the real per-cart romSize; the fixed
+      // ROMADDMASK (512K) alone doesn't, and rom[] is only ever as large
+      // as the cart's actual ROM buffer (e.g. 32K for BUS/DPC+)
+      if(isInvalidROM(addr))
+        return fatalError("fetch16", addr, "abort");
+
       addr &= ROMADDMASK;
-      if(addr < 0x50)
-        fatalError("fetch16", addr, "abort");
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
+      if(isInvalidRAM(addr))
+        return fatalError("fetch16", addr, "abort");
+
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);

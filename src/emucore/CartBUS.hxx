@@ -236,6 +236,7 @@ class CartridgeBUS : public CartridgeARM
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
+    uInt8 waveformSample(uInt8 index) const;
     void setupVersion();
     uInt32 scanBUSDriver(uInt32 value);
 

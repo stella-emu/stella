@@ -453,7 +453,12 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
 
   if (relocatedSymbol->undefined) Logger::error("unable to resolve symbol " + relocation.symbolName);
 
-  if (relocation.offset + 4 > targetSection.size)
+  // 64-bit comparison: relocation.offset is an unvalidated uInt32 straight
+  // from the ELF file (ElfParser only range-checks the symbol index, not
+  // this), and offset + 4 in 32-bit arithmetic wraps to a tiny value for
+  // offset in [0xFFFFFFFC, 0xFFFFFFFF], defeating this check and sending
+  // read32()/write32() below roughly 4GB past the segment buffer
+  if (static_cast<uInt64>(relocation.offset) + 4 > targetSection.size)
     ElfLinkError::raise(
       "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
     );
@@ -538,7 +543,9 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
       if (relocatedSymbol->undefined)
         Logger::error("unable to relocate symbol " + relocation.symbolName);
 
-      if (relocation.offset + 4 > section.size)
+      // See the identical comment in applyRelocationToSection() -- this is
+      // the same unvalidated relocation.offset, same 32-bit wraparound risk
+      if (static_cast<uInt64>(relocation.offset) + 4 > section.size)
         ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 
       const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
