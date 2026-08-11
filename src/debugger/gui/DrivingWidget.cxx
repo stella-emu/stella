@@ -34,8 +34,8 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
                                 embedded ? "GC-" : "Gray code -", Cmd::GrayCodeDown);
   myGrayDown->setTarget(this);
 
-  myGrayValue = new DataGridWidget(boss, font, 1, 1, 2, 8,
-                                   Common::Base::Fmt::_16);
+  myGrayValue = new DataGridWidget(boss, font, 1, 1, 2, 2,
+                                   Common::Base::Fmt::_2_2);
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);
 
@@ -127,6 +127,5 @@ void DrivingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 void DrivingWidget::setValue(int idx)
 {
   const int grayCode = ourGrayTable[idx];
-  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
-  myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
+  myGrayValue->setList(0, grayCode);
 }

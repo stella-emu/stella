@@ -92,6 +92,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
       });
       break;
     case Common::Base::Fmt::_2:
+    case Common::Base::Fmt::_2_2:
     case Common::Base::Fmt::_2_8:
     case Common::Base::Fmt::_2_16:
       setTextFilter([](char c) { return (c >= '0' && c <= '1'); });
@@ -780,6 +781,7 @@ void DataGridWidget::endEditMode()
         editString().insert(0, 1, '$');
         break;
       case Common::Base::Fmt::_2:
+      case Common::Base::Fmt::_2_2:
       case Common::Base::Fmt::_2_8:
       case Common::Base::Fmt::_2_16:
         editString().insert(0, 1, '\\');

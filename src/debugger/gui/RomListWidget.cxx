@@ -84,6 +84,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
 
       case Common::Base::Fmt::_2:
+      case Common::Base::Fmt::_2_2:
       case Common::Base::Fmt::_2_8:
       case Common::Base::Fmt::_2_16:
         return c == '0' || c == '1' || c == ' ';

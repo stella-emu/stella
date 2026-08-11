@@ -28,8 +28,8 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   // Create the controls at a placeholder position; reflow() lays them out
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   const auto grayValue = [&]() {
-    auto* g = new DataGridWidget(boss, font, 1, 1, 2, 8,
-                                 Common::Base::Fmt::_16);
+    auto* g = new DataGridWidget(boss, font, 1, 1, 2, 2,
+                                 Common::Base::Fmt::_2_2);
     g->setTarget(this);
     g->setEditable(false);
     return g;
@@ -168,6 +168,5 @@ void PointingDeviceWidget::setValue(DataGridWidget* grayValue,
 {
   const uInt8 grayCode = getGrayCodeTable(index, direction);
 
-  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
-  grayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
+  grayValue->setList(0, grayCode);
 }
