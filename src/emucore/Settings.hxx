@@ -52,7 +52,10 @@ class Settings
     using Options = std::unordered_map<string, Variant,
                     BSPF::StringHash, std::equal_to<>>;
 
-    static constexpr int SETTINGS_VERSION = 1;
+    // Encodes the Stella release whose settings format this is, as
+    // major * 100 + minor * 10 + patch (so 8.0.0 is 800).  Bump it in the
+    // release that adds a migration, and gate that migration on it.
+    static constexpr int SETTINGS_VERSION = 800;
     static constexpr string_view SETTINGS_VERSION_KEY = "settings.version";
 
   public:
@@ -113,22 +116,29 @@ class Settings
       return value(key).toPoint();
     }
 
-  protected:
+  private:
     /**
-      Add key/value pair to specified map.  Note that these should only be called
+      Add key/value pair to specified map.  These must only be called
       directly within the c'tor, to register the 'key' and set it to the
-      appropriate 'value'.  Elsewhere, any derived classes should call 'setValue',
+      appropriate 'value'; asserts otherwise.  Elsewhere, use 'setValue',
       and let it decide where the key/value pair will be saved.
     */
     void setPermanent(string_view key, const Variant& value);
     void setTemporary(string_view key, const Variant& value);
 
-  private:
     /**
       This method must be called *after* settings have been fully loaded
       to validate (and change, if necessary) any improper settings.
     */
     void validate();
+
+    /**
+      Bring settings persisted by an older version of Stella up to date.  Each
+      migration is gated on the release that introduced it, so an old config
+      runs every one newer than itself, in order.  Runs before command-line
+      options are applied, so an explicit option still overrides a migration.
+    */
+    void migrate();
 
   private:
     // Holds key/value pairs that are necessary for Stella to
@@ -140,6 +150,10 @@ class Settings
     Options myTemporarySettings;
 
     shared_ptr<KeyValueRepository> myRepository;
+
+    // Set once the c'tor body has finished running, so setPermanent/
+    // setTemporary can assert they're never called afterwards.
+    bool myConstructed{false};
 
   private:
     // Following constructors and assignment operators not supported
