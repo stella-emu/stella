@@ -288,8 +288,14 @@ bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
                               event->window.data1, event->window.data2,
                               static_cast<int>(event->window.windowID));
       break;
+    case SDL_EVENT_WINDOW_MOVED:
+      // Dragging the left/top edge moves the window too, in its own event;
+      // repaint for it or the contents lag that edge.  Not WINDOW_MOVED,
+      // which would persist the position once per event.
+      [[fallthrough]];
     case SDL_EVENT_WINDOW_EXPOSED:
-      self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
+      self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
+                              static_cast<int>(event->window.windowID));
       break;
     default:
       break;
