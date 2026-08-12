@@ -209,7 +209,7 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
-    myOSystem.settings().getString("video") == "software";
+    myOSystem.settings().getString("video.detected") == "software";
   const bool allowBezel =
     myOSystem.settings().getBool("bezel.windowed") || isFullScreen;
 

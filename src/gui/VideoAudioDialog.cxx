@@ -647,7 +647,7 @@ void VideoAudioDialog::loadConfig()
 
   // Display tab
   // Renderer settings
-  myRenderer->setSelected(settings.getString("video"), "default");
+  myRenderer->setSelected(settings.getString("video"), "auto");
   handleRendererChanged();
 
   // TIA interpolation

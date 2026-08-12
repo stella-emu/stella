@@ -151,6 +151,8 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
     { "software",   "Software"    }
   }};
 
+  VarList::push_back(renderers, "Auto", "auto");
+
   const int numDrivers = SDL_GetNumRenderDrivers();
   for(int i = 0; i < numDrivers; ++i)
   {
@@ -438,11 +440,15 @@ bool FBBackendSDL::createRenderer()
   const bool enableVSync = myOSystem.settings().getBool("vsync") &&
                           !myOSystem.settings().getBool("turbo");
   const string& video = myOSystem.settings().getString("video");
+  // An empty or "auto" preference lets SDL pick the renderer
+  const bool autoVideo = video.empty() || video == "auto";
 
   bool recreate = myRenderer == nullptr;
   if(myRenderer)
   {
-    recreate = recreate || video != SDL_GetRendererName(myRenderer);
+    // Under 'auto', whatever SDL already gave us satisfies the preference
+    recreate = recreate ||
+        (!autoVideo && video != SDL_GetRendererName(myRenderer));
 
     const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
     const bool currentVSync = SDL_GetNumberProperty(props,
@@ -457,7 +463,7 @@ bool FBBackendSDL::createRenderer()
 
     // Re-create with new properties
     const SDL_PropertiesID props = SDL_CreateProperties();
-    if(!video.empty())
+    if(!autoVideo)
       SDL_SetStringProperty(props, SDL_PROP_RENDERER_CREATE_NAME_STRING,
                             video.c_str());
     SDL_SetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER,
@@ -480,9 +486,12 @@ bool FBBackendSDL::createRenderer()
   }
   clear();
 
+  // Record what SDL actually gave us, which the preference does not say when
+  // it is "auto".  Temporary: persisting it would pin the renderer, defeating
+  // auto-detection on later runs.
   const char* const detectedvideo = SDL_GetRendererName(myRenderer);
   if(detectedvideo)
-    myOSystem.settings().setValue("video", detectedvideo);
+    myOSystem.settings().setValue("video.detected", detectedvideo, false);
 
   return true;
 }

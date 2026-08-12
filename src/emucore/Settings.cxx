@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cassert>
+
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Version.hxx"
@@ -45,7 +47,7 @@ Settings::Settings()
   setPermanent("stella.version", "6.2.1");
 
   // Video-related options
-  setPermanent("video", "");
+  setPermanent("video", "auto");
   setPermanent("speed", "1.0");
   setPermanent("vsync", "true");
   setPermanent("center", "true");
@@ -321,6 +323,8 @@ Settings::Settings()
 #endif
 
   setTemporary("elf.dump", false);
+
+  myConstructed = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,6 +343,10 @@ void Settings::load(const Options& options)
   for(const auto& [key, value]: fromFile)
     setValue(key, value, false);
 
+  // Bring anything persisted by an older version up to date, before the
+  // command-line is applied, so an explicit option still wins
+  migrate();
+
   // Apply command-line overrides (still non-persistent)
   for(const auto& [key, value]: options)
     setValue(key, value, false);
@@ -355,6 +363,26 @@ void Settings::save()
   KVRMap out;
   out.insert(myPermanentSettings.begin(), myPermanentSettings.end());
   myRepository->save(out);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::migrate()
+{
+  // Each block brings settings written before its release up to date, so an
+  // old config runs every block newer than it, in order.  Keep them
+  // idempotent; nothing guarantees a block runs exactly once.
+  const int version = getInt(SETTINGS_VERSION_KEY);
+
+  if(version < 800)  // Stella 8.0.0
+  {
+    // Older versions saved the *detected* renderer into the preference, so no
+    // persisted value reflects a choice made under SDL3 (and on Windows it
+    // pins the legacy D3D9 backend).  Hand everyone back to auto-detection.
+    // (setValue, not setPermanent: the latter ignores an existing key.)
+    setValue("video", "auto");
+  }
+
+  setValue(SETTINGS_VERSION_KEY, SETTINGS_VERSION);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -820,11 +848,15 @@ void Settings::setValue(string_view key, const Variant& value, bool persist)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setPermanent(string_view key, const Variant& value)
 {
+  assert(!myConstructed);  // only for use by the c'tor; see setValue
+
   myPermanentSettings.emplace(key, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setTemporary(string_view key, const Variant& value)
 {
+  assert(!myConstructed);  // only for use by the c'tor; see setValue
+
   myTemporarySettings.emplace(key, value);
 }
