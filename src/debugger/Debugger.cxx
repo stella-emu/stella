@@ -184,10 +184,13 @@ void Debugger::updateSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::applyResize()
 {
-  // Throttle to roughly the display rate: the modal-loop event-watch (and an
-  // X11 event flood) can deliver resizes far faster than 60Hz, and a full
-  // re-flow per event is wasteful
+  // Throttle to roughly the display rate; not on macOS (see
+  // Launcher::applyResize for both halves of that)
+#ifdef BSPF_MACOS
+  static constexpr uInt64 INTERVAL = 0;
+#else
   static constexpr uInt64 INTERVAL = 1000000 / 60;  // microseconds
+#endif
   const uInt64 now = TimerManager::getTicks();
   if(now - myLastResizeTime < INTERVAL)
     return false;

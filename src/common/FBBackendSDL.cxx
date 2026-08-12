@@ -32,6 +32,8 @@
 
 #ifndef BSPF_MACOS
   #include "stella_icon.hxx"
+#else
+  #include "MacOSUtils.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -492,6 +494,20 @@ bool FBBackendSDL::createRenderer()
     }
 
     detectFeatures();
+
+  #ifdef BSPF_MACOS
+    // See MacOSUtils::enableMetalLiveResizeAnchoring
+    if(BSPF::equalsIgnoreCase(SDL_GetRendererName(myRenderer), "metal"))
+    {
+      const SDL_PropertiesID winProps = SDL_GetWindowProperties(myWindow);
+      void* const nsWindow = SDL_GetPointerProperty(winProps,
+          SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr);
+      if(nsWindow)
+        MacOSUtils::enableMetalLiveResizeAnchoring(nsWindow,
+            SDL_GetNumberProperty(winProps,
+                SDL_PROP_WINDOW_COCOA_METAL_VIEW_TAG_NUMBER, 0));
+    }
+  #endif
   }
 
   // Refresh the cached window/render dimensions on every mode change;
@@ -826,5 +842,11 @@ void FBBackendSDL::determineDimensions()
     myRenderH = myWindowH;
   }
   else
-    SDL_GetCurrentRenderOutputSize(myRenderer, &myRenderW, &myRenderH);
+    // Deliberately not SDL_GetCurrentRenderOutputSize(): while a window is
+    // dragged on macOS that reports the size from the *previous* event, so
+    // scaleX()/scaleY() would divide the new window size by a stale one and
+    // draw every surface at the wrong scale.  The window's pixel size is
+    // always current, and with no logical presentation it is what the
+    // renderer outputs anyway.
+    SDL_GetWindowSizeInPixels(myWindow, &myRenderW, &myRenderH);
 }
