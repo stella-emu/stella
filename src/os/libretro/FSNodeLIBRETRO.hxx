@@ -24,9 +24,10 @@
 
 /*
  * Implementation of the Stella file system API based on the libretro VFS
- * (Virtual File System) interface.  Falls back to standard C++ file streams
- * for actual I/O, which work on all platforms where RetroArch provides real
- * filesystem paths.
+ * (Virtual File System) interface.  Metadata, directory operations and file
+ * I/O all go through the frontend; standard C++ file streams are only used
+ * when the frontend provides no VFS at all, in which case the paths are
+ * ordinary filesystem paths anyway.
  *
  * Parts of this class are documented in the base interface class,
  * AbstractFSNode.
@@ -66,11 +67,19 @@ class FSNodeLIBRETRO : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
-    // Used to serve the in-memory ROM on platforms where the ROM file path
-    // is not directly accessible (e.g. Android with need_fullpath = false).
-    // Returns 0 when the file exists on disk so the base class uses openIFStream.
-    size_t read(ByteArray& image, size_t) const override;
+    // All file I/O goes through the frontend VFS, since the path may only be
+    // meaningful to the frontend (Android SAF URIs, network shares).  When the
+    // VFS cannot read the ROM path, the in-memory ROM is served instead, for
+    // platforms where need_fullpath = false means RetroArch has loaded it.
+    // Returning 0 lets the base class fall back to a normal C++ stream.
+    size_t read(ByteArray& image, size_t size) const override;
+    size_t read(std::stringstream& buffer) const override;
+    size_t write(ByteSpan buffer) const override;
+    size_t write(string_view buffer) const override;
 
+    // These remain plain C++ streams: a std::ifstream cannot be handed a
+    // VFS-backed stream buffer that outlives it.  Subsystems should prefer
+    // ::read and ::write above, as AbstractFSNode itself recommends.
     std::ifstream openIFStream(std::ios::openmode mode) const override {
       return std::ifstream(_path, mode);
     }
@@ -88,6 +97,14 @@ class FSNodeLIBRETRO : public AbstractFSNode
      * @return  true if the path was found and flags were set
      */
     bool setFlags();
+
+    /**
+     * Does this node refer to a ROM that only exists in memory?  With
+     * need_fullpath = false the frontend loads the ROM itself, and the path
+     * it hands over may not be resolvable (e.g. Android, or a path inside an
+     * archive that RetroArch has already extracted).
+     */
+    bool isMemoryROM() const;
 
   private:
     string _path, _displayName;
