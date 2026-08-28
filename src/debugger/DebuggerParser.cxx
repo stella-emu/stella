@@ -3004,6 +3004,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     "is actually used.\n"
     "This shows the last collected values and then starts fresh sampling.\n"
     "Utilizes but does not effect _fTimReadCycles and _fWsyncCycles.",
+    "",
     false,
     false,
     false,
