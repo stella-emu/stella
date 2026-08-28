@@ -137,6 +137,8 @@ void VideoAudioDialog::addDisplayTab()
   myRenderer->setToolTip("Select renderer used for displaying screen.");
   wid.push_back(myRenderer);
 
+  myRendererDetected = new LabelWidget(pane, ifont, "Direct3D 11 detected");
+
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(pane, _font, "Interpolation");
   myTIAInterpolate->setToolTip("Blur emulated display.", Event::ToggleInter);
@@ -202,11 +204,17 @@ void VideoAudioDialog::addDisplayTab()
 
   // Describe the layout once; the pane runs it on every resize
   pane->setLayout([this](GUI::BoxLayout& col) {
+    using GUI::BoxLayout;
     using GUI::anchoredItem;
     using GUI::labeledRow;
     using GUI::indentedItem;
     using GUI::indentedFill;
-    const int VGAP = Dialog::vGap();
+    using GUI::alignedItem;
+    using GUI::HAlign;
+    using GUI::VAlign;
+    using Dir = BoxLayout::Dir;
+    const int fontWidth = Dialog::fontWidth(),
+              VGAP      = Dialog::vGap();
     const int INDENT = CheckboxWidget::prefixSize(_font);
 
     // The renderer's and the sliders' labels share one label column; the
@@ -218,7 +226,13 @@ void VideoAudioDialog::addDisplayTab()
     // The sliders' tracks span the renderer pop-up's box, so they end flush
     GUI::alignTracks({myTIAZoom, myTVOverscan, myVSizeAdjust}, myRenderer);
 
-    col.addAuto(labeledRow(myRendererLbl, myRenderer));
+    // Renderer row, with what 'Auto' resolved to beside the pop-up
+    auto rendererRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+    rendererRow->addAuto(labeledRow(myRendererLbl, myRenderer));
+    rendererRow->addSpace(fontWidth);
+    rendererRow->addStretch(alignedItem(myRendererDetected, HAlign::Fill, VAlign::Center));
+
+    col.addAuto(std::move(rendererRow));
     col.addSpace(VGAP);
     col.addAuto(anchoredItem(myTIAInterpolate));
     col.addSpace(VGAP * 4);
@@ -1277,6 +1291,21 @@ void VideoAudioDialog::handleRendererChanged()
 {
   const bool enable = myRenderer->getSelectedTag().toString() != "software";
   myTIAInterpolate->setEnabled(enable);
+
+  // Name what 'Auto' actually resolved to
+  string label;
+  if(myRenderer->getSelectedTag().toString() == "auto")
+  {
+    const string& detected = instance().settings().getString("video.detected");
+
+    for(const auto& renderer: instance().frameBuffer().supportedRenderers())
+      if(renderer.second.toString() == detected)
+      {
+        label = renderer.first + " detected";
+        break;
+      }
+  }
+  myRendererDetected->setLabel(label);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
