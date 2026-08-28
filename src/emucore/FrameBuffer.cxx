@@ -460,11 +460,26 @@ bool FrameBuffer::applyLiveResize()
   // dialog re-flows its own surfaces afterwards (updating dst rects only — no
   // texture re-upload), and the main loop then renders one correct frame.
   // (Reloading here would re-upload every texture every frame.)
+  // Let the backend trade whatever it must to keep up with the drag; undone by
+  // resizeSettled()
+  myBackend->beginLiveResize();
+
   myVidModeHandler.setImageSize(myWindow.pendingResize);
   myWindow.vidMode = myVidModeHandler.buildMode(
       myOSystem.settings(), false, myBezel->info());
   myBackend->refreshDimensions();
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::resizeSettled()
+{
+  myBackend->endLiveResize();
+
+  // Restoring vsync disturbs the frame already on screen, so put a correct one
+  // up now.  Otherwise it lingers until something else happens to draw -- in
+  // the debugger, idle, that is seconds
+  update(UpdateMode::REDRAW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -703,6 +718,25 @@ bool FrameBuffer::resizeSecondaryWindow(DialogContainer& container,
 
   setRenderTarget(0);
   return applied;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::settleSecondaryWindow(DialogContainer& container)
+{
+  if(!mySecondaryActive)
+    return;
+
+  // The trade was made against this window's own backend, so it must be the
+  // target here too
+  setRenderTarget(1);
+
+  myBackend->endLiveResize();
+
+  // Restoring vsync disturbs the frame already on screen, so put a correct one
+  // up now; see resizeSettled()
+  updateContainer(container, UpdateMode::RERENDER);
+
+  setRenderTarget(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -42,12 +42,22 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
 
   // Initialize SDL context
   SDL_SetHint("SDL_WINDOWS_DPI_AWARENESS", "unaware");
+  // X11 _NET_WM_SYNC_REQUEST: the WM waits for our frame before advancing an
+  // interactive resize, so a left/top edge drag cannot outrun the contents.
+  // Named literally, since SDL_HINT_VIDEO_X11_ENABLE_XSYNC_EXT only exists
+  // from SDL 3.4.10
+  SDL_SetHint("SDL_VIDEO_X11_ENABLE_XSYNC_EXT", "1");
   if(!SDL_InitSubSystem(SDL_INIT_VIDEO))
   {
     throw std::runtime_error(
       std::format("ERROR: Couldn't initialize SDL: {}", SDL_GetError()));
   }
   Logger::debug("FBBackendSDL::FBBackendSDL SDL_Init()");
+
+  // Resolve the live-resize facts now: this runs before any other subsystem
+  // (see the note in OSystem::create), and X11 and Wayland disagree
+  LiveResize::initialize(SDL_GetCurrentVideoDriver());
+  Logger::info(LiveResize::describe());
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL object)
@@ -301,6 +311,11 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   }
   else
   {
+    // Windowed wants redirecting, so the compositor honours our frame-sync
+    // acks; fullscreen keeps the bypass and the WM can scan out directly
+    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR,
+                mode.fullscreen ? "1" : "0");
+
     // Re-create with new properties
     const SDL_PropertiesID props = SDL_CreateProperties();
     SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING,
@@ -443,12 +458,16 @@ bool FBBackendSDL::createRenderer()
 {
   ASSERT_MAIN_THREAD;
 
+  // A mode change ends any interactive resize, so whatever the drag traded away
+  // must not outlive it.  Restoring here also keeps a still-suspended renderer
+  // from reading as a vsync mismatch below and forcing a needless recreation
+  endLiveResize();
+
   // A new renderer is only created when necessary:
   // - no renderer existing
   // - different renderer name
   // - different renderer vsync
-  const bool enableVSync = myOSystem.settings().getBool("vsync") &&
-                          !myOSystem.settings().getBool("turbo");
+  const bool enableVSync = vsyncWanted();
   const string& video = myOSystem.settings().getString("video");
   // An empty or "auto" preference lets SDL pick the renderer
   const bool autoVideo = video.empty() || video == "auto";
@@ -550,6 +569,51 @@ void FBBackendSDL::resizeWindow(const Common::Size& size)
 void FBBackendSDL::refreshDimensions()
 {
   determineDimensions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FBBackendSDL::vsyncWanted() const
+{
+  return myOSystem.settings().getBool("vsync") &&
+        !myOSystem.settings().getBool("turbo");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::beginLiveResize()
+{
+  ASSERT_MAIN_THREAD;
+
+  // With vsync the present blocks for a whole refresh -- measured 16.6ms per
+  // dragged frame against 0.95ms without -- which spends the step's entire
+  // budget waiting.  Where the ack rides on the present that also halves the
+  // drag rate; elsewhere it merely delays our own next frame, which still shows
+  // once a window draws enough to fill the interval.  So: everywhere
+  if(!LiveResize::suspendsVsync())
+    return;
+
+  if(myRenderer && !myVSyncSuspended)
+  {
+    myVSyncSuspended = true;
+    SDL_SetRenderVSync(myRenderer, SDL_RENDERER_VSYNC_DISABLED);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::endLiveResize()
+{
+  ASSERT_MAIN_THREAD;
+
+  if(!myVSyncSuspended)
+    return;
+
+  // Clear the flag whether or not there is a renderer to restore: a stale one
+  // would make the next beginLiveResize() think the drag is already suspended
+  // and leave vsync on for it
+  myVSyncSuspended = false;
+
+  if(myRenderer)
+    SDL_SetRenderVSync(myRenderer,
+        vsyncWanted() ? 1 : SDL_RENDERER_VSYNC_DISABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

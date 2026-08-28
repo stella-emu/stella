@@ -435,7 +435,8 @@ class ButtonWidget : public LabelWidget
       neighbours needs, so the LAYOUT equalizes them — see GUI::alignButtons().
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None,
+                 bool repeat = false);
     /**
       An icon, at a size you give me.  For the caller whose button must match
       something else (the high scores dialog's prev/next arrows, sized to the
@@ -443,7 +444,8 @@ class ButtonWidget : public LabelWidget
       two below, which need no size at all.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, int dw, int dh,
-                 const GUI::Icon& icon, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
+                 const GUI::Icon& icon, GuiCmd::Code cmd = GuiCmd::None,
+                 bool repeat = false);
 
     /**
       Size me from my own icon, and from my label if I have one: I am laid out
@@ -455,7 +457,8 @@ class ButtonWidget : public LabelWidget
     ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
                  GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
-                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None,
+                 bool repeat = false);
     ~ButtonWidget() override = default;
 
     /** Fires the button on Event::UISelect (simulates a mouse click) */
@@ -502,8 +505,7 @@ class ButtonWidget : public LabelWidget
   public:
     // The room a button leaves around its bitmap: an icon-only button centers
     // its bitmap in this, and an icon-and-label one draws its label after it
-    static int iconGap(const GUI::Font& font)
-    {
+    static int iconGap(const GUI::Font& font) {
       return ((font.getMaxCharWidth() + 1) & ~0b1) + 1;
     }
 
@@ -517,7 +519,8 @@ class ButtonWidget : public LabelWidget
       of its own kind (TimeLineWidget, the launcher's path button) uses this.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
-                 string_view label, GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
+                 string_view label, GuiCmd::Code cmd = GuiCmd::None,
+                 bool repeat = false);
 
     // The width my content needs: an icon-and-label button is laid out around
     // its icon -- a half-gap, the icon, a half-gap, then the label (see
@@ -540,8 +543,7 @@ class ButtonWidget : public LabelWidget
     // The height my content needs.  A compact button keeps to its line and no
     // more; the standard margin is what gives a dialog button its presence,
     // which a small op button beside a grid does not want
-    int autoHeight() const
-    {
+    int autoHeight() const {
       return _compact ? _font.getLineHeight() : calcHeight(_font);
     }
 
@@ -551,8 +553,7 @@ class ButtonWidget : public LabelWidget
     // other things measure themselves against (a navigation bar is one button
     // tall, a file list four), so it is asked for from outside; Dialog::
     // buttonHeight() is the wrapper they use
-    static int calcHeight(const GUI::Font& font)
-    {
+    static int calcHeight(const GUI::Font& font) {
       return font.getLineHeight() * 1.25;
     }
 
@@ -561,14 +562,12 @@ class ButtonWidget : public LabelWidget
     // needs it; it is here for the dialog that must state a width because the
     // label is not final (see the width-only ctor above), which says so with a
     // specimen label rather than a pixel count
-    static int calcWidth(const GUI::Font& font, string_view label)
-    {
+    static int calcWidth(const GUI::Font& font, string_view label) {
       return font.getStringWidth(label) + font.getMaxCharWidth() * 2.5;
     }
     // The same, for a label of the given length -- how a dialog states a button
     // width in characters rather than pixels (see Dialog::standardButtonWidth)
-    static int calcWidth(const GUI::Font& font, int chars)
-    {
+    static int calcWidth(const GUI::Font& font, int chars) {
       return font.getMaxCharWidth() * (chars + 2.5);
     }
 
@@ -634,13 +633,11 @@ class CheckboxWidget : public ButtonWidget
     void refreshFont() override;
 
     /** Side length of the (square) checkbox for the given font */
-    static int boxSize(const GUI::Font& font)
-    {
+    static int boxSize(const GUI::Font& font) {
       return font.isLarge() ? 22 : 14; // box is square
     }
     /** Horizontal space the box plus its gap take up, before the label starts */
-    static int prefixSize(const GUI::Font& font)
-    {
+    static int prefixSize(const GUI::Font& font) {
       return boxSize(font) + font.getMaxCharWidth() * 0.75;
     }
 
@@ -778,3 +775,4 @@ class SliderWidget : public ButtonWidget
 };
 
 #endif  // WIDGET_HXX
+//

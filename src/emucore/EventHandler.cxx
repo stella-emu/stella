@@ -445,6 +445,20 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
         break;
       }
     #endif
+    #ifdef GUI_SUPPORT
+      // The resize handler above has already re-flowed and presented this
+      // frame, so repainting it again is a second present of identical
+      // content.  Only where the drag blocks the main loop, though: elsewhere
+      // applyResize() throttles, and this repaint covers the events it drops.
+      // Nor where our last frame is rescaled as the window changes -- there a
+      // dropped repaint is a stale, resampled frame, not a saved one
+      if(LiveResize::blocksMainLoop() &&
+         !LiveResize::rescalesOurLastFrame())
+      {
+        if(myOverlay && myOverlay->resizeInProgress())
+          break;
+      }
+    #endif
       // Force full render update of the primary window
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;

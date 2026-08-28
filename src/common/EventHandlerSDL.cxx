@@ -46,19 +46,13 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, "1");
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_CENTER, "0");
 
-  // Re-render while the OS is in its modal window-resize loop (Windows/macOS),
-  // during which the main event loop is blocked.  See resizeWatch().
-  //
-  // Only Windows and macOS have such a modal loop.  X11/Wayland do not -
-  // SDL_PollEvent already delivers resize/expose events normally there, so the
-  // watch is redundant.  Worse, on X11 it is actively harmful: a window-manager
-  // move/resize drag floods the app with events, the watch fires (and re-renders)
-  // synchronously for every one, and that unthrottled render loop locks the main
-  // thread until the drag ends (showing a frozen/stretched frame meanwhile).
-  // So register it only on the platforms that need it.
-#if defined(BSPF_WINDOWS) || defined(BSPF_MACOS)
-  SDL_AddEventWatch(resizeWatch, this);
-#endif
+  // Re-render from the watch while the main loop is blocked; see resizeWatch().
+  // Elsewhere SDL_PollEvent delivers resize/expose normally, and on X11 the
+  // watch is actively harmful: a drag floods us with events, the watch
+  // re-renders synchronously for each, and that unthrottled loop holds the main
+  // thread until the drag ends
+  if(LiveResize::blocksMainLoop())
+    SDL_AddEventWatch(resizeWatch, this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

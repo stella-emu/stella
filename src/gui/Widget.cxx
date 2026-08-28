@@ -144,7 +144,7 @@ void Widget::draw()
 void Widget::drawChain()
 {
   // Clear chain *before* drawing, because some widgets may set it again when
-  //   being drawn (e.g. RomListWidget)
+  // being drawn (e.g. RomListWidget)
   clearDirtyChain();
 
   for(const auto& w: _children)
@@ -957,7 +957,6 @@ void CheckboxWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setFill(FillType type)
 {
-
   static constexpr std::array<uInt32, 10> checked_img_inactive_bits = {
     0b1111111111,  0b1111111111,  0b1111001111,  0b1110000111,  0b1100000011,
     0b1100000011,  0b1110000111,  0b1111001111,  0b1111111111,  0b1111111111

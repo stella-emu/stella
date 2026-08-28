@@ -129,6 +129,12 @@ class FrameBuffer
     bool applyLiveResize();
 
     /**
+      An interactive resize has settled.  Lets the backend undo whatever it
+      traded away to keep up with the drag.
+    */
+    void resizeSettled();
+
+    /**
       Set the minimum size (in logical UI pixels) the current window may be
       resized to.  Used by resizeable UI dialogs to prevent the window being
       shrunk small enough to clip their content.
@@ -187,6 +193,15 @@ class FrameBuffer
     */
     bool resizeSecondaryWindow(DialogContainer& container,
                                int width, int height);
+
+    /**
+      An interactive resize of the secondary window has settled.  The secondary
+      counterpart of resizeSettled(): lets its backend undo whatever it traded
+      away to keep up with the drag.
+
+      @param container  The DialogContainer rendered into the secondary window
+    */
+    void settleSecondaryWindow(DialogContainer& container);
 
     /**
       Draw the secondary window's container and present it.  No-op if no

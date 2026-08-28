@@ -110,6 +110,7 @@ class Debugger : public DialogContainer
     */
     void updateTime(uInt64 time) override;
     bool applyResize() override;
+    bool resizeInProgress() const override { return mySettleCountdown > 0; }
 
     /**
       The current (logical) size of the debugger window, which the dialog takes
@@ -456,6 +457,9 @@ class Debugger : public DialogContainer
     // is owned by the (single) FrameBuffer, not here.
     unique_ptr<TiaWindow> myTiaWindow;
     bool myTiaWindowOpen{false};
+    // The companion drags independently of the debugger window, so it settles
+    // on its own countdown, ticked by renderTiaWindow() (see resizeTiaWindow())
+    int myTiaSettleCountdown{0};
     // Deferred open: the window is created on the first render *after* the
     // state has become DEBUGGER, so its createDisplay() doesn't run the
     // emulation-mode (phosphor) path against the live console

@@ -106,16 +106,12 @@ Dialog* Launcher::baseDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Launcher::applyResize()
 {
-  // Throttle to roughly the display rate: the modal-loop event-watch (and an
-  // X11 event flood) can deliver resizes far faster than 60Hz, and a full
-  // re-flow per event is wasteful.  Not on macOS, where a skipped event only
-  // leaves a stale frame on screen and presents already block until scheduled
-  // during a live resize, so the compositor paces us anyway.
-#ifdef BSPF_MACOS
-  static constexpr uInt64 INTERVAL = 0;
-#else
-  static constexpr uInt64 INTERVAL = 1000000 / 60;  // microseconds
-#endif
+  // Throttle to roughly the display rate: an X11 event flood can deliver
+  // resizes far faster than 60Hz, and a full re-flow per event is wasteful.
+  // Never where the drag blocks the main loop, though: this handler is then the
+  // only thing running, so a skipped event is simply lost
+  const uInt64 INTERVAL =
+      LiveResize::blocksMainLoop() ? 0 : 1000000 / 60;  // microseconds
   const uInt64 now = TimerManager::getTicks();
   if(now - myLastResizeTime < INTERVAL)
     return false;
@@ -150,6 +146,9 @@ void Launcher::updateTime(uInt64 time)
   {
     // Once the countdown reaches zero, run the settle pass
     if(--mySettleCountdown == 0)
+    {
       relayout();
+      myOSystem.frameBuffer().resizeSettled();
+    }
   }
 }

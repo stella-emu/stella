@@ -196,11 +196,11 @@ class GuiObject : public CommandReceiver
 
   protected:
     // Position and size in screen coordinates
-    int         _x{0}, _y{0}, _w{0}, _h{0};
-    bool        _dirty{false};
-    bool        _dirtyChain{false};
+    int  _x{0}, _y{0}, _w{0}, _h{0};
+    bool _dirty{false};
+    bool _dirtyChain{false};
     // Flag bits currently set
-    Flag        _flags{Flag::None};
+    Flag _flags{Flag::None};
 
     // The child widgets owned by this object; a Widget appends itself to its
     // boss's list at construction (see the Widget constructor)

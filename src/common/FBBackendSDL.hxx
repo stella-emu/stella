@@ -182,6 +182,8 @@ class FBBackendSDL : public FBBackend
       Refresh cached window/renderer dimensions after an external resize.
     */
     void refreshDimensions() override;
+    void beginLiveResize() override;
+    void endLiveResize() override;
 
     /**
       The SDL window ID of this backend's window, or 0 if none.
@@ -288,6 +290,11 @@ class FBBackendSDL : public FBBackend
     */
     void setWindowIcon();
 
+    /**
+      Whether vsync is wanted for the current settings.
+    */
+    bool vsyncWanted() const;
+
   private:
     OSystem& myOSystem;
 
@@ -313,6 +320,9 @@ class FBBackendSDL : public FBBackend
 
     // Does the renderer support render targets?
     bool myRenderTargetSupport{false};
+
+    // Vsync dropped for the duration of an interactive resize
+    bool myVSyncSuspended{false};
 
     // Title of the main window/screen
     string myScreenTitle;

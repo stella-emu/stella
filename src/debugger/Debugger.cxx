@@ -184,13 +184,9 @@ void Debugger::updateSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::applyResize()
 {
-  // Throttle to roughly the display rate; not on macOS (see
-  // Launcher::applyResize for both halves of that)
-#ifdef BSPF_MACOS
-  static constexpr uInt64 INTERVAL = 0;
-#else
-  static constexpr uInt64 INTERVAL = 1000000 / 60;  // microseconds
-#endif
+  // Throttle to roughly the display rate; see Launcher::applyResize
+  const uInt64 INTERVAL =
+      LiveResize::blocksMainLoop() ? 0 : 1000000 / 60;  // microseconds
   const uInt64 now = TimerManager::getTicks();
   if(now - myLastResizeTime < INTERVAL)
     return false;
@@ -233,7 +229,10 @@ void Debugger::updateTime(uInt64 time)
   else if(mySettleCountdown > 0)
   {
     if(--mySettleCountdown == 0)
+    {
+      myOSystem.frameBuffer().resizeSettled();
       myOSystem.settings().setValue("dbg.res", mySize);
+    }
   }
 }
 
@@ -981,8 +980,14 @@ void Debugger::resizeTiaWindow(int width, int height)
   // and presents itself here rather than waiting for the next rendered frame
   // (during a modal resize loop there isn't one)
   if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
+  {
     myOSystem.frameBuffer().renderSecondaryWindow(
       *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
+
+    // Restart the settle: applying the resize suspended vsync on the companion's
+    // backend, and only settling puts it back
+    myTiaSettleCountdown = 15;  // ~frames of idle before the resize is settled
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1009,6 +1014,10 @@ void Debugger::closeTiaWindow()
 
   myOSystem.frameBuffer().closeSecondaryWindow();
   myTiaWindowOpen = false;
+
+  // Nothing left to tick the countdown, and re-opening restores vsync anyway
+  // (createRenderer() ends any suspension), so don't leave one pending
+  myTiaSettleCountdown = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1024,6 +1033,12 @@ void Debugger::renderTiaWindow()
 
   if(!myTiaWindowOpen)
     return;
+
+  // Once the countdown reaches zero, run the settle pass.  Driven here rather
+  // than from updateTime(): the companion is not the active overlay, so this is
+  // its only per-frame tick
+  if(myTiaSettleCountdown > 0 && --myTiaSettleCountdown == 0)
+    myOSystem.frameBuffer().settleSecondaryWindow(*myTiaWindow);
 
   // Render on demand: the companion is presented only when its dialog/widget is
   // dirty.  That covers user interaction (zoom/pan mark the widget dirty) and
