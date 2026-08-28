@@ -258,6 +258,18 @@ int RiotDebug::timReadCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 RiotDebug::busyRateTimReadCycles() const
+{
+  return mySystem.m6532().myBusyRateTimReadCycles;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotDebug::resetBusyRate()
+{
+  mySystem.m6532().resetBusyRate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RiotDebug::switches(int newVal)
 {
   uInt8& switches = myConsole.switches().mySwitches;

@@ -142,7 +142,7 @@ class DebuggerParser
       // Member function that carries out the command
       void (DebuggerParser::*executor)();
     };
-    using CommandArray = std::array<Command, 112>;
+    using CommandArray = std::array<Command, 113>;
     static const CommandArray commands;
 
     /** Evaluate each argString through YaccParser and store results in
@@ -206,6 +206,7 @@ class DebuggerParser
     void executeBreak();
     void executeBreakIf();
     void executeBreakLabel();
+    void executeBusyRate();
     void executeC();
     void executeCheat();
     void executeClearBreaks();

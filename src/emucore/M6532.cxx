@@ -412,6 +412,7 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimReadCycles);
     out.putBool(myTimWrappedOnRead);
     out.putBool(myTimWrappedOnWrite);
+    out.putLong(myBusyRateTimReadCycles);
   #endif
 
     out.putByte(myDDRA);
@@ -458,6 +459,7 @@ bool M6532::load(Serializer& in)
     myTimReadCycles = in.getInt();
     myTimWrappedOnRead = in.getBool();
     myTimWrappedOnWrite = in.getBool();
+    myBusyRateTimReadCycles = in.getLong();
   #endif
 
     myDDRA = in.getByte();

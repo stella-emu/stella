@@ -373,6 +373,38 @@ class TIA : public Device
     uInt32 frameWSyncCycles() const {
       return static_cast<uInt32>(myFrameWsyncCycles);
     }
+
+    /**
+      Answers the sum of system cycles induced by WSYNC-skipped lines during the last
+      busyRateFrames() frames.
+    */
+    uInt64 busyRateWsyncCycles() const {
+      return myBusyRateWsyncCycles;
+    }
+
+    /**
+      Answers the sum of total frame cycles during the last busyRateFrames() frames.
+    */
+    uInt64 busyRateTotalCycles() const {
+      return myBusyRateTotalCycles;
+    }
+
+    /**
+      Answers the number of frames since the start of summing WSYNC-skipped
+      system cycles
+    */
+    uInt32 busyRateFrames() const {
+      return myBusyRateFrames;
+    }
+
+    /**
+      Resets the values for busy statistics regarding TIA (RIOT needs to be resetted as well)
+    */
+    void resetBusyRate() {
+       myBusyRateWsyncCycles = 0;
+       myBusyRateTotalCycles = 0;
+       myBusyRateFrames = 0;
+    }
   #endif  // DEBUGGER_SUPPORT
 
     /**
@@ -1082,6 +1114,22 @@ class TIA : public Device
      * System cycles used by WSYNC during current frame.
      */
     uInt64 myFrameWsyncCycles{0};
+
+    /**
+     * Sum of system cycles induced by WSYNC calls during the last myBusyRateFrames frames.
+     */
+    uInt64 myBusyRateWsyncCycles{0};
+
+    /**
+     * Sum of total frame cycles during the last myBusyRateFrames frames.
+     */
+    uInt64 myBusyRateTotalCycles{0};
+
+    /**
+     * Number of frames since the start of summing WSYNC-skipped system cycles
+     * for statistics
+     */
+    uInt32 myBusyRateFrames{0};
   #endif  // DEBUGGER_SUPPORT
 
     /**

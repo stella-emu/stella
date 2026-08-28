@@ -174,6 +174,10 @@ class TIADebug : public DebuggerSystem
     int frameCount() const;
     int frameCycles() const;
     int frameWsyncCycles() const;
+    uInt64 busyRateWsyncCycles() const;
+    uInt64 busyRateTotalCycles() const;
+    uInt32 busyRateFrames() const;
+    void resetBusyRate();
     int cyclesLo() const;
     int cyclesHi() const;
     int clocksThisLine() const;

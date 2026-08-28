@@ -772,6 +772,30 @@ int TIADebug::frameWsyncCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 TIADebug::busyRateWsyncCycles() const
+{
+  return myTIA.busyRateWsyncCycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 TIADebug::busyRateTotalCycles() const
+{
+  return myTIA.busyRateTotalCycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIADebug::busyRateFrames() const
+{
+  return myTIA.busyRateFrames();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::resetBusyRate()
+{
+  myTIA.resetBusyRate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesLo() const
 {
   return static_cast<int>(mySystem.cycles());

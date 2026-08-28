@@ -170,6 +170,16 @@ class M6532 : public Device
     string getAccessCounters() const override;
 
     /**
+      Add the current number of timer read cycles to the total busy statistics counter
+    */
+    void updateBusyRateTimReadCycles() { myBusyRateTimReadCycles += myTimReadCycles; }
+
+    /**
+      Reset the current number of timer read cycles for the busy statistics
+    */
+    void resetBusyRate() { myBusyRateTimReadCycles = 0; }
+
+    /**
       Reset the timer read CPU cycle counter
     */
     void resetTimReadCycles() { myTimReadCycles = 0; }
@@ -288,6 +298,7 @@ class M6532 : public Device
     bool myTimWrappedOnWrite{false};
     // Timer read CPU cycles
     uInt16 myTimReadCycles{0};
+    uInt64 myBusyRateTimReadCycles{0};
 #endif  // DEBUGGER_SUPPORT
 
   private:

@@ -1072,6 +1072,39 @@ void DebuggerParser::executeBreakLabel()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "busyRate"
+void DebuggerParser::executeBusyRate()
+{
+  const uInt32 frames = debugger.tiaDebug().busyRateFrames();
+  const uInt64 totalCycles = debugger.tiaDebug().busyRateTotalCycles();
+  commandResult << "Busy work statistics across " << frames << " frame"
+    << (frames != 1 ? "s:\n" : ":\n");
+
+  if ((frames == 0) || (totalCycles == 0))
+  {
+    commandResult << "None";
+  }
+  else
+  {
+    const uInt64 wsyncCycles = debugger.tiaDebug().busyRateWsyncCycles();
+    const uInt64 timerReadCycles = debugger.riotDebug().busyRateTimReadCycles();
+    const double busyValue =
+      100.0L - (
+	static_cast<double>(wsyncCycles + timerReadCycles) / static_cast<double>(totalCycles)
+      ) * 100.0L;
+    commandResult << totalCycles << " total cycles\n";
+    commandResult << wsyncCycles << " cycles skipped by WSYNC\n";
+    commandResult << timerReadCycles << " cycles used for timer reads\n";
+    commandResult << "-> Busy load rate: " << std::setprecision(3) << busyValue << " %";
+  }
+
+  /* reset the statistics now that they have been shown */
+  debugger.tiaDebug().resetBusyRate();
+  debugger.riotDebug().resetBusyRate();
+
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "c"
 void DebuggerParser::executeC()
 {
@@ -2960,6 +2993,22 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeBreakLabel
+  },
+
+  {
+    "busyRate",
+    "Show and reset busy load rate statistics",
+    "The statistics sum the number of cycles skipped by WSYNC and timer\n"
+    "reads across multiple frames since ROM start or last reset to\n"
+    "calculate an approximation of how much total capacity of the console\n"
+    "is actually used.\n"
+    "This shows the last collected values and then starts fresh sampling.\n"
+    "Utilizes but does not effect _fTimReadCycles and _fWsyncCycles.",
+    false,
+    false,
+    false,
+    { Parameters::ARG_END_ARGS },
+    &DebuggerParser::executeBusyRate
   },
 
   {
