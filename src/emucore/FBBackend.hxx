@@ -51,7 +51,7 @@ namespace LiveResize
   };
 
   // Resolved by initialize(); read through the accessors below
-  inline Conditions ourConditions;
+  inline Conditions ourConditions;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
   /**
     Override one condition from the environment, if that variable is set.
@@ -90,7 +90,7 @@ namespace LiveResize
     // Anything more exotic (offscreen, dummy, KMSDRM) takes the safe path
     ourConditions.awaitsOurFrame = isX11 || driver == "wayland";
   #endif
-  #if defined(BSPF_MACOS)
+  #ifdef BSPF_MACOS
     ourConditions.rescalesOurLastFrame = true;
   #else
     ourConditions.rescalesOurLastFrame = false;

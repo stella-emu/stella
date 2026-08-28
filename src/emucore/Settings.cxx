@@ -339,6 +339,9 @@ Settings::Settings()
 
   setTemporary("elf.dump", false);
 
+  // Must flip only after the setPermanent/setTemporary calls above;
+  // see the assert(!myConstructed) in each
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myConstructed = true;
 }
 
