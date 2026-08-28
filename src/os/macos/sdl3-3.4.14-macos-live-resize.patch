@@ -1,0 +1,156 @@
+macOS: keep window contents in step with the window during a live resize
+
+Target: SDL release-3.4.14     Apply with: git apply <this file>
+
+Two things make the contents judder and lag behind the window edge while it is
+dragged, both fixed here:
+
+1. METAL_RenderPresent presents fire-and-forget, so a frame can reach the screen
+   a refresh or two late, by which time the window is a different size. Enables
+   CAMetalLayer.presentsWithTransaction while inLiveResize and presents once the
+   command buffer is scheduled, so the frame joins the CATransaction the resize
+   is committed under. Outside a drag the original path is unchanged.
+
+2. Between presented frames AppKit scales the layer's contents to the view's new
+   bounds. windowDidResize: now pins them to the corner opposite the dragged
+   edge, taken from the window's frame delta (the pointer sits on the window
+   border during a drag and cannot identify the edge reliably). Applied to the
+   Metal view's layer-backed ancestors too, only when the corner changes, and a
+   no-op for non-Metal windows.
+
+Addresses https://github.com/libsdl-org/SDL/issues/12081 , unfixed as of 3.4.14.
+Measured on Stella (github.com/stella-emu/stella): each half was removed in turn
+from the working build and the artifacts returned.
+
+diff --git a/src/render/metal/SDL_render_metal.m b/src/render/metal/SDL_render_metal.m
+index 989809c..aa31df3 100644
+--- a/src/render/metal/SDL_render_metal.m
++++ b/src/render/metal/SDL_render_metal.m
+@@ -2013,6 +2013,19 @@ static bool METAL_RenderPresent(SDL_Renderer *renderer)
+     @autoreleasepool {
+         SDL3METAL_RenderData *data = (__bridge SDL3METAL_RenderData *)renderer->internal;
+         bool ready = true;
++        BOOL syncpresent = NO;
++
++#if defined(SDL_PLATFORM_MACOS) && defined(SDL_VIDEO_DRIVER_COCOA)
++        /* During a drag, tie the drawable to the CATransaction the resize is
++         * committed under, so the frame and the new window bounds land
++         * together. Costs a CPU wait, so only while inLiveResize. */
++        if (data.mtlview) {
++            syncpresent = ((__bridge NSView *)data.mtlview).inLiveResize;
++        }
++        if (data.mtllayer.presentsWithTransaction != syncpresent) {
++            data.mtllayer.presentsWithTransaction = syncpresent;
++        }
++#endif
+ 
+         // If we don't have a command buffer, we can't present, so activate to get one.
+         if (data.mtlcmdencoder == nil) {
+@@ -2032,11 +2045,20 @@ static bool METAL_RenderPresent(SDL_Renderer *renderer)
+         //  But we'll still try to commit the command buffer in case it was already enqueued.
+         if (ready) {
+             SDL_assert(data.mtlbackbuffer != nil);
+-            [data.mtlcmdbuffer presentDrawable:data.mtlbackbuffer];
++            // presentsWithTransaction presents by hand instead; see below
++            if (!syncpresent) {
++                [data.mtlcmdbuffer presentDrawable:data.mtlbackbuffer];
++            }
+         }
+ 
+         [data.mtlcmdbuffer commit];
+ 
++        if (syncpresent && ready) {
++            // Scheduled, not completed: enough to join the transaction
++            [data.mtlcmdbuffer waitUntilScheduled];
++            [data.mtlbackbuffer present];
++        }
++
+         data.mtlcmdencoder = nil;
+         data.mtlcmdbuffer = nil;
+         data.mtlbackbuffer = nil;
+diff --git a/src/video/cocoa/SDL_cocoawindow.h b/src/video/cocoa/SDL_cocoawindow.h
+index b2695be..42f76cf 100644
+--- a/src/video/cocoa/SDL_cocoawindow.h
++++ b/src/video/cocoa/SDL_cocoawindow.h
+@@ -60,6 +60,10 @@ typedef enum
+     float pendingWindowWarpX, pendingWindowWarpY;
+     BOOL isDragAreaRunning;
+     NSTimer *liveResizeTimer;
++    NSRect liveResizeLastFrame;
++    BOOL liveResizeHasAnchor;
++    BOOL liveResizeAnchorLeft;
++    BOOL liveResizeAnchorTop;
+ }
+ 
+ - (BOOL)isTouchFromTrackpad:(NSEvent *)theEvent;
+diff --git a/src/video/cocoa/SDL_cocoawindow.m b/src/video/cocoa/SDL_cocoawindow.m
+index 68c6ac5..fbe654d 100644
+--- a/src/video/cocoa/SDL_cocoawindow.m
++++ b/src/video/cocoa/SDL_cocoawindow.m
+@@ -805,6 +805,26 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
+     return [NSCursor invisibleCursor];
+ }
+ 
++/* Between presented frames AppKit scales the layer's contents to the view's new
++ * bounds. Pinning them to the corner opposite the dragged edge leaves them
++ * unscaled against the edges that are holding still. */
++static void Cocoa_AnchorLiveResizeContents(NSWindow *nswindow, BOOL anchorLeft, BOOL anchorTop)
++{
++    NSView *metalview = [[nswindow contentView] viewWithTag:SDL_METALVIEW_TAG];
++    if (metalview == nil) {
++        return;  // not a Metal window
++    }
++
++    const NSViewLayerContentsPlacement placement = anchorLeft ?
++        (anchorTop ? NSViewLayerContentsPlacementTopLeft : NSViewLayerContentsPlacementBottomLeft) :
++        (anchorTop ? NSViewLayerContentsPlacementTopRight : NSViewLayerContentsPlacementBottomRight);
++
++    // Ancestors are layer-backed too and would rescale, undoing this
++    for (NSView *v = metalview; v != nil; v = [v superview]) {
++        [v setLayerContentsPlacement:placement];
++    }
++}
++
+ @implementation SDL3Cocoa_WindowListener
+ 
+ - (void)listen:(SDL_CocoaWindowData *)data
+@@ -1140,6 +1160,9 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
+ 
+ - (void)windowWillStartLiveResize:(NSNotification *)aNotification
+ {
++    liveResizeLastFrame = [_data.nswindow frame];
++    liveResizeHasAnchor = NO;
++
+     // We'll try to maintain 60 FPS during live resizing
+     const NSTimeInterval interval = 1.0 / 60.0;
+     liveResizeTimer = [NSTimer scheduledTimerWithTimeInterval:interval
+@@ -1275,6 +1298,29 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
+         }
+     }
+ 
++    /* The frame delta names the dragged edge: Cocoa frames are bottom-left
++       based, so a moving origin.x is the left edge, origin.y the bottom.
++       Set before the events below, so the app redraws against it. */
++    if ([nswindow inLiveResize]) {
++        const NSRect frame = [nswindow frame];
++        const NSRect prev = liveResizeLastFrame;
++        const BOOL moved = !NSEqualRects(frame, prev);
++
++        liveResizeLastFrame = frame;
++        if (moved) {
++            const BOOL anchorLeft = (frame.origin.x == prev.origin.x);
++            const BOOL anchorTop = (frame.origin.y != prev.origin.y);
++
++            if (!liveResizeHasAnchor || anchorLeft != liveResizeAnchorLeft ||
++                anchorTop != liveResizeAnchorTop) {
++                liveResizeHasAnchor = YES;
++                liveResizeAnchorLeft = anchorLeft;
++                liveResizeAnchorTop = anchorTop;
++                Cocoa_AnchorLiveResizeContents(nswindow, anchorLeft, anchorTop);
++            }
++        }
++    }
++
+     /* The window can move during a resize event, such as when maximizing
+        or resizing from a corner */
+     SDL_GlobalToRelativeForWindow(window, x, y, &x, &y);
