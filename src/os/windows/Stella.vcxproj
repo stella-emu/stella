@@ -329,7 +329,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -365,7 +365,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -402,7 +402,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -438,7 +438,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -476,7 +476,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -516,7 +516,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -557,7 +557,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -597,7 +597,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -638,7 +638,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -677,7 +677,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -717,7 +717,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>All</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -755,7 +755,7 @@
       <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4063;4100;4127;4146;4244;26400;26409;26410;26415;26429;26438;26440;26446;26451;26455;26459;26467;26472;26481;26482;26485;26492;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CompileAs>CompileAsCpp</CompileAs>
       <AssemblerOutput>All</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
@@ -1018,6 +1018,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartMVCWidget.cxx" />
     <ClCompile Include="..\..\debugger\gui\CartRamWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1047,6 +1048,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\ControllerWidget.cxx" />
     <ClCompile Include="..\..\debugger\gui\DataGridRamWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1080,6 +1082,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\NullControlWidget.cxx" />
     <ClCompile Include="..\..\debugger\gui\PaddleWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1100,6 +1103,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaDisplayWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\TiaWindow.cxx" />
+    <ClCompile Include="..\..\debugger\gui\TiaWindowDialog.cxx" />
     <ClCompile Include="..\..\debugger\TimerMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1179,13 +1185,14 @@
     <ClCompile Include="..\..\gui\EmulationDialog.cxx" />
     <ClCompile Include="..\..\gui\FavoritesManager.cxx" />
     <ClCompile Include="..\..\gui\FileListWidget.cxx" />
+    <ClCompile Include="..\..\gui\FontManager.cxx" />
+    <ClCompile Include="..\..\gui\GuiObject.cxx" />
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\..\gui\LauncherFileListWidget.cxx" />
+    <ClCompile Include="..\..\gui\Layout.cxx" />
     <ClCompile Include="..\..\gui\NavigationWidget.cxx" />
     <ClCompile Include="..\..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\..\gui\LoggerDialog.cxx" />
-    <ClCompile Include="..\..\gui\MessageDialog.cxx" />
-    <ClCompile Include="..\..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\..\gui\OverlayMenu.cxx" />
     <ClCompile Include="..\..\gui\PlusRomsSetupDialog.cxx" />
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
@@ -1193,12 +1200,14 @@
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="..\..\gui\StellaSettingsDialog.cxx" />
+    <ClCompile Include="..\..\gui\TabPaneWidget.cxx" />
     <ClCompile Include="..\..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\..\gui\TimeMachineDialog.cxx" />
     <ClCompile Include="..\..\gui\ToolTip.cxx" />
     <ClCompile Include="..\..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\..\gui\WhatsNewDialog.cxx" />
+    <ClCompile Include="..\..\gui\WrappedTextWidget.cxx" />
     <ClCompile Include="..\..\lib\sqlite\source\sqlite3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">CompileAsC</CompileAs>
@@ -2450,6 +2459,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartMVCWidget.hxx" />
     <ClInclude Include="..\..\debugger\gui\CartRamWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -2537,6 +2547,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaDisplayWidget.hxx" />
+    <ClInclude Include="..\..\debugger\gui\TiaWindow.hxx" />
+    <ClInclude Include="..\..\debugger\gui\TiaWindowDialog.hxx" />
     <ClInclude Include="..\..\debugger\gui\TrakBallWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -2646,14 +2659,14 @@
     <ClInclude Include="..\..\gui\EmulationDialog.hxx" />
     <ClInclude Include="..\..\gui\FavoritesManager.hxx" />
     <ClInclude Include="..\..\gui\FileListWidget.hxx" />
+    <ClInclude Include="..\..\gui\FontManager.hxx" />
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx" />
     <ClInclude Include="..\..\gui\Icon.hxx" />
     <ClInclude Include="..\..\gui\LauncherFileListWidget.hxx" />
+    <ClInclude Include="..\..\gui\Layout.hxx" />
     <ClInclude Include="..\..\gui\NavigationWidget.hxx" />
     <ClInclude Include="..\..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\..\gui\LoggerDialog.hxx" />
-    <ClInclude Include="..\..\gui\MessageDialog.hxx" />
-    <ClInclude Include="..\..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\..\gui\OverlayMenu.hxx" />
     <ClInclude Include="..\..\gui\PlusRomsSetupDialog.hxx" />
     <ClInclude Include="..\..\gui\QuadTariDialog.hxx" />
@@ -2665,12 +2678,14 @@
     <ClInclude Include="..\..\gui\Stella14x28tFont.hxx" />
     <ClInclude Include="..\..\gui\Stella16x32tFont.hxx" />
     <ClInclude Include="..\..\gui\StellaSettingsDialog.hxx" />
+    <ClInclude Include="..\..\gui\TabPaneWidget.hxx" />
     <ClInclude Include="..\..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\..\gui\TimeMachineDialog.hxx" />
     <ClInclude Include="..\..\gui\ToolTip.hxx" />
     <ClInclude Include="..\..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\..\gui\WhatsNewDialog.hxx" />
+    <ClInclude Include="..\..\gui\WrappedTextWidget.hxx" />
     <ClInclude Include="..\..\lib\dr_libs\dr_mp3.h" />
     <ClInclude Include="..\..\lib\dr_libs\dr_mp3_lib.hxx" />
     <ClInclude Include="..\..\lib\dr_libs\dr_wav.h" />

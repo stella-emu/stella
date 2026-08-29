@@ -687,9 +687,6 @@
     <ClCompile Include="..\..\gui\StellaSettingsDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\MinUICommandDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\debugger\BreakpointMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -698,9 +695,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\Lightgun.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\MessageDialog.cxx">
-      <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\HighScoresDialog.cxx">
       <Filter>Source Files\gui</Filter>
@@ -1271,6 +1265,39 @@
     </ClCompile>
     <ClCompile Include="..\..\common\television\TVGeometry.cxx">
       <Filter>Source Files\common\television</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\FontManager.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\GuiObject.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\Layout.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\TabPaneWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\WrappedTextWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartMVCWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\ControllerWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\NullControlWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaDisplayWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaWindow.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\TiaWindowDialog.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1886,9 +1913,6 @@
     <ClInclude Include="..\..\emucore\ControlLowLevel.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\MinUICommandDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\repository\KeyValueRepository.hxx">
       <Filter>Header Files\common\repository</Filter>
     </ClInclude>
@@ -1903,9 +1927,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\Lightgun.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\MessageDialog.hxx">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\HighScoresDialog.hxx">
       <Filter>Header Files\gui</Filter>
@@ -2632,6 +2653,30 @@
     </ClInclude>
     <ClInclude Include="..\..\common\television\TVGeometry.hxx">
       <Filter>Header Files\common\television</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\FontManager.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\Layout.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\TabPaneWidget.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\WrappedTextWidget.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartMVCWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaDisplayWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaWindow.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\TiaWindowDialog.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
