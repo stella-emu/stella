@@ -40,6 +40,7 @@ class RiotDebug;
 class TIADebug;
 class DebuggerParser;
 class RewindManager;
+class TiaWindow;
 
 #include <unordered_map>
 
@@ -86,9 +87,83 @@ class Debugger : public DialogContainer
     void initialize();
 
     /**
+      Release everything that points into the console, which is about to be
+      destroyed while this object lives on (the launcher keeps the debugger
+      around until the next ROM replaces it).  Called by OSystem::closeConsole()
+      while that console is still alive.  Nothing may use the debugger between
+      here and the next console; the states that could are the ones that cannot
+      be reached without one.
+    */
+    void detach();
+
+    /**
       Initialize the video subsystem wrt this class.
     */
     FBInitStatus initializeVideo();
+
+    /**
+      Live window-resize handling, as for the launcher.  EventHandler records
+      the latest dragged size (FrameBuffer::liveResize) and drives applyResize()
+      to apply + re-flow it, so the window shows live content as it is dragged
+      rather than a stretched snapshot.  updateTime() flushes any size the
+      throttle skipped and, once the drag settles, persists the final size.
+    */
+    void updateTime(uInt64 time) override;
+    bool applyResize() override;
+    bool resizeInProgress() const override { return mySettleCountdown > 0; }
+
+    /**
+      The current (logical) size of the debugger window, which the dialog takes
+      its own size from each time it lays out.
+    */
+    const Common::Size& size() const { return mySize; }
+
+    /**
+      The companion TIA window: a separate, debugger-controlled window showing
+      the TIA image (pan/zoom inspection for now).  Toggled on demand; only
+      meaningful while in the debugger.  renderTiaWindow() is called each frame
+      by the main loop and draws into the companion's own window.
+    */
+    void toggleTiaWindow();
+    void openTiaWindow();
+    void closeTiaWindow();
+    bool tiaWindowOpen() const { return myTiaWindowOpen; }
+    void renderTiaWindow();
+
+    /**
+      The user has dragged the companion TIA window's border.  Re-flows and
+      presents it at the new size, independently of the debugger window.
+    */
+    void resizeTiaWindow(int width, int height);
+
+    /**
+      Re-apply the current HiDPI scale factor to the companion TIA window.
+      Its size is tracked in logical units, so re-running the open path is
+      what rescales it; the backend and its surfaces stay alive throughout.
+    */
+    void rescaleTiaWindow();
+
+    /**
+      Give the companion TIA window its video mode, at the size it currently
+      tracks.  Shared by the initial open and by a later rescale.
+    */
+    void applyTiaWindowMode();
+
+    /**
+      Mark the companion TIA window as needing a redraw.  Called whenever the
+      emulation state the window reflects may have changed (e.g. after a step,
+      frame/scanline advance, or rewind), and when the OS asks the window to
+      repaint.  A no-op when the window is closed; the actual redraw happens in
+      the next renderTiaWindow().
+    */
+    void invalidateTiaWindow();
+
+    /**
+      The companion TIA window's DialogContainer, or nullptr when it isn't
+      open.  Used by EventHandler to route events that target the secondary
+      window to it instead of the main debugger overlay.
+    */
+    DialogContainer* tiaWindowContainer() const;
 
     /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
@@ -150,10 +225,13 @@ class Debugger : public DialogContainer
 
     const GUI::Font& lfont() const      { return myDialog->lfont();     }
     const GUI::Font& nlfont() const     { return myDialog->nfont();     }
+    void changeFont() const;
+
     DebuggerParser& parser() const      { return *myParser;             }
     PromptWidget& prompt() const        { return myDialog->prompt();    }
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
+
 
     BreakpointMap& breakPoints() const;
 
@@ -283,7 +361,7 @@ class Debugger : public DialogContainer
     /**
       Return (and possibly create) the bottom-most dialog of this container.
     */
-    Dialog* baseDialog() override { return myDialog; }
+    Dialog* baseDialog() override { return myDialog.get(); }
 
   private:
     /**
@@ -332,16 +410,30 @@ class Debugger : public DialogContainer
 
     void reset();
 
+    /**
+      Re-derive mySize from the (just resized) window, clamped to the allowed
+      bounds.  The dialog reads it back when it re-flows.
+    */
+    void updateSize();
+
+    /**
+      The minimum debugger window size: the font-based minimum, raised if
+      necessary so the current dialog's fixed tab content is not clipped.
+    */
+    Common::Size dialogMinSize() const;
+
     void saveState(int state);
     void saveAllStates();
     void loadState(int state);
     void loadAllStates();
 
   private:
-    Console& myConsole;
-    System&  mySystem;
+    // Non-owning, and null while detached: the debugger outlives the console
+    // in the launcher, so these cannot be references (see detach())
+    Console* myConsole{nullptr};
+    System*  mySystem{nullptr};
 
-    DebuggerDialog* myDialog{nullptr};
+    unique_ptr<DebuggerDialog> myDialog;
     unique_ptr<DebuggerParser> myParser;
     unique_ptr<CartDebug>      myCartDebug;
     unique_ptr<CpuDebug>       myCpuDebug;
@@ -354,8 +446,33 @@ class Debugger : public DialogContainer
     FunctionDefMap myFunctionDefs;
 
     // Dimensions of the entire debugger window
-    Common::Size mySize{DebuggerDialog::kSmallFontMinW,
-                        DebuggerDialog::kSmallFontMinH};
+    Common::Size mySize{FBMinimum::Width, FBMinimum::Height};
+
+    // Live window-resize handling: throttle the re-flow, and settle once the
+    // user stops dragging (see applyResize()/updateTime())
+    uInt64 myLastResizeTime{0};
+    int    mySettleCountdown{0};
+
+    // The companion TIA window's DialogContainer.  Its secondary window/backend
+    // is owned by the (single) FrameBuffer, not here.
+    unique_ptr<TiaWindow> myTiaWindow;
+    bool myTiaWindowOpen{false};
+    // The companion drags independently of the debugger window, so it settles
+    // on its own countdown, ticked by renderTiaWindow() (see resizeTiaWindow())
+    int myTiaSettleCountdown{0};
+    // Deferred open: the window is created on the first render *after* the
+    // state has become DEBUGGER, so its createDisplay() doesn't run the
+    // emulation-mode (phosphor) path against the live console
+    bool myTiaWindowPending{false};
+
+    // Deferred ROM exit: 'exitRom' tears the console down, but it can be
+    // reached from call stacks that keep using that console after it returns
+    // -- a script run from the prompt's first-time load (which happens inside
+    // the dialog's loadConfig(), itself inside createConsole() under '-debug'),
+    // or DebuggerParser::run(), which touches its own members afterwards.  So
+    // record the request here and act on it from updateTime(), once the stack
+    // that asked for it has unwound
+    bool myExitRomPending{false};
 
     // Various builtin functions and operations
     struct BuiltinFunction {

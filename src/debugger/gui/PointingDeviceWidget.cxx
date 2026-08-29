@@ -17,63 +17,85 @@
 
 #include "PointingDevice.hxx"
 #include "DataGridWidget.hxx"
+#include "Layout.hxx"
 #include "PointingDeviceWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& font,
-      int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+      Controller& controller)
+  : ControllerWidget(boss, font, controller)
 {
-  int ypos = y;
-  const int xLeft = x + 10,
-            xMid = xLeft + 30,
-            xRight = xLeft + 60,
-            xValue = xLeft + 87;
-  const StaticTextWidget* t = new StaticTextWidget(boss, font,
-                                      x, y + 2, getHeader());
-  ypos += t->getHeight() + 8;
-
-  // add gray code and up widgets
-  myGrayValueV = new DataGridWidget(boss, font, xMid, ypos,
-                                    1, 1, 2, 8, Common::Base::Fmt::_16);
-  myGrayValueV->setTarget(this);
-  myGrayValueV->setEditable(false);
-
-  ypos += myGrayValueV->getHeight() + 2;
-
-  myGrayUp = new ButtonWidget(boss, font, xMid, ypos, 17, "+", kTBUp);
-  myGrayUp->setTarget(this);
-
-  ypos += myGrayUp->getHeight() + 5;
-
-  // add horizontal direction and gray code widgets
-  myGrayLeft = new ButtonWidget(boss, font, xLeft, ypos, 17, "-", kTBLeft);
-  myGrayLeft->setTarget(this);
-
-  myGrayRight = new ButtonWidget(boss, font, xRight, ypos, 17, "+", kTBRight);
-  myGrayRight->setTarget(this);
-
-  myGrayValueH = new DataGridWidget(boss, font, xValue, ypos + 2,
-                                    1, 1, 2, 8, Common::Base::Fmt::_16);
-  myGrayValueH->setTarget(this);
-  myGrayValueH->setEditable(false);
-
-  ypos += myGrayLeft->getHeight() + 5;
-
-  // add down widget
-  myGrayDown = new ButtonWidget(boss, font, xMid, ypos, 17, "-", kTBDown);
-  myGrayDown->setTarget(this);
-
-  ypos += myGrayDown->getHeight() + 8;
-
-  myFire = new CheckboxWidget(boss, font, xLeft, ypos, "Fire", kTBFire);
+  // Create the controls at a placeholder position; reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  const auto grayValue = [&]() {
+    auto* g = new DataGridWidget(boss, font, 1, 1, 2, 2,
+                                 Common::Base::Fmt::_2_2);
+    g->setTarget(this);
+    g->setEditable(false);
+    return g;
+  };
+  const auto button = [&](string_view label, GuiCmd::Code cmd) {
+    auto* b = new ButtonWidget(boss, font, label, cmd);
+    b->setTarget(this);
+    return b;
+  };
+  myGrayValueV = grayValue();
+  myGrayUp     = button("+", Cmd::Up);
+  myGrayLeft   = button("-", Cmd::Left);
+  myGrayRight  = button("+", Cmd::Right);
+  myGrayValueH = grayValue();
+  myGrayDown   = button("-", Cmd::Down);
+  myFire       = new CheckboxWidget(boss, font, "Fire", Cmd::TrackBallFire);
   myFire->setTarget(this);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addFocusWidget(myGrayUp);
   addFocusWidget(myGrayLeft);
   addFocusWidget(myGrayRight);
   addFocusWidget(myGrayDown);
   addFocusWidget(myFire);
+
+  createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PointingDeviceWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::centeredItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The +/- buttons hold a single character, so keep them small
+  const int bWidth = _font.getMaxCharWidth() * 2;
+  for(auto* b: {myGrayUp, myGrayDown, myGrayLeft, myGrayRight})
+    b->setWidth(bWidth);
+
+  // A cross of +/- buttons with the gray-code readouts: the vertical value sits
+  // above Up, the horizontal value beside Right, and Fire below.  Every cell is
+  // centered so the cross stays symmetric though the value grids are wider
+  auto grid = std::make_unique<GridLayout>(4, 5, VGAP, VGAP);
+  for(int c = 0; c < 4; ++c)
+    grid->columnAuto(c);
+  for(int r = 0; r < 5; ++r)
+    grid->rowAuto(r);
+  grid->place(1, 0, centeredItem(myGrayValueV));
+  grid->place(1, 1, centeredItem(myGrayUp));
+  grid->place(0, 2, centeredItem(myGrayLeft));
+  grid->place(2, 2, centeredItem(myGrayRight));
+  grid->place(3, 2, centeredItem(myGrayValueH));
+  grid->place(1, 3, centeredItem(myGrayDown));
+  grid->place(0, 4, anchoredItem(myFire), 4);
+
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretchSpace();
+  row->addAuto(std::move(grid));
+  row->addStretchSpace();
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,7 +107,8 @@ void PointingDeviceWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void PointingDeviceWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                         int data, int id)
 {
   // Since the PointingDevice uses its own, internal state (not reading the
   // controller), we have to communicate directly with it
@@ -93,27 +116,27 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 
   switch(cmd)
   {
-    case kTBLeft:
+    case Cmd::Left:
       ++pDev.myCountH;
       pDev.myTrackBallLeft = false;
       setGrayCodeH();
       break;
-    case kTBRight:
+    case Cmd::Right:
       --pDev.myCountH;
       pDev.myTrackBallLeft = true;
       setGrayCodeH();
       break;
-    case kTBUp:
+    case Cmd::Up:
       ++pDev.myCountV;
       pDev.myTrackBallDown = true;
       setGrayCodeV();
       break;
-    case kTBDown:
+    case Cmd::Down:
       --pDev.myCountV;
       pDev.myTrackBallDown = false;
       setGrayCodeV();
       break;
-    case kTBFire:
+    case Cmd::TrackBallFire:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
     default:
@@ -145,6 +168,5 @@ void PointingDeviceWidget::setValue(DataGridWidget* grayValue,
 {
   const uInt8 grayCode = getGrayCodeTable(index, direction);
 
-  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
-  grayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
+  grayValue->setList(0, grayCode);
 }

@@ -36,7 +36,6 @@ class CartridgeARMWidget : public CartDebugWidget
   public:
     CartridgeARMWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeARM& cart);
     ~CartridgeARMWidget() override = default;
 
@@ -44,8 +43,12 @@ class CartridgeARMWidget : public CartDebugWidget
     void loadConfig() override;
 
   protected:
-    void addCycleWidgets(int xpos, int ypos);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // The ARM cycle/instruction counters and the controls that drive them, which
+    // every ARM cart has.  A leaf creates them in its ctor and, having appended
+    // its own rows in layoutContent(), calls this base to put them underneath
+    void createCycleWidgets();
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void handleChipType();
@@ -62,25 +65,30 @@ class CartridgeARMWidget : public CartDebugWidget
 
     CartridgeARM& myCart;
 
-    CheckboxWidget*   myIncCycles{nullptr};
-    SliderWidget*     myCycleFactor{nullptr};
-    PopUpWidget*      myChipType{nullptr};
-    CheckboxWidget*   myLockMamMode{nullptr};
-    PopUpWidget*      myMamMode{nullptr};
-    StaticTextWidget* myCyclesLabel{nullptr};
-    DataGridWidget*   myPrevThumbCycles{nullptr};
-    DataGridWidget*   myPrevThumbInstructions{nullptr};
-    DataGridWidget*   myThumbCycles{nullptr};
-    DataGridWidget*   myThumbInstructions{nullptr};
+    CheckboxWidget*  myIncCycles{nullptr};
+    LabelWidget*     myCycleFactorLbl{nullptr};
+    SliderWidget*    myCycleFactor{nullptr};
+    LabelWidget*     myChipTypeLbl{nullptr};
+    PopUpWidget*     myChipType{nullptr};
+    CheckboxWidget*  myLockMamMode{nullptr};
+    PopUpWidget*     myMamMode{nullptr};
+    LabelWidget*     myArmCyclesLbl{nullptr};
+    LabelWidget*     myInstructionsLbl{nullptr};
+    LabelWidget*     myCyclesLbl{nullptr};
+    DataGridWidget*  myPrevThumbCycles{nullptr};
+    DataGridWidget*  myPrevThumbInstructions{nullptr};
+    DataGridWidget*  myThumbCycles{nullptr};
+    DataGridWidget*  myThumbInstructions{nullptr};
 
     CartState myOldState;
 
-    enum {
-      kChipChanged      = 'chCh',
-      kMamLockChanged   = 'mlCh',
-      kMamModeChanged   = 'mmCh',
-      kIncCyclesChanged = 'inCH',
-      kFactorChanged    = 'fcCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ChipChanged      = GuiCmd::of("CartridgeARMWidget.ChipChanged"),
+        MamLockChanged   = GuiCmd::of("CartridgeARMWidget.MamLockChanged"),
+        MamModeChanged   = GuiCmd::of("CartridgeARMWidget.MamModeChanged"),
+        IncCyclesChanged = GuiCmd::of("CartridgeARMWidget.IncCyclesChanged"),
+        FactorChanged    = GuiCmd::of("CartridgeARMWidget.FactorChanged");
     };
 
   private:

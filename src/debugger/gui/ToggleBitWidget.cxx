@@ -23,9 +23,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars,
+                                 int cols, int rows, int colchars,
                                  const StringList& labels)
-  : ToggleWidget(boss, font, x, y, cols, rows),
+  : ToggleWidget(boss, font, cols, rows),
+    _colChars{colchars},
     _labelList{labels}
 {
   _rowHeight = font.getLineHeight();
@@ -43,15 +44,24 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
   }
 
   // Calculate real dimensions
-  _w = _colWidth  * cols + 1;
-  _h = _rowHeight * rows + 1;
+  recalcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars)
-  : ToggleBitWidget(boss, font, x, y, cols, rows, colchars, StringList())
+                                 int cols, int rows, int colchars)
+  : ToggleBitWidget(boss, font, cols, rows, colchars, StringList())
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToggleBitWidget::refreshFont()
+{
+  ToggleWidget::refreshFont();
+
+  _rowHeight = _lineHeight;
+  _colWidth  = _colChars * _fontWidth + 8;
+  recalcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,7 +135,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
     {
       ColorId textColor = kTextColor;
       const int x = _x + 4 + (col * _colWidth),
-                y = _y + 2 + (row * _rowHeight),
+                y = _y + firstTextY() + (row * _rowHeight),
                 pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.

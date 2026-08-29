@@ -30,17 +30,42 @@
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
-    myImageHeight{_h - labelHeight(font) - font.getFontHeight() / 4 - 1}
+RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE; // | FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse; // | Flag::WantsRawData;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
 
+  // myImageHeight and the zoom rect follow the area, which setArea() gives us
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  setSize(w, h);
+
+  myImageHeight = _h - labelHeight(_font) - _font.getFontHeight() / 4 - 1;
   myZoomRect = Common::Rect(_w * 7 / 16, myImageHeight * 7 / 16,
                             _w * 9 / 16, myImageHeight * 9 / 16);
+
+  // Resize the navigation overlay (redrawn from scratch in drawWidget())
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  if(myNavSurface)
+  {
+    myNavSurface->resize(_w, myImageHeight);
+    myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
+  }
+
+#ifdef IMAGE_SUPPORT
+  // Rescale the current image to the new area (the image is held at its native
+  // resolution, so this stays crisp without reloading)
+  if(mySurface && mySurfaceIsValid && !myIsZoomed)
+    zoomSurfaces(false, true);
+#endif
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,7 +161,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   {
     myImageIdx = 0;
     myImageList.clear();
-    myLabel.clear();
+    myLbl.clear();
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
@@ -305,17 +330,17 @@ bool RomImageWidget::loadPng(const string& fileName)
     PNGLibrary::loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
-    myLabel.clear();
+    myLbl.clear();
     for(const auto& data: metaData)
     {
       if(data.first == "Title")
       {
-        myLabel = data.second.toString();
+        myLbl = data.second.toString();
         break;
       }
       if(data.first == "Software"
           && data.second.toString().starts_with("Stella"))
-        myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
+        myLbl = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
   }
@@ -335,12 +360,12 @@ bool RomImageWidget::loadJpg(const string& fileName)
     instance().jpg().loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
-    myLabel.clear();
+    myLbl.clear();
     for(const auto& data: metaData)
     {
       if(data.first == "ImageDescription")
       {
-        myLabel = data.second.toString();
+        myLbl = data.second.toString();
         break;
       }
     }
@@ -567,8 +592,8 @@ void RomImageWidget::drawWidget(bool hilite)
   const int yText = _y + _h - _font.getFontHeight() * 10 / 8;
 
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
-  if(!myLabel.empty())
-    s.drawString(_font, myLabel, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
+  if(!myLbl.empty())
+    s.drawString(_font, myLbl, _x + 8, yText, _w - wText - 16 - _font.getMaxCharWidth() * 2, _textcolor);
   if(!myImageList.empty())
     s.drawString(_font, buf, _x + _w - wText, yText, wText, _textcolor);
 

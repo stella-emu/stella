@@ -21,22 +21,39 @@
 #include "Widget.hxx"
 #include "Command.hxx"
 
-// DataGridWidget operations
-enum {
-  kDGZeroCmd   = 'DGze',
-  kDGInvertCmd = 'DGiv',
-  kDGNegateCmd = 'DGng',
-  kDGIncCmd    = 'DGic',
-  kDGDecCmd    = 'DGdc',
-  kDGShiftLCmd = 'DGls',
-  kDGShiftRCmd = 'DGrs'
-};
+namespace GUI {
+  class GridLayout;
+}  // namespace GUI
 
 class DataGridOpsWidget : public Widget, public CommandSender
 {
   public:
-    DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    // DataGridWidget operations
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Zero       = GuiCmd::of("DataGridOpsWidget.Zero"),
+        Invert     = GuiCmd::of("DataGridOpsWidget.Invert"),
+        Negate     = GuiCmd::of("DataGridOpsWidget.Negate"),
+        Increment  = GuiCmd::of("DataGridOpsWidget.Increment"),
+        Decrement  = GuiCmd::of("DataGridOpsWidget.Decrement"),
+        ShiftLeft  = GuiCmd::of("DataGridOpsWidget.ShiftLeft"),
+        ShiftRight = GuiCmd::of("DataGridOpsWidget.ShiftRight");
+    };
+
+    DataGridOpsWidget(GuiObject* boss, const GUI::Font& font);
     ~DataGridOpsWidget() override = default;
+
+    // How many rows the ops column comes to: my four, plus one at the top for
+    // the owner's Options button.  Every column in the band is built to this
+    // many rows so they all end level
+    static constexpr int ROWS = 5;
+
+    // The column the op buttons live in: ROWS rows SHARING the height of the
+    // band with a fixed 'vGap' between them, so the column ends level with the
+    // register grids however tall the band comes to, and the height it is given
+    // goes into the buttons rather than the space between them.  Row 0 is left
+    // empty for the owner's Options button to place itself into
+    unique_ptr<GUI::GridLayout> buildLayout(int vGap, int hGap);
 
     void setTarget(CommandReceiver* target) override;
     void setEnabled(bool e) override;

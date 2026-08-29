@@ -30,7 +30,6 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
   public:
     Cartridge3EPlusWidget(GuiObject* boss, const GUI::Font& lfont,
                           const GUI::Font& nfont,
-                          int x, int y, int w, int h,
                           Cartridge3EPlus& cart);
     ~Cartridge3EPlusWidget() override = default;
 
@@ -41,21 +40,27 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Thomas Jentzsch"; }
     string description() override;
-    void bankSelect(int& ypos) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void createBankWidgets() override;
+    void layoutBankSelect(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void updateUIState();
 
   private:
     Cartridge3EPlus& myCart3EP;
 
+    std::array<LabelWidget*, 4> mySegLbl{nullptr};
+    std::array<LabelWidget*, 8> myAddrLbl{nullptr};
+    std::array<LabelWidget*, 4> myBankWidgetLbl{nullptr};
+    std::array<LabelWidget*, 4> myBankTypeLbl{nullptr};
     std::array<PopUpWidget*, 4> myBankType{nullptr};
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};
 
-    enum {
-      kRomRamChanged = 'rrCh',
-      kChangeBank = 'chBk',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RomRamChanged = GuiCmd::of("Cartridge3EPlusWidget.RomRamChanged"),
+        ChangeBank    = GuiCmd::of("Cartridge3EPlusWidget.ChangeBank");
     };
 
   private:

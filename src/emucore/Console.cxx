@@ -510,7 +510,7 @@ void Console::setFormat(uInt32 format, bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleInter(bool toggle)
 {
-  if(myOSystem.settings().getString("video") != "software")
+  if(myOSystem.settings().getString("video.detected") != "software")
   {
     bool enabled = myOSystem.settings().getBool("tia.inter");
 

@@ -28,27 +28,21 @@
 #include "ComboDialog.hxx"
 #include "Variant.hxx"
 
+#include "Layout.hxx"
 #include "EventMappingWidget.hxx"
 
+static constexpr int ACTION_LINES = 2;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                                       int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font),
     CommandSender(boss)
 {
-  const int lineHeight   = boss->dialog().lineHeight(),
-            fontWidth    = boss->dialog().fontWidth(),
-            buttonHeight = boss->dialog().buttonHeight(),
-            buttonWidth  = boss->dialog().buttonWidth("Defaults"),
-            VBORDER      = boss->dialog().vBorder(),
-            HBORDER      = boss->dialog().hBorder(),
-            VGAP         = boss->dialog().vGap();
-  constexpr int ACTION_LINES = 2;
-  int xpos = HBORDER, ypos = VBORDER;
-  const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
-  int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
-
   VariantList items;
+
+  // Widgets are only created here (at placeholder geometry); setArea() assigns
+  // all positions/sizes from the current font and area, so it reflows on font
+  // and dialog-size changes.
 
   VarList::push_back(items, "Emulation", Event::Group::Emulation);
   VarList::push_back(items, " Miscellaneous", Event::Group::Misc);
@@ -64,71 +58,152 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, " Debug", Event::Group::Debug);
   VarList::push_back(items, "User Interface", Event::Group::Menu);
 
-  myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
-                                  listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
-                                  lineHeight, items, "Events ", 0, kFilterCmd);
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myFilterPopupLbl = new LabelWidget(boss, font, "Events");
+  myFilterPopup = new PopUpWidget(boss, font, items, Cmd::Filter);
   myFilterPopup->setTarget(this);
   addFocusWidget(myFilterPopup);
-  ypos += lineHeight * 3 / 2;
-  listHeight -= lineHeight * 3 / 2;
 
-  myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
+  myActionsList = new StringListWidget(boss, font);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   addFocusWidget(myActionsList);
 
-  // Add remap, erase, cancel and default buttons
-  xpos = _w - HBORDER - buttonWidth + 2;
-  myMapButton = new ButtonWidget(boss, font, xpos, ypos,
-                                 buttonWidth, buttonHeight,
-                                 "Map" + ELLIPSIS, kStartMapCmd);
+  // Remap, cancel, erase, reset and combo buttons (font-derived fixed width)
+  myMapButton = new ButtonWidget(boss, font,
+                                 "Map" + ELLIPSIS, Cmd::StartMap);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
-  ypos += buttonHeight + VGAP;
-  myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
-                                       buttonWidth, buttonHeight,
-                                       "Cancel", kStopMapCmd);
+  myCancelMapButton = new ButtonWidget(boss, font,
+                                       "Cancel", Cmd::StopMap);
   myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
-  myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
+  myCancelMapButton->clearFlags(Widget::Flag::Enabled);
   addFocusWidget(myCancelMapButton);
 
-  ypos += buttonHeight + VGAP * 2;
-  myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
-                                   buttonWidth, buttonHeight,
-                                   "Erase", kEraseCmd);
+  myEraseButton = new ButtonWidget(boss, font,
+                                   "Erase", Cmd::Erase);
   myEraseButton->setTarget(this);
   myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
-  ypos += buttonHeight + VGAP;
-  myResetButton = new ButtonWidget(boss, font, xpos, ypos,
-                                   buttonWidth, buttonHeight,
-                                   "Reset", kResetCmd);
+  myResetButton = new ButtonWidget(boss, font,
+                                   "Reset", Cmd::Reset);
   myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  ypos += buttonHeight + VGAP * 2;
-  myComboButton = new ButtonWidget(boss, font, xpos, ypos,
-                                    buttonWidth, buttonHeight,
-                                    "Combo" + ELLIPSIS, kComboCmd);
+  myComboButton = new ButtonWidget(boss, font,
+                                   "Combo" + ELLIPSIS, Cmd::Combo);
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
+  // The five buttons stand in one column, so they share one width -- a standard
+  // one, so they match the dialog's own buttons rather than shrink to their labels
+  GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
+                     myResetButton, myComboButton},
+                    boss->dialog().standardButtonWidth());
+
   myComboDialog = std::make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
-  // Show message for currently selected event
-  xpos = HBORDER;
-  ypos = myActionsList->getBottom() + VGAP * 2;
-  const auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
-
-  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
-                                    _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
-                                    lineHeight + font.getFontHeight() * (ACTION_LINES - 1), "");
+  // Label and (read-only) display for the currently selected event's mapping
+  myActionLbl = new LabelWidget(boss, font, "Action");
+  myKeyMapping = new EditTextWidget(boss, font, 1, ACTION_LINES);
   myKeyMapping->setEditable(false, true);
-  myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  myKeyMapping->clearFlags(Widget::Flag::RetainFocus);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size EventMappingWidget::naturalSize() const
+{
+  // The actions list is what needs the room — it shows an event's description —
+  // and everything else here is sized from it: the buttons stand beside it, the
+  // filter pop-up above it, the mapping field below.  So what this tab asks for
+  // is the list's width plus that button column, and it is what makes the input
+  // settings as wide as they are.
+  // The height is whatever it is given: the list takes up the slack (see
+  // setArea), so there is no height of our own to report
+  const int fontWidth   = dialog().fontWidth(),
+            buttonWidth = myMapButton->getWidth(),
+            HBORDER     = dialog().hBorder();
+
+  return Common::Size(HBORDER * 2 + listWidth() + fontWidth + buttonWidth, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::setArea(int x, int y, int w, int h)
+{
+  using GUI::BoxLayout;
+  using GUI::alignedItem;
+  using GUI::widgetItem;
+  using GUI::stretchedItem;
+  using GUI::labeledRow;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  setPos(x, y);
+  Widget::setWidth(w);
+  Widget::setHeight(h);
+
+  // The buttons share one width; re-derived here so a live font change is picked
+  // up (each button first re-sizes itself to its own label, see refreshFont)
+  GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
+                     myResetButton, myComboButton}, dialog().standardButtonWidth());
+
+  const int fontWidth    = dialog().fontWidth(),
+            buttonWidth  = myMapButton->getWidth(),
+            VBORDER      = dialog().vBorder(),
+            HBORDER      = dialog().hBorder(),
+            VGAP         = dialog().vGap();
+  // The width the list actually gets: what is left beside the button column
+  const int listArea = w - buttonWidth - HBORDER * 2 - fontWidth;
+
+  // Event-group filter popup, flush with the actions list below it
+  GUI::alignLabels({{myFilterPopupLbl}});
+
+  auto filterRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  filterRow->addFixed(labeledRow(myFilterPopupLbl, myFilterPopup, 0, 0, true), listArea);
+  filterRow->addStretchSpace();
+
+  // The buttons form a column to the right of the list, aligned to its top
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  buttonCol->addAuto(stretchedItem(myMapButton));
+  buttonCol->addSpace(VGAP);
+  buttonCol->addAuto(stretchedItem(myCancelMapButton));
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addAuto(stretchedItem(myEraseButton));
+  buttonCol->addSpace(VGAP);
+  buttonCol->addAuto(stretchedItem(myResetButton));
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addAuto(stretchedItem(myComboButton));
+  buttonCol->addStretchSpace();
+
+  // The list widens with the dialog, but it says how narrow it may be — which is
+  // what the dialog's own width is derived from (see naturalSize)
+  auto listRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  listRow->addStretch(widgetItem(myActionsList, listWidth()));
+  listRow->addSpace(fontWidth);
+  listRow->addFixed(std::move(buttonCol), buttonWidth);
+
+  // Selected event's label and its (read-only) key-mapping display.  The display
+  // is a multi-line box, so the two sit on its FIRST line: centering the label
+  // would drop it to the middle of a box whose lower lines are there to be used
+  auto actionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  actionRow->addAuto(alignedItem(myActionLbl, HAlign::Left, VAlign::Baseline));
+  actionRow->addSpace(fontWidth);
+  actionRow->addStretch(alignedItem(myKeyMapping, HAlign::Fill, VAlign::Baseline));
+
+  auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  col->addAuto(std::move(filterRow));
+  col->addSpace(VGAP * 2);
+  // The actions list takes whatever height the rows around it leave over
+  col->addStretch(std::move(listRow));
+  col->addSpace(VGAP * 2);
+  col->addAuto(std::move(actionRow));
+  col->doLayout(x, y, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,7 +266,7 @@ void EventMappingWidget::startRemapping()
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
-  myActionsList->setFlags(Widget::FLAG_WANTS_RAWDATA);
+  myActionsList->setFlags(Widget::Flag::WantsRawData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,7 +310,7 @@ void EventMappingWidget::stopRemapping()
   drawKeyMapping();
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(Widget::FLAG_WANTS_RAWDATA);
+  myActionsList->clearFlags(Widget::Flag::WantsRawData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,16 +475,16 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
+void EventMappingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                        int data, int id)
 {
   switch(cmd)
   {
-    case kFilterCmd:
+    case Cmd::Filter:
       updateActions();
       break;
 
-    case ListWidget::kSelectionChangedCmd:
+    case ListWidget::Cmd::SelectionChanged:
       if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
         myActionSelected = sel;
@@ -418,7 +493,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case ListWidget::kDoubleClickedCmd:
+    case ListWidget::Cmd::DoubleClicked:
       if(const int sel = myActionsList->getSelected(); sel >= 0)
       {
         myActionSelected = sel;
@@ -426,23 +501,23 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case kStartMapCmd:
+    case Cmd::StartMap:
       startRemapping();
       break;
 
-    case kStopMapCmd:
+    case Cmd::StopMap:
       stopRemapping();
       break;
 
-    case kEraseCmd:
+    case Cmd::Erase:
       eraseRemapping();
       break;
 
-    case kResetCmd:
+    case Cmd::Reset:
       resetRemapping();
       break;
 
-    case kComboCmd:
+    case Cmd::Combo:
       if(myComboDialog)
         myComboDialog->show(
           EventHandler::eventAtIndex(myActionSelected, myEventGroup),

@@ -29,6 +29,7 @@
 class UndoHandler
 {
   public:
+    // 'size' is the maximum number of undo states kept
     explicit UndoHandler(size_t size = 100);
     ~UndoHandler() = default;
 
@@ -62,6 +63,7 @@ class UndoHandler
     }
 
   private:
+    // Past text states, newest first; myBuffer[myRedoCount] is the current one
     std::deque<string> myBuffer;
     // Undo buffer size
     size_t  mySize{0};

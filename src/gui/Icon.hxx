@@ -24,6 +24,7 @@ namespace GUI {
 
 struct IconDesc
 {
+  // Icon size in pixels
   int width{0};
   int height{0};
 
@@ -31,23 +32,39 @@ struct IconDesc
     : width{_width}, height{_height} { }
 };
 
+/**
+  A monochrome bitmap: one uInt32 per row, most significant bit leftmost, so
+  an icon is at most 32 pixels wide.
+
+  The geometry travels with the rows, so nothing that draws an Icon has to be
+  told its size separately -- see FBSurface::drawIcon().
+
+  An Icon is a view over rows that live elsewhere, in a constexpr array which
+  outlives it; the Icon itself is constexpr too, so a header full of them
+  costs nothing at run time.
+*/
 class Icon
 {
   public:
-    constexpr Icon(IconDesc desc, const uIntArray& bitmap)
+    constexpr Icon(IconDesc desc, SpanOf<uInt32> bitmap)
       : myIconDesc{desc}, myBitmap{bitmap} { }
-    constexpr Icon(int width, int height, const uIntArray& bitmap)
+    // Convenience overload taking width/height directly instead of an IconDesc
+    constexpr Icon(int width, int height, SpanOf<uInt32> bitmap)
       : Icon(IconDesc(width, height), bitmap) { }
     ~Icon() = default;
 
-    const IconDesc& desc() const { return myIconDesc; }
-    int height() const { return myIconDesc.height; }
-    int width() const { return myIconDesc.width; }
-    const uInt32* bitmap() const { return myBitmap.data(); }
+    // Width and height as a single descriptor
+    constexpr const IconDesc& desc() const { return myIconDesc; }
+    constexpr int height() const { return myIconDesc.height; }
+    constexpr int width() const { return myIconDesc.width; }
+    // First of 'height' rows, one uInt32 per row
+    constexpr const uInt32* bitmap() const { return myBitmap.data(); }
 
   private:
+    // This icon's size
     IconDesc myIconDesc;
-    uIntArray myBitmap;
+    // The row data itself, owned elsewhere (see the class comment)
+    SpanOf<uInt32> myBitmap;
 
   private:
     // Following constructors and assignment operators not supported
@@ -58,6 +75,6 @@ class Icon
     Icon& operator=(Icon&&) = delete;
 };
 
-} // namespace GUI
+}  // namespace GUI
 
 #endif  // ICON_HXX

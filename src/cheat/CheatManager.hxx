@@ -37,6 +37,7 @@ using CheatList = vector<shared_ptr<Cheat>>;
 class CheatManager
 {
   public:
+    // Creates an empty cheat manager for the given system
     explicit CheatManager(OSystem& osystem);
     ~CheatManager() = default;
 
@@ -143,13 +144,16 @@ class CheatManager
     void parse(string_view cheats);
 
   private:
+    // Parent system, used to reach console/settings/cheat file
     OSystem& myOSystem;
 
+    // All cheats currently loaded for the active ROM
     CheatList myCheatList;
+    // Subset of myCheatList re-applied every frame (e.g. RAM cheats)
     CheatList myPerFrameList;
 
+    // md5sum -> serialized cheat list, loaded from/saved to disk
     std::unordered_map<string, string, BSPF::StringHash, std::equal_to<>> myCheatMap;
-    string myCheatFile;
 
     // This is set each time a new cheat/ROM is loaded, for later
     // comparison to see if the cheatcode list has actually been modified

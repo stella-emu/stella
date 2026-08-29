@@ -23,21 +23,21 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h, bool hilite,
-                                   bool useScrollbar)
-  : ListWidget(boss, font, x, y, w, h, useScrollbar),
-    _hilite{hilite}
+                                   bool hilite, bool useScrollbar)
+  : ListWidget(boss, font, useScrollbar),
+    _hilite{hilite},
+    _textOfs{textInset(font)}
 {
   _bgcolorlo = kDlgColor;
+}
 
-  if(_font.getFontHeight() < 24)
-  {
-    _textOfs = 3;
-  }
-  else
-  {
-    _textOfs = 5;
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StringListWidget::refreshFont()
+{
+  ListWidget::refreshFont();
+
+  // My text inset is font-derived, so it has to follow a live font change
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,8 +128,8 @@ void StringListWidget::drawWidget(bool hilite)
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode &&
      (!_useScrollbar ||
-     ((_selectedItem >= _scrollBar->_currentPos) &&
-      (_selectedItem < _scrollBar->_currentPos + _rows))))
+     ((_selectedItem >= _scrollBar->currentPos()) &&
+      (_selectedItem < _scrollBar->currentPos() + _rows))))
     drawCaretSelection();
 }
 
@@ -139,6 +139,6 @@ Common::Rect StringListWidget::getEditRect() const
   const int offset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
   return {
     static_cast<uInt32>(_textOfs), static_cast<uInt32>(1 + offset),
-    static_cast<uInt32>(_w - _textOfs), static_cast<uInt32>(_lineHeight + offset)
+    static_cast<uInt32>(_textOfs + textWidth()), static_cast<uInt32>(_lineHeight + offset)
   };
 }

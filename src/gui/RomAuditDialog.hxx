@@ -21,49 +21,59 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
+class ButtonWidget;
 class EditTextWidget;
-class StaticTextWidget;
-namespace GUI {
-  class MessageBox;
-}  // namespace GUI
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "FSNode.hxx"
 
+/**
+  Dialog for auditing a ROM directory: renames files matching a known
+  MD5 to their properties name, reporting the results.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomAuditDialog : public Dialog
 {
   public:
-    RomAuditDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, int max_w, int max_h);
+    RomAuditDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~RomAuditDialog() override;
 
+    // Populates the audit path from the launcher's current directory (or
+    // 'romdir'), and clears the result fields
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // Audit ("OK") confirms, then runs auditRoms() and reloads the launcher;
+    // the path button opens a directory browser
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layout() override;
 
   private:
+    // Renames every ROM under the audit path that matches a known MD5 to its
+    // properties name, showing progress and reporting renamed/skipped counts
     void auditRoms();
 
   private:
-    enum {
-      kChooseAuditDirCmd = 'RAsl', // audit dir select
-      kConfirmAuditCmd   = 'RAcf'  // confirm rom audit
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ChooseAuditDir = GuiCmd::of("RomAuditDialog.ChooseAuditDir");  // audit dir select
     };
 
     // ROM audit path
+    ButtonWidget*   myRomButton{nullptr};
     EditTextWidget* myRomPath{nullptr};
 
     // Show the results of the ROM audit
+    LabelWidget*    myRenamedLbl{nullptr};
     EditTextWidget* myResults1{nullptr};
+    LabelWidget*    mySkippedLbl{nullptr};
     EditTextWidget* myResults2{nullptr};
 
-    // Show a message about the dangers of using this function
-    unique_ptr<GUI::MessageBox> myConfirmMsg;
-
-    // Maximum width and height for this dialog
-    int myMaxWidth{0}, myMaxHeight{0};
+    // Inline warning about the dangers of using this function
+    LabelWidget* myWarningLbl{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

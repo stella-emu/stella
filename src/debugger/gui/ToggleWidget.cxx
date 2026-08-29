@@ -24,15 +24,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int cols, int rows, int shiftBits)
-  : Widget(boss, font, x, y, 16, 16),
+                           int cols, int rows, int shiftBits)
+  : Widget(boss, font),
     CommandSender(boss),
     _rows{rows},
     _cols{cols},
     _shiftBits{shiftBits}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
-           Widget::FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus |
+           Widget::Flag::WantsRawData;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,7 +68,7 @@ void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
-    sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::ItemDataChanged, _selectedItem, _id);
     setDirty();
   }
 }
@@ -182,7 +182,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];
-      sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
+      sendCommand(Cmd::ItemDataChanged, _selectedItem, _id);
       dialog().tooltip().hide();
     }
 
@@ -193,10 +193,10 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
+void ToggleWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
-  if(cmd == GuiObject::kSetPositionCmd)
+  if(cmd == GuiObject::Cmd::SetPosition)
   {
     if(_selectedItem != data)
     {

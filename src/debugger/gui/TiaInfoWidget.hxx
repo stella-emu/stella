@@ -20,22 +20,61 @@
 
 class GuiObject;
 class EditTextWidget;
+class LabelWidget;
 class CheckboxWidget;
 
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class BoxLayout;
+}  // namespace GUI
+
 
 class TiaInfoWidget : public Widget, public CommandSender
 {
   public:
-    TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                  int x, int y, int max_w);
+    TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~TiaInfoWidget() override = default;
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move the widget and
+    // re-lay-out the two columns of fields for the width given, choosing the
+    // short or long label variants to fit
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how tall I am -- that is however tall my rows,
+    // gaps and margins make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
+    // The narrowest width the fields still fit into, i.e. the width at which
+    // the short label variants are used.  Bounds the status area, which shares
+    // the debugger's top band with the (growable) TIA image.  Measuring means
+    // showing the short labels, so this restores the form that was on screen
+    int minWidth();
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+
+  private:
+    // Lay the fields out within the width the parent layout gave us, choosing
+    // the label form that fits; shared by the ctor and setArea()
+    void reflow();
+
+    // Show the long or the short form of every row label.  The labels resize
+    // themselves to what they show, so the layout's own size follows suit
+    void setLabels(bool longstr);
+
+    // The two columns of rows, as the engine sees them.  Asking this tree for
+    // its natural size is where the widget's own width and height come from,
+    // so no width or height is ever added up here by hand
+    unique_ptr<GUI::BoxLayout> buildLayout() const;
+
+    // The width the given label form wants: clearances, gap and fields included
+    int naturalWidthFor(bool longstr);
+
+    // The gap between the two columns of fields
+    int columnGap() const { return _fontWidth * 5 / 4; }
 
   private:
     EditTextWidget* myFrameCount{nullptr};
@@ -51,8 +90,24 @@ class TiaInfoWidget : public Widget, public CommandSender
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
 
+    // Labels promoted from anonymous locals so the reflow can switch each one
+    // between its short and long text and reposition it
+    LabelWidget* myFrameCyclesLbl{nullptr};
+    LabelWidget* myWSyncCyclesLbl{nullptr};
+    LabelWidget* myTimerCyclesLbl{nullptr};
+    LabelWidget* myTotalLbl{nullptr};
+    LabelWidget* myDeltaLbl{nullptr};
+    LabelWidget* myFrameCountLbl{nullptr};
+    LabelWidget* myScanlineLbl{nullptr};
+    LabelWidget* myScanCycleLbl{nullptr};
+    LabelWidget* myPixelPosLbl{nullptr};
+    LabelWidget* myColorClockLbl{nullptr};
+
+    // Which label form is currently on screen
+    bool myLongLabels{false};
+
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

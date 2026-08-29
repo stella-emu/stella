@@ -28,7 +28,6 @@ class CartridgeARWidget : public CartDebugWidget
   public:
     CartridgeARWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       CartridgeAR& cart);
     ~CartridgeARWidget() override = default;
 
@@ -36,13 +35,18 @@ class CartridgeARWidget : public CartDebugWidget
     string bankState() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     CartridgeAR& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeARWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

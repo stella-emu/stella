@@ -19,9 +19,8 @@
 
 #include "CartELF.hxx"
 #include "Widget.hxx"
-#include "StringParser.hxx"
-#include "ScrollBarWidget.hxx"
-#include "StringListWidget.hxx"
+#include "WrappedTextWidget.hxx"
+#include "Layout.hxx"
 #include "BrowserDialog.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -31,9 +30,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss,
                        const GUI::Font& lfont, const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeELF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   initialize();
@@ -42,41 +40,41 @@ CartridgeELFWidget::CartridgeELFWidget(GuiObject* boss,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeELFWidget::initialize()
 {
-  addBaseInformation(myCart.myImage.size(), "AtariAge", "see log below", 1);
+  createBaseInformation(myCart.myImage.size(), "AtariAge", "see log below", 1);
 
-  const auto lineHeight = _font.getLineHeight();
-  const auto width = _w - 12;
-  constexpr uInt32 visibleLogLines = 19;
-  constexpr int x = 2;
+  // The log wraps itself to whatever width it is given, and scrolls beyond
+  // VISIBLE_LOG_LINES of it
+  myLog = new WrappedTextWidget(_boss, _font,
+                                myCart.getDebugLog(), VISIBLE_LOG_LINES);
+  myLog->setEditable(false);
+  myLog->setEnabled(true);
 
-  int y = (9 * lineHeight) / 2;
+  mySaveImageButton = new ButtonWidget(_boss, _font,
+                                       "Save ARM image" + ELLIPSIS, Cmd::SaveArmImage);
+  mySaveImageButton->setTarget(this);
+  addFocusWidget(mySaveImageButton);
 
-  const StringParser parser(
-    myCart.getDebugLog(),
-    (width - ScrollBarWidget::scrollBarWidth(_font)) / _font.getMaxCharWidth()
-  );
+  reflow();
+}
 
-  const auto& logLines = parser.stringList();
-  const bool useScrollbar = logLines.size() > visibleLogLines;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeELFWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
 
-  auto* logWidget = new StringListWidget(
-    _boss, _font, x, y, width, visibleLogLines * lineHeight, false, useScrollbar
-  );
+  // Word wrap couples width to height, so the log is given its width before the
+  // column holding it is built (see the heightForWidth note in Layout.hxx)
+  myLog->setWidth(contentWidth(_w));
 
-  logWidget->setEditable(false);
-  logWidget->setEnabled(true);
-  logWidget->setList(logLines);
-
-  y += visibleLogLines * lineHeight + lineHeight / 2;
-
-  WidgetArray wid;
-
-  auto* saveImageButton = new ButtonWidget(_boss, _font, x, y, "Save ARM image" + ELLIPSIS, kSaveArmImageCmd);
-  saveImageButton->setTarget(this);
-
-  wid.push_back(saveImageButton);
-
-  addToFocusList(wid);
+  col.addSpace(_lineHeight / 2);
+  // The log scrolls, so it is squeezable: a stretching cell between the floor it
+  // always shows and the height of its own text, which keeps the button below it
+  // on the tab however short the window gets
+  col.add(GUI::widgetItem(myLog, 0, myLog->minHeight()), GUI::SizePolicy::Stretch,
+          1, static_cast<int>(myLog->naturalSize().h), myLog->minHeight());
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(anchoredItem(mySaveImageButton));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,9 +96,10 @@ void CartridgeELFWidget::saveArmImage(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeELFWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CartridgeELFWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kSaveArmImageCmd)
+  if(cmd == Cmd::SaveArmImage)
     BrowserDialog::show(
       instance().debugger().baseDialog(),
       "Save ARM image",

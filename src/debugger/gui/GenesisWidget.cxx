@@ -15,58 +15,26 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Layout.hxx"
+
 #include "GenesisWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+                             Controller& controller)
+  : ControllerWidget(boss, font, controller)
 {
-  const string& label = getHeader();
-
-  const int fontHeight = font.getFontHeight(),
-            lwidth = font.getStringWidth("Right (Genesis)");
-  int xpos = x, ypos = y;
-
-  const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                                                   fontHeight, label, TextAlign::Left);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
-  myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                    CheckboxWidget::kCheckActionCmd);
-  myPins[kJUp]->setID(kJUp);
-  myPins[kJUp]->setTarget(this);
-
-  ypos += myPins[kJUp]->getHeight() * 2 + 10;
-  myPins[kJDown] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJDown]->setID(kJDown);
-  myPins[kJDown]->setTarget(this);
-
-  xpos -= myPins[kJUp]->getWidth() + 5;
-  ypos -= myPins[kJUp]->getHeight() + 5;
-  myPins[kJLeft] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJLeft]->setID(kJLeft);
-  myPins[kJLeft]->setTarget(this);
-
-  xpos += (myPins[kJUp]->getWidth() + 5) * 2;
-  myPins[kJRight] = new CheckboxWidget(boss, font, xpos, ypos, "",
-                                       CheckboxWidget::kCheckActionCmd);
-  myPins[kJRight]->setID(kJRight);
-  myPins[kJRight]->setTarget(this);
-
-  xpos -= (myPins[kJUp]->getWidth() + 5) * 2;
-  ypos = 30 + (myPins[kJUp]->getHeight() + 10) * 3;
-  myPins[kJBbtn] = new CheckboxWidget(boss, font, xpos, ypos, "B button",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJBbtn]->setID(kJBbtn);
-  myPins[kJBbtn]->setTarget(this);
-
-  ypos += myPins[kJBbtn]->getHeight() + 5;
-  myPins[kJCbtn] = new CheckboxWidget(boss, font, xpos, ypos, "C button",
-                                      CheckboxWidget::kCheckActionCmd);
-  myPins[kJCbtn]->setID(kJCbtn);
-  myPins[kJCbtn]->setTarget(this);
+  // Create the pins at a placeholder position; reflow() lays them out
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  const auto pin = [&](int id, string_view label) {
+    myPins[id] = new CheckboxWidget(boss, font, label,
+                                    CheckboxWidget::Cmd::CheckAction);
+    myPins[id]->setID(id);
+    myPins[id]->setTarget(this);
+  };
+  pin(kJUp, "");  pin(kJDown, "");  pin(kJLeft, "");  pin(kJRight, "");
+  pin(kJBbtn, "B button");  pin(kJCbtn, "C button");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addFocusWidget(myPins[kJUp]);
   addFocusWidget(myPins[kJLeft]);
@@ -74,6 +42,33 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myPins[kJDown]);
   addFocusWidget(myPins[kJBbtn]);
   addFocusWidget(myPins[kJCbtn]);
+
+  createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GenesisWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The shared cross, with the labeled buttons left-aligned below it; the whole
+  // unit is centered so the buttons line up with the cross's left column
+  auto unit = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  unit->addAuto(layoutCross(myPins[kJUp], myPins[kJDown],
+                            myPins[kJLeft], myPins[kJRight]));
+  unit->addAuto(anchoredItem(myPins[kJBbtn]));
+  unit->addAuto(anchoredItem(myPins[kJCbtn]));
+
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretchSpace();
+  row->addAuto(std::move(unit));
+  row->addStretchSpace();
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,10 +85,10 @@ void GenesisWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GenesisWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void GenesisWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
-  if(cmd == CheckboxWidget::kCheckActionCmd)
+  if(cmd == CheckboxWidget::Cmd::CheckAction)
   {
     switch(id)
     {

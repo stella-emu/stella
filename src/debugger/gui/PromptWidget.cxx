@@ -34,31 +34,26 @@
 static constexpr string_view PROMPT = "> ";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
+PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font),
     CommandSender(boss),
     _kConsoleCharWidth{font.getMaxCharWidth()},
     _kConsoleCharHeight{font.getFontHeight()},
     _kConsoleLineHeight{_kConsoleCharHeight + 2}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
-           Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA |
-           Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus |
+           Widget::Flag::WantsTab | Widget::Flag::WantsRawData |
+           Widget::Flag::TrackMouse;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
   _bgcolorlo = kDlgColor;
 
-  // Calculate depending values
-  _lineWidth = (_w - ScrollBarWidget::scrollBarWidth(_font) - 2) / _kConsoleCharWidth;
-  _linesPerPage = (_h - 2) / _kConsoleLineHeight;
-  _linesInBuffer = kBufferSize / _lineWidth;
+  recalcMetrics();
 
   // Add scrollbar
   // We want to initialize here, not in the member list
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                   ScrollBarWidget::scrollBarWidth(_font), _h);
+  _scrollBar = new ScrollBarWidget(boss, font);
   _scrollBar->setTarget(this);
 
   myUndoHandler = std::make_unique<UndoHandler>();
@@ -67,6 +62,109 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
 
   addFocusWidget(this);
   setHelpAnchor("PromptTab", true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::recalcMetrics()
+{
+  const int lineWidth = _lineWidth;
+
+  // The scrollbar is already excluded from _w (see the constructor), so the
+  // text spans the full width less a one pixel margin on each side
+  _lineWidth = std::max((_w - 2) / _kConsoleCharWidth, 1);
+  _linesPerPage = std::max((_h - 2) / _kConsoleLineHeight, 1);
+  _linesInBuffer = kBufferSize / _lineWidth;
+
+  // The buffer holds its text wrapped at a fixed line width, so it cannot be
+  // reinterpreted once that width changes
+  _bufferStale |= _lineWidth != lineWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::setPos(const Common::Point& pos)
+{
+  Widget::setPos(pos);
+  // The scrollbar is a sibling widget, not a child, so it must be moved to
+  // track the console (it sits flush against the console's right edge)
+  _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::setWidth(int w)
+{
+  // getWidth() reports the full footprint (console + scrollbar), so setWidth()
+  // must subtract the scrollbar again to stay its inverse (mirrors the
+  // constructor); the scrollbar stays flush against the right edge
+  Widget::setWidth(w - ScrollBarWidget::scrollBarWidth(_font));
+  _scrollBar->setPosX(_x + _w);
+
+  recalcMetrics();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  _scrollBar->setHeight(h);
+
+  recalcMetrics();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::setArea(int x, int y, int w, int h)
+{
+  // Both of these recompute the metrics; only once the area is fully settled
+  // can the buffer be judged against it
+  Widget::setArea(x, y, w, h);
+
+  if(_bufferStale && !_firstTime)
+  {
+    // A changed line width invalidates everything already printed.  The command
+    // history survives, and so does whatever had been typed at the prompt
+    const string input = getLine();
+
+    clearScreen();
+    printPrompt();
+
+    if(!input.empty())
+    {
+      setLine(input);
+      myUndoHandler->doo(input);
+      scrollToCurrent();
+    }
+  }
+  else
+  {
+    // A height-only change leaves the buffer valid, but resizes the page it is
+    // viewed through.  _scrollLine is the buffer line drawn on the page's last
+    // row, so pin it between the oldest line the buffer still holds and the
+    // newest line written: a page that grew would otherwise reach above the
+    // first, and one that shrank would leave it stale, scrolling the newest
+    // line (and the cursor with it) off the top.  Within those bounds the
+    // user's own scroll position survives the resize
+    _bufferStale = false;
+
+    const int lastLine = std::max(_promptEndPos, _currentPos) / _lineWidth,
+              minScroll = _firstLineInBuffer + _linesPerPage - 1;
+    _scrollLine = BSPF::clamp(_scrollLine, minScroll,
+                              std::max(lastLine, minScroll));
+    updateScrollBuffer();
+  }
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::refreshFont()
+{
+  Widget::refreshFont();
+
+  _kConsoleCharWidth = _font.getMaxCharWidth();
+  _kConsoleCharHeight = _font.getFontHeight();
+  _kConsoleLineHeight = _kConsoleCharHeight + 2;
+
+  // A new character width means a new line width; the setArea() that follows
+  // from the ensuing relayout() acts on the stale buffer this leaves behind
+  recalcMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -555,10 +653,10 @@ ContextMenu& PromptWidget::mouseMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::handleCommand(CommandSender* sender, int cmd,
+void PromptWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const string_view sel = mouseMenu().getSelectedTag().toString();
     if(sel == "cut")
@@ -569,7 +667,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
       textPaste();
     setDirty();
   }
-  else if(cmd == GuiObject::kSetPositionCmd)
+  else if(cmd == GuiObject::Cmd::SetPosition)
   {
     const int newPos = data + _linesPerPage - 1 + _firstLineInBuffer;
     if (newPos != _scrollLine)
@@ -1216,9 +1314,9 @@ void PromptWidget::updateScrollBuffer()
     _firstLineInBuffer = firstline;
   }
 
-  _scrollBar->_numEntries = numlines;
-  _scrollBar->_currentPos = _scrollBar->_numEntries - (line - _scrollLine + _linesPerPage);
-  _scrollBar->_entriesPerPage = _linesPerPage;
+  _scrollBar->setNumEntries(numlines);
+  _scrollBar->setCurrentPos(numlines - (line - _scrollLine + _linesPerPage));
+  _scrollBar->setEntriesPerPage(_linesPerPage);
   _scrollBar->recalc();
 }
 
@@ -1272,15 +1370,20 @@ void PromptWidget::drawCaret()
   FBSurface& s = _boss->dialog().surface();
   const int line = _currentPos / _lineWidth;
 
-  // Don't draw the cursor if it's not in the current view
-  if(_scrollLine < line)
+  // Don't draw the cursor if it's not in the current view, which spans the
+  // lines [_scrollLine - _linesPerPage + 1, _scrollLine]; drawing above the
+  // first would land outside the widget, as nothing clips us to it
+  if(line < _scrollLine - _linesPerPage + 1 || line > _scrollLine)
     return;
 
   const int displayLine = line - _scrollLine + _linesPerPage - 1,
                           x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth,
                           y = _y + displayLine * _kConsoleLineHeight;
 
-  const char c = buffer(_currentPos); //FIXME: int to char??
+  // buffer() packs char (bits 0-7) + color + inverse into one int; truncating to
+  // char here and back to uInt8 in drawChar() below round-trips the same bits as
+  // an explicit & 0xff would.
+  const char c = buffer(_currentPos);
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
@@ -1304,19 +1407,22 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::saveBuffer(const FSNode& file)
 {
+  // Positions grow without bound while the buffer recycles, so only the lines
+  // it still holds can be saved; buffer() maps a position onto the cell that
+  // currently backs it
+  const int first = _firstLineInBuffer * _lineWidth;
+  const int last = std::max(_promptStartPos, first);
+
   string out;
-  out.reserve(_promptStartPos);  // reasonable upper bound
+  out.reserve(last - first);  // reasonable upper bound
 
-  const auto buf = std::span{_buffer}.first(
-      static_cast<size_t>(_promptStartPos));  // hard upper bound the analyzer can see
-
-  for(int start = 0; start < _promptStartPos; start += _lineWidth)
+  for(int start = first; start < last; start += _lineWidth)
   {
     // Clamp end to the last valid position in the buffer
-    int end = std::min(start + _lineWidth, _promptStartPos) - 1;
+    int end = std::min(start + _lineWidth, last) - 1;
 
     // Look for first non-space, printing char from end of line
-    while(end >= start && static_cast<char>(buf[end] & 0xff) <= ' ')
+    while(end >= start && static_cast<char>(buffer(end) & 0xff) <= ' ')
       end--;
 
     // Skip entirely blank lines rather than letting end stay < start
@@ -1329,7 +1435,7 @@ string PromptWidget::saveBuffer(const FSNode& file)
     // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
-      out += static_cast<char>(buf[j] & 0xff);
+      out += static_cast<char>(buffer(j) & 0xff);
 
     out += '\n';
   }
@@ -1356,6 +1462,7 @@ void PromptWidget::clearScreen()
   _firstLineInBuffer = 0;
   _promptStartPos = _promptEndPos = -1;
   _buffer.fill(0);
+  _bufferStale = false;
 
   if(!_firstTime)
     updateScrollBuffer();

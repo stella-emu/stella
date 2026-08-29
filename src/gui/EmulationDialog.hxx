@@ -19,45 +19,80 @@
 #define EMULATION_DIALOG_HXX
 
 class RadioButtonGroup;
+class RadioButtonWidget;
+class SliderWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 
+/**
+  Dialog for editing general emulation settings: speed, threading,
+  auto-pause, and state-save behavior on entering/exiting emulation.
+
+  @author  Thomas Jentzsch
+*/
 class EmulationDialog : public Dialog
 {
   public:
-    EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                    int max_w, int max_h);
-    ~EmulationDialog() override = default;
+    EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
+    // Out-of-line: mySaveOnExitGroup (unique_ptr<RadioButtonGroup>) needs its
+    // complete type here
+    ~EmulationDialog() override;
 
+    // Populates all controls from current settings
     void loadConfig() override;
+    // Writes all controls back to settings, re-initializing audio/video
+    // (and NTSC threading) if a console is running
     void saveConfig() override;
+    // Resets all controls to hardcoded defaults, including the state
+    // directory to its default location
     void setDefaults() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // OK saves and exits; Defaults resets to hardcoded values; the speed
+    // slider updates its own label; the state-path button opens a browser;
+    // toggling 'load/save in ROM directory' enables/disables the path controls
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+    void layout() override;
 
   private:
     // Enable/disable the state path widgets based on the ROM-directory toggle
     void updateStatePathEnabled();
 
   private:
+    // Emulation speed slider and its label
+    LabelWidget*      mySpeedLbl{nullptr};
     SliderWidget*     mySpeed{nullptr};
+
+    // General emulation toggles
     CheckboxWidget*   myUseVSync{nullptr};
     CheckboxWidget*   myTurbo{nullptr};
     CheckboxWidget*   myUIMessages{nullptr};
+    // Skips the progress bars shown while a Supercharger BIOS loads
     CheckboxWidget*   myFastSCBios{nullptr};
     CheckboxWidget*   myAutoPauseWidget{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
-    RadioButtonGroup* mySaveOnExitGroup{nullptr};
+
+    // What to do with the emulation state on entering/exiting emulation:
+    // do nothing, save to the current slot, or use Time Machine states
+    LabelWidget*      mySaveOnExitLbl{nullptr};
+    unique_ptr<RadioButtonGroup> mySaveOnExitGroup;
+    std::array<RadioButtonWidget*, 3> mySaveOnExitButtons{nullptr, nullptr, nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};
+
+    // Where state files are read from/written to
     ButtonWidget*     myStatePathButton{nullptr};
     EditTextWidget*   myStatePath{nullptr};
+    // Overrides myStatePath with the current ROM's own directory
     CheckboxWidget*   myStateWithRom{nullptr};
 
-    enum {
-      kSpeedupChanged = 'EDSp',
-      kChooseStateDir = 'EDsd',
-      kStateWithRom   = 'EDsr',
+    // Command ids dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        SpeedupChanged = GuiCmd::of("EmulationDialog.SpeedupChanged"),
+        ChooseStateDir = GuiCmd::of("EmulationDialog.ChooseStateDir"),
+        StateWithRom   = GuiCmd::of("EmulationDialog.StateWithRom");
     };
 
   private:

@@ -24,11 +24,15 @@ class DataGridWidget;
 class DataGridOpsWidget;
 class DataGridRamWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 class InputTextDialog;
 
 #include "Widget.hxx"
 #include "Command.hxx"
+
+namespace GUI {
+  class BoxLayout;
+}  // namespace GUI
 
 class RamWidget : public Widget, public CommandSender
 {
@@ -36,18 +40,35 @@ class RamWidget : public Widget, public CommandSender
 
   public:
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y, int w, int h,
-              uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
+                            uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
               string_view helpAnchor);
     ~RamWidget() override;
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
 
+    // Reflow entry point for the resizable debugger: move the widget and lay
+    // the RAM grid, its labels/buttons and the detail row out for the width
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how big I am -- that is however big my grid,
+    // buttons and detail row make me -- so report what my layout tree comes to
+    Common::Size naturalSize() const override;
+
     virtual string getLabel(int addr) const = 0;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+  private:
+    // Lay the widgets out within the area the parent layout gave us; shared by
+    // the ctor and setArea()
+    void reflow();
+
+    // The grid, its row/column labels, the action buttons and the detail row,
+    // as the engine sees them.  Asking this tree for its natural size is where
+    // the widget's own size comes from, so nothing is added up here by hand
+    unique_ptr<GUI::BoxLayout> buildLayout() const;
 
   private:
     // To be implemented by derived classes
@@ -63,7 +84,7 @@ class RamWidget : public Widget, public CommandSender
   private:
     void fillGrid(bool updateOld);
 
-    void showInputBox(int cmd);
+    void showInputBox(GuiCmd::Code cmd);
     string_view doSearch(string_view str);
     string_view doCompare(string_view str);
     void doRestart();
@@ -73,19 +94,20 @@ class RamWidget : public Widget, public CommandSender
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
 
-    // These will be needed by most of the child classes;
-    // we may as well make them protected variables
-    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
-
   private:
-    enum {
-      kUndoCmd     = 'RWud',
-      kRevertCmd   = 'RWrv',
-      kSearchCmd   = 'RWse',
-      kCmpCmd      = 'RWcp',
-      kRestartCmd  = 'RWrs',
-      kSValEntered = 'RWsv',
-      kCValEntered = 'RWcv',
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Undo                = GuiCmd::of("RamWidget.Undo"),
+        Revert              = GuiCmd::of("RamWidget.Revert"),
+        Search              = GuiCmd::of("RamWidget.Search"),
+        Compare             = GuiCmd::of("RamWidget.Compare"),
+        Restart             = GuiCmd::of("RamWidget.Restart"),
+        SearchValueEntered  = GuiCmd::of("RamWidget.SearchValueEntered"),
+        CompareValueEntered = GuiCmd::of("RamWidget.CompareValueEntered");
+    };
+
+    // Widget IDs for the RAM grid
+    enum: uInt8 {
       kRamGridID,
       kRamHexID,
       kRamDecID,
@@ -101,14 +123,20 @@ class RamWidget : public Widget, public CommandSender
 
     unique_ptr<InputTextDialog> myInputBox;
 
-    StaticTextWidget* myRamStart{nullptr};
-    std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
+    LabelWidget* myRamStart{nullptr};
+    std::array<LabelWidget*, 16> myRamLabels{nullptr};
+
+    // Promoted from anonymous locals so the reflow can reposition them
+    std::array<LabelWidget*, 16> myColHeaders{nullptr};  // column headers 0..F
+    LabelWidget* myLabelText{nullptr};  // "Label"
+    LabelWidget* myDecPrefix{nullptr};  // "#"
+    LabelWidget* myBinPrefix{nullptr};  // "%"
 
     DataGridRamWidget* myRamGrid{nullptr};
     DataGridWidget* myHexValue{nullptr};
     DataGridWidget* myDecValue{nullptr};
     DataGridWidget* myBinValue{nullptr};
-    EditTextWidget* myLabel{nullptr};
+    EditTextWidget* myLbl{nullptr};
 
     ButtonWidget* myRevertButton{nullptr};
     ButtonWidget* myUndoButton{nullptr};

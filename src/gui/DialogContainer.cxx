@@ -190,6 +190,44 @@ void DialogContainer::removeDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::requestResize()
+{
+  // Re-flow every dialog in the stack for the new window size
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::relayout()
+{
+  myDialogStack.applyAll([](Dialog*& d) { d->relayout(); });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::refreshFont()
+{
+  // Re-font every dialog belonging to this container (the font object was
+  // already mutated in place; each dialog refreshes its cached metrics and
+  // re-flows).  Registration means this reaches the dialogs that are cached
+  // or not yet opened as well as the open ones -- Dialog::relayout() no-ops
+  // while a dialog is not visible, so those simply get their font-derived
+  // metrics brought up to date, ready for whenever they are next shown
+  for(auto* d: myAllDialogs)
+    d->refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::registerDialog(Dialog* d)
+{
+  myAllDialogs.push_back(d);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::deregisterDialog(const Dialog* d)
+{
+  std::erase(myAllDialogs, d);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu

@@ -25,9 +25,10 @@ class DialogContainer;
 class PopUpWidget;
 class RadioButtonGroup;
 class SliderWidget;
-class StaticTextWidget;
+class LabelWidget;
 class EditTextWidget;
 class TabWidget;
+class TabPaneWidget;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -36,177 +37,284 @@ class OSystem;
 #include "TVSignal.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for editing video and audio settings across five tabs:
+  Display, Palettes, TV Effects, Bezels, and Audio.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class VideoAudioDialog : public Dialog
 {
   public:
-    VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
-                     const GUI::Font& font, int max_w, int max_h);
+    VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~VideoAudioDialog() override = default;
 
+    // Populates every tab from current settings
     void loadConfig() override;
+    // Writes every tab back to settings, re-initializing the framebuffer/
+    // TIA surface/audio as needed
     void saveConfig() override;
+    // Resets the currently active tab to hardcoded defaults
     void setDefaults() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layout() override;
+    // OK saves and exits; Close reverts the live palette preview back to
+    // what was loaded (see myPalette/myPaletteAdj); Defaults resets the
+    // active tab; the remaining ids update slider/pop-up labels and enabled
+    // state, or open the bezel-path browser
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
+    // Builds the 'Display' tab: renderer, zoom, fullscreen/stretch,
+    // overscan, aspect ratio, V-Size
     void addDisplayTab();
+    // Builds the 'Palettes' tab: TIA palette choice, custom R/G/B and
+    // phase/hue/saturation/etc. adjustables, and the resulting color grid
     void addPaletteTab();
+    // Builds the 'TV Effects' tab: NTSC filter mode and its custom
+    // adjustables, phosphor, scanlines
     void addTVEffectsTab();
+    // Builds the 'Bezels' tab: enable/path, and the manual
+    // emulation-window sliders
     void addBezelTab();
+    // Builds the 'Audio' tab: volume, mode preset, sample rate/resampling/
+    // headroom/buffer size, DPC pitch
     void addAudioTab();
 
+    // Enables the custom TV-effect sliders and clone buttons only when
+    // 'Custom' is selected
     void handleTVModeChange(TVMode);
+    // Loads the given preset's sharpness/resolution/artifacts/fringing/
+    // bleed into the custom sliders
     void loadTVAdjustables(TVMode preset);
+    // Disables interpolation when the software renderer is selected
     void handleRendererChanged();
+    // Enables the custom-palette adjustables only when the 'Custom'
+    // palette is selected
     void handlePaletteChange();
+    // Formats a phase/R/G/B shift slider's value as degrees, then applies
+    // the live palette preview
     void handleShiftChanged(SliderWidget* widget);
+    // Applies the current adjustables as a live palette preview, and
+    // refreshes the color grid
     void handlePaletteUpdate();
+    // Enables the stretch/refresh-rate/overscan controls only in
+    // fullscreen mode
     void handleFullScreenChange();
+    // Blanks the value label and unit when overscan is 0, else shows it
+    // as a percentage
     void handleOverscanChange();
+    // Enables the phosphor blend slider unless phosphor mode is 'by ROM'
     void handlePhosphorChange();
+    // Toggles the curvature value's "%"/"Off" unit, and disables vertical
+    // curvature (meaningless on a flat screen) when curvature is 0
     void handleCurvatureChange();
+    // Formats the drift slider's value as Hz, or "Off" at 0
     void handlePALDriftChange();
+    // Enables the bezel path/windowed controls when bezels are on, and
+    // the manual window sliders when auto window detection is off
     void handleBezelChange();
 
-    void addPalette(int x, int y, int w, int h);
+    // Creates the chroma-digit labels and the color swatch grid
+    void createPaletteWidgets(TabPaneWidget* pane);
+    // Lays out the color grid: a hex-digit column plus one column per
+    // luminance
+    unique_ptr<GUI::Layout> paletteLayout();
+    // Fills the color grid from the running console's palette, or blanks
+    // it when no console is active
     void colorPalette();
 
-    SliderWidget* createCustomSlider(WidgetArray& wid, int xpos, int& ypos,
-                                     int swidth, int lwidth, string_view desc, int cmd);
+    SliderWidget* createCustomSlider(TabPaneWidget* pane, WidgetArray& wid,
+                                     LabelWidget*& lbl, string_view desc,
+                                     GuiCmd::Code cmd);
 
+    // Previews the selected audio preset's values, without persisting
+    // them, in the custom controls
     void updatePreset();
+    // Enables/disables every audio control based on the enable checkbox,
+    // the preset, and whether Pitfall II is loaded
     void updateAudioEnabledState();
+    // Loads sample rate/headroom/buffer size/resampling quality from the
+    // given settings
     void updateSettingsWithPreset(AudioSettings&);
 
   private:
+    // Hosts the settings tabs (Display, Palettes, TV Effects, Bezels when
+    // built with image support, Audio)
     TabWidget* myTab{nullptr};
 
     // General options
-    PopUpWidget*      myRenderer{nullptr};
-    CheckboxWidget*   myTIAInterpolate{nullptr};
-    CheckboxWidget*   myFullscreen{nullptr};
-    CheckboxWidget*   myUseStretch{nullptr};
-    SliderWidget*     myTVOverscan{nullptr};
-    CheckboxWidget*   myRefreshAdapt{nullptr};
-    SliderWidget*     myTIAZoom{nullptr};
-    CheckboxWidget*   myCorrectAspect{nullptr};
-    SliderWidget*     myVSizeAdjust{nullptr};
+    LabelWidget* myRendererLbl{nullptr};
+    PopUpWidget*    myRenderer{nullptr};
+    LabelWidget*    myRendererDetected{nullptr};
+    CheckboxWidget* myTIAInterpolate{nullptr};
+    CheckboxWidget* myFullscreen{nullptr};
+    CheckboxWidget* myUseStretch{nullptr};
+    LabelWidget*    myTVOverscanLbl{nullptr};
+    SliderWidget*   myTVOverscan{nullptr};
+    CheckboxWidget* myRefreshAdapt{nullptr};
+    LabelWidget*    myTIAZoomLbl{nullptr};
+    SliderWidget*   myTIAZoom{nullptr};
+    CheckboxWidget* myCorrectAspect{nullptr};
+    LabelWidget*    myVSizeAdjustLbl{nullptr};
+    SliderWidget*   myVSizeAdjust{nullptr};
+    LabelWidget*    myDisplayInfo{nullptr};
 
     // TV effects adjustables (custom mode).  NTSC and PAL each get their own
     // widget set (5 vs 2 adjustables, plus PAL's drift and colour loss, which
-    // are console/receiver properties rather than TV presets) so that whichever
-    // one is shown stacks with no gaps; SECAM has no adjustables at all.
-    PopUpWidget*      myTVMode{nullptr};
-    SliderWidget*     myNTSCSharp{nullptr};
-    SliderWidget*     myNTSCRes{nullptr};
-    SliderWidget*     myNTSCArtifacts{nullptr};
-    SliderWidget*     myNTSCFringe{nullptr};
-    SliderWidget*     myNTSCBleed{nullptr};
-    SliderWidget*     myPALSharp{nullptr};
-    SliderWidget*     myPALBlend{nullptr};
-    SliderWidget*     myPALDrift{nullptr};
-    PopUpWidget*      myPALColorLoss{nullptr};
+    // are console/receiver properties rather than TV presets); SECAM has no
+    // adjustables at all.
+    LabelWidget*    myTVModeLbl{nullptr};
+    PopUpWidget*    myTVMode{nullptr};
+    LabelWidget*    myNTSCSharpLbl{nullptr};
+    SliderWidget*   myNTSCSharp{nullptr};
+    LabelWidget*    myNTSCResLbl{nullptr};
+    SliderWidget*   myNTSCRes{nullptr};
+    LabelWidget*    myNTSCArtifactsLbl{nullptr};
+    SliderWidget*   myNTSCArtifacts{nullptr};
+    LabelWidget*    myNTSCFringeLbl{nullptr};
+    SliderWidget*   myNTSCFringe{nullptr};
+    LabelWidget*    myNTSCBleedLbl{nullptr};
+    SliderWidget*   myNTSCBleed{nullptr};
+    LabelWidget*    myPALSharpLbl{nullptr};
+    SliderWidget*   myPALSharp{nullptr};
+    LabelWidget*    myPALBlendLbl{nullptr};
+    SliderWidget*   myPALBlend{nullptr};
+    LabelWidget*    myPALDriftLbl{nullptr};
+    SliderWidget*   myPALDrift{nullptr};
+    LabelWidget*    myPALColorLossLbl{nullptr};
+    PopUpWidget*    myPALColorLoss{nullptr};
 
     // TV phosphor effect
-    PopUpWidget*      myTVPhosphor{nullptr};
-    SliderWidget*     myTVPhosLevel{nullptr};
+    LabelWidget*    myTVPhosphorLbl{nullptr};
+    PopUpWidget*    myTVPhosphor{nullptr};
+    LabelWidget*    myTVPhosLevelLbl{nullptr};
+    SliderWidget*   myTVPhosLevel{nullptr};
 
     // TV scanline intensity and interpolation
-    StaticTextWidget* myTVScanLabel{nullptr};
-    SliderWidget*     myTVScanIntense{nullptr};
-    PopUpWidget*      myTVScanMask{nullptr};
+    LabelWidget*    myTVScanLbl{nullptr};
+    LabelWidget*    myTVScanIntenseLbl{nullptr};
+    SliderWidget*   myTVScanIntense{nullptr};
+    LabelWidget*    myTVScanMaskLbl{nullptr};
+    PopUpWidget*    myTVScanMask{nullptr};
 
     // Curvature of the simulated tube face
+    LabelWidget*      myTVCurvatureLbl{nullptr};
     SliderWidget*     myTVCurvature{nullptr};
+    LabelWidget*      myTVCurvatureYLbl{nullptr};
     SliderWidget*     myTVCurvatureY{nullptr};
 
     // TV effects adjustables presets (custom mode)
-    ButtonWidget*     myCloneComposite{nullptr};
-    ButtonWidget*     myCloneSvideo{nullptr};
-    ButtonWidget*     myCloneRGB{nullptr};
-    ButtonWidget*     myCloneCustom{nullptr};
+    ButtonWidget*   myCloneComposite{nullptr};
+    ButtonWidget*   myCloneSvideo{nullptr};
+    ButtonWidget*   myCloneRGB{nullptr};
+    ButtonWidget*   myCloneCustom{nullptr};
 
     // Palettes
-    PopUpWidget*      myTIAPalette{nullptr};
-    CheckboxWidget*   myDetectPal60{nullptr};
-    CheckboxWidget*   myDetectNtsc50{nullptr};
-    SliderWidget*     myPhaseShift{nullptr};
-    SliderWidget*     myTVRedScale{nullptr};
-    SliderWidget*     myTVRedShift{nullptr};
-    SliderWidget*     myTVGreenScale{nullptr};
-    SliderWidget*     myTVGreenShift{nullptr};
-    SliderWidget*     myTVBlueScale{nullptr};
-    SliderWidget*     myTVBlueShift{nullptr};
-    SliderWidget*     myTVHue{nullptr};
-    SliderWidget*     myTVSatur{nullptr};
-    SliderWidget*     myTVBright{nullptr};
-    SliderWidget*     myTVContrast{nullptr};
-    SliderWidget*     myTVGamma{nullptr};
-    std::array<StaticTextWidget*, 16> myColorLbl{};
-    BSPF::array2D<ColorWidget*, 16, 8> myColor{};
+    LabelWidget*    myTIAPaletteLbl{nullptr};
+    PopUpWidget*    myTIAPalette{nullptr};
+    CheckboxWidget* myDetectPal60{nullptr};
+    CheckboxWidget* myDetectNtsc50{nullptr};
+    LabelWidget*    myPhaseShiftLbl{nullptr};
+    SliderWidget*   myPhaseShift{nullptr};
+    LabelWidget*    myTVRedScaleLbl{nullptr};
+    SliderWidget*   myTVRedScale{nullptr};
+    SliderWidget*   myTVRedShift{nullptr};
+    LabelWidget*    myTVGreenScaleLbl{nullptr};
+    SliderWidget*   myTVGreenScale{nullptr};
+    SliderWidget*   myTVGreenShift{nullptr};
+    LabelWidget*    myTVBlueScaleLbl{nullptr};
+    SliderWidget*   myTVBlueScale{nullptr};
+    SliderWidget*   myTVBlueShift{nullptr};
+    LabelWidget*    myTVHueLbl{nullptr};
+    SliderWidget*   myTVHue{nullptr};
+    LabelWidget*    myTVSaturLbl{nullptr};
+    SliderWidget*   myTVSatur{nullptr};
+    LabelWidget*    myTVBrightLbl{nullptr};
+    SliderWidget*   myTVBright{nullptr};
+    LabelWidget*    myTVContrastLbl{nullptr};
+    SliderWidget*   myTVContrast{nullptr};
+    LabelWidget*    myTVGammaLbl{nullptr};
+    SliderWidget*   myTVGamma{nullptr};
+    LabelWidget*    myAutodetectLbl{nullptr};
+    // The palette: a chroma per row, a luminance per column
+    static constexpr int NUM_CHROMA = 16;
+    static constexpr int NUM_LUMA = 8;
+    std::array<LabelWidget*, NUM_CHROMA> myColorLbl{};
+    BSPF::array2D<ColorWidget*, NUM_CHROMA, NUM_LUMA> myColor{};
 
     // Bezels
-    CheckboxWidget*   myBezelEnableCheckbox{nullptr};
-    ButtonWidget*     myOpenBrowserButton{nullptr};
-    EditTextWidget*   myBezelPath{nullptr};
-    CheckboxWidget*   myBezelShowWindowed{nullptr};
-    CheckboxWidget*   myManualWindow{nullptr};
-    SliderWidget*     myWinLeftSlider{nullptr};
-    SliderWidget*     myWinRightSlider{nullptr};
-    SliderWidget*     myWinTopSlider{nullptr};
-    SliderWidget*     myWinBottomSlider{nullptr};
+    CheckboxWidget* myBezelEnableCheckbox{nullptr};
+    ButtonWidget*   myOpenBrowserButton{nullptr};
+    EditTextWidget* myBezelPath{nullptr};
+    CheckboxWidget* myBezelShowWindowed{nullptr};
+    CheckboxWidget* myManualWindow{nullptr};
+    LabelWidget*    myWinLeftSliderLbl{nullptr};
+    SliderWidget*   myWinLeftSlider{nullptr};
+    LabelWidget*    myWinRightSliderLbl{nullptr};
+    SliderWidget*   myWinRightSlider{nullptr};
+    LabelWidget*    myWinTopSliderLbl{nullptr};
+    SliderWidget*   myWinTopSlider{nullptr};
+    LabelWidget*    myWinBottomSliderLbl{nullptr};
+    SliderWidget*   myWinBottomSlider{nullptr};
 
     // Audio
-    CheckboxWidget*   mySoundEnableCheckbox{nullptr};
-    SliderWidget*     myVolumeSlider{nullptr};
-    CheckboxWidget*   myStereoSoundCheckbox{nullptr};
-    PopUpWidget*      myModePopup{nullptr};
-    PopUpWidget*      myFreqPopup{nullptr};
-    PopUpWidget*      myResamplingPopup{nullptr};
-    SliderWidget*     myHeadroomSlider{nullptr};
-    SliderWidget*     myBufferSizeSlider{nullptr};
-    SliderWidget*     myDpcPitch{nullptr};
+    CheckboxWidget* mySoundEnableCheckbox{nullptr};
+    LabelWidget*    myVolumeSliderLbl{nullptr};
+    SliderWidget*   myVolumeSlider{nullptr};
+    CheckboxWidget* myStereoSoundCheckbox{nullptr};
+    LabelWidget*    myModePopupLbl{nullptr};
+    PopUpWidget*    myModePopup{nullptr};
+    LabelWidget*    myFreqPopupLbl{nullptr};
+    PopUpWidget*    myFreqPopup{nullptr};
+    LabelWidget*    myResamplingPopupLbl{nullptr};
+    PopUpWidget*    myResamplingPopup{nullptr};
+    LabelWidget*    myHeadroomSliderLbl{nullptr};
+    SliderWidget*   myHeadroomSlider{nullptr};
+    LabelWidget*    myBufferSizeSliderLbl{nullptr};
+    SliderWidget*   myBufferSizeSlider{nullptr};
+    LabelWidget*    myDpcPitchLbl{nullptr};
+    SliderWidget*   myDpcPitch{nullptr};
 
-    string            myPalette;
+    // The palette name and adjustables in effect when the dialog opened;
+    // restored on Close (see handleCommand())
+    string myPalette;
     PaletteHandler::Adjustable myPaletteAdj;
 
-    enum {
-      kRendererChanged    = 'VDRe',
-      kZoomChanged        = 'VDZo',
-      kVSizeChanged       = 'VDVs',
-      kFullScreenChanged  = 'VDFs',
-      kOverscanChanged    = 'VDOv',
-
-      kPaletteChanged     = 'VDpl',
-      kPhaseShiftChanged  = 'VDps',
-      kRedShiftChanged    = 'VDrs',
-      kGreenShiftChanged  = 'VDgs',
-      kBlueShiftChanged   = 'VDbs',
-      kPaletteUpdated     = 'VDpu',
-
-      kTVModeChanged      = 'VDtv',
-      kPALDriftChanged    = 'VDpd',
-      kCloneCompositeCmd  = 'CLcp',
-      kCloneSvideoCmd     = 'CLsv',
-      kCloneRGBCmd        = 'CLrb',
-      kCloneCustomCmd     = 'CLcu',
-      kPhosphorChanged    = 'VDph',
-      kPhosBlendChanged   = 'VDbl',
-      kScanlinesChanged   = 'VDsc',
-      kCurvatureChanged   = 'VDcv',
-      kCurvatureYChanged  = 'VDcy',
-
-      kBezelEnableChanged = 'BZen',
-      kChooseBezelDirCmd  = 'BZsl',
-      kAutoWindowChanged = 'BZab',
-
-      kSoundEnableChanged = 'ADse',
-      kDeviceChanged      = 'ADdc',
-      kModeChanged        = 'ADmc',
-      kHeadroomChanged    = 'ADhc',
-      kBufferSizeChanged  = 'ADbc'
+    // Command ids dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RendererChanged      = GuiCmd::of("VideoAudioDialog.RendererChanged"),
+        ZoomChanged          = GuiCmd::of("VideoAudioDialog.ZoomChanged"),
+        VSizeChanged         = GuiCmd::of("VideoAudioDialog.VSizeChanged"),
+        FullScreenChanged    = GuiCmd::of("VideoAudioDialog.FullScreenChanged"),
+        OverscanChanged      = GuiCmd::of("VideoAudioDialog.OverscanChanged"),
+        PaletteChanged       = GuiCmd::of("VideoAudioDialog.PaletteChanged"),
+        PhaseShiftChanged    = GuiCmd::of("VideoAudioDialog.PhaseShiftChanged"),
+        RedShiftChanged      = GuiCmd::of("VideoAudioDialog.RedShiftChanged"),
+        GreenShiftChanged    = GuiCmd::of("VideoAudioDialog.GreenShiftChanged"),
+        BlueShiftChanged     = GuiCmd::of("VideoAudioDialog.BlueShiftChanged"),
+        PaletteUpdated       = GuiCmd::of("VideoAudioDialog.PaletteUpdated"),
+        TvModeChanged        = GuiCmd::of("VideoAudioDialog.TvModeChanged"),
+        PALDriftChanged      = GuiCmd::of("VideoAudioDialog.PALDriftChanged"),
+        CloneComposite       = GuiCmd::of("VideoAudioDialog.CloneComposite"),
+        CloneSvideo          = GuiCmd::of("VideoAudioDialog.CloneSvideo"),
+        CloneRGB             = GuiCmd::of("VideoAudioDialog.CloneRGB"),
+        CloneCustom          = GuiCmd::of("VideoAudioDialog.CloneCustom"),
+        PhosphorChanged      = GuiCmd::of("VideoAudioDialog.PhosphorChanged"),
+        PhosphorBlendChanged = GuiCmd::of("VideoAudioDialog.PhosphorBlendChanged"),
+        ScanlinesChanged     = GuiCmd::of("VideoAudioDialog.ScanlinesChanged"),
+        CurvatureChanged     = GuiCmd::of("VideoAudioDialog.CurvatureChanged"),
+        CurvatureYChanged    = GuiCmd::of("VideoAudioDialog.CurvatureYChanged"),
+        BezelEnableChanged   = GuiCmd::of("VideoAudioDialog.BezelEnableChanged"),
+        ChooseBezelDir       = GuiCmd::of("VideoAudioDialog.ChooseBezelDir"),
+        AutoWindowChanged    = GuiCmd::of("VideoAudioDialog.AutoWindowChanged"),
+        SoundEnableChanged   = GuiCmd::of("VideoAudioDialog.SoundEnableChanged"),
+        DeviceChanged        = GuiCmd::of("VideoAudioDialog.DeviceChanged"),
+        ModeChanged          = GuiCmd::of("VideoAudioDialog.ModeChanged"),
+        HeadroomChanged      = GuiCmd::of("VideoAudioDialog.HeadroomChanged"),
+        BufferSizeChanged    = GuiCmd::of("VideoAudioDialog.BufferSizeChanged");
     };
 
   private:

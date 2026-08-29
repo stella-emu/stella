@@ -17,6 +17,7 @@
 
 #include "Logger.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "EventHandlerSDL.hxx"
 
 #include "ThreadDebugging.hxx"
@@ -44,6 +45,14 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE, "1");
   //SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_CENTER, "0");
+
+  // Re-render from the watch while the main loop is blocked; see resizeWatch().
+  // Elsewhere SDL_PollEvent delivers resize/expose normally, and on X11 the
+  // watch is actively harmful: a drag floods us with events, the watch
+  // re-renders synchronously for each, and that unthrottled loop holds the main
+  // thread until the drag ends
+  if(LiveResize::blocksMainLoop())
+    SDL_AddEventWatch(resizeWatch, this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,7 +111,8 @@ void EventHandlerSDL::pollEvent()
 
       case SDL_EVENT_MOUSE_MOTION:
         handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
-                               myEvent.motion.xrel, myEvent.motion.yrel);
+                               myEvent.motion.xrel, myEvent.motion.yrel,
+                               myEvent.motion.windowID);
         break;
 
       case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -125,22 +135,25 @@ void EventHandlerSDL::pollEvent()
             break;
         }
         handleMouseButtonEvent(b, myEvent.button.type == SDL_EVENT_MOUSE_BUTTON_DOWN,
-                               myEvent.button.x, myEvent.button.y);
+                               myEvent.button.x, myEvent.button.y,
+                               myEvent.button.windowID);
         break;
       }
 
       case SDL_EVENT_MOUSE_WHEEL:
       {
-        // SDL now uses float for mouse coords, but the core still
-        // uses int throughout; this is sufficient for our current needs
-        float x{0.F}, y{0.F};
-        SDL_GetMouseState(&x, &y);  // we need mouse position too
+        // SDL now uses float for mouse coords, but the core still uses int
+        // throughout; this is sufficient for our current needs.  The wheel
+        // event carries the window-relative mouse position, which is what we
+        // need so the correct (possibly secondary) window receives it.
+        const int x = static_cast<int>(myEvent.wheel.mouse_x);
+        const int y = static_cast<int>(myEvent.wheel.mouse_y);
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(MouseButton::WHEELDOWN, true,
-                                 static_cast<int>(x), static_cast<int>(y));
+          handleMouseButtonEvent(MouseButton::WHEELDOWN, true, x, y,
+                                 myEvent.wheel.windowID);
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(MouseButton::WHEELUP, true,
-                                 static_cast<int>(x), static_cast<int>(y));
+          handleMouseButtonEvent(MouseButton::WHEELUP, true, x, y,
+                                 myEvent.wheel.windowID);
         break;
       }
 
@@ -187,6 +200,10 @@ void EventHandlerSDL::pollEvent()
         handleEvent(Event::Quit);
         break;
 
+      case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+        handleWindowCloseEvent(myEvent.window.windowID);
+        break;
+
       case SDL_EVENT_DROP_FILE:
         handleDropfileEvent(myEvent.drop.data);
         break;
@@ -198,15 +215,23 @@ void EventHandlerSDL::pollEvent()
         handleSystemEvent(SystemEvent::WINDOW_HIDDEN);
         break;
       case SDL_EVENT_WINDOW_EXPOSED:
-        handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
+        // Pass the window ID so a repaint of the secondary (companion) window
+        // can be routed to it rather than forcing a primary-window render
+        handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MOVED:
+        // Pass the window ID; each window remembers its own position
         handleSystemEvent(SystemEvent::WINDOW_MOVED,
-                          myEvent.window.data1, myEvent.window.data2);
+                          myEvent.window.data1, myEvent.window.data2,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_RESIZED:
+        // Pass the window ID: the debugger and its companion TIA window are
+        // both resizable, and resize one another's windows programmatically
         handleSystemEvent(SystemEvent::WINDOW_RESIZED,
-                          myEvent.window.data1, myEvent.window.data2);
+                          myEvent.window.data1, myEvent.window.data2,
+                          static_cast<int>(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MINIMIZED:
         handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
@@ -236,6 +261,40 @@ void EventHandlerSDL::pollEvent()
         break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
+{
+  // SDL invokes event watches synchronously from within its event pump,
+  // including while the OS runs its own modal window-resize loop (Windows/
+  // macOS).  During that loop pollEvent() above is blocked, so without this
+  // hook the window shows black while being dragged.  Re-dispatching the
+  // resize/expose here lets the normal handler run during the loop: it re-flows
+  // the dragged window live and presents each frame, exactly as it would from
+  // the main loop.
+  auto* const self = static_cast<EventHandlerSDL*>(userdata);
+
+  switch(event->type)
+  {
+    case SDL_EVENT_WINDOW_RESIZED:
+      self->handleSystemEvent(SystemEvent::WINDOW_RESIZED,
+                              event->window.data1, event->window.data2,
+                              static_cast<int>(event->window.windowID));
+      break;
+    case SDL_EVENT_WINDOW_MOVED:
+      // Dragging the left/top edge moves the window too, in its own event;
+      // repaint for it or the contents lag that edge.  Not WINDOW_MOVED,
+      // which would persist the position once per event.
+      [[fallthrough]];
+    case SDL_EVENT_WINDOW_EXPOSED:
+      self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
+                              static_cast<int>(event->window.windowID));
+      break;
+    default:
+      break;
+  }
+  return true;  // return value is ignored for event watches
 }
 
 #ifdef JOYSTICK_SUPPORT

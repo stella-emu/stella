@@ -22,8 +22,9 @@ class OSystem;
 class GuiObject;
 class EditTextWidget;
 class PopUpWidget;
-class StaticTextWidget;
+class LabelWidget;
 class RadioButtonGroup;
+class RadioButtonWidget;
 class TabWidget;
 class SliderWidget;
 class QuadTariDialog;
@@ -33,25 +34,54 @@ class QuadTariDialog;
 #include "Props.hxx"
 #include "HighScoresManager.hxx"
 
+/**
+  Dialog for editing a ROM's properties (bankswitch type, TV format,
+  controllers, cartridge metadata, high-score definitions) across
+  five tabs.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
     GameInfoDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss, int max_w, int max_h);
+                   const GUI::Font& font, GuiObject* boss);
+    // Out-of-line: myQuadTariDialog, myLeftDiffGroup, myRightDiffGroup and
+    // myTVTypeGroup (unique_ptr<QuadTariDialog>/<RadioButtonGroup>) need
+    // their complete types here
     ~GameInfoDialog() override;
 
+    // Populates every tab from the current game properties, then sets the
+    // dialog's title
     void loadConfig() override;
+    // Writes every tab back into myGameProperties and the properties set,
+    // applying changes to a running console immediately
     void saveConfig() override;
+    // Resets the currently active tab to this ROM's default properties
     void setDefaults() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layout() override;
+    // OK saves and exits; Defaults resets the active tab to this ROM's
+    // defaults; Export writes properties to disk; the remaining ids refresh
+    // detected-controller/link/high-scores state or open the QuadTari/bezel
+    // browsers
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
+    // Builds the 'Emulation' tab: bankswitch type, TV format, phosphor/
+    // blend, V-Center, sound
     void addEmulationTab();
+    // Builds the 'Console' tab: TV type and left/right difficulty switches
     void addConsoleTab();
+    // Builds the 'Controllers' tab: port selection, paddle/mouse settings,
+    // EEPROM erase
     void addControllersTab();
+    // Builds the 'Cartridge' tab: name/MD5/manufacturer/model/rarity/note/
+    // link/bezel fields
     void addCartridgeTab();
+    // Builds the 'High Scores' tab: variation/score/special-value
+    // definitions and their live readouts
     void addHighScoresTab();
 
     // load the properties for the 'Emulation' tab
@@ -64,7 +94,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadCartridgeProperties(const Properties& props);
     // load the properties for the 'High Scores' tab
     void loadHighScoresProperties(const Properties& props);
-    // load the properties of the 'High Scores' tab
+    // save the properties of the 'High Scores' tab
     void saveHighScoresProperties();
     // save properties from all tabs into the local properties object
     void saveProperties();
@@ -84,122 +114,155 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(const EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
+    // Writes the current properties (from all tabs) to a stand-alone .pro
+    // file at 'node'
     void exportCurrentPropertiesToDisk(const FSNode& node);
 
   private:
+    // Hosts the five property tabs (Emulation, Console, Controllers,
+    // Cartridge, High Scores)
     TabWidget* myTab{nullptr};
 
     // Emulation properties
-    StaticTextWidget* myBSTypeLabel{nullptr};
-    PopUpWidget*      myBSType{nullptr};
-    CheckboxWidget*   myBSFilter{nullptr};
-    StaticTextWidget* myTypeDetected{nullptr};
-    PopUpWidget*      myStartBank{nullptr};
-    PopUpWidget*      myFormat{nullptr};
-    StaticTextWidget* myFormatDetected{nullptr};
-    SliderWidget*     myVCenter{nullptr};
-    CheckboxWidget*   myPhosphor{nullptr};
-    SliderWidget*     myPPBlend{nullptr};
-    CheckboxWidget*   mySound{nullptr};
+    LabelWidget*    myBSTypeLbl{nullptr};
+    PopUpWidget*    myBSType{nullptr};
+    CheckboxWidget* myBSFilter{nullptr};
+    LabelWidget*    myTypeDetected{nullptr};
+    LabelWidget*    myStartBankLbl{nullptr};
+    PopUpWidget*    myStartBank{nullptr};
+    LabelWidget*    myFormatLbl{nullptr};
+    PopUpWidget*    myFormat{nullptr};
+    LabelWidget*    myFormatDetected{nullptr};
+    LabelWidget*    myVCenterLbl{nullptr};
+    SliderWidget*   myVCenter{nullptr};
+    CheckboxWidget* myPhosphor{nullptr};
+    LabelWidget*    myPPBlendLbl{nullptr};
+    SliderWidget*   myPPBlend{nullptr};
+    CheckboxWidget* mySound{nullptr};
+    LabelWidget*    myEmulInfo{nullptr};
 
     // Console properties
-    RadioButtonGroup* myLeftDiffGroup{nullptr};
-    RadioButtonGroup* myRightDiffGroup{nullptr};
-    RadioButtonGroup* myTVTypeGroup{nullptr};
+    unique_ptr<RadioButtonGroup> myLeftDiffGroup;
+    unique_ptr<RadioButtonGroup> myRightDiffGroup;
+    unique_ptr<RadioButtonGroup> myTVTypeGroup;
+    LabelWidget* myTVTypeLbl{nullptr};
+    LabelWidget* myLeftDiffLbl{nullptr};
+    LabelWidget* myRightDiffLbl{nullptr};
+    std::array<RadioButtonWidget*, 2> myTVType{nullptr};
+    std::array<RadioButtonWidget*, 2> myLeftDiff{nullptr};
+    std::array<RadioButtonWidget*, 2> myRightDiff{nullptr};
 
     // Controller properties
-    StaticTextWidget* myLeftPortLabel{nullptr};
-    StaticTextWidget* myRightPortLabel{nullptr};
-    PopUpWidget*      myLeftPort{nullptr};
-    StaticTextWidget* myLeftPortDetected{nullptr};
-    PopUpWidget*      myRightPort{nullptr};
-    StaticTextWidget* myRightPortDetected{nullptr};
-    ButtonWidget*     myQuadTariButton{nullptr};
-    CheckboxWidget*   mySwapPorts{nullptr};
-    CheckboxWidget*   mySwapPaddles{nullptr};
-    StaticTextWidget* myEraseEEPROMLabel{nullptr};
-    ButtonWidget*     myEraseEEPROMButton{nullptr};
-    StaticTextWidget* myEraseEEPROMInfo{nullptr};
-    StaticTextWidget* myPaddlesCenter{nullptr};
-    SliderWidget*     myPaddleXCenter{nullptr};
-    SliderWidget*     myPaddleYCenter{nullptr};
-    CheckboxWidget*   myMouseControl{nullptr};
-    PopUpWidget*      myMouseX{nullptr};
-    PopUpWidget*      myMouseY{nullptr};
-    SliderWidget*     myMouseRange{nullptr};
+    LabelWidget*    myLeftPortLbl{nullptr};
+    LabelWidget*    myRightPortLbl{nullptr};
+    PopUpWidget*    myLeftPort{nullptr};
+    LabelWidget*    myLeftPortDetected{nullptr};
+    PopUpWidget*    myRightPort{nullptr};
+    LabelWidget*    myRightPortDetected{nullptr};
+    ButtonWidget*   myQuadTariButton{nullptr};
+    CheckboxWidget* mySwapPorts{nullptr};
+    CheckboxWidget* mySwapPaddles{nullptr};
+    LabelWidget*    myEraseEEPROMLbl{nullptr};
+    ButtonWidget*   myEraseEEPROMButton{nullptr};
+    LabelWidget*    myEraseEEPROMInfo{nullptr};
+    LabelWidget*    myPaddlesCenter{nullptr};
+    LabelWidget*    myPaddleXCenterLbl{nullptr};
+    SliderWidget*   myPaddleXCenter{nullptr};
+    LabelWidget*    myPaddleYCenterLbl{nullptr};
+    SliderWidget*   myPaddleYCenter{nullptr};
+    CheckboxWidget* myMouseControl{nullptr};
+    LabelWidget*    myMouseXLbl{nullptr};
+    PopUpWidget*    myMouseX{nullptr};
+    LabelWidget*    myMouseYLbl{nullptr};
+    PopUpWidget*    myMouseY{nullptr};
+    LabelWidget*    myMouseRangeLbl{nullptr};
+    SliderWidget*   myMouseRange{nullptr};
 
     // Allow assigning the four QuadTari controllers
     unique_ptr<QuadTariDialog> myQuadTariDialog;
 
     // Cartridge properties
-    EditTextWidget*   myName{nullptr};
-    EditTextWidget*   myMD5{nullptr};
-    EditTextWidget*   myManufacturer{nullptr};
-    EditTextWidget*   myModelNo{nullptr};
-    EditTextWidget*   myRarity{nullptr};
-    EditTextWidget*   myNote{nullptr};
-    EditTextWidget*   myUrl{nullptr};
-    ButtonWidget*     myUrlButton{nullptr};
-    EditTextWidget*   myBezelName{nullptr};
-    ButtonWidget*     myBezelButton{nullptr};
-    StaticTextWidget* myBezelDetected{nullptr};
+    // Row labels: Name/MD5/Manufacturer/Model/Rarity/Note/Link/Bezelname
+    std::array<LabelWidget*, 8> myCartLabels{nullptr};
+    EditTextWidget* myName{nullptr};
+    EditTextWidget* myMD5{nullptr};
+    EditTextWidget* myManufacturer{nullptr};
+    EditTextWidget* myModelNo{nullptr};
+    EditTextWidget* myRarity{nullptr};
+    EditTextWidget* myNote{nullptr};
+    EditTextWidget* myUrl{nullptr};
+    ButtonWidget*   myUrlButton{nullptr};
+    EditTextWidget* myBezelName{nullptr};
+    ButtonWidget*   myBezelButton{nullptr};
+    LabelWidget*    myBezelDetected{nullptr};
 
     // High Scores properties
-    CheckboxWidget*   myHighScores{nullptr};
-    //CheckboxWidget*   myARMGame{nullptr};
+    CheckboxWidget* myHighScores{nullptr};
 
-    StaticTextWidget* myVariationsLabel{nullptr};
-    EditTextWidget*   myVariations{nullptr};
-    StaticTextWidget* myVarAddressLabel{nullptr};
-    EditTextWidget*   myVarAddress{nullptr};
-    EditTextWidget*   myVarAddressVal{nullptr};
-    CheckboxWidget*   myVarsBCD{nullptr};
-    CheckboxWidget*   myVarsZeroBased{nullptr};
+    // Number of game variations, and where that count is read from memory
+    LabelWidget*    myVariationsLbl{nullptr};
+    EditTextWidget* myVariations{nullptr};
+    LabelWidget*    myVarAddressLbl{nullptr};
+    EditTextWidget* myVarAddress{nullptr};
+    EditTextWidget* myVarAddressVal{nullptr};
+    CheckboxWidget* myVarsBCD{nullptr};
+    CheckboxWidget* myVarsZeroBased{nullptr};
 
-    StaticTextWidget* myScoreLabel{nullptr};
-    StaticTextWidget* myScoreDigitsLabel{nullptr};
-    PopUpWidget*      myScoreDigits{nullptr};
-    StaticTextWidget* myTrailingZeroesLabel{nullptr};
-    PopUpWidget*      myTrailingZeroes{nullptr};
-    CheckboxWidget*   myScoreBCD{nullptr};
-    CheckboxWidget*   myScoreInvert{nullptr};
+    // Score format: digit count, trailing zero count, BCD encoding, and
+    // whether a lower score is better
+    LabelWidget*    myScoreLbl{nullptr};
+    LabelWidget*    myScoreDigitsLbl{nullptr};
+    PopUpWidget*    myScoreDigits{nullptr};
+    LabelWidget*    myTrailingZeroesLbl{nullptr};
+    PopUpWidget*    myTrailingZeroes{nullptr};
+    CheckboxWidget* myScoreBCD{nullptr};
+    CheckboxWidget* myScoreInvert{nullptr};
 
-    StaticTextWidget* myScoreAddressesLabel{nullptr};
-    EditTextWidget*   myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
-    EditTextWidget*   myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
-    StaticTextWidget* myCurrentScoreLabel{nullptr};
-    StaticTextWidget* myCurrentScore{nullptr};
+    // Memory addresses the score is read from, and the score they
+    // currently resolve to
+    LabelWidget*    myScoreAddressesLbl{nullptr};
+    EditTextWidget* myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget* myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
+    LabelWidget*    myCurrentScoreLbl{nullptr};
+    LabelWidget*    myCurrentScore{nullptr};
 
-    StaticTextWidget* mySpecialLabel{nullptr};
-    EditTextWidget*   mySpecialName{nullptr};
-    StaticTextWidget* mySpecialAddressLabel{nullptr};
-    EditTextWidget*   mySpecialAddress{nullptr};
-    EditTextWidget*   mySpecialAddressVal{nullptr};
-    CheckboxWidget*   mySpecialBCD{nullptr};
-    CheckboxWidget*   mySpecialZeroBased{nullptr};
+    // The optional "special" value (the game's own word, e.g. Level/Wave/
+    // Round) and where it's read from memory
+    LabelWidget*    mySpecialLbl{nullptr};
+    EditTextWidget* mySpecialName{nullptr};
+    LabelWidget*    mySpecialAddressLbl{nullptr};
+    EditTextWidget* mySpecialAddress{nullptr};
+    EditTextWidget* mySpecialAddressVal{nullptr};
+    CheckboxWidget* mySpecialBCD{nullptr};
+    CheckboxWidget* mySpecialZeroBased{nullptr};
 
-    StaticTextWidget* myHighScoreNotesLabel{nullptr};
-    EditTextWidget*   myHighScoreNotes{nullptr};
+    // Free-text notes about this game's high-score properties
+    LabelWidget*    myHighScoreNotesLbl{nullptr};
+    EditTextWidget* myHighScoreNotes{nullptr};
 
-    enum {
-      kBSTypeChanged    = 'Btch',
-      kBSFilterChanged  = 'Bfch',
-      kVCenterChanged   = 'Vcch',
-      kPhosphorChanged  = 'PPch',
-      kPPBlendChanged   = 'PBch',
-      kLeftCChanged     = 'LCch',
-      kRightCChanged    = 'RCch',
-      kQuadTariPressed  = 'QTpr',
-      kMCtrlChanged     = 'MCch',
-      kEEButtonPressed  = 'EEgb',
-      kHiScoresChanged  = 'HSch',
-      kPXCenterChanged  = 'Pxch',
-      kPYCenterChanged  = 'Pych',
-      kExportPressed    = 'Expr',
-      kLinkPressed      = 'Lkpr',
-      kBezelFilePressed = 'BFpr'
+    // Command ids dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankswitchTypeChanged   = GuiCmd::of("GameInfoDialog.BankswitchTypeChanged"),
+        BankswitchFilterChanged = GuiCmd::of("GameInfoDialog.BankswitchFilterChanged"),
+        VCenterChanged          = GuiCmd::of("GameInfoDialog.VCenterChanged"),
+        PhosphorChanged         = GuiCmd::of("GameInfoDialog.PhosphorChanged"),
+        PhosphorBlendChanged    = GuiCmd::of("GameInfoDialog.PhosphorBlendChanged"),
+        LeftControllerChanged   = GuiCmd::of("GameInfoDialog.LeftControllerChanged"),
+        RightControllerChanged  = GuiCmd::of("GameInfoDialog.RightControllerChanged"),
+        QuadTariPressed         = GuiCmd::of("GameInfoDialog.QuadTariPressed"),
+        MouseControlChanged     = GuiCmd::of("GameInfoDialog.MouseControlChanged"),
+        EraseEeprom             = GuiCmd::of("GameInfoDialog.EraseEeprom"),
+        HighScoresChanged       = GuiCmd::of("GameInfoDialog.HighScoresChanged"),
+        PaddleXCenterChanged    = GuiCmd::of("GameInfoDialog.PaddleXCenterChanged"),
+        PaddleYCenterChanged    = GuiCmd::of("GameInfoDialog.PaddleYCenterChanged"),
+        Export                  = GuiCmd::of("GameInfoDialog.Export"),
+        Link                    = GuiCmd::of("GameInfoDialog.Link"),
+        BezelFile               = GuiCmd::of("GameInfoDialog.BezelFile");
     };
 
+    // Widget id for myUrl, checked in handleCommand() to route its
+    // EditableWidget::Cmd::Changed to updateLink()
     enum: uInt8 { kLinkId };
 
     // Game properties for currently loaded ROM

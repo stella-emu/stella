@@ -28,7 +28,7 @@ class DataGridRamWidget : public DataGridWidget
   public:
     DataGridRamWidget(GuiObject* boss, const RamWidget& ram,
                       const GUI::Font& font,
-                      int x, int y, int cols, int rows,
+                      int cols, int rows,
                       int colchars, int bits,
                       Common::Base::Fmt base = Common::Base::Fmt::DEFAULT,
                       bool useScrollbar = false);

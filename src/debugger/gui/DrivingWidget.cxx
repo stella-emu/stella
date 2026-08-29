@@ -16,65 +16,66 @@
 //============================================================================
 
 #include "DataGridWidget.hxx"
+#include "Layout.hxx"
 #include "DrivingWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller, bool embedded)
-  : ControllerWidget(boss, font, x, y, controller)
+                             Controller& controller, bool embedded)
+  : ControllerWidget(boss, font, controller)
 {
-  const string& label = getHeader();
-
-  const int lineHeight = font.getLineHeight(),
-            bHeight = font.getLineHeight() * 1.25;
-  int xpos = x, ypos = y;
-
-  if(embedded)
-  {
-    const int bWidth = font.getStringWidth("GC+ ");
-
-    ypos += _lineHeight * 0.334;
-    myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bWidth, bHeight,
-                                "GC+", kGrayUpCmd);
-
-    ypos += myGrayUp->getHeight() + bHeight * 0.3;
-    myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bWidth, bHeight,
-                                  "GC-", kGrayDownCmd);
-    xpos += myGrayDown->getWidth() + _fontWidth * 0.75;
-  }
-  else
-  {
-    const int lwidth = font.getStringWidth("Right (Driving)"),
-      bWidth = font.getStringWidth("Gray code +") + _fontWidth * 1.25;
-
-    const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                                                     lineHeight, label, TextAlign::Left);
-
-    ypos = t->getBottom() + _lineHeight * 1.334;
-    myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bWidth, bHeight,
-                                "Gray code +", kGrayUpCmd);
-
-    ypos += myGrayUp->getHeight() + bHeight * 0.3;
-    myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bWidth, bHeight,
-                                  "Gray code -", kGrayDownCmd);
-    xpos += myGrayDown->getWidth() + _fontWidth;
-  }
-  ypos -= bHeight * 0.6;
-  myGrayValue = new DataGridWidget(boss, font, xpos, ypos,
-                                   1, 1, 2, 8, Common::Base::Fmt::_16);
-
-  xpos = x + myGrayDown->getWidth() * 0.25; ypos = myGrayDown->getBottom() + _lineHeight;
-  myFire = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kFireCmd);
-
+  // Create the controls at a placeholder position; reflow() lays them out.
+  // Embedded in a QuadTari there is only room for short button labels
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myGrayUp = new ButtonWidget(boss, font,
+                              embedded ? "GC+" : "Gray code +", Cmd::GrayCodeUp);
   myGrayUp->setTarget(this);
+  myGrayDown = new ButtonWidget(boss, font,
+                                embedded ? "GC-" : "Gray code -", Cmd::GrayCodeDown);
   myGrayDown->setTarget(this);
+
+  myGrayValue = new DataGridWidget(boss, font, 1, 1, 2, 2,
+                                   Common::Base::Fmt::_2_2);
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);
+
+  myFire = new CheckboxWidget(boss, font, "Fire", Cmd::Fire);
   myFire->setTarget(this);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addFocusWidget(myGrayUp);
   addFocusWidget(myGrayDown);
   addFocusWidget(myFire);
+
+  if(!embedded)
+    createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DrivingWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getFontHeight() / 4;
+
+  // The two Gray-code buttons share a width
+  GUI::alignButtons({myGrayUp, myGrayDown});
+
+  // The buttons stacked, with the current Gray-code value centered beside them
+  auto buttons = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  buttons->addAuto(anchoredItem(myGrayUp));
+  buttons->addAuto(anchoredItem(myGrayDown));
+
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _font.getMaxCharWidth());
+  row->addAuto(std::move(buttons));
+  row->addAuto(anchoredItem(myGrayValue));
+  col.addAuto(std::move(row));
+
+  col.addSpace(VGAP);
+  col.addAuto(anchoredItem(myFire));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,24 +98,24 @@ void DrivingWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DrivingWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void DrivingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
   switch(cmd)
   {
-    case kGrayUpCmd:
+    case Cmd::GrayCodeUp:
       myGrayIndex = (myGrayIndex + 1) % 4;
       setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
-    case kGrayDownCmd:
+    case Cmd::GrayCodeDown:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
       setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
-    case kFireCmd:
+    case Cmd::Fire:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
     default:
@@ -126,6 +127,5 @@ void DrivingWidget::handleCommand(
 void DrivingWidget::setValue(int idx)
 {
   const int grayCode = ourGrayTable[idx];
-  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
-  myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
+  myGrayValue->setList(0, grayCode);
 }

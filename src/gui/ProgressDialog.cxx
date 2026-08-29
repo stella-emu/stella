@@ -24,62 +24,75 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "DialogContainer.hxx"
+#include "Layout.hxx"
 #include "ProgressDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                string_view message)
-  : Dialog(boss->instance(), boss->parent(), font)
+  : Dialog(boss->instance(), boss->parent(), font),
+    myMessageText{message}
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Cancel"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int lwidth = font.getStringWidth(message);
   WidgetArray wid;
 
-  // Calculate real dimensions
-  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
-  _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
-
-  const int xpos = HBORDER;
-  int ypos = VBORDER;
-  myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                                   message, TextAlign::Center);
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myMessage = new LabelWidget(this, font, message,
+                                   TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  ypos += lineHeight + VGAP * 2;
-  mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight,
-                              "", 0, 0);
+  mySlider = new SliderWidget(this, font, 1);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  ypos += lineHeight + VGAP * 4;
-  auto* b = new ButtonWidget(this, font, (_w - buttonWidth) / 2, ypos,
-                             buttonWidth, buttonHeight, "Cancel",
-                             Event::UICancel);
+  auto* b = new ButtonWidget(this, font, "Cancel", Cmd::Cancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VBORDER = Dialog::vBorder(),
+            HBORDER = Dialog::hBorder(),
+            VGAP    = Dialog::vGap();
+
+  // The Cancel button keeps the width its label needs, centered on its row
+  auto cancelRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  cancelRow->addStretchSpace();
+  cancelRow->addAuto(anchoredItem(_cancelWidget));
+  cancelRow->addStretchSpace();
+
+  // The message and the slider below it both span the dialog's width; how much
+  // room the message needs is what that width is derived from (the button row
+  // below widens it further if the message is a short one)
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(stretchedItem(myMessage, _font.getStringWidth(myMessageText)));
+  root->addSpace(VGAP * 2);
+  root->addAuto(stretchedItem(mySlider));
+  root->addSpace(VGAP * 4);
+  root->addAuto(std::move(cancelRow));
+
+  const Common::Size natural = root->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = static_cast<int>(natural.h);
+
+  root->doLayout(0, 0, _w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setMessage(string_view message)
 {
-  const int buttonWidth  = Dialog::buttonWidth("Cancel"),
-            HBORDER      = Dialog::hBorder();
-  const int lwidth = _font.getStringWidth(message);
-  // Recalculate real dimensions
-  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
-
-  myMessage->setWidth(lwidth);
+  myMessageText = message;
   myMessage->setLabel(message);
-  mySlider->setWidth(lwidth);
-
-  _cancelWidget->setPosX((_w - buttonWidth) / 2);
+  layout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,10 +142,10 @@ void ProgressDialog::incProgress()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ProgressDialog::handleCommand(CommandSender* sender, int cmd,
+void ProgressDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
-  if(cmd == Event::UICancel)
+  if(cmd == Cmd::Cancel)
     myIsCancelled = true;
   else
     Dialog::handleCommand(sender, cmd, data, 0);

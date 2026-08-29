@@ -20,7 +20,7 @@
 
 class GuiObject;
 class DataGridOpsWidget;
-class StringListWidget;
+class WrappedTextWidget;
 class InternalRamWidget;
 class CartDebugWidget;
 
@@ -33,22 +33,35 @@ class CartRamWidget : public Widget, public CommandSender
   public:
     CartRamWidget(GuiObject* boss, const GUI::Font& lfont,
                   const GUI::Font& nfont,
-                  int x, int y, int w, int h, CartDebugWidget& cartDebug);
+                  CartDebugWidget& cartDebug);
     ~CartRamWidget() override = default;
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
 
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how tall I am -- that is however tall my fields
+    // make me -- so report what my own layout tree comes to.  The RAM view below
+    // them fills, and so adds nothing of its own
+    Common::Size naturalSize() const override;
+
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+    // Lay the tab out for its current area/font: the RAM size and description
+    // fields widen with it (the description re-wrapping itself), and the RAM view
+    // fills whatever is left below them.  Driven by setArea()
+    void reflow();
+
+  private:
+    // The tab as the engine sees it, built without positioning anything, so that
+    // reflow() and naturalSize() are the same layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   protected:
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
-
-    // These will be needed by most of the child classes;
-    // we may as well make them protected variables
-    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
     class InternalRamWidget : public RamWidget
@@ -56,7 +69,6 @@ class CartRamWidget : public Widget, public CommandSender
       public:
         InternalRamWidget(GuiObject* boss, const GUI::Font& lfont,
                           const GUI::Font& nfont,
-                          int x, int y, int w, int h,
                           CartDebugWidget& dbg);
         ~InternalRamWidget() override = default;
         string getLabel(int addr) const override;
@@ -83,7 +95,13 @@ class CartRamWidget : public Widget, public CommandSender
     };
 
   private:
-    StringListWidget* myDesc{nullptr};
+    // The most lines of description to show before it scrolls
+    static constexpr uInt16 MAX_DESC_LINES = 6;
+
+    LabelWidget* myRamSizeLbl{nullptr};
+    LabelWidget* myDescLbl{nullptr};
+    EditTextWidget* myRamSize{nullptr};
+    WrappedTextWidget* myDesc{nullptr};
     InternalRamWidget* myRam{nullptr};
 
   private:

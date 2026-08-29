@@ -21,65 +21,104 @@
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Dialog for editing UI settings: look & feel (theme, palette, fonts,
+  HiDPI) and launcher behavior, across two tabs.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class UIDialog : public Dialog, public CommandSender
 {
   public:
     UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-             GuiObject* boss, int max_w, int max_h);
+             GuiObject* boss);
     ~UIDialog() override = default;
 
+    // Populates both tabs' controls from current settings
     void loadConfig() override;
+    // Writes both tabs' controls back to settings, applying palette/font/
+    // HiDPI changes immediately
     void saveConfig() override;
+    // Resets the currently active tab's controls to hardcoded defaults
     void setDefaults() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // OK saves and exits, then informs the boss of the settings that changed
+    // (when global) and applies font/HiDPI changes immediately; Defaults
+    // resets the active tab; slider/pop-up ids update their own labels; the
+    // path buttons open browsers
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layout() override;
 
   private:
+    // Derives the launcher's minimum width/height from the selected dialog
+    // font, clamping the sliders to it
     void handleLauncherSize();
+    // Updates the ROM-viewer slider's label/unit and enables/disables the
+    // image-path controls based on its value
     void handleRomViewer();
 
   private:
-    enum
-    {
-      kDialogFont = 'UIDf',
-      kListDelay  = 'UILd',
-      kMouseWheel = 'UIMw',
-      kControllerDelay = 'UIcd',
-      kChooseRomDirCmd = 'LOrm', // rom select
-      kRomViewer = 'UIRv',
-      kChooseSnapLoadDirCmd = 'UIsl' // snapshot dir (load files)
+    // Command ids dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        DialogFont        = GuiCmd::of("UIDialog.DialogFont"),
+        ListDelay         = GuiCmd::of("UIDialog.ListDelay"),
+        MouseWheel        = GuiCmd::of("UIDialog.MouseWheel"),
+        ControllerDelay   = GuiCmd::of("UIDialog.ControllerDelay"),
+        ChooseRomDir      = GuiCmd::of("UIDialog.ChooseRomDir"),
+        RomViewer         = GuiCmd::of("UIDialog.RomViewer"),
+        ChooseSnapLoadDir = GuiCmd::of("UIDialog.ChooseSnapLoadDir");
     };
 
+    // Hosts the two option tabs (Look & Feel, Launcher)
     TabWidget* myTab{nullptr};
 
     // Launcher options
-    EditTextWidget*   myRomPath{nullptr};
-    CheckboxWidget*   myFollowLauncherWidget{nullptr};
-    SliderWidget*     myLauncherWidthSlider{nullptr};
-    SliderWidget*     myLauncherHeightSlider{nullptr};
-    PopUpWidget*      myLauncherFontPopup{nullptr};
-    CheckboxWidget*   myFavoritesWidget{nullptr};
-    CheckboxWidget*   myLauncherExtensionsWidget{nullptr};
-    CheckboxWidget*   myLauncherButtonsWidget{nullptr};
-    SliderWidget*     myRomViewerSize{nullptr};
-    ButtonWidget*     myOpenBrowserButton{nullptr};
-    EditTextWidget*   mySnapLoadPath{nullptr};
-    CheckboxWidget*   myLauncherExitWidget{nullptr};
+    ButtonWidget*   myRomButton{nullptr};
+    EditTextWidget* myRomPath{nullptr};
+    CheckboxWidget* myFollowLauncherWidget{nullptr};
+    LabelWidget*    myLauncherWidthSliderLbl{nullptr};
+    SliderWidget*   myLauncherWidthSlider{nullptr};
+    LabelWidget*    myLauncherHeightSliderLbl{nullptr};
+    SliderWidget*   myLauncherHeightSlider{nullptr};
+    LabelWidget*    myLauncherFontLbl{nullptr};
+    PopUpWidget*    myLauncherFontPopup{nullptr};
+    CheckboxWidget* myFavoritesWidget{nullptr};
+    CheckboxWidget* myLauncherExtensionsWidget{nullptr};
+    CheckboxWidget* myLauncherButtonsWidget{nullptr};
+    LabelWidget*    myRomViewerSizeLbl{nullptr};
+    SliderWidget*   myRomViewerSize{nullptr};
+    ButtonWidget*   myOpenBrowserButton{nullptr};
+    EditTextWidget* mySnapLoadPath{nullptr};
+    CheckboxWidget* myLauncherExitWidget{nullptr};
 
     // Misc options
-    PopUpWidget*      myPalette1Popup{nullptr};
-    PopUpWidget*      myPalette2Popup{nullptr};
-    CheckboxWidget*   myAutoPalette{nullptr};
-    PopUpWidget*      myDialogFontPopup{nullptr};
-    CheckboxWidget*   myHidpiWidget{nullptr};
-    PopUpWidget*      myPositionPopup{nullptr};
-    CheckboxWidget*   myCenter{nullptr};
-    SliderWidget*     myListDelaySlider{nullptr};
-    SliderWidget*     myWheelLinesSlider{nullptr};
-    SliderWidget*     myControllerRateSlider{nullptr};
-    SliderWidget*     myControllerDelaySlider{nullptr};
-    SliderWidget*     myDoubleClickSlider{nullptr};
+    LabelWidget*    myPalette1Lbl{nullptr};
+    PopUpWidget*    myPalette1Popup{nullptr};
+    LabelWidget*    myPalette2Lbl{nullptr};
+    PopUpWidget*    myPalette2Popup{nullptr};
+    CheckboxWidget* myAutoPalette{nullptr};
+    LabelWidget*    myDialogFontLbl{nullptr};
+    PopUpWidget*    myDialogFontPopup{nullptr};
+    LabelWidget*    myHidpiLbl{nullptr};
+    PopUpWidget*    myHidpiPopup{nullptr};
+    LabelWidget*    myPositionLbl{nullptr};
+    PopUpWidget*    myPositionPopup{nullptr};
+    CheckboxWidget* myCenter{nullptr};
+    LabelWidget*    myListDelaySliderLbl{nullptr};
+    SliderWidget*   myListDelaySlider{nullptr};
+    LabelWidget*    myWheelLinesSliderLbl{nullptr};
+    SliderWidget*   myWheelLinesSlider{nullptr};
+    LabelWidget*    myControllerRateSliderLbl{nullptr};
+    SliderWidget*   myControllerRateSlider{nullptr};
+    LabelWidget*    myControllerDelaySliderLbl{nullptr};
+    SliderWidget*   myControllerDelaySlider{nullptr};
+    LabelWidget*    myDoubleClickSliderLbl{nullptr};
+    SliderWidget*   myDoubleClickSlider{nullptr};
+
+    // Bottom-of-tab "(*) ..." info messages
+    LabelWidget* myLauncherInfo{nullptr};
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal{false};

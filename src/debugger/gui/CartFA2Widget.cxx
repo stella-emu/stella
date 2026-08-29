@@ -15,44 +15,61 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "CartFA2.hxx"
+#include "Layout.hxx"
 #include "CartFA2Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2Widget::CartridgeFA2Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeFA2& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeFA2& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCartFA2{cart}
 {
-  int xpos = 2;
-  const int ypos = initialize() + 12,
-            bwidth = _font.getStringWidth("Erase") + 20;
+  createFlashWidgets();
+  initialize();
+}
 
-  const auto* t = new StaticTextWidget(boss, _font, xpos, ypos,
-      _font.getStringWidth("Harmony flash memory "),
-      myFontHeight, "Harmony flash memory ", TextAlign::Left);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2Widget::createFlashWidgets()
+{
+  // Each button sizes itself to its label; layoutContent() gives the group one width
+  myFlashLbl = new LabelWidget(_boss, _font, "Harmony flash memory");
 
-  xpos += t->getWidth() + 4;
-  myFlashErase =
-    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
-                     "Erase", kFlashErase);
+  myFlashErase = new ButtonWidget(_boss, _font, "Erase", Cmd::FlashErase);
   myFlashErase->setTarget(this);
   addFocusWidget(myFlashErase);
-  xpos += myFlashErase->getWidth() + 8;
 
-  myFlashLoad =
-    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
-                     "Load", kFlashLoad);
+  myFlashLoad = new ButtonWidget(_boss, _font, "Load", Cmd::FlashLoad);
   myFlashLoad->setTarget(this);
   addFocusWidget(myFlashLoad);
-  xpos += myFlashLoad->getWidth() + 8;
 
-  myFlashSave =
-    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
-                     "Save", kFlashSave);
+  myFlashSave = new ButtonWidget(_boss, _font, "Save", Cmd::FlashSave);
   myFlashSave->setTarget(this);
   addFocusWidget(myFlashSave);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2Widget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+
+  // The PlusROM fields and bank selector first, then the flash row beneath them
+  CartridgeEnhancedWidget::layoutContent(col);
+
+  GUI::alignButtons({myFlashErase, myFlashLoad, myFlashSave});
+
+  // The flash label and the three flash buttons, in a row
+  auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
+  row->addAuto(anchoredItem(myFlashLbl));
+  row->addAuto(anchoredItem(myFlashErase));
+  row->addAuto(anchoredItem(myFlashLoad));
+  row->addAuto(anchoredItem(myFlashSave));
+
+  col.addSpace(VGAP * 2);
+  col.addAuto(std::move(row));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,20 +84,20 @@ string CartridgeFA2Widget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeFA2Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
   switch(cmd)
   {
-    case kFlashErase:
+    case Cmd::FlashErase:
       myCartFA2.flash(0);
       break;
 
-    case kFlashLoad:
+    case Cmd::FlashLoad:
       myCartFA2.flash(1);
       break;
 
-    case kFlashSave:
+    case Cmd::FlashSave:
       myCartFA2.flash(2);
       break;
 

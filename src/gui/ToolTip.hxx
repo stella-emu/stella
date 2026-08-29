@@ -34,6 +34,7 @@ class FBSurface;
 class ToolTip
 {
   public:
+    // Maximum characters per line / lines, sizing the backing surface (see setFont())
     static constexpr uInt32 MAX_COLUMNS = 60;
 
   private:
@@ -44,8 +45,11 @@ class ToolTip
     static constexpr uInt32 MAX_LEN = MAX_COLUMNS * MAX_ROWS;
 
     ToolTip(Dialog& dialog, const GUI::Font& font);
+    // Deallocates the backing surface
     ~ToolTip();
 
+    // Re-derives the max surface size from the new font; deallocates the
+    // (now wrongly-sized) surface, reallocated on next use
     void setFont(const GUI::Font& font);
 
     /**
@@ -80,6 +84,7 @@ class ToolTip
     */
     const shared_ptr<FBSurface>& surface();
 
+    // Sizes and positions the surface for 'tip' and marks it shown
     void show(string_view tip);
 
   private:
@@ -88,20 +93,26 @@ class ToolTip
     //  faster. This constant defines how much faster.
     static constexpr uInt32 RELEASE_SPEED = 2;
 
+    // The dialog this tooltip is attached to
     Dialog& myDialog;
     const GUI::Font* myFont{nullptr};
+    // The widget the currently shown/pending tooltip belongs to
     const Widget* myTipWidget{nullptr};
+    // The widget currently under the mouse, per update()
     const Widget* myFocusWidget{nullptr};
 
+    // Frames toward showing (request()) or hiding (release()) the tip
     uInt32 myTimer{0};
     Common::Point myMousePos;
+    // Mouse position when the tip was last shown, for changedToolTip()
     Common::Point myTipPos;
+    // Maximum surface size, font-derived (see setFont())
     uInt32 myWidth{0};
     uInt32 myHeight{0};
+    // Text inset from the surface edges, font-derived
     uInt32 myTextXOfs{0};
     uInt32 myTextYOfs{0};
     bool myTipShown{false};
-    uInt32 myScale{1};
     shared_ptr<FBSurface> mySurface;
 
   private:

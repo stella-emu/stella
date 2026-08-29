@@ -26,22 +26,24 @@ class DataGridWidget;
 class PointingDeviceWidget : public ControllerWidget
 {
   public:
-    PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    PointingDeviceWidget(GuiObject* boss, const GUI::Font& font,
                          Controller& controller);
     ~PointingDeviceWidget() override = default;
 
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
-    enum {
-      kTBLeft = 'TWlf',
-      kTBRight = 'TWrt',
-      kTBUp = 'TWup',
-      kTBDown = 'TWdn',
-      kTBFire = 'TWfr'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Left          = GuiCmd::of("PointingDeviceWidget.Left"),
+        Right         = GuiCmd::of("PointingDeviceWidget.Right"),
+        Up            = GuiCmd::of("PointingDeviceWidget.Up"),
+        Down          = GuiCmd::of("PointingDeviceWidget.Down"),
+        TrackBallFire = GuiCmd::of("PointingDeviceWidget.TrackBallFire");
     };
     ButtonWidget *myGrayLeft{nullptr}, *myGrayRight{nullptr};
     DataGridWidget* myGrayValueH{nullptr};

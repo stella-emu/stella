@@ -21,8 +21,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeWF8Widget::CartridgeWF8Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeWF8& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+      CartridgeWF8& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   myHotspotDelta = 0;
   initialize();

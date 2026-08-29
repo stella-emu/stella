@@ -20,9 +20,11 @@
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+#include "Logger.hxx"
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
+  #include "Icon.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,8 +106,10 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 
   // NOLINTNEXTLINE(misc-const-correctness)
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  const uInt32 ink = myPalette[color];
+
   while(x++ <= x2)
-    *buffer++ = myPalette[color];
+    *buffer++ = ink;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,9 +119,11 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
     return;
 
   uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  const uInt32 ink = myPalette[color];
+
   while(y++ <= y2)
   {
-    *buffer = myPalette[color];
+    *buffer = ink;
     buffer += myPitch;
   }
 }
@@ -141,50 +147,55 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     drawChar(font, chr, tx + 1, ty + 1, shadowColor);
   }
 
-  const FontDesc& desc = font.desc();
-
-  // If this character is not included in the font, use the default char.
-  if(std::cmp_less(chr, desc.firstchar) || chr >= desc.firstchar + desc.size)
-  {
-    if (chr == ' ') return;
-    chr = desc.defaultchar;
-  }
-  chr -= desc.firstchar;
-
-  // Get the bounding box of the character
-  int bbw = 0, bbh = 0, bbx = 0, bby = 0;
-  if(!desc.bbx)
-  {
-    bbw = desc.fbbw;
-    bbh = desc.fbbh;
-    bbx = desc.fbbx;
-    bby = desc.fbby;
-  }
-  else
-  {
-    bbw = desc.bbx[chr].w;
-    bbh = desc.bbx[chr].h;
-    bbx = desc.bbx[chr].x;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
-    bby = desc.bbx[chr].y;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
-  }
-
-  const uInt32 cx = tx + bbx;
-  const uInt32 cy = ty + desc.ascent - bby - bbh;
-
-  if(!checkBounds(cx , cy) || !checkBounds(cx + bbw - 1, cy + bbh - 1))
+  // The font hands out the glyph's mask and where to put it, so how a glyph
+  // is stored -- and how wide it is -- stays the font's business, not ours
+  const GUI::Glyph glyph = font.glyph(chr);
+  if(glyph.mask == nullptr)
     return;
 
-  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
+  const uInt32 cx = tx + glyph.dx;
+  const uInt32 cy = ty + glyph.dy;
+
+  if(!checkBounds(cx , cy) || !checkBounds(cx + glyph.w - 1, cy + glyph.h - 1))
+    return;
+
+  const uInt8* mask = glyph.mask;
   uInt32* buffer = myPixels + (cy * static_cast<size_t>(myPitch)) + cx;
+  const uInt32 ink = myPalette[color];
 
-  for(int y = 0; y < bbh; y++)
+  for(int y = 0; y < glyph.h; ++y)
   {
-    const uInt16 ptr = *tmp++;
-    uInt16 mask = 0x8000;
+    for(int x = 0; x < glyph.w; ++x)
+      if(mask[x >> 3] & (0x80 >> (x & 7)))
+        buffer[x] = ink;
 
-    for(int x = 0; x < bbw; x++, mask >>= 1)
-      if(ptr & mask)
-        buffer[x] = myPalette[color];
+    mask += glyph.stride;
+    buffer += myPitch;
+  }
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
+                         ColorId color)
+{
+#ifdef GUI_SUPPORT
+  const uInt32 w = icon.width(), h = icon.height();
+
+  if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
+    return;
+
+  const uInt32* rows = icon.bitmap();
+  uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  const uInt32 ink = myPalette[color];
+
+  for(uInt32 y = 0; y < h; ++y)
+  {
+    uInt32 mask = 1 << (w - 1);
+
+    for(uInt32 x = 0; x < w; ++x, mask >>= 1)
+      if(rows[y] & mask)
+        buffer[x] = ink;
 
     buffer += myPitch;
   }
@@ -192,28 +203,38 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           ColorId color, uInt32 h)
+void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
+                          ArrowDirection dir, ColorId color, uInt32 thickness)
 {
-  drawBitmap(bitmap, tx, ty, color, h, h);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           ColorId color, uInt32 w, uInt32 h)
-{
+  if(w == 0 || h == 0)
+    return;
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
     return;
 
+  const int aw = static_cast<int>(w), ah = static_cast<int>(h),
+            thick = static_cast<int>(thickness);
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  const uInt32 ink = myPalette[color];
 
-  for(uInt32 y = 0; y < h; ++y)
+  for(int y = 0; y < ah; ++y)
   {
-    uInt32 mask = 1 << (w - 1);
-    for(uInt32 x = 0; x < w; ++x, mask >>= 1)
-      if(bitmap[y] & mask)
-        buffer[x] = myPalette[color];
+    // How far down the arrow this row is, counting from the tip
+    const int t = (dir == ArrowDirection::Up) ? y : ah - 1 - y;
 
+    // The row's edges, measured in TWICE the distance from the centre line so
+    // that odd and even widths both come out exact with no rounding.  A filled
+    // arrow spans its box; a stroked one runs at 45 degrees and clips to it
+    const int outer = thick ? std::min(aw - 1, 2 * t)
+                            : (ah > 1 ? ((aw - 1) * t) / (ah - 1) : aw - 1);
+    const int inner = thick ? std::max(0, (2 * t) - (2 * (thick - 1))) : 0;
+
+    for(int x = 0; x < aw; ++x)
+    {
+      const int d = std::abs((2 * x) - (aw - 1));
+
+      if(d >= inner && d <= outer + 1)
+        buffer[x] = ink;
+    }
     buffer += myPitch;
   }
 }
@@ -402,7 +423,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
 
   int x0 = x, x1 = 0;
 
-  for(auto i = 0uz; i < str.size(); ++i)
+  for(auto i = 0UZ; i < str.size(); ++i)
   {
     w = font.getCharWidth(str[i]);
     if(x + w > rightX)
@@ -433,8 +454,13 @@ bool FBSurface::checkBounds(uInt32 x, uInt32 y) const
   if (x <= width() && y <= height())
     return true;
 
-  cerr << "FBSurface::checkBounds() failed: "
-       << x << ", " << y << " vs " << width() << ", " << height() << '\n';
+  // Downgraded from a raw cerr to a debug-level log so an oversized dialog
+  // (e.g. after a large dialog-font change) no longer spams the console; the
+  // too-large condition is detected and reported to the user elsewhere
+  // (see UIDialog / DialogContainer::anyDialogExceedsScreen)
+  Logger::debug("FBSurface::checkBounds() failed: " +
+                std::to_string(x) + ", " + std::to_string(y) + " vs " +
+                std::to_string(width()) + ", " + std::to_string(height()));
   return false;
 }
 

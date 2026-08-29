@@ -25,107 +25,80 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "ToggleBitWidget.hxx"
+#include "Layout.hxx"
 
 #include "CpuWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                     int x, int y, int max_w)
-  : Widget(boss, lfont, x, y, 16, 16),
+CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont)
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
-  constexpr int VGAP = 2;
-  const int lwidth = 4 * fontWidth;
+  const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
 
-  // Create a 1x1 grid with label for the PC register
-  int xpos = x, ypos = y;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
-                       "PC ", TextAlign::Left);
-  myPCGrid =
-    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
+  // Create every widget; reflow() positions and sizes them for the area the
+  // parent layout gives us
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myPCText = new LabelWidget(boss, lfont, "PC", TextAlign::Left);
+  myPCGrid = new DataGridWidget(boss, nfont, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
 
-  // Create a read-only textbox containing the current PC label
-  xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, nfont, xpos, ypos, (max_w - xpos + x) - 10,
-                                 fontHeight+1, "");
+  // Read-only textbox containing the current PC label
+  myPCLabel = new EditTextWidget(boss, nfont, 1);
   myPCLabel->setEditable(false, true);
 
-  // Create a 1x4 grid with labels for the other CPU registers
-  xpos = x + lwidth;  ypos = myPCGrid->getBottom() + VGAP;
-  myCpuGrid =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
+  // 1x4 grid with labels for the other CPU registers
+  myCpuGrid = new DataGridWidget(boss, nfont, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myCpuGrid->setHelpAnchor("CPURegisters", true);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
 
-  // Create a 1x4 grid with decimal and binary values for the other CPU registers
-  xpos = myPCGrid->getRight() + 10;
-  myCpuGridDecValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::Fmt::_10);
+  // 1x4 grids with the decimal and binary values for those registers
+  myCpuGridDecValue = new DataGridWidget(boss, nfont, 1, 4, 3, 8, Common::Base::Fmt::_10);
   myCpuGridDecValue->setHelpAnchor("CPURegisters", true);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
 
-  xpos = myCpuGridDecValue->getRight() + fontWidth * 2;
-  myCpuGridBinValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::Fmt::_2);
+  myCpuGridBinValue = new DataGridWidget(boss, nfont, 1, 4, 8, 8, Common::Base::Fmt::_2);
   myCpuGridBinValue->setHelpAnchor("CPURegisters", true);
   myCpuGridBinValue->setTarget(this);
   myCpuGridBinValue->setID(kCpuRegBinID);
   addFocusWidget(myCpuGridBinValue);
 
-  // Calculate real dimensions (_y will be calculated at the end)
-  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
-
-  // Create labels showing the source of data for SP/A/X/Y registers
-  const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
-  xpos += myCpuGridBinValue->getWidth() + 20;
-  const int src_w = (max_w - xpos + x) - 10;
-  for(int i = 0, src_y = ypos; i < 4; ++i)
+  // Labels showing the source of data for the SP/A/X/Y registers
+  for(int i = 0; i < 4; ++i)
   {
-    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, 1);
     myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
-    src_y += fontHeight + 2;
   }
 
-  // Add labels for other CPU registers
-  xpos = x;
+  // Row labels for the other CPU registers and the '#'/'%' value prefixes
   for(int row = 0; row < 4; ++row)
   {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         lwidth-2, fontHeight,
-                         labels[row], TextAlign::Left);
+    myRegLabels[row] = new LabelWidget(boss, lfont, labels[row], TextAlign::Left);
+    myDecPrefix[row] = new LabelWidget(boss, lfont, "#");
+    myBinPrefix[row] = new LabelWidget(boss, lfont, "%");
   }
 
-  // Add prefixes for decimal and binary values
-  for(int row = 0; row < 4; ++row)
-  {
-    new StaticTextWidget(boss, lfont, myCpuGridDecValue->getLeft() - fontWidth,
-                         ypos + row * lineHeight + 2,
-                         fontWidth, fontHeight, "#");
-    new StaticTextWidget(boss, lfont, myCpuGridBinValue->getLeft() - fontWidth,
-                         ypos + row * lineHeight + 2,
-                         fontWidth, fontHeight, "%");
-  }
-
-  // Create a bitfield widget for changing the processor status
-  xpos = x;  ypos = myCpuGrid->getBottom() + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
-                       "PS ", TextAlign::Left);
-  myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
+  // Bitfield widget for changing the processor status
+  myPSText = new LabelWidget(boss, lfont, "PS", TextAlign::Left);
+  myPSRegister = new ToggleBitWidget(boss, nfont, 8, 1);
   myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
+
+  // Last write destination address
+  myDestText = new LabelWidget(boss, lfont, "Dest");
+  myCpuDataDest = new EditTextWidget(boss, nfont, 1);
+  myCpuDataDest->setToolTip("Destination label of last write.");
+  myCpuDataDest->setEditable(false, true);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
@@ -139,16 +112,133 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const StringList on(onstr.begin(), onstr.end());
   myPSRegister->setList(off, on);
 
-  // Last write destination address
-  xpos = myCpuDataSrc[0]->getLeft();
-  new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, ypos + 2, "Dest");
-  myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
-  myCpuDataDest->setToolTip("Destination label of last write.");
-  myCpuDataDest->setEditable(false, true);
-
   setHelpAnchor("DataOpButtons", true);
 
-  _h = ypos + myPSRegister->getHeight() - y;
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> CpuWidget::buildLayout() const
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::stretchedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  // A label beside a data grid sits on the grid's first row, not on the middle
+  // of the whole grid, so the two share the row's baseline
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+
+  const int lineHeight = _font.getLineHeight(),
+            HGAP       = _fontWidth;
+  constexpr int VGAP = 2;
+  // A deliberate four-character column, wider than the register names in it
+  const int lwidth = 4 * _fontWidth;
+
+  // A per-row column of labels beside a (4-row) data grid.  The grid insets each
+  // row's text where a label centers its own, so the column starts that much
+  // lower and label i lands on grid row i's line.  A stack of labels is one item
+  // to the row beside it, so it cannot use VAlign::Baseline
+  const auto column = [&](const std::array<LabelWidget*, 4>& cells) {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical);
+    col->addSpace(myCpuGrid->firstTextY() - cells[0]->firstTextY());
+    for(auto* wid: cells)
+      col->addFixed(anchoredItem(wid), lineHeight);
+    return col;
+  };
+
+  // The four data-source fields, one per grid row.  Each is a pixel taller than
+  // its row, so that its bottom frame falls on the next one's top frame and the
+  // two draw as a single line -- the height the constructor gave them, restored
+  // here because a font change resets a field to the standard framed height
+  for(auto* wid: myCpuDataSrc)
+    wid->setHeight(lineHeight + 1);
+
+  auto srcCol = std::make_unique<BoxLayout>(Dir::Vertical);
+  for(auto* wid: myCpuDataSrc)
+    srcCol->addFixed(alignedItem(wid, HAlign::Fill, VAlign::Top), lineHeight);
+
+  // Three rows over one set of columns.  Sharing the columns is what lines the
+  // hex grid up under the PC grid and -- the point of doing it this way -- puts
+  // the destination field in the very column the source fields are in, with
+  // nobody reading back where those ended up
+  enum Col: uInt8 {
+    LABEL, GRID, DECPFX, DEC, GAP1, BINPFX, BIN, GAP2, DATA, NUM_COLS
+  };
+  auto grid = std::make_unique<GridLayout>(NUM_COLS, 3, 0, VGAP);
+
+  // Each prefix abuts the grid it belongs to, so those columns are sized by
+  // what is in them and carry no gap; the gaps separate the value groups
+  grid->columnFixed(LABEL, lwidth);
+  grid->columnAuto(GRID).columnAuto(DECPFX).columnAuto(DEC);
+  grid->columnAuto(BINPFX).columnAuto(BIN);
+  grid->columnFixed(GAP1, HGAP).columnFixed(GAP2, HGAP * 2);
+  grid->columnStretch(DATA);
+  grid->rowAuto(0).rowAuto(1).rowAuto(2);
+
+  // PC row: "PC", the PC grid, then the current-PC label across the rest
+  auto pcLabel = std::make_unique<BoxLayout>(Dir::Horizontal);
+  pcLabel->addSpace(HGAP);
+  pcLabel->addStretch(alignedItem(myPCLabel, HAlign::Fill, VAlign::Fill));
+
+  grid->place(LABEL, 0, onBaseline(myPCText));
+  grid->place(GRID,  0, onBaseline(myPCGrid));
+  grid->place(DECPFX, 0, std::move(pcLabel), NUM_COLS - DECPFX);
+
+  // Register rows: names | hex | # dec | % bin | the source of each value
+  grid->place(LABEL,  1, column(myRegLabels));
+  grid->place(GRID,   1, anchoredItem(myCpuGrid));
+  grid->place(DECPFX, 1, column(myDecPrefix));
+  grid->place(DEC,    1, anchoredItem(myCpuGridDecValue));
+  grid->place(BINPFX, 1, column(myBinPrefix));
+  grid->place(BIN,    1, anchoredItem(myCpuGridBinValue));
+  grid->place(DATA,   1, std::move(srcCol));
+
+  // PS row: the status toggle and the write destination share one cell across
+  // the value columns.  They must, rather than take a column each: the toggle
+  // is wider than any one of them, and a spanning cell that its tracks cannot
+  // hold BETWEEN them would widen those tracks and unpick the rows above
+  auto psRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  psRow->addAuto(onBaseline(myPSRegister));
+  psRow->addStretchSpace();
+  psRow->addAuto(onBaseline(myDestText));
+  psRow->addSpace(HGAP);
+
+  grid->place(LABEL, 2, onBaseline(myPSText));
+  grid->place(GRID,  2, std::move(psRow), DATA - GRID);
+  grid->place(DATA,  2, alignedItem(myCpuDataDest, HAlign::Fill, VAlign::Fill));
+
+  // The rows sit in from the right, as the fields above them do
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  root->addStretch(std::move(grid));
+  root->addSpace(HGAP);
+
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size CpuWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::reflow()
+{
+  buildLayout()->doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,14 +251,15 @@ void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CpuWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   int addr = -1, value = -1;
   CpuDebug& dbg = instance().debugger().cpuDebug();
 
   switch(cmd)
   {
-    case DataGridWidget::kItemDataChangedCmd:
+    case DataGridWidget::Cmd::ItemDataChanged:
       switch(id)
       {
         case kPCRegID:
@@ -236,7 +327,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case ToggleWidget::kItemDataChangedCmd:
+    case ToggleWidget::Cmd::ItemDataChanged:
     {
       const bool state = myPSRegister->getSelectedState();
 

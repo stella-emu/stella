@@ -30,7 +30,6 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
   public:
     CartridgeDPCPlusWidget(GuiObject* boss, const GUI::Font& lfont,
                            const GUI::Font& nfont,
-                           int x, int y, int w, int h,
                            CartridgeDPCPlus& cart);
     ~CartridgeDPCPlusWidget() override = default;
 
@@ -49,7 +48,8 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     struct CartState {
@@ -68,7 +68,14 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
     };
 
     CartridgeDPCPlus& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
+
+    LabelWidget *myTopsLbl{nullptr}, *myBottomsLbl{nullptr},
+                     *myCountersLbl{nullptr}, *myFracCountersLbl{nullptr},
+                     *myFracIncrementsLbl{nullptr}, *myParameterLbl{nullptr},
+                     *myMusicCountersLbl{nullptr}, *myMusicFrequenciesLbl{nullptr},
+                     *myMusicWaveformsLbl{nullptr}, *myRandomLbl{nullptr};
 
     DataGridWidget* myTops{nullptr};
     DataGridWidget* myBottoms{nullptr};
@@ -85,7 +92,10 @@ class CartridgeDPCPlusWidget : public CartridgeARMWidget
 
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeDPCPlusWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

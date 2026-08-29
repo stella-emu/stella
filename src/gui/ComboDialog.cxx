@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "ComboDialog.hxx"
 
@@ -30,40 +31,27 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
   : Dialog(boss->instance(), boss->parent(), font, "Add...")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
-  // Get maximum width of popupwidget
-  int pwidth = 0;
-  for(const auto& s: combolist)
-    pwidth = std::max(font.getStringWidth(s.first), pwidth);
+  // Widgets are only created here (at placeholder position); layout() assigns
+  // all geometry from the current font.
 
-  // Set real dimensions
-  _w = 8 * fontWidth + pwidth + PopUpWidget::dropDownWidth(font) + HBORDER * 2;
-  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
-  int xpos = HBORDER, ypos = VBORDER + _th;
-
-  // Add event popup for 8 events
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // Add event popup for 8 events; each sizes itself to the events it can show
   const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
-    myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
-                        pwidth, lineHeight, combolist, label);
+    myEventLabels[idx] = new LabelWidget(this, font, label);
+    myEvents[idx] = new PopUpWidget(this, font, combolist);
     wid.push_back(myEvents[idx]);
-    ypos += lineHeight + VGAP;
   };
-  ADD_EVENT_POPUP(0, "Event 1 ");
-  ADD_EVENT_POPUP(1, "Event 2 ");
-  ADD_EVENT_POPUP(2, "Event 3 ");
-  ADD_EVENT_POPUP(3, "Event 4 ");
-  ADD_EVENT_POPUP(4, "Event 5 ");
-  ADD_EVENT_POPUP(5, "Event 6 ");
-  ADD_EVENT_POPUP(6, "Event 7 ");
-  ADD_EVENT_POPUP(7, "Event 8 ");
+  ADD_EVENT_POPUP(0, "Event 1");
+  ADD_EVENT_POPUP(1, "Event 2");
+  ADD_EVENT_POPUP(2, "Event 3");
+  ADD_EVENT_POPUP(3, "Event 4");
+  ADD_EVENT_POPUP(4, "Event 5");
+  ADD_EVENT_POPUP(5, "Event 6");
+  ADD_EVENT_POPUP(6, "Event 7");
+  ADD_EVENT_POPUP(7, "Event 8");
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -71,6 +59,43 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addToFocusList(wid);
 
   setHelpAnchor("Combo");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ComboDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // One shared label column lines the popups' value boxes up down the dialog
+  GUI::alignLabels({{myEventLabels[0]}, {myEventLabels[1]}, {myEventLabels[2]},
+                    {myEventLabels[3]}, {myEventLabels[4]}, {myEventLabels[5]},
+                    {myEventLabels[6]}, {myEventLabels[7]}});
+
+  // Vertical stack of the eight labeled event popups; the button group sits
+  // below, positioned by layoutButtonGroup().
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
+  for(size_t i = 0; i < myEvents.size(); ++i)
+    root->addAuto(labeledRow(myEventLabels[i], myEvents[i]));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,8 +117,8 @@ void ComboDialog::loadConfig()
 {
   StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
-  const auto size = std::min(events.size(), 8uz);
-  for(auto i = 0uz; i < size; ++i)
+  const auto size = std::min(events.size(), 8UZ);
+  for(auto i = 0UZ; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 
   // Fill any remaining items to 'None'
@@ -123,17 +148,17 @@ void ComboDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ComboDialog::handleCommand(CommandSender* sender, int cmd,
+void ComboDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                 int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 

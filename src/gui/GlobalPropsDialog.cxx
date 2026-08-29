@@ -24,6 +24,7 @@
 #include "Settings.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "LauncherDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 
@@ -32,91 +33,61 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), font, "Power-on options"),
     CommandSender(boss)
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int lwidth = font.getStringWidth("Right difficulty ");
-  int pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
 
-  // Set real dimensions
-  _w = HBORDER * 2 + std::max(lwidth + pwidth + PopUpWidget::dropDownWidth(font),
-                              49 * infofont.getMaxCharWidth());
-  _h = _th + 11 * (lineHeight + VGAP) + 3 * infofont.getLineHeight() + VGAP * 12 + buttonHeight + VBORDER * 2;
-
-  int xpos = HBORDER, ypos = VBORDER + _th;
-
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Bankswitch type
-  new StaticTextWidget(this, font, xpos, ypos+1, "Bankswitch type");
+  myBSLbl = new LabelWidget(this, font, "Bankswitch type");
   for(const auto& [name, desc] : Bankswitch::BSList)
     VarList::push_back(items, desc, name);
-  myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                             pwidth, lineHeight, items, "");
+  myBSType = new PopUpWidget(this, font, items);
   wid.push_back(myBSType);
-  ypos += lineHeight + VGAP * 3;
-
-  pwidth = font.getStringWidth("A (Expert)");
 
   // TV type
-  new StaticTextWidget(this, font, xpos, ypos + 1, "TV type");
+  myTVLbl = new LabelWidget(this, font, "TV type");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B/W", "BW");
-  myTVType = new PopUpWidget(this, font, xpos + lwidth, ypos,
-                             pwidth, lineHeight, items, "");
+  myTVType = new PopUpWidget(this, font, items);
   wid.push_back(myTVType);
-  ypos += lineHeight + VGAP;
 
   // Left difficulty
-  new StaticTextWidget(this, font, xpos, ypos+1, GUI::LEFT_DIFFICULTY);
+  myLeftDiffLbl = new LabelWidget(this, font, GUI::LEFT_DIFFICULTY);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
   VarList::push_back(items, "B (Novice)", "B");
-  myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                               pwidth, lineHeight, items, "");
+  myLeftDiff = new PopUpWidget(this, font, items);
   wid.push_back(myLeftDiff);
-  ypos += lineHeight + VGAP;
 
   // Right difficulty
-  new StaticTextWidget(this, font, xpos, ypos+1, GUI::RIGHT_DIFFICULTY);
+  myRightDiffLbl = new LabelWidget(this, font, GUI::RIGHT_DIFFICULTY);
   // ... use same items as above
-  myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                                pwidth, lineHeight, items, "");
+  myRightDiff = new PopUpWidget(this, font, items);
   wid.push_back(myRightDiff);
-  ypos += lineHeight + VGAP * 3;
 
   // Start console with buttons held down
-  new StaticTextWidget(this, font, xpos, ypos+1,
-      "Start with the following held down:");
-  ypos += lineHeight;
-  new StaticTextWidget(this, infofont, xpos, ypos+1,
-      "(automatically released shortly after start)");
+  myHeldLbl = new LabelWidget(this, font, "Start with the following held down:");
+  myReleasedLbl = new LabelWidget(this, infofont,
+                                  "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
-  xpos = fontWidth * 4;  ypos += infofont.getLineHeight() + VGAP * 2;
-  ypos = addHoldWidgets(font, xpos, ypos, wid) + VGAP * 4;
+  createHoldWidgets(font, wid);
 
-  xpos = HBORDER;
   // Start in debugger mode
-  myDebug = new CheckboxWidget(this, font, xpos, ypos, "Start in Debugger mode");
+  myDebug = new CheckboxWidget(this, font, "Start in Debugger mode");
 #ifndef DEBUGGER_SUPPORT
   myDebug->setEnabled(false);
 #endif
   wid.push_back(myDebug);
 
   // Add message concerning usage
-  ypos = _h - VBORDER - buttonHeight - VGAP * 3 - infofont.getLineHeight() * 2;
-  new StaticTextWidget(this, infofont, xpos, ypos,
+  myInfo1 = new LabelWidget(this, infofont,
     "(*) These options are not saved, but apply to all");
-  ypos += infofont.getLineHeight();
-  new StaticTextWidget(this, infofont, xpos, ypos,
+  myInfo2 = new LabelWidget(this, infofont,
     "    further ROMs until selecting 'Defaults'.");
 
   // Add Defaults, OK and Cancel buttons
@@ -125,57 +96,32 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   addToFocusList(wid);
 
   setHelpAnchor("PowerOn");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
-                                      WidgetArray& wid)
+void GlobalPropsDialog::createHoldWidgets(const GUI::Font& font, WidgetArray& wid)
 {
-  const int fontWidth  = Dialog::fontWidth(),
-            VGAP       = Dialog::vGap();
-  int xpos = x, ypos = y;
-  const int xdiff = CheckboxWidget::boxSize(font) - 9;
-
   // Left joystick
-  auto* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Left joy");
-  xpos += t->getWidth()/2 - xdiff - 2;  ypos += t->getHeight() + VGAP;
-  myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
-  ypos += myJoy[kJ0Up]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ0Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Down);
-  xpos -= myJoy[kJ0Up]->getWidth() + xdiff;
-  ypos -= myJoy[kJ0Up]->getHeight() + VGAP;
-  myJoy[kJ0Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Left);
-  xpos += (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
-  myJoy[kJ0Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Right);
-  xpos -= (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
-  ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
-
-  xpos = _w / 3;  ypos = y;
+  myLeftJoyLbl    = new LabelWidget(this, font, "Left joy");
+  myJoy[kJ0Up]    = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Down]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Left]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Right] = new CheckboxWidget(this, font, "");
+  myJoy[kJ0Fire]  = new CheckboxWidget(this, font, "Fire");
 
   // Right joystick
-  t = new StaticTextWidget(this, font, xpos, ypos + 2, "Right joy");
-  xpos += t->getWidth()/2 - xdiff - 2;  ypos += t->getHeight() + VGAP;
-  myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
-  ypos += myJoy[kJ1Up]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ1Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Down);
-  xpos -= myJoy[kJ1Up]->getWidth() + xdiff;
-  ypos -= myJoy[kJ1Up]->getHeight() + VGAP;
-  myJoy[kJ1Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Left);
-  xpos += (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
-  myJoy[kJ1Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Right);
-  xpos -= (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
-  ypos += myJoy[kJ1Down]->getHeight() * 2 + VGAP * 2;
-  myJoy[kJ1Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ1Fire);
-
-  xpos = 2 * _w / 3 + fontWidth;  ypos = y;
+  myRightJoyLbl   = new LabelWidget(this, font, "Right joy");
+  myJoy[kJ1Up]    = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Down]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Left]  = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Right] = new CheckboxWidget(this, font, "");
+  myJoy[kJ1Fire]  = new CheckboxWidget(this, font, "Fire");
 
   // Console Select/Reset
-  t = new StaticTextWidget(this, font, xpos, ypos+2, "Console");
-  ypos += t->getHeight() + VGAP;
-  myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, GUI::SELECT);
-  ypos += myHoldSelect->getHeight() + VGAP;
-  myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
+  myConsoleLbl = new LabelWidget(this, font, "Console");
+  myHoldSelect = new CheckboxWidget(this, font, GUI::SELECT);
+  myHoldReset  = new CheckboxWidget(this, font, "Reset");
 
   static constexpr std::array<int, 10> TAB_ORDER = {
     kJ0Up, kJ0Left, kJ0Right, kJ0Down, kJ0Fire,
@@ -186,8 +132,140 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 
   wid.push_back(myHoldSelect);
   wid.push_back(myHoldReset);
+}
 
-  return myJoy[kJ0Fire]->getBottom();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> GlobalPropsDialog::joyLayout(LabelWidget* label,
+                                                     int base)
+{
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::centeredItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = Dialog::vGap();
+
+  // The four directions form a cross, with fire below it; every box is one
+  // standard gap from its neighbours, so the cross follows the font
+  auto cross = std::make_unique<GridLayout>(3, 4, VGAP, VGAP);
+  for(int col = 0; col < 3; ++col)
+    cross->columnAuto(col);
+  for(int row = 0; row < 4; ++row)
+    cross->rowAuto(row);
+
+  cross->place(1, 0, anchoredItem(myJoy[base + kJ0Up]));
+  cross->place(0, 1, anchoredItem(myJoy[base + kJ0Left]));
+  cross->place(2, 1, anchoredItem(myJoy[base + kJ0Right]));
+  cross->place(1, 2, anchoredItem(myJoy[base + kJ0Down]));
+  // Fire is the only one with a label, so it lies across the whole cross
+  cross->place(0, 3, anchoredItem(myJoy[base + kJ0Fire]), 3);
+
+  // Center the cross in the column, and its heading over the cross
+  auto crossRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  crossRow->addStretchSpace();
+  crossRow->addAuto(std::move(cross));
+  crossRow->addStretchSpace();
+
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  column->addAuto(centeredItem(label));
+  column->addAuto(std::move(crossRow));
+
+  return column;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> GlobalPropsDialog::consoleLayout()
+{
+  using GUI::BoxLayout;
+  using GUI::centeredItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = Dialog::vGap();
+
+  auto stack = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  stack->addAuto(anchoredItem(myHoldSelect));
+  stack->addAuto(anchoredItem(myHoldReset));
+
+  // Centered in the column, like the joysticks' crosses beside it
+  auto stackRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  stackRow->addStretchSpace();
+  stackRow->addAuto(std::move(stack));
+  stackRow->addStretchSpace();
+
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  column->addAuto(centeredItem(myConsoleLbl));
+  column->addAuto(std::move(stackRow));
+
+  return column;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> GlobalPropsDialog::holdLayout()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // The three groups share the width equally
+  auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row->addStretch(joyLayout(myLeftJoyLbl, kJ0Up));
+  row->addStretch(joyLayout(myRightJoyLbl, kJ1Up));
+  row->addStretch(consoleLayout());
+
+  return row;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GlobalPropsDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // The four pop-ups share one label column; the three offering the same kind
+  // of choice also share one value-box width, so their boxes line up (the
+  // bankswitch list has far longer entries and keeps its own width)
+  GUI::alignLabels({{myBSLbl}, {myTVLbl},
+                    {myLeftDiffLbl}, {myRightDiffLbl}});
+  GUI::alignPopUps({myTVType, myLeftDiff, myRightDiff});
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(labeledRow(myBSLbl, myBSType));
+  root->addSpace(VGAP * 3);
+  root->addAuto(labeledRow(myTVLbl, myTVType));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myLeftDiffLbl, myLeftDiff));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myRightDiffLbl, myRightDiff));
+  root->addSpace(VGAP * 3);
+  root->addAuto(anchoredItem(myHeldLbl));
+  root->addAuto(anchoredItem(myReleasedLbl));
+  root->addSpace(VGAP * 2);
+  root->addAuto(holdLayout());
+  root->addSpace(VGAP * 4);
+  root->addAuto(anchoredItem(myDebug));
+  root->addSpace(VGAP * 3);
+  root->addAuto(anchoredItem(myInfo1));
+  root->addAuto(anchoredItem(myInfo2));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / Load ROM / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -267,19 +345,19 @@ void GlobalPropsDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
+void GlobalPropsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                       int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       // Inform parent to load the ROM
-      sendCommand(LauncherDialog::kLoadROMCmd, 0, 0);
+      sendCommand(LauncherDialog::Cmd::LoadROM, 0, 0);
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       saveConfig();
       break;

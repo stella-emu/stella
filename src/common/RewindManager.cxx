@@ -261,6 +261,11 @@ string RewindManager::loadAllStates()
         compressStates();
 
       const uInt32 stateSize = in.getInt();
+      // A single state can never legitimately exceed the file it came
+      // from; without this, a crafted size field drives an allocation of
+      // up to ~4GB before the mismatched read below would even fail
+      if(stateSize > in.size())
+        return "Corrupt all states file";
 
       myStateList.addLast();
       RewindState& state = myStateList.current();
@@ -359,7 +364,7 @@ string RewindManager::getUnitString(Int64 cycles)
 
   const uInt64 u_cycles = std::abs(cycles);
 
-  auto i = 0uz;
+  auto i = 0UZ;
   for(i = 0; i < UNIT_NAMES.size() - 1; ++i)
   {
     // use the lower unit up to twice the nextCycles unit, except for an exact match of the nextCycles unit

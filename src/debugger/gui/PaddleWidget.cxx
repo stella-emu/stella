@@ -16,90 +16,93 @@
 //============================================================================
 
 #include "Paddles.hxx"
+#include "Layout.hxx"
 #include "PaddleWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
                            Controller& controller, bool embedded, bool second)
-  : ControllerWidget(boss, font, x, y, controller)
+  : ControllerWidget(boss, font, controller),
+    myEmbedded{embedded}
 {
   const bool leftport = isLeftPort();
-  const string& label = getHeader();
-  const int fontHeight = font.getFontHeight(),
-            lwidth = font.getStringWidth("Right (Paddles)");
-  int xpos = x, ypos = y;
 
-  if(!embedded)
+  // Create the controls at a placeholder position; reflow() lays them out.
+  // Embedded in a QuadTari the resistance is not shown, just a short pot label
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  if(embedded)
   {
-    new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                         _lineHeight, label);
-    ypos += _lineHeight + fontHeight + 2;
+    myP0Lbl = new LabelWidget(boss, font,
+      leftport ? second ? "P1b" : "P1a" : second ? "P3b" : "P3a");
+    myP1Lbl = new LabelWidget(boss, font,
+      leftport ? second ? "P2b" : "P2a" : second ? "P4b" : "P4a");
 
-    const string& p0string = leftport ? "P1 pot " : "P3 pot ";
-    const string& p1string = leftport ? "P2 pot " : "P4 pot ";
-    myP0Resistance =
-      new SliderWidget(boss, font, xpos, ypos,
-                       p0string, 0, kP0Changed);
-
-    xpos += 20;  ypos += myP0Resistance->getHeight() * 1.33;
-    myP0Fire = new CheckboxWidget(boss, font, xpos, ypos,
-                                  "Fire", kP0Fire);
-
-    xpos = x;  ypos += _lineHeight * 2.25;
-    myP1Resistance =
-      new SliderWidget(boss, font, xpos, ypos,
-                       p1string, 0, kP1Changed);
-
-    xpos += 20;  ypos += myP1Resistance->getHeight() * 1.33;
-    myP1Fire = new CheckboxWidget(boss, font, xpos, ypos,
-                                  "Fire", kP1Fire);
+    myP0Resistance = new SliderWidget(boss, font);
+    myP0Resistance->setEnabled(false);
+    myP0Resistance->setVisible(false);
+    myP1Resistance = new SliderWidget(boss, font);
+    myP1Resistance->setEnabled(false);
+    myP1Resistance->setVisible(false);
   }
   else
   {
-    const string& p0string = leftport ? second ? "P1b" : "P1a"
-                                      : second ? "P3b" : "P3a";
-    const string& p1string = leftport ? second ? "P2b" : "P2a"
-                                      : second ? "P4b" : "P4a";
-
-    new StaticTextWidget(boss, font, xpos, ypos + 2, p0string);
-
-    myP0Resistance = new SliderWidget(boss, font, xpos, ypos);
-    myP0Resistance->setEnabled(false);
-    myP0Resistance->setFlags(Widget::FLAG_INVISIBLE);
-
-    ypos += _lineHeight * 1.33;
-    myP0Fire = new CheckboxWidget(boss, font, xpos, ypos,
-                                  "Fire", kP0Fire);
-
-    xpos = x;  ypos += _lineHeight * 2.25;
-    new StaticTextWidget(boss, font, xpos, ypos + 2, p1string);
-
-    myP1Resistance = new SliderWidget(boss, font, xpos, ypos);
-    myP1Resistance->setEnabled(false);
-    myP1Resistance->setFlags(Widget::FLAG_INVISIBLE);
-
-    ypos += _lineHeight * 1.33;
-    myP1Fire = new CheckboxWidget(boss, font, xpos, ypos,
-                                  "Fire", kP1Fire);
+    myP0Lbl = new LabelWidget(boss, font, leftport ? "P1 pot" : "P3 pot");
+    myP0Resistance = new SliderWidget(boss, font, 0, Cmd::Paddle0Changed);
+    myP1Lbl = new LabelWidget(boss, font, leftport ? "P2 pot" : "P4 pot");
+    myP1Resistance = new SliderWidget(boss, font, 0, Cmd::Paddle1Changed);
   }
-  myP0Resistance->setMinValue(0);
-  myP0Resistance->setMaxValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE});
-  myP0Resistance->setStepValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE / 100});
-  myP0Resistance->setTarget(this);
+  myP0Fire = new CheckboxWidget(boss, font, "Fire", Cmd::Paddle0Fire);
+  myP1Fire = new CheckboxWidget(boss, font, "Fire", Cmd::Paddle1Fire);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
+  for(auto* s: {myP0Resistance, myP1Resistance})
+  {
+    s->setMinValue(0);
+    s->setMaxValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE});
+    s->setStepValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE / 100});
+    s->setTarget(this);
+  }
   myP0Fire->setTarget(this);
-
-  myP1Resistance->setMinValue(0);
-  myP1Resistance->setMaxValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE});
-  myP1Resistance->setStepValue(uInt32{AnalogReadout::MAX_POT_RESISTANCE / 100});
-  myP1Resistance->setTarget(this);
-
   myP1Fire->setTarget(this);
 
   addFocusWidget(myP0Resistance);
   addFocusWidget(myP0Fire);
   addFocusWidget(myP1Resistance);
   addFocusWidget(myP1Fire);
+
+  if(!embedded)
+    createHeader();
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaddleWidget::layoutContent(GUI::BoxLayout& col)
+{
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::labeledRow;
+
+  const int VGAP   = _font.getFontHeight() / 4,
+            INDENT = _font.getMaxCharWidth() * 2;
+
+  if(myEmbedded)
+  {
+    // Just the pot label and its fire button, twice (the sliders are hidden)
+    col.addAuto(anchoredItem(myP0Lbl));
+    col.addAuto(anchoredItem(myP0Fire));
+    col.addSpace(VGAP);
+    col.addAuto(anchoredItem(myP1Lbl));
+    col.addAuto(anchoredItem(myP1Fire));
+  }
+  else
+  {
+    // A resistance slider beside its label, with the fire button indented below
+    col.addAuto(labeledRow(myP0Lbl, myP0Resistance));
+    col.addAuto(indentedItem(myP0Fire, INDENT));
+    col.addSpace(VGAP);
+    col.addAuto(labeledRow(myP1Lbl, myP1Resistance));
+    col.addAuto(indentedItem(myP1Fire, INDENT));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,23 +117,23 @@ void PaddleWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleWidget::handleCommand(
-    CommandSender* sender, int cmd, int data, int id)
+void PaddleWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                 int data, int id)
 {
   switch(cmd)
   {
-    case kP0Changed:
+    case Cmd::Paddle0Changed:
       setPin(Controller::AnalogPin::Five,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP0Resistance->getValue()));
       break;
-    case kP1Changed:
+    case Cmd::Paddle1Changed:
       setPin(Controller::AnalogPin::Nine,
              AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE - myP1Resistance->getValue()));
       break;
-    case kP0Fire:
+    case Cmd::Paddle0Fire:
       setPin(Controller::DigitalPin::Four, !myP0Fire->getState());
       break;
-    case kP1Fire:
+    case Cmd::Paddle1Fire:
       setPin(Controller::DigitalPin::Three, !myP1Fire->getState());
       break;
     default:

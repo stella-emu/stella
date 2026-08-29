@@ -26,9 +26,9 @@ class Controller;
 class SaveKeyWidget : public FlashWidget
 {
   public:
-    SaveKeyWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    SaveKeyWidget(GuiObject* boss, const GUI::Font& font,
                   Controller& controller, bool embedded = false)
-      : FlashWidget(boss, font, x, y, controller) { init(boss, font, x, y, embedded); }
+      : FlashWidget(boss, font, controller) { init(boss, font, embedded); }
 
     ~SaveKeyWidget() override = default;
 

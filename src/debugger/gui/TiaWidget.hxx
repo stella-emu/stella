@@ -21,7 +21,7 @@
 class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
-class StaticTextWidget;
+class LabelWidget;
 class TogglePixelWidget;
 class EditTextWidget;
 class ColorWidget;
@@ -30,20 +30,66 @@ class DelayQueueWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+namespace GUI {
+  class Layout;
+}  // namespace GUI
+
 class TiaWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y, int w, int h);
+    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont);
     ~TiaWidget() override = default;
 
     void loadConfig() override;
 
+    // Reflow entry point for the resizable debugger: move/resize the widget and
+    // lay its register blocks out for the available area
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how big I am -- that is however big my blocks
+    // make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+  private:
+    // Build the layout tree from the current font and position/size everything;
+    // shared by the ctor and setArea()
+    void reflow();
+
+    // Everything the tab holds, as the engine sees it
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   private:
     DataGridWidget* myColorRegs{nullptr};
+
+    // Labels and buttons promoted from anonymous locals, so that the layout can
+    // place them.  Grouped as they are built
+    std::array<LabelWidget*, 4> myColorRegLabels{nullptr};
+    std::array<LabelWidget*, 8> myDbgColorLabels{nullptr};
+    std::array<LabelWidget*, 5> myCollRowLabels{nullptr};
+    std::array<LabelWidget*, 5> myCollColLabels{nullptr};
+    std::array<LabelWidget*, 20> myPFBitLabels{nullptr};
+    LabelWidget* myPFLbl{nullptr};
+    LabelWidget* myQueuedWritesLbl{nullptr};
+
+    // One per register block: its name, then "Pos#"/"HM" and the block's fourth
+    // label ("NuSiz" for a player, "Size" for a missile or the ball)
+    struct BlockLabels {
+      LabelWidget* name{nullptr};
+      LabelWidget* pos{nullptr};
+      LabelWidget* hm{nullptr};
+      LabelWidget* size{nullptr};
+    };
+    // P0, P1, M0, M1, BL, in that order
+    std::array<BlockLabels, 5> myBlockLabels{};
+
+    ButtonWidget* myCxclrButton{nullptr};
+    // RESP0, RESP1, RESM0, RESM1, RESBL -- these share one column
+    std::array<ButtonWidget*, 5> myResButtons{nullptr};
+    // WSYNC, RSYNC, HMOVE, HMCLR
+    std::array<ButtonWidget*, 4> myStrobeButtons{nullptr};
 
     ColorWidget* myCOLUP0Color{nullptr};
     ColorWidget* myCOLUP1Color{nullptr};
@@ -133,21 +179,21 @@ class TiaWidget : public Widget, public CommandSender
     };
 
     // Strobe button and misc commands
-    enum {
-      kWsyncCmd = 'Swsy',
-      kRsyncCmd = 'Srsy',
-      kResP0Cmd = 'Srp0',
-      kResP1Cmd = 'Srp1',
-      kResM0Cmd = 'Srm0',
-      kResM1Cmd = 'Srm1',
-      kResBLCmd = 'Srbl',
-      kHmoveCmd = 'Shmv',
-      kHmclrCmd = 'Shmc',
-      kCxChgCmd = 'Sccc',
-      kCxclrCmd = 'Scxl',
-      kDbgClCmd = 'DBGc',
-      kVSyncCmd = 'Cvsn',
-      kVBlankCmd = 'Cvbl'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Wsync         = GuiCmd::of("TiaWidget.Wsync"),
+        Rsync         = GuiCmd::of("TiaWidget.Rsync"),
+        ResetPlayer0  = GuiCmd::of("TiaWidget.ResetPlayer0"),
+        ResetPlayer1  = GuiCmd::of("TiaWidget.ResetPlayer1"),
+        ResetMissile0 = GuiCmd::of("TiaWidget.ResetMissile0"),
+        ResetMissile1 = GuiCmd::of("TiaWidget.ResetMissile1"),
+        ResetBall     = GuiCmd::of("TiaWidget.ResetBall"),
+        Hmove         = GuiCmd::of("TiaWidget.Hmove"),
+        Hmclr         = GuiCmd::of("TiaWidget.Hmclr"),
+        Cxclr         = GuiCmd::of("TiaWidget.Cxclr"),
+        DebugColors   = GuiCmd::of("TiaWidget.DebugColors"),
+        VSync         = GuiCmd::of("TiaWidget.VSync"),
+        VBlank        = GuiCmd::of("TiaWidget.VBlank");
     };
 
     // Color registers

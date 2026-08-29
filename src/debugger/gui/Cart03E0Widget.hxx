@@ -27,7 +27,6 @@ class Cartridge03E0Widget : public CartridgeEnhancedWidget
   public:
     Cartridge03E0Widget(GuiObject* boss, const GUI::Font& lfont,
                         const GUI::Font& nfont,
-                        int x, int y, int w, int h,
                         Cartridge03E0& cart);
     ~Cartridge03E0Widget() override = default;
 
@@ -36,7 +35,7 @@ class Cartridge03E0Widget : public CartridgeEnhancedWidget
     string description() override;
     string romDescription() override;
     string hotspotStr(int bank, int segment, bool noBrackets = false) override;
-    uInt16 bankSegs() override { return 3; }
+    uInt16 bankSegs() const override { return 3; }
 
   private:
     // Following constructors and assignment operators not supported

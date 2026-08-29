@@ -27,8 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
-  : myDialog{dialog},
-    myScale{myDialog.instance().frameBuffer().hidpiScaleFactor()}
+  : myDialog{dialog}
 {
   setFont(font);
 }
@@ -167,26 +166,27 @@ void ToolTip::show(string_view tip)
   const uInt32 height = std::min(myHeight, myFont->getFontHeight() * lines + myTextYOfs * 2);
   constexpr uInt32 V_GAP = 1;
   constexpr uInt32 H_CURSOR = 18;
-  // Note: The rects include HiDPI scaling
+  // Note: The rects include HiDPI scaling, which can change while we live
+  const uInt32 scale = myDialog.instance().frameBuffer().hidpiScaleFactor();
   const Common::Rect& imageRect = myDialog.instance().frameBuffer().imageRect();
   const Common::Rect& dialogRect = myDialog.surface().dstRect();
   // Limit position to app size and adjust accordingly
-  const Int32 xAbs = myTipPos.x + dialogRect.x() / myScale;
-  const uInt32 yAbs = myTipPos.y + dialogRect.y() / myScale;
-  Int32 x = std::min(xAbs, static_cast<Int32>(imageRect.w() / myScale - width));
-  const uInt32 y = (yAbs + height + H_CURSOR > imageRect.h() / myScale)
+  const Int32 xAbs = myTipPos.x + dialogRect.x() / scale;
+  const uInt32 yAbs = myTipPos.y + dialogRect.y() / scale;
+  Int32 x = std::min(xAbs, static_cast<Int32>(imageRect.w() / scale - width));
+  const uInt32 y = (yAbs + height + H_CURSOR > imageRect.h() / scale)
     ? yAbs - height - V_GAP
-    : yAbs + H_CURSOR / myScale + V_GAP;
+    : yAbs + H_CURSOR / scale + V_GAP;
 
   if(x < 0)
   {
     x = 0;
-    width = std::min(width, imageRect.w() / myScale);
+    width = std::min(width, imageRect.w() / scale);
   }
 
   surface()->setSrcSize(width, height);
-  surface()->setDstSize(width * myScale, height * myScale);
-  surface()->setDstPos(x * myScale, y * myScale);
+  surface()->setDstSize(width * scale, height * scale);
+  surface()->setDstPos(x * scale, y * scale);
   surface()->frameRect(0, 0, width, height, kColor);
 
   myTipShown = true;

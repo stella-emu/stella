@@ -23,50 +23,84 @@ class Properties;
 
 #include "Widget.hxx"
 
+/**
+  Shows a ROM's snapshot image(s) in the launcher, with navigation
+  between multiple matches and a zoom mode.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomImageWidget : public Widget
 {
   public:
-    RomImageWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+    RomImageWidget(GuiObject *boss, const GUI::Font& font);
     ~RomImageWidget() override = default;
 
+    // Height reserved below the image for its label/counter line
     static int labelHeight(const GUI::Font& font)
     {
       return font.getFontHeight() * 9 / 8;
     }
 
+    // Sets the properties to load an image for (parsed immediately if the
+    // launcher is active); 'full' additionally loads every matching snapshot,
+    // not just the first, so changeImage() has something to cycle through
     void setProperties(const FSNode& node, const Properties& properties,
                        bool full = true);
+    // Clears the display; used when nothing (or an invalid ROM) is selected
     void clearProperties();
+    // Re-parses the current properties (e.g. after a change made in the ROM browser)
     void reloadProperties(const FSNode& node);
+
+    // Reposition and resize the widget, rescaling the current image to fit.
+    // Used when the launcher (and thus this widget) is resized.
+    void setArea(int x, int y, int w, int h) override;
+    // Loads the previous/next (direction -1/+1) image in myImageList, if any
     bool changeImage(int direction = 1);
     // Toggle zoom via keyboard
     void toggleImageZoom();
     void disableImageZoom() { myZoomMode = false; }
 
+    // Estimated time (ms) the next image load may take, for callers deciding
+    // whether to show a "loading" indicator first
     uInt64 pendingLoadTime() const { return myMaxLoadTime * timeFactor; }
 
   #ifdef IMAGE_SUPPORT
+    // Arrow keys/PgUp/PgDn change images; OK/Select toggles zoom
     bool handleEvent(Event::Type event) override;
+    // Clicking the left/right nav arrow changes images; elsewhere toggles zoom
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    // Tracks which nav area (left/right/zoom) the mouse is currently over
     void handleMouseMoved(int x, int y) override;
+    // Advances the hover-to-zoom delay timer, growing/shrinking the zoomed view
     void tick() override;
   #endif
 
   protected:
+    // Draws the image (or an error message), its label/counter, and (while
+    // highlighted) the prev/next/zoom navigation icons
     void drawWidget(bool hilite) override;
 
   private:
+    // Builds myImageList (or loads the single best-match image if !full) from
+    // myProperties, and loads the first entry
     void parseProperties(const FSNode& node, bool full = true);
   #ifdef IMAGE_SUPPORT
+    // Finds every snapshot matching 'propName'/'romName' into myImageList,
+    // sorted so 'oldFileName' (the previously first match) stays first
     bool getImageList(const string& propName, const string& romName,
                       const string& oldFileName);
+    // Tries 'fileName' with a .png then a .jpg extension; appends whichever loads
     bool tryImageFormats(string& fileName);
+    // Loads 'fileName' (by its extension) into mySurface, updating mySurfaceIsValid
     bool loadImage(const string& fileName);
+    // Format-specific loaders, called by loadImage(); also extract myLbl from metadata
     bool loadPng(const string& fileName);
     bool loadJpg(const string& fileName);
 
+    // Rescales mySurface (and, when zoomed, myFrameSurface) for the current
+    // area or the zoomed layout; positions them via positionSurfaces()
     void zoomSurfaces(bool zoomed, bool force = false);
+    // Places mySurface (and myFrameSurface, if zoomed) at their on-screen destination
     void positionSurfaces();
   #endif
 
@@ -147,7 +181,7 @@ class RomImageWidget : public Widget
     size_t myImageIdx{0};
 
     // Label for the loaded image
-    string myLabel;
+    string myLbl;
 
     // Maximum load time, for adapting pending loads delay
     uInt64 myMaxLoadTime{0};

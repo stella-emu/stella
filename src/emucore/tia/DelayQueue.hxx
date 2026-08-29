@@ -175,7 +175,10 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
     myPendingCount = 0;
     for (uInt32 i = 0; i < length; ++i)
     {
-      myMembers[i].load(in);
+      // A failed member load leaves its mySize corrupted (set before its own
+      // internal validation throws); without this check that bad count
+      // would survive into myPendingCount and, later, execute()'s loop bound
+      if (!myMembers[i].load(in)) throw std::runtime_error("invalid delay queue member");
       myPendingCount += myMembers[i].mySize;
     }
 

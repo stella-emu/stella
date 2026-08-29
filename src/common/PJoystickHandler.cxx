@@ -894,7 +894,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       {
         const bool isLeft = (j->type == LEFT_STELLADAPTOR ||
                              j->type == LEFT_2600DAPTOR);
-        const auto port = isLeft ? 0uz : 1uz;
+        const auto port = isLeft ? 0UZ : 1UZ;
         const auto& ctrl = isLeft ? myOSystem.console().leftController()
                                   : myOSystem.console().rightController();
         if(myOSystem.hasConsole() && ctrl.type() == Controller::Type::Driving)
@@ -1274,8 +1274,8 @@ PhysicalJoystickHandler::EventMappingArray
 PhysicalJoystickHandler::DefaultLeftJoystickMapping = {
   // Left joystick (assume buttons zero..two)
   {Event::LeftJoystickFire,   0},
-  {Event::LeftJoystickFire5,  1},
-  {Event::LeftJoystickFire9,  2},
+  {Event::LeftJoystickFire9,  1},
+  {Event::LeftJoystickFire5,  2},
   // Left joystick left/right directions
   {Event::LeftJoystickLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::LeftJoystickRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
@@ -1295,8 +1295,8 @@ PhysicalJoystickHandler::EventMappingArray
 PhysicalJoystickHandler::DefaultRightJoystickMapping = {
   // Right joystick (assume buttons zero..two)
   {Event::RightJoystickFire,    0},
-  {Event::RightJoystickFire5,   1},
-  {Event::RightJoystickFire9,   2},
+  {Event::RightJoystickFire9,   1},
+  {Event::RightJoystickFire5,   2},
   // Right joystick left/right directions
   {Event::RightJoystickLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::RightJoystickRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},

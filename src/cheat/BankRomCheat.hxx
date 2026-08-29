@@ -20,21 +20,36 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that patches ROM bytes at a specific bankswitch address,
+  decoded from an 8-digit cheatcode.
+
+  @author  Stephen Anthony
+*/
 class BankRomCheat : public Cheat
 {
   public:
+    // Decodes an 8-digit bankswitch cheat and backs up the targeted ROM bytes
     BankRomCheat(OSystem& os, string_view name, string_view code);
     ~BankRomCheat() override = default;
 
+    // Patches 'value' into the target bank/address range
     bool enable() override;
+    // Restores the original ROM bytes in the target bank
     bool disable() override;
+    // Applies the patch if not already enabled
     void evaluate() override;
 
   private:
+    // Original ROM bytes at address, for disable()
     std::array<uInt8, 16> savedRom{};
+    // Cartridge address ($F000-based) to patch
     uInt16 address{0};
+    // Byte value to poke at address
     uInt8  value{0};
+    // Number of consecutive bytes to patch
     uInt8  count{0};
+    // Bank number the cheat targets
     int    bank{0};
 
   private:

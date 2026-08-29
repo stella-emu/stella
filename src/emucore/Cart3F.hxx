@@ -78,9 +78,9 @@ class Cartridge3F : public CartridgeEnhanced
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) override
+        const GUI::Font& nfont) override
     {
-      return new Cartridge3FWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new Cartridge3FWidget(boss, lfont, nfont, *this);
     }
   #endif
 

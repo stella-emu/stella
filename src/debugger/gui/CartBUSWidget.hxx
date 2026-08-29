@@ -30,7 +30,6 @@ class CartridgeBUSWidget : public CartridgeARMWidget
   public:
     CartridgeBUSWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeBUS& cart);
     ~CartridgeBUSWidget() override = default;
 
@@ -49,7 +48,13 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+  private:
+    // The datastream table: the pointer and increment grids side by side, with the
+    // stream numbers (and the named streams below them) labelling their rows
+    unique_ptr<GUI::Layout> layoutDatastreams() const;
 
   private:
     struct CartState {
@@ -68,8 +73,15 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     };
 
     CartridgeBUS& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
     int myDatastreamCount;
+    int myDatastream2Rows{0};   // named streams below the main table
+
+    LabelWidget *myPointersLbl{nullptr}, *myIncrementsLbl{nullptr},
+                *myAddressMapsLbl{nullptr}, *myCountersLbl{nullptr},
+                *myFrequenciesLbl{nullptr}, *myWaveformsLbl{nullptr},
+                *myWaveformSizesLbl{nullptr}, *mySamplePointerLbl{nullptr};
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};
@@ -83,10 +95,13 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
-    std::array<StaticTextWidget*, 8> myDatastreamLabels{nullptr};
+    std::array<LabelWidget*, 8> myDatastreamLabels{nullptr};
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeBUSWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

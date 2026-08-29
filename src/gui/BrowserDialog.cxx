@@ -26,6 +26,7 @@
 #include "FileListWidget.hxx"
 #include "NavigationWidget.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "BrowserDialog.hxx"
 
@@ -48,79 +49,135 @@ BrowserDialog::BrowserDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::initialize(int max_w, int max_h)
 {
+  // This dialog takes as much space as is made available to it
   _w = max_w;
   _h = max_h;
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Base Dir"),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int selectHeight = lineHeight + VGAP * 3;
-  int xpos = HBORDER, ypos = VBORDER + _th;
-  ButtonWidget* b = nullptr;
 
-  // Current path
-  _navigationBar = new NavigationWidget(this, _font, xpos, ypos, _w - HBORDER * 2, buttonHeight);
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all positions and sizes from the current font and dialog size.  The
+  // composite widgets (navigation bar and file list) are created at a real base
+  // size to avoid degenerate tiny-size initialization.
 
-  xpos = _w - (HBORDER + _font.getStringWidth("Save") + CheckboxWidget::prefixSize(_font));
-  _savePathBox = new CheckboxWidget(this, _font, xpos, ypos + 2, "Save");
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // Current path (navigation bar) and the "save path" checkbox beside it
+  _navigationBar = new NavigationWidget(this, _font);
+  _savePathBox = new CheckboxWidget(this, _font, "Save");
   _savePathBox->setToolTip("Check to save current path as default.");
 
-  // Add file list
-  xpos = HBORDER; ypos = _navigationBar->getBottom() + VGAP;
-  _fileList = new FileListWidget(this, _font, xpos, ypos, _w - 2 * xpos,
-                                 _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
+  // File listing
+  _fileList = new FileListWidget(this, _font);
   _fileList->setEditable(false);
   addFocusWidget(_fileList);
   _navigationBar->setList(_fileList);
 
-  // Add currently selected item
-  ypos += _fileList->getHeight() + VGAP * 2;
-
-  _name = new StaticTextWidget(this, _font, xpos, ypos + 2, "Name ");
-  _selected = new EditTextWidget(this, _font, xpos + _name->getWidth(), ypos,
-                                 _w - _name->getWidth() - 2 * xpos, lineHeight, "");
+  // Currently selected item
+  _name = new LabelWidget(this, _font, "Name");
+  _selected = new EditTextWidget(this, _font, 1);
   addFocusWidget(_selected);
 
-  // Buttons
-  _goUpButton = new ButtonWidget(this, _font, xpos, _h - buttonHeight - VBORDER,
-                                 buttonWidth, buttonHeight, "Go up", kGoUpCmd);
+  // Directory-navigation buttons
+  _goUpButton = new ButtonWidget(this, _font, "Go up", Cmd::GoUp);
   addFocusWidget(_goUpButton);
-
-  _baseDirButton = new ButtonWidget(this, _font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
-                                    buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
+  _baseDirButton = new ButtonWidget(this, _font, "Base Dir", Cmd::BaseDir);
   _baseDirButton->setToolTip("Go to Stella's base directory.");
   addFocusWidget(_baseDirButton);
-
-  _homeDirButton = new ButtonWidget(this, _font, _baseDirButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
-                                    buttonWidth, buttonHeight, "Home Dir", kHomeDirCmd);
+  _homeDirButton = new ButtonWidget(this, _font, "Home Dir", Cmd::HomeDir);
   _homeDirButton->setToolTip("Go to user's home directory.");
   addFocusWidget(_homeDirButton);
 
-#ifndef BSPF_MACOS
-  b = new ButtonWidget(this, _font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "OK", kChooseCmd);
-  addFocusWidget(b);
-  addOKWidget(b);
-  b = new ButtonWidget(this, _font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Cancel", GuiObject::kCloseCmd);
-  addFocusWidget(b);
-  addCancelWidget(b);
-#else
-  b = new ButtonWidget(this, _font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Cancel", GuiObject::kCloseCmd);
-  addFocusWidget(b);
-  addCancelWidget(b);
-  b = new ButtonWidget(this, _font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "OK", kChooseCmd);
-  addFocusWidget(b);
-  addOKWidget(b);
-#endif
+  // OK and Cancel; the platform-specific left/right ordering is handled by
+  // Dialog::layoutButtonGroup()
+  auto* okButton = new ButtonWidget(this, _font,
+                                    "OK", Cmd::Choose);
+  addFocusWidget(okButton);
+  addOKWidget(okButton);
+  auto* cancelButton = new ButtonWidget(this, _font, "Cancel",
+                                        GuiObject::Cmd::Close);
+  addFocusWidget(cancelButton);
+  addCancelWidget(cancelButton);
 
   // add last to avoid focus problems
   addFocusWidget(_savePathBox);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+  const bool fileMode  = _mode != Mode::Directories;      // has selected-item row
+  const bool hasNavBar = _mode != Mode::FileLoadNoDirs;   // has navigation bar
+
+  // Vertical stack: navigation bar, file listing (fills the available space),
+  // an optional selected-item row, then a reserved band for the bottom buttons.
+  // This dialog takes all the space it is given, so its size is not derived from
+  // the content.
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+
+  // Navigation-bar row (absent in FileLoadNoDirs, whose directory is fixed, so
+  // the file listing fills that space instead).  In the file-selection modes
+  // the "save path" checkbox sits at the right; in Directories mode the bar
+  // spans the full width.
+  if(hasNavBar)
+  {
+    if(fileMode)
+    {
+      auto navRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+      navRow->addStretch(stretchedItem(_navigationBar));
+      navRow->addSpace(fontWidth);
+      navRow->addAuto(anchoredItem(_savePathBox));
+      root->addAuto(std::move(navRow));
+    }
+    else
+      root->addAuto(stretchedItem(_navigationBar));
+
+    root->addSpace(VGAP);
+  }
+
+  root->addStretch(widgetItem(_fileList));
+
+  // Currently-selected item (label + editable name), only in file modes
+  if(fileMode)
+  {
+    auto nameRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+    nameRow->addAuto(anchoredItem(_name));
+    nameRow->addSpace(fontWidth);
+    nameRow->addStretch(stretchedItem(_selected));
+
+    root->addSpace(VGAP * 2);
+    root->addAuto(std::move(nameRow));
+  }
+
+  // Gap down to the bottom button row, then the reserved button band (the
+  // buttons themselves are positioned below)
+  root->addSpace(VBORDER + VGAP);
+  root->addSpace(buttonHeight);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Bottom-left directory-navigation buttons (Go up / Base Dir / Home Dir)
+  // The three navigation buttons share one width, the widest of them
+  GUI::alignButtons({_goUpButton, _baseDirButton, _homeDirButton});
+
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, BUTTON_GAP);
+  navButtons->addAuto(anchoredItem(_goUpButton));
+  navButtons->addAuto(anchoredItem(_baseDirButton));
+  navButtons->addAuto(anchoredItem(_homeDirButton));
+
+  // OK/Cancel along the bottom-right (platform order), the navigation buttons
+  // on the left of the same band
+  layoutButtonGroup(std::move(navButtons));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,7 +203,7 @@ void BrowserDialog::show(Dialog* parent, const GUI::Font& font,
   if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent() ||
      std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
-    ourBrowser = std::make_unique<BrowserDialog>(parent, font, w, h);
+    ourBrowser.reset(new BrowserDialog(parent, font, w, h));
   }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
@@ -183,7 +240,7 @@ void BrowserDialog::show(OSystem& osystem,
   if(ourBrowser == nullptr || &ourBrowser->parent() != &overlay ||
      std::cmp_greater(ourBrowser->_w, w) || std::cmp_greater(ourBrowser->_h, h))
   {
-    ourBrowser = std::make_unique<BrowserDialog>(osystem, overlay, font, w, h);
+    ourBrowser.reset(new BrowserDialog(osystem, overlay, font, w, h));
   }
   ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
@@ -205,8 +262,6 @@ void BrowserDialog::show(string_view startpath,
   if(startpath.empty())
     startpath = "~";
 
-  const int fontWidth = Dialog::fontWidth(),
-            VGAP      = Dialog::vGap();
   _mode = mode;
   _command = command;
   bool fileSelected = true;
@@ -226,20 +281,19 @@ void BrowserDialog::show(string_view startpath,
   _navigationBar->setVisible(true);
   _fileList->setListMode(FSNode::ListMode::All);
   _fileList->setShowFileExtensions(true);
-  _goUpButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _goUpButton->setVisible(true);
   _goUpButton->setEnabled(true);
-  _baseDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _baseDirButton->setVisible(true);
   _baseDirButton->setEnabled(true);
-  _homeDirButton->clearFlags(Widget::FLAG_INVISIBLE);
+  _homeDirButton->setVisible(true);
   _homeDirButton->setEnabled(true);
 
   // Common setup for all file-selection modes
   if(_mode != Mode::Directories)
   {
     _fileList->setNameFilter(namefilter);
-    _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
-    _name->clearFlags(Widget::FLAG_INVISIBLE);
-    _selected->clearFlags(Widget::FLAG_INVISIBLE);
+    _name->setVisible(true);
+    _selected->setVisible(true);
     _selected->setEditable(false);
     _selected->setEnabled(false);
   }
@@ -249,9 +303,8 @@ void BrowserDialog::show(string_view startpath,
     case Mode::FileLoad:
       _fileList->setListMode(FSNode::ListMode::All);
       // Show "save" checkbox
-      _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
-      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(true);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
       _okWidget->setLabel("Load");
       break;
@@ -264,13 +317,13 @@ void BrowserDialog::show(string_view startpath,
       _navigationBar->setEnabled(false);
       // Hide "save" checkbox
       _savePathBox->setEnabled(false);
-      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(false);
 
-      _goUpButton->setFlags(Widget::FLAG_INVISIBLE);
+      _goUpButton->setVisible(false);
       _goUpButton->setEnabled(false);
-      _baseDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _baseDirButton->setVisible(false);
       _baseDirButton->setEnabled(false);
-      _homeDirButton->setFlags(Widget::FLAG_INVISIBLE);
+      _homeDirButton->setVisible(false);
       _homeDirButton->setEnabled(false);
       _okWidget->setLabel("Select");
       break;
@@ -278,9 +331,8 @@ void BrowserDialog::show(string_view startpath,
     case Mode::FileSave:
       _fileList->setListMode(FSNode::ListMode::All);
       // Show "save" checkbox
-      _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
-      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(true);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
 
       _selected->setEditable(true);
@@ -293,15 +345,12 @@ void BrowserDialog::show(string_view startpath,
     case Mode::Directories:
       _fileList->setListMode(FSNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FSNode&) { return true; });
-      // TODO: scrollbar affected too!
-      _fileList->setHeight(_selected->getBottom() - _fileList->getTop());
       // Hide "save" checkbox
-      _navigationBar->setWidth(_savePathBox->getRight() - _navigationBar->getLeft());
       _savePathBox->setEnabled(false);
-      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setVisible(false);
 
-      _name->setFlags(Widget::FLAG_INVISIBLE);
-      _selected->setFlags(Widget::FLAG_INVISIBLE);
+      _name->setVisible(false);
+      _selected->setVisible(false);
       _selected->setEditable(false);
       _selected->setEnabled(false);
       _okWidget->setLabel("OK");
@@ -344,13 +393,13 @@ void BrowserDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
+void BrowserDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                   int data, int id)
 {
   switch (cmd)
   {
-    case kChooseCmd:
-    case FileListWidget::ItemActivated:
+    case Cmd::Choose:
+    case FileListWidget::Cmd::ItemActivated:
       // Send a signal to the calling class that a selection has been made
       if(_mode != Mode::Directories)
       {
@@ -364,30 +413,30 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       break;
 
-    case kCloseCmd:
+    case GuiObject::Cmd::Close:
       // Send a signal to the calling class that the dialog was closed without selection
       if(_command) _command(false, getResult());
       close();
       break;
 
-    case kGoUpCmd:
+    case Cmd::GoUp:
       _fileList->selectParent();
       break;
 
-    case kBaseDirCmd:
+    case Cmd::BaseDir:
       _fileList->selectDirectory(FSNode(instance().baseDir()));
       break;
 
-    case kHomeDirCmd:
+    case Cmd::HomeDir:
       _fileList->selectDirectory(FSNode(instance().homeDir()));
       break;
 
-    case EditableWidget::kChangedCmd:
+    case EditableWidget::Cmd::Changed:
       Dialog::handleCommand(sender, cmd, data, 0);
       updateUI(false);
       break;
 
-    case FileListWidget::ItemChanged:
+    case FileListWidget::Cmd::ItemChanged:
       updateUI(true);
       break;
 

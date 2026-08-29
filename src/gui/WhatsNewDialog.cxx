@@ -18,41 +18,41 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Version.hxx"
+#include "Layout.hxx"
+#include "WrappedTextWidget.hxx"
 
 #include "WhatsNewDialog.hxx"
 
-static constexpr int MAX_CHARS = 64; // maximum number of chars per line
+// The longest line we are prepared to draw before wrapping, and the most lines
+// to show before the text scrolls rather than growing the dialog further.  The
+// dialog is sized to its text, so there is no floor to keep: one line of news
+// gets one line of box
+static constexpr int MAX_CHARS = 64;
+static constexpr uInt16 MAX_LINES = 20, MIN_LINES = 1;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
-                               int max_w, int max_h)
+WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(),
            "What's New in Stella " + string(STELLA_VERSION) + "?")
 {
-  const int fontWidth = Dialog::fontWidth(),
-    buttonHeight = Dialog::buttonHeight(),
-    VBORDER = Dialog::vBorder(),
-    HBORDER = Dialog::hBorder(),
-    VGAP = Dialog::vGap();
-  int ypos = _th + VBORDER;
+  string text;
+  const auto add = [&text](string_view entry) {
+    if(!text.empty())
+      text += '\n';
+    text += "\x1f ";
+    text += entry;
+  };
 
-  // Set preliminary dimensions
-  setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
-          max_w, max_h);
+  // This release only, however we are reached: from the first run after an
+  // upgrade, or from the About dialog.  Anything older belongs in Changes.txt
+  add("ported Stella to SDL3");
+  add(ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 
-  const string_view version = instance().settings().getString("stella.version");
-  if(version < "7.0")
-  {
-    add(ypos, "accelerated ARM emulation by ~15%");
-    add(ypos, "added user defined CPU cycle timers to debugger");
-  }
-  add(ypos, "ported Stella to SDL3");
-  add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
-
-  // Set needed dimensions
-  ypos += VGAP * 2 + buttonHeight + VBORDER;
-  assert(std::cmp_less_equal(ypos, FBMinimum::Height)); // minimal launcher height
-  setSize(MAX_CHARS * fontWidth + HBORDER * 2, ypos, max_w, max_h);
+  // One bullet per line: the parser breaks on the newlines above and wraps
+  // whatever is still too long for the width layout() ends up giving it
+  myText = new WrappedTextWidget(this, _font, text, MAX_LINES, MIN_LINES);
+  myText->setEditable(false);
+  myText->setEnabled(false);
 
   WidgetArray wid;
   addOKBGroup(wid, _font);
@@ -64,24 +64,43 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void WhatsNewDialog::add(int& ypos, string_view text)
+void WhatsNewDialog::layout()
 {
-  const int lineHeight = Dialog::lineHeight(),
-            fontHeight = Dialog::fontHeight(),
-            HBORDER    = Dialog::hBorder();
-  string txt = "\x1f ";
-  txt += text;
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
 
-  // automatically wrap too long texts
-  while(txt.length() > MAX_CHARS)
-  {
-    int i = MAX_CHARS;
+  const int fontWidth = Dialog::fontWidth(),
+            VBORDER   = Dialog::vBorder(),
+            HBORDER   = Dialog::hBorder(),
+            VGAP      = Dialog::vGap();
 
-    while(--i && txt[i] != ' ');  // NOLINT(bugprone-inc-dec-in-conditions)
-    new StaticTextWidget(this, _font, HBORDER, ypos, txt.substr(0, i));
-    txt = " " + txt.substr(i);
-    ypos += fontHeight;
-  }
-  new StaticTextWidget(this, _font, HBORDER, ypos, txt);
-  ypos += lineHeight;
+  // As wide as there is room for, up to a comfortable reading length.  The
+  // window we open over may be narrower than that at a large font, and it is
+  // the one that has the final say
+  uInt32 availW = 0, availH = 0;
+  getDynamicBounds(availW, availH);
+  _w = std::min(static_cast<int>(availW), MAX_CHARS * fontWidth + HBORDER * 2);
+
+  // Wrapping is the widget's own concern; it just has to be told the width,
+  // and only then can it say how tall the wrapped text came to
+  myText->setWidth(_w - HBORDER * 2);
+
+  // The OK button keeps the width its label needs, centered on its row
+  auto okRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  okRow->addStretchSpace();
+  okRow->addAuto(anchoredItem(_okWidget));
+  okRow->addStretchSpace();
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(widgetItem(myText, 0,
+                           static_cast<int>(myText->naturalSize().h)));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(okRow));
+
+  _h = std::min(static_cast<int>(availH),
+                _th + static_cast<int>(root->naturalSize().h));
+
+  root->doLayout(0, _th, _w, _h - _th);
 }

@@ -21,11 +21,18 @@
 class GuiObject;
 class CheckboxWidget;
 class PopUpWidget;
+class LabelWidget;
 class StringListWidget;
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
+/**
+  Shows accumulated log messages, with controls for log level and
+  console echo, and a save-to-disk option.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class LoggerDialog : public Dialog
 {
   public:
@@ -34,18 +41,28 @@ class LoggerDialog : public Dialog
                  bool useLargeFont = true);
     ~LoggerDialog() override = default;
 
+    // Populates the log listing/level/console-echo controls from Logger and settings
     void loadConfig() override;
+    // Saves the log level/console-echo settings and applies them to Logger
     void saveConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // OK saves and closes; Defaults ("Save log to disk") opens a save-file browser
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+    void layout() override;
 
   private:
+    // Writes the current log to 'node', reporting success/failure via a status message
     void saveLogFile(const FSNode& node);
 
   private:
+    // The scrollable log output itself
     StringListWidget* myLogInfo{nullptr};
+    // How much detail is logged (see Logger::Level)
+    LabelWidget* myLogLevelLbl{nullptr};
     PopUpWidget*      myLogLevel{nullptr};
+    // Whether log output is also echoed to the console
     CheckboxWidget*   myLogToConsole{nullptr};
 
   private:

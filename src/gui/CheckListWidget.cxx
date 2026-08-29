@@ -21,28 +21,67 @@
 #include "CheckListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int w, int h)
-  : ListWidget(boss, font, x, y, w, h)
+CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font)
+  : ListWidget(boss, font)
 {
-  int ypos = _y + 2;
-
-  // rowheight is determined by largest item on a line,
-  // possibly meaning that number of rows will change
+  // rowheight is determined by largest item on a line, so the row count that
+  // follows from it is settled by setHeight(), which reflows the checkboxes too
   _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _lineHeight;
+}
 
-  // Create a CheckboxWidget for each row in the list
-  for(int i = 0; i < _rows; ++i)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setPos(const Common::Point& pos)
+{
+  ListWidget::setPos(pos);
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::setHeight(int h)
+{
+  // Recomputes _rows (and revalidates the scrollbar/selection)
+  ListWidget::setHeight(h);
+  reflowCheckboxes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::refreshFont()
+{
+  ListWidget::refreshFont();
+  // The base reset _lineHeight to the plain font line height; the row must
+  // still clear the checkbox (mirrors the constructor)
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckListWidget::reflowCheckboxes()
+{
+  // Grow the pool so there is a checkbox for every visible row.  The boss owns
+  // these widgets for its lifetime and there is no removal API, so we only ever
+  // append (surplus rows are hidden below).
+  while(std::cmp_less(_checkList.size(), _rows))
   {
-    auto* t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
-                                 CheckboxWidget::kCheckActionCmd);
+    auto* t = new CheckboxWidget(_boss, _font, "",
+                                 CheckboxWidget::Cmd::CheckAction);
     t->setTextColor(kTextColor);
     t->setTarget(this);
-    t->setID(i);
-    ypos += _lineHeight;
-
+    t->setID(static_cast<int>(_checkList.size()));
     _checkList.push_back(t);
+  }
+
+  // Position each checkbox against the list's current origin; hide any that
+  // fall past the visible row count
+  int ypos = _y + 2;
+  for(int i = 0; std::cmp_less(i, _checkList.size()); ++i)
+  {
+    if(i < _rows)
+    {
+      _checkList[i]->setPos(_x + 2, ypos);
+      _checkList[i]->setVisible(true);
+      ypos += _lineHeight;
+    }
+    else
+      _checkList[i]->setVisible(false);
   }
 }
 
@@ -56,12 +95,12 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
-    _checkList[i]->setFlags(Widget::FLAG_ENABLED);
+    _checkList[i]->setFlags(Widget::Flag::Enabled);
 
   // Then turn off any extras
   if(std::cmp_less(_stateList.size(), _rows))
     for(int i = static_cast<int>(_stateList.size()); i < _rows; ++i)
-      _checkList[i]->clearFlags(Widget::FLAG_ENABLED);
+      _checkList[i]->clearFlags(Widget::Flag::Enabled);
 
   ListWidget::recalc();
 }
@@ -126,8 +165,8 @@ void CheckListWidget::drawWidget(bool hilite)
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode &&
      (!_useScrollbar ||
-     ((_selectedItem >= _scrollBar->_currentPos) &&
-      (_selectedItem < _scrollBar->_currentPos + _rows))))
+     ((_selectedItem >= _scrollBar->currentPos()) &&
+      (_selectedItem < _scrollBar->currentPos() + _rows))))
     drawCaretSelection();
 }
 
@@ -167,17 +206,17 @@ bool CheckListWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
+void CheckListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
-  if(cmd == CheckboxWidget::kCheckActionCmd)
+  if(cmd == CheckboxWidget::Cmd::CheckAction)
   {
     // Figure out which line has been checked
     const int line = _currentPos + id;
     _stateList[line] = static_cast<bool>(data);
 
     // Let the boss know about it
-    sendCommand(CheckListWidget::kListItemChecked, line, _id);
+    sendCommand(Cmd::ListItemChecked, line, _id);
   }
   else
     ListWidget::handleCommand(sender, cmd, data, id);

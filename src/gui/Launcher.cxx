@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "LauncherDialog.hxx"
+#include "TimerManager.hxx"
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -27,9 +28,19 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem& osystem)
-  : DialogContainer(osystem),
-    mySize{myOSystem.settings().getSize("launcherres")}
+  : DialogContainer(osystem)
 {
+  loadSize();
+
+  myBaseDialog = std::make_unique<LauncherDialog>(myOSystem, *this,
+                                                  mySize.w, mySize.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::loadSize()
+{
+  mySize = myOSystem.settings().getSize("launcherres");
+
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Launcher);
   const double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
@@ -41,19 +52,17 @@ Launcher::Launcher(OSystem& osystem)
   // Now make overscan effective
   mySize.w = std::min(mySize.w, static_cast<uInt32>(d.w * overscan));
   mySize.h = std::min(mySize.h, static_cast<uInt32>(d.h * overscan));
-
-  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Launcher::~Launcher()
-{
-  delete myBaseDialog;  myBaseDialog = nullptr;
-}
+Launcher::~Launcher() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
 {
+  // Pick up any size the user set by resizing the launcher window
+  loadSize();
+
   return myOSystem.frameBuffer().createDisplay(STELLA_FULL_TITLE,
                                                BufferType::Launcher, mySize);
 }
@@ -61,35 +70,85 @@ FBInitStatus Launcher::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRom()
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRom();
+  return myBaseDialog->selectedRom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRomMD5()
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->selectedRomMD5();
+  return myBaseDialog->selectedRomMD5();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& Launcher::currentDir() const
 {
-  return static_cast<LauncherDialog*>(myBaseDialog)->currentDir();
+  return myBaseDialog->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::reload()
 {
-  static_cast<LauncherDialog*>(myBaseDialog)->reload();
+  myBaseDialog->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::quit()
 {
-  static_cast<LauncherDialog*>(myBaseDialog)->quit();
+  myBaseDialog->quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog* Launcher::baseDialog()
 {
-  return myBaseDialog;
+  return myBaseDialog.get();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Launcher::applyResize()
+{
+  // Throttle to roughly the display rate: an X11 event flood can deliver
+  // resizes far faster than 60Hz, and a full re-flow per event is wasteful.
+  // Never where the drag blocks the main loop, though: this handler is then the
+  // only thing running, so a skipped event is simply lost
+  const uInt64 INTERVAL =
+      LiveResize::blocksMainLoop() ? 0 : 1000000 / 60;  // microseconds
+  const uInt64 now = TimerManager::getTicks();
+  if(now - myLastResizeTime < INTERVAL)
+    return false;
+
+  // Nothing to do unless a new size is pending
+  if(!myOSystem.frameBuffer().applyLiveResize())
+    return false;
+
+  myLastResizeTime = now;
+  relayout();
+  mySettleCountdown = 15;  // ~frames of idle before the resize is settled
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::updateTime(uInt64 time)
+{
+  DialogContainer::updateTime(time);
+
+  // Live re-flow is normally applied straight from the event handler
+  // (applyResize(), which also covers the Windows/macOS modal loop).  Here we
+  // catch any size the handler's throttle skipped — notably the final one when
+  // the drag stops — and, once idle, run one settle pass with
+  // resizeInProgress() false so layout() performs the finalization it defers
+  // during the drag (window minimum-size hint, persisting the final size).
+  if(myOSystem.frameBuffer().applyLiveResize())
+  {
+    relayout();
+    mySettleCountdown = 15;
+  }
+  else if(mySettleCountdown > 0)
+  {
+    // Once the countdown reaches zero, run the settle pass
+    if(--mySettleCountdown == 0)
+    {
+      relayout();
+      myOSystem.frameBuffer().resizeSettled();
+    }
+  }
 }

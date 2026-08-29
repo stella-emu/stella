@@ -74,6 +74,7 @@ void SqliteDatabase::exec(string_view sql, T arg1, Ts... args)
 {
   char buffer[512];
 
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
   if (snprintf(buffer, 512, string{sql}.c_str(), arg1, args...) >= 512)
     throw std::runtime_error("SQL statement too long");
 

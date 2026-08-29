@@ -21,34 +21,22 @@
 #include "Font.hxx"
 #include "GuiObject.hxx"
 #include "Widget.hxx"
+#include "TabPaneWidget.hxx"
 #include "TabWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font),
     CommandSender(boss),
     _tabHeight{font.getLineHeight() + 4}
 {
   _id = 0;  // For dialogs with multiple tab widgets, they should specifically
             // call ::setID to differentiate among them
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TabWidget::~TabWidget()
-{
-  for(auto& tab: _tabs)
-  {
-    delete tab.firstWidget;
-    tab.firstWidget = nullptr;
-    // _tabs[i].parentWidget is deleted elsewhere
-  }
-  _tabs.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,39 +48,88 @@ int TabWidget::getChildY() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TabWidget::addTab(string_view title, int tabWidth)
 {
-  // Add a new tab page
-  const int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
+  // Add a new tab page.  AUTO_WIDTH tabs size to their title (recomputed from
+  // the font in updateTabSizes()); NO_WIDTH tabs share the common _tabWidth.
+  const bool autoWidth = tabWidth == AUTO_WIDTH;
+  _tabs.emplace_back(title, autoWidth ? NO_WIDTH : tabWidth, autoWidth);
 
-  if(tabWidth == AUTO_WIDTH)
-    _tabs.emplace_back(title, newWidth);
-  else
-    _tabs.emplace_back(title, tabWidth);
-  const int numTabs = static_cast<int>(_tabs.size());
+  updateTabSizes();
 
-  // Determine the new tab width
-  int fixedWidth = 0, fixedTabs = 0;
-  for(const auto& tab: _tabs)
+  // Activate the new tab
+  setActiveTab(static_cast<int>(_tabs.size()) - 1);
+
+  return _activeTab;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::updateTabSizes()
+{
+  // Tab-bar height and the AUTO-width tabs' widths follow the current font
+  _tabHeight = tabBarHeight();
+
+  // A common width is shared by the NO_WIDTH tabs (its floor is kTabMinWidth);
+  // AUTO/fixed tabs contribute their own width to the fixed total
+  int fixedWidth = 0, fixedTabs = 0, sharedWidth = kTabMinWidth;
+  for(auto& tab: _tabs)
   {
+    if(tab.autoWidth)
+      tab.tabWidth = _font.getStringWidth(tab.title) + 2 * kTabPadding;
+
     if(tab.tabWidth != NO_WIDTH)
     {
       fixedWidth += tab.tabWidth;
-      fixedTabs++;
+      ++fixedTabs;
     }
+    else
+      sharedWidth = std::max(sharedWidth,
+                             _font.getStringWidth(tab.title) + 2 * kTabPadding);
   }
 
-  if(tabWidth == NO_WIDTH)
-    _tabWidth = std::max(_tabWidth, newWidth);
-
-  if(numTabs - fixedTabs)
+  // Clamp the shared width so all the NO_WIDTH tabs still fit the current width
+  _tabWidth = sharedWidth;
+  const int varTabs = static_cast<int>(_tabs.size()) - fixedTabs;
+  if(varTabs > 0)
   {
-    const int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
+    const int maxWidth =
+        (_w - kTabLeftOffset - fixedWidth) / varTabs - kTabLeftOffset;
     _tabWidth = std::min(_tabWidth, maxWidth);
   }
 
-  // Activate the new tab
-  setActiveTab(numTabs - 1);
+  // The content area (below the tab bar) has now changed, so re-lay the tabs'
+  // content out — the container owns this, so dialogs need no such code
+  layoutTabs();
+}
 
-  return _activeTab;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::refreshFont()
+{
+  Widget::refreshFont();
+
+  // A caller's recursion over _children reaches only the active tab (see
+  // setActiveTab); each hidden tab's widgets live in _tabs[i].children
+  // instead, so refresh those directly.  This is safe to do while hidden --
+  // unlike layoutTabs(), it only recomputes cached metrics, it does not lay
+  // anything out or create widgets -- and it is what lets a hidden tab already
+  // hold correct sizes for the new font once it is later activated and reflowed
+  for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
+    if(i != _activeTab)
+      refreshFontInList(_tabs[i].children);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TabWidget::getMaxContentHeight() const
+{
+  int maxHeight = 0;
+
+  // What each tab's content ASKS to be, not where it happens to sit: a widget
+  // that owns a layout tree answers from the tree, so this holds before anything
+  // has been laid out.  Content that simply fills reports 0 (see naturalSize)
+  for(const auto& tab: _tabs)
+    if(tab.parentWidget != nullptr)
+      maxHeight = std::max(maxHeight,
+                           static_cast<int>(tab.parentWidget->naturalSize().h));
+
+  return maxHeight;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,18 +140,88 @@ void TabWidget::setActiveTab(int tabID, bool show)
   if(_activeTab != -1)
   {
     // Exchange the widget lists, and switch to the new tab
-    _tabs[_activeTab].firstWidget = _firstWidget;
+    _tabs[_activeTab].children = std::move(_children);
   }
 
   if(_activeTab != tabID)
     setDirty();
 
   _activeTab = tabID;
-  _firstWidget  = _tabs[tabID].firstWidget;
+  _children = std::move(_tabs[tabID].children);
+
+  // As a container, lay the newly-active content out to the current size
+  layoutContent(_activeTab);
 
   // Let parent know about the tab change
   if(show)
-    sendCommand(TabWidget::kTabChangedCmd, _activeTab, _id);
+    sendCommand(Cmd::TabChanged, _activeTab, _id);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::layoutTabs()
+{
+  for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
+  {
+    // A pane parents the tab's controls to itself, so it can be laid out while
+    // hidden — and it must be, since a dialog's loadConfig() feeds the controls
+    // of every tab, not just the visible one, and they have to be at their real
+    // size by then.  Content parented directly to us must NOT be laid out while
+    // hidden: any child it creates lazily (e.g. RomListWidget's checkbox pool,
+    // which grows with the height) would be added to whichever tab is active
+    if(i == _activeTab || _tabs[i].isPane)
+      layoutContent(i);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::layoutContent(int tabID)
+{
+  if(tabID < 0)
+    return;
+
+  // A tab's content is registered right after the tab is added, so there is
+  // none yet while addTab() activates the tab it just created
+  Widget* content = _tabs[tabID].parentWidget;
+  if(content == nullptr)
+    return;
+
+  // Size the content to fill the area below the tab bar, inset by a small frame
+  // border.  Skip while the tab widget is still at its placeholder size (a
+  // negative content area would drive content widgets into degenerate states);
+  // the owning dialog's layout() sizes us, then re-drives this via
+  // updateTabSizes()
+  const int w = _w - 2 * CONTENT_BORDER,
+            h = _h - _tabHeight - 2 * CONTENT_BORDER;
+  if(w <= 0 || h <= 0)
+    return;
+
+  content->setArea(CONTENT_BORDER, CONTENT_BORDER, w, h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TabWidget::naturalSize() const
+{
+  int contentW = 0, contentH = 0;
+
+  // Every tab is asked, pane or self-contained composite alike: the tab that
+  // needs the most room is not always one built of rows (the event mapper's list
+  // is what makes the input settings as wide as they are).  Content that simply
+  // fills an axis reports 0 for it and so does not constrain us — but it must
+  // SAY so by overriding naturalSize(), since the default reports its current
+  // size, which for such a widget is merely what it was last given
+  for(const auto& tab: _tabs)
+    if(tab.parentWidget != nullptr)
+    {
+      const Common::Size natural = tab.parentWidget->naturalSize();
+      contentW = std::max(contentW, static_cast<int>(natural.w));
+      contentH = std::max(contentH, static_cast<int>(natural.h));
+    }
+
+  // The bar height is taken from the font rather than the cached _tabHeight,
+  // which a live font change leaves stale until updateTabSizes() runs — and a
+  // dialog's layout() asks us how big we want to be before it gets there
+  return Common::Size(contentW + 2 * CONTENT_BORDER,
+                      contentH + tabBarHeight() + 2 * CONTENT_BORDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +251,7 @@ void TabWidget::updateActiveTab()
 void TabWidget::activateTabs()
 {
   for(uInt32 i = 0; i <_tabs.size(); ++i)
-    sendCommand(TabWidget::kTabChangedCmd, i-1, _id);
+    sendCommand(Cmd::TabChanged, i-1, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,17 +293,18 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::setPaneWidget(int tabID, TabPaneWidget* pane)
+{
+  setParentWidget(tabID, pane);
+  // A pane owns the tab's controls, so it can also be laid out while hidden
+  _tabs[tabID].isPane = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* TabWidget::parentWidget(int tabID)
 {
   assert(0 <= tabID && std::cmp_less(tabID, _tabs.size()));
 
-  if(!_tabs[tabID].parentWidget)
-  {
-    // Create dummy widget if not existing
-    auto* w = new Widget(_boss, _font, 0, 0, 0, 0);
-
-    setParentWidget(tabID, w);
-  }
   return _tabs[tabID].parentWidget;
 }
 
@@ -229,7 +337,8 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TabWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   // Command is not inspected; simply forward it to the caller
   sendCommand(cmd, data, _id);
@@ -311,7 +420,7 @@ void TabWidget::drawWidget(bool hilite)
 
     clearDirty();
     // Make all child widgets of currently active tab dirty
-    Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
+    Widget::setDirtyInList(_children);
   }
 }
 
@@ -326,6 +435,6 @@ Widget* TabWidget::findWidget(int x, int y)
   else
   {
     // Iterate over all child widgets and find the one which was clicked
-    return Widget::findWidgetInChain(_firstWidget, x, y - _tabHeight);
+    return Widget::findWidgetInList(_children, x, y - _tabHeight);
   }
 }

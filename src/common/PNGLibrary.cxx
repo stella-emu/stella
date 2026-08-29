@@ -162,7 +162,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
 
   // And read directly into the surface buffer
   auto* row = reinterpret_cast<png_bytep>(base);
-  for(auto y = 0uz; y < height; ++y, row += rowStride)
+  for(auto y = 0UZ; y < height; ++y, row += rowStride)
     png_read_row(png_ptr, reinterpret_cast<png_bytep>(row), nullptr);
 
   // We're finished reading
@@ -258,7 +258,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
             + srcRect.y() * rowStride
             + srcRect.x() * sizeof(uInt32);
 
-  for(auto y = 0uz; y < height; ++y, row += rowStride)
+  for(auto y = 0UZ; y < height; ++y, row += rowStride)
     png_write_row(png_ptr, reinterpret_cast<png_bytep>(row));
 
   // We're finished writing
@@ -464,7 +464,7 @@ void PNGLibrary::writeMetaData(png_structp png_ptr, png_infop info_ptr,
     return;
 
   std::vector<png_text> text_ptr(numMetaData);
-  for(auto i = 0uz; i < numMetaData; ++i)
+  for(auto i = 0UZ; i < numMetaData; ++i)
   {
     text_ptr[i].key         = const_cast<char*>(metaData[i].first.c_str());
     text_ptr[i].text        = const_cast<char*>(metaData[i].second.toCString());

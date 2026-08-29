@@ -23,13 +23,19 @@ class ButtonWidget;
 class EditTextWidget;
 class FileListWidget;
 class NavigationWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "FSNode.hxx"
 #include "bspf.hxx"
 
+/**
+  A file/directory browser, invoked via one of its static show() methods
+  for loading, saving, or selecting a directory.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class BrowserDialog : public Dialog
 {
   public:
@@ -47,11 +53,6 @@ class BrowserDialog : public Dialog
     using Command = std::function<void(bool, const FSNode&)>;
 
   public:
-    // NOTE: Do not call these c'tors directly!  Use the static show methods below
-    //       There is no point in doing so, since the result can't be returned
-    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
-    BrowserDialog(OSystem& osystem, DialogContainer& parent,
-                  const GUI::Font& font, int max_w, int max_h);
     ~BrowserDialog() override = default;
 
     /**
@@ -116,10 +117,24 @@ class BrowserDialog : public Dialog
     static void hide();
 
   protected:
+    void layout() override;
+    // Routes navigation keys to the file list first; the dialog only sees a
+    // key that the list doesn't handle itself
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // OK/selection and Close invoke the stored callback and close(); the
+    // navigation buttons jump directories; edits/selection changes refresh
+    // the UI (see updateUI())
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
+    // No point calling these directly: the result can't be gotten back
+    // that way. Use the static show() methods above instead.
+    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
+    BrowserDialog(OSystem& osystem, DialogContainer& parent,
+                  const GUI::Font& font, int max_w, int max_h);
+
+    // Creates all widgets; layout() derives their real geometry from
+    // max_w/max_h and the current font
     void initialize(int max_w, int max_h);
 
     /** Place the browser window onscreen, using the given attributes */
@@ -128,34 +143,47 @@ class BrowserDialog : public Dialog
               const Command& command,
               const FSNode::NameFilter& namefilter);
 
-    /** Get resulting file node (called after receiving kChooseCmd) */
+    /** Get resulting file node (called after receiving Cmd::Choose) */
     FSNode getResult() const;
 
+    // Refreshes the up button, nav bar and OK-enabled state; 'fileSelected'
+    // also fills in the selected-item field from the list's current entry
     void updateUI(bool fileSelected);
 
   private:
-    enum {
-      kChooseCmd  = 'CHOS',
-      kGoUpCmd    = 'GOUP',
-      kBaseDirCmd = 'BADR',
-      kHomeDirCmd = 'HODR'
+    // Command ids dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Choose  = GuiCmd::of("BrowserDialog.Choose"),
+        GoUp    = GuiCmd::of("BrowserDialog.GoUp"),
+        BaseDir = GuiCmd::of("BrowserDialog.BaseDir"),
+        HomeDir = GuiCmd::of("BrowserDialog.HomeDir");
     };
 
     // Called when the user selects OK (bool is true) or Cancel (bool is false)
     // FSNode will be set to whatever is active (basically, getResult())
     Command _command;
 
+    // File listing
     FileListWidget*   _fileList{nullptr};
+    // Current-path display, kept in sync with _fileList
     NavigationWidget* _navigationBar{nullptr};
-    StaticTextWidget* _name{nullptr};
+    // Currently selected item: its label, and its editable name field
+    LabelWidget*      _name{nullptr};
     EditTextWidget*   _selected{nullptr};
+    // Directory-navigation buttons
     ButtonWidget*     _goUpButton{nullptr};
     ButtonWidget*     _baseDirButton{nullptr};
     ButtonWidget*     _homeDirButton{nullptr};
+    // Saves the current path as the default when checked (FileLoad/FileSave
+    // modes only)
     CheckboxWidget*   _savePathBox{nullptr};
 
+    // Which show() mode is active; governs which controls are visible (see
+    // the instance show())
     BrowserDialog::Mode _mode{Mode::Directories};
 
+    // The single lazily-created instance behind the static show() methods
     static unique_ptr<BrowserDialog> ourBrowser;
 
   private:

@@ -889,10 +889,10 @@ class TIA : public Device
     //   renderPixel()        --writes-->  myBackBuffer    [emulation thread]
     //   onFrameComplete()    --copies-->  myFrontBuffer   [emulation thread]
     //   renderToFrameBuffer()--copies-->  myFramebuffer   [main thread, before worker starts]
-    //   TIASurface           --reads --   myFramebuffer   [main thread]
+    //   Television           --reads --   myFramebuffer   [main thread]
     //
     // Values are 8-bit TIA color indices (palette mapping happens later
-    // in TIASurface).
+    // in Television).
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer{};
 
     std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};

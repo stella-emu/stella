@@ -28,6 +28,7 @@ class FBSurface;
 class Television;
 class TVGeometry;
 class Bezel;
+class DialogContainer;
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
@@ -91,10 +92,155 @@ class FrameBuffer
                                Common::Size size, bool honourHiDPI = true);
 
     /**
+      Handle a resize of a window that does not re-flow live (see liveResize()).
+      Rebuilds the active video mode for the new window size and reloads all
+      surfaces, *without* recreating the window.
+
+      @param width   The new window width, in pixels
+      @param height  The new window height, in pixels
+    */
+    void handleResize(int width, int height);
+
+    /**
+      Whether a window of this type may be resized by the user.  Such windows
+      all re-flow live, rather than resizing immediately via handleResize().
+    */
+    static constexpr bool isResizable(BufferType type) {
+      return type == BufferType::Launcher || type == BufferType::Debugger
+          || type == BufferType::TiaWindow;
+    }
+
+    /**
+      Record the latest window size for a live, per-frame re-flow.  Returns true
+      for a user-resizable window — the caller then applies it via
+      applyLiveResize() and re-lays-out its dialogs; false otherwise, so the
+      caller falls back to handleResize().
+
+      @param width   The latest window width, in pixels
+      @param height  The latest window height, in pixels
+      @return  True if this window re-flows live
+    */
+    bool liveResize(int width, int height);
+
+    /**
+      If a live resize is pending, rebuild the UI at the recorded size and clear
+      the flag.  Returns true if it applied (the caller then re-flows its
+      dialogs), false if nothing was pending.
+    */
+    bool applyLiveResize();
+
+    /**
+      An interactive resize has settled.  Lets the backend undo whatever it
+      traded away to keep up with the drag.
+    */
+    void resizeSettled();
+
+    /**
+      Set the minimum size (in logical UI pixels) the current window may be
+      resized to.  Used by resizeable UI dialogs to prevent the window being
+      shrunk small enough to clip their content.
+
+      @param size  The minimum size, in logical (unscaled) UI pixels
+    */
+    void setWindowMinSize(const Common::Size& size);
+
+    /**
+      Ensure a resizeable UI window (the launcher or the debugger) is at
+      least the given size, growing it in place if not -- used when a live
+      font change raises the content's minimum past the window's current
+      size.  Also applies the size as the new minimum (see setWindowMinSize).
+      Never shrinks a window the user has already sized larger, and never
+      exceeds the desktop.  A no-op window resize (already big enough) costs
+      nothing beyond the minimum-size update.
+
+      @param minSize  The new minimum, in logical (unscaled) UI pixels
+    */
+    void growWindowTo(const Common::Size& minSize);
+
+    /**
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
     void update(UpdateMode mode = UpdateMode::NONE);
+
+  #ifdef GUI_SUPPORT
+    /**
+      Secondary-window support.  In addition to the primary window (launcher /
+      emulation / main debugger), the FrameBuffer can drive one additional
+      window backed by its own FBBackend (e.g. the debugger's companion TIA
+      window).  All other state -- palette, fonts, Television -- is shared, so
+      the secondary window is *not* a separate FrameBuffer; only the window /
+      renderer / surfaces differ.  These methods scope the internal render
+      target switch themselves; callers never see it.
+
+      @param container  The DialogContainer rendered into the secondary window
+      @param title      The secondary window title
+      @param type       The BufferType (geometry/position key) for the window
+      @param size       The secondary window size, in logical UI pixels
+      @param minSize    The smallest size the user may drag it to
+    */
+    FBInitStatus openSecondaryWindow(DialogContainer& container,
+                                     string_view title, BufferType type,
+                                     Common::Size size, Common::Size minSize);
+
+    /**
+      Apply a user resize of the secondary window: rebuild its video mode at the
+      new size and re-flow its dialogs, whose surfaces are bound to its backend.
+
+      @param container  The DialogContainer rendered into the secondary window
+      @param width      The latest window width, in pixels
+      @param height     The latest window height, in pixels
+      @return  True if a resize was applied
+    */
+    bool resizeSecondaryWindow(DialogContainer& container,
+                               int width, int height);
+
+    /**
+      An interactive resize of the secondary window has settled.  The secondary
+      counterpart of resizeSettled(): lets its backend undo whatever it traded
+      away to keep up with the drag.
+
+      @param container  The DialogContainer rendered into the secondary window
+    */
+    void settleSecondaryWindow(DialogContainer& container);
+
+    /**
+      Draw the secondary window's container and present it.  No-op if no
+      secondary window is open.
+    */
+    void renderSecondaryWindow(DialogContainer& container,
+                               UpdateMode mode = UpdateMode::REDRAW);
+  #endif  // GUI_SUPPORT
+
+    /**
+      Hide the secondary window (its backend/surfaces are kept for re-open).
+    */
+    void closeSecondaryWindow();
+
+    /**
+      Whether the secondary window is currently shown.
+    */
+    bool secondaryWindowOpen() const { return mySecondaryActive; }
+
+    /**
+      The platform window ID of the primary window (0 if none).  Used to ignore
+      window-specific events reported for any other window.
+    */
+    uInt32 primaryWindowId() const;
+
+    /**
+      The platform window ID of the secondary window (0 if none).  Used to
+      route window-specific events to it.
+    */
+    uInt32 secondaryWindowId() const;
+
+    /**
+      The user has moved a window: remember its position and display, under that
+      window's own settings keys.  Ignored for a window we do not own.
+
+      @param windowId  The platform window ID reported by the move event
+    */
+    void saveWindowPosition(uInt32 windowId) const;
 
     /**
       There is a dedicated update method for emulation mode.
@@ -204,15 +350,15 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    const Common::Rect& imageRect() const { return myActiveVidMode.imageR; }
+    const Common::Rect& imageRect() const { return myWindow.vidMode.imageR; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const Common::Size& screenSize() const { return myActiveVidMode.screenS; }
-    const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
+    const Common::Size& screenSize() const { return myWindow.vidMode.screenS; }
+    const Common::Rect& screenRect() const { return myWindow.vidMode.screenR; }
 
     /**
       Returns the dimensions of the mode specific users' desktop, or if
@@ -355,6 +501,13 @@ class FrameBuffer
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled.at(displayId()) ? 2 : 1; }
 
     /**
+      Re-evaluate the 'hidpi' setting for every attached display and, if the
+      scale factor of the current one has changed, rebuild the window and
+      re-flow the UI at the new scale.  Call after changing the setting.
+    */
+    void refreshHiDPI();
+
+    /**
       This method should be called to save the current settings of all
       its subsystems.  Note that the this may be called when the class
       hasn't been fully initialized, so we first need to check if the
@@ -364,21 +517,14 @@ class FrameBuffer
 
   #ifdef GUI_SUPPORT
     /**
-      Get the font object(s) of the framebuffer
+      Get the font object(s) used by the UI.  The fonts are owned by the
+      FontManager; these are here because the UI classes reach their fonts
+      through the framebuffer
     */
-    const GUI::Font& font() const { return *myFont; }
-    const GUI::Font& infoFont() const { return *myInfoFont; }
-    const GUI::Font& smallFont() const { return *mySmallFont; }
-    const GUI::Font& launcherFont() const { return *myLauncherFont; }
-
-    /**
-      Get the font description from the font name
-
-      @param name  The settings name of the font
-
-      @return  The description of the font
-    */
-    static FontDesc getFontDesc(string_view name);
+    const GUI::Font& font() const;
+    const GUI::Font& infoFont() const;
+    const GUI::Font& smallFont() const;
+    const GUI::Font& launcherFont() const;
   #endif  // GUI_SUPPORT
 
     /**
@@ -420,12 +566,67 @@ class FrameBuffer
 
   private:
     /**
+      The state belonging to one window, which must follow the render target.
+      Both windows may be resized independently, so each keeps its own pending
+      size and minimum.  Grouped so that a new per-window field cannot be
+      forgotten by setRenderTarget().
+    */
+    struct WindowState {
+      VideoModeHandler::Mode vidMode;
+      BufferType bufferType{BufferType::None};
+
+      // The latest size recorded by liveResize(), waiting for applyLiveResize()
+      Common::Size pendingResize;
+      bool liveResizePending{false};
+
+      // Last minimum size forwarded to the backend (scaled), so an unchanged
+      // minimum isn't re-applied on every layout() during a drag
+      Common::Size minSize;
+    };
+
+    /**
       These methods are used to load/save position and display of the
       current window.
     */
-    string getPositionKey() const;
+    string getPositionKey(BufferType bufferType = BufferType::None) const;
     string getDisplayKey(BufferType bufferType = BufferType::None) const;
     void saveCurrentWindowPosition() const;
+
+    /**
+      Save the given window's position and display under that window's own
+      settings keys.
+    */
+    void savePosition(const FBBackend& backend, BufferType type) const;
+
+    /**
+      Work out the desktop size of every attached display, along with whether
+      HiDPI mode is allowed and wanted there.  Runs at startup and again
+      whenever the 'hidpi' setting changes.
+    */
+    void computeDesktopSizes();
+
+    /**
+      Answer whether HiDPI mode is wanted on a desktop of the given size.  The
+      'hidpi' setting is either an explicit boolean, or 'auto': enabled on a
+      very high resolution screen, and then only while the smallest UI Stella
+      can build covers too little of it to read comfortably.
+    */
+    bool wantsHiDPI(const Common::Size& desktop) const;
+
+    /**
+      The backend and state of the primary/secondary window, whichever of the
+      two is currently the render target.  The primary backend exists from
+      initialize() onwards; the secondary one is created lazily, so accessing it
+      requires mySecondaryCreated.
+    */
+    const FBBackend& primaryBackend() const
+      { return (myRenderTarget == 1) ? *myOtherBackend : *myBackend; }
+    const FBBackend& secondaryBackend() const
+      { return (myRenderTarget == 1) ? *myBackend : *myOtherBackend; }
+    const WindowState& primaryWindow() const
+      { return (myRenderTarget == 1) ? myOtherWindow : myWindow; }
+    const WindowState& secondaryWindow() const
+      { return (myRenderTarget == 1) ? myWindow : myOtherWindow; }
 
     /**
       Frees and reloads all surfaces that the framebuffer knows about.
@@ -468,17 +669,49 @@ class FrameBuffer
 
   #ifdef GUI_SUPPORT
     /**
-      Setup the UI fonts
+      Determine the minimal TIA zoom level from the dialog font, so that what
+      fits with the reference font also fits with a larger one
     */
-    void setupFonts();
+    void setupTIAMinZoom();
+  #endif  // GUI_SUPPORT
+
+    /**
+      Switch the active render target between the primary (0) and secondary (1)
+      window.  This swaps only the per-window state (backend, video mode, buffer
+      type); all shared state (palette, fonts, Television) is unaffected.  The
+      secondary-window methods scope this so the rest of the code always sees
+      the primary target.
+    */
+    void setRenderTarget(int target);
+
+  #ifdef GUI_SUPPORT
+    /**
+      Draw a DialogContainer into the current render target and present it.
+    */
+    void updateContainer(DialogContainer& container, UpdateMode mode);
   #endif  // GUI_SUPPORT
 
   private:
     // The parent system for the framebuffer
     OSystem& myOSystem;
 
-    // Backend used for all platform-specific graphics operations
+    // Backend used for all platform-specific graphics operations.
+    // This always refers to the *current* render target's backend; the
+    // inactive target's backend is parked in myOtherBackend (see
+    // setRenderTarget()).  Most code only ever sees the primary backend.
     unique_ptr<FBBackend> myBackend;
+
+    // Backend for the *inactive* render target, swapped with myBackend by
+    // setRenderTarget().  Used to drive a single secondary window (e.g. the
+    // debugger's companion TIA window) without duplicating the shared
+    // palette/fonts/Television.
+    unique_ptr<FBBackend> myOtherBackend;
+    int myRenderTarget{0};           // 0 = primary, 1 = secondary
+    bool mySecondaryCreated{false};  // secondary backend has been created
+    bool mySecondaryActive{false};   // secondary window is currently shown
+
+    WindowState myWindow;       // the current render target's
+    WindowState myOtherWindow;  // parked, swapped in by setRenderTarget()
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
@@ -508,27 +741,17 @@ class FrameBuffer
     // Flag for pending render
     bool myPendingRender{false};
 
+    // Re-entrancy guard: true only while a backend is (re)creating its window
+    // and renderer.  On X11, SDL pumps the event queue synchronously from
+    // inside those calls and delivers WINDOW_EXPOSED, which fires the
+    // EventHandlerSDL::resizeWatch hook and re-enters update().  For the
+    // companion TIA window that would flush a renderer that does not exist yet
+    // (segfault), so update() bails out while this is set.
+    bool myInVideoMode{false};
+
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality
     VideoModeHandler myVidModeHandler;
-    VideoModeHandler::Mode myActiveVidMode;
-
-    // Type of the frame buffer
-    BufferType myBufferType{BufferType::None};
-
-  #ifdef GUI_SUPPORT
-    // The font object to use for the normal in-game GUI
-    unique_ptr<GUI::Font> myFont;
-
-    // The info font object to use for the normal in-game GUI
-    unique_ptr<GUI::Font> myInfoFont;
-
-    // The font object to use when space is very limited
-    unique_ptr<GUI::Font> mySmallFont;
-
-    // The font object to use for the ROM launcher
-    unique_ptr<GUI::Font> myLauncherFont;
-  #endif  // GUI_SUPPORT
 
     // The Television class takes responsibility for TIA rendering
     shared_ptr<Television> myTelevision;

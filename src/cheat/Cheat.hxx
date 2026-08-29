@@ -22,30 +22,47 @@ class OSystem;
 
 #include "bspf.hxx"
 
+/**
+  Abstract base class for a single cheat: holds its name/code and
+  enabled state, decoded and applied by each derived class.
+
+  @author  Stephen Anthony
+*/
 class Cheat
 {
   public:
+    // Creates a cheat; name defaults to code when empty
     Cheat(OSystem& osystem, string_view name, string_view code)
       : myOSystem{osystem},
         myName{name.empty() ? code : name},
         myCode{code} { }
     virtual ~Cheat() = default;
 
+    // True while the cheat is active
     bool enabled() const { return myEnabled; }
-    const string& name() const { return myName; }
-    const string& code() const { return myCode; }
+    // Display name of the cheat
+    string_view name() const { return myName; }
+    // Hex-encoded cheat code
+    string_view code() const { return myCode; }
 
+    // Activates the cheat; returns the new enabled state
     virtual bool enable() = 0;
+    // Deactivates the cheat, restoring any patched state
     virtual bool disable() = 0;
 
+    // Applies the cheat's effect
     virtual void evaluate() = 0;
 
   protected:
+    // Parent system, used to reach console/cartridge/RAM
     OSystem& myOSystem;
 
+    // Display name of the cheat
     string myName;
+    // Hex-encoded cheat code
     string myCode;
 
+    // True while the cheat is active
     bool myEnabled{false};
 
   private:

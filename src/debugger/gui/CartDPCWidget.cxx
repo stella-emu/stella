@@ -25,11 +25,10 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCWidget::CartridgeDPCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeDPC& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeDPC& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
-  constexpr int V_GAP = 4;
   const size_t size = cart.myImage.size();
 
   const auto bankStart = [&](uInt32 offset) -> uInt16 {
@@ -53,79 +52,76 @@ CartridgeDPCWidget::CartridgeDPCWidget(
       i, Base::hex4(start + 0x80), Base::hex4(start + 0xFFF), Base::hex4(0xF000 + spot + i));
   }
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Activision (Pitfall II)", info) +
-              myLineHeight;
+  createBaseInformation(size, "Activision (Pitfall II)", info);
 
   VariantList items;
   for(int bank = 0; bank < 2; ++bank)
     VarList::push_back(items, std::format("#{} (${})", bank, Base::hex4(0xFFF8 + bank)));
 
-  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
-                           myLineHeight, items, "Set bank     ",
-                           0, kBankChanged);
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  ypos += myLineHeight + V_GAP * 3;
 
-  // Data fetchers
-  new StaticTextWidget(boss, _font, xpos, ypos, "Data fetchers ");
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBankLbl);
 
-  // Top registers
-  int lwidth = _font.getStringWidth("Counter registers ");
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Top registers ");
-  xpos += lwidth;
+  // The data fetcher registers, each a labelled row of a grid
+  myFetcherLbl = new LabelWidget(boss, _font, "Data fetchers");
 
-  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
-  myTops->setTarget(this);
-  myTops->setEditable(false);
+  const auto addRegisters = [&](LabelWidget*& label, string_view text,
+                                DataGridWidget*& grid, int cols, int colchars,
+                                int bits, Common::Base::Fmt fmt) {
+    label = new LabelWidget(boss, _font, text);
 
-  // Bottom registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Bottom registers ");
-  xpos += lwidth;
+    grid = new DataGridWidget(boss, _nfont, cols, 1, colchars, bits, fmt);
+    grid->setTarget(this);
+    grid->setEditable(false);
+  };
 
-  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
-  myBottoms->setTarget(this);
-  myBottoms->setEditable(false);
+  addRegisters(myTopsLbl,     "Top registers",     myTops,     8, 2,  8,
+               Common::Base::Fmt::_16);
+  addRegisters(myBottomsLbl,  "Bottom registers",  myBottoms,  8, 2,  8,
+               Common::Base::Fmt::_16);
+  addRegisters(myCountersLbl, "Counter registers", myCounters, 8, 4, 16,
+               Common::Base::Fmt::_16_4);
+  addRegisters(myFlagsLbl,    "Flag registers",    myFlags,    8, 2,  8,
+               Common::Base::Fmt::_16);
 
-  // Counter registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Counter registers ");
-  xpos += lwidth;
+  addRegisters(myMusicModeLbl, "Music mode (DF5/DF6/DF7)", myMusicMode, 3, 2, 8,
+               Common::Base::Fmt::_16);
+  addRegisters(myRandomLbl,    "Current random number",    myRandom,    1, 2, 8,
+               Common::Base::Fmt::_16);
 
-  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::Fmt::_16_4);
-  myCounters->setTarget(this);
-  myCounters->setEditable(false);
+  reflow();
+}
 
-  // Flag registers
-  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Flag registers ");
-  xpos += lwidth;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
 
-  myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
-  myFlags->setTarget(this);
-  myFlags->setEditable(false);
+  // The four register rows are indented under the "Data fetchers" heading and
+  // share a label column; the two rows below it share the tab's left edge
+  const int indent = _fontWidth * 2;
 
-  // Music mode
-  xpos = 2; ypos += myLineHeight + V_GAP * 3;
-  lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
-  new StaticTextWidget(boss, _font, xpos, ypos, "Music mode (DF5/DF6/DF7) ");
-  xpos += lwidth;
+  GUI::alignLabels({{myTopsLbl, indent}, {myBottomsLbl, indent},
+                    {myCountersLbl, indent}, {myFlagsLbl, indent}});
+  GUI::alignLabels({{myMusicModeLbl}, {myRandomLbl}});
 
-  myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::Fmt::_16);
-  myMusicMode->setTarget(this);
-  myMusicMode->setEditable(false);
+  col.addAuto(labeledRow(myBankLbl, myBank));
 
-  // Current random number
-  xpos = 2; ypos += myLineHeight + V_GAP * 3;
-  new StaticTextWidget(boss, _font, xpos, ypos, "Current random number ");
-  xpos += lwidth;
+  col.addSpace(_lineHeight);
+  col.addAuto(anchoredItem(myFetcherLbl));
+  col.addAuto(labeledRow(myTopsLbl,     myTops,     0, indent));
+  col.addAuto(labeledRow(myBottomsLbl,  myBottoms,  0, indent));
+  col.addAuto(labeledRow(myCountersLbl, myCounters, 0, indent));
+  col.addAuto(labeledRow(myFlagsLbl,    myFlags,    0, indent));
 
-  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::Fmt::_16);
-  myRandom->setTarget(this);
-  myRandom->setEditable(false);
+  col.addSpace(_lineHeight);
+  col.addAuto(labeledRow(myMusicModeLbl, myMusicMode));
+  col.addAuto(labeledRow(myRandomLbl,    myRandom));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,10 +212,10 @@ void CartridgeDPCWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeDPCWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBank->getSelected());

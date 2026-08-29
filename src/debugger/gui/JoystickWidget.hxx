@@ -24,14 +24,15 @@
 class JoystickWidget : public ControllerWidget
 {
   public:
-    JoystickWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    JoystickWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller, bool embedded = false);
     ~JoystickWidget() override = default;
 
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };

@@ -29,8 +29,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCMWidget::CartridgeCMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeCM& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeCM& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   constexpr uInt16 size = 4 * 4096;
@@ -43,107 +43,103 @@ CartridgeCMWidget::CartridgeCMWidget(
     "used to control the cart functionality\n"
     "Startup bank = 3 (ROM), RAM disabled\n";
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "CompuMate", info) + myLineHeight;
+  createBaseInformation(size, "CompuMate", info);
 
   VariantList items;
   VarList::push_back(items, " 0 ");
   VarList::push_back(items, " 1 ");
   VarList::push_back(items, " 2 ");
   VarList::push_back(items, " 3 ");
-  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
-                           myLineHeight, items, "Set bank     ",
-                           0, kBankChanged);
+
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBankLbl);
+
   // Raw SWCHA value (this will be broken down further in other UI elements)
-  int lwidth = _font.getStringWidth("Current column ");
-  ypos += myLineHeight + 8;
-  new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, myFontHeight,
-                       "Current SWCHA ", TextAlign::Left);
-  xpos += lwidth;
-  mySWCHA = new ToggleBitWidget(boss, _nfont, xpos, ypos, 8, 1);
+  mySWCHALbl = new LabelWidget(boss, _font, "Current SWCHA");
+  mySWCHA = new ToggleBitWidget(boss, _nfont, 8, 1);
   mySWCHA->setTarget(this);
   mySWCHA->setEditable(false);
 
   // Current column number
-  xpos = 10;  ypos += myLineHeight + 5;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current column ", TextAlign::Left);
-  xpos += lwidth;
-
-  myColumn = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::Fmt::_16);
+  myColumnLbl = new LabelWidget(boss, _font, "Current column");
+  myColumn = new DataGridWidget(boss, _nfont, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  // Relevant pins of SWCHA
-  xpos = 30;
+  // The relevant pins of SWCHA, as two columns of read-only checkboxes
+  const auto addPin = [&](CheckboxWidget*& box, string_view label) {
+    box = new CheckboxWidget(boss, _font, label);
+    box->setTarget(this);
+    box->setEditable(false);
+  };
 
-  // D6 (column part)
-  ypos += myLineHeight + 8;
-  myIncrease = new CheckboxWidget(boss, _font, xpos, ypos, "Increase Column");
-  myIncrease->setTarget(this);
-  myIncrease->setEditable(false);
-
-  const int orig_ypos = ypos;  // save for when we go to the next column
-
-  // D5 (column part)
-  ypos += myLineHeight + 4;
-  myReset = new CheckboxWidget(boss, _font, xpos, ypos, "Reset Column");
-  myReset->setTarget(this);
-  myReset->setEditable(false);
-
-  // Row inputs
-  ypos += myLineHeight + 4;
-  myRow[0] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 0");
-  myRow[0]->setTarget(this);
-  myRow[0]->setEditable(false);
-  ypos += myLineHeight + 4;
-  myRow[1] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 1");
-  myRow[1]->setTarget(this);
-  myRow[1]->setEditable(false);
-  ypos += myLineHeight + 4;
-  myRow[2] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 2");
-  myRow[2]->setTarget(this);
-  myRow[2]->setEditable(false);
-  ypos += myLineHeight + 4;
-  myRow[3] = new CheckboxWidget(boss, _font, xpos, ypos, "Row 3");
-  myRow[3]->setTarget(this);
-  myRow[3]->setEditable(false);
-
-  // Func and Shift keys
-  ypos += myLineHeight + 4;
-  myFunc = new CheckboxWidget(boss, _font, xpos, ypos, "FUNC key pressed");
-  myFunc->setTarget(this);
-  myFunc->setEditable(false);
-  ypos += myLineHeight + 4;
-  myShift = new CheckboxWidget(boss, _font, xpos, ypos, "Shift key pressed");
-  myShift->setTarget(this);
-  myShift->setEditable(false);
-
-  // Move to next column
-  xpos += myShift->getWidth() + 20;  ypos = orig_ypos;
-
-  // D7
-  myAudIn = new CheckboxWidget(boss, _font, xpos, ypos, "Audio Input");
-  myAudIn->setTarget(this);
-  myAudIn->setEditable(false);
-
-  // D6 (audio part)
-  ypos += myLineHeight + 4;
-  myAudOut = new CheckboxWidget(boss, _font, xpos, ypos, "Audio Output");
-  myAudOut->setTarget(this);
-  myAudOut->setEditable(false);
+  addPin(myIncrease, "Increase Column");   // D6 (column part)
+  addPin(myReset,    "Reset Column");      // D5 (column part)
+  for(size_t i = 0; i < myRow.size(); ++i)
+    addPin(myRow[i], std::format("Row {}", i));
+  addPin(myFunc,   "FUNC key pressed");
+  addPin(myShift,  "Shift key pressed");
+  addPin(myAudIn,  "Audio Input");         // D7
+  addPin(myAudOut, "Audio Output");        // D6 (audio part)
 
   // Ram state (combination of several bits in SWCHA)
-  ypos += myLineHeight + 8;
-  lwidth = _font.getStringWidth("Ram State ");
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Ram State ", TextAlign::Left);
-  myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
-              _nfont.getStringWidth(" Write-only "), myLineHeight, "");
+  myRAMLbl = new LabelWidget(boss, _font, "Ram State");
+  myRAM = new EditTextWidget(boss, _nfont,
+                             static_cast<int>(string_view(" Write-only ").size()));
   myRAM->setEditable(false, true);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCMWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  // The two SWCHA rows share a label column of their own, below the info block's.
+  // The RAM state label has nothing to line up with, so it is a group of one --
+  // which is where its clearance from the field beside it comes from
+  GUI::alignLabels({{mySWCHALbl}, {myColumnLbl}});
+  GUI::alignLabels({{myRAMLbl}});
+
+  col.addAuto(labeledRow(myBankLbl, myBank));
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(labeledRow(mySWCHALbl, mySWCHA));
+  col.addAuto(labeledRow(myColumnLbl, myColumn));
+
+  // The SWCHA pins, in two columns: the keyboard ones, then the audio ones with
+  // the RAM state under them
+  auto keys = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  keys->addAuto(anchoredItem(myIncrease));
+  keys->addAuto(anchoredItem(myReset));
+  for(auto* row: myRow)
+    keys->addAuto(anchoredItem(row));
+  keys->addAuto(anchoredItem(myFunc));
+  keys->addAuto(anchoredItem(myShift));
+
+  auto audio = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+  audio->addAuto(anchoredItem(myAudIn));
+  audio->addAuto(anchoredItem(myAudOut));
+  audio->addSpace(_lineHeight / 2);
+  audio->addAuto(labeledRow(myRAMLbl, myRAM));
+
+  auto pins = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 2);
+  pins->addSpace(_fontWidth * 2);   // the pins sit in from the rows above them
+  pins->addAuto(std::move(keys));
+  pins->addAuto(std::move(audio));
+
+  col.addSpace(_lineHeight / 2);
+  col.addAuto(std::move(pins));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,10 +200,10 @@ void CartridgeCMWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCMWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+void CartridgeCMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.mySWCHA &= 0xFC;

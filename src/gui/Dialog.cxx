@@ -26,6 +26,7 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "TabWidget.hxx"
 #include "ToolTip.hxx"
 
@@ -45,28 +46,41 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
-               string_view title, int x, int y, int w, int h)
-  : GuiObject(instance, parent, *this, x, y, w, h),
+               string_view title, int w, int h)
+  : GuiObject(instance, parent, *this, w, h),
     _font{font},
     _title{title},
+    _builtTitle{title},
     _renderCallback{[]() { return; }}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::Border | Widget::Flag::ClearBG;
   setTitle(title);
 
   _toolTip = std::make_unique<ToolTip>(*this, font);
+
+  // Make ourselves known to the container from here on, the way a Widget adds
+  // itself to its boss's child list.  Every Dialog has a container (not every
+  // one has an owning Dialog or Widget), so this is the one hook that reaches
+  // all of them -- which is what lets a font change find a dialog nobody
+  // remembered to forward it to
+  parent.registerDialog(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
-               int x, int y, int w, int h)
-  : Dialog(instance, parent, instance.frameBuffer().font(), "", x, y, w, h)
+               int w, int h)
+  : Dialog(instance, parent, instance.frameBuffer().font(), "", w, h)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  // Drop out of the container's registry first, so nothing can reach a
+  // half-destroyed dialog.  This is the registration made in the c'tor being
+  // released, not work being done here
+  parent().deregisterDialog(this);
+
   if(instance().hasFrameBuffer())
   {
     instance().frameBuffer().deallocateSurface(_surface);
@@ -84,8 +98,7 @@ void Dialog::clear()
   _myFocus.list.clear();
   _myTabList.clear();
 
-  delete _firstWidget;
-  _firstWidget = nullptr;
+  _children.clear();
 
   _buttonGroup.clear();
 }
@@ -93,6 +106,11 @@ void Dialog::clear()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::open()
 {
+  // Settle our size and child widget geometry before allocating the surface
+  // (the base implementation is a no-op; resizeable dialogs override it)
+  layout();
+  layoutHelp();
+
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
@@ -110,15 +128,26 @@ void Dialog::open()
   setPosition();
 
   if(!_myTabList.empty())
-    // (Re)-build the focus list to use for all widgets of all tabs
+    // Re-select the tab this dialog was last left on, then (re)-build the
+    // focus list to use for all widgets of all tabs
     for(auto& tabfocus : _myTabList)
+    {
+      restoreActiveTab(tabfocus.widget);
       buildCurrentFocusList(tabfocus.widget->getID());
+    }
   else
     buildCurrentFocusList();
 
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
+
+  // A dialog laid out for a large font (e.g. after a live dialog-font change)
+  // can be bigger than the current window; inform the user instead of silently
+  // clipping it (drawing out-of-bounds is safely skipped by FBSurface)
+  if(exceedsScreen())
+    instance().frameBuffer().showTextMessage("Dialog too large for screen",
+                                             MessagePosition::BottomCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,19 +188,29 @@ void Dialog::initHelp()
       const string key = instance().eventHandler().getMappingDesc(
         Event::UIHelp, EventMode::kMenuMode);
 
-      const int helpWidth = static_cast<int>(std::lround(_font.getMaxCharWidth() *
-                                                         3.5));
-      _helpWidget = new ButtonWidget(this, _font, _w - helpWidth, 0,
-        helpWidth, buttonHeight(), "?", kHelpCmd);
+      _helpWidget = new ButtonWidget(this, _font, "?", Cmd::Help);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");
     }
+    layoutHelp();
 
     if(hasHelp())
-      _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
+      _helpWidget->setVisible(true);
     else
-      _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
+      _helpWidget->setVisible(false);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutHelp()
+{
+  // The help button sits in the top-right corner of the title bar
+  if(_helpWidget != nullptr)
+  {
+    // It sizes itself from its own label, and follows a live font change by
+    // itself (see ButtonWidget::refreshFont), so only its corner is ours
+    _helpWidget->setPos(_w - _helpWidget->getWidth(), 0);
   }
 }
 
@@ -207,7 +246,7 @@ string Dialog::getHelpURL() const
     const int activeTab = activeTabGroup->getActiveTab();
     const Widget* parentTab = activeTabGroup->parentWidget(activeTab);
 
-    if(parentTab->hasHelp())
+    if(parentTab && parentTab->hasHelp())
       return parentTab->getHelpURL();
 
     // 3. check active tab group
@@ -259,13 +298,8 @@ void Dialog::setDirtyChain()
 void Dialog::tick()
 {
   // Recursively tick dialog and all child dialogs and widgets
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     w->tick();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,8 +336,13 @@ void Dialog::positionAt(uInt32 pos)
       break;
 
     default:
-      // center
-      _surface->setDstPos((screen.w - dst.w()) >> 1, (screen.h - dst.h()) >> 1);
+      // center; clamp so that a surface larger than the screen (e.g. while a
+      // resizeable dialog is mid-drag and bigger than the shrinking window)
+      // stays anchored at the top-left instead of wrapping off-screen via
+      // unsigned underflow
+      _surface->setDstPos(
+        std::max(0, (static_cast<Int32>(screen.w) - static_cast<Int32>(dst.w())) / 2),
+        std::max(0, (static_cast<Int32>(screen.h) - static_cast<Int32>(dst.h())) / 2));
       break;
   }
 }
@@ -364,6 +403,61 @@ void Dialog::render()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::relayout()
+{
+  if(_surface == nullptr || !isVisible())
+    return;
+
+  // Recompute size and widget geometry for the current window
+  layout();
+  layoutHelp();
+
+  // Grow the backing surface if needed, then refresh src/dst scaling
+  if(static_cast<uInt32>(_w) > _surface->width() ||
+     static_cast<uInt32>(_h) > _surface->height())
+    _surface->resize(_w, _h);
+  _surface->setSrcSize(_w, _h);
+
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  _surface->setDstSize(_w * scale, _h * scale);
+
+  setPosition();
+
+  // Force a full repaint of the dialog and all its widgets
+  setDirty();
+  setDirtyChain();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::refreshFont()
+{
+  // Refresh the cached font metrics of every widget (the font object itself was
+  // already mutated in place), update the tooltip font, then re-flow.  Order
+  // matters: metrics first, so layout() computes geometry from current values.
+  Widget::refreshFontInList(_children);
+  tooltip().setFont(_font);
+
+  // Recompute the title-bar height for the new font (setTitle only ran at
+  // construction, with the old font); layout() reads _th to place its content
+  _th = _title.empty() ? 0 : static_cast<int>(_font.getLineHeight() * 1.25);
+
+  relayout();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::exceedsScreen() const
+{
+  if(_surface == nullptr)
+    return false;
+
+  // Compare in the same (hidpi-scaled) units positionAt() uses: the surface's
+  // destination rect against the screen size
+  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Rect& dst = _surface->dstRect();
+  return dst.w() > screen.w || dst.h() > screen.h;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::releaseFocus()
 {
   if(_focusedWidget)
@@ -384,7 +478,7 @@ void Dialog::addFocusWidget(Widget* w)
     return;
 
   // All focusable widgets should retain focus
-  w->setFlags(Widget::FLAG_RETAIN_FOCUS);
+  w->setFlags(Widget::Flag::RetainFocus);
 
   _myFocus.widget = w;
   _myFocus.list.push_back(w);
@@ -395,7 +489,7 @@ int Dialog::addToFocusList(const WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
-    w->setFlags(Widget::FLAG_RETAIN_FOCUS);
+    w->setFlags(Widget::Flag::RetainFocus);
 
   Vec::append(_myFocus.list, list);
   _focusList = _myFocus.list;
@@ -417,7 +511,7 @@ int Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabI
 
   // All focusable widgets should retain focus
   for(const auto& fw: list)
-    fw->setFlags(Widget::FLAG_RETAIN_FOCUS);
+    fw->setFlags(Widget::Flag::RetainFocus);
 
   // First get the appropriate focus list
   FocusList& focus = _myTabList[w->getID()].focus;
@@ -463,11 +557,60 @@ void Dialog::setFocus(const Widget* w)
   if(w && w != _focusedWidget && w->wantsFocus() && w->isEnabled())
   {
     // Redraw widgets for new focus
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(), w, 0);
 
     // Update current tab based on new focused widget
     getTabIdForWidget(_focusedWidget);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::releaseFocus(const Widget* w)
+{
+  if(w == _focusedWidget)
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(), _focusedWidget, +1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Dialog::tabStateKey(const TabWidget* tab) const
+{
+  // The title is what tells two dialogs apart (RTTI is disabled, so the class
+  // itself cannot be asked).  An untitled dialog gets no key, and so simply
+  // does not take part -- which is what the debugger, the one dialog whose tab
+  // count varies from ROM to ROM, relies on
+  if(_builtTitle.empty())
+    return {};
+
+  // A dialog may own more than one tab widget, so its id belongs in the key
+  return std::format("tab.{}.{}", _builtTitle, tab->getID());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::saveActiveTab(int tabID, int id)
+{
+  if(std::cmp_greater_equal(id, _myTabList.size()))
+    return;
+
+  const string key = tabStateKey(_myTabList[id].widget);
+  if(!key.empty())
+    // The key is never registered as a permanent setting, so this can only
+    // ever reach the temporary settings -- it is remembered for this run only
+    instance().settings().setValue(key, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::restoreActiveTab(TabWidget* tab)
+{
+  const string key = tabStateKey(tab);
+  if(key.empty())
+    return;
+
+  // An unset key reads back as 0, which is also the default tab, so there is
+  // nothing to register up front.  The range check matters for a dialog whose
+  // tab count can differ between two openings within the same run
+  const int tabID = instance().settings().getInt(key);
+  if(tabID > 0 && tabID < tab->getTabCount())
+    tab->setActiveTab(tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,7 +701,7 @@ void Dialog::drawDialog()
       s.frameRect(_x, _y, _w, _h, kColor);
 
     // Make all child widgets dirty
-    Widget::setDirtyInChain(_firstWidget);
+    Widget::setDirtyInList(_children);
 
     clearDirty();
   }
@@ -575,7 +718,7 @@ void Dialog::drawDialog()
   // focus events
   if(_focusedWidget)
   {
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+    _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                               _focusedWidget, 0, false);
     //if(_focusedWidget)
     //  _focusedWidget->draw(); // make sure the highlight color is drawn initially
@@ -589,14 +732,9 @@ void Dialog::drawChain()
   //   being drawn (e.g. RomListWidget)
   clearDirtyChain();
 
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     if(w->needsRedraw())
       w->draw();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -662,7 +800,7 @@ void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   if(_focusedWidget)
   {
     // Lose focus on mouseup unless the widget requested to retain the focus
-    if(! (_focusedWidget->getFlags() & Widget::FLAG_RETAIN_FOCUS ))
+    if(!_focusedWidget->hasFlag(Widget::Flag::RetainFocus))
       releaseFocus();
   }
 
@@ -734,7 +872,7 @@ void Dialog::handleMouseMoved(int x, int y)
     _mouseWidget = w;
   }
 
-  if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
+  if (w && w->hasFlag(Widget::Flag::TrackMouse))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 
   // Update mouse coordinates for tooltips
@@ -842,7 +980,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
     case Event::UINavPrev:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+        _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                                   _focusedWidget, -1);
         // Update current tab based on new focused widget
         getTabIdForWidget(_focusedWidget);
@@ -854,7 +992,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
     case Event::UINavNext:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {
-        _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+        _focusedWidget = Widget::setFocusForList(this, getFocusList(),
                                                   _focusedWidget, +1);
         // Update current tab based on new focused widget
         getTabIdForWidget(_focusedWidget);
@@ -925,20 +1063,30 @@ bool Dialog::cycleTab(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void Dialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                           int data, int id)
 {
   switch(cmd)
   {
-    case TabWidget::kTabChangedCmd:
+    case TabWidget::Cmd::TabChanged:
+      // Only a visible dialog can be reporting a tab the *user* chose.  While
+      // it is being built or opened this same command also arrives for tabs
+      // nobody selected -- activateTabs() announces every tab in turn, and
+      // TabWidget::loadConfig() re-announces the active one -- and remembering
+      // those would store whichever tab happened to be announced last
       if(_visible)
+      {
+        // Remember the choice, so reopening this dialog returns to it
+        saveActiveTab(data, id);
         buildCurrentFocusList(id);
+      }
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       close();
       break;
 
-    case kHelpCmd:
+    case Cmd::Help:
       openHelp();
       break;
 
@@ -954,55 +1102,35 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Dialog::findWidget(int x, int y) const
 {
-  return Widget::findWidgetInChain(_firstWidget, x, y);
+  return Widget::findWidgetInList(_children, x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
-                         string_view okText, int buttonWidth)
+                         string_view okText)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
-
-  buttonWidth = std::max({buttonWidth, Dialog::buttonWidth(okText),
-                          Dialog::buttonWidth("Cancel")});
-  _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
-
-  addOKWidget(new ButtonWidget(this, font, (_w - buttonWidth) / 2,
-              _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kCloseCmd));
+  // Created at a placeholder position; the button sizes itself to its label and
+  // layoutButtonGroup() places it
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::Cmd::Close));
   wid.push_back(_okWidget);
+
+  _w = std::max(buttonGroupWidth(), _w);
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                string_view okText, string_view cancelText,
-                               bool focusOKButton, int buttonWidth)
+                               bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+  // Created at placeholder positions; each button sizes itself to its label, and
+  // layoutButtonGroup() gives the group one width and positions it
+  addOKWidget(new ButtonWidget(this, font, okText, GuiObject::Cmd::OK));
+  addCancelWidget(new ButtonWidget(this, font, cancelText,
+                                   GuiObject::Cmd::Close));
 
-  buttonWidth = std::max({buttonWidth,
-                          Dialog::buttonWidth("Defaults"),
-                          Dialog::buttonWidth(okText),
-                          Dialog::buttonWidth(cancelText)});
-
-  _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
-
-#ifndef BSPF_MACOS
-  addOKWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
-  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
-#else
-  addCancelWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
-  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
-      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
-#endif
+  _w = std::max(buttonGroupWidth(), _w);
+  layoutButtonGroup();
 
   // Note that 'focusOKButton' only takes effect when there are no other UI
   // elements in the dialog; otherwise, the first widget of the dialog is always
@@ -1021,47 +1149,147 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Dialog::buttonGroupWidth() const
+{
+  const int BUTTON_GAP = Dialog::buttonGap(),
+            HBORDER    = Dialog::hBorder();
+
+  // Every button in the group ends up as wide as the widest of them (see
+  // layoutButtonGroup), so count them and multiply -- this holds whether or not
+  // they have been equalized yet, which is what lets a dialog derive its own
+  // width from this before the group is laid out
+  int bwidth = standardButtonWidth(), left = 0, right = 0;
+
+  for(const auto* b: {_defaultWidget, _extraWidget, _okWidget, _cancelWidget})
+    if(b != nullptr)
+      bwidth = std::max(bwidth, b->getWidth());
+  for(const auto* b: {_defaultWidget, _extraWidget})
+    if(b != nullptr)
+      ++left;
+  for(const auto* b: {_okWidget, _cancelWidget})
+    if(b != nullptr)
+      ++right;
+
+  const auto side = [&](int n) {
+    return n > 0 ? n * bwidth + (n - 1) * BUTTON_GAP : 0;
+  };
+  // The two sides never touch; a group with only one side needs no clearance
+  const int between = (left > 0 && right > 0) ? BUTTON_GAP * 2 : 0;
+
+  return HBORDER * 2 + side(left) + between + side(right);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonGroup()
+{
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+  const int by = _h - buttonHeight - VBORDER;
+
+  // The group shares one width: no button knows what its neighbours' labels need,
+  // and the standard group has a standard size whatever they are
+  GUI::alignButtons({_defaultWidget, _extraWidget, _okWidget, _cancelWidget},
+                    standardButtonWidth());
+
+  // Left side: Defaults, with an optional Extra button beside it
+  if(_defaultWidget != nullptr)
+  {
+    _defaultWidget->setPos(HBORDER, by);
+    if(_extraWidget != nullptr)
+      _extraWidget->setPos(HBORDER + _defaultWidget->getWidth() + BUTTON_GAP, by);
+  }
+
+  // Right side: OK/Cancel in platform order, right-aligned.  Positioned from
+  // the right using each button's own width (the group shares one width).  One
+  // button may serve as both (Enter and Escape both close), so a repeat is
+  // skipped rather than placed twice
+#ifndef BSPF_MACOS
+  const std::array<ButtonWidget*, 2> right{_okWidget, _cancelWidget};
+#else
+  const std::array<ButtonWidget*, 2> right{_cancelWidget, _okWidget};
+#endif
+  int xpos = _w - HBORDER;
+  const ButtonWidget* placed = nullptr;
+  for(auto* b: std::views::reverse(right))
+  {
+    if(b == nullptr || b == placed)
+      continue;
+    xpos -= b->getWidth();
+    b->setPos(xpos, by);
+    xpos -= BUTTON_GAP;
+    placed = b;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonGroup(unique_ptr<GUI::Layout> bandContent)
+{
+  layoutButtonGroup();
+  if(bandContent == nullptr)
+    return;
+
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // The band segment the standard group leaves free: it starts after the left
+  // group (Defaults, and Extra beside it) and ends before the right one
+  int bandL = HBORDER;
+  for(const auto* b: {_defaultWidget, _extraWidget})
+    if(b != nullptr)
+      bandL = std::max(bandL, b->getRight() + BUTTON_GAP);
+
+  int bandR = _w - HBORDER;
+  for(const auto* b: {_okWidget, _cancelWidget})
+    if(b != nullptr)
+      bandR = std::min(bandR, b->getLeft() - BUTTON_GAP);
+
+  bandContent->doLayout(bandL, _h - buttonHeight - VBORDER,
+                        bandR - bandL, buttonHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::layoutButtonBand(unique_ptr<GUI::Layout> content)
+{
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  content->doLayout(HBORDER, _h - buttonHeight - VBORDER,
+                    _w - HBORDER * 2, buttonHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        string_view okText, string_view cancelText,
                                        string_view defaultsText,
                                        bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(defaultsText),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
-
-  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  addDefaultWidget(new ButtonWidget(this, font, defaultsText,
+                                    GuiObject::Cmd::Defaults));
   wid.push_back(_defaultWidget);
 
-  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsExtraOKCancelBGroup(
       WidgetArray& wid, const GUI::Font& font,
-      string_view extraText, int extraCmd,
+      string_view extraText, GuiCmd::Code extraCmd,
       string_view okText, string_view cancelText, string_view defaultsText,
       bool focusOKButton)
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = std::max(Dialog::buttonWidth(defaultsText),
-                                    Dialog::buttonWidth(extraText)),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
-
-  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  addDefaultWidget(new ButtonWidget(this, font, defaultsText,
+                                    GuiObject::Cmd::Defaults));
   wid.push_back(_defaultWidget);
 
-  addExtraWidget(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
-                 _h - buttonHeight - VBORDER,
-                 buttonWidth, buttonHeight, extraText, extraCmd));
+  addExtraWidget(new ButtonWidget(this, font, extraText, extraCmd));
   wid.push_back(_extraWidget);
 
-  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1077,7 +1305,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& lst)
 void Dialog::TabFocus::saveCurrentFocus(Widget* w)
 {
   if(currentTab < focus.size() &&
-      Widget::isWidgetInChain(focus[currentTab].list, w))
+      Widget::isWidgetInList(focus[currentTab].list, w))
     focus[currentTab].widget = w;
 }
 

@@ -22,6 +22,7 @@
 
 class CartridgeELF;
 class EditTextWidget;
+class WrappedTextWidget;
 class FSNode;
 
 class CartridgeELFWidget: public CartDebugWidget
@@ -29,22 +30,31 @@ class CartridgeELFWidget: public CartDebugWidget
   public:
     CartridgeELFWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeELF& cart);
 
     ~CartridgeELFWidget() override = default;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void initialize();
     void saveArmImage(const FSNode& node);
 
   private:
+    // The most lines of the debug log to show before it scrolls
+    static constexpr uInt16 VISIBLE_LOG_LINES = 19;
+
     CartridgeELF& myCart;
 
-    enum { kSaveArmImageCmd = 'sarm' };
+    WrappedTextWidget* myLog{nullptr};
+    ButtonWidget* mySaveImageButton{nullptr};
+
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        SaveArmImage = GuiCmd::of("CartridgeELFWidget.SaveArmImage");
+    };
 
   private:
     CartridgeELFWidget() = delete;

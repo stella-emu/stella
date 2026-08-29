@@ -31,21 +31,22 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int cols, int rows,
+                               int cols, int rows,
                                int colchars, int bits,
                                Common::Base::Fmt base,
                                bool useScrollbar)
-  : EditableWidget(boss, font, x, y,
+  : EditableWidget(boss, font,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
     _rows{rows},
     _cols{cols},
+    _colChars{colchars},
     _rowHeight{font.getLineHeight()},
     _colWidth{colchars * font.getMaxCharWidth() + 8},
     _bits{bits},
     _base{base}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
+  _flags = Widget::Flag::Enabled | Widget::Flag::RetainFocus | Widget::Flag::WantsRawData;
   _editMode = false;
 
   // Make sure all lists contain some default values
@@ -65,13 +66,12 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // Add a scrollbar if necessary
   if(useScrollbar)
   {
-    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                     ScrollBarWidget::scrollBarWidth(_font), _h);
+    _scrollBar = new ScrollBarWidget(boss, font);
     _scrollBar->setTarget(this);
-    _scrollBar->_numEntries = 1;
-    _scrollBar->_currentPos = 0;
-    _scrollBar->_entriesPerPage = 1;
-    _scrollBar->_wheel_lines = 1;
+    _scrollBar->setNumEntries(1);
+    _scrollBar->setCurrentPos(0);
+    _scrollBar->setEntriesPerPage(1);
+    _scrollBar->setWheelLineCount(1);
   }
 
   // Add filtering
@@ -92,6 +92,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
       });
       break;
     case Common::Base::Fmt::_2:
+    case Common::Base::Fmt::_2_2:
     case Common::Base::Fmt::_2_8:
     case Common::Base::Fmt::_2_16:
       setTextFilter([](char c) { return (c >= '0' && c <= '1'); });
@@ -122,7 +123,7 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   if(dirty)
   {
     // Send item selected signal for starting with cell 0
-    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
 
     setDirty();
   }
@@ -175,7 +176,7 @@ void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
 void DataGridWidget::setNumRows(int rows)
 {
   if(_scrollBar)
-    _scrollBar->_numEntries = rows;
+    _scrollBar->setNumEntries(rows);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,7 +211,7 @@ void DataGridWidget::setValue(int position, int value, bool changed,
     _valueList[position] = value;
 
     if(emitSignal)
-      sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
+      sendCommand(Cmd::ItemDataChanged, position, _id);
 
     setDirty();
   }
@@ -244,7 +245,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
 
-    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
     setDirty();
   }
 }
@@ -256,7 +257,7 @@ void DataGridWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   // send the double click command
   if(clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(DataGridWidget::kItemDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(Cmd::ItemDoubleClicked, _selectedItem, _id);
 
     // Start edit mode
     if(isEditable() && !_editMode)
@@ -471,7 +472,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
     _selectedItem = _currentRow*_cols + _currentCol;
 
     if(_selectedItem != oldItem)
-      sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+      sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
 
     setDirty();
     dialog().tooltip().hide();
@@ -511,41 +512,41 @@ void DataGridWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
+void DataGridWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kSetPositionCmd:
+    case GuiObject::Cmd::SetPosition:
       // Chain access; pass to parent
-      sendCommand(GuiObject::kSetPositionCmd, data, _id);
+      sendCommand(GuiObject::Cmd::SetPosition, data, _id);
       break;
 
-    case kDGZeroCmd:
+    case DataGridOpsWidget::Cmd::Zero:
       zeroCell();
       break;
 
-    case kDGInvertCmd:
+    case DataGridOpsWidget::Cmd::Invert:
       invertCell();
       break;
 
-    case kDGNegateCmd:
+    case DataGridOpsWidget::Cmd::Negate:
       negateCell();
       break;
 
-    case kDGIncCmd:
+    case DataGridOpsWidget::Cmd::Increment:
       incrementCell();
       break;
 
-    case kDGDecCmd:
+    case DataGridOpsWidget::Cmd::Decrement:
       decrementCell();
       break;
 
-    case kDGShiftLCmd:
+    case DataGridOpsWidget::Cmd::ShiftLeft:
       lshiftCell();
       break;
 
-    case kDGShiftRCmd:
+    case DataGridOpsWidget::Cmd::ShiftRight:
       rshiftCell();
       break;
 
@@ -625,7 +626,7 @@ void DataGridWidget::drawWidget(bool hilite)
     for(int col = 0; col < _cols; col++)
     {
       const int x = _x + 4 + (col * _colWidth);
-      const int y = _y + 2 + (row * _rowHeight);
+      const int y = _y + firstTextY() + (row * _rowHeight);
       const int pos = row*_cols + col;
       ColorId textColor = kTextColor;
 
@@ -697,6 +698,46 @@ int DataGridWidget::getWidth() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setPos(const Common::Point& pos)
+{
+  Widget::setPos(pos);
+  // Keep the (optional) scrollbar flush against the grid's right edge
+  if(_scrollBar)
+    _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  // The (optional) scrollbar spans the grid's full height
+  if(_scrollBar)
+    _scrollBar->setHeight(_h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::refreshFont()
+{
+  EditableWidget::refreshFont();
+
+  // The grid's size is intrinsic: it is exactly what its rows and columns need
+  // for the current font, so recompute it here rather than leaving it stale for
+  // the owning widget's reflow to read back
+  _rowHeight = _lineHeight;
+  _colWidth = _colChars * _fontWidth + 8;
+  _w = _cols * _colWidth + 1;
+  _h = _rowHeight * _rows + 1;
+
+  // The scrollbar refreshes its own (font-derived) width, but the grid owns its
+  // position and height
+  if(_scrollBar)
+  {
+    _scrollBar->setPos(_x + _w, _y);
+    _scrollBar->setHeight(_h);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setCrossed(bool enable)
 {
   if(_crossGrid != enable)
@@ -740,6 +781,7 @@ void DataGridWidget::endEditMode()
         editString().insert(0, 1, '$');
         break;
       case Common::Base::Fmt::_2:
+      case Common::Base::Fmt::_2_2:
       case Common::Base::Fmt::_2_8:
       case Common::Base::Fmt::_2_16:
         editString().insert(0, 1, '\\');

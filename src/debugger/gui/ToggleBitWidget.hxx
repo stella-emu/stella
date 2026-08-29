@@ -25,9 +25,9 @@ class ToggleBitWidget : public ToggleWidget
 {
   public:
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int cols, int rows, int colchars = 1);
+                    int cols, int rows, int colchars = 1);
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                    int x, int y, int cols, int rows, int colchars,
+                    int cols, int rows, int colchars,
                     const StringList& labels);
     ~ToggleBitWidget() override = default;
 
@@ -36,10 +36,13 @@ class ToggleBitWidget : public ToggleWidget
 
     string getToolTip(const Common::Point& pos) const override;
 
+    void refreshFont() override;
+
   protected:
     void drawWidget(bool hilite) override;
 
   protected:
+    int _colChars{1};   // characters per column; _colWidth follows the font
     StringList _offList;
     StringList _onList;
     StringList _labelList;

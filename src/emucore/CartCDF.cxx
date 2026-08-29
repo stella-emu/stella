@@ -171,7 +171,7 @@ FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
-    for(auto x = 0uz; x < myMusicCounters.size(); ++x)
+    for(auto x = 0UZ; x < myMusicCounters.size(); ++x)
       myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
@@ -299,9 +299,18 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       }
       else
       {
-        peekvalue = myDisplayImage[getWaveform(0) + (myMusicCounters[0] >> myMusicWaveformSize[0])]
-                  + myDisplayImage[getWaveform(1) + (myMusicCounters[1] >> myMusicWaveformSize[1])]
-                  + myDisplayImage[getWaveform(2) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+        // myMusicCounters/myMusicWaveformSize can grow or be corrupted (via
+        // save states, or a driver that simply doesn't reset the counter
+        // often enough) beyond what getWaveform()'s own bounding accounts
+        // for. Real hardware would alias into the Harmony RAM chip rather
+        // than fault, so wrap into myDisplayImage rather than fabricate a
+        // value; the shift is also clamped since 32+ is UB.
+        const auto waveformSample = [this](uInt8 index) -> uInt8 {
+          const uInt8 shift = std::min<uInt8>(myMusicWaveformSize[index], 31);
+          const uInt64 idx = static_cast<uInt64>(getWaveform(index)) + (myMusicCounters[index] >> shift);
+          return myDisplayImage[idx % myDisplayImage.size()];
+        };
+        peekvalue = waveformSample(0) + waveformSample(1) + waveformSample(2);
       }
       return peekvalue;
     }
@@ -850,14 +859,14 @@ uInt32 CartridgeCDF::romSize() const
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss,
-      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
+      const GUI::Font& lfont, const GUI::Font& nfont)
   {
-    return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeCDFWidget(boss, lfont, nfont, *this);
   }
 
   CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss,
-      const GUI::Font& lfont, const GUI::Font& nfont, int x, int y, int w, int h)
+      const GUI::Font& lfont, const GUI::Font& nfont)
   {
-    return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeCDFInfoWidget(boss, lfont, nfont, *this);
   }
 #endif

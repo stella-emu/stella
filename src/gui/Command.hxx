@@ -23,6 +23,46 @@
 
 #include "bspf.hxx"
 
+namespace GuiCmd {
+
+  /**
+    A GUI command identifier.
+
+    This enum deliberately has no enumerators.  Values are contributed as
+    constexpr constants by whichever class defines them (conventionally a
+    nested 'Cmd' struct), which an enum cannot do for itself.  The empty
+    enumerator list is required rather than cosmetic: gcc's -Wswitch rejects
+    any 'case' label that is not a named enumerator, and no 'default' label
+    silences it, so a single enumerator here would make every dispatch switch
+    fail the warnings-as-errors build.  That is also why 'None' below is a
+    constant rather than an enumerator.
+  */
+  enum class Code : uInt32 {};
+
+  // The command of a widget that has none assigned; never dispatched
+  inline constexpr Code None{};
+
+  /**
+    Hashes a command's name into its identifier at compile time, using FNV-1a.
+
+    Names are free-form, but qualifying each with its defining class
+    ("OptionsDialog.Video") keeps two classes from colliding without someone
+    typing the same string twice.
+  */
+  constexpr Code of(string_view name)
+  {
+    uInt32 hash = 2166136261U;         // FNV-1a 32-bit offset basis
+    for(const char c: name)
+    {
+      hash ^= static_cast<uInt8>(c);
+      hash *= 16777619U;               // FNV-1a 32-bit prime
+    }
+    // A name hashing to None would silently never dispatch
+    return static_cast<Code>(hash ? hash : 1);
+  }
+
+}  // namespace GuiCmd
+
 /**
   Allows base GUI objects to send and receive commands.
 
@@ -40,7 +80,9 @@ class CommandReceiver
     virtual ~CommandReceiver() = default;
 
   protected:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
+    // Reacts to a command sent by 'sender'; the default does nothing
+    virtual void handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                               int data, int id) { }
 
   private:
     // Following constructors and assignment operators not supported
@@ -54,21 +96,26 @@ class CommandSender
 {
   public:
     CommandSender() = default;
+    // Creates a sender already wired to 'target'
     explicit CommandSender(CommandReceiver* target)
         : _target{target} { }
 
     virtual ~CommandSender() = default;
 
+    // Changes which receiver gets future commands
     virtual void setTarget(CommandReceiver* target) { _target = target; }
+    // Returns the current receiver, or nullptr if none is set
     virtual CommandReceiver* getTarget() const { return _target; }
 
-    virtual void sendCommand(int cmd, int data, int id)
+    // Dispatches (cmd, data, id) to the target's handleCommand(), if both are set
+    virtual void sendCommand(GuiCmd::Code cmd, int data, int id)
     {
-      if(_target && cmd)
+      if(_target && cmd != GuiCmd::None)
         _target->handleCommand(this, cmd, data, id);
     }
 
   protected:
+    // The receiver that gets commands sent via sendCommand()
     CommandReceiver* _target{nullptr};
 
   private:

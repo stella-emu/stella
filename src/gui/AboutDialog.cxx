@@ -22,6 +22,7 @@
 #include "Font.hxx"
 #include "WhatsNewDialog.hxx"
 #include "MediaFactory.hxx"
+#include "Layout.hxx"
 
 #include "AboutDialog.hxx"
 
@@ -30,64 +31,38 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, font, "About Stella")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Previous"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
-  // Set real dimensions
-  _w = 55 * fontWidth + HBORDER * 2;
-  _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
-
-  // Add Previous, Next and Close buttons
-  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
+  // Previous, Next and Close buttons
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Previous", GuiObject::kPrevCmd);
-  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+    new ButtonWidget(this, font, "Previous", GuiObject::Cmd::Prev);
+  myPrevButton->clearFlags(Widget::Flag::Enabled);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + fontWidth;
   myNextButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Next", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, "Next", GuiObject::Cmd::Next);
   wid.push_back(myNextButton);
 
-  xpos = _w - buttonWidth - HBORDER;
-  auto* b = new ButtonWidget(this, font, xpos, ypos,
-      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = HBORDER;  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
-  const int bwidth = font.getStringWidth("What's New" + ELLIPSIS) + fontWidth * 2.5;
-
-  myTitle = new StaticTextWidget(this, font, xpos + bwidth, ypos,
-                                 _w - (xpos + bwidth) * 2,
-                                 fontHeight, "", TextAlign::Center);
+  myTitle = new LabelWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   myWhatsNewButton =
-    new ButtonWidget(this, font, _w - HBORDER - bwidth,
-                     ypos - (buttonHeight - fontHeight) / 2,
-                     bwidth, buttonHeight, "What's New" + ELLIPSIS, kWhatsNew);
+    new ButtonWidget(this, font, "What's New" + ELLIPSIS, Cmd::WhatsNew);
   wid.push_back(myWhatsNewButton);
 
-  xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    auto* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                   fontHeight, "", TextAlign::Left, kNone);
+    auto* s = new LabelWidget(this, font, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");
-    ypos += fontHeight;
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addToFocusList(wid);
 
@@ -96,6 +71,59 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::~AboutDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AboutDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // Previous and Next share one width, the wider of the two
+  GUI::alignButtons({myPrevButton, myNextButton});
+
+  // Title row: a centered title with the "What's New" button at the right; the
+  // leading spacer (= that button's own width) keeps the title centered across
+  // the dialog.  The title is centered in the (taller) button row, so it needs
+  // no offset of its own
+  const int whatsNewWidth = myWhatsNewButton->getWidth();
+  auto titleRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  titleRow->addSpace(whatsNewWidth);
+  titleRow->addStretch(stretchedItem(myTitle));
+  titleRow->addAuto(anchoredItem(myWhatsNewButton));
+
+  // Description lines, indented an extra border on each side
+  auto descCol = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, 0);
+  for(auto* s: myDesc)
+    descCol->addAuto(stretchedItem(s));
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(titleRow));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(descCol));
+
+  // The pages are written to 55 characters, so that is the dialog's width; its
+  // height is however much room they ask for, plus the button row below them
+  _w = 55 * fontWidth + HBORDER * 2;
+  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Bottom row: Previous / Next on the left of the button band, Close (the
+  // cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap());
+  navButtons->addAuto(anchoredItem(myPrevButton));
+  navButtons->addAuto(anchoredItem(myNextButton));
+  layoutButtonGroup(std::move(navButtons));
+}
 
 // The following commands can be put at the start of a line (all subject to change):
 //   \C, \L, \R  -- set center/left/right alignment
@@ -256,38 +284,38 @@ void AboutDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void AboutDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kNextCmd:
+    case GuiObject::Cmd::Next:
       myPage++;
       if(myPage >= myNumPages)
-        myNextButton->clearFlags(Widget::FLAG_ENABLED);
+        myNextButton->clearFlags(Widget::Flag::Enabled);
       if(myPage >= 2)
-        myPrevButton->setFlags(Widget::FLAG_ENABLED);
+        myPrevButton->setFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
 
-    case GuiObject::kPrevCmd:
+    case GuiObject::Cmd::Prev:
       myPage--;
       if(myPage <= myNumPages)
-        myNextButton->setFlags(Widget::FLAG_ENABLED);
+        myNextButton->setFlags(Widget::Flag::Enabled);
       if(myPage <= 1)
-        myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+        myPrevButton->clearFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
 
-    case kWhatsNew:
+    case Cmd::WhatsNew:
       if(myWhatsNewDialog == nullptr)
-        myWhatsNewDialog = std::make_unique<WhatsNewDialog>(instance(), parent(),
-                                                       640 * 0.95, 480 * 0.95);
+        myWhatsNewDialog = std::make_unique<WhatsNewDialog>(instance(), parent());
       myWhatsNewDialog->open();
       break;
 
-    case StaticTextWidget::kOpenUrlCmd:
+    case LabelWidget::Cmd::OpenUrl:
     {
       const string& url = myDesc[id]->getUrl();
 

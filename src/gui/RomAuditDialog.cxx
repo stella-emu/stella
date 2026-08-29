@@ -24,6 +24,7 @@
 #include "ProgressDialog.hxx"
 #include "FSNode.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -34,59 +35,100 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
-                               const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Audit ROMs"),
-    myMaxWidth{max_w},
-    myMaxHeight{max_h}
+                               const GUI::Font& font)
+  : Dialog(osystem, parent, font, "Audit ROMs")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Audit path" + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int lwidth = font.getStringWidth("ROMs without properties (skipped) ");
-  const int xpos = HBORDER + buttonWidth + fontWidth;
-  int ypos = _th + VBORDER;
   WidgetArray wid;
 
-  // Set real dimensions
-  _w = 64 * fontWidth + HBORDER * 2;
-  _h = _th + VBORDER * 2 + buttonHeight * 2 + lineHeight * 3 + VGAP * 10;
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font.
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Audit path
-  auto* romButton = new ButtonWidget(this, font, HBORDER, ypos,
-      buttonWidth, buttonHeight, "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
-  wid.push_back(romButton);
-  myRomPath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
-                                 _w - xpos - HBORDER, lineHeight);
+  myRomButton = new ButtonWidget(this, font,
+      "Audit path" + ELLIPSIS, Cmd::ChooseAuditDir);
+  wid.push_back(myRomButton);
+  myRomPath = new EditTextWidget(this, font, 1);
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  ypos += buttonHeight + VGAP * 4;
-  new StaticTextWidget(this, font, HBORDER, ypos, "ROMs with properties (renamed) ");
-  myResults1 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
-                                  fontWidth * 6, lineHeight);
+  myRenamedLbl = new LabelWidget(this, font, "ROMs with properties (renamed)");
+  myResults1 = new EditTextWidget(this, font, 5);
   myResults1->setEditable(false, true);
-  ypos += buttonHeight;
-  new StaticTextWidget(this, font, HBORDER, ypos, "ROMs without properties (skipped) ");
-  myResults2 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
-                                  fontWidth * 6, lineHeight);
+  mySkippedLbl = new LabelWidget(this, font, "ROMs without properties (skipped)");
+  myResults2 = new EditTextWidget(this, font, 5);
   myResults2->setEditable(false, true);
 
-  ypos += buttonHeight + VGAP * 2;
-  new StaticTextWidget(this, font, HBORDER, ypos, "(*) WARNING: Operation cannot be undone!");
+  myWarningLbl = new LabelWidget(this, font, "(*) WARNING: Operation cannot be undone!");
 
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Close");
   addBGroupToFocusList(wid);
 
   setHelpAnchor("ROMAudit");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::~RomAuditDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomAuditDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // Audit-path row: a button plus an edit filling the remaining width (the edit
+  // keeps its natural height, vertically centered in the taller button row).
+  // How much of a path the field must show is this dialog's one width decision,
+  // and everything else is derived from it
+  auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  pathRow->addAuto(anchoredItem(myRomButton));
+  pathRow->addSpace(fontWidth);
+  pathRow->addStretch(stretchedItem(myRomPath,
+                                    EditTextWidget::calcWidth(_font, 48)));
+
+  // Two result rows: a label plus a small count field.  The label column is as
+  // wide as the longer of the two labels, so the fields line up beneath one
+  // another without either label being measured
+  auto results = std::make_unique<GridLayout>(2, 2, fontWidth, VGAP);
+  results->columnAuto(0).columnStretch(1);
+  results->rowAuto(0).rowAuto(1);
+  results->place(0, 0, anchoredItem(myRenamedLbl));
+  results->place(1, 0, anchoredItem(myResults1));
+  results->place(0, 1, anchoredItem(mySkippedLbl));
+  results->place(1, 1, anchoredItem(myResults2));
+
+  // Vertical stack; the OK/Cancel group sits below, positioned by
+  // layoutButtonGroup()
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(pathRow));
+  root->addSpace(VGAP * 4);
+  root->addAuto(std::move(results));
+  root->addSpace(VGAP * 2);
+  root->addAuto(anchoredItem(myWarningLbl));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // OK ("Audit") / Cancel ("Close") along the bottom edge
+  layoutButtonGroup();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::loadConfig()
@@ -163,35 +205,30 @@ void RomAuditDialog::auditRoms()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
+void RomAuditDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
-      if(!myConfirmMsg)
-      {
-        StringList msg;
-        msg.emplace_back("This operation cannot be undone.  Your ROMs");
-        msg.emplace_back("will be modified, and as such there is a chance");
-        msg.emplace_back("that files may be lost.  You are recommended");
-        msg.emplace_back("to back up your files before proceeding.");
-        msg.emplace_back("");
-        msg.emplace_back("If you're sure you want to proceed with the");
-        msg.emplace_back("audit, click 'OK', otherwise click 'Cancel'.");
-        myConfirmMsg = std::make_unique<GUI::MessageBox>
-          (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
-          "OK", "Cancel", "ROM Audit", false);
-      }
-      myConfirmMsg->show();
+    case GuiObject::Cmd::OK:
+      GUI::MessageBox::confirm(this,
+        "This operation cannot be undone.  Your ROMs\n"
+        "will be modified, and as such there is a chance\n"
+        "that files may be lost.  You are recommended\n"
+        "to back up your files before proceeding.\n\n"
+        "If you're sure you want to proceed with the\n"
+        "audit, click 'OK', otherwise click 'Cancel'.",
+        [this](bool ok) {
+          if(ok)
+          {
+            auditRoms();
+            instance().launcher().reload();
+          }
+        },
+        "ROM Audit");
       break;
 
-    case kConfirmAuditCmd:
-      auditRoms();
-      instance().launcher().reload();
-      break;
-
-    case kChooseAuditDirCmd:
+    case Cmd::ChooseAuditDir:
       BrowserDialog::show(this, _font, "Select ROM Directory to Audit",
                           myRomPath->getText(),
                           BrowserDialog::Mode::Directories,

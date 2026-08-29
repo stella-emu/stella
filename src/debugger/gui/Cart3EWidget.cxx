@@ -15,15 +15,17 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "Cart3E.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Cart3EWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EWidget::Cartridge3EWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge3E& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+      Cartridge3E& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   initialize();
 }
@@ -58,46 +60,68 @@ string Cartridge3EWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items, int& width)
+void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items)
 {
-  CartridgeEnhancedWidget::bankList(bankCount, seg, items, width);
+  CartridgeEnhancedWidget::bankList(bankCount, seg, items);
 
   VarList::push_back(items, "Inactive", "");
-  width = _font.getStringWidth("Inactive");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::bankSelect(int& ypos)
+void Cartridge3EWidget::createBankWidgets()
 {
-  int xpos{2};
   VariantList items;
-  int pw{0};
 
-  myBankWidgets = std::make_unique<PopUpWidget* []>(2);
+  myBankWidgets.resize(2);
 
-  bankList(myCart.romBankCount(), 0, items, pw);
-  myBankWidgets[0] =
-    new PopUpWidget(_boss, _font, xpos, ypos - 2, pw,
-                    myLineHeight, items, "Set bank     ",
-                    _font.getStringWidth("Set bank     "), kBankChanged);
+  bankList(myCart.romBankCount(), 0, items);
+  myBankLbl = new LabelWidget(_boss, _font, "Set bank");
+  myBankWidgets[0] = new PopUpWidget(_boss, _font, items,
+                                     CartridgeEnhancedWidget::Cmd::BankChanged);
   myBankWidgets[0]->setTarget(this);
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  const auto* t = new StaticTextWidget(_boss, _font,
-      myBankWidgets[0]->getRight(), ypos - 1, " (ROM)");
+  myROMTypeLbl = new LabelWidget(_boss, _font, "(ROM)");
 
-  xpos = t->getRight() + 20;
   items.clear();
-  bankList(myCart.ramBankCount(), 0, items, pw);
-  myBankWidgets[1] =
-    new PopUpWidget(_boss, _font, xpos, ypos - 2, pw,
-                    myLineHeight, items, "", 0, kRAMBankChanged);
+  bankList(myCart.ramBankCount(), 0, items);
+  myRAMBankLbl = new LabelWidget(_boss, _font, "");
+  myBankWidgets[1] = new PopUpWidget(_boss, _font, items, Cmd::RamBankChanged);
   myBankWidgets[1]->setTarget(this);
   myBankWidgets[1]->setID(1);
   addFocusWidget(myBankWidgets[1]);
 
-  new StaticTextWidget(_boss, _font, myBankWidgets[1]->getRight(), ypos - 1, " (RAM)");
+  myRAMTypeLbl = new LabelWidget(_boss, _font, "(RAM)");
+
+  // Both selectors take the tab's label column, so their boxes line up under one
+  // another; the RAM one has no label of its own and simply leaves it empty
+  myLabelColumn.insert(myLabelColumn.end(),
+                       {{myBankLbl}, {myRAMBankLbl}});
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col) const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+
+  // A row per selector, each annotated with the kind of bank it selects.  Both
+  // boxes sit in the tab's label column (see collectBankLabels), so they line up
+  // with each other and with the ROM info fields above -- and the row's width no
+  // longer grows with the bank labels, as a side-by-side pair's did
+  const std::array<LabelWidget*, 2> labels{myBankLbl, myRAMBankLbl};
+  const std::array<LabelWidget*, 2> types{myROMTypeLbl, myRAMTypeLbl};
+
+  for(size_t i = 0; i < myBankWidgets.size(); ++i)
+  {
+    auto row = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal, _fontWidth);
+    row->addAuto(labeledRow(labels[i], myBankWidgets[i]));
+    row->addAuto(anchoredItem(types[i]));
+
+    col.addAuto(std::move(row));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,11 +146,12 @@ void Cartridge3EWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void Cartridge3EWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
   uInt16 bank = 0;
 
-  if(cmd == kBankChanged)
+  if(cmd == CartridgeEnhancedWidget::Cmd::BankChanged)
   {
     if(myBankWidgets[0]->getSelected() < myCart.romBankCount())
     {
@@ -140,7 +165,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
       myBankWidgets[1]->setSelectedIndex(0);
     }
   }
-  else if(cmd == kRAMBankChanged)
+  else if(cmd == Cmd::RamBankChanged)
   {
     if(myBankWidgets[1]->getSelected() < myCart.ramBankCount())
     {

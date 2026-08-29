@@ -24,14 +24,15 @@
 class GenesisWidget : public ControllerWidget
 {
   public:
-    GenesisWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    GenesisWidget(GuiObject* boss, const GUI::Font& font,
                   Controller& controller);
     ~GenesisWidget() override = default;
 
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
     enum: uInt8 { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };

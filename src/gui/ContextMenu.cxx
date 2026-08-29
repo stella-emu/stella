@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, int cmd, int width)
+                         const VariantList& items, GuiCmd::Code cmd, int width)
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
     _rowHeight{font.getLineHeight()},
@@ -45,18 +45,42 @@ void ContextMenu::addItems(const VariantList& items)
   _entries = items;
   _enabled.assign(_entries.size(), true);
 
-  // Resize to largest string
-  int maxwidth = _maxWidth;
-  for(const auto& e: _entries)
-    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
-
   _x = _y = 0;
-  _w = maxwidth;
+  recalcWidth();
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
   _scrollDnColor = (_firstEntry + _numEntries < static_cast<int>(_entries.size())) ?
       kScrollColor : kColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::setMaxWidth(int width)
+{
+  _maxWidth = width;
+  recalcWidth();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::recalcWidth()
+{
+  // Resize to largest string
+  int maxwidth = _maxWidth;
+  for(const auto& e: _entries)
+    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
+  _w = maxwidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::refreshFont()
+{
+  Dialog::refreshFont();
+
+  // Our own cached font-derived state, which the base class knows nothing of
+  _rowHeight = _font.getLineHeight();
+  setArrows();     // re-picks the arrow size/_textOfs for the new font
+  recalcWidth();   // _textOfs feeds the per-entry width, so this must follow
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,7 +239,7 @@ bool ContextMenu::sendSelectionUp()
     return false;
 
   _selectedItem--;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -226,7 +250,7 @@ bool ContextMenu::sendSelectionDown()
     return false;
 
   _selectedItem++;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -237,7 +261,7 @@ bool ContextMenu::sendSelectionFirst()
     return false;
 
   _selectedItem = 0;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -248,7 +272,7 @@ bool ContextMenu::sendSelectionLast()
     return false;
 
   _selectedItem = static_cast<int>(_entries.size()) - 1;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
 
@@ -421,7 +445,7 @@ void ContextMenu::sendSelection()
 
   // Send any command associated with the selection
   _selectedItem = item;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
+  sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -557,70 +581,10 @@ void ContextMenu::scrollDown(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setArrows()
 {
-  static constexpr std::array<uInt32, 8> up_arrow = {
-    0b00011000,
-    0b00011000,
-    0b00111100,
-    0b00111100,
-    0b01111110,
-    0b01111110,
-    0b11111111,
-    0b11111111
-  };
-  static constexpr std::array<uInt32, 8> down_arrow = {
-    0b11111111,
-    0b11111111,
-    0b01111110,
-    0b01111110,
-    0b00111100,
-    0b00111100,
-    0b00011000,
-    0b00011000
-  };
-
-  static constexpr std::array<uInt32, 12> up_arrow_large = {
-    0b000001100000,
-    0b000001100000,
-    0b000011110000,
-    0b000011110000,
-    0b000111111000,
-    0b000111111000,
-    0b001111111100,
-    0b001111111100,
-    0b011111111110,
-    0b011111111110,
-    0b111111111111,
-    0b111111111111
-  };
-  static constexpr std::array<uInt32, 12> down_arrow_large = {
-    0b111111111111,
-    0b111111111111,
-    0b011111111110,
-    0b011111111110,
-    0b001111111100,
-    0b001111111100,
-    0b000111111000,
-    0b000111111000,
-    0b000011110000,
-    0b000011110000,
-    0b000001100000,
-    0b000001100000
-  };
-
-  if(_font.getFontHeight() < 24)
-  {
-    _textOfs = 2;
-    _arrowSize = 8;
-    _upImg = up_arrow.data();
-    _downImg = down_arrow.data();
-  }
-  else
-  {
-    _textOfs = 4;
-    _arrowSize = 12;
-    _upImg = up_arrow_large.data();
-    _downImg = down_arrow_large.data();
-  }
+  // Filled triangles, sized from the font so they follow the text instead of
+  // stepping.  At the default 9x18 this reproduces the old 8x8 bitmap
+  _arrowSize = arrowSize(_font);
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -644,7 +608,8 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y+_rowHeight-1, w+2, kColor);
-    s.drawBitmap(_upImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, _arrowSize);
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+                _arrowSize, _arrowSize, ArrowDirection::Up, _scrollUpColor);
     y += _rowHeight;
     offset--;
   }
@@ -663,7 +628,8 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y, w+2, kColor);
-    s.drawBitmap(_downImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, _arrowSize);
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+                _arrowSize, _arrowSize, ArrowDirection::Down, _scrollDnColor);
   }
 
   clearDirty();

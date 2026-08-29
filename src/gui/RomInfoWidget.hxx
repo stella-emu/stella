@@ -24,31 +24,45 @@ class FBSurface;
 #include "Props.hxx"
 #include "Widget.hxx"
 
+/**
+  Shows a ROM's textual properties (and any PNG metadata) as wrapped
+  lines in the launcher, with a clickable link line.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class RomInfoWidget : public Widget, public CommandSender
 {
   public:
-    enum {
-      kClickedCmd = 'RIcl'
+    // Sent when the "Name:" line is clicked, if the ROM has a Cart_Url property
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Clicked = GuiCmd::of("RomInfoWidget.Clicked");
     };
 
   public:
-    RomInfoWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+    RomInfoWidget(GuiObject *boss, const GUI::Font& font);
     ~RomInfoWidget() override = default;
 
+    // Sets the properties to describe (parsed immediately if the launcher is active)
     void setProperties(const FSNode& node, const Properties& properties,
                        bool full = true);
+    // Clears the display; used when nothing (or an invalid ROM) is selected
     void clearProperties();
+    // Re-parses the current properties (e.g. after a change made in the ROM browser)
     void reloadProperties(const FSNode& node);
 
     const string& getUrl() const { return myUrl; }
 
+    // Fires Cmd::Clicked if the highlighted "Name:" link is clicked
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
+    // Draws as many lines of myRomInfo as fit, wrapping/eliding as needed
     void drawWidget(bool hilite) override;
 
   private:
+    // Builds myRomInfo (and myUrl) from myProperties; 'full' additionally runs
+    // controller/bankswitch auto-detection, which needs to open the ROM image
     void parseProperties(const FSNode& node, bool full = true);
 
   private:

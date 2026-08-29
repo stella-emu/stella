@@ -24,17 +24,19 @@ class CartridgeELF;
 class DataGridWidget;
 class ToggleBitWidget;
 class EditTextWidget;
-class StaticTextWidget;
+class LabelWidget;
 
 class CartridgeELFStateWidget : public CartDebugWidget {
   public:
     CartridgeELFStateWidget(GuiObject* boss, const GUI::Font& lfont,
                             const GUI::Font& nfont,
-                            int x, int y, int w, int h,
                             CartridgeELF& cart);
     ~CartridgeELFStateWidget() override = default;
 
     void loadConfig() override;
+
+  protected:
+    void layoutContent(GUI::BoxLayout& col) const override;
 
   private:
     void initialize();
@@ -43,12 +45,22 @@ class CartridgeELFStateWidget : public CartDebugWidget {
     CartridgeELF& myCart;
     BoolArray myFlagValues;
 
-    DataGridWidget* myArmRegisters{nullptr};
+    DataGridWidget*  myArmRegisters{nullptr};
     ToggleBitWidget* myFlags{nullptr};
-    EditTextWidget* myCurrentCyclesVcs{nullptr};
-    EditTextWidget* myCurrentCyclesArm{nullptr};
-    EditTextWidget* myQueueSize{nullptr};
-    StaticTextWidget* myNextTransaction{nullptr};
+    EditTextWidget*  myCurrentCyclesVcs{nullptr};
+    EditTextWidget*  myCurrentCyclesArm{nullptr};
+    EditTextWidget*  myQueueSize{nullptr};
+    LabelWidget*     myNextTransaction{nullptr};
+
+    // Labels promoted from anonymous locals so layoutContent() can place them.
+    // The row labels share the tab's column (see myLabelColumn); the flag names
+    // caption the toggle's four columns, so they ride above it instead
+    LabelWidget* myRegistersLbl{nullptr};
+    LabelWidget* myFlagsLbl{nullptr};
+    LabelWidget* myTimeVcsLbl{nullptr};
+    LabelWidget* myTimeArmLbl{nullptr};
+    LabelWidget* myQueueSizeLbl{nullptr};
+    std::array<LabelWidget*, 4> myFlagLabels{nullptr};
 
   private:
     CartridgeELFStateWidget() = delete;

@@ -24,6 +24,7 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "InputTextDialog.hxx"
+#include "Layout.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
 
@@ -34,56 +35,38 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Cheat codes")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            //fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("One shot "),
-            VGAP         = Dialog::vGap(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
   WidgetArray wid;
-  ButtonWidget* b = nullptr;
 
-  // Set real dimensions
-  _w = 45 * fontWidth + HBORDER * 2;
-  _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font.  Each button sizes itself to its label;
+  // layout() gives the column one shared width
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // List of cheats, with checkboxes to enable/disable
-  int xpos = HBORDER, ypos = _th + VBORDER;
-  myCheatList =
-    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - fontWidth,
-                        _h - _th - buttonHeight - VBORDER * 3);
+  myCheatList = new CheckListWidget(this, font);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  xpos += myCheatList->getWidth() + fontWidth; ypos = _th + VBORDER;
+  myAddButton = new ButtonWidget(this, font,
+                                 "Add" + ELLIPSIS, Cmd::AddCheat);
+  wid.push_back(myAddButton);
 
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Add" + ELLIPSIS, kAddCheatCmd);
-  wid.push_back(b);
-  ypos += lineHeight + VGAP * 2;
-
-  myEditButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Edit" + ELLIPSIS, kEditCheatCmd);
+  myEditButton = new ButtonWidget(this, font,
+                                  "Edit" + ELLIPSIS, Cmd::EditCheat);
   wid.push_back(myEditButton);
-  ypos += lineHeight + VGAP * 2;
 
-  myRemoveButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Remove", kRemCheatCmd);
+  myRemoveButton = new ButtonWidget(this, font,
+                                    "Remove", Cmd::RemoveCheat);
   wid.push_back(myRemoveButton);
-  ypos += lineHeight + VGAP * 2 * 3;
 
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "One shot" + ELLIPSIS, kAddOneShotCmd);
-  wid.push_back(b);
+  myOneShotButton = new ButtonWidget(this, font,
+                                     "One shot" + ELLIPSIS, Cmd::AddOneShot);
+  wid.push_back(myOneShotButton);
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
-  labels.emplace_back("Name       ");
-  labels.emplace_back("Code (hex) ");
+  labels.emplace_back("Name");
+  labels.emplace_back("Code (hex)");
   myCheatInput = std::make_unique<InputTextDialog>(this, font, labels, "Cheat code");
   myCheatInput->setTarget(this);
 
@@ -107,10 +90,68 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Cheats");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::~CheatCodeDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::stretchedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VGAP         = Dialog::vGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // The four action buttons stand in one column, so they share one width
+  GUI::alignButtons({myAddButton, myEditButton, myRemoveButton, myOneShotButton});
+  const int buttonWidth = myAddButton->getWidth();
+
+  // Right-hand column of action buttons, with a larger gap setting 'One shot'
+  // apart from the editing buttons
+  auto buttonCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP * 2, 0, 0);
+  buttonCol->addAuto(stretchedItem(myAddButton));
+  buttonCol->addAuto(stretchedItem(myEditButton));
+  buttonCol->addAuto(stretchedItem(myRemoveButton));
+  buttonCol->addSpace(VGAP * 2);
+  buttonCol->addAuto(stretchedItem(myOneShotButton));
+  buttonCol->addStretchSpace();
+
+  // The list fills the width to the left of the button column, and shows
+  // eleven cheats -- which, with the room its names need, is what sizes the
+  // dialog
+  auto mainRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  mainRow->addStretch(widgetItem(myCheatList, 32 * fontWidth,
+                                 ListWidget::calcHeight(_font, 11)));
+  mainRow->addSpace(fontWidth);
+  mainRow->addFixed(std::move(buttonCol), buttonWidth);
+
+  // The list STRETCHES, so the band for the button group has to be reserved
+  // here: laying the tree out over the whole dialog would otherwise let the list
+  // grow down into it.  (A dialog whose rows are all addAuto -- EmulationDialog
+  // -- has nothing that can expand, and simply adds the band to its height.)
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addStretch(std::move(mainRow));
+  root->addSpace(VBORDER);
+  root->addSpace(buttonHeight);
+
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // OK/Cancel along the bottom edge
+  layoutButtonGroup();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig()
@@ -124,7 +165,7 @@ void CheatCodeDialog::loadConfig()
   const CheatList& list = instance().cheat().list();
   for(const auto& c: list)
   {
-    l.push_back(c->name());
+    l.emplace_back(c->name());
     b.push_back(c->enabled());
   }
   myCheatList->setList(l, b);
@@ -135,6 +176,14 @@ void CheatCodeDialog::loadConfig()
   const bool enabled = !list.empty();
   myEditButton->setEnabled(enabled);
   myRemoveButton->setEnabled(enabled);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheatCodeDialog::refreshFont()
+{
+  Dialog::refreshFont();
+
+  myCheatInput->refreshFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,7 +206,7 @@ void CheatCodeDialog::addCheat()
   myCheatInput->setText("", 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(0);
-  myCheatInput->setEmitSignal(kCheatAdded);
+  myCheatInput->setEmitSignal(Cmd::CheatAdded);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,15 +217,15 @@ void CheatCodeDialog::editCheat()
     return;
 
   const CheatList& list = instance().cheat().list();
-  const string& name = list[idx]->name();
-  const string& code = list[idx]->code();
+  const string_view name = list[idx]->name();
+  const string_view code = list[idx]->code();
 
   myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setText(name, 0);
   myCheatInput->setText(code, 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
-  myCheatInput->setEmitSignal(kCheatEdited);
+  myCheatInput->setEmitSignal(Cmd::CheatEdited);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,37 +243,37 @@ void CheatCodeDialog::addOneShotCheat()
   myCheatInput->setText("", 1);
   myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
-  myCheatInput->setEmitSignal(kOneShotCheatAdded);
+  myCheatInput->setEmitSignal(Cmd::OneShotCheatAdded);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
+void CheatCodeDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                     int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       close();
       break;
 
-    case ListWidget::kDoubleClickedCmd:
+    case ListWidget::Cmd::DoubleClicked:
       editCheat();
       break;
 
-    case kAddCheatCmd:
+    case Cmd::AddCheat:
       addCheat();
       break;
 
-    case kEditCheatCmd:
+    case Cmd::EditCheat:
       editCheat();
       break;
 
-    case kCheatAdded:
+    case Cmd::CheatAdded:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
@@ -239,7 +288,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kCheatEdited:
+    case Cmd::CheatEdited:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
@@ -256,15 +305,15 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kRemCheatCmd:
+    case Cmd::RemoveCheat:
       removeCheat();
       break;
 
-    case kAddOneShotCmd:
+    case Cmd::AddOneShot:
       addOneShotCheat();
       break;
 
-    case kOneShotCheatAdded:
+    case Cmd::OneShotCheatAdded:
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);

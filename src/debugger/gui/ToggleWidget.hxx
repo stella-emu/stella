@@ -26,14 +26,15 @@ class ToggleWidget : public Widget, public CommandSender
 {
   public:
     // Commands emitted by this commandsender
-    enum {
-      kItemDataChangedCmd   = 'TWch',
-      kSelectionChangedCmd  = 'TWsc'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemDataChanged  = GuiCmd::of("ToggleWidget.ItemDataChanged"),
+        SelectionChanged = GuiCmd::of("ToggleWidget.SelectionChanged");
     };
 
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int cols = 1, int rows = 1,
+                 int cols = 1, int rows = 1,
                  int shiftBits = 0);
     ~ToggleWidget() override = default;
 
@@ -43,6 +44,12 @@ class ToggleWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
 
     int colWidth() const { return _colWidth; }
+
+    // We are several rows of text in one box, not one line centered in it, so
+    // report the inset of the FIRST row: that is the line a label beside us must
+    // sit on (GUI::VAlign::Baseline), and drawWidget() steps down from it
+    int firstTextY() const override { return 2; }
+
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }
 
@@ -57,7 +64,15 @@ class ToggleWidget : public Widget, public CommandSender
     bool hasToolTip() const override { return true; }
     Common::Point getToolTipIndex(const Common::Point& pos) const;
     void drawWidget(bool hilite) override = 0;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+    // The grid's size is intrinsic: exactly what its rows and columns need.
+    // Child classes derive _rowHeight/_colWidth from the font, then call this
+    // (from their constructor and their refreshFont())
+    void recalcSize() {
+      _w = _colWidth * _cols + 1;
+      _h = _rowHeight * _rows + 1;
+    }
 
   protected:
     int  _rows{0};

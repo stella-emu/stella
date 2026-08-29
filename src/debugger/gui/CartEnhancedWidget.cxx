@@ -15,12 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "CartEnhanced.hxx"
+#include "Layout.hxx"
 #include "CartEnhancedWidget.hxx"
 
 using Common::Base;
@@ -28,24 +30,32 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeEnhancedWidget::CartridgeEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
                                        const GUI::Font& nfont,
-                                       int x, int y, int w, int h,
                                        CartridgeEnhanced& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeEnhancedWidget::initialize()
+void CartridgeEnhancedWidget::initialize()
 {
-  int ypos = addBaseInformation(size(), manufacturer(), description(), descriptionLines());
+  createWidgets();
+  reflow();
+}
 
-  plusROMInfo(ypos);
-  ypos += myLineHeight;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::createWidgets()
+{
+  createBaseInformation(size(), manufacturer(), description(), descriptionLines());
+  createPlusROM();
+  createBankWidgets();
+}
 
-  bankSelect(ypos);
-
-  return ypos;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  layoutPlusROM(col);
+  layoutBankSelect(col);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,48 +137,64 @@ string CartridgeEnhancedWidget::romDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::plusROMInfo(int& ypos)
+void CartridgeEnhancedWidget::createPlusROM()
 {
-  if(myCart.isPlusROM())
-  {
-    constexpr int xpos = 2;
-    const int lwidth = _font.getStringWidth("Manufacturer "),
-              fwidth = _w - lwidth - 12;
+  if(!myCart.isPlusROM())
+    return;
 
-    new StaticTextWidget(_boss, _font, xpos, ypos + 1, "PlusROM:");
-    ypos += myLineHeight + 4;
+  myPlusROMLbl = new LabelWidget(_boss, _font, "PlusROM:");
 
-    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Host");
-    myPlusROMHostWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1,
-      fwidth, myLineHeight, myCart.myPlusROM->getHost());
-    myPlusROMHostWidget->setEditable(false);
-    ypos += myLineHeight + 4;
+  myPlusROMHostLbl = new LabelWidget(_boss, _font, "Host");
+  myPlusROMHostWidget = new EditTextWidget(_boss, _font, 1,
+                                           myCart.myPlusROM->getHost());
+  myPlusROMHostWidget->setEditable(false);
 
-    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Path");
-    myPlusROMPathWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1,
-      fwidth, myLineHeight, myCart.myPlusROM->getPath());
-    myPlusROMPathWidget->setEditable(false);
-    ypos += myLineHeight + 4;
+  myPlusROMPathLbl = new LabelWidget(_boss, _font, "Path");
+  myPlusROMPathWidget = new EditTextWidget(_boss, _font, 1,
+                                           myCart.myPlusROM->getPath());
+  myPlusROMPathWidget->setEditable(false);
 
-    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Send");
-    myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1,
-      fwidth, myLineHeight);
-    myPlusROMSendWidget->setEditable(false);
-    ypos += myLineHeight + 4;
+  myPlusROMSendLbl = new LabelWidget(_boss, _font, "Send");
+  myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, 1);
+  myPlusROMSendWidget->setEditable(false);
 
-    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Receive");
-    myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1,
-      fwidth, myLineHeight);
-    myPlusROMReceiveWidget->setEditable(false);
-    ypos += myLineHeight + 4;
-  }
+  myPlusROMReceiveLbl = new LabelWidget(_boss, _font, "Receive");
+  myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, 1);
+  myPlusROMReceiveWidget->setEditable(false);
+
+  // The fields line up with the ROM info fields above them, their labels indented
+  // under the "PlusROM:" header (alignLabels narrows their column by exactly the
+  // indent, so the fields still meet)
+  const int indent = _fontWidth * 2;
+
+  myLabelColumn.insert(myLabelColumn.end(),
+                       {{myPlusROMHostLbl, indent}, {myPlusROMPathLbl, indent},
+                        {myPlusROMSendLbl, indent}, {myPlusROMReceiveLbl, indent}});
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::layoutPlusROM(GUI::BoxLayout& col) const
+{
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+
+  if(!myCart.isPlusROM())
+    return;
+
+  // The labels were given their (indented) column when they joined myLabelColumn
+  const int indent = _fontWidth * 2;
+
+  col.addAuto(anchoredItem(myPlusROMLbl));
+  col.addAuto(labeledRow(myPlusROMHostLbl, myPlusROMHostWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMPathLbl, myPlusROMPathWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMSendLbl, myPlusROMSendWidget, 0, indent, true));
+  col.addAuto(labeledRow(myPlusROMReceiveLbl, myPlusROMReceiveWidget, 0, indent, true));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg,
-                                       VariantList& items, int& width)
+                                       VariantList& items)
 {
-  width = 0;
   const bool hasRamBanks = myCart.myRamBankCount > 0;
 
   for(int bank = 0; std::cmp_less(bank, bankCount); ++bank)
@@ -183,44 +209,48 @@ void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg,
       label += " " + hotspotStr(bank, seg);
 
     VarList::push_back(items, label);
-    width = std::max(width, _font.getStringWidth(label));
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::bankSelect(int& ypos)
+void CartridgeEnhancedWidget::createBankWidgets()
 {
-  if(myCart.romBankCount() + myCart.ramBankCount() > 1)
+  if(myCart.romBankCount() + myCart.ramBankCount() <= 1)
+    return;
+
+  myBankWidgetLabels.resize(bankSegs());
+  myBankWidgets.resize(bankSegs());
+
+  for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
   {
-    constexpr int xpos = 2;
+    // fill bank and hotspot list
+    VariantList items;
 
-    myBankWidgets = std::make_unique<PopUpWidget* []>(bankSegs());
+    bankList(myCart.romBankCount() + myCart.ramBankCount(), seg, items);
 
-    for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
-    {
-      // fill bank and hotspot list
-      VariantList items;
-      int pw = 0;
+    // create widgets; the pop-up sizes its box to the widest entry
+    const string label = bankSegs() > 1
+      ? std::format("Set bank for segment #{}", seg)
+      : "Set bank";
 
-      bankList(myCart.romBankCount() + myCart.ramBankCount(), seg, items, pw);
+    myBankWidgetLabels[seg] = new LabelWidget(_boss, _font, label);
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items, Cmd::BankChanged);
+    myBankWidgets[seg]->setTarget(this);
+    myBankWidgets[seg]->setID(seg);
+    addFocusWidget(myBankWidgets[seg]);
 
-      // create widgets
-      string label = "Set bank";
-      if(bankSegs() > 1)
-        label += std::format(" for segment #{} ", seg);
-      else
-        label += "     "; // align with info
-
-      myBankWidgets[seg] = new PopUpWidget(_boss, _font, xpos, ypos - 2,
-                                           pw, myLineHeight, items, label,
-                                           0, kBankChanged);
-      myBankWidgets[seg]->setTarget(this);
-      myBankWidgets[seg]->setID(seg);
-      addFocusWidget(myBankWidgets[seg]);
-
-      ypos += myBankWidgets[seg]->getHeight() + 4;
-    }
+    // The selector's box lines up with the info fields above it
+    myLabelColumn.emplace_back(myBankWidgetLabels[seg]);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::layoutBankSelect(GUI::BoxLayout& col) const
+{
+  using GUI::labeledRow;
+
+  for(size_t seg = 0; seg < myBankWidgets.size(); ++seg)
+    col.addAuto(labeledRow(myBankWidgetLabels[seg], myBankWidgets[seg]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,7 +299,7 @@ string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhancedWidget::bankSegs()
+uInt16 CartridgeEnhancedWidget::bankSegs() const
 {
   return myCart.myBankSegs;
 }
@@ -313,7 +343,7 @@ void CartridgeEnhancedWidget::loadConfig()
     myPlusROMReceiveWidget->setText(formatBytes(recvArr), recvArr != myOldState.receive);
   }
 
-  if(myBankWidgets != nullptr)
+  if(!myBankWidgets.empty())
   {
     if(bankSegs() > 1)
       for(int seg = 0; std::cmp_less(seg, bankSegs()); ++seg)
@@ -327,10 +357,10 @@ void CartridgeEnhancedWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
-                                            int cmd, int data, int id)
+void CartridgeEnhancedWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                            int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBankWidgets[id]->getSelected(), id);

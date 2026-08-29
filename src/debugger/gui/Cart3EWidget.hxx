@@ -29,7 +29,6 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
   public:
     Cartridge3EWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       Cartridge3E& cart);
     ~Cartridge3EWidget() override = default;
 
@@ -37,17 +36,24 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
     string bankState() override;
 
   private:
-    enum {
-      kRAMBankChanged = 'raCH'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        RamBankChanged = GuiCmd::of("Cartridge3EWidget.RamBankChanged");
     };
+
+    LabelWidget* myROMTypeLbl{nullptr};
+    LabelWidget* myRAMTypeLbl{nullptr};
+    LabelWidget* myBankLbl{nullptr};
+    LabelWidget* myRAMBankLbl{nullptr};
 
   protected:
     string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }
     string description() override;
-    void bankList(uInt16 bankCount, int seg, VariantList& items, int& width) override;
-    void bankSelect(int& ypos) override;
-    uInt16 bankSegs() override { return 1; }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void bankList(uInt16 bankCount, int seg, VariantList& items) override;
+    void createBankWidgets() override;
+    void layoutBankSelect(GUI::BoxLayout& col) const override;
+    uInt16 bankSegs() const override { return 1; }
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

@@ -57,7 +57,7 @@ class DialogContainer
 
       @param time  The current time in microseconds
     */
-    void updateTime(uInt64 time);
+    virtual void updateTime(uInt64 time);
 
     /**
       Handle a keyboard Unicode text event.
@@ -164,7 +164,41 @@ class DialogContainer
       may not choose to do a resize, and even if it does, *how* it does it
       is determined by the specific container.
     */
-    virtual void requestResize() { }
+    virtual void requestResize();
+
+    /**
+      Whether an interactive window resize is currently in progress.  Dialogs
+      can use this to defer work that should not run on every frame of a drag
+      (e.g. re-asserting the window minimum size, persisting the final size)
+      until the resize has settled.
+    */
+    virtual bool resizeInProgress() const { return false; }
+
+    /**
+      Apply a pending live window resize (recorded via FrameBuffer::liveResize)
+      and re-flow this container, throttled to roughly the display rate.
+      Returns true if it applied — the caller then presents the new frame.
+
+      This is driven from the resize event handler (not just the main loop) so
+      that it also runs during the Windows/macOS modal resize loop, when the
+      main loop — and hence updateTime() — is blocked.  The base container does
+      nothing.
+    */
+    virtual bool applyResize() { return false; }
+
+    /**
+      Re-flow every dialog in the stack for the current window size.
+    */
+    void relayout();
+
+    /**
+      Re-font every dialog belonging to this container after the font has been
+      changed in place (see OSystem::refreshFonts), so they re-font live with
+      no restart.  Reaches every dialog registered with us, not just the open
+      stack: one that is merely cached (e.g. the menus OverlayMenu keeps per
+      EventHandlerState) would otherwise stay stale until next shown.
+    */
+    void refreshFont();
 
     /**
       Return (and possibly create) the bottom-most dialog of this container.
@@ -181,6 +215,8 @@ class DialogContainer
     }
 
   private:
+    // Clears all continuous-event tracking state (mouse/joy button/axis/hat down,
+    // last-click); called at construction and by reStack()
     void reset();
 
     /**
@@ -193,14 +229,31 @@ class DialogContainer
     */
     void removeDialog();
 
+    /**
+      Track every dialog built for this container, whether or not it is
+      currently on the stack.  A Dialog registers itself as it is constructed
+      and deregisters as it is destroyed, the way a Widget adds itself to its
+      boss's child list -- so nothing has to remember to do it by hand.
+    */
+    void registerDialog(Dialog* d);
+    void deregisterDialog(const Dialog* d);
+
   protected:
+    // Parent system, used to reach the frame buffer/event handler/settings
     OSystem& myOSystem;
+    // The currently open dialogs, bottom to top; the top one receives input
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:
+    // Every dialog belonging to this container, in creation order and
+    // non-owning (each is owned by whatever created it).  A superset of
+    // myDialogStack, which holds only the currently open ones
+    vector<Dialog*> myAllDialogs;
+
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime{0};
 
+    // Input-repeat timing, in milliseconds; set via setDoubleClickDelay() etc.
     static inline uInt64 S_DOUBLE_CLICK_DELAY = 500;
     static inline uInt64 S_REPEAT_INITIAL_DELAY = 400;
     static inline uInt64 S_REPEAT_SUSTAIN_DELAY = 50;
@@ -213,6 +266,7 @@ class DialogContainer
       int y{0};
       MouseButton b{MouseButton::NONE};
     } myCurrentMouseDown;
+    // When the held mouse button next re-fires (see updateTime())
     uInt64 myClickRepeatTime{0};
 
     // For continuous 'joy button down' events
@@ -220,8 +274,11 @@ class DialogContainer
       int stick{-1};
       int button{-1};
     } myCurrentButtonDown;
+    // When the held joystick button next re-fires / triggers its long-press
     uInt64 myButtonRepeatTime{0};
     uInt64 myButtonLongPressTime{0};
+    // Set once a button has fired its long-press, so the eventual release
+    // isn't also reported as a (short) button-up
     bool myIgnoreButtonUp{false};
 
     // For continuous 'joy axis down' events
@@ -230,6 +287,7 @@ class DialogContainer
       JoyAxis axis{JoyAxis::NONE};
       JoyDir adir{JoyDir::NONE};
     } myCurrentAxisDown;
+    // When the held joystick axis next re-fires
     uInt64 myAxisRepeatTime{0};
 
     // For continuous 'joy hat' events
@@ -238,6 +296,7 @@ class DialogContainer
       int hat{-1};
       JoyHatDir hdir{JoyHatDir::CENTER};
     } myCurrentHatDown;
+    // When the held joystick hat next re-fires
     uInt64 myHatRepeatTime{0};
 
     // Position and time of last mouse click (used to detect double clicks)

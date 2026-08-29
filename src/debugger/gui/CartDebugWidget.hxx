@@ -19,27 +19,52 @@
 #define CART_DEBUG_WIDGET_HXX
 
 class GuiObject;
-class StringListWidget;
+class EditTextWidget;
+class WrappedTextWidget;
 
 namespace GUI {
   class Font;
+  class BoxLayout;
 }  // namespace GUI
 
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
+#include "Layout.hxx"
 #include "Widget.hxx"
 
 class CartDebugWidget : public Widget, public CommandSender
 {
   public:
     CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
-                    int x, int y, int w, int h);
+                    const GUI::Font& nfont);
     ~CartDebugWidget() override = default;
 
   public:
-    int addBaseInformation(size_t bytes, string_view manufacturer,
-        string_view desc, uInt16 maxlines = 10);
+    // Layout metrics shared by BOTH cart tabs (this one and CartRamWidget), so
+    // their fields line up with each other.  The right margin is wider than the
+    // left so the fields keep a gap from the window border
+    static constexpr int HBORDER = 2, RBORDER = 12, VBORDER = 4, VGAP = 4;
+
+    // The width a tab's content is laid out in, for the tab of width 'w'.  Ask for
+    // it rather than subtracting the margins yourself: a word-wrapping widget must
+    // be given its width before the column holding it is built, and that width has
+    // to be the one the column will hand it (see Layout.hxx's heightForWidth note)
+    static constexpr int contentWidth(int w) { return w - HBORDER - RBORDER; }
+
+  public:
+    // Reposition/resize this widget's content when its area changes; drives
+    // reflow() so a cart tab re-flows live with the debugger window
+    void setArea(int x, int y, int w, int h) override;
+
+    // My constructor cannot know how tall I am -- that is however tall the rows
+    // this cart contributes make me -- so report what my own layout tree comes to
+    Common::Size naturalSize() const override;
+
+    // Lay this tab out for its current area and font.  EVERY cart tab has the
+    // same skeleton -- one label column, the ROM info rows, the cart's own rows
+    // beneath them, all within the shared margins -- so it is written once, here.
+    // A cart says only what goes in the middle: see layoutContent()
+    void reflow();
 
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate();
@@ -66,21 +91,53 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual string tabLabel() { return " Cartridge RAM "; }
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override { }
+
+    // Create the ROM size / manufacturer / description fields, at a placeholder
+    // position: reflow() is what positions them.  Call this from the ctor
+    void createBaseInformation(size_t bytes, string_view manufacturer,
+        string_view desc, uInt16 maxlines = 10);
+
+    // THE hook: append this cart's own rows to the tab's column.  Everything
+    // around them — the label column, the ROM info rows above, the margins — is
+    // the skeleton's business (see reflow()), so a cart states only its content.
+    // A cart adding to what its base class lays out calls the base first, then
+    // appends; one REPLACING a part of it overrides that part instead (see
+    // CartridgeEnhancedWidget's bank selectors)
+    virtual void layoutContent(GUI::BoxLayout& col) const { }
+
+    // Append the ROM size / manufacturer / description rows to a vertical box
+    void layoutBaseInformation(GUI::BoxLayout& col) const;
+
+  private:
+    // The whole tab as the engine sees it: the skeleton above, with this cart's
+    // own rows in the middle.  Built without positioning anything, so that
+    // reflow() and naturalSize() are the same layout asked two questions
+    unique_ptr<GUI::Layout> buildLayout() const;
 
   protected:
+    // The controls sharing this tab's label column.  A control says it belongs
+    // here as it is CREATED — the ROM info rows below, the PlusROM fields and
+    // bank selectors in the carts — and one GUI::alignLabels() call at reflow
+    // time gives them all the same column.  So no label carries padding of its
+    // own, and a cart whose selectors sit elsewhere simply does not join
+    std::vector<GUI::LabeledControl> myLabelColumn;
+
     // Arrays used to hold current and previous internal RAM values
     ByteArray myRamOld, myRamCurrent;
 
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
 
-    // These will be needed by most of the child classes;
-    // we may as well make them protected variables
-    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
-
   private:
-    StringListWidget* myDesc{nullptr};
+    // The ROM size / manufacturer / description fields and their labels.
+    // The description (myDesc) re-wraps itself whenever its width changes
+    LabelWidget* myROMSizeLbl{nullptr};
+    LabelWidget* myManufacturerLbl{nullptr};
+    LabelWidget* myDescLbl{nullptr};
+    EditTextWidget* myROMSize{nullptr};
+    EditTextWidget* myManufacturer{nullptr};
+    WrappedTextWidget* myDesc{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

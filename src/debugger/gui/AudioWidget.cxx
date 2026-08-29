@@ -23,74 +23,150 @@
 #include "TIADebug.hxx"
 #include "Widget.hxx"
 #include "Base.hxx"
+#include "Layout.hxx"
 
 #include "AudioWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
-                         const GUI::Font& nfont,
-                         int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+                         const GUI::Font& nfont)
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight(),
-            lwidth     = lfont.getStringWidth("AUDW ");
-  int xpos = 10, ypos = 25;
+  // Create every widget at a placeholder position/size; reflow() positions and
+  // sizes them for the area the widget occupies
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
 
-  // AudF registers
-  new StaticTextWidget(boss, lfont, xpos, ypos+2,
-                       lwidth, fontHeight,
-                       "AUDF", TextAlign::Left);
-  xpos += lwidth;
-  myAudF = new DataGridWidget(boss, nfont, xpos, ypos,
-                              2, 1, 2, 5, Common::Base::Fmt::_16);
+  // Column headers for the two audio channels
+  for(int col = 0; col < 2; ++col)
+    myChannelLabels[col] = new LabelWidget(boss, lfont,
+      Common::Base::toString(col, Common::Base::Fmt::_16_1), TextAlign::Left);
+
+  // AUDF registers (frequency divider, two hex digits per channel)
+  myRegLabels[0] = new LabelWidget(boss, lfont, "AUDF", TextAlign::Left);
+  myAudF = new DataGridWidget(boss, nfont, 2, 1, 2, 5, Common::Base::Fmt::_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
   addFocusWidget(myAudF);
-  myAud0F = new StaticTextWidget(boss, lfont,
-    myAudF->getRight() + fontWidth, ypos + (lineHeight + 5)/ 2 + 2, "         ");
-  new StaticTextWidget(boss, lfont,
-    myAud0F->getRight(), ypos + (lineHeight + 5)/ 2 + 2, "/");
-  myAud1F = new StaticTextWidget(boss, lfont,
-    myAud0F->getRight() + fontWidth, ypos + (lineHeight + 5)/ 2 + 2, "         ");
 
-  for(int col = 0; col < 2; ++col)
-  {
-    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() +
-                         static_cast<int>(myAudF->colWidth() / 2.75),
-                         ypos - lineHeight, fontWidth, fontHeight,
-                         Common::Base::toString(col, Common::Base::Fmt::_16_1),
-                         TextAlign::Left);
-  }
-  // AudC registers
-  xpos = 10;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
-                       "AUDC", TextAlign::Left);
-  xpos += lwidth;
-  myAudC = new DataGridWidget(boss, nfont, xpos + static_cast<int>(myAudF->colWidth() / 2.75), ypos,
-                              2, 1, 1, 4, Common::Base::Fmt::_16_1);
+  // The resulting channel frequencies ("f0 / f1"), filled in by loadConfig(); each
+  // is sized from a representative value (every value it holds is the same length)
+  myAud0F = new LabelWidget(boss, lfont, "31400.0Hz");
+  mySlash = new LabelWidget(boss, lfont, "/");
+  myAud1F = new LabelWidget(boss, lfont, "31400.0Hz");
+
+  // AUDC registers (control, one hex digit per channel)
+  myRegLabels[1] = new LabelWidget(boss, lfont, "AUDC", TextAlign::Left);
+  myAudC = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   addFocusWidget(myAudC);
 
-  // AudV registers
-  xpos = 10;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
-                       "AUDV", TextAlign::Left);
-  xpos += lwidth;
-  myAudV = new DataGridWidget(boss, nfont, xpos + static_cast<int>(myAudF->colWidth() / 2.75), ypos,
-                              2, 1, 1, 4, Common::Base::Fmt::_16_1);
+  // AUDV registers (volume, one hex digit per channel)
+  myRegLabels[2] = new LabelWidget(boss, lfont, "AUDV", TextAlign::Left);
+  myAudV = new DataGridWidget(boss, nfont, 2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   addFocusWidget(myAudV);
 
-  myAudEffV = new StaticTextWidget(boss, lfont,
-                                   myAudV->getRight() + fontWidth * 2, myAudV->getTop() + 2,
-                                   "100% (eff. volume)");
+  // The effective volume, filled in by loadConfig()
+  myAudEffV = new LabelWidget(boss, lfont, "");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   setHelpAnchor("AudioTab", true);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> AudioWidget::buildLayout() const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
+  using GUI::centeredItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  // A label, or the narrower AUDC/AUDV grid centered under the AUDF grid, sits on
+  // that grid's line, so they share the row's baseline
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  const auto centeredGrid = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Center, VAlign::Baseline);
+  };
+
+  // Standard dialog borders/gaps, font-derived (as Dialog::hBorder/vBorder/vGap)
+  const int fontWidth = _font.getMaxCharWidth(),
+            VGAP      = _font.getFontHeight() / 4,
+            HBORDER   = static_cast<int>(fontWidth * 1.25),
+            VBORDER   = _font.getFontHeight() / 2;
+
+  // One shared column for the three register labels
+  GUI::alignLabels({{myRegLabels[0]}, {myRegLabels[1]}, {myRegLabels[2]}});
+
+  const int labelW   = myRegLabels[0]->getWidth(),
+            channelW = myAudF->colWidth(),  // one channel column of the AUDF grid
+            gridW    = myAudF->getWidth();   // both AUDF channels
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, HBORDER, VBORDER);
+
+  // Channel headers ("0"/"1"), each centered over its AUDF column
+  auto headers = std::make_unique<BoxLayout>(Dir::Horizontal);
+  headers->addSpace(labelW);
+  for(auto* h: myChannelLabels)
+    headers->addFixed(centeredItem(h), channelW);
+  root->addAuto(std::move(headers));
+
+  // AUDF row: label, the two-digit frequency-divider grid, then the resulting
+  // channel frequencies "f0 / f1" (each readout is sized to its own value)
+  auto audf = std::make_unique<BoxLayout>(Dir::Horizontal);
+  audf->addAuto(onBaseline(myRegLabels[0]));
+  audf->addFixed(onBaseline(myAudF), gridW);
+  audf->addSpace(fontWidth);
+  audf->addAuto(anchoredItem(myAud0F));
+  audf->addFixed(anchoredItem(mySlash), fontWidth);
+  audf->addAuto(anchoredItem(myAud1F));
+  root->addAuto(std::move(audf));
+
+  // AUDC row: label and the one-digit control grid, centered under AUDF
+  auto audc = std::make_unique<BoxLayout>(Dir::Horizontal);
+  audc->addAuto(onBaseline(myRegLabels[1]));
+  audc->addFixed(centeredGrid(myAudC), gridW);
+  root->addAuto(std::move(audc));
+
+  // AUDV row: label, the one-digit volume grid centered under AUDF, then the
+  // effective volume filling the rest of the row
+  auto audv = std::make_unique<BoxLayout>(Dir::Horizontal);
+  audv->addAuto(onBaseline(myRegLabels[2]));
+  audv->addFixed(centeredGrid(myAudV), gridW);
+  audv->addSpace(fontWidth * 2);
+  audv->addStretch(stretchedItem(myAudEffV));
+  root->addAuto(std::move(audv));
+
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::reflow()
+{
+  buildLayout()->doLayout(_x, _y, _w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size AudioWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,9 +233,10 @@ void AudioWidget::handleVolume()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void AudioWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
-  if(cmd == DataGridWidget::kItemDataChangedCmd)
+  if(cmd == DataGridWidget::Cmd::ItemDataChanged)
   {
     switch(id)
     {

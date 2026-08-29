@@ -39,7 +39,8 @@ enum class BufferType: uInt8 {
   None,
   Launcher,
   Emulator,
-  Debugger
+  Debugger,
+  TiaWindow  // the debugger's companion TIA window (own FrameBuffer/window)
 };
 
 enum class ScalingInterpolation: uInt8 {
@@ -152,6 +153,12 @@ enum class TextAlign: uInt8 {
 enum class FrameStyle: uInt8 {
   Solid,
   Dashed
+};
+
+// Which way an arrow drawn by FBSurface::drawArrow() points
+enum class ArrowDirection: uInt8 {
+  Up,
+  Down
 };
 
 #endif  // FRAME_BUFFER_CONSTANTS_HXX

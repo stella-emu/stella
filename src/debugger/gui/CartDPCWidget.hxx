@@ -29,7 +29,6 @@ class CartridgeDPCWidget : public CartDebugWidget
   public:
     CartridgeDPCWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeDPC& cart);
     ~CartridgeDPCWidget() override = default;
 
@@ -49,7 +48,8 @@ class CartridgeDPCWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     struct CartState {
@@ -64,7 +64,13 @@ class CartridgeDPCWidget : public CartDebugWidget
     };
 
     CartridgeDPC& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
+
+    LabelWidget *myFetcherLbl{nullptr};
+    LabelWidget *myTopsLbl{nullptr}, *myBottomsLbl{nullptr},
+                *myCountersLbl{nullptr}, *myFlagsLbl{nullptr},
+                *myMusicModeLbl{nullptr}, *myRandomLbl{nullptr};
 
     DataGridWidget* myTops{nullptr};
     DataGridWidget* myBottoms{nullptr};
@@ -74,7 +80,10 @@ class CartridgeDPCWidget : public CartDebugWidget
     DataGridWidget* myRandom{nullptr};
 
     CartState myOldState;
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeDPCWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

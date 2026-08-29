@@ -26,14 +26,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const VariantList& items,
-                         string_view label, int labelWidth, int cmd)
-  : EditableWidget(boss, font, x, y - 1, w, h + 2),
-    _label{label},
-    _labelWidth{labelWidth}
+                         int w, const VariantList& items, GuiCmd::Code cmd)
+  : EditableWidget(boss, font, w, font.getLineHeight() + 2)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
-    | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::RetainFocus
+    | Widget::Flag::TrackMouse;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;
@@ -44,19 +41,61 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   });
   setEditable(false);
 
-  if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
-
   setArrow();
 
-  _w = w + _labelWidth + dropDownWidth(font); // 23
+  _w = w + dropDownWidth(font);
 
-  // vertically center the arrows and text
-  myTextY   = (_h - _font.getFontHeight()) / 2;
+  // vertically center the arrows (the text centers itself, see firstTextY())
   myArrowsY = (_h - _arrowHeight) / 2;
 
   myMenu = std::make_unique<ContextMenu>(this, font, items, cmd,
                                     w + dropDownWidth(font));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
+                         const VariantList& items, GuiCmd::Code cmd)
+  : PopUpWidget(boss, font, calcWidth(font, items), items, cmd)
+{
+  // Nobody chose that width but me, so nobody else will restore it
+  myAutoWidth = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PopUpWidget::calcWidth(const GUI::Font& font, const VariantList& items)
+{
+  int width = 0;
+
+  for(const auto& item: items)
+    width = std::max(width, font.getStringWidth(item.first));
+
+  return width;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setBoxWidth(int w)
+{
+  _w = w + dropDownWidth(_font);
+  myMenu->setMaxWidth(_w);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::refreshFont()
+{
+  // Also refreshes the inherited (right-click) mouse menu, if allocated
+  EditableWidget::refreshFont();
+
+  // Re-pick the arrow bitmap/dimensions for the live font, restore the framed
+  // height and vertically re-center the arrows (mirrors the ctor).
+  setArrow();
+  _h = _font.getLineHeight() + 2;
+
+  // A width I derived from my own items is mine to restore; one a dialog chose
+  // is re-applied by the owning layout(), which runs straight after this
+  if(myAutoWidth)
+    setBoxWidth(calcWidth(_font, myMenu->entries()));
+  myArrowsY = (_h - _arrowHeight) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,6 +104,14 @@ void PopUpWidget::setID(uInt32 id)
   myMenu->setID(id);
 
   Widget::setID(id);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setWidth(int w)
+{
+  Widget::setWidth(w);
+  // Keep the drop-down menu as wide as the value box
+  myMenu->setMaxWidth(_w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,7 +192,7 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
       if(isEnabled() && !myMenu->isVisible())
       {
         // Add menu just underneath parent widget
-        myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
+        myMenu->show(getAbsX(), getAbsY() + getHeight(),
                      dialog().surface().dstRect(), myMenu->getSelected());
       }
     }
@@ -199,7 +246,8 @@ bool PopUpWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void PopUpWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                int data, int id)
 {
   // Intercept all events sent through the PromptWidget
   // They're likely from our ContextMenu, indicating a redraw is required
@@ -213,44 +261,13 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setArrow()
 {
-  // Small down arrow
-  static constexpr std::array<uInt32, 7> down_arrow = {
-    0b100000001,
-    0b110000011,
-    0b111000111,
-    0b011101110,
-    0b001111100,
-    0b000111000,
-    0b000010000,
-  };
-  // Large down arrow
-  static constexpr std::array<uInt32, 10> down_arrow_large = {
-    0b1000000000001,
-    0b1100000000011,
-    0b1110000000111,
-    0b1111000001111,
-    0b0111100011110,
-    0b0011110111100,
-    0b0001111111000,
-    0b0000111110000,
-    0b0000011100000,
-    0b0000001000000
-  };
+  // The arrow is sized from the font, so it grows with the text instead of
+  // stepping.  At the default 9x18 this reproduces the old 9x7 bitmap
+  _arrowWidth = arrowWidth(_font);
+  _arrowHeight = _arrowWidth - 2;
+  _arrowThickness = ((_arrowWidth - 1) / 4) + 1;
 
-  if(_font.getFontHeight() < 24)
-  {
-    _textOfs = 3;
-    _arrowWidth = 9;
-    _arrowHeight = 7;
-    _arrowImg = down_arrow.data();
-  }
-  else
-  {
-    _textOfs = 5;
-    _arrowWidth = 13;
-    _arrowHeight = 10;
-    _arrowImg = down_arrow_large.data();
-  }
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,13 +275,8 @@ void PopUpWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
 
-  const int x = _x + _labelWidth;
-  int w = _w - _labelWidth;
-
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() ? _textcolor : kColor, TextAlign::Left);
+  const int x = _x;
+  int w = _w;
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
@@ -278,8 +290,9 @@ void PopUpWidget::drawWidget(bool hilite)
   s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
              isEnabled() && hilite ? kBtnColorHi : bgCol);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawBitmap(_arrowImg, x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
-               !isEnabled() ? kColor : kTextColor, _arrowWidth, _arrowHeight);
+  s.drawArrow(x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
+              _arrowWidth, _arrowHeight, ArrowDirection::Down,
+              !isEnabled() ? kColor : kTextColor, _arrowThickness);
 
   // Draw the selected entry, if any
   const string& name = editString();
@@ -289,7 +302,7 @@ void PopUpWidget::drawWidget(bool hilite)
   const TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
                            TextAlign::Right : TextAlign::Left;
   adjustOffset();
-  s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
+  s.drawString(_font, name, x + _textOfs, _y + firstTextY(), w,
                !isEnabled() ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
                align, editable ? -_editScrollOffset : 0, !editable);
 
@@ -301,7 +314,7 @@ void PopUpWidget::drawWidget(bool hilite)
 Common::Rect PopUpWidget::getEditRect() const
 {
   return {
-    static_cast<uInt32>(_labelWidth + _textOfs), 1,
+    static_cast<uInt32>(_textOfs), 1,
     static_cast<uInt32>(_w - _textOfs - dropDownWidth(_font)),
     static_cast<uInt32>(_h)
   };

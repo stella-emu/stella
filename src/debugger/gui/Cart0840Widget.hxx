@@ -27,7 +27,6 @@ class Cartridge0840Widget : public CartridgeEnhancedWidget
   public:
     Cartridge0840Widget(GuiObject* boss, const GUI::Font& lfont,
                         const GUI::Font& nfont,
-                        int x, int y, int w, int h,
                         Cartridge0840& cart);
     ~Cartridge0840Widget() override = default;
 

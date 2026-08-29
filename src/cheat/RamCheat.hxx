@@ -20,18 +20,30 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that pokes a fixed value into RAM every frame while enabled,
+  decoded from a 4-digit cheatcode.
+
+  @author  Stephen Anthony
+*/
 class RamCheat : public Cheat
 {
   public:
+    // Decodes a 4-digit RAM cheat into address/value
     RamCheat(OSystem& os, string_view name, string_view code);
     ~RamCheat() override = default;
 
+    // Adds the cheat to CheatManager's per-frame list
     bool enable() override;
+    // Removes the cheat from CheatManager's per-frame list
     bool disable() override;
+    // Pokes value into RAM at address; called every frame while enabled
     void evaluate() override;
 
   private:
+    // RAM address to poke
     uInt16 address{0};
+    // Byte value to poke at address
     uInt8  value{0};
 
   private:

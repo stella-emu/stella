@@ -23,13 +23,21 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, int cmd, bool framed)
-  : Widget(boss, font, x, y, w, h),
+                         int w, int h, bool framed)
+  : Widget(boss, font),
     CommandSender(boss),
-    _framed{framed},
-    _cmd{cmd}
+    _framed{framed}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _w = w;
+  _h = h;
+
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font, bool framed)
+  : ColorWidget(boss, font, calcWidth(font), calcHeight(font), framed)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

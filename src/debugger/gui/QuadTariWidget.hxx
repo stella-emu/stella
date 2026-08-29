@@ -24,17 +24,24 @@
 class QuadTariWidget: public ControllerWidget
 {
   public:
-    QuadTariWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller);
     ~QuadTariWidget() override = default;
 
     void loadConfig() override;
 
-  private:
-    StaticTextWidget* myPointer{nullptr};
+  protected:
+    // The two embedded controllers side by side, with the active-controller
+    // pointer between them; the row lays each of them out via its own setArea()
+    void layoutContent(GUI::BoxLayout& col) override;
 
-    void addController(GuiObject* boss, int x, int y,
-                       Controller& controller, bool second);
+  private:
+    ControllerWidget* addController(GuiObject* boss, Controller& controller,
+                                    bool second);
+
+    LabelWidget* myPointer{nullptr};
+    ControllerWidget* myFirst{nullptr};
+    ControllerWidget* mySecond{nullptr};
 
     // Following constructors and assignment operators not supported
     QuadTariWidget() = delete;

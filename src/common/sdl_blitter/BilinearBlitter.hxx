@@ -48,6 +48,12 @@ class BilinearBlitter : public Blitter {
     SDL_FRect mySrcFRect{};
     SDL_FRect myDstFRect{};
 
+    // Allocated texture dimensions.  The textures are only recreated when the
+    // source grows beyond this; a shrinking source reuses the existing texture
+    // and renders a sub-rect, so a live window resize does not thrash textures.
+    int myTexW{0};
+    int myTexH{0};
+
     bool myEnableBlend{false};
     uInt8 myBlendLevel{100};
     bool myInterpolate{false};

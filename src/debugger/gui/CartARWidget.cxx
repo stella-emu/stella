@@ -20,13 +20,14 @@
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartARWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeARWidget::CartridgeARWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeAR& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeAR& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   const size_t size = myCart.getImage().size();
@@ -36,17 +37,27 @@ CartridgeARWidget::CartridgeARWidget(
     "\nNote: on real hardware, RAM contents at power-on are uncertain "
     "(may be zero or random). Currently emulated as zero-filled.\n";
 
-  constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
+  createBaseInformation(size, "Starpath", info);
 
   VariantList items;
   for(int i = 0; i < 32; ++i)
     VarList::push_back(items, std::format("{:3}", i));
-  myBank = new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
-                           myLineHeight, items, "Set bank     ",
-                           0, kBankChanged);
+
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBankLbl);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  col.addAuto(GUI::labeledRow(myBankLbl, myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,10 +73,10 @@ void CartridgeARWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeARWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBank->getSelected());

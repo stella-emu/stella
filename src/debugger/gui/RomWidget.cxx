@@ -26,29 +26,70 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "RomListWidget.hxx"
+#include "Layout.hxx"
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                     int x, int y, int w, int h)
-  : Widget(boss, lfont, x, y, w, h),
+RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont,
+                     const GUI::Font& nfont, const GUI::Font& dfont)
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
-  // Show current bank state
-  int xpos = x, ypos = y + 7;
-  const auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
+  // Create the bank display and the listing at a placeholder position/size;
+  // reflow() positions and sizes them for the area the widget occupies
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myInfoLbl = new LabelWidget(boss, lfont, "Info ");
 
-  xpos += t->getRight();
-  myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
-                              _w - 2 - xpos, nfont.getLineHeight());
+  myBank = new EditTextWidget(boss, nfont, 1);
   myBank->setEditable(false);
 
-  // Create rom listing
-  xpos = x;  ypos += myBank->getHeight() + 4;
-
-  myRomList = new RomListWidget(boss, lfont, nfont, xpos, ypos, _w - 4, _h - ypos - 2);
+  myRomList = new RomListWidget(boss, lfont, dfont);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::reflow()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  // This tab insets itself by the same small border on every side -- the listing
+  // fills it, and its frame is meant to sit close to the tab's own, as it did
+  // before the engine laid this widget out.  VGAP is the gap BETWEEN the two
+  // rows, and was standing in for the vertical border as well, which left the
+  // listing twice as far off the bottom of the tab as it should be
+  constexpr int HBORDER = 2, VBORDER = 2, VGAP = 4;
+
+  // The label and the bank display are sibling widgets parented to the boss,
+  // not children of this widget, so they are positioned explicitly here
+  BoxLayout root(Dir::Vertical, VGAP, HBORDER, VBORDER);
+
+  // The bank info row: a label, then the bank display filling the rest
+  auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  infoRow->addAuto(anchoredItem(myInfoLbl));
+  infoRow->addStretch(alignedItem(myBank, HAlign::Fill, VAlign::Center));
+  root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
+
+  // The disassembly fills whatever is left
+  root.addStretch(widgetItem(myRomList));
+
+  root.doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,42 +119,43 @@ void RomWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void RomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                              int data, int id)
 {
   switch(cmd)
   {
-    case RomListWidget::kBPointChangedCmd:
+    case RomListWidget::Cmd::BreakpointChanged:
       // 'data' is the line in the disassemblylist to be accessed
       toggleBreak(data);
       break;
 
-    case RomListWidget::kRomChangedCmd:
+    case RomListWidget::Cmd::RomChanged:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
       patchROM(data, myRomList->getText(), static_cast<Common::Base::Fmt>(id));
       break;
 
-    case RomListWidget::kSetPCCmd:
+    case RomListWidget::Cmd::SetPC:
       // 'data' is the line in the disassemblylist to be accessed
       setPC(data);
       break;
 
-    case RomListWidget::kRuntoPCCmd:
+    case RomListWidget::Cmd::RunToPC:
       // 'data' is the line in the disassemblylist to be accessed
       runtoPC(data);
       break;
 
-    case RomListWidget::kSetTimerCmd:
+    case RomListWidget::Cmd::SetTimer:
       // 'data' is the line in the disassemblylist to be accessed
       setTimer(data);
       break;
 
-    case RomListWidget::kDisassembleCmd:
+    case RomListWidget::Cmd::Disassemble:
       // 'data' is the line in the disassemblylist to be accessed
       disassemble(data);
       break;
 
-    case RomListWidget::kTentativeCodeCmd:
+    case RomListWidget::Cmd::TentativeCode:
     {
       // 'data' is the boolean value
       DiStella::settings.resolveCode = data;
@@ -123,7 +165,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case RomListWidget::kPCAddressesCmd:
+    case RomListWidget::Cmd::PCAddresses:
       // 'data' is the boolean value
       DiStella::settings.showAddresses = data;
       instance().settings().setValue("dis.showaddr",
@@ -131,7 +173,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       invalidate();
       break;
 
-    case RomListWidget::kGfxAsBinaryCmd:
+    case RomListWidget::Cmd::GfxAsBinary:
       // 'data' is the boolean value
       if(data)
       {
@@ -146,7 +188,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       invalidate();
       break;
 
-    case RomListWidget::kAddrRelocationCmd:
+    case RomListWidget::Cmd::AddressRelocation:
       // 'data' is the boolean value
       DiStella::settings.rFlag = data;
       instance().settings().setValue("dis.relocate",

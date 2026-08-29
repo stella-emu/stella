@@ -24,10 +24,12 @@
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
+#include "TiaWindow.hxx"
 #include "PromptWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
+#include "TimerManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -57,17 +59,17 @@ Debugger* Debugger::myStaticDebugger = nullptr;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
-    myConsole{console},
-    mySystem{console.system()}
+    myConsole{&console},
+    mySystem{&console.system()}
 {
   // Init parser
   myParser = std::make_unique<DebuggerParser>(*this, osystem.settings());
 
   // Create debugger subsystems
-  myCpuDebug  = std::make_unique<CpuDebug>(*this, myConsole);
-  myCartDebug = std::make_unique<CartDebug>(*this, myConsole, osystem);
-  myRiotDebug = std::make_unique<RiotDebug>(*this, myConsole);
-  myTiaDebug  = std::make_unique<TIADebug>(*this, myConsole);
+  myCpuDebug  = std::make_unique<CpuDebug>(*this, console);
+  myCartDebug = std::make_unique<CartDebug>(*this, console, osystem);
+  myRiotDebug = std::make_unique<RiotDebug>(*this, console);
+  myTiaDebug  = std::make_unique<TIADebug>(*this, console);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -79,7 +81,39 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
-  delete myDialog;  myDialog = nullptr;
+  // The static accessor must not outlive the object it hands out.  Only clear
+  // it if it still refers to us: on a new ROM the replacement debugger is
+  // constructed (claiming the static) before the old one is destroyed
+  if(myStaticDebugger == this)
+    myStaticDebugger = nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::changeFont() const
+{
+  // Re-resolves the fonts and re-fonts every dialog in the application.  Our
+  // own separate Dialogs (the disassembly settings and colour dialogs, the
+  // RAM search box, the right-click menus) are reached because they register
+  // with us, so nothing here has to name them
+  myOSystem.refreshFonts();
+
+  // A larger font can raise the content minimum past the window's current
+  // size (dialogMinSize() reads the just-refreshed dialog, so this must
+  // follow refreshFont()); grow the window to fit, same as the launcher
+  myOSystem.frameBuffer().growWindowTo(dialogMinSize());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size Debugger::dialogMinSize() const
+{
+  // The dialog's layout tree answers this: it accounts for the debugger font,
+  // the proportional TIA band and whatever the current ROM's tabs ask for.  A
+  // floor of one pixel keeps a size a window can actually be given, for the
+  // moment before the dialog exists
+  if(myDialog != nullptr)
+    return myDialog->minSize();
+
+  return Common::Size(1, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,15 +122,19 @@ void Debugger::initialize()
   mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
 
-  // The debugger dialog is resizable, within certain bounds
-  // We check those bounds now
-  mySize.clamp(static_cast<uInt32>(DebuggerDialog::kSmallFontMinW), d.w,
-               static_cast<uInt32>(DebuggerDialog::kSmallFontMinH), d.h);
+  // Only a laid-out dialog can say how small the window may be -- that is what
+  // its layout tree reports -- so build it at the saved size first, then clamp
+  // to what it asks for.  The dialog reads mySize back the next time it lays out
+  // (from open()), so there is nothing to rebuild here
+  mySize.clamp(FBMinimum::Width, d.w, FBMinimum::Height, d.h);
+
+  myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this,
+                                              mySize.w, mySize.h);
+
+  const Common::Size minSize = dialogMinSize();
+  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
 
   myOSystem.settings().setValue("dbg.res", mySize);
-
-  delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 
   myCartDebug->setDebugWidget(myDialog->cartDebug());
 
@@ -104,11 +142,98 @@ void Debugger::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::detach()
+{
+  // The subsystems hold their own references to the console and its system,
+  // and describe one ROM only; they are rebuilt with the next console
+  myCpuDebug.reset();
+  myCartDebug.reset();
+  myRiotDebug.reset();
+  myTiaDebug.reset();
+
+  myConsole = nullptr;
+  mySystem  = nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  return myOSystem.frameBuffer().createDisplay(
+  const FBInitStatus status = myOSystem.frameBuffer().createDisplay(
     string{STELLA_FULL_TITLE} + ": Debugger mode",
     BufferType::Debugger, mySize);
+
+  // The debugger window may be resized, but not below its usable minimum
+  // (which depends on the configured debugger font size)
+  myOSystem.frameBuffer().setWindowMinSize(dialogMinSize());
+
+  return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::updateSize()
+{
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+  const Common::Size minSize = dialogMinSize();
+
+  mySize = Common::Size(r.w() / scale, r.h() / scale);
+  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::applyResize()
+{
+  // Throttle to roughly the display rate; see Launcher::applyResize
+  const uInt64 INTERVAL =
+      LiveResize::blocksMainLoop() ? 0 : 1000000 / 60;  // microseconds
+  const uInt64 now = TimerManager::getTicks();
+  if(now - myLastResizeTime < INTERVAL)
+    return false;
+
+  // Nothing to do unless a new size is pending
+  if(!myOSystem.frameBuffer().applyLiveResize())
+    return false;
+
+  myLastResizeTime = now;
+  updateSize();
+  relayout();
+  mySettleCountdown = 15;  // ~frames of idle before the resize is settled
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::updateTime(uInt64 time)
+{
+  DialogContainer::updateTime(time);
+
+  // The stack that asked to exit the ROM has unwound by now, so the console
+  // can safely be torn down
+  if(myExitRomPending)
+  {
+    myExitRomPending = false;
+    myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    return;
+  }
+
+  // Live re-flow is normally applied straight from the event handler
+  // (applyResize(), which also covers the Windows/macOS modal resize loop).
+  // Here we catch any size the handler's throttle skipped — notably the final
+  // one when the drag stops — and, once idle, persist the settled size
+  if(myOSystem.frameBuffer().applyLiveResize())
+  {
+    updateSize();
+    relayout();
+    mySettleCountdown = 15;
+  }
+  else if(mySettleCountdown > 0)
+  {
+    if(--mySettleCountdown == 0)
+    {
+      myOSystem.frameBuffer().resizeSettled();
+      myOSystem.settings().setValue("dbg.res", mySize);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,7 +281,8 @@ void Debugger::quit()
 void Debugger::exit(bool exitrom)
 {
   if(exitrom)
-    myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    // Deferred; see myExitRomPending
+    myExitRomPending = true;
   else
   {
     myOSystem.eventHandler().leaveDebugMode();
@@ -209,19 +335,19 @@ string Debugger::autoExec(StringList* history)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BreakpointMap& Debugger::breakPoints() const
 {
-  return mySystem.m6502().breakPoints();
+  return mySystem->m6502().breakPoints();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::readTraps() const
 {
-  return mySystem.m6502().readTraps();
+  return mySystem->m6502().readTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::writeTraps() const
 {
-  return mySystem.m6502().writeTraps();
+  return mySystem->m6502().writeTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,7 +373,7 @@ string Debugger::invIfChanged(int reg, int oldReg)
 void Debugger::reset()
 {
   unlockSystem();
-  mySystem.reset();
+  mySystem->reset();
   lockSystem();
 }
 
@@ -262,8 +388,8 @@ string Debugger::setRAM(const IntArray& args)
 
   const size_t count = args.size(), written = count - 1;
   int address = args[0];
-  for(auto i = 1uz; i < count; ++i)
-    mySystem.pokeOob(address++, args[i]);
+  for(auto i = 1UZ; i < count; ++i)
+    mySystem->pokeOob(address++, args[i]);
 
   return std::format("changed {} {}", written,
     written == 1 ? "location" : "locations");
@@ -289,7 +415,7 @@ void Debugger::saveAllStates()
 void Debugger::loadState(int state)
 {
   // We're loading a new state, so we start with a clean slate
-  mySystem.clearDirtyPages();
+  mySystem->clearDirtyPages();
 
   // State loading could initiate a bankswitch, so we allow it temporarily
   unlockSystem();
@@ -301,7 +427,7 @@ void Debugger::loadState(int state)
 void Debugger::loadAllStates()
 {
   // We're loading new states, so we start with a clean slate
-  mySystem.clearDirtyPages();
+  mySystem->clearDirtyPages();
 
   // State loading could initiate a bankswitch, so we allow it temporarily
   unlockSystem();
@@ -315,7 +441,7 @@ int Debugger::step(bool save)
   if(save)
     saveOldState();
 
-  const uInt64 startCycle = mySystem.cycles();
+  const uInt64 startCycle = mySystem->cycles();
 
   unlockSystem();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
@@ -323,7 +449,7 @@ int Debugger::step(bool save)
 
   if(save)
     addState("step");
-  return static_cast<int>(mySystem.cycles() - startCycle);
+  return static_cast<int>(mySystem->cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,11 +465,11 @@ int Debugger::step(bool save)
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem.peekOob(myCpuDebug->pc()) == 32)
+  if(mySystem->peekOob(myCpuDebug->pc()) == 32)
   {
     saveOldState();
 
-    const uInt64 startCycle = mySystem.cycles();
+    const uInt64 startCycle = mySystem->cycles();
     const int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
@@ -355,12 +481,12 @@ int Debugger::trace()
     }
 
     unlockSystem();
-    mySystem.m6502().execute(11900000); // max. ~10 seconds
+    mySystem->m6502().execute(11900000); // max. ~10 seconds
     myOSystem.console().tia().flushLineCache();
     lockSystem();
 
     addState("trace");
-    return static_cast<int>(mySystem.cycles() - startCycle);
+    return static_cast<int>(mySystem->cycles() - startCycle);
   }
   else
     return step();
@@ -515,11 +641,11 @@ void Debugger::log(string_view triggerMsg)
 
   // First find the lines in the range, and determine the longest string
   const auto& disasm = myCartDebug->disassembly();
-  const uInt16 start = pc & mySystem.addressMask();
+  const uInt16 start = pc & mySystem->addressMask();
 
   for(const auto& tag: disasm.list)
   {
-    if((tag.address & mySystem.addressMask()) >= start)
+    if((tag.address & mySystem->addressMask()) >= start)
     {
       const string pcStr = Base::hex4(pc);
       msg += std::format("{} {:<8} {}", pcStr, tag.bytes, tag.disasm.substr(0, 7));
@@ -537,57 +663,57 @@ void Debugger::log(string_view triggerMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(addr, flags);
+  return mySystem->peekOob(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
-  return static_cast<uInt16>(mySystem.peekOob(addr, flags) |
-                            (mySystem.peekOob(addr+1, flags) << 8));
+  return static_cast<uInt16>(mySystem->peekOob(addr, flags) |
+                            (mySystem->peekOob(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
-  mySystem.pokeOob(addr, value, flags);
+  mySystem->pokeOob(addr, value, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502& Debugger::m6502() const
 {
-  return mySystem.m6502();
+  return mySystem->m6502();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(static_cast<uInt16>(addr), flags);
+  return mySystem->peekOob(static_cast<uInt16>(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peekOob(static_cast<uInt16>(addr), flags) |
-      (mySystem.peekOob(static_cast<uInt16>(addr+1), flags) << 8);
+  return mySystem->peekOob(static_cast<uInt16>(addr), flags) |
+      (mySystem->peekOob(static_cast<uInt16>(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags Debugger::getAccessFlags(uInt16 addr) const
 {
-  return mySystem.getAccessFlags(addr);
+  return mySystem->getAccessFlags(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
-  mySystem.setAccessFlags(addr, flags);
+  mySystem->setAccessFlags(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessCounter Debugger::getAccessCounter(uInt16 addr) const
 {
-  return mySystem.getAccessCounter(addr);
+  return mySystem->getAccessCounter(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -741,14 +867,14 @@ int Debugger::stringToValue(string_view stringval)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(uInt16 addr, uInt8 value)
 {
-  return myConsole.cartridge().patch(addr, value);
+  return myConsole->cartridge().patch(addr, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveOldState(bool clearDirtyPages)
 {
   if(clearDirtyPages)
-    mySystem.clearDirtyPages();
+    mySystem->clearDirtyPages();
 
   lockSystem();
   myCartDebug->saveOldState();
@@ -770,6 +896,12 @@ void Debugger::addState(string_view rewindMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setStartState()
 {
+  // Request the companion TIA window if the user has enabled it.  Actual
+  // creation is deferred to renderTiaWindow() so it happens once the state is
+  // DEBUGGER (see myTiaWindowPending).
+  if(myOSystem.settings().getBool("dbg.tiawindow"))
+    myTiaWindowPending = true;
+
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockSystem();
 
@@ -789,6 +921,10 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  // Hide the companion TIA window (kept alive for a fast re-open)
+  myTiaWindowPending = false;
+  closeTiaWindow();
+
   myDialog->saveConfig();
   saveOldState();
 
@@ -798,7 +934,142 @@ void Debugger::setQuitState()
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  mySystem.m6502().execute(1);
+  mySystem->m6502().execute(1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleTiaWindow()
+{
+  if(myTiaWindowOpen)
+    closeTiaWindow();
+  else
+    openTiaWindow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::openTiaWindow()
+{
+  if(myTiaWindowOpen)
+    return;
+
+  applyTiaWindowMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::applyTiaWindowMode()
+{
+  if(myTiaWindow == nullptr)
+    myTiaWindow = std::make_unique<TiaWindow>(myOSystem);
+
+  // The (single) FrameBuffer owns the secondary window/backend; palette, fonts
+  // and Television are shared with the main window, so nothing can be clobbered.
+  const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
+    *myTiaWindow, string{STELLA_FULL_TITLE} + ": TIA",
+    BufferType::TiaWindow, myTiaWindow->size(), TiaWindow::minSize());
+
+  myTiaWindowOpen = (status == FBInitStatus::Success);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::resizeTiaWindow(int width, int height)
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // The companion window resizes independently of the debugger's, and re-flows
+  // and presents itself here rather than waiting for the next rendered frame
+  // (during a modal resize loop there isn't one)
+  if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
+  {
+    myOSystem.frameBuffer().renderSecondaryWindow(
+      *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
+
+    // Restart the settle: applying the resize suspended vsync on the companion's
+    // backend, and only settling puts it back
+    myTiaSettleCountdown = 15;  // ~frames of idle before the resize is settled
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::rescaleTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // createDisplay() applies the scale factor to the (logical) size the window
+  // tracks, so the open path is what puts the new one into effect.  Closing
+  // only hides the window, leaving its backend and surfaces in place
+  // Re-run the open path with the window still shown: it tracks its size in
+  // logical units, and createDisplay() applies the current factor to that.
+  // Hiding it first would be wrong -- a resize applied to a hidden window
+  // does not survive being shown again
+  applyTiaWindowMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::closeTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  myOSystem.frameBuffer().closeSecondaryWindow();
+  myTiaWindowOpen = false;
+
+  // Nothing left to tick the countdown, and re-opening restores vsync anyway
+  // (createRenderer() ends any suspension), so don't leave one pending
+  myTiaSettleCountdown = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::renderTiaWindow()
+{
+  // Deferred open (now that the state is DEBUGGER, so createDisplay() doesn't
+  // run the emulation-mode/phosphor path against the live console)
+  if(myTiaWindowPending)
+  {
+    myTiaWindowPending = false;
+    openTiaWindow();
+  }
+
+  if(!myTiaWindowOpen)
+    return;
+
+  // Once the countdown reaches zero, run the settle pass.  Driven here rather
+  // than from updateTime(): the companion is not the active overlay, so this is
+  // its only per-frame tick
+  if(myTiaSettleCountdown > 0)
+  {
+    --myTiaSettleCountdown;
+    if(myTiaSettleCountdown == 0)
+      myOSystem.frameBuffer().settleSecondaryWindow(*myTiaWindow);
+  }
+
+  // Render on demand: the companion is presented only when its dialog/widget is
+  // dirty.  That covers user interaction (zoom/pan mark the widget dirty) and
+  // the initial open (Dialog::open() marks it dirty); content changes from
+  // stepping the emulation come in via invalidateTiaWindow().  When nothing is
+  // dirty this neither redraws nor presents, so an idle companion is free.
+  myOSystem.frameBuffer().renderSecondaryWindow(
+    *myTiaWindow, FrameBuffer::UpdateMode::NONE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::invalidateTiaWindow()
+{
+  if(!myTiaWindowOpen)
+    return;
+
+  // loadConfig() cascades to TiaDisplayWidget::loadConfig(), which marks the
+  // widget dirty so renderTiaWindow() redraws it next frame.  It only sets
+  // dirty flags here; the actual draw is deferred (and scoped to the secondary
+  // render target) by renderTiaWindow().
+  myTiaWindow->baseDialog()->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer* Debugger::tiaWindowContainer() const
+{
+  return myTiaWindowOpen ? myTiaWindow.get() : nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -861,7 +1132,7 @@ Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp()
 {
   std::ostringstream buf;
-  auto c_maxlen = 0uz, i_maxlen = 0uz;
+  auto c_maxlen = 0UZ, i_maxlen = 0UZ;
 
   // Get column widths for aligned output (functions)
   for(const auto& func: ourBuiltinFunctions)
@@ -920,15 +1191,15 @@ void Debugger::getCompletions(string_view in, StringList& list) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::lockSystem()
 {
-  mySystem.lockDataBus();
-  myConsole.cartridge().lockHotspots();
+  mySystem->lockDataBus();
+  myConsole->cartridge().lockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::unlockSystem()
 {
-  mySystem.unlockDataBus();
-  myConsole.cartridge().unlockHotspots();
+  mySystem->unlockDataBus();
+  myConsole->cartridge().unlockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

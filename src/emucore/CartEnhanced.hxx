@@ -345,6 +345,12 @@ class CartridgeEnhanced : public Cartridge
       @param address  The address to get the offset for
       @return  The calculated offset
     */
+    // TODO: myCurrentSegOffset is unvalidated after a save-state load; if
+    // it's ever < myImage.size() here the subtraction underflows into an
+    // out-of-range offset for peek()/poke()'s myRAM[...] accesses. Not
+    // confirmed reachable today (needs a RAM-banking scheme whose image
+    // size isn't bank-aligned). If it ever is, bounds-check the result
+    // against myRAM.size() at the two call sites, as peek()'s ROM read was.
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
       return static_cast<uInt16>(
         (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())

@@ -20,8 +20,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h, CartridgeBUS& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+    CartridgeBUS& cart)
+  : CartDebugWidget(boss, lfont, nfont)
 {
   constexpr uInt16 size = 8 * 4096;
 
@@ -45,5 +45,8 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
           ? "BUS registers accessible @ $FFEE - $FFF3\n"  // BUS3
           : "BUS registers accessible @ $F000 - $F01A\n", // BUS1, BUS2
         cart.startBank());
-  addBaseInformation(size, "AtariAge", info);
+
+  // This tab is nothing but the ROM info block; reflow() lays it out
+  createBaseInformation(size, "AtariAge", info);
+  reflow();
 }

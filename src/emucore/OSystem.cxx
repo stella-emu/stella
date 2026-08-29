@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <random>
+
 #include "bspf.hxx"
 #include "Logger.hxx"
 
@@ -29,6 +31,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
+  #include "MessageBox.hxx"
   #include "OverlayMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -54,6 +57,7 @@
 #include "TimerManager.hxx"
 #ifdef GUI_SUPPORT
   #include "HighScoresManager.hxx"
+  #include "FontManager.hxx"
 #endif
 #include "Version.hxx"
 #include "TIA.hxx"
@@ -104,11 +108,12 @@ OSystem::OSystem()
 OSystem::~OSystem()
 {
 #ifdef GUI_SUPPORT
-  // BrowserDialog is a special dialog that is statically allocated
-  // So we need to make sure that it is destroyed in the normal d'tor chain;
-  // not at the very end of program exit, when some objects it requires
-  // have already been destroyed
+  // BrowserDialog/MessageBox are special dialogs that are statically
+  // allocated.  So we need to make sure that they are destroyed in the
+  // normal d'tor chain; not at the very end of program exit, when some
+  // objects they require have already been destroyed
   BrowserDialog::hide();
+  GUI::MessageBox::hide();
 #endif
 }
 
@@ -127,17 +132,27 @@ bool OSystem::initialize(const Settings::Options& options)
     "State directory:    '{}'\n"
     "NVRam directory:    '{}'\n"
     "Persistence:        '{}'\n"
+#ifdef CHEATCODE_SUPPORT
     "Cheat file:         '{}'\n"
+#endif
     "Palette file:       '{}'\n",
     STELLA_VERSION,
     myFeatures,
     myBuildInfo,
-    AsciiFold::toAscii(myBaseDir.getShortPath()),
-    AsciiFold::toAscii(myStateDir.getShortPath()),
-    AsciiFold::toAscii(myNVRamDir.getShortPath()),
+    AsciiFold::toAscii(baseDir().getShortPath()),
+    AsciiFold::toAscii(stateDir().getShortPath()),
+    AsciiFold::toAscii(nvramDir().getShortPath()),
     AsciiFold::toAscii(describePersistence()),
-    AsciiFold::toAscii(myCheatFile.getShortPath()),
-    AsciiFold::toAscii(myPaletteFile.getShortPath())));
+#ifdef CHEATCODE_SUPPORT
+    AsciiFold::toAscii(cheatFile().getShortPath()),
+#endif
+    AsciiFold::toAscii(paletteFile().getShortPath())));
+
+#ifdef GUI_SUPPORT
+  // The fonts come first, since the framebuffer sizes itself from the
+  // dialog font.  Nothing here touches the video hardware
+  myFontManager = std::make_unique<FontManager>(settings());
+#endif
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
@@ -429,6 +444,40 @@ FBInitStatus OSystem::createFrameBuffer()
   return fbstatus;
 }
 
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::refreshFonts()
+{
+  // Re-resolve every role; the font objects are mutated in place, so nothing
+  // holding a font reference has to be told about the new descriptor
+  myFontManager->loadConfig(settings());
+
+  // ...but every dialog's CACHED font-derived state (widget metrics, layout)
+  // is now stale, and each container knows only about its own dialogs
+  myLauncher->refreshFont();
+  myOverlayMenu->refreshFont();
+  myTimeMachine->refreshFont();
+#ifdef DEBUGGER_SUPPORT
+  // Only exists once a console has been created
+  if(myDebugger)
+    myDebugger->refreshFont();
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::relayoutDialogs()
+{
+  myLauncher->relayout();
+  myOverlayMenu->relayout();
+  myTimeMachine->relayout();
+#ifdef DEBUGGER_SUPPORT
+  // Only exists once a console has been created
+  if(myDebugger)
+    myDebugger->relayout();
+#endif
+}
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createSound()
 {
@@ -470,8 +519,18 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   myEventHandler->handleConsoleStartupEvents();
   try
   {
-    closeConsole();
-    myConsole = openConsole(myRomFile, myRomMD5);
+    // Build and validate the replacement console before tearing down
+    // whatever is currently running: openConsole() doesn't touch myConsole
+    // and can fail either by throwing or (e.g. an unreadable ROM file, no
+    // cart created) by returning null, so a bad ROM load -- dropped onto an
+    // active game, say -- leaves the current session untouched either way
+    // instead of destroying it for nothing
+    auto newConsole = openConsole(myRomFile, myRomMD5);
+    if(newConsole)
+    {
+      closeConsole();
+      myConsole = std::move(newConsole);
+    }
   }
   catch(const std::runtime_error& e)
   {
@@ -556,12 +615,21 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
     {
       if(settings().getString("plusroms.fixedid").empty())
       {
-        // Make sure there always is an id
+        // Make sure there always is an id. This identifies the installation
+        // to PlusROM backends, so it needs real entropy across its full
+        // length: seed mt19937's entire state from random_device, rather
+        // than from a single value, so the ID isn't bottlenecked on a
+        // 32-bit seed.
         constexpr string_view HEX_DIGITS{"0123456789ABCDEF"};
         std::array<char, 32> id_chr{};
-        const Random rnd;
+        std::random_device rd;
+        std::array<std::random_device::result_type, std::mt19937::state_size> seedData{};
+        std::ranges::generate(seedData, std::ref(rd));
+        std::seed_seq seedSeq(seedData.begin(), seedData.end());
+        std::mt19937 gen(seedSeq);
+        std::uniform_int_distribution<int> dist(0, 15);
         std::ranges::generate(id_chr,
-          [&]{ return HEX_DIGITS[rnd.next() % 16]; });
+          [&]{ return HEX_DIGITS[dist(gen)]; });
 
         settings().setValue("plusroms.fixedid",
                             string_view{id_chr.data(), id_chr.size()});
@@ -569,13 +637,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
         myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
       }
 
-      string id = settings().getString("plusroms.id");
-
-      if(id.empty())
-        id = settings().getString("plusroms.fixedid");
-
-      Logger::info(std::format("PlusROM Nick: {}, ID: {}",
-        settings().getString("plusroms.nick"), id));
+      // The Device-ID is a long-lived identifier a PlusROM backend uses to
+      // recognize this installation; it isn't logged in full so it can't
+      // leak through a shared log file. The full ID is always visible to
+      // the user themselves via the PlusROM setup dialog.
+      Logger::info(std::format("PlusROM Nick: {}, ID: <redacted>",
+        settings().getString("plusroms.nick")));
     }
   }
 
@@ -787,6 +854,14 @@ void OSystem::closeConsole()
   #ifdef CHEATCODE_SUPPORT
     // If a previous console existed, save cheats before creating a new one
     myCheatManager->saveCheats(myConsole->properties().get(PropType::Cart_MD5));
+  #endif
+  #ifdef DEBUGGER_SUPPORT
+    // The debugger lives on without a console (the launcher keeps it until the
+    // next ROM replaces it), so let it drop what points into this one.  The
+    // object itself must NOT be destroyed here: we can be reached from its own
+    // call stack, and freeing it would pull the ground out from under callers
+    if(myDebugger)
+      myDebugger->detach();
   #endif
     myConsole.reset();
   }
@@ -1017,6 +1092,12 @@ void OSystem::mainLoop()
       // Render the GUI with 60 Hz in all other modes
       timesliceSeconds = 1. / 60.;
       myFrameBuffer->update();
+    #ifdef DEBUGGER_SUPPORT
+      // While in the debugger, also drive its companion TIA window (if open).
+      // It renders into its own window via a scoped active-FrameBuffer swap.
+      if(myEventHandler->state() == EventHandlerState::DEBUGGER && myDebugger)
+        myDebugger->renderTiaWindow();
+    #endif
     }
 
     const duration<double> timeslice(timesliceSeconds);

@@ -235,7 +235,7 @@ class SoundLIBRETRO : public Sound
         const uInt32 frameSize = myChannels * (myBitsPerSample / 8);
         const double step = static_cast<double>(mySampleRate) / outputRate;
 
-        for(auto i = 0uz; i < numSamples && myPos < myEnd; ++i)
+        for(auto i = 0UZ; i < numSamples && myPos < myEnd; ++i)
         {
           const Int16 wavL = sample(myPos);
           const Int16 wavR = (myChannels > 1) ? sample(myPos + myBitsPerSample / 8) : wavL;

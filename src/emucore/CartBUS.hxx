@@ -172,12 +172,10 @@ class CartridgeBUS : public CartridgeARM
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y,
-                                 int w, int h) override;
+                                 const GUI::Font& nfont) override;
 
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
-                                const GUI::Font& nfont, int x, int y,
-                                int w, int h) override;
+                                const GUI::Font& nfont) override;
   #endif
 
   public:
@@ -236,6 +234,7 @@ class CartridgeBUS : public CartridgeARM
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
+    uInt8 waveformSample(uInt8 index) const;
     void setupVersion();
     uInt32 scanBUSDriver(uInt32 value);
 

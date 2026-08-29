@@ -18,8 +18,10 @@ MODULE_OBJS := \
         src/gui/FavoritesManager.o \
         src/gui/FileListWidget.o \
         src/gui/Font.o \
+        src/gui/FontManager.o \
         src/gui/GameInfoDialog.o \
         src/gui/GlobalPropsDialog.o \
+        src/gui/GuiObject.o \
         src/gui/HelpDialog.o \
         src/gui/HighScoresDialog.o \
         src/gui/InputDialog.o \
@@ -28,11 +30,10 @@ MODULE_OBJS := \
         src/gui/LauncherDialog.o \
         src/gui/LauncherFileListWidget.o \
         src/gui/Launcher.o \
+        src/gui/Layout.o \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
         src/gui/MessageBox.o \
-        src/gui/MessageDialog.o \
-        src/gui/MinUICommandDialog.o \
         src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
         src/gui/OverlayMenu.o \
@@ -48,6 +49,7 @@ MODULE_OBJS := \
         src/gui/SnapshotDialog.o \
         src/gui/StellaSettingsDialog.o \
         src/gui/StringListWidget.o \
+        src/gui/TabPaneWidget.o \
         src/gui/TabWidget.o \
         src/gui/TimeLineWidget.o \
         src/gui/TimeMachineDialog.o \
@@ -57,7 +59,8 @@ MODULE_OBJS := \
         src/gui/UIDialog.o \
         src/gui/VideoAudioDialog.o \
         src/gui/WhatsNewDialog.o \
-        src/gui/Widget.o
+        src/gui/Widget.o \
+        src/gui/WrappedTextWidget.o
 
 MODULE_TEST_OBJS =
 

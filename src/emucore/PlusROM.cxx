@@ -380,8 +380,8 @@ bool PlusROM::isValidHost(string_view host)
     return false;
 
   // Each dot-separated label must be 1..63 characters (RFC 1035)
-  auto start = 0uz;
-  for(auto i = 0uz; i <= host.size(); ++i)
+  auto start = 0UZ;
+  for(auto i = 0UZ; i <= host.size(); ++i)
   {
     if(i == host.size() || host[i] == '.')
     {

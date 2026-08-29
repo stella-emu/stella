@@ -1443,7 +1443,7 @@ void DebuggerParser::executeDump()
     string dumpOut{out.view()};
     string dumpResult{commandResult.view()};
 
-    DebuggerDialog* dlg = debugger.myDialog;
+    DebuggerDialog* dlg = debugger.myDialog.get();
     BrowserDialog::show(dlg, "Save Dump as", path,
                         BrowserDialog::Mode::FileSave,
                         [dlg, outStr = std::move(dumpOut),
@@ -1552,7 +1552,7 @@ void DebuggerParser::executeHelp()
   if(argCount == 0)  // normal help, show all commands
   {
     static const size_t clen = []() {
-      auto len = 0uz;
+      auto len = 0UZ;
       for(const auto& c: commands)
         len = std::max(len, c.cmdString.length());
       return len;
@@ -1865,9 +1865,9 @@ void DebuggerParser::executeLoadState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogBreaks()
 {
-  const bool enable = !debugger.mySystem.m6502().getLogBreaks();
+  const bool enable = !debugger.mySystem->m6502().getLogBreaks();
 
-  debugger.mySystem.m6502().setLogBreaks(enable);
+  debugger.mySystem->m6502().setLogBreaks(enable);
   settings.setValue("dbg.logbreaks", enable);
   commandResult << "logBreaks " << (enable ? "enabled" : "disabled");
 }
@@ -1884,9 +1884,9 @@ void DebuggerParser::executeLogExec()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogTrace()
 {
-  const bool enable = !debugger.mySystem.m6502().getLogTrace();
+  const bool enable = !debugger.mySystem->m6502().getLogTrace();
 
-  debugger.mySystem.m6502().setLogTrace(enable);
+  debugger.mySystem->m6502().setLogTrace(enable);
   settings.setValue("dbg.logtrace", enable);
   commandResult << "logTrace " << (enable ? "enabled" : "disabled");
 }
@@ -2048,7 +2048,7 @@ void DebuggerParser::executeRunTo()
   progress.setRange(0, static_cast<int>(max_iterations), 5);
   progress.open();
 
-  auto count = 0uz;
+  auto count = 0UZ;
   bool done = false;
   do {
     debugger.step(false);
@@ -2126,7 +2126,7 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  auto* dlg = debugger.myDialog;
+  auto* dlg = debugger.myDialog.get();
   const string fileName = std::format("{}{}.script", dlg->instance().userDir().getPath(), cartName());
 
   if(argCount && argStrings[0] == "?")
@@ -2153,7 +2153,7 @@ void DebuggerParser::executeSaveAccess()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = debugger.myDialog;
+    DebuggerDialog* dlg = debugger.myDialog.get();
 
     BrowserDialog::show(dlg, "Save Access Counters as",
                         std::format("{}{}.csv", dlg->instance().userDir().getPath(), cartName()),
@@ -2185,7 +2185,7 @@ void DebuggerParser::executeSaveDisassembly()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = debugger.myDialog;
+    DebuggerDialog* dlg = debugger.myDialog.get();
 
     BrowserDialog::show(dlg, "Save Disassembly as",
                         std::format("{}{}.asm", dlg->instance().userDir().getPath(), cartName()),
@@ -2209,7 +2209,7 @@ void DebuggerParser::executeSaveRom()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = debugger.myDialog;
+    DebuggerDialog* dlg = debugger.myDialog.get();
 
     BrowserDialog::show(dlg, "Save ROM as",
                         std::format("{}{}.a26", dlg->instance().userDir().getPath(), cartName()),
@@ -2237,7 +2237,7 @@ void DebuggerParser::executeSaveSes()
 
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = debugger.myDialog;
+    DebuggerDialog* dlg = debugger.myDialog.get();
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename,
                         BrowserDialog::Mode::FileSave,

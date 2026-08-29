@@ -29,30 +29,24 @@
 #include "Dialog.hxx"
 #include "ToolTip.hxx"
 #include "ContextMenu.hxx"
-#include "FrameManager.hxx"
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
-  : Widget(boss, font, x, y, 16, 16),
+TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font),
     CommandSender(boss)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |
-           Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG |
+           Widget::Flag::RetainFocus | Widget::Flag::TrackMouse;
   _bgcolor = _bgcolorhi = kDlgColor;
-
-  // Use all available space, up to the maximum bounds of the TIA image
-  _w = std::min(w, 320);
-  _h = std::min(h, static_cast<int>(FrameManager::Metrics::maxHeight));
 
   addFocusWidget(this);
 
-  // Initialize positions
-  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  myNumCols = (_w - 4) / myZoomLevel;  // must initialize after _w
-  myNumRows = (_h - 4) / myZoomLevel;  // must initialize after _h
-  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+  // A zoom view has no size of its own -- setArea() gives it the real one and
+  // redoes this.  Until then the grid still has to be counted from something,
+  // so use a placeholder area big enough to yield a sane row and column count
+  constexpr int PLACEHOLDER_AREA = 16;
+  recomputeGrid(PLACEHOLDER_AREA, PLACEHOLDER_AREA);
 
   // Create context menu for zoom levels
   VariantList l;
@@ -83,6 +77,29 @@ void TiaZoomWidget::setPos(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaZoomWidget::setArea(int x, int y, int w, int h)
+{
+  // Our setPos(int,int) override is hijacked to re-centre the zoom on a TIA
+  // pixel, so move the widget itself via the geometry setPos explicitly
+  Widget::setPos(Common::Point(x, y));
+  recomputeGrid(w, h);
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaZoomWidget::recomputeGrid(int w, int h)
+{
+  // Use all the space available; the zoom view need not preserve the TIA aspect
+  // ratio, and once the view outgrows the image drawWidget() simply stops at the
+  // image's edge, leaving the rest of the view blank
+  _w = w;
+  _h = h;
+
+  myNumCols = (_w - 4) / myZoomLevel;
+  myNumRows = (_h - 4) / myZoomLevel;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::zoom(int level)
 {
   if(myZoomLevel == level)
@@ -107,9 +124,11 @@ void TiaZoomWidget::recalc()
   const int tw = instance().console().tia().width(),
             th = instance().console().tia().height();
 
-  // Don't go past end of framebuffer
-  myOffX = BSPF::clamp(myOffX, 0, (tw << 1) - myNumCols);
-  myOffY = BSPF::clamp(myOffY, 0, th - myNumRows);
+  // Don't go past end of framebuffer.  When the viewport is larger than the
+  // image (e.g. the companion TIA window at low zoom), the available range can
+  // go negative, so pin the upper bound at 0 to keep the offset at top-left.
+  myOffX = BSPF::clamp(myOffX, 0, std::max(0, (tw << 1) - myNumCols));
+  myOffY = BSPF::clamp(myOffY, 0, std::max(0, th - myNumRows));
 
   setDirty();
 }
@@ -242,9 +261,10 @@ bool TiaZoomWidget::handleEvent(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaZoomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
-  if(cmd == ContextMenu::kItemSelectedCmd)
+  if(cmd == ContextMenu::Cmd::ItemSelected)
   {
     const uInt32 startLine = instance().console().tia().startLine();
     const string& rmb = myMenu->getSelectedTag().toString();
@@ -281,7 +301,9 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
 {
-  const Int32 width = instance().console().tia().width() * 2;
+  // A native TIA pixel is drawn 'myZoomLevel << 1' wide and myOffX counts
+  // doubled pixels, so 'col' is a native column, as getToolTip() indexes with
+  const Int32 width = instance().console().tia().width();
   const Int32 height = instance().console().tia().height();
   const int col = (pos.x - 1 - getAbsX()) / (myZoomLevel << 1) + (myOffX >> 1);
   const int row = (pos.y - 1 - getAbsY()) / myZoomLevel + myOffY;
@@ -331,6 +353,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // and I don't have time to make it faster :)
   const uInt8* currentFrame  = instance().console().tia().outputBuffer();
   const int width = instance().console().tia().width(),
+            height = instance().console().tia().height(),
             wzoom = myZoomLevel << 1,
             hzoom = myZoomLevel;
 
@@ -340,9 +363,14 @@ void TiaZoomWidget::drawWidget(bool hilite)
   instance().console().tia().electronBeamPos(scanx, scany);
   const uInt32 scanoffset = width * scany + scanx;
 
-  for(int y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
+  // The view may be larger than the image, in which case it shows all of it and
+  // leaves the rest blank; never read beyond the frame buffer
+  const int xEnd = std::min((myNumCols + myOffX) >> 1, width),
+            yEnd = std::min(myNumRows + myOffY, height);
+
+  for(int y = myOffY, row = 0; y < yEnd; ++y, row += hzoom)
   {
-    for(int x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
+    for(int x = myOffX >> 1, col = 0; x < xEnd; ++x, col += wzoom)
     {
       const uInt32 idx = std::max(y * width + x, 0);
       const auto color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1 : 0));

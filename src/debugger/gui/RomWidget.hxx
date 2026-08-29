@@ -29,14 +29,15 @@ class RomListWidget;
 class RomWidget : public Widget, public CommandSender
 {
   public:
-    // This enum needs to be seen outside the class
-    enum {
-      kInvalidateListing  = 'INli'
+    // These commands need to be seen outside the class
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        InvalidateListing = GuiCmd::of("RomWidget.InvalidateListing");
     };
 
   public:
     RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y, int w, int h);
+              const GUI::Font& dfont);
     ~RomWidget() override = default;
 
     void loadConfig() override;
@@ -46,10 +47,20 @@ class RomWidget : public Widget, public CommandSender
 
     void scrollTo(int line);
 
+    void setArea(int x, int y, int w, int h) override;
+
+    // I fill whatever area I am given, so I have no height of my own to
+    // constrain the window with (see the note in TabWidget::naturalSize)
+    Common::Size naturalSize() const override { return {}; }
+
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
+    // Position the bank display and the disassembly listing within the area
+    // this widget occupies; shared by the ctor and setArea()
+    void reflow();
+
     void toggleBreak(int disasm_line);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
@@ -59,8 +70,9 @@ class RomWidget : public Widget, public CommandSender
     uInt16 getAddress(int disasm_line);
 
   private:
-    RomListWidget*  myRomList{nullptr};
-    EditTextWidget* myBank{nullptr};
+    RomListWidget*   myRomList{nullptr};
+    EditTextWidget*  myBank{nullptr};
+    LabelWidget* myInfoLbl{nullptr};
 
     bool myListIsDirty{true};
 

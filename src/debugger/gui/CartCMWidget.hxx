@@ -32,7 +32,6 @@ class CartridgeCMWidget : public CartDebugWidget
   public:
     CartridgeCMWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       CartridgeCM& cart);
     ~CartridgeCMWidget() override = default;
 
@@ -52,7 +51,8 @@ class CartridgeCMWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     struct CartState {
@@ -63,8 +63,10 @@ class CartridgeCMWidget : public CartDebugWidget
     };
 
     CartridgeCM& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
 
+    LabelWidget *mySWCHALbl{nullptr}, *myColumnLbl{nullptr}, *myRAMLbl{nullptr};
     ToggleBitWidget* mySWCHA{nullptr};
     DataGridWidget* myColumn{nullptr};
     CheckboxWidget *myAudIn{nullptr}, *myAudOut{nullptr},
@@ -75,7 +77,10 @@ class CartridgeCMWidget : public CartDebugWidget
 
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeCMWidget.BankChanged");
+    };
 
   private:
     // Following constructors and assignment operators not supported

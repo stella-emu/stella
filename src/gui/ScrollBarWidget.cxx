@@ -20,21 +20,17 @@
 #include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
 
-/*
- * TODO:
- * - Allow for a horizontal scrollbar, too?
- * - If there are less items than fit on one pages, no scrolling can be done
- *   and we thus should not highlight the arrows/slider.
- */
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
+  : Widget(boss, font),
     CommandSender(boss),
     _scrollBarWidth{scrollBarWidth(font)}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
+  // My width is my own business -- it follows the font.  My position and height
+  // are the list's, which sets them whenever it moves or resizes
+  _w = _scrollBarWidth;
+
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
 
@@ -44,67 +40,27 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::setArrows()
 {
-  // Small up arrow
-  static constexpr std::array<uInt32, 6> up_arrow = {
-    0b0001000,
-    0b0011100,
-    0b0111110,
-    0b1110111,
-    0b1100011,
-    0b1000001,
-  };
-  // Small down arrow
-  static constexpr std::array<uInt32, 6> down_arrow = {
-    0b1000001,
-    0b1100011,
-    0b1110111,
-    0b0111110,
-    0b0011100,
-    0b0001000
-  };
+  // The arrow is sized from the font, and everything around it follows from
+  // the arrow -- so the scroll bar scales instead of stepping at one font size.
+  // At the default 9x18 this reproduces the old 7x6 arrow in an 18px box
+  _arrowWidth = arrowWidth(_font);
+  _arrowHeight = _arrowWidth - 1;
+  _arrowThickness = (_arrowWidth / 3) + 1;
+  _upDownBoxHeight = _arrowHeight * 3;
+}
 
-  // Large up arrow
-  static constexpr std::array<uInt32, 9> up_arrow_large = {
-    0b00000100000,
-    0b00001110000,
-    0b00011111000,
-    0b00111111100,
-    0b01111011110,
-    0b11110001111,
-    0b11100000111,
-    0b11000000011,
-    0b10000000001,
-  };
-  // Large down arrow
-  static constexpr std::array<uInt32, 9> down_arrow_large = {
-    0b10000000001,
-    0b11000000011,
-    0b11100000111,
-    0b11110001111,
-    0b01111011110,
-    0b00111111100,
-    0b00011111000,
-    0b00001110000,
-    0b00000100000
-  };
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ScrollBarWidget::refreshFont()
+{
+  Widget::refreshFont();
 
-
-  if(_font.getFontHeight() < 24)
-  {
-    _upDownWidth = 7;
-    _upDownHeight = 6;
-    _upDownBoxHeight = 18;
-    _upImg = up_arrow.data();
-    _downImg = down_arrow.data();
-  }
-  else
-  {
-    _upDownWidth = 11;
-    _upDownHeight = 9;
-    _upDownBoxHeight = 27;
-    _upImg = up_arrow_large.data();
-    _downImg = down_arrow_large.data();
-  }
+  // All of these are font-dependent, so recompute them for the new font.  The
+  // bar width is intrinsic to the scrollbar (the list positions and sets our
+  // height, but the width follows the font)
+  _scrollBarWidth = scrollBarWidth(_font);
+  setArrows();
+  Widget::setWidth(_scrollBarWidth);
+  recalc();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +187,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
   {
     recalc();
     setDirty();
-    sendCommand(GuiObject::kSetPositionCmd, _currentPos, _id);
+    sendCommand(GuiObject::Cmd::SetPosition, _currentPos, _id);
   }
 }
 
@@ -282,20 +238,22 @@ void ScrollBarWidget::drawWidget(bool hilite)
   // Up arrow
   if(hilite && _part == Part::UpArrow)
     s.fillRect(_x + 1, _y + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
-  s.drawBitmap(_upImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
-               _y + (_upDownBoxHeight - _upDownHeight) / 2,
-               isSinglePage ? kColor
-                            : (hilite && _part == Part::UpArrow) ? kWidColor : kTextColor,
-               _upDownWidth, _upDownHeight);
+  s.drawArrow(_x + (_scrollBarWidth - _arrowWidth) / 2,
+              _y + (_upDownBoxHeight - _arrowHeight) / 2,
+              _arrowWidth, _arrowHeight, ArrowDirection::Up,
+              isSinglePage ? kColor
+                           : (hilite && _part == Part::UpArrow) ? kWidColor : kTextColor,
+              _arrowThickness);
 
   // Down arrow
   if(hilite && _part == Part::DownArrow)
     s.fillRect(_x + 1, bottomY - _upDownBoxHeight + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
-  s.drawBitmap(_downImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
-               bottomY - _upDownBoxHeight + (_upDownBoxHeight - _upDownHeight) / 2,
-               isSinglePage ? kColor
-                            : (hilite && _part == Part::DownArrow) ? kWidColor : kTextColor,
-               _upDownWidth, _upDownHeight);
+  s.drawArrow(_x + (_scrollBarWidth - _arrowWidth) / 2,
+              bottomY - _upDownBoxHeight + (_upDownBoxHeight - _arrowHeight) / 2,
+              _arrowWidth, _arrowHeight, ArrowDirection::Down,
+              isSinglePage ? kColor
+                           : (hilite && _part == Part::DownArrow) ? kWidColor : kTextColor,
+              _arrowThickness);
 
   // Slider
   if(!isSinglePage)

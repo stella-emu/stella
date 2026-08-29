@@ -20,76 +20,53 @@
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SnapshotDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
-                               const GUI::Font& font, int max_w, int max_h)
+                               const GUI::Font& font)
   : Dialog(osystem, parent, font, "Snapshot settings")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
   WidgetArray wid;
 
-  // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 10 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font, so the dialog reflows on font change.
 
-  int xpos = HBORDER, ypos = VBORDER + _th;
-
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Snapshot path (save files)
-  auto* b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                             "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + fontWidth;
-  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
-                                  _w - xpos - HBORDER, lineHeight, "");
+  mySnapSaveButton =
+    new ButtonWidget(this, font, "Save path" + ELLIPSIS, Cmd::ChooseSnapSaveDir);
+  wid.push_back(mySnapSaveButton);
+  mySnapSavePath = new EditTextWidget(this, font, 1);
   wid.push_back(mySnapSavePath);
 
-  // Snapshot naming
-  xpos = HBORDER;  ypos += buttonHeight + VGAP * 4;
-
   // Snapshot interval (continuous mode)
-  mySnapInterval = new SliderWidget(this, font, xpos, ypos,
-                                    "Continuous snapshot interval ", 0, kSnapshotInterval,
-                                    font.getStringWidth("10 seconds"));
+  mySnapIntervalLbl = new LabelWidget(this, font, "Continuous snapshot interval");
+  mySnapInterval = new SliderWidget(this, font, 0, Cmd::SnapshotInterval, 10);
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
   mySnapInterval->setTickmarkIntervals(3);
   wid.push_back(mySnapInterval);
 
-  // Booleans for saving snapshots
-  const int fwidth = font.getStringWidth("When saving snapshots:");
-  xpos = HBORDER;  ypos += lineHeight + VGAP * 3;
-  new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
-                       "When saving snapshots:", TextAlign::Left);
+  // Header for the boolean save options
+  myWhenLbl = new LabelWidget(this, font, "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
-  xpos += INDENT;  ypos += lineHeight + VGAP;
-  mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actual ROM name");
+  mySnapName = new CheckboxWidget(this, font, "Use actual ROM name");
   wid.push_back(mySnapName);
-  ypos += lineHeight + VGAP;
-
-  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos, "Overwrite existing files");
+  mySnapSingle = new CheckboxWidget(this, font, "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
-  ypos += lineHeight + VGAP;
-  mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
+  mySnap1x = new CheckboxWidget(this, font,
       "Create pixel-exact image (no zoom/post-processing)");
   wid.push_back(mySnap1x);
 
   // Automatically crop black borders
-  ypos += lineHeight + VGAP;
-  mySnapCrop = new CheckboxWidget(this, font, xpos, ypos,
-      "Crop black borders");
+  mySnapCrop = new CheckboxWidget(this, font, "Crop black borders");
   wid.push_back(mySnapCrop);
 
   // Add Defaults, OK and Cancel buttons
@@ -98,6 +75,70 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   setHelpAnchor("Snapshots");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SnapshotDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::anchoredItem;
+  using GUI::indentedItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+
+  // The slider's label stands on its own, so give it a label column of its own
+  GUI::alignLabels({{mySnapIntervalLbl}});
+
+  // Save-path row: a button plus an edit field that fills the remaining width.
+  // The row is the only one with several widgets, so it needs its own HBox; the
+  // outer VBox already supplies the HBORDER inset (hence marginH 0 here).  The
+  // edit field keeps its own (natural) height, vertically centered in the taller
+  // button row, and how much of a path it must show is this dialog's one width
+  // decision -- everything else is derived from it
+  auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  pathRow->addAuto(anchoredItem(mySnapSaveButton));
+  pathRow->addSpace(fontWidth);
+  pathRow->addStretch(stretchedItem(mySnapSavePath,
+                                    EditTextWidget::calcWidth(_font, 48)));
+
+  // Assemble the vertical stack; the button group sits below it, positioned
+  // separately by layoutButtonGroup().  The header/checkboxes keep their
+  // natural size, so all but the interval row are anchored.
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(pathRow));
+  root->addSpace(VGAP * 4);
+  root->addAuto(labeledRow(mySnapIntervalLbl, mySnapInterval));
+  root->addSpace(VGAP * 3);
+  root->addAuto(anchoredItem(myWhenLbl));
+  root->addSpace(VGAP);
+  root->addAuto(indentedItem(mySnapName, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(indentedItem(mySnapSingle, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(indentedItem(mySnap1x, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(indentedItem(mySnapCrop, INDENT));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,21 +180,21 @@ void SnapshotDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
+void SnapshotDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case kChooseSnapSaveDirCmd:
+    case Cmd::ChooseSnapSaveDir:
       BrowserDialog::show(this, _font, "Select Snapshot Save Directory",
                           mySnapSavePath->getText(),
                           BrowserDialog::Mode::Directories,
@@ -162,7 +203,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
                           });
       break;
 
-    case kSnapshotInterval:
+    case Cmd::SnapshotInterval:
       if(mySnapInterval->getValue() == 1)
         mySnapInterval->setValueUnit(" second");
       else

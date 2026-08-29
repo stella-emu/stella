@@ -24,9 +24,7 @@
 #include "OptionsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
 #include "CommandDialog.hxx"
-#include "MinUICommandDialog.hxx"
 #include "HighScoresDialog.hxx"
-#include "MessageDialog.hxx"
 #include "PlusRomsSetupDialog.hxx"
 #include "OverlayMenu.hxx"
 
@@ -40,9 +38,9 @@ OverlayMenu::OverlayMenu(OSystem& osystem)
 OverlayMenu::~OverlayMenu() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OverlayMenu::setDialog(Dialog* dialog)
+void OverlayMenu::setDialog(unique_ptr<Dialog> dialog)
 {
-  myTransientDialog.reset(dialog);
+  myTransientDialog = std::move(dialog);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,17 +52,14 @@ Dialog* OverlayMenu::baseDialog()
   {
     case EventHandlerState::OPTIONSMENU:
       return &cached(myOSystem.settings().getBool("basic_settings")
-                     ? Cached::StellaSettings : Cached::Options);
+        ? Cached::StellaSettings
+        : Cached::Options);
 
     case EventHandlerState::CMDMENU:
-      return &cached(myOSystem.settings().getBool("minimal_ui")
-                     ? Cached::MinUICommand : Cached::Command);
+      return &cached(Cached::Command);
 
     case EventHandlerState::HIGHSCORESMENU:
       return &cached(Cached::HighScores);
-
-    case EventHandlerState::MESSAGEMENU:
-      return &cached(Cached::Message);
 
     case EventHandlerState::PLUSROMSMENU:
       return &cached(Cached::PlusRoms);
@@ -90,25 +85,17 @@ Dialog* OverlayMenu::createDialog(Cached id)
   {
     case Cached::Options:
       return new OptionsDialog(myOSystem, *this, nullptr,
-        FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
+        Dialog::AppMode::emulator);
 
     case Cached::StellaSettings:
       return new StellaSettingsDialog(myOSystem, *this,
-        1280, 720, Dialog::AppMode::emulator);
+        Dialog::AppMode::emulator);
 
     case Cached::Command:
       return new CommandDialog(myOSystem, *this);
 
-    case Cached::MinUICommand:
-      return new MinUICommandDialog(myOSystem, *this);
-
     case Cached::HighScores:
-      return new HighScoresDialog(myOSystem, *this,
-        FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
-
-    case Cached::Message:
-      return new MessageDialog(myOSystem, *this,
-        myOSystem.frameBuffer().font(), FBMinimum::Width, FBMinimum::Height);
+      return new HighScoresDialog(myOSystem, *this, Dialog::AppMode::emulator);
 
     case Cached::PlusRoms:
       return new PlusRomsSetupDialog(myOSystem, *this,

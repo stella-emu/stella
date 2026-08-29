@@ -18,71 +18,104 @@
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "CartDebug.hxx"
-#include "StringParser.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
-#include "StringListWidget.hxx"
-#include "ScrollBarWidget.hxx"
+#include "WrappedTextWidget.hxx"
+#include "Layout.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartRamWidget::CartRamWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartDebugWidget& cartDebug)
-  : Widget(boss, lfont, x, y, w, h),
+      CartDebugWidget& cartDebug)
+  : Widget(boss, lfont),
     CommandSender(boss),
-    _nfont{nfont},
-    myFontWidth{lfont.getMaxCharWidth()},
-    myFontHeight{lfont.getFontHeight()},
-    myLineHeight{lfont.getLineHeight()},
-    myButtonHeight{myLineHeight + 4}
+    _nfont{nfont}
 {
-  const int lwidth = lfont.getStringWidth("Description "),
-            fwidth = w - lwidth - 20;
-
-  constexpr int xpos = 2;
-  int ypos = 8;
-
-  // Add RAM size
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
+  // Everything is created at a placeholder position; reflow() positions and
+  // sizes it, and the description re-wraps itself, whenever our area changes
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myRamSizeLbl = new LabelWidget(_boss, _font, "RAM size");
 
   const uInt32 ramsize = cartDebug.internalRamSize();
-  const string ramsizeStr = ramsize >= 1024
-    ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
-    : std::format("{} bytes", ramsize);
+  myRamSize = new EditTextWidget(boss, nfont, 1,
+    ramsize >= 1024
+      ? std::format("{} bytes / {}KB", ramsize, ramsize / 1024)
+      : std::format("{} bytes", ramsize));
+  myRamSize->setEditable(false);
 
-  auto* etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                 fwidth, myLineHeight, ramsizeStr);
-  etw->setEditable(false);
-  ypos += myLineHeight + 4;
-
-  // Add Description
-  const string& desc = cartDebug.internalRamDescription();
-  constexpr uInt16 maxlines = 6;
-  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
-  const StringList& sl = bs.stringList();
-
-  bool useScrollbar = false;
-  auto lines = std::max<uInt32>(static_cast<uInt32>(sl.size()), 2);
-  if(lines > maxlines)
-  {
-    lines = maxlines;
-    useScrollbar = true;
-  }
-
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
-  myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                fwidth, lines * myLineHeight, false, useScrollbar);
+  myDescLbl = new LabelWidget(_boss, _font, "Description");
+  myDesc = new WrappedTextWidget(boss, nfont,
+                                 cartDebug.internalRamDescription(), MAX_DESC_LINES);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
-  myDesc->setList(sl);
 
-  ypos += myDesc->getHeight() + myFontHeight / 2;
-
-  // Add RAM widget
-  myRam = new InternalRamWidget(boss, lfont, nfont, 2, ypos, w, h-ypos, cartDebug);
+  // The RAM view fills whatever is left below the fields
+  myRam = new InternalRamWidget(boss, lfont, nfont, cartDebug);
   addToFocusList(myRam->getFocusList());
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
+{
+  using GUI::BoxLayout;
+  using GUI::labeledRow;
+  using GUI::widgetItem;
+
+  // The two rows share one label column, as wide as the longer of their labels
+  GUI::alignLabels({{myRamSizeLbl}, {myDescLbl}});
+
+  const int contentW = CartDebugWidget::contentWidth(_w);
+
+  // Word wrap couples width to height: the description only knows how tall it is
+  // once it knows how wide it is, so it is given its width before the column is
+  // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
+  // filling row below will hand it -- the content, less the shared label column
+  myDesc->setWidth(contentW - myDescLbl->getWidth());
+
+  auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical,
+                CartDebugWidget::VGAP, 0, CartDebugWidget::VBORDER);
+
+  col->addAuto(labeledRow(myRamSizeLbl, myRamSize, 0, 0, true));
+
+  // The description scrolls, so it is squeezable: a stretching cell between the
+  // floor it always shows and the height of its own text, exactly as on the
+  // cart tab (see CartDebugWidget::layoutBaseInformation).  Only the floor is
+  // width-independent, which is what lets this column be measured before it has
+  // been sized.  The RAM view below is the last stretching cell, so it is what
+  // takes the slack the description's cap declines
+  auto descRow = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+  descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
+  descRow->addStretch(widgetItem(myDesc, 0, myDesc->minHeight()));
+  col->add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
+           static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
+
+  col->addSpace(_fontHeight / 2);
+  col->addStretch(widgetItem(myRam));
+
+  return col;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartRamWidget::reflow()
+{
+  buildLayout()->doLayout(_x + CartDebugWidget::HBORDER, _y,
+                          CartDebugWidget::contentWidth(_w), _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size CartRamWidget::naturalSize() const
+{
+  // The tree is laid out in the CONTENT rect, so what it comes to is my size
+  // less the horizontal margins reflow() insets it by
+  const Common::Size content = buildLayout()->naturalSize();
+
+  return Common::Size(content.w + CartDebugWidget::HBORDER
+                                + CartDebugWidget::RBORDER, content.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,7 +131,15 @@ void CartRamWidget::setOpsWidget(DataGridOpsWidget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartRamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void CartRamWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartRamWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
   myRam->handleCommand(sender, cmd, data, id);
 }
@@ -110,9 +151,8 @@ void CartRamWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartRamWidget::InternalRamWidget::InternalRamWidget(GuiObject* boss,
         const GUI::Font& lfont, const GUI::Font& nfont,
-        int x, int y, int w, int h,
         CartDebugWidget& dbg)
-  : RamWidget(boss, lfont, nfont, x, y, w, h,
+  : RamWidget(boss, lfont, nfont,
       dbg.internalRamSize(), std::min(dbg.internalRamSize() / 16, 16U),
       std::min(dbg.internalRamSize() / 16, 16U) * 16, "CartridgeRAMInformation"),
     myCart(dbg)

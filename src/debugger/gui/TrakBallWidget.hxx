@@ -25,9 +25,9 @@ class Controller;
 class TrakBallWidget : public PointingDeviceWidget
 {
   public:
-    TrakBallWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    TrakBallWidget(GuiObject* boss, const GUI::Font& font,
                    Controller& controller)
-      : PointingDeviceWidget(boss, font, x, y, controller) { }
+      : PointingDeviceWidget(boss, font, controller) { }
 
     ~TrakBallWidget() override = default;
 

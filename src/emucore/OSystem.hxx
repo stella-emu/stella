@@ -37,6 +37,7 @@ class AudioSettings;
   class Debugger;
 #endif
 #ifdef GUI_SUPPORT
+  class FontManager;
   class Launcher;
   class OverlayMenu;
   class TimeMachine;
@@ -155,6 +156,34 @@ class OSystem
       @return The highscore manager object
     */
     HighScoresManager& highScores() const { return *myHighScoresManager; }
+
+    /**
+      Get the font manager of the system, which owns every UI font.
+
+      @return The font manager object
+    */
+    FontManager& fonts() const { return *myFontManager; }
+
+    /**
+      Re-resolve every UI font role from the current settings, then re-font
+      every dialog in the application.
+
+      A font role is global, so it is not enough to refresh whichever
+      container the change was made from: the dialogs another container is
+      holding on to (the menus cached over emulation, for instance) would
+      keep the old font's metrics and draw the new glyphs at the old
+      spacing.  Only this class owns both the fonts and every container, so
+      this is the one place that can reach all of them.
+    */
+    void refreshFonts();
+
+    /**
+      Re-flow the open dialogs of every container.  Like the fonts above, the
+      HiDPI scale factor is global: a dialog scales its surface at layout
+      time, so all of them go stale together when the factor changes, and
+      only this class can reach every container.
+    */
+    void relayoutDialogs();
   #endif
 
     /**
@@ -568,6 +597,10 @@ class OSystem
   #ifdef GUI_SUPPORT
     // Pointer to the HighScoresManager object
     unique_ptr<HighScoresManager> myHighScoresManager;
+
+    // Pointer to the FontManager object, which owns every UI font.  It is
+    // created before the FrameBuffer, which asks it for the dialog font
+    unique_ptr<FontManager> myFontManager;
   #endif
 
     // Indicates whether ROM launcher was ever opened during this run

@@ -17,14 +17,14 @@
 
 #include "CartE7.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartE7Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7Widget::CartridgeE7Widget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-    int x, int y, int w, int h,
     CartridgeE7& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   const string info = std::format(
@@ -57,8 +57,7 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
 {
   const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
-  constexpr int xpos = 2;
-  int ypos = addBaseInformation(size, "M Network", info, 15) + myLineHeight;
+  createBaseInformation(size, "M Network", info, 15);
 
   VariantList items0, items1;
   for(int i = 0; std::cmp_less(i, cart.romBankCount()); ++i)
@@ -66,20 +65,32 @@ void CartridgeE7Widget::initialize(GuiObject* boss,
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));
 
-  const int lwidth = _font.getStringWidth("Set bank for upper 256B segment "),
-    fwidth = _font.getStringWidth("#3 - RAM ($FFEB)");
-  myLower2K =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, myLineHeight, items0,
-                    "Set bank for lower 2K segment", lwidth, kLowerChanged);
+  myLower2KLbl = new LabelWidget(boss, _font, "Set bank for lower 2K segment");
+  myLower2K = new PopUpWidget(boss, _font, items0, Cmd::LowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
-  ypos += myLower2K->getHeight() + 4;
 
-  myUpper256B =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, fwidth, myLineHeight, items1,
-                    "Set bank for upper 256B segment ", lwidth, kUpperChanged);
+  myUpper256BLbl = new LabelWidget(boss, _font, "Set bank for upper 256B segment");
+  myUpper256B = new PopUpWidget(boss, _font, items1, Cmd::UpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeE7Widget::layoutContent(GUI::BoxLayout& col) const
+{
+  using GUI::labeledRow;
+
+  // The two selectors are a column of their own: their labels are far longer than
+  // the ROM info's, so they get their own label column -- and one box width, so
+  // their boxes end level despite listing different things
+  GUI::alignLabels({{myLower2KLbl}, {myUpper256BLbl}});
+  GUI::alignPopUps({myLower2K, myUpper256B});
+
+  col.addAuto(labeledRow(myLower2KLbl, myLower2K));
+  col.addAuto(labeledRow(myUpper256BLbl, myUpper256B));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,17 +114,17 @@ void CartridgeE7Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7Widget::handleCommand(CommandSender* sender,
-                                            int cmd, int data, int id)
+void CartridgeE7Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                      int data, int id)
 {
   myCart.unlockHotspots();
 
   switch(cmd)
   {
-    case kLowerChanged:
+    case Cmd::LowerChanged:
       myCart.bank(myLower2K->getSelected());
       break;
-    case kUpperChanged:
+    case Cmd::UpperChanged:
       myCart.bankRAM(myUpper256B->getSelected());
       break;
     default:

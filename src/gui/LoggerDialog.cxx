@@ -27,6 +27,7 @@
 #include "BrowserDialog.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "Logger.hxx"
 #include "LoggerDialog.hxx"
@@ -37,54 +38,85 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            bool uselargefont)
   : Dialog(osystem, parent, font, "System logs")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Save log to disk" + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
-  // Set real dimensions
   // This is one dialog that can take as much space as is available
   setSize(4000, 4000, max_w, max_h);
 
-  // Test listing of the log output
-  int xpos = HBORDER, ypos = VBORDER + _th;
+  // Widgets are only created here (at placeholder geometry); layout() assigns
+  // all geometry from the current font and dialog size.
+
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // Scrollable listing of the log output
   myLogInfo = new StringListWidget(this, uselargefont ? font :
-                  instance().frameBuffer().infoFont(), xpos, ypos, _w - 2 * xpos,
-                  _h - buttonHeight - ypos - VBORDER - lineHeight - VGAP * 4, false);
+                  instance().frameBuffer().infoFont(), false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
-  ypos += myLogInfo->getHeight() + VGAP * 2;
 
   // Level of logging (how much info to print)
   VariantList items;
   VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
   VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
   VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
-  myLogLevel =
-    new PopUpWidget(this, font, xpos, ypos, font.getStringWidth("Verbose"),
-                    lineHeight, items, "Log level ",
-                    font.getStringWidth("Log level "));
+  myLogLevelLbl = new LabelWidget(this, font, "Log level");
+  myLogLevel = new PopUpWidget(this, font, items);
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
-  xpos += myLogLevel->getWidth() + fontWidth * 4;
-  myLogToConsole = new CheckboxWidget(this, font, xpos, ypos + 1, "Print to console");
+  myLogToConsole = new CheckboxWidget(this, font, "Print to console");
   wid.push_back(myLogToConsole);
 
-  // Add Save, OK and Cancel buttons
-  auto* b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-      buttonWidth, buttonHeight, "Save log to disk" + ELLIPSIS,
-      GuiObject::kDefaultsCmd);
-  wid.push_back(b);
+  // 'Save log to disk' occupies the left (Defaults) slot of the button group,
+  // with OK/Cancel on the right
+  addDefaultWidget(new ButtonWidget(this, font,
+                   "Save log to disk" + ELLIPSIS, GuiObject::Cmd::Defaults));
+  wid.push_back(_defaultWidget);
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 
   setHelpAnchor("Logs");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LoggerDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  GUI::alignLabels({{myLogLevelLbl}});
+
+  // Bottom controls: the log-level popup and a checkbox to its right
+  auto controlRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
+  controlRow->addAuto(labeledRow(myLogLevelLbl, myLogLevel));
+  controlRow->addSpace(fontWidth * 4);
+  controlRow->addAuto(anchoredItem(myLogToConsole));
+
+  // Vertical stack: the log listing fills the available space, then the control
+  // row, then a reserved slot for the button group (positioned separately by
+  // layoutButtonGroup()).  This dialog takes all the space it is given, so its
+  // size is not derived from the content.
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addStretch(widgetItem(myLogInfo));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(controlRow));
+  root->addSpace(VGAP * 2);
+  root->addSpace(buttonHeight);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // 'Save log to disk' (left) + OK/Cancel (right), along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,17 +159,17 @@ void LoggerDialog::saveLogFile(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
+void LoggerDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       BrowserDialog::show(this, _font, "Save Log as",
                           instance().userDir().getPath() + "stella.log",
                           BrowserDialog::Mode::FileSave,

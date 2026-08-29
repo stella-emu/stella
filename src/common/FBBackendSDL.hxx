@@ -165,6 +165,38 @@ class FBBackendSDL : public FBBackend
                       uInt32 winIdx, const Common::Point& winPos) override;
 
     /**
+      Make the window user-resizable (or not).
+    */
+    void setWindowResizable(bool resizable) override;
+
+    /**
+      Set the window's minimum size (in pixels).
+    */
+    void setWindowMinSize(const Common::Size& minSize) override;
+
+    /**
+      Resize the window in place (in pixels).
+    */
+    void resizeWindow(const Common::Size& size) override;
+
+    /**
+      Refresh cached window/renderer dimensions after an external resize.
+    */
+    void refreshDimensions() override;
+    void beginLiveResize() override;
+    void endLiveResize() override;
+
+    /**
+      The SDL window ID of this backend's window, or 0 if none.
+    */
+    uInt32 windowId() const override;
+
+    /**
+      Show or hide the window without destroying it.
+    */
+    void setWindowVisible(bool visible) override;
+
+    /**
       This method is called to create a surface with the given attributes.
 
       @param w      The requested width of the new surface.
@@ -288,6 +320,11 @@ class FBBackendSDL : public FBBackend
     */
     void setWindowIcon();
 
+    /**
+      Whether vsync is wanted for the current settings.
+    */
+    bool vsyncWanted() const;
+
   private:
     OSystem& myOSystem;
 
@@ -313,6 +350,9 @@ class FBBackendSDL : public FBBackend
 
     // Does the renderer support render targets?
     bool myRenderTargetSupport{false};
+
+    // Vsync dropped for the duration of an interactive resize
+    bool myVSyncSuspended{false};
 
     // Title of the main window/screen
     string myScreenTitle;

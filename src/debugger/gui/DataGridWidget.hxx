@@ -32,16 +32,17 @@ class DataGridWidget : public EditableWidget
 {
   public:
     // Commands emitted by this commandsender
-    enum {
-      kItemDoubleClickedCmd = 'DGdb',
-      kItemActivatedCmd     = 'DGac',
-      kItemDataChangedCmd   = 'DGch',
-      kSelectionChangedCmd  = 'DGsc'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        ItemDoubleClicked = GuiCmd::of("DataGridWidget.ItemDoubleClicked"),
+        ItemActivated     = GuiCmd::of("DataGridWidget.ItemActivated"),
+        ItemDataChanged   = GuiCmd::of("DataGridWidget.ItemDataChanged"),
+        SelectionChanged  = GuiCmd::of("DataGridWidget.SelectionChanged");
     };
 
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int cols, int rows,
+                   int cols, int rows,
                    int colchars, int bits,
                    Common::Base::Fmt base = Common::Base::Fmt::DEFAULT,
                    bool useScrollbar = false);
@@ -78,7 +79,35 @@ class DataGridWidget : public EditableWidget
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
 
+    /**
+      My size is intrinsic -- exactly what my rows and columns need for the
+      current font -- and my footprint includes the scrollbar, if I have one.
+      getWidth() has always said so, and naturalSize() must agree with it: a
+      layout that sized a cell to the grid alone would put whatever follows on
+      top of the scrollbar.  Since that reported width is what a layout then
+      hands back via setArea(), setWidth() keeps the grid's own width intact.
+    */
+    Common::Size naturalSize() const override {
+      return Common::Size(std::max(getWidth(), 0), std::max(getHeight(), 0));
+    }
+    void setWidth(int) override { }
+
+    // The scrollbar (when present) is a sibling widget, and so is never placed
+    // by a layout itself: the grid tracks it when the layout moves or resizes
+    // the grid (mirrors ListWidget).  Only the height is passed on -- the grid's
+    // width is intrinsic, so setWidth() above leaves both of us alone
+    using Widget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setHeight(int h) override;
+
     int colWidth() const { return _colWidth; }
+
+    void refreshFont() override;
+
+    // We are several rows of text in one box, not one line centered in it, so
+    // report the inset of the FIRST row: that is the line a label beside us must
+    // sit on (GUI::VAlign::Baseline), and drawWidget() steps down from it
+    int firstTextY() const override { return 2; }
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 
@@ -113,11 +142,12 @@ class DataGridWidget : public EditableWidget
     bool hasToolTip() const override { return true; }
     int getToolTipIndex(const Common::Point& pos) const;
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   protected:
     int   _rows{0};
     int   _cols{0};
+    int   _colChars{0};   // characters per column; _colWidth follows the font
     int   _currentRow{0};
     int   _currentCol{0};
     int   _rowHeight{0};

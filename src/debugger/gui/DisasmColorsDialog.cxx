@@ -47,14 +47,14 @@ void DisasmColorsDialog::saveConfig()
     result += std::to_string(CartDebug::ourDisasmThemes[0].map[i]);
   }
   instance().settings().setValue("dis.color", result);
-  sendCommand(RomListWidget::kDisasmColorsChangedCmd, 0, 0);
+  sendCommand(RomListWidget::Cmd::DisasmColorsChanged, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DisasmColorsDialog::handleCommand(CommandSender* sender, int cmd,
+void DisasmColorsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                        int data, int id)
 {
-  if(cmd == GuiObject::kOKCmd)
+  if(cmd == GuiObject::Cmd::OK)
   {
     saveConfig();
     close();

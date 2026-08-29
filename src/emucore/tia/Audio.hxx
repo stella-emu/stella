@@ -192,6 +192,9 @@ inline void Audio::tick(uInt32 colorClocks)
         case Event::lineWrap:
           myCounter = 0;
           break;
+
+        default:
+          std::unreachable();
       }
     }
   }

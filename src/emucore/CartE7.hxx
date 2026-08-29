@@ -213,9 +213,9 @@ class CartridgeE7 : public Cartridge
       of the cart.
       */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y, int w, int h) override
+                                 const GUI::Font& nfont) override
     {
-      return new CartridgeE7Widget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeE7Widget(boss, lfont, nfont, *this);
     }
   #endif
 

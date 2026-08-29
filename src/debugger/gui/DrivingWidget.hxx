@@ -28,20 +28,22 @@ class DataGridWidget;
 class DrivingWidget : public ControllerWidget
 {
   public:
-    DrivingWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    DrivingWidget(GuiObject* boss, const GUI::Font& font,
                   Controller& controller, bool embedded = false);
     ~DrivingWidget() override = default;
 
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
-    enum {
-      kGrayUpCmd   = 'DWup',
-      kGrayDownCmd = 'DWdn',
-      kFireCmd     = 'DWfr'
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        GrayCodeUp   = GuiCmd::of("DrivingWidget.GrayCodeUp"),
+        GrayCodeDown = GuiCmd::of("DrivingWidget.GrayCodeDown"),
+        Fire         = GuiCmd::of("DrivingWidget.Fire");
     };
     ButtonWidget *myGrayUp{nullptr}, *myGrayDown{nullptr};
     DataGridWidget* myGrayValue{nullptr};

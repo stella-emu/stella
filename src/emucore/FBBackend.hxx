@@ -21,6 +21,7 @@
 class FBSurface;
 class TVGeometry;
 
+#include <cstdlib>
 #include <unordered_map>
 
 #include "Rect.hxx"
@@ -28,6 +29,143 @@ class TVGeometry;
 #include "FrameBufferConstants.hxx"
 #include "VideoModeHandler.hxx"
 #include "bspf.hxx"
+
+/**
+  How the display server behaves while the user drags a window edge.  Every
+  live-resize policy derives from these conditions, rather than re-testing the
+  platform at each site.
+
+  Resolved at runtime, not compile time, because Linux is not one platform
+  here: one binary serves both X11 and Wayland and they do not agree.
+*/
+namespace LiveResize
+{
+  struct Conditions
+  {
+    string driver;
+    bool blocksMainLoop{false};
+    bool awaitsOurFrame{false};
+    bool rescalesOurLastFrame{false};
+    bool acksOnPresent{false};
+    // Policy, not a platform fact; see suspendsVsync()
+    bool suspendsVsync{true};
+  };
+
+  // Resolved by initialize(); read through the accessors below
+  inline Conditions ourConditions;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+
+  /**
+    Override one condition from the environment, if that variable is set.
+  */
+  inline void forceCondition(const char* name, bool& condition)
+  {
+  #ifdef BSPF_WINDOWS  // MSVC deprecates getenv
+    char* value = nullptr;
+    size_t length = 0;
+    if(_dupenv_s(&value, &length, name) == 0 && value != nullptr)
+    {
+      condition = *value != '0';
+      free(value);  // NOLINT(cppcoreguidelines-no-malloc)
+    }
+  #else
+    if(const char* const value = std::getenv(name))  // NOLINT(concurrency-mt-unsafe)
+      condition = *value != '0';
+  #endif
+  }
+
+  /**
+    Resolve the conditions for the display server actually in use.  Call once,
+    from the video backend, before any other subsystem reads them.  'driver' is
+    SDL's video driver name ("x11", "wayland", "windows", "cocoa").
+  */
+  inline void initialize(string_view driver)
+  {
+    const bool isX11 = driver == "x11";
+
+    ourConditions.driver = driver;
+  #if defined(BSPF_WINDOWS) || defined(BSPF_MACOS)
+    ourConditions.blocksMainLoop = true;
+    ourConditions.awaitsOurFrame = false;
+  #else
+    ourConditions.blocksMainLoop = false;
+    // Anything more exotic (offscreen, dummy, KMSDRM) takes the safe path
+    ourConditions.awaitsOurFrame = isX11 || driver == "wayland";
+  #endif
+  #ifdef BSPF_MACOS
+    ourConditions.rescalesOurLastFrame = true;
+  #else
+    ourConditions.rescalesOurLastFrame = false;
+  #endif
+    ourConditions.acksOnPresent = isX11;
+    ourConditions.suspendsVsync = true;
+
+    // Debug overrides, so a regression can be bisected on the machine showing
+    // it without a rebuild: STELLA_LIVERESIZE_<CONDITION>=0|1
+    forceCondition("STELLA_LIVERESIZE_BLOCKS_MAIN_LOOP",
+                   ourConditions.blocksMainLoop);
+    forceCondition("STELLA_LIVERESIZE_AWAITS_OUR_FRAME",
+                   ourConditions.awaitsOurFrame);
+    forceCondition("STELLA_LIVERESIZE_RESCALES_LAST_FRAME",
+                   ourConditions.rescalesOurLastFrame);
+    forceCondition("STELLA_LIVERESIZE_ACKS_ON_PRESENT",
+                   ourConditions.acksOnPresent);
+    forceCondition("STELLA_LIVERESIZE_SUSPEND_VSYNC",
+                   ourConditions.suspendsVsync);
+  }
+
+  /**
+    A drag runs in an OS modal loop that blocks our main loop, so the re-flow
+    is driven from the SDL event watch and no resize event may be dropped.
+  */
+  inline bool blocksMainLoop() { return ourConditions.blocksMainLoop; }
+
+  /**
+    The display server withholds the resized window until we present at the
+    new size, so nothing stale or rescaled appears between our frames.  This
+    does NOT imply slack: see acksOnPresent().
+    Gates nothing today -- skipping work on the strength of it floated X11.
+  */
+  inline bool awaitsOurFrame() { return ourConditions.awaitsOurFrame; }
+
+  /**
+    Our last frame is rescaled to the window as it changes, so anything we do
+    not present for is shown stale and resampled: every change needs a frame.
+  */
+  inline bool rescalesOurLastFrame()
+    { return ourConditions.rescalesOurLastFrame; }
+
+  /**
+    Presenting is itself the acknowledgement that we have drawn the new size
+    (X11 _NET_WM_SYNC_REQUEST, acked from X11_GL_SwapWindow).  Blocking the
+    present therefore stalls the WM's half of the drag as well as our own: with
+    vsync on, the ack waits a full refresh and the drag rate halves.  That makes
+    this the strongest reason to suspend vsync, not a reason against it.
+    Gates nothing today -- see suspendsVsync().
+  */
+  inline bool acksOnPresent() { return ourConditions.acksOnPresent; }
+
+  /**
+    Suspend vsync for the duration of a drag.  A policy, not a platform fact:
+    true everywhere, because a blocked present costs a frame's budget on every
+    platform, and a resize is infrequent and off the hot path, so the CPU it
+    spends is worth the smoothness.  Kept overridable because turning it off is
+    what reproduces the X11 float and the old Wayland behaviour.
+  */
+  inline bool suspendsVsync() { return ourConditions.suspendsVsync; }
+
+  /**
+    One-line summary of the resolved conditions, for the startup log.
+  */
+  inline string describe()
+  {
+    return std::format("LiveResize: driver={} blocksMainLoop={} "
+        "awaitsOurFrame={} rescalesLastFrame={} acksOnPresent={} "
+        "suspendsVsync={}",
+        ourConditions.driver, ourConditions.blocksMainLoop,
+        ourConditions.awaitsOurFrame, ourConditions.rescalesOurLastFrame,
+        ourConditions.acksOnPresent, ourConditions.suspendsVsync);
+  }
+}  // namespace LiveResize
 
 /**
   This class provides an interface/abstraction for platform-specific,
@@ -80,6 +218,57 @@ class FBBackend
     */
     virtual bool setVideoMode(const VideoModeHandler::Mode& mode,
                               uInt32 winIdx, const Common::Point& winPos) = 0;
+
+    /**
+      Make the window user-resizable (or not).  Only meaningful for desktop
+      windowed UI modes (the launcher, the debugger and its companion TIA
+      window).  Each such window's owner sets its own minimum size, separately.
+    */
+    virtual void setWindowResizable(bool resizable) { }
+
+    /**
+      Set the window's minimum size (in pixels).  Honored by most window
+      managers to prevent the user shrinking the window below this size.
+    */
+    virtual void setWindowMinSize(const Common::Size& minSize) { }
+
+    /**
+      Resize this backend's window in place (no destroy/recreate), in
+      pixels.  Used to grow a resizable window (the launcher or the
+      debugger) whose minimum size has just increased past its current size
+      (e.g. a live font change) -- the window's owner learns the new size
+      back through the normal live-resize event path, exactly as it would
+      from the user dragging the border.
+    */
+    virtual void resizeWindow(const Common::Size& size) { }
+
+    /**
+      Refresh cached window/renderer dimensions after the window has been
+      resized externally (e.g. the user dragging the window border).
+    */
+    virtual void refreshDimensions() { }
+
+    /**
+      An interactive resize of this window has started / has settled.  A
+      backend may trade away whatever it must to keep up for the duration,
+      since a re-flow and a present happen per dragged frame.
+    */
+    virtual void beginLiveResize() { }
+    virtual void endLiveResize() { }
+
+    /**
+      The platform window ID of this backend's window, or 0 if no window
+      exists.  Used to route window-specific events (mouse, keyboard, close,
+      resize) to the FrameBuffer that owns the targeted window when more than
+      one window is open (e.g. the debugger's companion TIA window).
+    */
+    virtual uInt32 windowId() const { return 0; }
+
+    /**
+      Show or hide this backend's window without destroying it or its
+      surfaces.  Used to toggle a secondary window on and off cheaply.
+    */
+    virtual void setWindowVisible(bool visible) { }
 
     /**
       Clear the framebuffer.

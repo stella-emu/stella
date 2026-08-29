@@ -23,18 +23,34 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h, string_view text)
-  : EditableWidget(boss, font, x, y, w, h + 2, text)
+                               int chars, int lines, string_view text)
+  : EditableWidget(boss, font, calcWidth(font, chars), calcHeight(font, lines) + 2, text),
+    _textOfs{textInset(font)},
+    _lines{std::max(1, lines)}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
-    | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG
+    | Widget::Flag::RetainFocus | Widget::Flag::TrackMouse;
 
   EditableWidget::startEditMode();  // We're always in edit mode
+}
 
-  if(_font.getFontHeight() < 24)
-    _textOfs = 3;
-  else
-    _textOfs = 5;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
+                               int chars, string_view text)
+  : EditTextWidget(boss, font, chars, 1, text)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::refreshFont()
+{
+  EditableWidget::refreshFont();
+
+  // Restore the framed height for the live font and the number of lines I was
+  // built to show; the width is dialog-chosen and re-applied by the owning
+  // layout().
+  _h = calcHeight(_font, _lines) + 2;
+  _textOfs = textInset(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,7 +97,7 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   const Common::Rect editRect = getEditRect();
-  s.drawString(_font, editString(), _x + _textOfs, _y + 2, editRect.w(), editRect.h(),
+  s.drawString(_font, editString(), _x + _textOfs, _y + firstTextY(), editRect.w(), editRect.h(),
                _changed && isEnabled()
                ? kDbgChangedTextColor
                : isEnabled() ? _textcolor : kColor,

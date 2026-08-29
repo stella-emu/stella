@@ -29,12 +29,14 @@ class TiaZoomWidget : public Widget, public CommandSender
   public:
     using Widget::setPos;
 
-    TiaZoomWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+    TiaZoomWidget(GuiObject *boss, const GUI::Font& font);
     ~TiaZoomWidget() override = default;
 
     void loadConfig() override;
     void setPos(int x, int y) override;
+    // Reflow entry point for the resizable debugger: move and resize the zoom
+    // view (it need not preserve the TIA aspect ratio) and recompute the grid
+    void setArea(int x, int y, int w, int h) override;
 
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
@@ -53,11 +55,14 @@ class TiaZoomWidget : public Widget, public CommandSender
     Common::Point getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     void zoom(int level);
     void recalc();
+    // Clamp the view size to the TIA image bounds and recompute the visible
+    // column/row counts for the current zoom level
+    void recomputeGrid(int w, int h);
 
   private:
     unique_ptr<ContextMenu> myMenu;

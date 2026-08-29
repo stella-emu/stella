@@ -154,7 +154,9 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     cStart{c_start},
     cStack{c_stack},
     decodedRom{std::make_unique<Op[]>(romSize / 2)},
-    decodedParam{std::make_unique<uInt32[]>(romSize / 2)},
+    // +1: reserved slot for decodeInstructionWord()'s uncached (RAM-resident
+    // code) path, whose pc falls outside [0, romSize) -- see execute()
+    decodedParam{std::make_unique<uInt32[]>(romSize / 2 + 1)},
     ram{ram_ptr},
     configuration{configurefor},
     myCartridge{cartridge}
@@ -338,15 +340,22 @@ FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
+      // isInvalidROM() checks the real per-cart romSize; the fixed
+      // ROMADDMASK (512K) alone doesn't, and rom[] is only ever as large
+      // as the cart's actual ROM buffer (e.g. 32K for BUS/DPC+)
+      if(isInvalidROM(addr))
+        return fatalError("fetch16", addr, "abort");
+
       addr &= ROMADDMASK;
-      if(addr < 0x50)
-        fatalError("fetch16", addr, "abort");
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << '\n');
       return data;
 
     case 0x40000000: //RAM
+      if(isInvalidRAM(addr))
+        return fatalError("fetch16", addr, "abort");
+
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
@@ -372,9 +381,15 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   {
     case 0x40000000: //RAM
       if(isInvalidRAM(addr))
+      {
         fatalError("write16", addr, "abort - out of range");
+        return;
+      }
       if(isProtectedRAM(addr))
+      {
         fatalError("write16", addr, "to driver area");
+        return;
+      }
 
       addr &= RAMADDMASK;
       addr >>= 1;
@@ -608,7 +623,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
   {
     case 0x00000000: //ROM
       if(isInvalidROM(addr))
-        fatalError("read16", addr, "abort - out of range");
+        return fatalError("read16", addr, "abort - out of range");
 
       addr &= ROMADDMASK;
       addr >>= 1;
@@ -618,7 +633,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
 
     case 0x40000000: //RAM
       if(isInvalidRAM(addr))
-        fatalError("read16", addr, "abort - out of range");
+        return fatalError("read16", addr, "abort - out of range");
 
       addr &= RAMADDMASK;
       addr >>= 1;
@@ -660,7 +675,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
   {
     case 0x00000000: //ROM
       if(isInvalidROM(addr))
-        fatalError("read32", addr, "abort - out of range");
+        return fatalError("read32", addr, "abort - out of range");
 
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
@@ -669,7 +684,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
 
     case 0x40000000: //RAM
       if(isInvalidRAM(addr))
-        fatalError("read32", addr, "abort - out of range");
+        return fatalError("read32", addr, "abort - out of range");
 
       data = read16(addr+0);
       data |= read16(addr+2) << 16;
@@ -853,7 +868,11 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
     rb <<= 1;
     rb += pc;
     rb += 2;
-    decodedParam[pc / 2] = rb + 4;
+    // pc can be outside the ROM (the uncached execute() path decodes RAM-
+    // resident code too); an out-of-range pc shares the one reserved slot
+    // at decodedParam[romSize / 2] with the matching clamp in execute()'s
+    // read, since only one uncached decode is ever in flight at a time
+    decodedParam[std::min(pc / 2, romSize / 2)] = rb + 4;
 
     switch(op)
     {
@@ -914,7 +933,11 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
     rb <<= 1;
     rb += pc;
     rb += 2;
-    decodedParam[pc / 2] = rb + 4;
+    // pc can be outside the ROM (the uncached execute() path decodes RAM-
+    // resident code too); an out-of-range pc shares the one reserved slot
+    // at decodedParam[romSize / 2] with the matching clamp in execute()'s
+    // read, since only one uncached decode is ever in flight at a time
+    decodedParam[std::min(pc / 2, romSize / 2)] = rb + 4;
 
     return Op::b2;
   }
@@ -1119,6 +1142,10 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
 
   const uInt32 instructionPtr = pc - 2;
   const uInt32 instructionPtr2 = instructionPtr >> 1;
+  // Valid ROM indices are always < romSize / 2; a decode from RAM-resident
+  // code (instructionPtr2 outside that range) shares the one reserved slot
+  // decodeInstructionWord() clamps its uncached writes to
+  const uInt32 decodedParamIdx = std::min(instructionPtr2, romSize / 2);
   inst = fetch16(instructionPtr);
 
   pc += 2;
@@ -1131,7 +1158,10 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
     decodedOp = decodedRom[instructionPtr2];
   else
-    decodedOp = decodeInstructionWord(CONV_RAMROM(rom[instructionPtr2]), instructionPtr);
+    // instructionPtr is by construction outside the ROM range here, so
+    // decode the halfword fetch16() already fetched (and bounds-checked)
+    // instead of re-reading rom[] with an unmasked, out-of-range index
+    decodedOp = decodeInstructionWord(static_cast<uInt16>(inst), instructionPtr);
 
 #ifdef COUNT_OPS
   ++opCount[std::to_underlying(decodedOp)];
@@ -1359,70 +1389,70 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     case Op::beq: {
       THUMB_STAT(_stats.branches)
       if(!znFlags)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bne: {
       THUMB_STAT(_stats.branches)
       if(znFlags)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bcs: {
       THUMB_STAT(_stats.branches)
       if(cFlag)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bcc: {
       THUMB_STAT(_stats.branches)
       if(!cFlag)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bmi: {
       THUMB_STAT(_stats.branches)
       if(znFlags & 0x80000000)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bpl: {
       THUMB_STAT(_stats.branches)
       if(!(znFlags & 0x80000000))
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bvs: {
       THUMB_STAT(_stats.branches)
       if(vFlag)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bvc: {
       THUMB_STAT(_stats.branches)
       if(!vFlag)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bhi: {
       THUMB_STAT(_stats.branches)
       if(cFlag && znFlags)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     case Op::bls: {
       THUMB_STAT(_stats.branches)
       if(!znFlags || !cFlag)
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
@@ -1430,7 +1460,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       THUMB_STAT(_stats.branches)
       if(((znFlags & 0x80000000) && vFlag) ||
          ((!(znFlags & 0x80000000)) && !vFlag))
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
@@ -1438,7 +1468,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       THUMB_STAT(_stats.branches)
       if((!(znFlags & 0x80000000) && vFlag) ||
          ( (znFlags & 0x80000000) && !vFlag))
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
@@ -1448,7 +1478,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       {
         if(((znFlags & 0x80000000) && vFlag) ||
            ((!(znFlags & 0x80000000)) && !vFlag))
-          write_register(15, decodedParam[instructionPtr2]);      }
+          write_register(15, decodedParam[decodedParamIdx]);      }
       return 0;
     }
 
@@ -1457,14 +1487,14 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       if(!znFlags ||
          (!(znFlags & 0x80000000) && vFlag) ||
          ( (znFlags & 0x80000000) && !vFlag))
-        write_register(15, decodedParam[instructionPtr2]);
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
     //B(2) unconditional branch
     case Op::b2: {
       THUMB_STAT(_stats.branches)
-      write_register(15, decodedParam[instructionPtr2]);
+      write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 

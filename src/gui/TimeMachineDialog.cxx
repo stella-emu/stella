@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "OSystem.hxx"
+#include "Icon.hxx"
 #include "Widget.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -32,11 +33,17 @@
 #include "System.hxx"
 
 #include "TimeMachineDialog.hxx"
+#include "Layout.hxx"
 #include "Base.hxx"
 
+// This dialog is a compact translucent HUD bar with fixed-size icon buttons, so
+// it deliberately uses its own tight metrics rather than the standard Dialog
+// form helpers (hBorder()/buttonGap()/buttonHeight()/...).
 static constexpr int BUTTON_W = 14, BUTTON_H = 14;
+static constexpr int H_BORDER = 6, V_BORDER = 4, BUTTON_GAP = 4;
+static constexpr int BUTTON_WIDTH = BUTTON_W + 10, BUTTON_HEIGHT = BUTTON_H + 10;
 
-static constexpr std::array<uInt32, BUTTON_H> RECORD = {
+static constexpr std::array<uInt32, BUTTON_H> RECORD_BITS = {
   0b00000111100000,
   0b00011111111000,
   0b00111111111100,
@@ -52,7 +59,8 @@ static constexpr std::array<uInt32, BUTTON_H> RECORD = {
   0b00011111111000,
   0b00000111100000
 };
-static constexpr std::array<uInt32, BUTTON_H> STOP = {
+static constexpr GUI::Icon RECORD(BUTTON_W, BUTTON_H, RECORD_BITS);
+static constexpr std::array<uInt32, BUTTON_H> STOP_BITS = {
   0b11111111111111,
   0b11111111111111,
   0b11111111111111,
@@ -68,7 +76,8 @@ static constexpr std::array<uInt32, BUTTON_H> STOP = {
   0b11111111111111,
   0b11111111111111
 };
-static constexpr std::array<uInt32, BUTTON_H> EXIT = {
+static constexpr GUI::Icon STOP(BUTTON_W, BUTTON_H, STOP_BITS);
+static constexpr std::array<uInt32, BUTTON_H> EXIT_BITS = {
   0b01100000000110,
   0b11110000001111,
   0b11111000011111,
@@ -84,8 +93,9 @@ static constexpr std::array<uInt32, BUTTON_H> EXIT = {
   0b11110000001111,
   0b01100000000110
 };
+static constexpr GUI::Icon EXIT(BUTTON_W, BUTTON_H, EXIT_BITS);
 
-static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
+static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL_BITS = {
   0,
   0b11000011000011,
   0b11000111000111,
@@ -101,7 +111,8 @@ static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
   0b11000011000011,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
+static constexpr GUI::Icon REWIND_ALL(BUTTON_W, BUTTON_H, REWIND_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> REWIND_1_BITS = {
   0,
   0b00000110001110,
   0b00001110001110,
@@ -117,7 +128,8 @@ static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
   0b00000110001110,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> PLAYBACK = {
+static constexpr GUI::Icon REWIND_1(BUTTON_W, BUTTON_H, REWIND_1_BITS);
+static constexpr std::array<uInt32, BUTTON_H> PLAYBACK_BITS = {
   0b11000000000000,
   0b11110000000000,
   0b11111100000000,
@@ -133,7 +145,8 @@ static constexpr std::array<uInt32, BUTTON_H> PLAYBACK = {
   0b11110000000000,
   0b11000000000000
 };
-static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
+static constexpr GUI::Icon PLAYBACK(BUTTON_W, BUTTON_H, PLAYBACK_BITS);
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_1_BITS = {
   0,
   0b01110001100000,
   0b01110001110000,
@@ -149,7 +162,8 @@ static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
   0b01110001100000,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL = {
+static constexpr GUI::Icon UNWIND_1(BUTTON_W, BUTTON_H, UNWIND_1_BITS);
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL_BITS = {
   0,
   0b11000011000011,
   0b11100011100011,
@@ -165,7 +179,8 @@ static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL = {
   0b11000011000011,
   0
 };
-static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL = {
+static constexpr GUI::Icon UNWIND_ALL(BUTTON_W, BUTTON_H, UNWIND_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL_BITS = {
   0b00000111100000,
   0b00000111100000,
   0b00000111100000,
@@ -181,7 +196,8 @@ static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL = {
   0b11111111111111,
   0b11111111111111,
 };
-static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
+static constexpr GUI::Icon SAVE_ALL(BUTTON_W, BUTTON_H, SAVE_ALL_BITS);
+static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL_BITS = {
   0b00000011000000,
   0b00000111100000,
   0b00001111110000,
@@ -197,6 +213,7 @@ static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
   0b11111111111111,
   0b11111111111111,
 };
+static constexpr GUI::Icon LOAD_ALL(BUTTON_W, BUTTON_H, LOAD_ALL_BITS);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -204,98 +221,129 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  constexpr int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
-  constexpr int buttonWidth = BUTTON_W + 10, buttonHeight = BUTTON_H + 10;
-  const int rowHeight = font.getLineHeight();
 
-  // Set real dimensions
-  _w = width;  // Parent determines our width (based on window size)
-  _h = V_BORDER * 2 + rowHeight + std::max(buttonHeight + 2, rowHeight);
+  // The parent determines our width (based on window size); our height is
+  // whatever the two rows turn out to need (see layout())
+  _w = width;
 
-  this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
-  this->clearFlags(Widget::FLAG_BORDER);
-  this->setFlags(Widget::FLAG_NOBG);
+  this->clearFlags(Widget::Flag::ClearBG); // does only work combined with blending (0..100)!
+  this->clearFlags(Widget::Flag::Border);
+  this->setFlags(Widget::Flag::NoBG);
 
-  int xpos = H_BORDER, ypos = V_BORDER;
+  // Widgets are only created here (at placeholder positions); layout() assigns
+  // all geometry from the current font and dialog width.
 
-  // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // Index info (current + last state index)
+  myCurrentIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
-  myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
-  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
-                                         "1000", TextAlign::Right, kBGColor);
-  myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myCurrentIdxWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
+  myLastIdxWidget = new LabelWidget(this, font, "1000", TextAlign::Right, kBGColor);
+  myLastIdxWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
-  // Add timeline
-  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2 + 6,
-    tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-    tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
-    tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
-  myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
+  // Timeline scrubber
+  myTimeline = new TimeLineWidget(this, font, Cmd::Timeline);
   myTimeline->setMinValue(0);
-  ypos += rowHeight;
 
-  // Add time info
-  const int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
-  myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  // Time info (current + last time)
+  myCurrentTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos_s,
-                                          "00:00.00", TextAlign::Right, kBGColor);
-  myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  myLastTimeWidget = new LabelWidget(this, font, "00:00.00", TextAlign::Right, kBGColor);
+  myLastTimeWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myLastTimeWidget->setTextColor(kColorInfo);
-  xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
-  // Add buttons
-  myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                    STOP.data(), BUTTON_W, BUTTON_H, kToggle);
+  // Buttons
+  myToggleWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                    STOP, Cmd::Toggle);
   myToggleWidget->setToolTip("Toggle Time Machine mode.");
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myExitWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                  EXIT.data(), BUTTON_W, BUTTON_H, kExit);
+  myExitWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                  EXIT, Cmd::Exit);
   myExitWidget->setToolTip("Exit Time Machine dialog.");
-  xpos += buttonWidth + BUTTON_GAP * 4;
-
-  myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                       REWIND_ALL.data(), BUTTON_W, BUTTON_H, kRewindAll);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                     REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myPlayBackWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                      PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
+  myRewindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                       REWIND_ALL,
+                                       Cmd::RewindAll);
+  myRewind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                     REWIND_1, Cmd::Rewind1,
+                                     true);
+  myPlayBackWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                      PLAYBACK, Cmd::PlayBack);
   myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                     UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1, true);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                       UNWIND_ALL.data(), BUTTON_W, BUTTON_H, kUnwindAll);
-  xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 4;
-
-  mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                     SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
+  myUnwind1Widget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                     UNWIND_1, Cmd::Unwind1,
+                                     true);
+  myUnwindAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                       UNWIND_ALL,
+                                       Cmd::UnwindAll);
+  mySaveAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                     SAVE_ALL, Cmd::SaveAll);
   mySaveAllWidget->setToolTip("Save all Time Machine states.");
-  xpos = mySaveAllWidget->getRight() + BUTTON_GAP;
-
-  myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                     LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
+  myLoadAllWidget = new ButtonWidget(this, font, BUTTON_WIDTH, BUTTON_HEIGHT,
+                                     LOAD_ALL, Cmd::LoadAll);
   myLoadAllWidget->setToolTip("Load all Time Machine states.");
-  xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
-  // Add message
-  const int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
-                                         string(mWidth, ' '),
-                                         TextAlign::Left, kBGColor);
-  myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
+  // Message (fills the space between the buttons and the last-time readout)
+  myMessageWidget = new LabelWidget(this, font, "", TextAlign::Left, kBGColor);
+  myMessageWidget->setFlags(Widget::Flag::ClearBG | Widget::Flag::NoBG);
   myMessageWidget->setTextColor(kColorInfo);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  // Row 1: current-index label, timeline (fills), last-index label
+  auto row1 = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row1->addAuto(anchoredItem(myCurrentIdxWidget));
+  row1->addSpace(BUTTON_GAP * 2);
+  row1->addStretch(alignedItem(myTimeline, HAlign::Fill, VAlign::Center));
+  row1->addSpace(BUTTON_GAP * 2);
+  row1->addAuto(anchoredItem(myLastIdxWidget));
+
+  // Row 2: current-time label, transport buttons, message (fills), last-time label.
+  // The text readouts are centered on the (taller) icon buttons.
+  auto row2 = std::make_unique<BoxLayout>(Dir::Horizontal);
+  row2->addAuto(anchoredItem(myCurrentTimeWidget));
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(myToggleWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myExitWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(myRewindAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myRewind1Widget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myPlayBackWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myUnwind1Widget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myUnwindAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addFixed(anchoredItem(mySaveAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP);
+  row2->addFixed(anchoredItem(myLoadAllWidget), BUTTON_WIDTH);
+  row2->addSpace(BUTTON_GAP * 4);
+  row2->addStretch(stretchedItem(myMessageWidget));
+  row2->addAuto(anchoredItem(myLastTimeWidget));
+
+  // Two stacked rows, inset by the HUD borders.  The parent gave us our width;
+  // our height is as tall as the two rows need to be
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, H_BORDER, V_BORDER);
+  root->addAuto(std::move(row1));
+  root->addAuto(std::move(row2));
+
+  _h = _th + static_cast<int>(root->naturalSize().h);
+
+  root->doLayout(0, _th, _w, _h - _th);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,41 +373,41 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
   switch(event)
   {
     case Event::ExitMode:
-      handleCommand(nullptr, kExit, 0, 0);
+      handleCommand(nullptr, Cmd::Exit, 0, 0);
       break;
 
     case Event::Rewind1Menu:
-      handleCommand(nullptr, kRewind1, 0, 0);
+      handleCommand(nullptr, Cmd::Rewind1, 0, 0);
       break;
 
     case Event::Rewind10Menu:
-      handleCommand(nullptr, kRewind10, 0, 0);
+      handleCommand(nullptr, Cmd::Rewind10, 0, 0);
       break;
 
     case Event::RewindAllMenu:
-      handleCommand(nullptr, kRewindAll, 0, 0);
+      handleCommand(nullptr, Cmd::RewindAll, 0, 0);
       break;
 
     case Event::Unwind1Menu:
-      handleCommand(nullptr, kUnwind1, 0, 0);
+      handleCommand(nullptr, Cmd::Unwind1, 0, 0);
       break;
 
     case Event::Unwind10Menu:
-      handleCommand(nullptr, kUnwind10, 0, 0);
+      handleCommand(nullptr, Cmd::Unwind10, 0, 0);
       break;
 
     case Event::UnwindAllMenu:
-      handleCommand(nullptr, kUnwindAll, 0, 0);
+      handleCommand(nullptr, Cmd::UnwindAll, 0, 0);
       break;
 
     case Event::LoadAllStates:
       if(!repeated)
-        handleCommand(nullptr, kLoadAll, 0, 0);
+        handleCommand(nullptr, Cmd::LoadAll, 0, 0);
       break;
 
     case Event::SaveAllStates:
       if(!repeated)
-        handleCommand(nullptr, kSaveAll, 0, 0);
+        handleCommand(nullptr, Cmd::SaveAll, 0, 0);
       break;
 
     // Hotkey only commands (no button available)
@@ -367,9 +415,16 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
     case Event::PreviousState:
     case Event::NextState:
     case Event::LoadState:
+      if(!repeated)
+        instance().eventHandler().handleEvent(event);
+      break;
+
     case Event::TakeSnapshot:
       if(!repeated)
-        handleCommand(nullptr, event, 0, 0);
+      {
+        instance().eventHandler().handleEvent(Event::TakeSnapshot);
+        instance().frameBuffer().setPendingRender();
+      }
       break;
 
     default:
@@ -383,21 +438,22 @@ void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
   // The following shortcuts duplicate the shortcuts in EventHandler
   // Note: mode switches must happen in key UP
 
-  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+  const Event::Type event =
+    instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
   if(event == Event::TogglePlayBackMode || key == StellaKey::SPACE)
-    handleCommand(nullptr, kPlayBack, 0, 0);
+    handleCommand(nullptr, Cmd::PlayBack, 0, 0);
   else
     Dialog::handleKeyUp(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
+void TimeMachineDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                       int data, int id)
 {
   switch(cmd)
   {
-    case kTimeline:
+    case Cmd::Timeline:
     {
       const Int32 winds = myTimeline->getValue() -
           instance().state().rewindManager().getCurrentIdx() + 1;
@@ -405,64 +461,52 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kToggle:
+    case Cmd::Toggle:
       instance().toggleTimeMachine();
       handleToggle();
       break;
 
-    case kExit:
+    case Cmd::Exit:
       instance().eventHandler().leaveMenuMode();
       break;
 
-    case kRewind1:
+    case Cmd::Rewind1:
       handleWinds(-1);
       break;
 
-    case kRewind10:
+    case Cmd::Rewind10:
       handleWinds(-10);
       break;
 
-    case kRewindAll:
+    case Cmd::RewindAll:
       handleWinds(-1000);
       break;
 
-    case kPlayBack:
+    case Cmd::PlayBack:
       instance().eventHandler().enterPlayBackMode();
       break;
 
-    case kUnwind1:
+    case Cmd::Unwind1:
       handleWinds(1);
       break;
 
-    case kUnwind10:
+    case Cmd::Unwind10:
       handleWinds(10);
       break;
 
-    case kUnwindAll:
+    case Cmd::UnwindAll:
       handleWinds(1000);
       break;
 
-    case kSaveAll:
+    case Cmd::SaveAll:
       instance().eventHandler().handleEvent(Event::SaveAllStates);
       break;
 
-    case kLoadAll:
+    case Cmd::LoadAll:
       instance().eventHandler().handleEvent(Event::LoadAllStates);
       initBar();
       break;
 
-    // Hotkey only commands (no button available)
-    case Event::SaveState:
-    case Event::PreviousState:
-    case Event::NextState:
-    case Event::LoadState:
-      instance().eventHandler().handleEvent(static_cast<Event::Type>(cmd));
-      break;
-
-    case Event::TakeSnapshot:
-      instance().eventHandler().handleEvent(Event::TakeSnapshot);
-      instance().frameBuffer().setPendingRender();
-      break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
@@ -476,7 +520,9 @@ void TimeMachineDialog::initBar()
   const IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  const uInt32 maxValue = cycles.size() > 1 ? static_cast<uInt32>(cycles.size() - 1) : 0;
+  const uInt32 maxValue = cycles.size() > 1
+    ? static_cast<uInt32>(cycles.size() - 1)
+    : 0;
   myTimeline->setMaxValue(maxValue);
   myTimeline->setStepValues(cycles);
 
@@ -546,6 +592,6 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleToggle()
 {
-  myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ?
-    RECORD.data() : STOP.data(), BUTTON_W, BUTTON_H);
+  myToggleWidget->setIcon(instance().state().mode() == StateManager::Mode::Off ?
+    RECORD : STOP);
 }

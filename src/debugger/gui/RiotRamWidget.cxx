@@ -23,40 +23,45 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w)
-  : RamWidget(boss, lfont, nfont, x, y, w, 0, 128, 8, 128, "M6532"),
-    myDbg{instance().debugger().cartDebug()}
+        const GUI::Font& nfont)
+  : RamWidget(boss, lfont, nfont, 128, 8, 128, "M6532")
 {
   // setHelpAnchor("M6532"); TODO: does not work due to use of "boss" insted of "this"
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebug& RiotRamWidget::dbg() const
+{
+  return instance().debugger().cartDebug();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotRamWidget::getValue(int addr) const
 {
-  const auto& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(dbg().getState());
   return instance().debugger().peek(state.rport[addr]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotRamWidget::setValue(int addr, uInt8 value)
 {
-  const auto& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(dbg().getState());
   instance().debugger().poke(state.wport[addr], value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotRamWidget::getLabel(int addr) const
 {
-  const auto& state = static_cast<const CartState&>(myDbg.getState());
-  return myDbg.getLabel(state.rport[addr], true);
+  const auto& state = static_cast<const CartState&>(dbg().getState());
+  return dbg().getLabel(state.rport[addr], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotRamWidget::fillList(uInt32 start, uInt32 size, IntArray& alist,
                              IntArray& vlist, BoolArray& changed) const
 {
-  const auto& state    = static_cast<const CartState&>(myDbg.getState());
-  const auto& oldstate = static_cast<const CartState&>(myDbg.getOldState());
+  const auto& state    = static_cast<const CartState&>(dbg().getState());
+  const auto& oldstate = static_cast<const CartState&>(dbg().getOldState());
 
   for(uInt32 i = 0; i < size; ++i)
   {
@@ -69,13 +74,13 @@ void RiotRamWidget::fillList(uInt32 start, uInt32 size, IntArray& alist,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 RiotRamWidget::readPort(uInt32 start) const
 {
-  const auto& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(dbg().getState());
   return state.rport[start];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& RiotRamWidget::currentRam(uInt32) const
 {
-  const auto& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(dbg().getState());
   return state.ram;
 }

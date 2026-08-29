@@ -23,8 +23,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge03E0Widget::Cartridge03E0Widget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-  int x, int y, int w, int h, Cartridge03E0& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  Cartridge03E0& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   initialize();
 }

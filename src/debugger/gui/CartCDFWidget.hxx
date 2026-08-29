@@ -21,7 +21,7 @@
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
-class StaticTextWidget;
+class LabelWidget;
 class SliderWidget;
 
 #include "CartCDF.hxx"
@@ -32,7 +32,6 @@ class CartridgeCDFWidget : public CartridgeARMWidget
   public:
     CartridgeCDFWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeCDF& cart);
     ~CartridgeCDFWidget() override = default;
 
@@ -51,7 +50,13 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+  private:
+    // The datastream table: the pointer and increment grids side by side, with the
+    // stream numbers (and the named streams below them) labelling their rows
+    unique_ptr<GUI::Layout> layoutDatastreams() const;
 
   private:
     struct CartState {
@@ -69,7 +74,14 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     };
 
     CartridgeCDF& myCart;
+    LabelWidget* myBankLbl{nullptr};
     PopUpWidget* myBank{nullptr};
+
+    LabelWidget *myPointersLbl{nullptr}, *myIncrementsLbl{nullptr},
+                *myFastFetchOffsetLbl{nullptr}, *myMusicLbl{nullptr},
+                *myCountersLbl{nullptr}, *myFrequenciesLbl{nullptr},
+                *myWaveformsLbl{nullptr}, *myWaveformSizesLbl{nullptr},
+                *mySamplePointerLbl{nullptr};
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};
@@ -83,14 +95,17 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     DataGridWidget* myMusicWaveformSizes{nullptr};
     DataGridWidget* mySamplePointer{nullptr};
     DataGridWidget* myFastFetcherOffset{nullptr};
-    std::array<StaticTextWidget*, 10> myDatastreamLabels{nullptr};
+    std::array<LabelWidget*, 10> myDatastreamLabels{nullptr};
 
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
 
     CartState myOldState;
 
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeCDFWidget.BankChanged");
+    };
 
   private:
     bool isCDFJ() const;

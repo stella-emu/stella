@@ -26,7 +26,6 @@ class CartridgeBUSInfoWidget : public CartDebugWidget
   public:
     CartridgeBUSInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                             const GUI::Font& nfont,
-                            int x, int y, int w, int h,
                             CartridgeBUS& cart);
     ~CartridgeBUSInfoWidget() override = default;
 

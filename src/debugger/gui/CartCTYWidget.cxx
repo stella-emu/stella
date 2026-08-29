@@ -20,13 +20,14 @@
 #include "CartDebug.hxx"
 #include "CartCTY.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartCTYWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTYWidget::CartridgeCTYWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeCTY& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeCTY& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   constexpr uInt16 size = 8 * 4096;
@@ -37,8 +38,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
     "  $F040 - $F07F (R), $F000 - $F03F (W)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
-  constexpr int xpos = 2;
-  const int ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
+  createBaseInformation(size, "Chris D. Walton", info);
 
   VariantList items;
   VarList::push_back(items, "1 ($FFF5)");
@@ -48,12 +48,24 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   VarList::push_back(items, "5 ($FFF9)");
   VarList::push_back(items, "6 ($FFFA)");
   VarList::push_back(items, "7 ($FFFB)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
+
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myBankLbl = new LabelWidget(boss, _font, "Set bank");
+  myBank = new PopUpWidget(boss, _font, items, Cmd::BankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+
+  // The selector's box lines up with the info fields above it
+  myLabelColumn.emplace_back(myBankLbl);
+
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTYWidget::layoutContent(GUI::BoxLayout& col) const
+{
+  col.addAuto(GUI::labeledRow(myBankLbl, myBank));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,10 +86,10 @@ void CartridgeCTYWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCTYWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+void CartridgeCTYWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
     myCart.bank(myBank->getSelected()+1);

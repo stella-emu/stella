@@ -42,15 +42,17 @@ void BilinearBlitter::reinitialize(
   uInt8 blendLevel, SDL_Surface* staticData
 )
 {
-  myRecreateTextures = myRecreateTextures || !(
-    mySrcRect.w == srcRect.w &&
-    mySrcRect.h == srcRect.h &&
-    myDstRect.w == myFB.scaleX(destRect.w) &&
-    myDstRect.h == myFB.scaleY(destRect.h) &&
-    blendLevel  == myBlendLevel &&
-    enableBlend == myEnableBlend &&
-    myStaticData == staticData
-   );
+  // The textures are sized from the SOURCE only; the destination rect is
+  // applied at render time (SDL_RenderTexture).  So a destination change (e.g.
+  // rescaling as the window is resized) needs no texture recreation.  A source
+  // that fits the current texture is reused too — only the rendered sub-rect
+  // shrinks — so a live window resize does not thrash textures.  Recreate only
+  // when the source grows past the allocation, or blending/static data changes.
+  myRecreateTextures = myRecreateTextures ||
+    srcRect.w > myTexW || srcRect.h > myTexH ||
+    blendLevel  != myBlendLevel ||
+    enableBlend != myEnableBlend ||
+    myStaticData != staticData;
 
   myEnableBlend = enableBlend;
   myBlendLevel = blendLevel;
@@ -120,15 +122,21 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     ? SDL_TEXTUREACCESS_STREAMING
     : SDL_TEXTUREACCESS_STATIC;
 
+  // Size the textures to the larger of the current source and the previous
+  // allocation, so they never shrink; only the rendered sub-rect (mySrcFRect)
+  // shrinks.  (Static surfaces have a fixed source, so this is exact for them.)
+  myTexW = std::max(mySrcRect.w, myTexW);
+  myTexH = std::max(mySrcRect.h, myTexH);
+
   myTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
-      texAccess, mySrcRect.w, mySrcRect.h);
+      texAccess, myTexW, myTexH);
   SDL_SetTextureScaleMode(myTexture, myInterpolate
       ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
 
   if (myStaticData == nullptr) {
     mySecondaryTexture = SDL_CreateTexture(myFB.renderer(),
         myFB.pixelFormat().format,
-        texAccess, mySrcRect.w, mySrcRect.h);
+        texAccess, myTexW, myTexH);
     SDL_SetTextureScaleMode(mySecondaryTexture, myInterpolate
         ? SDL_SCALEMODE_LINEAR
         : SDL_SCALEMODE_NEAREST);

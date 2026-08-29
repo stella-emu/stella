@@ -68,7 +68,7 @@ class StringParser
 
     void parseLines()
     {
-      auto start = 0uz;
+      auto start = 0UZ;
       const size_t n = myBuffer.size();
 
       while(start < n)
@@ -84,7 +84,7 @@ class StringParser
 
     void parseWrapped(size_t maxlen)
     {
-      auto start = 0uz;
+      auto start = 0UZ;
       const size_t n = myBuffer.size();
 
       while(start < n)
@@ -100,7 +100,7 @@ class StringParser
 
     void wrapLine(string_view line, size_t maxlen)
     {
-      auto beg = 0uz;
+      auto beg = 0UZ;
 
       while(beg < line.size())
       {

@@ -21,8 +21,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFAWidget::CartridgeFAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeFA& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+      CartridgeFA& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   initialize();
 }

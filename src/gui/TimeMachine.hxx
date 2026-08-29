@@ -19,6 +19,7 @@
 #define TIME_MACHINE_HXX
 
 class OSystem;
+class TimeMachineDialog;
 
 #include "DialogContainer.hxx"
 
@@ -31,6 +32,8 @@ class TimeMachine : public DialogContainer
 {
   public:
     explicit TimeMachine(OSystem& osystem);
+    // Out-of-line: myBaseDialog (unique_ptr<TimeMachineDialog>) needs its
+    // complete type here
     ~TimeMachine() override;
 
     /**
@@ -50,8 +53,11 @@ class TimeMachine : public DialogContainer
     void setEnterWinds(Int32 numWinds);
 
   private:
-    Dialog* myBaseDialog{nullptr};
+    // The dialog itself; recreated by requestResize() when the width must change
+    // (its width is fixed at construction, so it cannot simply be resized in place)
+    unique_ptr<TimeMachineDialog> myBaseDialog;
 
+    // myBaseDialog's current width, cached to detect when it must be recreated
     uInt32 myWidth{0};
 
   private:

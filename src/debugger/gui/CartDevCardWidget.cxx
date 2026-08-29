@@ -24,8 +24,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDevCardWidget::CartridgeDevCardWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeDevCard& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+      CartridgeDevCard& cart)
+  : CartDebugWidget(boss, lfont, nfont),
     myCart{cart}
 {
   constexpr string_view info =
@@ -34,7 +34,9 @@ CartridgeDevCardWidget::CartridgeDevCardWidget(
     "$B000-$BFFF  $D000-$DFFF  $F000-$FFFF\n"
     "All windows readable and writable; no bankswitching.";
 
-  addBaseInformation(CartridgeDevCard::RAM_SIZE, "Atari (DevKit)", info);
+  // This tab is nothing but the ROM info block; reflow() lays it out
+  createBaseInformation(CartridgeDevCard::RAM_SIZE, "Atari (DevKit)", info);
+  reflow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

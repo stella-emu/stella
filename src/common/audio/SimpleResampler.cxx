@@ -53,7 +53,7 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
   const size_t outputSamples = stereoOut ? (length >> 1) : length;
 
   // For the following math, remember that myTimeIndex = time * myFormatFrom.sampleRate * myFormatTo.sampleRate
-  for (auto i = 0uz; i < outputSamples; ++i) {
+  for (auto i = 0UZ; i < outputSamples; ++i) {
     if (stereoIn) {
       const float sampleL = static_cast<float>(
           myCurrentFragment[2*static_cast<size_t>(myFragmentIndex)]) * SAMPLE_SCALE;

@@ -25,8 +25,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss,
-    const GUI::Font& font, int x, int y, int w, int h)
-  : FileListWidget(boss, font, x, y, w, h)
+    const GUI::Font& font)
+  : FileListWidget(boss, font)
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -267,9 +267,9 @@ LauncherFileListWidget::getIconType(const FSNode& node) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
+const GUI::Icon* LauncherFileListWidget::getIcon(int i) const
 {
-  static const Icon favrom_small = {
+  static constexpr auto favrom_small_bits = std::to_array<uInt32>({
     0b00000000'00001000,
     0b00001111'00011100,
     0b00001010'01111111,
@@ -284,8 +284,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10001010'10100010,
     0b10011010'10110010,
     0b11110011'10011110
-  };
-  static const Icon favdir_small = {
+  });
+  static constexpr GUI::Icon favrom_small(16, 14, favrom_small_bits);
+  static constexpr auto favdir_small_bits = std::to_array<uInt32>({
     0b00000000'00001000,
     0b11111000'00011100,
     0b11111100'01111111,
@@ -300,8 +301,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10000000'00000010,
     0b10000000'00000010,
     0b11111111'11111110
-  };
-  static const Icon favzip_small = {
+  });
+  static constexpr GUI::Icon favdir_small(16, 14, favdir_small_bits);
+  static constexpr auto favzip_small_bits = std::to_array<uInt32>({
     0b00000000'00001000,
     0b11111000'00011100,
     0b11111100'01111111,
@@ -316,8 +318,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10001111'11100010,
     0b10000000'00000010,
     0b11111111'11111110
-  };
-  static const Icon user_small = {
+  });
+  static constexpr GUI::Icon favzip_small(16, 14, favzip_small_bits);
+  static constexpr auto user_small_bits = std::to_array<uInt32>({
     0b00000000'00000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -332,8 +335,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10001111'11100010,
     0b10011110'11110010,
     0b11011000'00110110
-  };
-  static const Icon recent_small = {
+  });
+  static constexpr GUI::Icon user_small(16, 14, user_small_bits);
+  static constexpr auto recent_small_bits = std::to_array<uInt32>({
     0b00000000'00000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -348,8 +352,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10001111'11100010,
     0b10000011'10000010,
     0b11111111'11111110
-  };
-  static const Icon popular_small = {
+  });
+  static constexpr GUI::Icon recent_small(16, 14, recent_small_bits);
+  static constexpr auto popular_small_bits = std::to_array<uInt32>({
     0b00000000'00000000,
     0b11111000'00000000,
     0b11111100'00000000,
@@ -364,9 +369,10 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b10000011'10000010,
     0b10000001'00000010,
     0b11111111'11111110
-  };
+  });
+  static constexpr GUI::Icon popular_small(16, 14, popular_small_bits);
 
-  static const Icon favrom_large = {
+  static constexpr auto favrom_large_bits = std::to_array<uInt32>({
     0b00000000000'00000100000,
     0b00000011111'11101110000,
     0b00000011111'11001110000,
@@ -389,8 +395,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000111110'11111000110,
     0b11111110111'11011111110,
     0b11111100111'11001111110
-  };
-  static const Icon favdir_large = {
+  });
+  static constexpr GUI::Icon favrom_large(24, 22, favrom_large_bits);
+  static constexpr auto favdir_large_bits = std::to_array<uInt32>({
     0b00000000000'00000100000,
     0b11111110000'00001110000,
     0b11111111000'00001110000,
@@ -413,8 +420,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon favzip_large = {
+  });
+  static constexpr GUI::Icon favdir_large(24, 22, favdir_large_bits);
+  static constexpr auto favzip_large_bits = std::to_array<uInt32>({
     0b00000000000'00000100000,
     0b11111110000'00001110000,
     0b11111111000'00001110000,
@@ -437,8 +445,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon user_large = {
+  });
+  static constexpr GUI::Icon favzip_large(24, 22, favzip_large_bits);
+  static constexpr auto user_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -461,8 +470,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon recent_large = {
+  });
+  static constexpr GUI::Icon user_large(24, 22, user_large_bits);
+  static constexpr auto recent_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -485,8 +495,9 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
-  static const Icon popular_large = {
+  });
+  static constexpr GUI::Icon recent_large(24, 22, recent_large_bits);
+  static constexpr auto popular_large_bits = std::to_array<uInt32>({
     0b00000000000'00000000000,
     0b11111110000'00000000000,
     0b11111111000'00000000000,
@@ -509,13 +520,14 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110
-  };
+  });
+  static constexpr GUI::Icon popular_large(24, 22, popular_large_bits);
   static constexpr auto NLT = static_cast<int>(IconType::numLauncherTypes);
-  static const Icon* const small_icons[NLT] = {
+  static constexpr const GUI::Icon* small_icons[NLT] = {
     &favrom_small, &favdir_small, &favzip_small,
     &user_small, &recent_small, &popular_small
   };
-  static const Icon* const large_icons[NLT] = {
+  static constexpr const GUI::Icon* large_icons[NLT] = {
     &favrom_large, &favdir_large, &favzip_large,
     &user_large, &recent_large, &popular_large
   };

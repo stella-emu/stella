@@ -21,8 +21,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4KWidget::Cartridge4KWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge4K& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+      Cartridge4K& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart)
 {
   initialize();
 }

@@ -15,9 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
 #include "Cart3EPlus.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartEnhancedWidget.hxx"
 
 using Common::Base;
@@ -25,8 +27,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlusWidget::Cartridge3EPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, Cartridge3EPlus& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      Cartridge3EPlus& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCart3EP{cart}
 {
   initialize();
@@ -57,84 +59,111 @@ string Cartridge3EPlusWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlusWidget::bankSelect(int& ypos)
+void Cartridge3EPlusWidget::createBankWidgets()
 {
   const ByteSpan image = myCart.getImage();
-  const int VGAP = myFontHeight / 4;
   VariantList banktype;
 
   VarList::push_back(banktype, "ROM", "ROM");
   VarList::push_back(banktype, "RAM", "RAM");
 
-  myBankWidgets = std::make_unique<PopUpWidget* []>(bankSegs());
+  // The segment selectors sit in rows of their own rather than under the ROM
+  // info fields, so none of them joins the tab's label column (myLabelColumn):
+  // they align in groups of their own — see layoutBankSelect()
+  myBankWidgets.resize(bankSegs());
 
-  ypos -= VGAP * 2;
+  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
+                              image[0x400 - 4]) / 0x1000) * 0x1000;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
-    int xpos = 2, ypos_s = ypos + 1, width = 0;
     VariantList items;
+    const size_t bank_off = static_cast<size_t>(seg) * 2;
 
-    const string segLabel = std::format("Set segment {} as ", seg);
-    new StaticTextWidget(_boss, _font, xpos, ypos, segLabel);
-    ypos += myLineHeight + VGAP * 2;
-
-    xpos += _font.getMaxCharWidth() * 2;
+    mySegLbl[seg] = new LabelWidget(_boss, _font,
+        std::format("Set segment {} as", seg));
 
     CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
-                                      seg, items, width);
-    myBankWidgets[seg] =
-      new PopUpWidget(_boss, _font, xpos, ypos - 2, width,
-                      myLineHeight, items, "Bank ", 0, kBankChanged);
+                                      seg, items);
+    myBankWidgetLbl[seg] = new LabelWidget(_boss, _font, "Bank");
+    myBankWidgets[seg] = new PopUpWidget(_boss, _font, items,
+                                         CartridgeEnhancedWidget::Cmd::BankChanged);
     myBankWidgets[seg]->setID(seg);
     myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
-    xpos += myBankWidgets[seg]->getWidth();
-    myBankType[seg] =
-      new PopUpWidget(_boss, _font, xpos, ypos - 2, 3 * _font.getMaxCharWidth(),
-                      myLineHeight, banktype, " of ", 0, kRomRamChanged);
+    myBankTypeLbl[seg] = new LabelWidget(_boss, _font, "of");
+    myBankType[seg] = new PopUpWidget(_boss, _font, banktype, Cmd::RomRamChanged);
     myBankType[seg]->setID(seg);
     myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
 
-    xpos = myBankType[seg]->getRight() + _font.getMaxCharWidth();
-
     // add "Commit" button (why required?)
-    myBankCommit[seg] = new ButtonWidget(_boss, _font, xpos, ypos - 4,
-                                         _font.getStringWidth(" Commit "), myButtonHeight,
-                                         "Commit", kChangeBank);
+    myBankCommit[seg] = new ButtonWidget(_boss, _font,
+                                         "Commit", Cmd::ChangeBank);
     myBankCommit[seg]->setID(seg);
     myBankCommit[seg]->setTarget(this);
     addFocusWidget(myBankCommit[seg]);
 
-    const int xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
-
-    const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
-                                image[0x400 - 4]) / 0x1000) * 0x1000;
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
-    const string addrLabel1 = std::format("${}-${}", Base::hex4(addr1),
-                                          Base::hex4(addr1 + 0x1FF));
-    const auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2,
-                                         addrLabel1);
-
-    const int xoffset = t->getRight() + _font.getMaxCharWidth();
-    const size_t bank_off = static_cast<size_t>(seg) * 2;
-    myBankState[bank_off] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
-                                               _w - xoffset - 10, myLineHeight, "");
+    myAddrLbl[bank_off] = new LabelWidget(_boss, _font,
+        std::format("${}-${}", Base::hex4(addr1), Base::hex4(addr1 + 0x1FF)));
+    myBankState[bank_off] = new EditTextWidget(_boss, _font, 1);
     myBankState[bank_off]->setEditable(false, true);
-    ypos_s += myLineHeight + VGAP;
 
-    const string addrLabel2 = std::format("${}-${}", Base::hex4(addr2),
-                                          Base::hex4(addr2 + 0x1FF));
-    new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, addrLabel2);
-
-    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font,
-        xoffset, ypos_s, _w - xoffset - 10, myLineHeight, "");
+    myAddrLbl[bank_off + 1] = new LabelWidget(_boss, _font,
+        std::format("${}-${}", Base::hex4(addr2), Base::hex4(addr2 + 0x1FF)));
+    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font, 1);
     myBankState[bank_off + 1]->setEditable(false, true);
+  }
+}
 
-    ypos += myLineHeight + VGAP * 4;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using GUI::LabeledControl;
+  using Dir = BoxLayout::Dir;
+
+  // Each kind of control aligns down its own column: the bank and type pop-ups'
+  // labels, and the address labels beside the state fields
+  std::vector<LabeledControl> banks, types, addrs;
+  for(auto* label: myBankWidgetLbl)
+    banks.emplace_back(label);
+  for(auto* label: myBankTypeLbl)
+    types.emplace_back(label);
+  for(auto* label: myAddrLbl)
+    addrs.emplace_back(label);
+  GUI::alignLabels(banks);
+  GUI::alignLabels(types);
+  GUI::alignLabels(addrs);
+
+  for(uInt32 seg = 0; seg < bankSegs(); ++seg)
+  {
+    const size_t off = static_cast<size_t>(seg) * 2;
+
+    // The bank / type / commit controls along one row
+    auto controls = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth);
+    controls->addAuto(labeledRow(myBankWidgetLbl[seg], myBankWidgets[seg]));
+    controls->addAuto(labeledRow(myBankTypeLbl[seg], myBankType[seg]));
+    controls->addAuto(anchoredItem(myBankCommit[seg]));
+
+    // The two address rows on the right, each an address label + filling field
+    auto addrCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+    addrCol->addAuto(labeledRow(myAddrLbl[off], myBankState[off], 0, 0, true));
+    addrCol->addAuto(labeledRow(myAddrLbl[off + 1], myBankState[off + 1], 0, 0, true));
+
+    // The controls on the left (top row), address rows filling the right
+    auto block = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 2);
+    block->addAuto(std::move(controls));
+    block->addStretch(std::move(addrCol));
+
+    col.addAuto(anchoredItem(mySegLbl[seg]));
+    col.addAuto(std::move(block));
+    col.addSpace(VGAP * 2);
   }
 }
 
@@ -146,15 +175,15 @@ void Cartridge3EPlusWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
-                                          int cmd, int data, int id)
+void Cartridge3EPlusWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                          int data, int id)
 {
   const uInt16 segment = id;
 
   switch(cmd)
   {
-    case kBankChanged:
-    case kRomRamChanged:
+    case CartridgeEnhancedWidget::Cmd::BankChanged:
+    case Cmd::RomRamChanged:
     {
       const bool isROM = myBankType[segment]->getSelectedTag() == "ROM";
       const int bank = myBankWidgets[segment]->getSelected();
@@ -164,7 +193,7 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
         (!isROM && std::cmp_less(bank, myCart.ramBankCount())));
       break;
     }
-    case kChangeBank:
+    case Cmd::ChangeBank:
     {
       // Ignore bank if either number or type hasn't been selected
       if(myBankWidgets[segment]->getSelected() < 0 ||

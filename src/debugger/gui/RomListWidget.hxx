@@ -31,26 +31,26 @@ class DisasmColorsDialog;
 class RomListWidget : public EditableWidget
 {
   public:
-    enum {
-      kBPointChangedCmd  = 'RLbp',  // 'data' will be disassembly line number,
-                                    // 'id' will be the checkbox state
-      kRomChangedCmd     = 'RLpr',  // 'data' will be disassembly line number
-                                    // 'id' will be the Base::Format of the data
-      kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
-      kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
-      kSetTimerCmd       = 'STtm',
-      kDisassembleCmd    = 'REds',
-      kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
-      kPCAddressesCmd    = 'PCad',  // 'data' will be boolean
-      kGfxAsBinaryCmd    = 'GFXb',  // 'data' will be boolean
-      kAddrRelocationCmd      = 'ADre',  // 'data' will be boolean
-      kDisasmColorsCmd        = 'DCop',  // open disasm colours dialog
-      kDisasmColorsChangedCmd = 'DCch'   // disasm colour map updated; reload and redraw
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BreakpointChanged   = GuiCmd::of("RomListWidget.BreakpointChanged"),
+        RomChanged          = GuiCmd::of("RomListWidget.RomChanged"),
+        SetPC               = GuiCmd::of("RomListWidget.SetPC"),
+        RunToPC             = GuiCmd::of("RomListWidget.RunToPC"),
+        SetTimer            = GuiCmd::of("RomListWidget.SetTimer"),
+        Disassemble         = GuiCmd::of("RomListWidget.Disassemble"),
+        TentativeCode       = GuiCmd::of("RomListWidget.TentativeCode"),
+        PCAddresses         = GuiCmd::of("RomListWidget.PCAddresses"),
+        GfxAsBinary         = GuiCmd::of("RomListWidget.GfxAsBinary"),
+        AddressRelocation   = GuiCmd::of("RomListWidget.AddressRelocation"),
+        DisasmColors        = GuiCmd::of("RomListWidget.DisasmColors"),
+        DisasmColorsChanged = GuiCmd::of("RomListWidget.DisasmColorsChanged");
     };
 
   public:
-    RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                    int x, int y, int w, int h);
+    // lfont is only for the pop-up dialogs this widget owns; dfont is the
+    // disassembly font, and everything in the list is drawn and measured in it
+    RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& dfont);
     ~RomListWidget() override = default;
 
     void setList(const CartDebug::Disassembly& disasm);
@@ -71,8 +71,21 @@ class RomListWidget : public EditableWidget
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     bool handleEvent(Event::Type e) override;
 
+    // Reflow support so the owning dialog's layout() can move/resize the list
+    // in place (used by the resizable debugger).  These grow the checkbox pool,
+    // reposition the sibling scrollbar and recompute the row count / column
+    // widths from the live geometry and font.
+    using EditableWidget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setWidth(int w) override;
+    void setHeight(int h) override;
+    // Reports the full footprint (list area + scrollbar), so setWidth() is its
+    // inverse (mirrors ListWidget)
+    int getWidth() const override;
+    void refreshFont() override;
+
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
     Common::Rect getLineRect() const;
@@ -101,6 +114,15 @@ class RomListWidget : public EditableWidget
   private:
     void scrollToCurrent(int item);
     Common::Point getToolTipIndex(const Common::Point& pos) const;
+
+    // Grow the checkbox pool to one per visible row (grow-only; widgets can't
+    // be removed) and position every checkbox against the list's current
+    // origin, hiding any beyond the visible row count
+    void reflowCheckboxes();
+
+    // (Re)compute the label and bytes column widths from the full footprint
+    // width and the disassembly font (wider windows get wider label columns)
+    void recalcColumnWidths(int w);
 
   private:
     unique_ptr<RomListSettings>    myMenu;

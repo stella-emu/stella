@@ -51,7 +51,53 @@ Stella is a classic emulation architecture centered on `OSystem` owning everythi
 
 **Debugger** (`src/debugger/`): Interactive debugger with DiStella disassembler, breakpoints, watchpoints, expression parser (yacc/bison in `src/debugger/yacc/`), and dedicated GUI dialogs in `src/debugger/gui/`.
 
-**GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc.
+**GUI** (`src/gui/`): Dialog/widget system for launcher, options, high scores, etc. New dialogs use the relative layout engine (`src/gui/Layout.*`) via a create-only constructor plus a `layout()` override — see [src/gui/DIALOGS.md](src/gui/DIALOGS.md) for the full guide.
+
+#### Before touching `src/gui/` or `src/debugger/gui/` — read this first
+
+Every dialog in `src/gui/` is already converted to the layout engine, so there is a
+precedent for whatever you are about to do. These rules are not style preferences;
+ignoring them has repeatedly cost whole sessions of rework.
+
+1. **Read the exemplar.** Open the nearest already-converted file and follow its
+   *shape* before designing anything. Notes and summaries give you the vocabulary,
+   not the design.
+2. **No new seam without asking.** Do not invent a virtual, protocol, collector or
+   helper that has no counterpart in `src/gui/`. If the existing seams cannot
+   express what you need, that is a question to ask, not a design to make.
+3. **State intent, not pixels.** No pixel arithmetic, no `setPos()` after a layout,
+   no hand-summed widths, no measured specimen strings
+   (`getStringWidth("Manufacturer ")`), no labels padded with spaces to fake
+   alignment. Extend the engine rather than working around it.
+4. **One `align*` call per group**, made by the code that *builds* the group
+   (`alignLabels` / `alignPopUps` / `alignButtons` / `alignTracks`). Size cells with
+   `addAuto()`.
+5. **Widgets own their size.** A constructor never bakes geometry: if a widget can
+   derive it (button, pop-up, edit field, slider, static text), don't pass it. All
+   geometry lives in `layout()` / `reflow()`.
+
+The debugger tab widgets in `src/debugger/gui/` are `Widget`s, not `Dialog`s. The
+five rules above still hold, but the shape and exemplars differ, so also obey:
+
+6. **Create-only constructor + `reflow()`.** Build every child at `0, 0` in the
+   constructor, which *ends* with `reflow()`. Add
+   `setArea(x,y,w,h){ Widget::setArea(...); reflow(); }`. `reflow()` reads `_x/_y/_w`,
+   builds a `GUI::BoxLayout`/`GridLayout` tree and `doLayout()`s it. Do **not** add a
+   `max_w`/size constructor parameter (the old `CpuWidget`/`RamWidget` style).
+7. **The exemplars are the debugger files**, not the `src/gui/` dialogs:
+   `CartRamWidget::reflow` and `RomWidget::reflow` (the `setArea`/`reflow` shape),
+   `CartDebugWidget` (skeleton + one `layoutContent` hook), `CpuWidget`
+   (`VAlign::Baseline` label + `DataGrid` rows). Open one before designing.
+8. **Labels beside a `DataGrid`'s rows** use the `RamWidget` `gridLabels` idiom (a
+   vertical box at the grid's row pitch, offset by
+   `grid->firstTextY() - label->firstTextY()`), never an `N*fontWidth` column.
+9. **A composite that hosts sub-widgets** (`ControllerWidget`, `CartDebugWidget`)
+   shares one seam: the base owns the skeleton plus a virtual
+   `layoutContent(GUI::BoxLayout&)` hook. Don't invent a second one — that is a
+   question to ask (rule 2).
+10. **The root box carries the font-derived borders as its margins**
+    (`HBORDER = fontWidth*1.25`, `VBORDER = fontHeight/2`, `VGAP = fontHeight/4`),
+    computed from `_font`.
 
 **Common utilities** (`src/common/`): Audio pipeline (`AudioQueue`, `AudioSettings`), filesystem abstraction (`FSNode`), state/rewind managers, high scores, palette, TV filters (`television/`), SDL blitters (`sdl_blitter/`), persistence layer (`repository/` — JSON, properties, SQLite).
 

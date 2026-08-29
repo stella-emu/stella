@@ -28,14 +28,18 @@
 class PlusRomsSetupDialog: public InputTextDialog
 {
   public:
+    // Sets up the Nickname (editable) and Device-ID (read-only) fields
     PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~PlusRomsSetupDialog() override = default;
 
+    // Populates the fields from settings
     void loadConfig() override;
+    // Saves the nickname back to settings
     void saveConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // Accept saves and leaves menu mode; Close/Cancel just leaves menu mode
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported

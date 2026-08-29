@@ -23,6 +23,7 @@ class Television;
 
 namespace GUI {
   class Font;
+  class Icon;
 }  // namespace GUI
 namespace Common {
   struct Rect;
@@ -132,29 +133,34 @@ class FBSurface
                           ColorId color, ColorId shadowColor = kNone);
 
     /**
-      This method should be called to draw the bitmap image.
+      Draw an icon.  It carries its own size, so there is nothing to describe
+      to us about it beyond where it goes and what colour to use.
 
-      @param bitmap The data to draw
+      @param icon   The icon to draw
       @param x      The x coordinate
       @param y      The y coordinate
-      @param color  The color of the bitmap
-      @param h      The height of the data image
+      @param color  The color to draw it in
     */
-    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
-                            uInt32 h = 8);
+    virtual void drawIcon(const GUI::Icon& icon, uInt32 x, uInt32 y,
+                          ColorId color);
 
     /**
-      This method should be called to draw the bitmap image.
+      Draw an arrow, sized by the caller rather than picked from a fixed set of
+      bitmaps -- so it follows the font instead of stepping.
 
-      @param bitmap The data to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the bitmap
-      @param w      The width of the data image
-      @param h      The height of the data image
+      @param x          The x coordinate
+      @param y          The y coordinate
+      @param w          The width of the arrow
+      @param h          The height of the arrow
+      @param dir        Which way it points
+      @param color      The color to draw it in
+      @param thickness  The width of the stroke, or 0 for a filled arrow.  A
+                        stroke runs at 45 degrees and is clipped to the box; a
+                        filled one is a triangle spanning the whole box
     */
-    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
-                            uInt32 w, uInt32 h);
+    virtual void drawArrow(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           ArrowDirection dir, ColorId color,
+                           uInt32 thickness = 0);
 
     /**
       This method should be called to convert and copy a given row of pixel
@@ -216,7 +222,6 @@ class FBSurface
       @param underline    Whether to underline the link
       @return       Number of lines drawn
     */
-
     virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
                            int w, int h, ColorId color,
                            TextAlign align = TextAlign::Left,
@@ -244,7 +249,6 @@ class FBSurface
       @param underline    Whether to underline the link
 
       @return    x coordinate of end of string
-
     */
     virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
                            int w, ColorId color, TextAlign align = TextAlign::Left,

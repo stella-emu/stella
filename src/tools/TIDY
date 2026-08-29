@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
+time run-clang-tidy-22 -quiet -header-filter=\(.*\.hxx\) -quiet \
 -checks=*,\
 -abseil*,\
 -altera*,\
@@ -29,7 +29,6 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -cppcoreguidelines-pro-type-const-cast,\
 -cppcoreguidelines-pro-type-reinterpret-cast,\
 -cppcoreguidelines-pro-type-static-cast-downcast,\
--cppcoreguidelines-pro-type-vararg,\
 -cppcoreguidelines-use-enum-class,\
 -google-build-using-namespace,\
 -google-default-arguments,\
@@ -49,7 +48,6 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -misc-no-recursion,\
 -misc-non-private-member-variables-in-classes,\
 -misc-unused-parameters,\
--modernize-avoid-bind,\
 -modernize-avoid-c-arrays,\
 -modernize-pass-by-value,\
 -modernize-use-designated-initializers,\
@@ -73,6 +71,19 @@ time run-clang-tidy-22 -header-filter=\(.*\.hxx\) \
 -readability-redundant-access-specifiers,\
 -readability-simplify-boolean-expr,\
 -readability-suspicious-call-argument\
- > ~/tmp/TODO
+ | awk '
+BEGIN { header = 1 }
+/^\[/ {
+  header = 0
+  if (block ~ /warning:|error:/) printf "%s", block
+  block = $0 "\n"
+  next
+}
+header { print; next }
+{ block = block $0 "\n" }
+END {
+  if (block ~ /warning:|error:/) printf "%s", block
+}
+' > ~/tmp/TODO
 
 exit

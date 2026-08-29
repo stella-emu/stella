@@ -21,6 +21,7 @@
 #include "Switches.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
+#include "Layout.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "OSystem.hxx"
@@ -34,75 +35,46 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = _font.getStringWidth("Time Machine On") + Dialog::fontWidth() * 2,
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int HGAP      = Dialog::buttonGap(),
-            rowHeight = buttonHeight + VGAP;
-  // Set real dimensions
-  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
-  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
-  ButtonWidget* bw = nullptr;
+  // Only the button size is needed to create the widgets; layout() computes
+  // _w/_h and positions everything from the current font
   WidgetArray wid;
-  int xoffset = HBORDER, yoffset = VBORDER + _th;
 
-  const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
+  // Widgets are only created here (at placeholder geometry); layout() positions
+  // them via a GridLayout.  myButtons keeps them in grid order (column-major).
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  const auto ADD_CD_BUTTON = [&](string_view label, GuiCmd::Code cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
-    auto* b = new ButtonWidget(this, _font, xoffset, yoffset,
-        buttonWidth, buttonHeight, label, cmd);
+    auto* b = new ButtonWidget(this, _font, label, cmd);
     b->setToolTip(event1, event2);
-    yoffset += buttonHeight + VGAP;
+    myButtons.push_back(b);
+    wid.push_back(b);
     return b;
   };
 
   // Column 1
-  bw = ADD_CD_BUTTON(GUI::SELECT, kSelectCmd, Event::ConsoleSelect);
-  wid.push_back(bw);
-  bw = ADD_CD_BUTTON("Reset", kResetCmd, Event::ConsoleReset);
-  wid.push_back(bw);
-  myColorButton = ADD_CD_BUTTON("", kColorCmd, Event::ConsoleColor, Event::ConsoleBlackWhite);
-  wid.push_back(myColorButton);
-  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd,
+  ADD_CD_BUTTON(GUI::SELECT, Cmd::Select, Event::ConsoleSelect);
+  ADD_CD_BUTTON("Reset", Cmd::Reset, Event::ConsoleReset);
+  myColorButton = ADD_CD_BUTTON("", Cmd::Color, Event::ConsoleColor, Event::ConsoleBlackWhite);
+  myLeftDiffButton = ADD_CD_BUTTON("", Cmd::LeftDifficulty,
     Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB);
-  wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd,
+  myRightDiffButton = ADD_CD_BUTTON("", Cmd::RightDifficulty,
     Event::ConsoleRightDiffA, Event::ConsoleRightDiffB);
-  wid.push_back(myRightDiffButton);
 
   // Column 2
-  xoffset += buttonWidth + HGAP;
-  yoffset = VBORDER + _th;
-
-  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd, Event::SaveState);
-  wid.push_back(mySaveStateButton);
-  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd, Event::NextState);
-  wid.push_back(myStateSlotButton);
-  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd, Event::LoadState);
-  wid.push_back(myLoadStateButton);
-  bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd, Event::TakeSnapshot);
-  wid.push_back(bw);
-  myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd, Event::TimeMachineMode);
-  wid.push_back(myTimeMachineButton);
-  bw = ADD_CD_BUTTON("Exit Game", kExitCmd, Event::ExitMode);
-  wid.push_back(bw);
+  mySaveStateButton = ADD_CD_BUTTON("", Cmd::SaveState, Event::SaveState);
+  myStateSlotButton = ADD_CD_BUTTON("Change Slot", Cmd::StateSlot, Event::NextState);
+  myLoadStateButton = ADD_CD_BUTTON("", Cmd::LoadState, Event::LoadState);
+  ADD_CD_BUTTON("Snapshot", Cmd::Snapshot, Event::TakeSnapshot);
+  myTimeMachineButton = ADD_CD_BUTTON("", Cmd::TimeMachine, Event::TimeMachineMode);
+  ADD_CD_BUTTON("Exit Game", Cmd::Exit, Event::ExitMode);
 
   // Column 3
-  xoffset += buttonWidth + HGAP;
-  yoffset = VBORDER + _th;
-
-  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd, Event::FormatIncrease);
-  wid.push_back(myTVFormatButton);
-  myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd, Event::PaletteIncrease);
-  wid.push_back(myPaletteButton);
-  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd, Event::TogglePhosphor);
-  wid.push_back(myPhosphorButton);
-  mySoundButton = ADD_CD_BUTTON("", kSoundCmd, Event::SoundToggle);
-  wid.push_back(mySoundButton);
-  bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd, Event::ReloadConsole);
-  wid.push_back(bw);
+  myTVFormatButton = ADD_CD_BUTTON("", Cmd::Format, Event::FormatIncrease);
+  myPaletteButton = ADD_CD_BUTTON("", Cmd::Palette, Event::PaletteIncrease);
+  myPhosphorButton = ADD_CD_BUTTON("", Cmd::Phosphor, Event::TogglePhosphor);
+  mySoundButton = ADD_CD_BUTTON("", Cmd::Sound, Event::SoundToggle);
+  ADD_CD_BUTTON("Reload ROM", Cmd::ReloadRom, Event::ReloadConsole);
 
   addToFocusList(wid);
 
@@ -111,6 +83,52 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   processCancelWithoutWidget(true);
 
   setHelpAnchor("CommandMenu");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::layout()
+{
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+
+  const int VBORDER = Dialog::vBorder();
+  const int HBORDER = Dialog::hBorder();
+  const int VGAP    = Dialog::vGap();
+  const int HGAP    = Dialog::buttonGap();
+
+  // These buttons are RE-LABELLED as the console state changes (loadConfig), so
+  // they cannot size themselves: they must all be as wide as the widest label any
+  // of them can ever show, or they would resize under the user
+  const int buttonWidth = ButtonWidget::calcWidth(_font, "Time Machine On");
+  for(auto* b: myButtons)
+    b->setWidth(buttonWidth);
+
+  // Three columns of buttons; columns 1 and 3 have five rows, column 2 has six
+  static constexpr int COLS = 3, ROWS = 6;
+  static constexpr std::array<int, COLS> colRows{5, 6, 5};
+
+  auto grid = std::make_unique<GridLayout>(COLS, ROWS, HGAP, VGAP,
+                                           HBORDER, VBORDER);
+  for(int c = 0; c < COLS; ++c)
+    grid->columnAuto(c);
+  for(int r = 0; r < ROWS; ++r)
+    grid->rowAuto(r);
+
+  // myButtons is stored column-major; place each in its cell
+  size_t idx = 0;
+  for(int c = 0; c < COLS; ++c)
+    for(int r = 0; r < colRows[c]; ++r)
+      grid->place(c, r, anchoredItem(myButtons[idx++]));
+
+  // The dialog is exactly as large as the button grid asks to be
+  const Common::Size natural = grid->naturalSize();
+
+  _w = static_cast<int>(natural.w);
+  _h = _th + static_cast<int>(natural.h);
+
+  // Position the grid in the dialog area below the title bar
+  grid->doLayout(0, _th, _w, _h - _th);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,7 +155,7 @@ void CommandDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CommandDialog::handleCommand(CommandSender* sender, int cmd,
+void CommandDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                   int data, int id)
 {
   bool consoleCmd = false, stateCmd = false;
@@ -146,87 +164,87 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     // Column 1
-    case kSelectCmd:
+    case Cmd::Select:
       event = Event::ConsoleSelect;
       consoleCmd = true;
       break;
 
-    case kResetCmd:
+    case Cmd::Reset:
       event = Event::ConsoleReset;
       consoleCmd = true;
       break;
 
-    case kColorCmd:
+    case Cmd::Color:
       event = Event::ConsoleColorToggle;
       consoleCmd = true;
       break;
 
-    case kLeftDiffCmd:
+    case Cmd::LeftDifficulty:
       event = Event::ConsoleLeftDiffToggle;
       consoleCmd = true;
       break;
 
-    case kRightDiffCmd:
+    case Cmd::RightDifficulty:
       event = Event::ConsoleRightDiffToggle;
       consoleCmd = true;
       break;
 
     // Column 2
-    case kSaveStateCmd:
+    case Cmd::SaveState:
       event = Event::SaveState;
       consoleCmd = true;
       break;
 
-    case kStateSlotCmd:
+    case Cmd::StateSlot:
     {
       event = Event::NextState;
       stateCmd = true;
       updateSlot((instance().state().currentSlot() + 1) % 10);
       break;
     }
-    case kLoadStateCmd:
+    case Cmd::LoadState:
       event = Event::LoadState;
       consoleCmd = true;
       break;
 
-    case kSnapshotCmd:
+    case Cmd::Snapshot:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::TakeSnapshot);
       break;
 
-    case kTimeMachineCmd:
+    case Cmd::TimeMachine:
       instance().eventHandler().leaveMenuMode();
       instance().toggleTimeMachine();
       break;
 
-    case kExitCmd:
+    case Cmd::Exit:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::ExitGame);
       break;
 
     // Column 3
-    case kFormatCmd:
+    case Cmd::Format:
       instance().console().selectFormat();
       updateTVFormat();
       break;
 
-    case kPaletteCmd:
+    case Cmd::Palette:
       instance().frameBuffer().television().paletteHandler().cyclePalette();
       updatePalette();
       break;
 
-    case kPhosphorCmd:
+    case Cmd::Phosphor:
       instance().eventHandler().leaveMenuMode();
       instance().console().togglePhosphor();
       break;
 
-    case kSoundCmd:
+    case Cmd::Sound:
     {
       instance().eventHandler().leaveMenuMode();
       instance().sound().toggleMute();
       break;
     }
-    case kReloadRomCmd:
+    case Cmd::ReloadRom:
       instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::ReloadConsole);
       break;

@@ -23,13 +23,13 @@ Joy2BPlus::Joy2BPlus(Jack jack, const Event& event, const System& system)
 {
   if(myJack == Jack::Left)
   {
-    myButtonCEvent = Event::LeftJoystickFire5;
-    myButton3Event = Event::LeftJoystickFire9;
+    myButtonCEvent = Event::LeftJoystickFire9;
+    myButton3Event = Event::LeftJoystickFire5;
   }
   else
   {
-    myButtonCEvent = Event::RightJoystickFire5;
-    myButton3Event = Event::RightJoystickFire9;
+    myButtonCEvent = Event::RightJoystickFire9;
+    myButton3Event = Event::RightJoystickFire5;
   }
 
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());

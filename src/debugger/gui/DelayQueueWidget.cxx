@@ -29,14 +29,25 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueueWidget::DelayQueueWidget(
     GuiObject* boss,
-    const GUI::Font& font,
-    int x, int y
-  ) : Widget(boss, font, x, y, 0, 0)
+    const GUI::Font& font
+  ) : Widget(boss, font)
 {
   _textcolor = kTextColor;
 
-  _w = 20 * font.getMaxCharWidth() + 6;
-  _h = static_cast<int>(myLines.size() * font.getLineHeight() + 6);
+  // Called from our own ctor, but this dispatches to our own override
+  // regardless -- DelayQueueWidget has no subclasses to be incomplete
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
+  refreshFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DelayQueueWidget::refreshFont()
+{
+  Widget::refreshFont();
+
+  // Twenty characters wide, one row per line I show
+  _w = 20 * _font.getMaxCharWidth() + 6;
+  _h = static_cast<int>(myLines.size() * _font.getLineHeight() + 6);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

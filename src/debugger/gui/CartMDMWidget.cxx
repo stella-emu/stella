@@ -17,15 +17,25 @@
 
 #include "CartMDM.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "CartMDMWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDMWidget::CartridgeMDMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeMDM& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+      CartridgeMDM& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, cart),
     myCartMDM{cart}
 {
+  // A single-bank cart has no bank selector, so nothing to lock either
+  if(myCart.romBankCount() > 1)
+  {
+    myBankDisabled = new CheckboxWidget(_boss, _font,
+                                        "Bankswitching is locked/disabled",
+                                        Cmd::BankDisabled);
+    myBankDisabled->setTarget(this);
+    addFocusWidget(myBankDisabled);
+  }
   initialize();
 }
 
@@ -42,27 +52,31 @@ string CartridgeMDMWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::bankSelect(int& ypos)
+void CartridgeMDMWidget::layoutBankSelect(GUI::BoxLayout& col) const
 {
-  CartridgeEnhancedWidget::bankSelect(ypos);
-  if(myCart.romBankCount() > 1)
-  {
-    const int xpos = myBankWidgets[0]->getRight() + 20;
-    ypos = myBankWidgets[0]->getTop();
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using GUI::indentedItem;
 
-    myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
-                                        "Bankswitching is locked/disabled",
-                                        kBankDisabled);
-    myBankDisabled->setTarget(this);
-    addFocusWidget(myBankDisabled);
-  }
+  // A single-bank cart has neither a selector nor a checkbox to lock it with
+  if(myBankWidgets.empty())
+    return;
+
+  col.addAuto(labeledRow(myBankWidgetLabels[0], myBankWidgets[0]));
+
+  // The lock checkbox goes UNDER the selector rather than beside it: its label is
+  // long and the selector's width follows the bank labels, so a single row would
+  // crowd the right border on a cart with many banks.  It is an option BELONGING
+  // to the selector, so it is indented under it
+  col.addAuto(indentedItem(myBankDisabled, _fontWidth * 2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::loadConfig()
 {
-  if(myBankWidgets != nullptr)
+  if(!myBankWidgets.empty())
   {
+    myBankWidgetLabels[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankDisabled->setState(myCartMDM.myBankingDisabled);
   }
@@ -70,12 +84,13 @@ void CartridgeMDMWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDMWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+void CartridgeMDMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                       int data, int id)
 {
-  if(cmd == kBankDisabled)
+  if(cmd == Cmd::BankDisabled)
   {
     myCartMDM.myBankingDisabled = myBankDisabled->getState();
+    myBankWidgetLabels[0]->setEnabled(!myCartMDM.myBankingDisabled);
     myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
   }
   else

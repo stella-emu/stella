@@ -43,12 +43,22 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
 
   // Initialize SDL context
   SDL_SetHint("SDL_WINDOWS_DPI_AWARENESS", "unaware");
+  // X11 _NET_WM_SYNC_REQUEST: the WM waits for our frame before advancing an
+  // interactive resize, so a left/top edge drag cannot outrun the contents.
+  // Named literally, since SDL_HINT_VIDEO_X11_ENABLE_XSYNC_EXT only exists
+  // from SDL 3.4.10
+  SDL_SetHint("SDL_VIDEO_X11_ENABLE_XSYNC_EXT", "1");
   if(!SDL_InitSubSystem(SDL_INIT_VIDEO))
   {
     throw std::runtime_error(
       std::format("ERROR: Couldn't initialize SDL: {}", SDL_GetError()));
   }
   Logger::debug("FBBackendSDL::FBBackendSDL SDL_Init()");
+
+  // Resolve the live-resize facts now: this runs before any other subsystem
+  // (see the note in OSystem::create), and X11 and Wayland disagree
+  LiveResize::initialize(SDL_GetCurrentVideoDriver());
+  Logger::info(LiveResize::describe());
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL object)
@@ -152,6 +162,8 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
     { "gpu",        "GPU"         },
     { "software",   "Software"    }
   }};
+
+  VarList::push_back(renderers, "Auto", "auto");
 
   const int numDrivers = SDL_GetNumRenderDrivers();
   for(int i = 0; i < numDrivers; ++i)
@@ -263,17 +275,16 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
   const bool adaptRefresh = false;
 #endif
 
-  // Don't re-create the window if its display and size hasn't changed,
-  // as it's not necessary, and causes flashing in fullscreen mode
+  // The window only needs to be recreated when the fullscreen state actually
+  // toggles (windowed <-> fullscreen), the target display changes, or the
+  // refresh rate is being adapted
   if(myWindow)
   {
     const uInt32 d = getCurrentDisplayID();
-    int w{0}, h{0};
+    const bool wasFullscreen =
+        (SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN) != 0;
 
-    SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayId ||
-       std::cmp_not_equal(w, mode.screenS.w) ||
-       std::cmp_not_equal(h, mode.screenS.h) || adaptRefresh)
+    if(d != displayId || adaptRefresh || mode.fullscreen != wasFullscreen)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);
@@ -285,12 +296,28 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
 
   if(myWindow)
   {
-    // Even though window size stayed the same, the title may have changed
+    // Reuse the existing window.  In windowed mode resize it to the new mode's
+    // size (clearing any minimum left over from a resizable launcher/debugger
+    // mode first, so a smaller mode can shrink to fit; the window's owner
+    // re-applies its own minimum afterwards).  In fullscreen the window already
+    // spans the display and the fullscreen block below keeps it there, so we
+    // leave its size/position alone and let the src/dst rects resize the image.
     SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
-    SDL_SetWindowPosition(myWindow, posX, posY);
+    if(!mode.fullscreen)
+    {
+      SDL_SetWindowMinimumSize(myWindow, 0, 0);
+      SDL_SetWindowSize(myWindow, mode.screenS.w, mode.screenS.h);
+      SDL_SetWindowPosition(myWindow, posX, posY);
+      SDL_SyncWindow(myWindow);
+    }
   }
   else
   {
+    // Windowed wants redirecting, so the compositor honours our frame-sync
+    // acks; fullscreen keeps the bypass and the WM can scan out directly
+    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR,
+                mode.fullscreen ? "1" : "0");
+
     // Re-create with new properties
     const SDL_PropertiesID props = SDL_CreateProperties();
     SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING,
@@ -433,18 +460,26 @@ bool FBBackendSDL::createRenderer()
 {
   ASSERT_MAIN_THREAD;
 
+  // A mode change ends any interactive resize, so whatever the drag traded away
+  // must not outlive it.  Restoring here also keeps a still-suspended renderer
+  // from reading as a vsync mismatch below and forcing a needless recreation
+  endLiveResize();
+
   // A new renderer is only created when necessary:
   // - no renderer existing
   // - different renderer name
   // - different renderer vsync
-  const bool enableVSync = myOSystem.settings().getBool("vsync") &&
-                          !myOSystem.settings().getBool("turbo");
+  const bool enableVSync = vsyncWanted();
   const string& video = myOSystem.settings().getString("video");
+  // An empty or "auto" preference lets SDL pick the renderer
+  const bool autoVideo = video.empty() || video == "auto";
 
   bool recreate = myRenderer == nullptr;
   if(myRenderer)
   {
-    recreate = recreate || video != SDL_GetRendererName(myRenderer);
+    // Under 'auto', whatever SDL already gave us satisfies the preference
+    recreate = recreate ||
+        (!autoVideo && video != SDL_GetRendererName(myRenderer));
 
     const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
     const bool currentVSync = SDL_GetNumberProperty(props,
@@ -461,7 +496,7 @@ bool FBBackendSDL::createRenderer()
 
     // Re-create with new properties
     const SDL_PropertiesID props = SDL_CreateProperties();
-    if(!video.empty())
+    if(!autoVideo)
       SDL_SetStringProperty(props, SDL_PROP_RENDERER_CREATE_NAME_STRING,
                             video.c_str());
     SDL_SetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER,
@@ -480,15 +515,129 @@ bool FBBackendSDL::createRenderer()
     }
 
     detectFeatures();
-    determineDimensions();
   }
+
+  // Refresh the cached window/render dimensions on every mode change;
+  // scaleX()/scaleY() rely on these being current
+  determineDimensions();
   clear();
 
+  // Record what SDL actually gave us, which the preference does not say when
+  // it is "auto".  Temporary: persisting it would pin the renderer, defeating
+  // auto-detection on later runs.
   const char* const detectedvideo = SDL_GetRendererName(myRenderer);
   if(detectedvideo)
-    myOSystem.settings().setValue("video", detectedvideo);
+    myOSystem.settings().setValue("video.detected", detectedvideo, false);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowResizable(bool resizable)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow == nullptr)
+    return;
+
+  SDL_SetWindowResizable(myWindow, resizable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowMinSize(const Common::Size& minSize)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow)
+    SDL_SetWindowMinimumSize(myWindow,
+        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::resizeWindow(const Common::Size& size)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow)
+  {
+    SDL_SetWindowSize(myWindow, static_cast<int>(size.w), static_cast<int>(size.h));
+    // Block until the window manager has actually applied the new size, the
+    // same way the video-mode reuse-path above does -- so the resize event
+    // we rely on to re-flow (see EventHandler::handleSystemEvent) reports the
+    // real, settled size rather than racing an async X11/Wayland compositor
+    SDL_SyncWindow(myWindow);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::refreshDimensions()
+{
+  determineDimensions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FBBackendSDL::vsyncWanted() const
+{
+  return myOSystem.settings().getBool("vsync") &&
+        !myOSystem.settings().getBool("turbo");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::beginLiveResize()
+{
+  ASSERT_MAIN_THREAD;
+
+  // With vsync the present blocks for a whole refresh -- measured 16.6ms per
+  // dragged frame against 0.95ms without -- which spends the step's entire
+  // budget waiting.  Where the ack rides on the present that also halves the
+  // drag rate; elsewhere it merely delays our own next frame, which still shows
+  // once a window draws enough to fill the interval.  So: everywhere
+  if(!LiveResize::suspendsVsync())
+    return;
+
+  if(myRenderer && !myVSyncSuspended)
+  {
+    myVSyncSuspended = true;
+    SDL_SetRenderVSync(myRenderer, SDL_RENDERER_VSYNC_DISABLED);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::endLiveResize()
+{
+  ASSERT_MAIN_THREAD;
+
+  if(!myVSyncSuspended)
+    return;
+
+  // Clear the flag whether or not there is a renderer to restore: a stale one
+  // would make the next beginLiveResize() think the drag is already suspended
+  // and leave vsync on for it
+  myVSyncSuspended = false;
+
+  if(myRenderer)
+    SDL_SetRenderVSync(myRenderer,
+        vsyncWanted() ? 1 : SDL_RENDERER_VSYNC_DISABLED);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FBBackendSDL::windowId() const
+{
+  return myWindow ? SDL_GetWindowID(myWindow) : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setWindowVisible(bool visible)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myWindow == nullptr)
+    return;
+
+  if(visible)
+    SDL_ShowWindow(myWindow);
+  else
+    SDL_HideWindow(myWindow);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -959,5 +1108,11 @@ void FBBackendSDL::determineDimensions()
     myRenderH = myWindowH;
   }
   else
-    SDL_GetCurrentRenderOutputSize(myRenderer, &myRenderW, &myRenderH);
+    // Deliberately not SDL_GetCurrentRenderOutputSize(): while a window is
+    // dragged on macOS that reports the size from the *previous* event, so
+    // scaleX()/scaleY() would divide the new window size by a stale one and
+    // draw every surface at the wrong scale.  The window's pixel size is
+    // always current, and with no logical presentation it is what the
+    // renderer outputs anyway.
+    SDL_GetWindowSizeInPixels(myWindow, &myRenderW, &myRenderH);
 }

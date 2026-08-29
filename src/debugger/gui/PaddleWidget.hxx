@@ -25,7 +25,7 @@ class Controller;
 class PaddleWidget : public ControllerWidget
 {
   public:
-    PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+    PaddleWidget(GuiObject* boss, const GUI::Font& font,
                  Controller& controller,
                  bool embedded = false, bool second = false);
     ~PaddleWidget() override = default;
@@ -33,14 +33,24 @@ class PaddleWidget : public ControllerWidget
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layoutContent(GUI::BoxLayout& col) override;
 
   private:
-    enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
-           kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Paddle0Changed = GuiCmd::of("PaddleWidget.Paddle0Changed"),
+        Paddle1Changed = GuiCmd::of("PaddleWidget.Paddle1Changed"),
+        Paddle0Fire    = GuiCmd::of("PaddleWidget.Paddle0Fire"),
+        Paddle1Fire    = GuiCmd::of("PaddleWidget.Paddle1Fire");
+    };
 
+    bool myEmbedded{false};
     SliderWidget *myP0Resistance{nullptr}, *myP1Resistance{nullptr};
     CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
+    // Short pot labels when embedded in a QuadTari; the resistance sliders'
+    // own labels otherwise (the two uses are mutually exclusive)
+    LabelWidget *myP0Lbl{nullptr}, *myP1Lbl{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

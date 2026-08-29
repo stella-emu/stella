@@ -20,20 +20,34 @@
 
 #include "Cheat.hxx"
 
+/**
+  A cheat that patches ROM bytes at a fixed address, decoded from a
+  6-digit Cheetah-style cheatcode.
+
+  @author  Stephen Anthony
+*/
 class CheetahCheat : public Cheat
 {
   public:
+    // Decodes a 6-digit ROM cheat and backs up the targeted ROM bytes
     CheetahCheat(OSystem& os, string_view name, string_view code);
     ~CheetahCheat() override = default;
 
+    // Patches 'value' into the address range
     bool enable() override;
+    // Restores the original ROM bytes
     bool disable() override;
+    // Applies the patch if not already enabled
     void evaluate() override;
 
   private:
+    // Original ROM bytes at address, for disable()
     std::array<uInt8, 16> savedRom{};
+    // Cartridge address ($F000-based) to patch
     uInt16 address{0};
+    // Byte value to poke at address
     uInt8  value{0};
+    // Number of consecutive bytes to patch
     uInt8  count{0};
 
   private:

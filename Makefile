@@ -66,16 +66,10 @@ CFLAGS+= -Wall -Wextra -Wno-unused-parameter
 CXXFLAGS_TEST+= -std=c++23 -Wall -Wextra -Wunused -Woverloaded-virtual -Wno-unused-parameter
 CFLAGS_TEST+= -Wall -Wextra -Wunused -Wno-unused-parameter
 
-ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar
-  CXXFLAGS_TEST+= -Wno-multichar
-  CFLAGS_TEST+= -Wno-multichar
-endif
-
 ifdef USE_FULL_WARNINGS
   ifdef HAVE_CLANG
     CXXFLAGS+= -Weverything -Wno-c++98-compat-pedantic -Wno-padded \
-               -Wno-four-char-constants -Wno-sign-conversion \
+               -Wno-sign-conversion \
                -Wno-global-constructors -Wno-exit-time-destructors \
                -Wno-weak-vtables -Wno-duplicate-enum -Wno-float-equal \
                -Wno-switch-enum -Wno-float-conversion -Wno-unsafe-buffer-usage \

@@ -30,8 +30,8 @@ class Dialog;
   The single DialogContainer for all dialogs that overlay TIA mode.
 
   It serves two roles:
-    - The built-in menus (options, command, high scores, message, PlusROM)
-      are selected by the current EventHandler state in baseDialog() and
+    - The built-in menus (options, command, high scores, PlusROM) are
+      selected by the current EventHandler state in baseDialog() and
       lazily created/cached on first use.
     - Any other dialog can be shown over TIA via setDialog() (see
       EventHandler::openDialog), which takes ownership of a transient dialog.
@@ -39,8 +39,9 @@ class Dialog;
   Adding a new overlay:
 
     A) Transient/one-off dialog (the common case) - nothing to change here.
-       Just call eventHandler().openDialog(new FooDialog(...)) for an owned
-       dialog, or eventHandler().openBrowserDialog(...) for a file browser.
+       Just call eventHandler().openDialog(make_unique<FooDialog>(...)),
+       or one of the convenience wrappers: eventHandler().openMessageBox(...)
+       for a simple confirmation, openBrowserDialog(...) for a file browser.
        It is shown via the generic OVERLAYMENU state and freed on replacement.
 
     B) A new persistent built-in menu (its own hotkey/toggle, like options):
@@ -61,11 +62,12 @@ class OverlayMenu : public DialogContainer
 {
   public:
     explicit OverlayMenu(OSystem& osystem);
+    // Out-of-line: myCached/myTransientDialog need Dialog's complete type here
     ~OverlayMenu() override;
 
     // Take ownership of a transient dialog (deletes any previously held one)
     // and make it the active base dialog for the OVERLAYMENU state.
-    void setDialog(Dialog* dialog);
+    void setDialog(unique_ptr<Dialog> dialog);
 
     // Return the base dialog for the current EventHandler state, lazily
     // creating and caching the matching built-in menu dialog as needed.
@@ -74,17 +76,20 @@ class OverlayMenu : public DialogContainer
   private:
     // The concrete built-in menu dialogs, each cached on first use
     enum class Cached: uInt8 {
-      Options, StellaSettings, Command, MinUICommand,
-      HighScores, Message, PlusRoms, NumCached
+      Options, StellaSettings, Command,
+      HighScores, PlusRoms, NumCached
     };
 
     // Return the cached dialog for 'id', creating it on first access
     Dialog& cached(Cached id);
+    // Constructs the concrete dialog for 'id'; called once per id, by cached()
     Dialog* createDialog(Cached id);
 
   private:
+    // One slot per Cached id, populated lazily by cached()
     std::array<unique_ptr<Dialog>,
                static_cast<size_t>(Cached::NumCached)> myCached;
+    // The transient dialog set via setDialog(), if any
     unique_ptr<Dialog> myTransientDialog;
 
   private:

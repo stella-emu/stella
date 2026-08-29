@@ -27,24 +27,26 @@ static constexpr int HANDLE_W = 3;
 static constexpr int HANDLE_H = 3; // size above/below the slider
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h,
-                               string_view label, uInt32 labelWidth, int cmd)
-  : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _labelWidth{labelWidth}
+TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font, GuiCmd::Code cmd)
+  : ButtonWidget(boss, font, 0, calcHeight(font), "", cmd)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE
-    | Widget::FLAG_CLEARBG | Widget::FLAG_NOBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse
+    | Widget::Flag::ClearBG | Widget::Flag::NoBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 
-  if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
-
-  _w = w + _labelWidth;
-
   _stepValue.reserve(100);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeLineWidget::refreshFont()
+{
+  ButtonWidget::refreshFont();
+
+  // ButtonWidget leaves the size of a button it did not size itself alone; my
+  // height is font-derived, so I restore it here (my width stays the layout's)
+  _h = calcHeight(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +86,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    const double scale = (_w - _labelWidth - 2 - HANDLE_W) / static_cast<double>(steps.back());
+    const double scale = (_w - 2 - HANDLE_W) / static_cast<double>(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
@@ -92,7 +94,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 
     // Due to integer <-> double conversion, the last value is sometimes
     // slightly less than the maximum value; we assign it manually to fix this
-    _stepValue.push_back(_w - _labelWidth - 2 - HANDLE_W);
+    _stepValue.push_back(_w - 2 - HANDLE_W);
   }
   else
     _stepValue.push_back(0);
@@ -101,8 +103,8 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::handleMouseMoved(int x, int y)
 {
-  if(isEnabled() && _isDragging && std::cmp_greater_equal(x, _labelWidth))
-    setValue(posToValue(x - _labelWidth));
+  if(isEnabled() && _isDragging && x >= 0)
+    setValue(posToValue(x));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,16 +143,11 @@ void TimeLineWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
-
   // Frame the handle
   constexpr int HANDLE_W2 = (HANDLE_W + 1) / 2;
   const int p = valueToPos(_value),
-            x = _x + _labelWidth + HANDLE_W2,
-            w = _w - _labelWidth - HANDLE_W;
+            x = _x + HANDLE_W2,
+            w = _w - HANDLE_W;
   s.hLine(x + p - HANDLE_W2, _y + 0, x + p - HANDLE_W2 + HANDLE_W, kColorInfo);
   s.vLine(x + p - HANDLE_W2, _y + 1, _y + _h - 2, kColorInfo);
   s.hLine(x + p - HANDLE_W2 + 1, _y + _h - 1, x + p - HANDLE_W2 + 1 + HANDLE_W, kBGColor);

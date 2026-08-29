@@ -21,6 +21,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "MediaFactory.hxx"
+#include "Layout.hxx"
 
 #include "HelpDialog.hxx"
 
@@ -29,70 +30,96 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, font, "Help")
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth(" << "),
-            closeButtonWidth = Dialog::buttonWidth("Close"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
-  // Set real dimensions
-  _w = 46 * fontWidth + HBORDER * 2;
-  _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
-
-  // Add Previous, Next and Close buttons
-  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
+  // Previous, Next, Update and Close buttons.  Each sizes itself to its label;
+  // layout() gives the two arrows one shared width
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myPrevButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "<<", GuiObject::kPrevCmd);
-  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+    new ButtonWidget(this, font, "<<", GuiObject::Cmd::Prev);
+  myPrevButton->clearFlags(Widget::Flag::Enabled);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + fontWidth;
   myNextButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     ">>", GuiObject::kNextCmd);
+    new ButtonWidget(this, font, ">>", GuiObject::Cmd::Next);
   wid.push_back(myNextButton);
 
-  xpos += buttonWidth + fontWidth;
-
-  const int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
   myUpdateButton =
-    new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
-                     "Check for Update" + ELLIPSIS, kUpdateCmd);
+    new ButtonWidget(this, font, "Check for Update" + ELLIPSIS, Cmd::Update);
   myUpdateButton->setEnabled(true);
   wid.push_back(myUpdateButton);
 
-  xpos = _w - closeButtonWidth - HBORDER;
-  auto* b = new ButtonWidget(this, font, xpos, ypos, closeButtonWidth,
-                             buttonHeight, "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = HBORDER; ypos = VBORDER + _th;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2, fontHeight,
-                                 "", TextAlign::Center);
+  myTitle = new LabelWidget(this, font, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
-  const int lwidth = 15 * fontWidth;
-  ypos += lineHeight + VGAP * 2;
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myKey[i] =
-      new StaticTextWidget(this, font, xpos, ypos, lwidth,
-                           fontHeight);
-    myDesc[i] =
-      new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - HBORDER,
-                           fontHeight);
+    myKey[i] = new LabelWidget(this, font);
+    myDesc[i] = new LabelWidget(this, font);
     myDesc[i]->setID(i);
-    ypos += fontHeight;
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HelpDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
+  using GUI::GridLayout;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // The two arrow buttons share one width, the wider of the two
+  GUI::alignButtons({myPrevButton, myNextButton});
+
+  // Key / description table.  The key column is a fixed 15 characters rather
+  // than sized to its content: the keys are refilled per page (see loadConfig),
+  // and a column that followed them would shift as the user pages through
+  const int numRows = static_cast<int>(LINES_PER_PAGE);
+  auto table = std::make_unique<GridLayout>(2, numRows);
+  table->columnFixed(0, 15 * fontWidth);
+  table->columnStretch(1);
+  for(int i = 0; i < numRows; ++i)
+  {
+    table->rowAuto(i);
+    table->place(0, i, stretchedItem(myKey[i]));
+    table->place(1, i, stretchedItem(myDesc[i]));
+  }
+
+  // Centered title, then the table below it
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(stretchedItem(myTitle));
+  root->addSpace(VGAP * 2);
+  root->addAuto(std::move(table));
+
+  // The pages are written to 46 characters, so that is the dialog's width; its
+  // height is however much room they ask for, plus the button row below them
+  _w = 46 * fontWidth + HBORDER * 2;
+  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Bottom row: Prev / Next / Update on the left of the button band, Close
+  // (cancel widget) at right
+  auto navButtons = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap());
+  navButtons->addAuto(anchoredItem(myPrevButton));
+  navButtons->addAuto(anchoredItem(myNextButton));
+  navButtons->addAuto(anchoredItem(myUpdateButton));
+  layoutButtonGroup(std::move(navButtons));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -211,37 +238,37 @@ void HelpDialog::displayInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HelpDialog::handleCommand(CommandSender* sender, int cmd,
+void HelpDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kNextCmd:
+    case GuiObject::Cmd::Next:
       ++myPage;
       if(myPage >= myNumPages)
-        myNextButton->clearFlags(Widget::FLAG_ENABLED);
+        myNextButton->clearFlags(Widget::Flag::Enabled);
       if(myPage >= 2)
-        myPrevButton->setFlags(Widget::FLAG_ENABLED);
+        myPrevButton->setFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
 
-    case GuiObject::kPrevCmd:
+    case GuiObject::Cmd::Prev:
       --myPage;
       if(myPage <= myNumPages)
-        myNextButton->setFlags(Widget::FLAG_ENABLED);
+        myNextButton->setFlags(Widget::Flag::Enabled);
       if(myPage <= 1)
-        myPrevButton->clearFlags(Widget::FLAG_ENABLED);
+        myPrevButton->clearFlags(Widget::Flag::Enabled);
 
       displayInfo();
       break;
 
-    case kUpdateCmd:
+    case Cmd::Update:
       MediaFactory::openURL("https://stella-emu.github.io/downloads.html?version="
                             + instance().settings().getString("stella.version"));
       break;
 
-    case StaticTextWidget::kOpenUrlCmd:
+    case LabelWidget::Cmd::OpenUrl:
     {
       const string& url = myDesc[id]->getUrl();
 

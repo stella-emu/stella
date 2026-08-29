@@ -74,9 +74,9 @@ class CartridgeDevCard : public Cartridge
     uInt16 bankOrigin(uInt16 bank, uInt16 PC = 0) const override;
 
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) override
+        const GUI::Font& nfont) override
     {
-      return new CartridgeDevCardWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeDevCardWidget(boss, lfont, nfont, *this);
     }
   #endif
 

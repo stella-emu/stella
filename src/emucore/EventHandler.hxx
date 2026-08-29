@@ -176,13 +176,22 @@ class EventHandler
 
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
-    void openDialog(Dialog* dialog);
+    void openDialog(unique_ptr<Dialog> dialog);
   #ifdef GUI_SUPPORT
     void openBrowserDialog(string_view title, string_view startpath,
                            BrowserDialog::Mode mode,
                            const BrowserDialog::Command& command,
                            const FSNode::NameFilter& namefilter = {
                             [](const FSNode&) { return true; } });
+
+    /**
+      Show a transient message box over TIA mode; the answer is reported
+      through 'callback' after the menu mode is left.
+    */
+    void openMessageBox(string_view title, string_view text,
+                        const std::function<void(bool ok)>& callback,
+                        string_view okText = "OK",
+                        string_view cancelText = "Cancel");
   #endif
     bool enterDebugMode();
     void leaveDebugMode();
@@ -417,6 +426,17 @@ class EventHandler
     void exitLauncher();
     void exitEmulation(bool checkLauncher = false);
 
+    /**
+      Exit emulation ('quitApp' also quits the application entirely), first
+      asking for confirmation if the 'confirmexit' setting is enabled.
+    */
+    void confirmExitEmulation(bool quitApp = false);
+
+    /**
+      Quit the application, exiting emulation or the launcher first as needed.
+    */
+    void doQuit();
+
   protected:
     // Global OSystem object
     OSystem& myOSystem;
@@ -436,8 +456,9 @@ class EventHandler
       of input.
     */
     void handleTextEvent(char text);
-    void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
-    void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
+    void handleMouseMotionEvent(int x, int y, int xrel, int yrel, uInt32 windowID = 0);
+    void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y,
+                                uInt32 windowID = 0);
     void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated) {
       myPKeyHandler->handleEvent(key, mod, pressed, repeated);
     }
@@ -473,8 +494,26 @@ class EventHandler
       THEME_CHANGED,
       DROP_FILE
     };
-    void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
+
+    /**
+      Handle an event reported by the platform (window, theme, files).  The data
+      arguments are event-specific: WINDOW_RESIZED carries the new width, height
+      and window ID; WINDOW_MOVED the new x, y and window ID; WINDOW_EXPOSED the
+      window ID alone (in data1).
+    */
+    void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0,
+                           int data3 = 0);
     void handleDropfileEvent(string_view file);
+
+    /**
+      Handle a platform "window close requested" event (e.g. the window's close
+      button).  A close request on the debugger's companion TIA window closes
+      just that window; requests on the main window are left to the normal quit
+      path.
+
+      @param windowID  The platform window ID that received the close request
+    */
+    void handleWindowCloseEvent(uInt32 windowID);
 
     /**
       Add the given joystick to the list of physical joysticks available to
@@ -522,6 +561,17 @@ class EventHandler
     // returns the action array index of the index in the provided group
     static int getEmulActionListIndex(int idx, const Event::EventSet& events);
     static int getActionListIndex(int idx, Event::Group group);
+
+    /**
+      Determine which overlay (DialogContainer) a window-specific GUI event
+      should be routed to.  Normally this is the current overlay, but while the
+      debugger's companion TIA window is open, events targeting that window are
+      routed to it instead.
+
+      @param windowID  The platform window ID the event originated from
+      @return  The overlay to dispatch to, or nullptr if there is none
+    */
+    DialogContainer* overlayForWindow(uInt32 windowID) const;
 
   private:
     // Structure used for action menu items

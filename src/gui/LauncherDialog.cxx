@@ -49,43 +49,92 @@
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "Font.hxx"
-#include "StellaFont.hxx"
-#include "ConsoleBFont.hxx"
-#include "ConsoleMediumBFont.hxx"
-#include "StellaMediumFont.hxx"
-#include "StellaLargeFont.hxx"
-#include "Stella12x24tFont.hxx"
-#include "Stella14x28tFont.hxx"
-#include "Stella16x32tFont.hxx"
+#include "FontManager.hxx"
+#include "Layout.hxx"
 #include "Icons.hxx"
 #include "Version.hxx"
 #include "MediaFactory.hxx"
 #include "LauncherDialog.hxx"
 #include "Random.hxx"
 
+namespace {
+
+// A thin draggable vertical divider.  While dragged it reports its new
+// (dialog-relative) x position via the given command, so the owning dialog
+// can resize the areas on either side of it.
+class DividerWidget : public Widget, public CommandSender
+{
+  public:
+    DividerWidget(GuiObject* boss, const GUI::Font& font, int w, GuiCmd::Code cmd)
+      : Widget(boss, font),
+        CommandSender(boss),
+        myCmd{cmd}
+    {
+      // My width is the dialog's choice; my height is the area I divide, which
+      // the dialog's layout gives me
+      _w = w;
+
+      // Flag::TrackMouse is required for handleMouseMoved() to be delivered
+      // (Dialog only forwards moves to widgets that request mouse tracking)
+      _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse;
+    }
+    ~DividerWidget() override = default;
+
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override
+    {
+      if(b == MouseButton::LEFT)
+        myDragging = true;
+    }
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override
+    {
+      myDragging = false;
+    }
+    void handleMouseMoved(int x, int y) override
+    {
+      if(myDragging)
+        sendCommand(myCmd, _x + x, 0);  // dialog-relative cursor x
+    }
+
+  protected:
+    void drawWidget(bool hilite) override
+    {
+      FBSurface& s = dialog().surface();
+      const int x = _x + _w / 2;
+      const ColorId color = (isHighlighted() || myDragging)
+                            ? kWidColorHi : kShadowColor;
+
+      s.vLine(x - 1, _y, _y + _h - 1, color);
+      s.vLine(x + 1, _y, _y + _h - 1, color);
+    }
+
+  private:
+    bool myDragging{false};
+    GuiCmd::Code myCmd{GuiCmd::None};
+
+  private:
+    DividerWidget() = delete;
+    DividerWidget(const DividerWidget&) = delete;
+    DividerWidget(DividerWidget&&) = delete;
+    DividerWidget& operator=(const DividerWidget&) = delete;
+    DividerWidget& operator=(DividerWidget&&) = delete;
+};
+
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
-                               int x, int y, int w, int h)
+                               int w, int h)
   : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
-           x, y, w, h),
-    CommandSender(this),
-    myUseMinimalUI{instance().settings().getBool("minimal_ui")}
+           w, h),
+    CommandSender(this)
 {
-  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
-  int ypos = Dialog::vBorder();
+  // Create the widgets (in focus order); layout() assigns all geometry
+  addPathWidgets();
+  addFilteringWidgets();
 
-  // If minimalUI, show title within dialog surface instead of showing the filtering control
-  if(myUseMinimalUI) {
-    addTitleWidget(ypos);
-    addPathWidgets(ypos);       //-- path widget line will have file count
-  } else {
-    addPathWidgets(ypos);
-    addFilteringWidgets(ypos);  //-- filtering widget line has file count
-  }
-
-  mySelectedItem = addRomWidgets(ypos) - (myUseMinimalUI ? 1 : 2);  // Highlight 'Rom Listing'
-  if(!myUseMinimalUI && bottomButtons)
-    addButtonWidgets(ypos);
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+  mySelectedItem = addRomWidgets() - 2;  // Highlight 'Rom Listing'
+  addButtonWidgets();
   myNavigationBar->setList(myList);
 
   tooltip().setFont(_font);
@@ -95,313 +144,430 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addTitleWidget(int &ypos)
-{
-  const int fontHeight   = Dialog::fontHeight(),
-            VGAP         = Dialog::vGap();
-  // App information
-  new StaticTextWidget(this, _font, 1, ypos, _w - 2, fontHeight,
-                       std::format("Stella {}", STELLA_VERSION), TextAlign::Center);
-  ypos += fontHeight + VGAP;
-}
+LauncherDialog::~LauncherDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addFilteringWidgets(int& ypos)
+void LauncherDialog::addFilteringWidgets()
 {
-  const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            HBORDER      = Dialog::hBorder(),
-            LBL_GAP      = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            btnGap       = fontWidth / 4,
-            btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
   WidgetArray wid;
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myReloadButton = new ButtonWidget(this, _font,
+                                    GUI::icon_reload_small, Cmd::Reload);
+  myReloadButton->setToolTip("Reload listing (Ctrl+R)");
+  wid.push_back(myReloadButton);
 
-  if(_w >= 640)
-  {
-    const bool smallIcon = lineHeight < 26;
+  myFilterLbl = new LabelWidget(this, _font, "Filter");
 
-    // Figure out general icon button size
-    const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
-    const GUI::Icon& randomIcon = smallIcon ? GUI::icon_random_small : GUI::icon_random_large;
-    const GUI::Icon& dummyIcon = reloadIcon;  //-- used for sizing all the other icons
-    const int iconWidth = dummyIcon.width();
-    const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
-    const int iconButtonWidth = iconWidth + iconGap;
-    const int randomButtonWidth = randomIcon.width() + iconGap;
+  myPattern = new EditTextWidget(this, _font, 1);
+  myPattern->setToolTip("Enter filter text to reduce file list.\n"
+    "Use '*' and '?' as wildcards.");
+  wid.push_back(myPattern);
 
-    int xpos = HBORDER;
+  mySubDirsButton = new ButtonWidget(this, _font,
+                                     GUI::icon_reload_small, Cmd::SubDirs);
+  mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
+  wid.push_back(mySubDirsButton);
 
-    // Setup some constants for Settings button - icon, label, and width
-    const GUI::Icon& settingsIcon = smallIcon ? GUI::icon_settings_small : GUI::icon_settings_large;
-    const string lblSettings = "Options" + ELLIPSIS;
-    const int lwSettings = _font.getStringWidth(lblSettings);
-    const int bwSettings = iconButtonWidth + lwSettings + btnGap * 2 + 1;   // Button width for Options button
+  myRomCount = new LabelWidget(this, _font, "", TextAlign::Right);
 
-    // Setup some variables for handling the Filter label + field
-    string_view lblFilter = "Filter";
-    int lwFilter = _font.getStringWidth(lblFilter);
-
-    string lblFound = "12345 items found";
-    int lwFound = _font.getStringWidth(lblFound);
-    int fwFilter = EditTextWidget::calcWidth(_font, "123456"); // at least 6 chars
-
-    // Calculate how much space everything will take
-    int wTotal = xpos + (iconButtonWidth * 2) + randomButtonWidth + lwFilter + fwFilter + lwFound + bwSettings
-      + LBL_GAP * 5 + btnGap * 3 + HBORDER;
-
-    // make sure there is space for at least 6 characters in the filter field
-    if(_w < wTotal)
-    {
-      wTotal -= lwFound;
-      lblFound = "12345 items";
-      myShortCount = true;
-      lwFound = _font.getStringWidth(lblFound);
-      wTotal += lwFound;
-    }
-    if(_w < wTotal)
-    {
-      wTotal -= lwFilter + LBL_GAP;
-      lwFilter = 0;
-    }
-
-    fwFilter += _w - wTotal;
-
-    ypos += btnYOfs;
-    // Show the reload button
-    myReloadButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                      iconButtonWidth, buttonHeight, reloadIcon, kReloadCmd);
-    myReloadButton->setToolTip("Reload listing (Ctrl+R)");
-    wid.push_back(myReloadButton);
-    xpos = myReloadButton->getRight() + LBL_GAP * 2;
-
-    // Show the "Filter" label
-    if(lwFilter)
-    {
-      const StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
-      xpos = s->getRight() + LBL_GAP;
-    }
-
-    // Show the filter input field that can narrow the results shown in the listing
-    myPattern = new EditTextWidget(this, _font, xpos, ypos - 2, fwFilter, lineHeight, "");
-    myPattern->setToolTip("Enter filter text to reduce file list.\n"
-      "Use '*' and '?' as wildcards.");
-    wid.push_back(myPattern);
-    xpos = myPattern->getRight() + btnGap;
-
-    // Show the subdirectories button
-    mySubDirsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                       iconButtonWidth, buttonHeight, dummyIcon, kSubDirsCmd);
-    mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
-    wid.push_back(mySubDirsButton);
-    xpos = mySubDirsButton->getRight() + btnGap + LBL_GAP;
-
-    // Show the files counter
-    myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
-                                      lwFound, fontHeight, "", TextAlign::Right);
-    xpos = _w - HBORDER - bwSettings - randomButtonWidth - btnGap;
-
-    // Show the random ROM button
-    myRandomRomButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                         randomButtonWidth, buttonHeight, randomIcon, kLoadRndRomCmd);
+  myRandomRomButton = new ButtonWidget(this, _font,
+                                       GUI::icon_random_small, Cmd::LoadRandomRom);
 #ifndef BSPF_MACOS
-    myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
+  myRandomRomButton->setToolTip("Load random ROM (Alt+R)");
 #else
-    myRandomRomButton->setToolTip("Load random ROM (Cmd+R)");
+  myRandomRomButton->setToolTip("Load random ROM (Cmd+R)");
 #endif
-    wid.push_back(myRandomRomButton);
+  wid.push_back(myRandomRomButton);
 
-    // Show the Settings / Options button (positioned from the right)
-    xpos = _w - HBORDER - bwSettings;
-    mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                        iconWidth, buttonHeight, settingsIcon,
-                                        iconGap, lblSettings, kOptionsCmd);
-    mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
-    wid.push_back(mySettingsButton);
+  mySettingsButton = new ButtonWidget(this, _font,
+    GUI::icon_settings_small, "Options" + ELLIPSIS, Cmd::Options);
+  mySettingsButton->setToolTip("Open Options dialog (Ctrl+O)");
+  wid.push_back(mySettingsButton);
 
-    ypos = mySettingsButton->getBottom() + Dialog::vGap();
-  }
+  addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::addPathWidgets()
+{
+  WidgetArray wid;
+  // The navigation bar; its geometry (and that of its children) is assigned by
+  // layout()
+  myNavigationBar = new NavigationWidget(this, _font);
+
+  // Help icon (variant/size re-picked in layout())
+  myHelpButton = new ButtonWidget(this, _font,
+                                  GUI::icon_help_small, Dialog::Cmd::Help);
+  myHelpButton->setToolTip(std::format("Click for help. ({})",
+    instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
+  myHelpButton->setEnabled(true);
+  wid.push_back(myHelpButton);
   addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addPathWidgets(int& ypos)
+int LauncherDialog::addRomWidgets()
 {
-  // Add some buttons and textfield to show current directory
-  const int
-    lineHeight   = Dialog::lineHeight(),
-    fontHeight   = Dialog::fontHeight(),
-    fontWidth    = Dialog::fontWidth(),
-    HBORDER      = Dialog::hBorder(),
-    LBL_GAP      = fontWidth,
-    buttonHeight = Dialog::buttonHeight(),
-    BTN_GAP      = fontWidth / 4,
-    btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
-  const bool smallIcon = lineHeight < 26;
-  const string lblFound = "12345 items";
-  const int lwFound = _font.getStringWidth(lblFound);
-
-  // Setup some constants for Help button
-  const GUI::Icon& helpIcon = smallIcon ? GUI::icon_help_small : GUI::icon_help_large;
-  const int iconWidth = helpIcon.width();
-  const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
-  const int buttonWidth = iconWidth + iconGap;
-  const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
-  int xpos = HBORDER;
+  const int fontWidth = Dialog::fontWidth();
+  const int HBORDER   = Dialog::hBorder();
+  const int VGAP      = Dialog::vGap();
   WidgetArray wid;
 
-  myNavigationBar = new NavigationWidget(this, _font, xpos, ypos - btnYOfs, wNav, buttonHeight);
+  // The bottom button row can be toggled on/off at runtime; we always create its
+  // widgets and just show/hide them in layout(), so toggling needs no rebuild
+  myShowButtons = instance().settings().getBool("launcherbuttons");
 
-  if(myUseMinimalUI)
+  // Estimate the list/column height the way layout() sizes the main row, so the
+  // ROM info font (chosen once, here) is sized for the right area
+  const int fixedRows = myShowButtons ? 3 : 2;
+  const int listHeight = (_h - 2 * Dialog::vBorder())
+    - fixedRows * Dialog::buttonHeight() - fixedRows * (VGAP * 2);
+
+  // The ROM info viewer can be toggled on/off at runtime; we always create its
+  // widgets and just show/hide them in layout(), so toggling needs no rebuild
+  myShowRomInfo = instance().settings().getFloat("romviewer") > 0.F;
+
+  // Determine the ROM info column width: the persisted drag width if present,
+  // otherwise the configured zoom level (a default zoom when currently disabled,
+  // so the widgets have a sensible size ready to be shown)
+  const float savedFraction = instance().settings().getFloat("romwidth");
+  int imageWidth = 0;
+  if(savedFraction > 0.F)
+    imageWidth = clampRomInfoWidth(
+      static_cast<int>(std::round(savedFraction * (_w - HBORDER * 2))), listHeight);
+  else
   {
-    // Show the files counter
-    myShortCount = true;
-    xpos = _w - HBORDER - lwFound - LBL_GAP / 2;
-    myRomCount = new StaticTextWidget(this, _font, xpos, ypos - 1,
-      lwFound, fontHeight, "", TextAlign::Right);
-
-    auto* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1,
-        ypos - btnYOfs, lwFound + LBL_GAP + 1, lineHeight, "");
-    e->setEditable(false);
-    e->setEnabled(false);
-  } else {
-    // Show Help icon at far right
-    xpos = _w - HBORDER - (buttonWidth + BTN_GAP - 2);
-    myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-                                    buttonWidth, buttonHeight, helpIcon, kHelpCmd);
-    myHelpButton->setToolTip(std::format("Click for help. ({})",
-      instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode)));
-    myHelpButton->setEnabled(true);
-    wid.push_back(myHelpButton);
+    const float zoom = myShowRomInfo
+      ? instance().settings().getFloat("romviewer") : 1.F;
+    imageWidth = static_cast<int>(getRomInfoZoom(listHeight, zoom)
+                                  * TIAConstants::viewableWidth);
   }
-  ypos += lineHeight + Dialog::vGap() * 2;
-
-  addToFocusList(wid);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int LauncherDialog::addRomWidgets(int ypos)
-{
-  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
-  const int fontWidth    = Dialog::fontWidth(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            buttonHeight = myUseMinimalUI
-              ? -VGAP * 2
-              : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2;
-  int xpos = HBORDER;
-  WidgetArray wid;
-
-  // Add list with game titles
-  // Before we add the list, we need to know the size of the RomInfoWidget
-  const int listHeight = _h - ypos - VBORDER - buttonHeight - VGAP * 3;
-
-  const float imgZoom = getRomInfoZoom(listHeight);
-  const int imageWidth = imgZoom * TIAConstants::viewableWidth;
-  const int listWidth = _w - (imageWidth > 0 ? imageWidth + fontWidth : 0) - HBORDER * 2;
+  // Remember the ROM info width as a fraction of the content width, so it scales
+  // proportionally when the window is resized (see layout())
+  myRomInfoFraction = imageWidth > 0
+    ? static_cast<float>(imageWidth) / (_w - HBORDER * 2) : 0.F;
 
   // remember initial ROM directory for returning there via home button
   instance().settings().setValue("startromdir", getRomDir());
-  myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
+  myList = new LauncherFileListWidget(this, _font);
   myList->setEditable(false);
   myList->setListMode(FSNode::ListMode::All);
-  // since we cannot know how many files there are, use are really high value here
+  // since we cannot know how many files there are, use a really high value here
   myList->progress().setRange(0, 50000, 5);
   myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
   wid.push_back(myList);
 
-  // Add ROM info area (if enabled)
+  // Create the ROM info area (if enabled); layout() shows/hides and positions it
   if(imageWidth > 0)
   {
-    xpos += myList->getWidth() + fontWidth;
-
-    // Initial surface size is the viewable area's width squared
-    const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
-      TIAConstants::viewableWidth * imgZoom);
-
-    // Calculate font area, and in the process the font that can be used
-    // Infofont is unknown yet, but used in image label too. Assuming maximum font height.
-    int imageHeight = imgSize.h + RomImageWidget::labelHeight(_font);
-
+    // Choose the ROM info font for the (estimated) available area.  The image
+    // is (roughly) the column width squared, plus a label
+    const int imageHeight = imageWidth + RomImageWidget::labelHeight(_font);
     const Common::Size fontArea(imageWidth - fontWidth * 2,
-      myList->getHeight() - imageHeight - VGAP * 4);
+                                listHeight - imageHeight - VGAP * 4);
     setRomInfoFont(fontArea);
 
-    // Now we have the correct font height
-    imageHeight = imgSize.h + RomImageWidget::labelHeight(*myROMInfoFont);
-    myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
-      xpos, ypos, imageWidth, imageHeight);
-    if(!myUseMinimalUI)
-      wid.push_back(myRomImageWidget);
-
-    const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
-    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
-      xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
+    const GUI::Font& romInfoFont = instance().fonts().romInfoFont();
+    myRomImageWidget = new RomImageWidget(this, romInfoFont);
+    wid.push_back(myRomImageWidget);
+    myRomInfoWidget = new RomInfoWidget(this, romInfoFont);
+    // Draggable divider between the list and the ROM info column
+    myDivider = new DividerWidget(this, _font, fontWidth, Cmd::RomWidthChanged);
   }
   return addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addButtonWidgets(int& ypos)
+void LauncherDialog::addButtonWidgets()
 {
-  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
-  const int lineHeight = Dialog::lineHeight(),
-    BUTTON_GAP = Dialog::buttonGap(),
-    VBORDER = Dialog::vBorder(),
-    HBORDER = Dialog::hBorder(),
-    VGAP = Dialog::vGap(),
-    buttonHeight = myUseMinimalUI
-      ? lineHeight - VGAP * 4
-      : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2,
-    buttonWidth = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
-  int xpos = HBORDER;
   WidgetArray wid;
-
-  // Add four buttons at the bottom
-  ypos = _h - VBORDER - buttonHeight;
+  // Four equal-width buttons at the bottom; each sizes itself from its label and
+  // layout() then stretches them to share the row
 #ifndef BSPF_MACOS
-  myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
-    "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", Cmd::LoadROM);
   wid.push_back(myStartButton);
-
-  xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-  myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-    "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::Cmd::ParentDir);
   wid.push_back(myGoUpButton);
-
-  xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-  myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
-    "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, Cmd::Options);
   wid.push_back(myOptionsButton);
-
-  xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-  myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
-    "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", Cmd::Quit);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
-    "Quit", kQuitCmd);
+  myQuitButton    = new ButtonWidget(this, _font, "Quit", Cmd::Quit);
   wid.push_back(myQuitButton);
-
-  xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-  myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-    "Options" + ELLIPSIS, kOptionsCmd);
+  myOptionsButton = new ButtonWidget(this, _font, "Options" + ELLIPSIS, Cmd::Options);
   wid.push_back(myOptionsButton);
-
-  xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-  myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
-    "Go Up", ListWidget::kParentDirCmd);
+  myGoUpButton    = new ButtonWidget(this, _font, "Go Up", ListWidget::Cmd::ParentDir);
   wid.push_back(myGoUpButton);
-
-  xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-  myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
-    "Select", kLoadROMCmd);
+  myStartButton   = new ButtonWidget(this, _font, "Select", Cmd::LoadROM);
   wid.push_back(myStartButton);
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::showRomWidgets(bool show)
+{
+  if(!myRomImageWidget || !myRomInfoWidget)
+    return;
+
+  if(show)
+  {
+    myRomImageWidget->setVisible(true);
+    myRomInfoWidget->setVisible(true);
+    if(myDivider)
+      myDivider->setVisible(true);
+  }
+  else
+  {
+    myRomImageWidget->setVisible(false);
+    myRomInfoWidget->setVisible(false);
+    if(myDivider)
+      myDivider->setVisible(false);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::showButtonWidgets(bool show)
+{
+  if(!myStartButton || !myGoUpButton || !myOptionsButton || !myQuitButton)
+    return;
+
+  // Disabling (not just hiding) keeps a hidden button out of Tab/joystick
+  // focus cycling, which only skips disabled widgets (see setFocusForList)
+  myStartButton->setVisible(show);
+  myStartButton->setEnabled(show);
+  myOptionsButton->setVisible(show);
+  myOptionsButton->setEnabled(show);
+  myQuitButton->setVisible(show);
+  myQuitButton->setEnabled(show);
+  // Go Up additionally depends on whether there is a parent directory;
+  // updateUI() re-derives that half of its enabled state
+  myGoUpButton->setVisible(show);
+  myGoUpButton->setEnabled(show && myList->currentDir().hasParent());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::updateRomCount()
+{
+  myRomCount->setLabel(std::format("{} items found",
+    myList->getList().size() - (currentDir().hasParent() ? 1 : 0)));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int LauncherDialog::clampRomInfoWidth(int imageWidth, int colHeight) const
+{
+  const int fontWidth  = Dialog::fontWidth();
+  const int fontHeight = Dialog::fontHeight();
+  const int HBORDER    = Dialog::hBorder();
+  const int contentW   = _w - HBORDER * 2;
+
+  // Horizontal limit: keep at least MIN_LAUNCHER_CHARS for the list
+  const int hMax = contentW - fontWidth - MIN_LAUNCHER_CHARS * fontWidth;
+  // Vertical limit: the (roughly square) image, its label and a couple of
+  // info text lines must all fit in the column height.  The launcher font is
+  // used as a conservative estimate (the ROM info font is never larger).
+  const int vMax = colHeight - fontHeight * 4;
+
+  const int minW = MIN_ROMINFO_CHARS * fontWidth;
+  const int maxW = std::max(std::min(hMax, vMax), minW);
+
+  return BSPF::clamp(imageWidth, minW, maxW);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::layout()
+{
+  // Derive the available (logical) size from the current window, clamped to the
+  // minimum computed at the end of the previous layout (the widgets have no
+  // usable geometry until this method runs, so the minimum can't be read up
+  // front).  Most WMs honour SDL's minimum-size hint; this clamp is a fallback.
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const Common::Rect& image = instance().frameBuffer().imageRect();
+  const int w = std::max(static_cast<int>(image.w() / scale),
+                         static_cast<int>(myMinSize.w));
+  const int h = std::max(static_cast<int>(image.h() / scale),
+                         static_cast<int>(myMinSize.h));
+
+  // Persist the launcher window size, so it is restored next time (on restart
+  // and when returning from a game).  While an interactive resize is in
+  // progress this is deferred: the settle pass re-runs layout() and persists
+  // the final size exactly once per drag.  (Settings::setValue ignores an
+  // unchanged value, so calling it unconditionally here is cheap.)
+  const bool resizing = parent().resizeInProgress();
+  if(!resizing)
+    instance().settings().setValue("launcherres",
+        Common::Size(static_cast<uInt32>(w), static_cast<uInt32>(h)));
+  _w = w;
+  _h = h;
+
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::alignedItem;
+  using GUI::anchoredItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  const int HBORDER      = Dialog::hBorder();
+  const int vBorder      = Dialog::vBorder();
+  const int fontWidth    = Dialog::fontWidth();
+  const int fontHeight   = Dialog::fontHeight();
+  const int lineHeight   = Dialog::lineHeight();
+  const int buttonHeight = Dialog::buttonHeight();
+  const int rowGap       = Dialog::vGap() * 2;
+  const int LBL_GAP      = fontWidth;
+  const int BTN_GAP      = fontWidth / 4;
+
+  // The icons come in two sizes; re-pick them here, since a live font change may
+  // have crossed the threshold.  Each button re-sizes itself around the icon it
+  // is given, so nothing here says how wide one is
+  const bool largeIcons = _font.isLarge();
+  const GUI::Icon& reloadIcon   = largeIcons ? GUI::icon_reload_large   : GUI::icon_reload_small;
+  const GUI::Icon& randomIcon   = largeIcons ? GUI::icon_random_large   : GUI::icon_random_small;
+  const GUI::Icon& settingsIcon = largeIcons ? GUI::icon_settings_large : GUI::icon_settings_small;
+  const GUI::Icon& helpIcon     = largeIcons ? GUI::icon_help_large     : GUI::icon_help_small;
+
+  myReloadButton->setIcon(reloadIcon);
+  myRandomRomButton->setIcon(randomIcon);
+  mySettingsButton->setIcon(settingsIcon);
+  if(myHelpButton)
+    myHelpButton->setIcon(helpIcon);
+  // The subdirs button shows the current on/off state in the matching variant
+  const bool subdirs = instance().settings().getBool("launchersubdirs");
+  mySubDirsButton->setIcon(subdirs
+    ? (largeIcons ? GUI::icon_subdirs_large_on  : GUI::icon_subdirs_small_on)
+    : (largeIcons ? GUI::icon_subdirs_large_off : GUI::icon_subdirs_small_off));
+
+  // Filtering row: the filter field absorbs the slack; everything else packs
+  // around it.  This row is the widest thing in the dialog, so it is what the
+  // window minimum ends up being -- which is why everything in it always fits
+  const auto makeFilterRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
+    row->addAuto(anchoredItem(myReloadButton));
+    row->addSpace(LBL_GAP * 2);
+    row->addAuto(anchoredItem(myFilterLbl));
+    row->addSpace(LBL_GAP);
+    row->addStretch(widgetItem(myPattern, EditTextWidget::calcWidth(_font, "123456")));
+    row->addSpace(BTN_GAP);
+    row->addAuto(anchoredItem(mySubDirsButton));
+    row->addSpace(BTN_GAP + LBL_GAP);
+    row->addFixed(alignedItem(myRomCount, HAlign::Fill, VAlign::Center),
+                  _font.getStringWidth("12345 items found"));
+    row->addSpace(LBL_GAP * 2);
+    row->addAuto(anchoredItem(myRandomRomButton));
+    row->addSpace(BTN_GAP);
+    row->addAuto(anchoredItem(mySettingsButton));
+    return row;
+  };
+
+  // Path / navigation row: the bar fills the width, the help button anchors
+  // to the right
+  const auto makePathRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, BTN_GAP, HBORDER, 0);
+    row->addStretch(widgetItem(myNavigationBar, MIN_LAUNCHER_CHARS * fontWidth));
+    if(myHelpButton)
+      row->addAuto(anchoredItem(myHelpButton));
+    return row;
+  };
+
+  // Bottom button row (optional): four equal-width buttons
+  const bool hasButtonRow = myShowButtons && myStartButton && myGoUpButton
+                         && myOptionsButton && myQuitButton;
+  const auto makeButtonRow = [&]() {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap(),
+                                           HBORDER, 0);
+#ifndef BSPF_MACOS
+    row->addStretch(widgetItem(myStartButton));
+    row->addStretch(widgetItem(myGoUpButton));
+    row->addStretch(widgetItem(myOptionsButton));
+    row->addStretch(widgetItem(myQuitButton));
+#else
+    row->addStretch(widgetItem(myQuitButton));
+    row->addStretch(widgetItem(myOptionsButton));
+    row->addStretch(widgetItem(myGoUpButton));
+    row->addStretch(widgetItem(myStartButton));
+#endif
+    return row;
+  };
+
+  // Main row: the ROM list, plus an optional ROM info column (divider + image
+  // over info text).  The column width is a fraction of the content width so it
+  // scales with the window, clamped to keep both list and image usable
+  const bool showRom = myShowRomInfo && myRomImageWidget && myRomInfoWidget;
+  const int minRomW = MIN_ROMINFO_CHARS * fontWidth;
+
+  const auto makeMainRow = [&](int imageWidth) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
+    row->addStretch(widgetItem(myList, MIN_LAUNCHER_CHARS * fontWidth,
+                               lineHeight * 3));
+    if(imageWidth > 0)
+    {
+      row->addFixed(widgetItem(myDivider), fontWidth);
+
+      // The image cell and the column are fixed at the current (fraction- and
+      // clamp-derived) width, but both compress as the window shrinks: declare
+      // their floors so minSize() reports a size-independent minimum
+      const GUI::Font& romInfoFont = instance().fonts().romInfoFont();
+      const int labelHeight = RomImageWidget::labelHeight(romInfoFont);
+      auto romCol = std::make_unique<BoxLayout>(Dir::Vertical);
+      romCol->addFixed(widgetItem(myRomImageWidget, minRomW),
+                       imageWidth + labelHeight, minRomW + labelHeight);
+      romCol->addSpace(romInfoFont.getFontHeight() / 2);
+      romCol->addStretch(widgetItem(myRomInfoWidget, minRomW, fontHeight * 2));
+      row->addFixed(std::move(romCol), imageWidth, minRomW);
+    }
+    return row;
+  };
+
+  // Assemble the vertical stack; the main row takes whatever the others leave
+  const auto makeRoot = [&](int imageWidth) {
+    auto stack = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, vBorder);
+    stack->addFixed(makePathRow(), buttonHeight);
+    stack->addSpace(rowGap);
+    stack->addFixed(makeFilterRow(), buttonHeight);
+    stack->addSpace(rowGap);
+    stack->addStretch(makeMainRow(imageWidth));
+    if(hasButtonRow)
+    {
+      stack->addSpace(rowGap);
+      stack->addFixed(makeButtonRow(), buttonHeight);
+    }
+    return stack;
+  };
+
+  // The ROM image is square, so how WIDE the column may be depends on how TALL
+  // the main row is -- and only the layout knows that.  So lay the stack out
+  // once with the list alone, ask the list what height it was given, and lay it
+  // out again for real.  (The ROM widgets are not in that first pass, so nothing
+  // rescales an image for it.)
+  int imageWidth = 0;
+  if(showRom)
+  {
+    makeRoot(0)->doLayout(0, 0, _w, _h);
+    imageWidth = clampRomInfoWidth(
+        static_cast<int>(std::round(myRomInfoFraction * (_w - HBORDER * 2))),
+        myList->getHeight());
+  }
+
+  showRomWidgets(imageWidth > 0);
+  showButtonWidgets(hasButtonRow);
+
+  auto root = makeRoot(imageWidth);
+  root->doLayout(0, 0, _w, _h);
+
+  // The layout tree also yields the minimum content size (from the items'
+  // declared minimums, so it is independent of the current size), used to
+  // clamp the next layout and as the window manager's minimum-size hint.
+  // The hint is NOT re-applied while an interactive resize is in progress —
+  // re-asserting a minimum mid-drag fights the resize itself (the window can
+  // only shrink up to the last hint per motion, felt as heavy lag).  The
+  // settle pass applies the final value once the drag ends.
+  myMinSize = root->minSize();
+  if(!resizing)
+    instance().frameBuffer().setWindowMinSize(myMinSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -517,7 +683,7 @@ void LauncherDialog::loadConfig()
     myRomInfoWidget->reloadProperties(currentNode());
   }
 
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
+  myList->clearFlags(Widget::Flag::WantsRawData); // always reset this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -535,16 +701,15 @@ void LauncherDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateUI()
 {
-  // Only enable the 'up' button if there's a parent directory
+  // Only enable the 'up' button if there's a parent directory (and the
+  // button row is even shown -- showButtonWidgets() sets the other half)
   if(myGoUpButton)
-    myGoUpButton->setEnabled(myList->currentDir().hasParent());
+    myGoUpButton->setEnabled(myShowButtons && myList->currentDir().hasParent());
   // Only enable the navigation buttons if function is available
   myNavigationBar->updateUI();
 
   // Indicate how many files were found
-  myRomCount->setLabel(std::format("{} {}",
-    myList->getList().size() - (currentDir().hasParent() ? 1 : 0),
-    myShortCount ? "items" : "items found"));
+  updateRomCount();
 
   loadRomInfo();
 }
@@ -596,11 +761,9 @@ void LauncherDialog::applyFiltering()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float LauncherDialog::getRomInfoZoom(int listHeight) const
+float LauncherDialog::getRomInfoZoom(int listHeight, float zoom) const
 {
   // The ROM info area is some multiple of the minimum TIA image size
-  float zoom = instance().settings().getFloat("romviewer");
-
   if(zoom > 0.F)
   {
     const GUI::Font& smallFont = instance().frameBuffer().smallFont();
@@ -638,36 +801,68 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::setRomInfoFont(const Common::Size& area)
 {
-  // TODO: Perhaps offer a setting to override the font used?
+  // The role may name a font of its own, in which case FontManager has
+  // already set it and there is nothing to fit
+  if(instance().settings().getString(
+        FontManager::settingKey(FontManager::FontRole::RomInfo))
+     != FontManager::AUTO_FONT)
+    return;
 
-  const FontDesc FONTS[7] = {
-    GUI::stella16x32tDesc, GUI::stella14x28tDesc, GUI::stella12x24tDesc,
-    GUI::stellaLargeDesc, GUI::stellaMediumDesc,
-    GUI::consoleMediumBDesc, GUI::consoleBDesc
-  };
-
-  // Try to pick a font that works best, based on the available area
-  for(const auto& font: FONTS)
+  // Try to pick a font that works best, based on the available area.  The
+  // candidates come from the font registry, but which of them fits is a
+  // question about this dialog's layout, so it is decided here
+  for(const FontDesc* font: FontManager::romInfoFonts())
   {
     // only use fonts <= launcher fonts
-    if(Dialog::fontHeight() >= font.height)
+    if(Dialog::fontHeight() >= font->height)
     {
       if(std::cmp_greater_equal(area.h,
-            MIN_ROMINFO_ROWS * font.height + 2 + MIN_ROMINFO_LINES * font.height)
-         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font.maxwidth))
+            MIN_ROMINFO_ROWS * font->height + 2 + MIN_ROMINFO_LINES * font->height)
+         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font->maxwidth))
       {
-        myROMInfoFont = std::make_unique<GUI::Font>(font);
+        instance().fonts().changeRomInfoFont(*font);
         return;
       }
     }
   }
-  myROMInfoFont = std::make_unique<GUI::Font>(GUI::stellaDesc);
+  instance().fonts().changeRomInfoFont(FontManager::smallestDesc());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setRomInfoEnabled(bool enable)
+{
+  if(enable == myShowRomInfo)
+    return;
+
+  myShowRomInfo = enable;
+
+  // Re-flow so the list and ROM info column take their new widths, and the
+  // viewer widgets are shown/hidden
+  layout();
+
+  if(enable)
+    loadRomInfo();                  // load image/info for the current selection
+  else if(myRomImageWidget)
+    myRomImageWidget->clearProperties();  // stop rendering the image surface
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setButtonsEnabled(bool enable)
+{
+  if(enable == myShowButtons)
+    return;
+
+  myShowButtons = enable;
+
+  // Re-flow so the main row takes back/gives up the space, and the button
+  // row itself is shown/hidden
+  layout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!myRomImageWidget || !myRomInfoWidget)
+  if(!myShowRomInfo || !myRomImageWidget || !myRomInfoWidget)
     return;
 
   // Update ROM info UI item, delayed
@@ -774,9 +969,9 @@ void LauncherDialog::handleContextMenu()
   else if(cmd == "sorting")
     toggleSorting();
   else if(cmd == "subdirs")
-    sendCommand(kSubDirsCmd, 0, 0);
+    sendCommand(Cmd::SubDirs, 0, 0);
   else if(cmd == "homedir")
-    sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
+    sendCommand(FileListWidget::Cmd::HomeDir, 0, 0);
   else if(cmd == "highscores")
     openHighScores();
   else if(cmd == "reload")
@@ -811,7 +1006,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       switch(key)
       {
         case StellaKey::D:
-          sendCommand(kSubDirsCmd, 0, 0);
+          sendCommand(Cmd::SubDirs, 0, 0);
           break;
 
         case StellaKey::E:
@@ -873,9 +1068,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   myEventHandled = false;
-  myList->setFlags(Widget::FLAG_WANTS_RAWDATA);   // allow handling long button press
+  myList->setFlags(Widget::Flag::WantsRawData);   // allow handling long button press
   Dialog::handleJoyDown(stick, button, longPress);
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // revert flag afterwards!
+  myList->clearFlags(Widget::Flag::WantsRawData); // revert flag afterwards!
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -891,7 +1086,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
   else if(!myEventHandled)
     Dialog::handleJoyUp(stick, button);
 
-  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // stop allowing to handle long button press
+  myList->clearFlags(Widget::Flag::WantsRawData); // stop allowing to handle long button press
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -900,55 +1095,18 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
   Event::Type event = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 
   // map axis events for launcher
-  if(myUseMinimalUI)
+  switch(event)
   {
-    switch(event)
-    {
-      case Event::UINavPrev:
-        // convert unused previous item event into page-up event
-        event = Event::UIPgUp;
-        break;
+    case Event::UITabPrev:
+      event = Event::UIPgUp;
+      break;
 
-      case Event::UINavNext:
-        // convert unused next item event into page-down event
-        event = Event::UIPgDown;
-        break;
+    case Event::UITabNext:
+      event = Event::UIPgDown;
+      break;
 
-      case Event::UITabPrev:
-        myRomImageWidget->changeImage(-1);
-        myEventHandled = true;
-        break;
-
-      case Event::UITabNext:
-        myRomImageWidget->changeImage(1);
-        myEventHandled = true;
-        break;
-
-      case Event::UIOK:
-      case Event::UICancel:
-        myRomImageWidget->toggleImageZoom();
-        myEventHandled = true;
-        break;
-
-      default:
-        break;
-    }
-  }
-  else
-  {
-    switch(event)
-    {
-      case Event::UITabPrev:
-        event = Event::UIPgUp;
-        break;
-
-      case Event::UITabNext:
-        event = Event::UIPgDown;
-        break;
-
-      default:
-        break;
-    }
+    default:
+      break;
   }
   return event;
 }
@@ -968,16 +1126,32 @@ void LauncherDialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
+void LauncherDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   switch(cmd)
   {
-    case kSubDirsCmd:
+    case Cmd::RomWidthChanged:
+    {
+      // The divider was dragged: 'data' is the dialog-relative cursor x.
+      // The ROM info column spans from there to the right border.
+      const int HBORDER   = Dialog::hBorder();
+      const int contentW  = _w - HBORDER * 2;
+      const int imageWidth = clampRomInfoWidth((_w - HBORDER) - data,
+                                               myList->getHeight());
+
+      myRomInfoFraction = static_cast<float>(imageWidth) / contentW;
+      instance().settings().setValue("romwidth", myRomInfoFraction);
+
+      layout();
+      break;
+    }
+
+    case Cmd::SubDirs:
       toggleSubDirs();
       break;
 
-    case kLoadROMCmd:
+    case Cmd::LoadROM:
       if(myList->isDirectory(myList->selected()))
       {
         if(myList->selected().getName() == "..")
@@ -987,43 +1161,43 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         break;
       }
       [[fallthrough]];
-    case FileListWidget::ItemActivated:
+    case FileListWidget::Cmd::ItemActivated:
       loadRom();
       break;
 
-    case kLoadRndRomCmd:
+    case Cmd::LoadRandomRom:
       loadRandomRom();
       break;
 
-    case ListWidget::kParentDirCmd:
+    case ListWidget::Cmd::ParentDir:
       myList->selectParent();
       break;
 
-    case kOptionsCmd:
+    case Cmd::Options:
       openSettings();
       break;
 
-    case kReloadCmd:
+    case Cmd::Reload:
       reload();
       break;
 
-    case FileListWidget::ItemChanged:
+    case FileListWidget::Cmd::ItemChanged:
       updateUI();
       break;
 
-    case ListWidget::kLongButtonPressCmd:
+    case ListWidget::Cmd::LongButtonPress:
       if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
         openContextMenu();
       myEventHandled = true;
       break;
 
-    case EditableWidget::kChangedCmd:
-    case EditableWidget::kAcceptCmd:
+    case EditableWidget::Cmd::Changed:
+    case EditableWidget::Cmd::Accept:
     {
       const bool subDirs = instance().settings().getBool("launchersubdirs");
 
       myList->setIncludeSubDirs(subDirs);
-      if(subDirs && cmd == EditableWidget::kChangedCmd)
+      if(subDirs && cmd == EditableWidget::Cmd::Changed)
       {
         // delay (potentially slow) subdirectories reloads until user stops typing
         myReloadTime = TimerManager::getTicks() / 1000 +
@@ -1035,11 +1209,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kQuitCmd:
+    case Cmd::Quit:
       handleQuit();
       break;
 
-    case kRomDirChosenCmd:
+    case Cmd::RomDirChosen:
     {
       string_view romDir = instance().settings().getString("romdir");
 
@@ -1060,34 +1234,38 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kFavChangedCmd:
+    case Cmd::FavouritesChanged:
       handleFavoritesChanged();
       break;
 
-    case kRmAllFav:
-      myList->removeAllUserFavorites();
+    case Cmd::ExtensionsChanged:
       reload();
       break;
 
-    case kRmAllPop:
-      myList->removeAllPopular();
-      reload();
+    case Cmd::RomViewerChanged:
+      setRomInfoEnabled(instance().settings().getFloat("romviewer") > 0.F);
       break;
 
-    case kRmAllRec:
-      myList->removeAllRecent();
-      reload();
+    case Cmd::ButtonsChanged:
+      setButtonsEnabled(instance().settings().getBool("launcherbuttons"));
       break;
 
-    case kExtChangedCmd:
-      reload();
+    case Cmd::FontChanged:
+      // The launcher font was changed at runtime.  Swap it in place (every
+      // widget references the same Font object), then refresh the cached
+      // font-derived state and re-flow — no restart required.
+      instance().refreshFonts();
+      // A larger font can raise the content minimum past the window's
+      // current size; layout() (run by refreshFont() above) has already
+      // recomputed myMinSize for the new font, so grow the window to fit
+      instance().frameBuffer().growWindowTo(myMinSize);
       break;
 
-    case ContextMenu::kItemSelectedCmd:
+    case ContextMenu::Cmd::ItemSelected:
       handleContextMenu();
       break;
 
-    case RomInfoWidget::kClickedCmd:
+    case RomInfoWidget::Cmd::Clicked:
     {
       const string& url = myRomInfoWidget->getUrl();
 
@@ -1143,7 +1321,7 @@ void LauncherDialog::openContextMenu(int x, int y)
     explicit ContextItem(string_view _label, string_view _shortcut,
                          string_view _key)
       : label{_label}, shortcut{_shortcut}, key{_key} {}
-    // No shortcuts displayed in minimal UI
+    // For items that have no keyboard shortcut
     ContextItem(string_view _label, string_view _key)
       : label{_label}, key{_key} {}
   };
@@ -1179,45 +1357,25 @@ void LauncherDialog::openContextMenu(int x, int y)
     if(instance().highScores().enabled())
       items.emplace_back("High scores" + ELLIPSIS, "Ctrl+H", "highscores");
   }
-  if(myUseMinimalUI)
-  {
-    items.emplace_back(instance().settings().getBool("launchersubdirs")
-      ? "Exclude subdirectories"
-      : "Include subdirectories", "subdirs");
-    items.emplace_back("Go to initial directory", "homedir");
-    items.emplace_back("Go to parent directory", "prevdir");
-    items.emplace_back("Reload listing", "reload");
-    items.emplace_back("Options" + ELLIPSIS, "options");
-  }
-  else
-  {
-    items.emplace_back(instance().settings().getBool("launcherextensions")
-      ? "Disable file extensions"
-      : "Enable file extensions", "Ctrl+E", "extensions");
-    if(useFavorites && myList->inVirtualDir())
-      items.emplace_back(instance().settings().getBool("altsorting")
-        ? "Normal sorting"
-        : "Alternative sorting", "Ctrl+S", "sorting");
-  }
+  items.emplace_back(instance().settings().getBool("launcherextensions")
+    ? "Disable file extensions"
+    : "Enable file extensions", "Ctrl+E", "extensions");
+  if(useFavorites && myList->inVirtualDir())
+    items.emplace_back(instance().settings().getBool("altsorting")
+      ? "Normal sorting"
+      : "Alternative sorting", "Ctrl+S", "sorting");
   if(addCancel)
     items.emplace_back("Cancel", ""); // closes the context menu and does nothing
 
-  // Format items for menu
+  // Format items for menu, aligning all shortcuts to the right
   VariantList varItems;
-  if(myUseMinimalUI)
-    for(auto& item : items)
-      VarList::push_back(varItems, " " + item.label + " ", item.key);
-  else
-  {
-    // Align all shortcuts to the right
-    auto maxLen = 0uz;
-    for(auto& item : items)
-      maxLen = std::max(maxLen, item.label.length());
+  auto maxLen = 0UZ;
+  for(auto& item: items)
+    maxLen = std::max(maxLen, item.label.length());
 
-    for(auto& item : items)
-      VarList::push_back(varItems, " " + item.label.append(maxLen - item.label.length(), ' ')
-        + "  " + item.shortcut + " ", item.key);
-  }
+  for(auto& item: items)
+    VarList::push_back(varItems, " " + item.label.append(maxLen - item.label.length(), ' ')
+      + "  " + item.shortcut + " ", item.key);
   contextMenu().addItems(varItems);
 
   // Add menu at current x,y mouse location
@@ -1245,10 +1403,10 @@ void LauncherDialog::openSettings()
   // Create an options dialog, similar to the in-game one
   if(instance().settings().getBool("basic_settings"))
     myDialog = std::make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                 _w, _h, AppMode::launcher);
+                                                      AppMode::launcher);
   else
-    myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
-                                          AppMode::launcher);
+    myDialog = std::make_unique<OptionsDialog>(instance(), parent(), this,
+                                               AppMode::launcher);
   myDialog->open();
 }
 
@@ -1259,7 +1417,7 @@ void LauncherDialog::openGameProperties()
   {
     // Create game properties dialog
     myDialog = std::make_unique<GameInfoDialog>(instance(), parent(),
-      myUseMinimalUI ? _font : instance().frameBuffer().font(), this, _w, _h);
+      instance().frameBuffer().font(), this);
     myDialog->open();
   }
 }
@@ -1271,9 +1429,8 @@ void LauncherDialog::openGlobalProps()
   {
     // Create global props dialog, which is used to temporarily override
     // ROM properties
-    myDialog = std::make_unique<GlobalPropsDialog>(this, myUseMinimalUI
-                                              ? _font
-                                              : instance().frameBuffer().font());
+    myDialog = std::make_unique<GlobalPropsDialog>(this,
+                                              instance().frameBuffer().font());
     myDialog->open();
   }
 }
@@ -1282,15 +1439,14 @@ void LauncherDialog::openGlobalProps()
 void LauncherDialog::openHighScores()
 {
   // Create an high scores dialog, similar to the in-game one
-  myDialog = std::make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
-                                           AppMode::launcher);
+  myDialog = std::make_unique<HighScoresDialog>(instance(), parent(), AppMode::launcher);
   myDialog->open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openWhatsNew()
 {
-  myDialog = std::make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
+  myDialog = std::make_unique<WhatsNewDialog>(instance(), parent());
   myDialog->open();
 }
 
@@ -1305,15 +1461,11 @@ void LauncherDialog::toggleSubDirs(bool toggle)
     instance().settings().setValue("launchersubdirs", subdirs);
   }
 
-  if(mySubDirsButton)
-  {
-    const bool smallIcon = Dialog::lineHeight() < 26;
-    const GUI::Icon& subdirsIcon = subdirs
-      ? smallIcon ? GUI::icon_subdirs_small_on : GUI::icon_subdirs_large_on
-      : smallIcon ? GUI::icon_subdirs_small_off : GUI::icon_subdirs_large_off;
+  const bool largeIcons = _font.isLarge();
+  mySubDirsButton->setIcon(subdirs
+    ? (largeIcons ? GUI::icon_subdirs_large_on  : GUI::icon_subdirs_small_on)
+    : (largeIcons ? GUI::icon_subdirs_large_off : GUI::icon_subdirs_small_off));
 
-    mySubDirsButton->setIcon(subdirsIcon);
-  }
   myList->setIncludeSubDirs(subdirs);
   if(toggle)
     reload();
@@ -1345,42 +1497,31 @@ void LauncherDialog::toggleSorting()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllFavorites()
 {
-  StringList msg;
-
-  msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back("your 'Favorites' list!");
-  msg.emplace_back("");
-  msg.emplace_back("Are you sure?");
-  myConfirmMsg = std::make_unique<GUI::MessageBox>
-    (this, _font, msg, _w, _h, kRmAllFav,
-      "Yes", "No", "Remove all Favorites", false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    "This will remove ALL ROMs from\n"
+    "your 'Favorites' list!\n\n"
+    "Are you sure?",
+    [this](bool ok) { if(ok) { myList->removeAllUserFavorites(); reload(); } },
+    "Remove all Favorites", "Yes", "No");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::removeAll(string_view name)
+void LauncherDialog::removeAll(string_view name, const std::function<void()>& action)
 {
-  StringList msg;
-
-  msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back(std::format("your '{}' list!", name));
-  msg.emplace_back("");
-  msg.emplace_back("Are you sure?");
-
-  myConfirmMsg = std::make_unique<GUI::MessageBox>(
-    this, _font, msg, _w, _h, kRmAllPop,
-    "Yes", "No", std::format("Remove all {}", name), false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    std::format("This will remove ALL ROMs from\nyour '{}' list!\n\nAre you sure?", name),
+    [this, action](bool ok) { if(ok) { action(); reload(); } },
+    std::format("Remove all {}", name), "Yes", "No");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllPopular()
 {
-  removeAll("Most Popular");
+  removeAll("Most Popular", [this]() { myList->removeAllPopular(); });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllRecent()
 {
-  removeAll("Recently Played");
+  removeAll("Recently Played", [this]() { myList->removeAllRecent(); });
 }

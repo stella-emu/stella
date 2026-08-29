@@ -25,44 +25,67 @@ class OSystem;
 
 #include "Dialog.hxx"
 
+/**
+  The Options menu: buttons opening each settings category's dialog
+  (Video, Audio, Input, UI, Snapshots, ROM Audit, Game Properties,
+  Cheats, Logs, Developer, Help, About).
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class OptionsDialog : public Dialog
 {
   public:
+    // Builds the two columns of category buttons plus the Close button; some
+    // are disabled/enabled depending on 'mode' (launcher vs. in-game)
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, AppMode mode);
+                  AppMode mode);
+    // Out-of-line: myDialog (unique_ptr<Dialog>) needs its complete type here
     ~OptionsDialog() override;
 
+    // Enables/disables the Game Properties button per the current ROM/state
     void loadConfig() override;
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // Opens the sub-dialog for the clicked category button; Close exits
+    // menu mode (emulator) or closes this dialog (launcher)
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+
+    void layout() override;
 
   private:
+    // The currently open category sub-dialog, if any
     unique_ptr<Dialog>           myDialog;
 
+    // All buttons in grid order: the two columns top-to-bottom, then Close
+    vector<ButtonWidget*> myButtons;
+
+    // Kept to enable/disable per-mode (see the ctor/loadConfig())
     ButtonWidget* myRomAuditButton{nullptr};
     ButtonWidget* myGameInfoButton{nullptr};
     ButtonWidget* myCheatCodeButton{nullptr};
 
+    // The dialog that opened us, passed through to sub-dialogs that need it
+    // (e.g. Game Properties)
     GuiObject* myBoss{nullptr};
     // Indicates if this dialog is used for global (vs. in-game) settings
     AppMode myMode{AppMode::emulator};
 
-    enum {
-      kBasSetCmd   = 'BAST',
-      kVidCmd      = 'VIDO',
-      kEmuCmd      = 'EMUO',
-      kInptCmd     = 'INPT',
-      kUsrIfaceCmd = 'URIF',
-      kSnapCmd     = 'SNAP',
-      kAuditCmd    = 'RAUD',
-      kInfoCmd     = 'INFO',
-      kCheatCmd    = 'CHET',
-      kLoggerCmd   = 'LOGG',
-      kDevelopCmd  = 'DEVL',
-      kHelpCmd     = 'HELP',
-      kAboutCmd    = 'ABOU',
-      kExitCmd     = 'EXIM'
+    // Command ids for the category buttons, dispatched in handleCommand()
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        Video         = GuiCmd::of("OptionsDialog.Video"),
+        Emulation     = GuiCmd::of("OptionsDialog.Emulation"),
+        Input         = GuiCmd::of("OptionsDialog.Input"),
+        UserInterface = GuiCmd::of("OptionsDialog.UserInterface"),
+        Snapshots     = GuiCmd::of("OptionsDialog.Snapshots"),
+        RomAudit      = GuiCmd::of("OptionsDialog.RomAudit"),
+        GameInfo      = GuiCmd::of("OptionsDialog.GameInfo"),
+        Cheats        = GuiCmd::of("OptionsDialog.Cheats"),
+        Logger        = GuiCmd::of("OptionsDialog.Logger"),
+        Developer     = GuiCmd::of("OptionsDialog.Developer"),
+        Help          = GuiCmd::of("OptionsDialog.Help"),
+        About         = GuiCmd::of("OptionsDialog.About"),
+        Exit          = GuiCmd::of("OptionsDialog.Exit");
     };
 
   private:

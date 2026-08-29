@@ -26,7 +26,6 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
   public:
     CartridgeCDFInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                             const GUI::Font& nfont,
-                            int x, int y, int w, int h,
                             CartridgeCDF& cart);
     ~CartridgeCDFInfoWidget() override = default;
 

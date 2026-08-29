@@ -25,85 +25,54 @@
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
 #include "Television.hxx"
+#include "Layout.hxx"
 
 #include "StellaSettingsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  int max_w, int max_h, AppMode mode)
+StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem,
+                                           DialogContainer& parent,
+                                           AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode{mode}
 {
-  const int iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("  Help  " + ELLIPSIS),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
-  ButtonWidget* bw = nullptr;
-
   WidgetArray wid;
 
-  // Set real dimensions
-  setSize(35 * fontWidth + HBORDER * 2 + 5,
-          VBORDER * 2 +_th + 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
-          + VGAP * 12 + buttonHeight * 2, max_w, max_h);
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myAdvancedButton = new ButtonWidget(this, _font,
+    "Use Advanced Settings" + ELLIPSIS, Cmd::AdvancedSettings);
+  wid.push_back(myAdvancedButton);
+  myHelpButton = new ButtonWidget(this, _font, "Help" + ELLIPSIS, Cmd::Help);
+  wid.push_back(myHelpButton);
 
-  int xpos = HBORDER;
-  int ypos = VBORDER + _th;
+  myGlobalLbl = new LabelWidget(this, _font, "Global settings:");
+  createUIOptions(wid);
+  createVideoOptions(wid);
 
-  bw = new ButtonWidget(this, _font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
-    "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
-  wid.push_back(bw);
-  bw = new ButtonWidget(this, _font, bw->getRight() + 8, ypos, buttonWidth, buttonHeight,
-    "Help" + ELLIPSIS, kHelp);
-  wid.push_back(bw);
-
-  ypos += buttonHeight + VGAP * 2;
-
-  new StaticTextWidget(this, _font, xpos, ypos + 1, "Global settings:");
-  xpos += INDENT;
-  ypos += lineHeight + VGAP;
-
-  addUIOptions(wid, xpos, ypos);
-  ypos += VGAP * 4;
-  addVideoOptions(wid, xpos, ypos);
-  ypos += VGAP * 4;
-
-  xpos -= INDENT;
-  myGameSettings = new StaticTextWidget(this, _font, xpos, ypos + 1, "Game settings:");
-  xpos += INDENT;
-  ypos += lineHeight + VGAP;
-
-  addGameOptions(wid, xpos, ypos);
+  myGameSettings = new LabelWidget(this, _font, "Game settings:");
+  createGameOptions(wid);
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, _font);
 
   addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::~StellaSettingsDialog() = default;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createUIOptions(WidgetArray& wid)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            VGAP       = Dialog::vGap();
   VariantList items;
-  const int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
 
-  ypos += 1;
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight, items, "UI theme           ");
+  myThemePopupLbl = new LabelWidget(this, _font, "UI theme");
+  myThemePopup = new PopUpWidget(this, _font, items);
   wid.push_back(myThemePopup);
-  ypos += lineHeight + VGAP;
 
   // Dialog position
   items.clear();
@@ -112,70 +81,60 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
-    items, "Dialogs position   ");
+  myPositionPopupLbl = new LabelWidget(this, _font, "Dialogs position");
+  myPositionPopup = new PopUpWidget(this, _font, items);
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + VGAP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth  = Dialog::fontWidth(),
-            VGAP       = Dialog::vGap();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList items;
 
   // TV effects options
-  const int swidth = _font.getMaxCharWidth() * 11;
+  const int swidth = 11;
+
+  // These controls all draw their own label, and the pop-up sizes its own value
+  // box; layout() gives the group one label column and one box width (see
+  // GUI::alignLabels / GUI::alignPopUps), so none of them names a width here
 
   // TV Mode
   VarList::push_back(items, "Disabled", static_cast<uInt32>(TVMode::None));
   VarList::push_back(items, "RGB", static_cast<uInt32>(TVMode::RGB));
   VarList::push_back(items, "S-Video", static_cast<uInt32>(TVMode::SVideo));
   VarList::push_back(items, "Composite", static_cast<uInt32>(TVMode::Composite));
-  const int pwidth = _font.getStringWidth("Right bottom");
-  const int lwidth = _font.getStringWidth("Scanline intensity ");
-
-  myTVMode = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
-    items, "TV mode            ");
+  myTVModeLbl = new LabelWidget(this, _font, "TV mode");
+  myTVMode = new PopUpWidget(this, _font, items);
   wid.push_back(myTVMode);
-  ypos += lineHeight + VGAP;
 
   // Scanline intensity
-  myTVScanIntense = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
-    "Scanline intensity", lwidth, kScanlinesChanged, fontWidth * 3);
+  myTVScanIntenseLbl = new LabelWidget(this, _font, "Scanline intensity");
+  myTVScanIntense = new SliderWidget(this, _font, swidth, Cmd::ScanlinesChanged, 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
-  ypos += lineHeight + VGAP;
 
   // TV Phosphor blend level
-  myTVPhosLevel = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
-    "Phosphor blend  ", lwidth, kPhosphorChanged, fontWidth * 3);
+  myTVPhosLevelLbl = new LabelWidget(this, _font, "Phosphor blend");
+  myTVPhosLevel = new SliderWidget(this, _font, swidth, Cmd::PhosphorChanged, 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
-  ypos += lineHeight + VGAP;
 
   // FS overscan
-  myTVOverscan = new SliderWidget(this, _font, xpos, ypos - 1, swidth, lineHeight,
-    "Overscan (*)    ", lwidth, kOverscanChanged, fontWidth * 3);
+  myTVOverscanLbl = new LabelWidget(this, _font, "Overscan (*)");
+  myTVOverscan = new SliderWidget(this, _font, swidth, Cmd::OverscanChanged, 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
-  ypos += lineHeight + VGAP;
 
-  new StaticTextWidget(this, ifont, xpos, ypos + 1, "(*) Change requires launcher reboot");
-  ypos += ifont.getLineHeight() + VGAP;
+  myOverscanInfo = new LabelWidget(this, ifont, "(*) Change requires launcher reboot");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
+void StellaSettingsDialog::createGameOptions(WidgetArray& wid)
 {
-  const int lineHeight = Dialog::lineHeight(),
-            VGAP       = Dialog::vGap();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
 
@@ -192,25 +151,115 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
   VarList::push_back(ctrls, "Joy2B+", "JOY_2B+"); // TODO: should work, but needs testing with real hardware
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  const int pwidth = _font.getStringWidth("Sega Genesis");
-  myLeftPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Left port  ");
-  myLeftPort = new PopUpWidget(this, _font, myLeftPortLabel->getRight(),
-    myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
+  // Both port popups offer this same (fixed) list, so they size themselves to it
+  myLeftPortLbl = new LabelWidget(this, _font, "Left port");
+  myLeftPort = new PopUpWidget(this, _font, ctrls, Cmd::LeftControllerChanged);
   wid.push_back(myLeftPort);
-  ypos += lineHeight + VGAP;
+  myLeftPortDetected = new LabelWidget(this, ifont, "Sega Genesis detected");
 
-  myLeftPortDetected = new StaticTextWidget(this, ifont, myLeftPort->getLeft(), ypos,
-    "Sega Genesis detected");
-  ypos += ifont.getLineHeight() + VGAP;
-
-  myRightPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Right port ");
-  myRightPort = new PopUpWidget(this, _font, myRightPortLabel->getRight(),
-    myRightPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
+  myRightPortLbl = new LabelWidget(this, _font, "Right port");
+  myRightPort = new PopUpWidget(this, _font, ctrls, Cmd::RightControllerChanged);
   wid.push_back(myRightPort);
-  ypos += lineHeight + VGAP;
-  myRightPortDetected = new StaticTextWidget(this, ifont, myRightPort->getLeft(), ypos,
-    "Sega Genesis detected");
-  ypos += ifont.getLineHeight() + VGAP;
+  myRightPortDetected = new LabelWidget(this, ifont, "Sega Genesis detected");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using GUI::indentedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+
+  // The pop-ups and the sliders each have a separate label; all share one
+  // label column, lining their boxes and tracks up down the dialog...
+  GUI::alignLabels({{myThemePopupLbl}, {myPositionPopupLbl}, {myTVModeLbl},
+                    {myTVScanIntenseLbl}, {myTVPhosLevelLbl}, {myTVOverscanLbl}});
+  // ...and one shared box width keeps the pop-ups' right edges flush too
+  GUI::alignPopUps({myThemePopup, myPositionPopup, myTVMode});
+
+  // Top row: "Use Advanced Settings" fills the width (but never shrinks below
+  // what its own label needs), "Help" keeps its width at the right
+  auto buttonRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  buttonRow->addStretch(stretchedItem(myAdvancedButton,
+                                      myAdvancedButton->getWidth()));
+  buttonRow->addSpace(fontWidth);
+  buttonRow->addAuto(anchoredItem(myHelpButton));
+
+  // Game settings: the two controller ports.  Each pop-up sits right of its
+  // label in a column as wide as the longer of the two, and its "detected" line
+  // sits beneath it in that same column -- so nothing measures a label
+  auto ports = std::make_unique<GridLayout>(2, 4, fontWidth, VGAP);
+  ports->columnAuto(0).columnAuto(1);
+  for(int r = 0; r < 4; ++r)
+    ports->rowAuto(r);
+  ports->place(0, 0, anchoredItem(myLeftPortLbl));
+  ports->place(1, 0, anchoredItem(myLeftPort));
+  ports->place(1, 1, anchoredItem(myLeftPortDetected));
+  ports->place(0, 2, anchoredItem(myRightPortLbl));
+  ports->place(1, 2, anchoredItem(myRightPort));
+  ports->place(1, 3, anchoredItem(myRightPortDetected));
+
+  auto portsRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  portsRow->addSpace(INDENT);
+  portsRow->addStretch(std::move(ports));
+
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(std::move(buttonRow));
+  root->addSpace(VGAP * 2);
+
+  // Global settings: header, then the indented UI and video options
+  root->addAuto(anchoredItem(myGlobalLbl));
+  root->addSpace(VGAP);
+  auto themeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  themeRow->addSpace(INDENT);
+  themeRow->addStretch(labeledRow(myThemePopupLbl, myThemePopup));
+  root->addAuto(std::move(themeRow));
+  root->addSpace(VGAP);
+  auto positionRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  positionRow->addSpace(INDENT);
+  positionRow->addStretch(labeledRow(myPositionPopupLbl, myPositionPopup));
+  root->addAuto(std::move(positionRow));
+  root->addSpace(VGAP * 5);
+  auto tvModeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  tvModeRow->addSpace(INDENT);
+  tvModeRow->addStretch(labeledRow(myTVModeLbl, myTVMode));
+  root->addAuto(std::move(tvModeRow));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myTVScanIntenseLbl, myTVScanIntense, 0, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myTVPhosLevelLbl, myTVPhosLevel, 0, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(labeledRow(myTVOverscanLbl, myTVOverscan, 0, INDENT));
+  root->addSpace(VGAP);
+  root->addAuto(indentedItem(myOverscanInfo, INDENT));
+  root->addSpace(VGAP * 5);
+
+  root->addAuto(anchoredItem(myGameSettings));
+  root->addSpace(VGAP);
+  root->addAuto(std::move(portsRow));
+
+  // The dialog is as large as its content asks to be, and at least wide enough
+  // for the button row below it (which the content knows nothing about)
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,8 +274,7 @@ void StellaSettingsDialog::loadConfig()
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
 
   // TV Mode
-  myTVMode->setSelected(
-    settings.getString("tv.filter"), "0");
+  myTVMode->setSelected(settings.getString("tv.filter"), "0");
 
   // TV scanline intensity
   myTVScanIntense->setValue(valueToLevel(settings.getInt("tv.scanlines")));
@@ -258,8 +306,7 @@ void StellaSettingsDialog::saveConfig()
   Settings& settings = instance().settings();
 
   // UI palette
-  settings.setValue("uipalette",
-    myThemePopup->getSelectedTag().toString());
+  settings.setValue("uipalette", myThemePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
   instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
@@ -267,12 +314,13 @@ void StellaSettingsDialog::saveConfig()
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
   // TV Mode
-  instance().settings().setValue("tv.filter",
-    myTVMode->getSelectedTag().toString());
+  instance().settings().setValue("tv.filter", myTVMode->getSelectedTag().toString());
 
   // TV phosphor mode
   instance().settings().setValue(PhosphorHandler::SETTING_MODE,
-    myTVPhosLevel->getValue() > 0 ? PhosphorHandler::VALUE_ALWAYS : PhosphorHandler::VALUE_BYROM);
+                                 myTVPhosLevel->getValue() > 0
+                                  ? PhosphorHandler::VALUE_ALWAYS
+                                  : PhosphorHandler::VALUE_BYROM);
   // TV phosphor blend
   instance().settings().setValue(PhosphorHandler::SETTING_BLEND,
     levelToValue(myTVPhosLevel->getValue()));
@@ -294,9 +342,7 @@ void StellaSettingsDialog::saveConfig()
 
   // In any event, inform the Console
   if(instance().hasConsole())
-  {
     instance().console().setProperties(myGameProperties);
-  }
 
   // Finally, issue a complete framebuffer re-initialization...
   instance().createFrameBuffer();
@@ -332,57 +378,49 @@ void StellaSettingsDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
-  int data, int id)
+void StellaSettingsDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                         int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       [[fallthrough]];
-    case GuiObject::kCloseCmd:
+    case GuiObject::Cmd::Close:
       if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
       break;
 
-    case kAdvancedSettings:
+    case Cmd::AdvancedSettings:
       switchSettingsMode();
       break;
 
-    case kConfirmSwitchCmd:
-      instance().settings().setValue("basic_settings", false);
-      if(myMode != AppMode::emulator)
-        close();
-      else
-        instance().eventHandler().leaveMenuMode();
-      break;
-
-    case kHelp:
+    case Cmd::Help:
       openHelp();
       break;
 
-    case kScanlinesChanged:
+    case Cmd::ScanlinesChanged:
       if(myTVScanIntense->getValue() == 0)
         myTVScanIntense->setValueLabel("Off");
       break;
 
-    case kPhosphorChanged:
+    case Cmd::PhosphorChanged:
       if(myTVPhosLevel->getValue() == 0)
         myTVPhosLevel->setValueLabel("Off");
       break;
 
-    case kOverscanChanged:
+    case Cmd::OverscanChanged:
       handleOverscanChange();
       break;
 
-    case kLeftCChanged:
-    case kRightCChanged:
+    case Cmd::LeftControllerChanged:
+    case Cmd::RightControllerChanged:
       updateControllerStates();
       break;
 
@@ -407,21 +445,25 @@ void StellaSettingsDialog::handleOverscanChange()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::switchSettingsMode()
 {
-  StringList msg;
-
-  msg.emplace_back("Warning!");
-  msg.emplace_back("");
-  msg.emplace_back("Advanced settings should be");
-  msg.emplace_back("handled with care! When in");
-  msg.emplace_back("doubt, read the manual.");
-  msg.emplace_back("");
-  msg.emplace_back("If you are sure you want to");
-  msg.emplace_back("proceed with the switch, click");
-  msg.emplace_back("'OK', otherwise click 'Cancel'.");
-
-  myConfirmMsg = std::make_unique<GUI::MessageBox>(this, _font, msg,
-      _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);
-  myConfirmMsg->show();
+  GUI::MessageBox::confirm(this,
+    "Warning!\n\n"
+    "Advanced settings should be\n"
+    "handled with care! When in\n"
+    "doubt, read the manual.\n\n"
+    "If you are sure you want to\n"
+    "proceed with the switch, click\n"
+    "'OK', otherwise click 'Cancel'.",
+    [this](bool ok) {
+      if(ok)
+      {
+        instance().settings().setValue("basic_settings", false);
+        if(myMode != AppMode::emulator)
+          close();
+        else
+          instance().eventHandler().leaveMenuMode();
+      }
+    },
+    "Switch settings mode");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -445,10 +487,10 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
 
   myGameSettings->setEnabled(enable);
   myLeftPort->setEnabled(enable);
-  myLeftPortLabel->setEnabled(enable);
+  myLeftPortLbl->setEnabled(enable);
   myLeftPortDetected->setEnabled(enable);
   myRightPort->setEnabled(enable);
-  myRightPortLabel->setEnabled(enable);
+  myRightPortLbl->setEnabled(enable);
   myRightPortDetected->setEnabled(enable);
 
   if(enable)
@@ -547,8 +589,8 @@ void StellaSettingsDialog::updateControllerStates()
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   const bool enableSelectControl = myGameProperties.get(PropType::Cart_Type) != "CM";
-  myLeftPortLabel->setEnabled(enableSelectControl);
-  myRightPortLabel->setEnabled(enableSelectControl);
+  myLeftPortLbl->setEnabled(enableSelectControl);
+  myRightPortLbl->setEnabled(enableSelectControl);
   myLeftPort->setEnabled(enableSelectControl);
   myRightPort->setEnabled(enableSelectControl);
 }

@@ -27,7 +27,6 @@ class CartridgeF4SCWidget : public CartridgeEnhancedWidget
   public:
     CartridgeF4SCWidget(GuiObject* boss, const GUI::Font& lfont,
                         const GUI::Font& nfont,
-                        int x, int y, int w, int h,
                         CartridgeF4SC& cart);
     ~CartridgeF4SCWidget() override = default;
 

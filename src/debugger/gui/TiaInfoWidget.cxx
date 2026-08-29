@@ -24,120 +24,247 @@
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
+#include "Layout.hxx"
 
 #include "TiaInfoWidget.hxx"
 
+namespace {
+  // Between the current and the last-frame scanline counts, which share a row
+  constexpr int SCAN_GAP = 2;
+
+  // How many characters wide each kind of value field is
+  constexpr int CYCLE_CHARS = 5,  // a cycle count for this frame
+               TOTAL_CHARS = 8,  // the session total, in E notation
+               COUNT_CHARS = 3;  // a scanline, pixel or clock count
+
+  // The label of each row, in the two forms picked between by the width available
+  struct RowLabel { string_view full; string_view abbr; };
+
+  constexpr std::array<RowLabel, 5> LEFT_LABELS{{
+    {"Frame Cycles", "Frame C."},
+    {"WSync Cycles", "WSync C."},
+    {"Timer Cycles", "Timer C."},
+    {"Total",        "Total"},
+    {"Delta",        "Delta"}
+  }};
+  constexpr std::array<RowLabel, 5> RIGHT_LABELS{{
+    {"Frame Cnt.",  "Frame"},
+    {"Scanline",    "Scn Ln"},
+    {"Scan Cycle",  "Scn Cycle"},
+    {"Pixel Pos",   "Pixel Pos"},
+    {"Color Clock", "Color Clk"}
+  }};
+}  // namespace
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
-                             const GUI::Font& nfont,
-                             int x, int y, int max_w)
-  : Widget(boss, lfont, x, y, 16, 16),
+                             const GUI::Font& nfont)
+  : Widget(boss, lfont),
     CommandSender(boss)
 {
-  const int VGAP = lfont.getLineHeight() / 4;
-  constexpr int VBORDER = 5 + 1;
-  const int COLUMN_GAP = _fontWidth * 1.25;
-  const bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
-    + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
-    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
-  const int lineHeight = lfont.getLineHeight();
-  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycls" : "F. Cycls");
-  int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
-  int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
-  int fwidth = EditTextWidget::calcWidth(lfont, 5);
-  const int twidth = EditTextWidget::calcWidth(lfont, 8);
-  const int LGAP = (max_w - lwidth - EditTextWidget::calcWidth(lfont, 5)
-    - lwidthR - EditTextWidget::calcWidth(lfont, 5)) / 4;
-
-  lwidth += LGAP;
-  lwidth8 += LGAP;
-  lwidthR += LGAP;
-
-  // Left column
-  // Left: Frame Cycle
-  int xpos = x, ypos = y + VBORDER;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
-  myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  // Create every field; reflow() picks the short/long label text and positions
+  // and sizes everything for the width the parent layout gives us
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myFrameCyclesLbl = new LabelWidget(boss, lfont, "Frame Cycles");
+  myFrameCycles = new EditTextWidget(boss, nfont, 1);
   myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
-  // Left: WSync Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycls" : "WSync C.");
-  myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myWSyncCyclesLbl = new LabelWidget(boss, lfont, "WSync Cycles");
+  myWSyncCylces = new EditTextWidget(boss, nfont, 1);
   myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
   myWSyncCylces->setEditable(false, true);
 
-  // Left: Timer Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycls" : "Timer C.");
-  myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myTimerCyclesLbl = new LabelWidget(boss, lfont, "Timer Cycles");
+  myTimerCylces = new EditTextWidget(boss, nfont, 1);
   myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
   myTimerCylces->setEditable(false, true);
 
-  // Left: Total Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Total");
-  myTotalCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myTotalLbl = new LabelWidget(boss, lfont, "Total");
+  myTotalCycles = new EditTextWidget(boss, nfont, 1);
   myTotalCycles->setEditable(false, true);
 
-  // Left: Delta Cycles
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Delta");
-  myDeltaCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myDeltaLbl = new LabelWidget(boss, lfont, "Delta");
+  myDeltaCycles = new EditTextWidget(boss, nfont, 1);
   myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
-  // Right column
-  xpos = x + max_w - lwidthR - EditTextWidget::calcWidth(lfont, 5); ypos = y + VBORDER;
-
-  // Right: Frame Count
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cnt." : "Frame");
-  myFrameCount = new EditTextWidget(boss, nfont, xpos + lwidthR, ypos - 1, fwidth, lineHeight);
+  myFrameCountLbl = new LabelWidget(boss, lfont, "Frame Cnt.");
+  myFrameCount = new EditTextWidget(boss, nfont, 1);
   myFrameCount->setToolTip("Total number of frames executed this session.");
   myFrameCount->setEditable(false, true);
 
-  lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
-  fwidth = EditTextWidget::calcWidth(lfont, 3);
-
-  // Right: Scanline
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scanline" : "Scn Ln");
-  myScanlineCountLast = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineLbl = new LabelWidget(boss, lfont, "Scanline");
+  myScanlineCountLast = new EditTextWidget(boss, nfont, 1);
   myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
-  myScanlineCount = new EditTextWidget(boss, nfont,
-                                       xpos + lwidth - myScanlineCountLast->getWidth() - 2, ypos - 1,
-                                       fwidth, lineHeight);
+  myScanlineCount = new EditTextWidget(boss, nfont, 1);
   myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
-  // Right: Scan Cycle
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scan Cycle" : "Scn Cycle");
-  myScanlineCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanCycleLbl = new LabelWidget(boss, lfont, "Scan Cycle");
+  myScanlineCycles = new EditTextWidget(boss, nfont, 1);
   myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
-  // Right: Pixel Pos
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Pixel Pos");
-  myPixelPosition = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myPixelPosLbl = new LabelWidget(boss, lfont, "Pixel Pos");
+  myPixelPosition = new EditTextWidget(boss, nfont, 1);
   myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
-  // Right: Color Clock
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Color Clock" : "Color Clk");
-  myColorClocks = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myColorClockLbl = new LabelWidget(boss, lfont, "Color Clock");
+  myColorClocks = new EditTextWidget(boss, nfont, 1);
   myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
-  // Calculate actual dimensions
-  _w = myColorClocks->getRight() - x;
-  _h = myColorClocks->getBottom();
+  // Each label switches between a long and a short form as the width allows, so
+  // it must take its width from whichever one it is currently showing
+  for(auto* l: {myFrameCyclesLbl, myWSyncCyclesLbl, myTimerCyclesLbl,
+                myTotalLbl, myDeltaLbl, myFrameCountLbl, myScanlineLbl,
+                myScanCycleLbl, myPixelPosLbl, myColorClockLbl})
+    l->setAutoResize(true);
+
+  reflow();
 
   //setHelpAnchor("TIAInfo", true); // TODO: does not work due to missing focus
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::setArea(int x, int y, int w, int h)
+{
+  Widget::setArea(x, y, w, h);
+  reflow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::setLabels(bool longstr)
+{
+  const auto set = [&](LabelWidget* w, const RowLabel& l) {
+    w->setLabel(longstr ? l.full : l.abbr);
+  };
+  set(myFrameCyclesLbl, LEFT_LABELS[0]);
+  set(myWSyncCyclesLbl, LEFT_LABELS[1]);
+  set(myTimerCyclesLbl, LEFT_LABELS[2]);
+  set(myTotalLbl,       LEFT_LABELS[3]);
+  set(myDeltaLbl,       LEFT_LABELS[4]);
+  set(myFrameCountLbl,  RIGHT_LABELS[0]);
+  set(myScanlineLbl,    RIGHT_LABELS[1]);
+  set(myScanCycleLbl,   RIGHT_LABELS[2]);
+  set(myPixelPosLbl,    RIGHT_LABELS[3]);
+  set(myColorClockLbl,  RIGHT_LABELS[4]);
+
+  myLongLabels = longstr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
+{
+  using GUI::BoxLayout;
+  using GUI::anchoredItem;
+  using GUI::stretchedItem;
+  using Dir = BoxLayout::Dir;
+
+  const int VGAP = _font.getLineHeight() / 4;
+  const int VBORDER = _font.getFontHeight() / 2;
+  // Every label keeps one character of clearance before its value field, which
+  // is simply the row's spacing -- so a row is that much wider than its parts
+  const int space = _font.getMaxCharWidth();
+
+  // A field is as wide as the characters it has to show; it fills the cell that
+  // says so, which is how its width follows the font without anyone setting it
+  const auto field = [&](Widget* w, int chars) {
+    return std::pair{stretchedItem(w), EditTextWidget::calcWidth(_font, chars)};
+  };
+
+  // A row stretches its label across whatever width the column has and anchors
+  // its value field at the right, so that a column's fields all end flush, no
+  // matter how wide its labels or how many characters each field holds
+  const auto row = [&](LabelWidget* label, Widget* value, int chars) {
+    auto [item, w] = field(value, chars);
+    auto r = std::make_unique<BoxLayout>(Dir::Horizontal, space);
+    r->addStretch(anchoredItem(label));
+    r->addFixed(std::move(item), w);
+    return r;
+  };
+
+  auto left = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
+  left->addAuto(row(myFrameCyclesLbl, myFrameCycles, CYCLE_CHARS));
+  left->addAuto(row(myWSyncCyclesLbl, myWSyncCylces, CYCLE_CHARS));
+  left->addAuto(row(myTimerCyclesLbl, myTimerCylces, CYCLE_CHARS));
+  left->addAuto(row(myTotalLbl, myTotalCycles, TOTAL_CHARS));
+  left->addAuto(row(myDeltaLbl, myDeltaCycles, TOTAL_CHARS));
+
+  // The scanline row shows the current and last-frame counts side by side
+  auto counts = std::make_unique<BoxLayout>(Dir::Horizontal, SCAN_GAP);
+  for(auto* c: {myScanlineCount, myScanlineCountLast})
+  {
+    auto [item, w] = field(c, COUNT_CHARS);
+    counts->addFixed(std::move(item), w);
+  }
+
+  auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal, space);
+  scanRow->addStretch(anchoredItem(myScanlineLbl));
+  scanRow->addAuto(std::move(counts));
+
+  auto right = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, VBORDER);
+  right->addAuto(row(myFrameCountLbl, myFrameCount, CYCLE_CHARS));
+  right->addAuto(std::move(scanRow));
+  right->addAuto(row(myScanCycleLbl, myScanlineCycles, COUNT_CHARS));
+  right->addAuto(row(myPixelPosLbl, myPixelPosition, COUNT_CHARS));
+  right->addAuto(row(myColorClockLbl, myColorClocks, COUNT_CHARS));
+
+  // The two columns and the gap between them start at the size their contents
+  // need and share any surplus in the proportion 1 : 2 : 1, so the gap always
+  // outgrows the label clearances
+  const int leftW  = static_cast<int>(left->naturalSize().w),
+            rightW = static_cast<int>(right->naturalSize().w);
+
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
+  root->addStretch(std::move(left), 1, leftW);
+  root->addStretchSpace(2, columnGap());
+  root->addStretch(std::move(right), 1, rightW);
+
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Size TiaInfoWidget::naturalSize() const
+{
+  return buildLayout()->naturalSize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::naturalWidthFor(bool longstr)
+{
+  setLabels(longstr);
+
+  // Called from our own ctor via reflow(), but this dispatches to our own
+  // override regardless -- TiaInfoWidget has no subclasses to be incomplete
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
+  return static_cast<int>(naturalSize().w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TiaInfoWidget::minWidth()
+{
+  // Measuring means showing the short labels, so put back what was on screen
+  const bool wasLong = myLongLabels;
+  const int w = naturalWidthFor(false);
+
+  setLabels(wasLong);
+
+  return w;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaInfoWidget::reflow()
+{
+  // Spell the labels out only once they fit without eating their own clearance
+  if(naturalWidthFor(true) > _w)
+    setLabels(false);
+
+  buildLayout()->doLayout(_x, _y, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,7 +273,8 @@ void TiaInfoWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaInfoWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void TiaInfoWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                  int data, int id)
 {
 }
 

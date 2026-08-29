@@ -51,6 +51,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartGLWidget.o \
         src/debugger/gui/CartJANEWidget.o \
         src/debugger/gui/CartMDMWidget.o \
+        src/debugger/gui/CartMVCWidget.o \
         src/debugger/gui/CartRamWidget.o \
         src/debugger/gui/CartSBWidget.o \
         src/debugger/gui/CartTVBoyWidget.o \
@@ -59,6 +60,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartWF8Widget.o \
         src/debugger/gui/CartX07Widget.o \
         src/debugger/gui/CartDebugWidget.o \
+        src/debugger/gui/ControllerWidget.o \
         src/debugger/gui/CpuWidget.o \
         src/debugger/gui/DataGridOpsWidget.o \
         src/debugger/gui/DataGridRamWidget.o \
@@ -72,6 +74,7 @@ MODULE_OBJS := \
         src/debugger/gui/Joy2BPlusWidget.o \
         src/debugger/gui/JoystickWidget.o \
         src/debugger/gui/KeyboardWidget.o \
+        src/debugger/gui/NullControlWidget.o \
         src/debugger/gui/PaddleWidget.o \
         src/debugger/gui/PointingDeviceWidget.o \
         src/debugger/gui/PromptWidget.o \
@@ -82,9 +85,12 @@ MODULE_OBJS := \
         src/debugger/gui/RomListSettings.o \
         src/debugger/gui/RomListWidget.o \
         src/debugger/gui/RomWidget.o \
+        src/debugger/gui/TiaDisplayWidget.o \
         src/debugger/gui/TiaInfoWidget.o \
         src/debugger/gui/TiaOutputWidget.o \
         src/debugger/gui/TiaWidget.o \
+        src/debugger/gui/TiaWindow.o \
+        src/debugger/gui/TiaWindowDialog.o \
         src/debugger/gui/TiaZoomWidget.o \
         src/debugger/gui/ToggleBitWidget.o \
         src/debugger/gui/TogglePixelWidget.o \

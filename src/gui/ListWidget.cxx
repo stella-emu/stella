@@ -25,14 +25,11 @@
 #include "ListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h, bool useScrollbar)
-  : EditableWidget(boss, font, x, y, 16, 16),
-    _rows{h / _lineHeight},
-    _cols{w / _fontWidth},
+ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font, bool useScrollbar)
+  : EditableWidget(boss, font),
     _useScrollbar{useScrollbar}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG | Widget::Flag::RetainFocus;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -40,19 +37,69 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 
   _editMode = false;
 
-  // Set real dimensions
-  _h = h + 2;
-
-  // Create scrollbar and attach to the list
+  // My real dimensions -- and the row count that follows from them -- arrive
+  // via setWidth()/setHeight(), which reserve the scrollbar's room the same way
   if(_useScrollbar)
   {
-    _w = w - ScrollBarWidget::scrollBarWidth(_font);
-    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                     ScrollBarWidget::scrollBarWidth(_font), _h);
+    _scrollBar = new ScrollBarWidget(boss, font);
     _scrollBar->setTarget(this);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setPos(const Common::Point& pos)
+{
+  Widget::setPos(pos);
+  // The scrollbar is a sibling widget, not a child, so it must be moved to
+  // track the list (it sits flush against the list's right edge)
+  if(_useScrollbar)
+    _scrollBar->setPos(_x + _w, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setWidth(int w)
+{
+  // getWidth() reports the full footprint (drawable area + scrollbar), so
+  // setWidth() must subtract the scrollbar again to stay its inverse
+  // (mirrors the constructor); otherwise repeated resizes accumulate the
+  // scrollbar width into the list
+  _fullWidth = w;
+
+  if(_useScrollbar)
+  {
+    // The scrollbar sizes its own (font-derived) width; we just reserve room
+    // for it and keep it flush against the list's right edge.  It only asks
+    // for that room while it is needed: with everything in view there is
+    // nothing to scroll, so it hides and the width is the list's to use
+    const bool needed = scrollBarNeeded();
+
+    _scrollBar->setVisible(needed);
+    Widget::setWidth(w - (needed ? ScrollBarWidget::scrollBarWidth(_font) : 1));
+    _scrollBar->setPosX(_x + _w);
+  }
   else
-    _w = w - 1;
+    Widget::setWidth(w - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ListWidget::scrollBarNeeded() const
+{
+  return _useScrollbar && std::cmp_greater(_list.size(), _rows);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::updateScrollBarRoom()
+{
+  // Nothing to re-split before we have been given a footprint.  The guard is
+  // for the subclass that re-wraps its text to the new width: that lands back
+  // in recalc(), and the answer there cannot change again -- a wider list
+  // never needs MORE lines -- so one pass is always enough
+  if(_fullWidth == 0 || _inScrollBarRoom)
+    return;
+
+  _inScrollBarRoom = true;
+  setWidth(_fullWidth);
+  _inScrollBarRoom = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,7 +127,7 @@ void ListWidget::setSelected(int item)
       abortEditMode();
 
     _selectedItem = item;
-    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
 
     _currentPos = _selectedItem - _rows / 2;
     scrollToSelected();
@@ -160,7 +207,12 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::getWidth() const
 {
-  return _w + ScrollBarWidget::scrollBarWidth(_font);
+  // Our footprint is what setWidth() was given, however we have since split it
+  // with the scrollbar -- a hidden bar must not shrink what we report, or the
+  // focus rect (and anything else measuring us) would no longer fit us
+  return _fullWidth != 0
+    ? _fullWidth
+    : _w + ScrollBarWidget::scrollBarWidth(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,9 +233,12 @@ void ListWidget::recalc()
 
   if(_useScrollbar)
   {
-    _scrollBar->_numEntries = static_cast<int>(_list.size());
-    _scrollBar->_entriesPerPage = _rows;
-    // disable scrollbar if no longer necessary
+    _scrollBar->setNumEntries(static_cast<int>(_list.size()));
+    _scrollBar->setEntriesPerPage(_rows);
+    // hide the scrollbar if no longer necessary, which hands its room back to
+    // the list (and take it again once there is something to scroll)
+    if(_scrollBar->isVisible() != scrollBarNeeded())
+      updateScrollBarRoom();
     scrollBarRecalc();
   }
 
@@ -198,9 +253,9 @@ void ListWidget::scrollBarRecalc()
 {
   if(_useScrollbar)
   {
-    _scrollBar->_currentPos = _currentPos;
+    _scrollBar->setCurrentPos(_currentPos);
     _scrollBar->recalc();
-    sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+    sendCommand(Cmd::Scrolled, _currentPos, _id);
   }
 }
 
@@ -221,7 +276,7 @@ void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     if(_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
     setDirty();
   }
 
@@ -236,7 +291,7 @@ void ListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   // send the double click command
   if(clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(ListWidget::kDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(Cmd::DoubleClicked, _selectedItem, _id);
 
     // Start edit mode
     if(isEditable() && !_editMode)
@@ -297,7 +352,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 void ListWidget::handleJoyDown(int stick, int button, bool longPress)
 {
   if(longPress)
-    sendCommand(ListWidget::kLongButtonPressCmd, _selectedItem, _id);
+    sendCommand(Cmd::LongButtonPress, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,7 +381,7 @@ bool ListWidget::handleEvent(Event::Type e)
         if(isEditable())
           startEditMode();
         else
-          sendCommand(ListWidget::kActivatedCmd, _selectedItem, _id);
+          sendCommand(Cmd::Activated, _selectedItem, _id);
       }
       break;
 
@@ -359,7 +414,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPrevDir:
-      sendCommand(ListWidget::kParentDirCmd, _selectedItem, _id);
+      sendCommand(Cmd::ParentDir, _selectedItem, _id);
       break;
 
     default:
@@ -374,7 +429,7 @@ bool ListWidget::handleEvent(Event::Type e)
       scrollToSelected();
     }
 
-    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(Cmd::SelectionChanged, _selectedItem, _id);
   }
 
   return handled;
@@ -390,9 +445,10 @@ void ListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void ListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                               int data, int id)
 {
-  if(cmd == GuiObject::kSetPositionCmd)
+  if(cmd == GuiObject::Cmd::SetPosition)
   {
     if(_currentPos != data)
     {
@@ -400,7 +456,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       setDirty();
 
       // Let boss know the list has scrolled
-      sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+      sendCommand(Cmd::Scrolled, _currentPos, _id);
     }
   }
 }
@@ -427,14 +483,14 @@ void ListWidget::scrollToCurrent(int item)
 
   if(_useScrollbar)
   {
-    const int oldScrollPos = _scrollBar->_currentPos;
-    _scrollBar->_currentPos = _currentPos;
+    const int oldScrollPos = _scrollBar->currentPos();
+    _scrollBar->setCurrentPos(_currentPos);
     _scrollBar->recalc();
 
     setDirty();
 
     if(oldScrollPos != _currentPos)
-      sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+      sendCommand(Cmd::Scrolled, _currentPos, _id);
   }
 }
 
@@ -460,7 +516,7 @@ void ListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   _editMode = false;
   _list[_selectedItem] = editString();
-  sendCommand(ListWidget::kDataChangedCmd, _selectedItem, _id);
+  sendCommand(Cmd::DataChanged, _selectedItem, _id);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

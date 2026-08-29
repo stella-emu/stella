@@ -56,7 +56,7 @@
 #endif
 #ifdef GUI_SUPPORT
   #include "BrowserDialog.hxx"
-  #include "MessageDialog.hxx"
+  #include "MessageBox.hxx"
   #include "OverlayMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
@@ -318,7 +318,8 @@ void EventHandler::handleTextEvent(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
+void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel,
+                                          uInt32 windowID)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
@@ -333,14 +334,14 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     mySkipMouseMotion = false;
   }
 #ifdef GUI_SUPPORT
-  else if(myOverlay)
-    myOverlay->handleMouseMotionEvent(x, y);
+  else if(DialogContainer* overlay = overlayForWindow(windowID))
+    overlay->handleMouseMotionEvent(x, y);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
-                                          int x, int y)
+                                          int x, int y, uInt32 windowID)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
@@ -358,19 +359,108 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
     }
   }
 #ifdef GUI_SUPPORT
-  else if(myOverlay)
-    myOverlay->handleMouseButtonEvent(b, pressed, x, y);
+  else if(DialogContainer* overlay = overlayForWindow(windowID))
+    overlay->handleMouseButtonEvent(b, pressed, x, y);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleSystemEvent(SystemEvent e, int, int)
+DialogContainer* EventHandler::overlayForWindow([[maybe_unused]] uInt32 windowID) const
+{
+#ifdef DEBUGGER_SUPPORT
+  // While the debugger's companion TIA window is open, events that originate
+  // from it are routed to its own container rather than the main overlay.
+  if(myState == EventHandlerState::DEBUGGER && windowID != 0 &&
+     myOSystem.frameBuffer().secondaryWindowOpen() &&
+     windowID == myOSystem.frameBuffer().secondaryWindowId())
+    return myOSystem.debugger().tiaWindowContainer();
+#endif
+  return myOverlay;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
+                                     int data3)
 {
   switch(e)
   {
-    case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
-      // Force full render update
+    {
+      auto& fb = myOSystem.frameBuffer();
+      const auto windowID = static_cast<uInt32>(data3);
+
+    #ifdef DEBUGGER_SUPPORT
+      // The companion TIA window resizes independently of the debugger window
+      // it belongs to (data3 carries the window ID)
+      if(myState == EventHandlerState::DEBUGGER && fb.secondaryWindowOpen() &&
+         windowID == fb.secondaryWindowId())
+      {
+        myOSystem.debugger().resizeTiaWindow(data1, data2);
+        break;
+      }
+    #endif
+      // Ignore a resize reported for any window we are not driving
+      if(windowID != fb.primaryWindowId())
+        break;
+
+      // A user-resizable window (the launcher and the debugger) records the
+      // latest size, then applies + re-flows + presents it right here
+      // (throttled inside applyResize()).  Driving it from the handler — rather
+      // than only from the main loop's updateTime() — is what makes it work
+      // during the Windows/macOS modal resize loop, where the main loop is
+      // blocked and this handler is reached only via the SDL resize
+      // event-watch.  Every other window resizes immediately.
+      if(fb.liveResize(data1, data2))
+      {
+      #ifdef GUI_SUPPORT
+        if(myOverlay && myOverlay->applyResize())
+          fb.update(FrameBuffer::UpdateMode::RERENDER);
+      #endif
+      }
+      else
+      {
+        fb.handleResize(data1, data2);
+        // Force full render update
+        fb.update(FrameBuffer::UpdateMode::RERENDER);
+      }
+      break;
+    }
+
+    case SystemEvent::WINDOW_MOVED:
+      // Remember where the user put this window (data3 carries the window ID);
+      // the position is read back from the window itself, so a fullscreen or
+      // centered window is correctly skipped
+      myOSystem.frameBuffer().saveWindowPosition(static_cast<uInt32>(data3));
+      break;
+
+    case SystemEvent::WINDOW_EXPOSED:
+    #ifdef DEBUGGER_SUPPORT
+      // A repaint of the companion TIA window is its own concern (data1 carries
+      // the window ID); just mark it dirty so it redraws, leaving the primary
+      // window untouched
+      if(myState == EventHandlerState::DEBUGGER &&
+         myOSystem.frameBuffer().secondaryWindowOpen() &&
+         static_cast<uInt32>(data1) == myOSystem.frameBuffer().secondaryWindowId())
+      {
+        myOSystem.debugger().invalidateTiaWindow();
+        break;
+      }
+    #endif
+    #ifdef GUI_SUPPORT
+      // The resize handler above has already re-flowed and presented this
+      // frame, so repainting it again is a second present of identical
+      // content.  Only where the drag blocks the main loop, though: elsewhere
+      // applyResize() throttles, and this repaint covers the events it drops.
+      // Nor where our last frame is rescaled as the window changes -- there a
+      // dropped repaint is a stale, resampled frame, not a saved one
+      if(LiveResize::blocksMainLoop() &&
+         !LiveResize::rescalesOurLastFrame())
+      {
+        if(myOverlay && myOverlay->resizeInProgress())
+          break;
+      }
+    #endif
+      // Force full render update of the primary window
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
 
@@ -402,6 +492,19 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 void EventHandler::handleDropfileEvent(string_view file)
 {
   myOSystem.createConsole(FSNode(file));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID)
+{
+#ifdef DEBUGGER_SUPPORT
+  // A close request on the companion TIA window closes only that window; the
+  // main window's close is left to the normal SDL_EVENT_QUIT path.
+  if(myState == EventHandlerState::DEBUGGER &&
+     myOSystem.frameBuffer().secondaryWindowOpen() &&
+     windowID == myOSystem.frameBuffer().secondaryWindowId())
+    myOSystem.debugger().closeTiaWindow();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1598,60 +1701,31 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
         case EventHandlerState::EMULATION:
           if(pressed && !repeated)
-          {
-#ifdef GUI_SUPPORT
-            if (myOSystem.settings().getBool("confirmexit"))
-            {
-              StringList msg;
-              const string saveOnExit = myOSystem.settings().getString("saveonexit");
-              const bool activeTM = myOSystem.settings().getBool(
-                myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
-
-
-              msg.emplace_back("Do you really want to exit emulation?");
-              if (saveOnExit != "all" || !activeTM)
-              {
-                msg.emplace_back("");
-                msg.emplace_back("You will lose all your progress.");
-              }
-              MessageDialog::setMessage("Exit Emulation", msg, true);
-              enterMenuMode(EventHandlerState::MESSAGEMENU);
-            }
-            else
-#endif
-              exitEmulation(true);
-
-          }
+            confirmExitEmulation();
           return;
 
-#ifdef GUI_SUPPORT
-        case EventHandlerState::MESSAGEMENU:
-          if(pressed && !repeated)
-          {
-            leaveMenuMode();
-            if (MessageDialog::confirmed())
-              exitEmulation(true);
-          }
-          return;
-#endif
         default:
           return;
       }
 
     case Event::ExitGame:
-      exitEmulation(true);
+      if(pressed && !repeated)
+        confirmExitEmulation();
       return;
 
     case Event::Quit:
       if(pressed && !repeated)
       {
-        saveKeyMapping();
-        saveJoyMapping();
-        if (myState != EventHandlerState::LAUNCHER)
-          exitEmulation();
+#ifdef GUI_SUPPORT
+        // Quitting from an active game loses progress just like exiting it,
+        // so honor 'confirmexit' here too; the window-manager close button
+        // also arrives here (as SDL_EVENT_QUIT)
+        if(myState == EventHandlerState::EMULATION ||
+           myState == EventHandlerState::PAUSE)
+          confirmExitEmulation(true);
         else
-          exitLauncher();
-        myOSystem.quit();
+#endif
+          doQuit();
       }
       return;
 
@@ -1886,9 +1960,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
          || myState == EventHandlerState::TIMEMACHINE || myState == EventHandlerState::PLAYBACK)
         enterMenuMode(EventHandlerState::CMDMENU);
-      else if(myState == EventHandlerState::CMDMENU && !myOSystem.settings().getBool("minimal_ui"))
-        // The extra check for "minimal_ui" allows mapping e.g. right joystick fire
-        //  to open the command dialog and navigate there using that fire button
+      else if(myState == EventHandlerState::CMDMENU)
         leaveMenuMode();
       else
         handled = false;
@@ -2031,12 +2103,33 @@ void EventHandler::setComboMap()
     {
       for(const json& combo : mapping)
       {
+        // An unrecognized "combo" value deserializes to Event::NoType (see
+        // jsonDefinitions.hxx's NLOHMANN_JSON_SERIALIZE_ENUM, which never
+        // throws), so a corrupted settings file can drive i far outside
+        // [0, COMBO_SIZE) rather than tripping the catch below
         const int i = combo.at("combo").get<Event::Type>() - Event::Combo1;
+        if(i < 0 || i >= COMBO_SIZE)
+          continue;
+
         int j = 0;
         const json events = combo.at("events");
 
         for(const json& event: events)
-          myComboTable[i][j++] = event;
+        {
+          if(j >= EVENTS_PER_COMBO)
+            break;
+
+          const Event::Type e = event;
+          // The GUI's combo-event-slot list excludes Combo1..Combo16 (see
+          // getComboList()'s "exclude combo events"); a settings file that
+          // names one anyway would make this combo trigger itself, directly
+          // or through another combo, recursing without bound in
+          // handleEvent()
+          if(e >= Event::Combo1 && e <= Event::Combo16)
+            continue;
+
+          myComboTable[i][j++] = e;
+        }
       }
     }
     catch(const json::exception&)
@@ -2511,6 +2604,14 @@ void EventHandler::changeMouseControllerMode(int direction)
     }
     ++i;
   }
+  if(std::cmp_greater_equal(i, MODES.size()))
+  {
+    // 'usemouse' held a value that isn't one of the known modes (e.g. a
+    // hand-edited or corrupted settings file); fall back to the documented
+    // default rather than leaving i one past MSG's last valid index
+    i = 1;  // "analog", matches Settings.cxx's default
+    usemouse = MODES[i];
+  }
   myOSystem.settings().setValue("usemouse", usemouse);
   setMouseControllerMode(usemouse);
   myOSystem.frameBuffer().setCursorState(); // if necessary change grab mouse
@@ -2544,10 +2645,10 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::openDialog(Dialog* dialog)
+void EventHandler::openDialog(unique_ptr<Dialog> dialog)
 {
 #ifdef GUI_SUPPORT
-  myOSystem.overlayMenu().setDialog(dialog);
+  myOSystem.overlayMenu().setDialog(std::move(dialog));
   enterMenuMode(EventHandlerState::OVERLAYMENU);
 #endif
 }
@@ -2564,6 +2665,16 @@ void EventHandler::openBrowserDialog(string_view title, string_view startpath,
   setState(EventHandlerState::OVERLAYMENU);
   myOSystem.sound().pause(true);
   BrowserDialog::show(myOSystem, title, startpath, mode, command, namefilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::openMessageBox(string_view title, string_view text,
+                                  const std::function<void(bool ok)>& callback,
+                                  string_view okText, string_view cancelText)
+{
+  openDialog(GUI::MessageBox::create(
+    myOSystem, myOSystem.overlayMenu(), myOSystem.frameBuffer().font(), text,
+    callback, okText, cancelText, title));
 }
 #endif
 
@@ -2683,7 +2794,6 @@ void EventHandler::setState(EventHandlerState state)
     case EventHandlerState::OPTIONSMENU:
     case EventHandlerState::CMDMENU:
     case EventHandlerState::HIGHSCORESMENU:
-    case EventHandlerState::MESSAGEMENU:
     case EventHandlerState::PLUSROMSMENU:
     case EventHandlerState::OVERLAYMENU:
       myOverlay = &myOSystem.overlayMenu();
@@ -2765,6 +2875,55 @@ void EventHandler::exitEmulation(bool checkLauncher)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::confirmExitEmulation(bool quitApp)
+{
+#ifdef GUI_SUPPORT
+  if(myOSystem.settings().getBool("confirmexit"))
+  {
+    const string saveOnExit = myOSystem.settings().getString("saveonexit");
+    const bool activeTM = myOSystem.settings().getBool(
+      myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+
+    string msg = quitApp ? "Do you really want to quit Stella?"
+                         : "Do you really want to exit emulation?";
+    if(saveOnExit != "all" || !activeTM)
+      msg += "\n\nYou will lose all your progress.";
+
+    openMessageBox(quitApp ? "Quit Stella" : "Exit Emulation", msg,
+      [this, quitApp](bool ok)
+      {
+        if(ok)
+        {
+          if(quitApp)
+            doQuit();
+          else
+            exitEmulation(true);
+        }
+      }, "Yes", "No");
+  }
+  else
+#endif
+  {
+    if(quitApp)
+      doQuit();
+    else
+      exitEmulation(true);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::doQuit()
+{
+  saveKeyMapping();
+  saveJoyMapping();
+  if(myState != EventHandlerState::LAUNCHER)
+    exitEmulation();
+  else
+    exitLauncher();
+  myOSystem.quit();
+}
+
 #ifdef __clang__
   #pragma clang diagnostic ignored "-Wmissing-field-initializers"
 #elif defined(__GNUC__) || defined(__GNUG__)
@@ -2831,16 +2990,16 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::LeftJoystickLeft,        "Left Joystick Left"                    },
   { Event::LeftJoystickRight,       "Left Joystick Right"                   },
   { Event::LeftJoystickFire,        "Left Joystick Fire"                    },
-  { Event::LeftJoystickFire5,       "Left Top Booster Button, Button 'C'"   },
-  { Event::LeftJoystickFire9,       "Left Handle Grip Trigger, Button '3'"  },
+  { Event::LeftJoystickFire9,       "Left Top Booster Button, Button 'C'"   },
+  { Event::LeftJoystickFire5,       "Left Handle Grip Trigger, Button '3'"  },
 
   { Event::RightJoystickUp,         "Right Joystick Up"                     },
   { Event::RightJoystickDown,       "Right Joystick Down"                   },
   { Event::RightJoystickLeft,       "Right Joystick Left"                   },
   { Event::RightJoystickRight,      "Right Joystick Right"                  },
   { Event::RightJoystickFire,       "Right Joystick Fire"                   },
-  { Event::RightJoystickFire5,      "Right Top Booster Button, Button 'C'"  },
-  { Event::RightJoystickFire9,      "Right Handle Grip Trigger, Button '3'" },
+  { Event::RightJoystickFire9,      "Right Top Booster Button, Button 'C'"  },
+  { Event::RightJoystickFire5,      "Right Handle Grip Trigger, Button '3'" },
 
   { Event::QTJoystickThreeUp,       "QuadTari Joystick 3 Up"                },
   { Event::QTJoystickThreeDown,     "QuadTari Joystick 3 Down"              },
@@ -3180,9 +3339,9 @@ const Event::EventSet EventHandler::ConsoleEvents = {
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
 const Event::EventSet EventHandler::JoystickEvents = {
   Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
-  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
+  Event::LeftJoystickFire, Event::LeftJoystickFire9, Event::LeftJoystickFire5,
   Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
-  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
+  Event::RightJoystickFire, Event::RightJoystickFire9, Event::RightJoystickFire5,
   Event::QTJoystickThreeUp, Event::QTJoystickThreeDown, Event::QTJoystickThreeLeft, Event::QTJoystickThreeRight,
   Event::QTJoystickThreeFire,
   Event::QTJoystickFourUp, Event::QTJoystickFourDown, Event::QTJoystickFourLeft, Event::QTJoystickFourRight,

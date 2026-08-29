@@ -18,6 +18,7 @@
 #ifndef ROM_LIST_SETTINGS_HXX
 #define ROM_LIST_SETTINGS_HXX
 
+class ButtonWidget;
 class CheckboxWidget;
 class EditTextWidget;
 
@@ -47,12 +48,17 @@ class RomListSettings : public Dialog, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layout() override;
 
   private:
     uInt32 _xorig{0}, _yorig{0};
     int _item{0}; // currently selected line number in the disassembly list
 
+    ButtonWidget*   mySetPC{nullptr};
+    ButtonWidget*   myRuntoPC{nullptr};
+    ButtonWidget*   mySetTimer{nullptr};
+    ButtonWidget*   myDisassemble{nullptr};
     CheckboxWidget* myShowTentative{nullptr};
     CheckboxWidget* myShowAddresses{nullptr};
     CheckboxWidget* myShowGFXBinary{nullptr};

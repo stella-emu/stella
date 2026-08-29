@@ -27,7 +27,6 @@ class CartridgeWDWidget : public CartridgeEnhancedWidget
   public:
     CartridgeWDWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
-                      int x, int y, int w, int h,
                       CartridgeWD& cart);
     ~CartridgeWDWidget() override = default;
 
@@ -35,7 +34,7 @@ class CartridgeWDWidget : public CartridgeEnhancedWidget
     string manufacturer() override { return "Wickstead Design"; }
     string description() override;
     string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
-    uInt16 bankSegs() override { return 1; }
+    uInt16 bankSegs() const override { return 1; }
 
   private:
     // Following constructors and assignment operators not supported

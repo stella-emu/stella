@@ -28,7 +28,6 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
   public:
     CartridgeMDMWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
-                       int x, int y, int w, int h,
                        CartridgeMDM& cart);
     ~CartridgeMDMWidget() override = default;
 
@@ -37,14 +36,17 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
   protected:
     string manufacturer() override { return "Edwin Blink"; }
     string description() override;
-    void bankSelect(int& ypos) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void layoutBankSelect(GUI::BoxLayout& col) const override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
   private:
     CartridgeMDM& myCartMDM;
     CheckboxWidget* myBankDisabled{nullptr};
 
-    enum { kBankDisabled = 'bkDI' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankDisabled = GuiCmd::of("CartridgeMDMWidget.BankDisabled");
+    };
 
   private:
     // Following constructors and assignment operators not supported

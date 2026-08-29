@@ -58,22 +58,22 @@ void PlusRomsSetupDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
+void PlusRomsSetupDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                         int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
-    case EditableWidget::kAcceptCmd:
+    case GuiObject::Cmd::OK:
+    case EditableWidget::Cmd::Accept:
       saveConfig();
       instance().eventHandler().leaveMenuMode();
       break;
 
-    case kCloseCmd:
+    case GuiObject::Cmd::Close:
       instance().eventHandler().leaveMenuMode();
       break;
 
-    case EditableWidget::kCancelCmd:
+    case EditableWidget::Cmd::Cancel:
       break;
 
     default:

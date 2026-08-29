@@ -40,25 +40,37 @@
 #include "MessageBox.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
-#include "ConsoleFont.hxx"
-#include "ConsoleBFont.hxx"
-#include "ConsoleMediumFont.hxx"
-#include "ConsoleMediumBFont.hxx"
-#include "StellaMediumFont.hxx"
+#include "FontManager.hxx"
 #include "OptionsDialog.hxx"
 #include "BrowserDialog.hxx"
 #include "StateManager.hxx"
 #include "FrameManager.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "TIAConstants.hxx"
+#include "Layout.hxx"
 #include "DebuggerDialog.hxx"
+
+// Horizontal border of the status and ROM areas, left of their widgets
+static constexpr int HBORDER = 10;
+
+// Border and gap of the ROM area, around and between its widgets
+static constexpr int VBORDER = 4, VGAP = 4;
+
+// Inset and gap of the ROM area's control columns, which the CPU area stretches
+// up to: the data grid operations, the rewind/unwind arrows and the step buttons
+static constexpr int HGAP = 5;
+
+// Vertical gap separating the CPU, RAM and disassembly sections
+static constexpr int SECTION_GAP = 10;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
-                               int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                               int w, int h)
+  : Dialog(osystem, parent, w, h)
 {
-  createFont();  // Font is sized according to available space
+  // Font is sized according to available space; the tooltip follows it
+  changeFont();
 
   addTiaArea();
   addTabArea();
@@ -69,10 +81,109 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   myTiaOutput->setZoomWidget(myTiaZoom);
 
   setHelpAnchor(" ", true);
+
+  // Settle the geometry now, because Debugger::initialize() asks for minSize()
+  // before ever opening the dialog, and only laying out produces it.  open()
+  // lays it out again, at whatever size the debugger has settled on by then
+  DebuggerDialog::layout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::~DebuggerDialog() = default;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::layout()
+{
+  // The debugger owns the (resizable) window, and so its size; take ours from
+  // it every time, which is what makes a live resize re-flow this dialog
+  const Common::Size& size = instance().debugger().size();
+  _w = static_cast<int>(size.w);
+  _h = static_cast<int>(size.h);
+
+  auto root = buildLayout();
+
+  // The window minimum is the same tree's answer to a different question, so it
+  // follows the font, the current ROM's tabs and the proportional band by
+  // construction -- and can never depend on the size we happen to be at
+  myMinSize = root->minSize();
+
+  root->doLayout(0, 0, _w, _h);
+
+  // Each tab widget lays its own active content out, once it has been sized
+  myTab->updateTabSizes();
+  myRomTab->updateTabSizes();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> DebuggerDialog::buildLayout()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // Left of centre: the TIA band over the tab area.  The band takes its share of
+  // the height but never less than a full PAL frame, and the tabs take the rest
+  const Common::Size tabNatural = myTab->naturalSize();
+
+  auto left = std::make_unique<BoxLayout>(Dir::Vertical);
+  left->addPercent(buildTopBand(), TIA_BAND_PERCENT,
+                   FrameManager::Metrics::baseHeightPAL);
+  left->addSpace(1 + VBORDER);
+  left->addStretch(GUI::widgetItem(myTab, static_cast<int>(tabNatural.w),
+                                          static_cast<int>(tabNatural.h)));
+
+  // The two halves meet at the centre with the divider between them: the prompt
+  // gets exactly half the window and the disassembly the other half, whatever
+  // either of them holds.  Stating it as two halves rather than two equal
+  // stretches matters -- stretch cells share the LEFTOVER, so unequal content
+  // would put the divider off centre
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
+  root->addPercent(std::move(left), 50);
+  root->addSpace(1);
+  root->addStretch(buildRomArea());
+
+  return root;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> DebuggerDialog::buildTopBand()
+{
+  using GUI::BoxLayout;
+  using Dir = BoxLayout::Dir;
+
+  // The image is as wide as its own height calls for, so extra width goes to the
+  // status area beside it -- but it is also the one thing here that gives way,
+  // and this is where it does: a TALLER window makes the image want to be wider
+  // without making the window any wider, so unchecked it would squeeze the
+  // status column below what its fields need.  Its cell says it can be squeezed
+  // away entirely (a floor of 0), so the window minimum is decided by the status
+  // fields and the tabs alone -- what a small display can least afford to lose
+  const int available = _w / 2 - (1 + HBORDER) - myTiaInfo->minWidth();
+  const int imageWidth = std::max(0, std::min(tiaImageWidth(), available));
+
+  auto band = std::make_unique<BoxLayout>(Dir::Horizontal);
+  band->addFixed(GUI::widgetItem(myTiaOutput), imageWidth, 0);
+  band->addSpace(1 + HBORDER);
+  band->addStretch(buildStatusArea());
+
+  return band;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DebuggerDialog::tiaBandHeight() const
+{
+  return std::max<int>(FrameManager::Metrics::baseHeightPAL,
+                       _h * TIA_BAND_PERCENT / 100);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DebuggerDialog::tiaImageWidth() const
+{
+  // A cell can say "a share of the box" or "what my content wants", but not "as
+  // wide as my own height makes me": the image is the one leaf that needs the
+  // latter, so it reads the same band law the tree is given above
+  return tiaBandHeight() * TIAConstants::viewableWidth
+       / FrameManager::Metrics::baseHeightPAL;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
@@ -93,6 +204,11 @@ void DebuggerDialog::loadConfig()
 
   myMessageBox->setText("");
   myMessageBox->setToolTip("");
+
+  // This is the single funnel every refresh-required debugger command reaches
+  // (step/trace/advance/scanline/rewind/unwind/register edits), so it is also
+  // where the companion TIA window is told its contents may have changed.
+  instance().debugger().invalidateTiaWindow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,62 +354,53 @@ void DebuggerDialog::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
+void DebuggerDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                    int data, int id)
 {
   // We reload the tabs in the cases where the actions could possibly
   // change their contents
   switch(cmd)
   {
-    case kDDStepCmd:
+    case Cmd::Step:
       doStep();
       break;
 
-    case kDDTraceCmd:
+    case Cmd::Trace:
       doTrace();
       break;
 
-    case kDDAdvCmd:
+    case Cmd::AdvanceFrame:
       doAdvance();
       break;
 
-    case kDDSAdvCmd:
+    case Cmd::AdvanceScanline:
       doScanlineAdvance();
       break;
 
-    case kDDRewindCmd:
+    case Cmd::Rewind:
       doRewind();
       break;
 
-    case kDDUnwindCmd:
+    case Cmd::Unwind:
       doUnwind();
       break;
 
-    case kDDRunCmd:
+    case Cmd::Run:
       doExitDebugger();
       break;
 
-    case kDDExitFatalCmd:
-      doExitRom();
-      break;
-
-    case kDDOptionsCmd:
+    case Cmd::Options:
       saveConfig();
 
       if(myOptions == nullptr)
-      {
-        uInt32 w = 0, h = 0;
-
-        getDynamicBounds(w, h);
-        myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this, w, h,
-                                               AppMode::debugger);
-      }
+        myOptions = std::make_unique<OptionsDialog>(instance(), parent(), this,
+                                                    AppMode::debugger);
       myOptions->open();
 
       loadConfig();
       break;
 
-    case RomWidget::kInvalidateListing:
+    case RomWidget::Cmd::InvalidateListing:
       // Only do a full redraw if the disassembly tab is actually showing
       myRom->invalidate(myRomTab->getActiveTab() == 0);
       break;
@@ -376,124 +483,98 @@ void DebuggerDialog::doExitRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::createFont()
+const GUI::Font& DebuggerDialog::lfont() const
 {
-  const string fontSize = instance().settings().getString("dbg.fontsize");
-  const int fontStyle = instance().settings().getInt("dbg.fontstyle");
+  return instance().fonts().debuggerLabelFont();
+}
 
-  if(fontSize == "large")
-  {
-    // Large font doesn't use fontStyle at all
-    myLFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
-    myNFont = std::make_unique<GUI::Font>(GUI::stellaMediumDesc);
-  }
-  else if(fontSize == "medium")
-    {
-      switch(fontStyle)
-      {
-        case 1:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          break;
-        case 2:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          break;
-        case 3:
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-          break;
-        default: // default to zero
-          myLFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          myNFont = std::make_unique<GUI::Font>(GUI::consoleMediumDesc);
-          break;
-      }
-    }
-  else
-  {
-    switch(fontStyle)
-    {
-      case 1:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        break;
-      case 2:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        break;
-      case 3:
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleBDesc);
-        break;
-      default: // default to zero
-        myLFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        myNFont = std::make_unique<GUI::Font>(GUI::consoleDesc);
-        break;
-    }
-  }
-  tooltip().setFont(*myNFont);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& DebuggerDialog::nfont() const
+{
+  return instance().fonts().debuggerTextFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& DebuggerDialog::dfont() const
+{
+  return instance().fonts().debuggerDisasmFont();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::changeFont()
+{
+  // Every widget already references the same Font objects, so the FontManager
+  // swaps their descriptors in place; the new glyphs and metrics are picked
+  // up without recreating anything (see refreshFont())
+  instance().fonts().loadConfig(instance().settings());
+
+  tooltip().setFont(nfont());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::refreshFont()
+{
+  Dialog::refreshFont();
+
+  // The tooltip is not a Dialog, so the container's broadcast cannot reach
+  // it; it also wants the debugger's own font rather than the base's
+  tooltip().setFont(nfont());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(string_view msg)
 {
-  myFatalError = std::make_unique<GUI::MessageBox>(this, *myLFont, msg, _w-20, _h-20,
-                                              kDDExitFatalCmd, "Exit ROM", "Continue", "Fatal error");
-  myFatalError->show();
+  GUI::MessageBox::confirm(this, msg,
+    [this](bool ok) { if(ok) doExitRom(); },
+    "Fatal error", "Exit ROM", "Continue", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  const Common::Rect& r = getTiaBounds();
-  myTiaOutput =
-    new TiaOutputWidget(this, *myNFont, r.x(), r.y(), r.w(), r.h());
+  myTiaOutput = new TiaOutputWidget(this, nfont());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
-  const Common::Rect& r = getTabBounds();
-  constexpr int vBorder = 4;
+  // Every widget is created at a placeholder position/size; layoutTabArea()
+  // sizes and positions them.  Each tab's content is created while that tab is
+  // the active one, since setActiveTab() is what decides whose child list a
+  // widget joins
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
 
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 0
-  myTab = new TabWidget(this, *myLFont, r.x(), r.y() + vBorder,
-                        r.w(), r.h() - vBorder);
+  myTab = new TabWidget(this, lfont());
   myTab->setID(0);
   addTabWidget(myTab);
 
-  const int widWidth  = r.w() - vBorder;
-  const int widHeight = r.h() - myTab->getTabHeight() - vBorder - 4;
-
   // The Prompt/console tab
   int tabID = myTab->addTab("Prompt");
-  myPrompt = new PromptWidget(myTab, *myNFont,
-                              2, 2, widWidth - 4, widHeight);
+  myPrompt = new PromptWidget(myTab, nfont());
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  auto* tia = new TiaWidget(myTab, *myLFont, *myNFont,
-                            2, 2, widWidth, widHeight);
-  myTab->setParentWidget(tabID, tia);
-  addToFocusList(tia->getFocusList(), myTab, tabID);
+  myTiaTab = new TiaWidget(myTab, lfont(), nfont());
+  myTab->setParentWidget(tabID, myTiaTab);
+  addToFocusList(myTiaTab->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
-  auto* riot = new RiotWidget(myTab, *myLFont, *myNFont,
-                              2, 2, widWidth, widHeight);
-  myTab->setParentWidget(tabID, riot);
-  addToFocusList(riot->getFocusList(), myTab, tabID);
+  myRiotTab = new RiotWidget(myTab, lfont(), nfont());
+  myTab->setParentWidget(tabID, myRiotTab);
+  addToFocusList(myRiotTab->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  auto* aud = new AudioWidget(myTab, *myLFont, *myNFont,
-                              2, 2, widWidth, widHeight);
-  myTab->setParentWidget(tabID, aud);
-  addToFocusList(aud->getFocusList(), myTab, tabID);
+  myAudioTab = new AudioWidget(myTab, lfont(), nfont());
+  myTab->setParentWidget(tabID, myAudioTab);
+  addToFocusList(myAudioTab->getFocusList(), myTab, tabID);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   myTab->setActiveTab(0);
 }
@@ -501,32 +582,52 @@ void DebuggerDialog::addTabArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addStatusArea()
 {
-  const int lineHeight = myLFont->getLineHeight();
-  const Common::Rect& r = getStatusBounds();
-  constexpr int HBORDER = 10;
-  const int VGAP = lineHeight / 3;
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  myTiaInfo = new TiaInfoWidget(this, lfont(), nfont());
 
-  const int xpos = r.x() + HBORDER;
-  int ypos = r.y();
-  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - HBORDER);
-
-  ypos = myTiaInfo->getBottom() + VGAP;
-  myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos, ypos,
-                                r.w() - HBORDER, r.h() - ypos - VGAP - lineHeight + 3);
+  myTiaZoom = new TiaZoomWidget(this, nfont());
   addToFocusList(myTiaZoom->getFocusList());
 
-  ypos = myTiaZoom->getBottom() + VGAP;
-  myMessageBox = new EditTextWidget(this, *myLFont, xpos, ypos,
-                                    myTiaZoom->getWidth(), lineHeight);
+  myMessageBox = new EditTextWidget(this, lfont(), 1);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myMessageBox->setEditable(false, false);
-  myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  myMessageBox->clearFlags(Widget::Flag::RetainFocus);
   myMessageBox->setTextColor(kTextColorEm);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<GUI::Layout> DebuggerDialog::buildStatusArea()
+{
+  using GUI::BoxLayout;
+  using GUI::alignedItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using GUI::widgetItem;
+  using Dir = BoxLayout::Dir;
+
+  const int vGap = lfont().getLineHeight() / 3;
+
+  // The info widget reports how tall its rows make it and spells its labels out
+  // only if the width allows, so it fills the column and keeps its own height --
+  // and states the width below which its short labels would no longer fit, which
+  // is what stops the TIA image beside it from crowding the column.  The zoom
+  // view takes whatever is left; never force the message box's height, which
+  // frames its own text
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical, vGap);
+  column->addAuto(alignedItem(myTiaInfo, HAlign::Fill, VAlign::Top,
+                              myTiaInfo->minWidth()));
+  column->addStretch(widgetItem(myTiaZoom));
+  column->addFixed(alignedItem(myMessageBox, HAlign::Fill, VAlign::Center),
+                   myMessageBox->getHeight());
+
+  return column;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
-  static constexpr std::array<uInt32, 11> LEFT_ARROW = {
+  // Icons rather than raw bitmaps, so the buttons holding them size themselves
+  static constexpr auto leftArrowBits = std::to_array<uInt32>({
     0b0000010,
     0b0000110,
     0b0001110,
@@ -538,8 +639,8 @@ void DebuggerDialog::addRomArea()
     0b0001110,
     0b0000110,
     0b0000010
-  };
-  static constexpr std::array<uInt32, 11> RIGHT_ARROW = {
+  });
+  static constexpr auto rightArrowBits = std::to_array<uInt32>({
     0b0100000,
     0b0110000,
     0b0111000,
@@ -551,126 +652,86 @@ void DebuggerDialog::addRomArea()
     0b0111000,
     0b0110000,
     0b0100000
-  };
+  });
+  static constexpr GUI::Icon LEFT_ARROW(7, 11, leftArrowBits);
+  static constexpr GUI::Icon RIGHT_ARROW(7, 11, rightArrowBits);
 
-  const Common::Rect& r = getRomBounds();
-  constexpr int VBORDER = 4;
   WidgetArray wid1, wid2;
-  ButtonWidget* b = nullptr;
 
-  int bwidth  = myLFont->getStringWidth("Frame +1 "),
-      bheight = myLFont->getLineHeight() + 2;
-  int buttonX = r.x() + r.w() - bwidth - 5, buttonY = r.y() + 5;
-
-  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Step", kDDStepCmd, true);
-  b->setToolTip("Ctrl+S");
-  b->setHelpAnchor("GlobalButtons", true);
-  wid2.push_back(b);
-  buttonY += bheight + 4;
-  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Trace", kDDTraceCmd, true);
-  b->setToolTip("Ctrl+T");
-  b->setHelpAnchor("GlobalButtons", true);
-  wid2.push_back(b);
-  buttonY += bheight + 4;
-  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Scan +1", kDDSAdvCmd, true);
-  b->setToolTip("Ctrl+L");
-  b->setHelpAnchor("GlobalButtons", true);
-  wid2.push_back(b);
-  buttonY += bheight + 4;
-  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Frame +1", kDDAdvCmd, true);
-  b->setToolTip("Ctrl+F");
-  b->setHelpAnchor("GlobalButtons", true);
-  wid2.push_back(b);
-  buttonY += bheight + 4;
-  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Run", kDDRunCmd);
-  b->setToolTip("Escape");
-  b->setHelpAnchor("GlobalButtons", true);
-  wid2.push_back(b);
-
-  bwidth = bheight; // 7 + 12;
-  bheight = bheight * 3 + 4 * 2;
-  buttonX -= (bwidth + 5);
-  buttonY = r.y() + 5;
+  // Every widget is created at a placeholder position/size; layoutRomArea()
+  // sizes and positions them
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  const auto addStepButton = [&](size_t idx, string_view label, GuiCmd::Code cmd,
+                                 string_view tip, bool repeat) {
+    auto* b = new ButtonWidget(this, lfont(), label, cmd, repeat);
+    b->setToolTip(tip);
+    b->setHelpAnchor("GlobalButtons", true);
+    myStepButtons[idx] = b;
+    wid2.push_back(b);
+  };
+  addStepButton(0, "Step",     Cmd::Step,            "Ctrl+S", true);
+  addStepButton(1, "Trace",    Cmd::Trace,           "Ctrl+T", true);
+  addStepButton(2, "Scan +1",  Cmd::AdvanceScanline, "Ctrl+L", true);
+  addStepButton(3, "Frame +1", Cmd::AdvanceFrame,    "Ctrl+F", true);
+  addStepButton(4, "Run",      Cmd::Run,             "Escape", false);
 
   myRewindButton =
-    new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
+    new ButtonWidget(this, lfont(), LEFT_ARROW, Cmd::Rewind, true);
   myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
-  myRewindButton->clearFlags(Widget::FLAG_ENABLED);
-
-  buttonY += bheight + 4;
-  bheight = (myLFont->getLineHeight() + 2) * 2 + 4 * 1;
+  myRewindButton->clearFlags(Widget::Flag::Enabled);
 
   myUnwindButton =
-    new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
+    new ButtonWidget(this, lfont(), RIGHT_ARROW, Cmd::Unwind, true);
   myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
-  myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
+  myUnwindButton->clearFlags(Widget::Flag::Enabled);
 
-  int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
-
-  bwidth = myLFont->getStringWidth("Options " + ELLIPSIS);
-  bheight = myLFont->getLineHeight() + 2;
-
-  b = new ButtonWidget(this, *myLFont, xpos, r.y() + 5, bwidth, bheight,
-                       "Options" + ELLIPSIS, kDDOptionsCmd);
-  wid1.push_back(b);
+  myOptionsButton = new ButtonWidget(this, lfont(),
+                                     "Options" + ELLIPSIS, Cmd::Options);
+  // It heads the operations column, so it is trimmed like the op buttons under it
+  myOptionsButton->setCompact();
+  wid1.push_back(myOptionsButton);
   wid1.push_back(myRewindButton);
   wid1.push_back(myUnwindButton);
 
-  auto* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
+  myDataGridOps = new DataGridOpsWidget(this, lfont());
 
-  const int max_w = xpos - r.x() - 10;
-  xpos = r.x() + 10;  ypos = 5;
-  myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
+  myCpu = new CpuWidget(this, lfont(), nfont());
   addToFocusList(myCpu->getFocusList());
 
   addToFocusList(wid1);
   addToFocusList(wid2);
 
-  xpos = r.x() + 10;  ypos += myCpu->getHeight() + 10;
-  myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - 10);
+  myRam = new RiotRamWidget(this, lfont(), nfont());
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
   // DataGridWidget which we want controlled
-  myCpu->setOpsWidget(ops);
-  myRam->setOpsWidget(ops);
+  myCpu->setOpsWidget(myDataGridOps);
+  myRam->setOpsWidget(myDataGridOps);
 
   ////////////////////////////////////////////////////////////////////
   // Disassembly area
 
-  xpos = r.x() + VBORDER;  ypos += myRam->getHeight() + 5;
-  const int tabWidth  = r.w() - VBORDER - 1;
-  const int tabHeight = r.h() - ypos - 1;
-
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 1
-  myRomTab = new TabWidget(
-      this, *myLFont, xpos, ypos, tabWidth, tabHeight);
+  myRomTab = new TabWidget(this, lfont());
   myRomTab->setID(1);
   addTabWidget(myRomTab);
 
   // The main disassembly tab
   int tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
-  myRom = new RomWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
-                        tabHeight - myRomTab->getTabHeight() - 2);
+  myRom = new RomWidget(myRomTab, lfont(), nfont(), dfont());
   myRom->setHelpAnchor("Disassembly", true);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
-  // The 'cart-specific' information tab (optional)
+  // The 'cart-specific' information tab (optional).  A tab is added BEFORE the
+  // content it will hold is created: a cart widget parents its children to us,
+  // and they join whichever tab is active at that moment (see setActiveTab)
   tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
-  myCartInfo = instance().console().cartridge().infoWidget(
-    myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
-    tabHeight - myRomTab->getTabHeight() - 2);
+  myCartInfo = instance().console().cartridge().infoWidget(myRomTab, lfont(), nfont());
   if(myCartInfo != nullptr)
   {
     myRomTab->setParentWidget(tabID, myCartInfo);
@@ -678,82 +739,123 @@ void DebuggerDialog::addRomArea()
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
   }
 
-  // The 'cart-specific' state tab
-  myCartDebug = instance().console().cartridge().debugWidget(
-        myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
-        tabHeight - myRomTab->getTabHeight() - 2);
-  if(myCartDebug)  // TODO - make this always non-null
-  {
-    myRomTab->setHelpAnchor("BankswitchInformation", true);
-    myRomTab->setParentWidget(tabID, myCartDebug);
-    addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
+  // The 'cart-specific' state tab, which every scheme has (Cartridge's
+  // debugWidget() is pure, so one cannot be added without it)
+  myCartDebug = instance().console().cartridge().debugWidget(myRomTab, lfont(), nfont());
+  myRomTab->setHelpAnchor("BankswitchInformation", true);
+  myRomTab->setParentWidget(tabID, myCartDebug);
+  addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
 
-    // The cartridge RAM tab
-    if(myCartDebug->internalRamSize() > 0)
-    {
-      tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
-      myCartRam =
-        new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
-                tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);
-      if(myCartRam)  // TODO - make this always non-null
-      {
-        myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
-        myRomTab->setParentWidget(tabID, myCartRam);
-        addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
-        myCartRam->setOpsWidget(ops);
-      }
-    }
+  // The cartridge RAM tab
+  if(myCartDebug->internalRamSize() > 0)
+  {
+    tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
+    myCartRam =
+      new CartRamWidget(myRomTab, lfont(), nfont(), *myCartDebug);
+    myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
+    myRomTab->setParentWidget(tabID, myCartRam);
+    addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
+    myCartRam->setOpsWidget(myDataGridOps);
   }
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   myRomTab->setActiveTab(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getTiaBounds() const
+unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
 {
-  // The area showing the TIA image (NTSC and PAL supported, up to 274 lines without scaling)
-  return {
-    0, 0, 320,
-    std::max<uInt32>(FrameManager::Metrics::baseHeightPAL, _h * 0.35)
+  using GUI::BoxLayout;
+  using GUI::GridLayout;
+  using GUI::anchoredItem;
+  using GUI::alignedItem;
+  using GUI::widgetItem;
+  using GUI::HAlign;
+  using GUI::VAlign;
+  using Dir = BoxLayout::Dir;
+
+  const int bheight = lfont().getLineHeight() + 2;
+
+  // Every column in this band -- the register grids, the grid operations and the
+  // step buttons -- ends level with the others.  The grids set the height, and
+  // the button columns divide it into ROWS rows that SHARE what is left after a
+  // fixed VGAP between each: the engine divides the same slack the same way in
+  // every column, so they stay level at any font without anyone measuring anyone.
+  // The rows take the slack rather than the gaps, so it goes into the buttons
+  const int bwidth = lfont().getStringWidth("Frame +1 ");
+  const int lastRow = (DataGridOpsWidget::ROWS - 1) * 2;
+
+  const auto bandRows = [&](int cols, int hGap) {
+    auto g = std::make_unique<GridLayout>(cols, lastRow + 1, hGap, 0);
+    for(int row = 0; row <= lastRow; ++row)
+    {
+      if(row % 2)
+        g->rowFixed(row, VGAP);
+      else
+        g->rowStretch(row);
+    }
+    return g;
   };
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getRomBounds() const
-{
-  // The ROM area is the full area to the right of the tabs
-  const Common::Rect& status = getStatusBounds();
-  return {
-    status.x() + status.w() + 1, 0,
-    static_cast<uInt32>(_w), static_cast<uInt32>(_h)
+  const auto bandButton = [](ButtonWidget* b) {
+    return alignedItem(b, HAlign::Fill, VAlign::Fill);
   };
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getStatusBounds() const
-{
-  // The status area is the full area to the right of the TIA image
-  // extending as far as necessary
-  // 30% of any space above 1030 pixels will be allocated to this area
-  const Common::Rect& tia = getTiaBounds();
+  // The step and run buttons, in a column down the right-hand edge
+  auto stepCol = bandRows(1, 0);
+  stepCol->columnStretch(0);
+  for(int i = 0; i < DataGridOpsWidget::ROWS; ++i)
+    stepCol->place(0, i * 2, bandButton(myStepButtons[i]));
 
-  return {
-      tia.x() + tia.w() + 1,
-      0,
-      tia.x() + tia.w() + 225 + (_w > 1030 ? static_cast<int>(0.35 * (_w - 1030)) : 0),
-      tia.y() + tia.h()
+  // The rewind and unwind arrows beside them, spanning three rows and two so
+  // that the pair stands exactly as tall as the step buttons
+  const int awidth = bheight;
+
+  auto arrowCol = bandRows(1, 0);
+  arrowCol->columnStretch(0);
+  arrowCol->place(0, 0, bandButton(myRewindButton), 1, 5);
+  arrowCol->place(0, 6, bandButton(myUnwindButton), 1, 3);
+
+  // The Options button heads the operations column; it sizes its own width from
+  // its label (so it follows a font change), and takes its height from the row
+  auto opsCol = myDataGridOps->buildLayout(VGAP, HGAP);
+  opsCol->place(0, 0, alignedItem(myOptionsButton, HAlign::Left, VAlign::Fill), 2);
+
+  // The CPU area takes whatever width the three control columns leave it, and
+  // keeps the height its own rows come to
+  auto topRow = std::make_unique<BoxLayout>(Dir::Horizontal);
+  topRow->addStretch(alignedItem(myCpu, HAlign::Fill, VAlign::Top));
+  topRow->addAuto(std::move(opsCol));
+  topRow->addSpace(HGAP);
+  topRow->addFixed(std::move(arrowCol), awidth);
+  topRow->addSpace(HGAP);
+  topRow->addFixed(std::move(stepCol), bwidth);
+
+  ////////////////////////////////////////////////////////////////////
+  // The three bands, stacked.  Each sits in from the edges by its own amount,
+  // so the inset rides on the band rather than on the column holding them
+  const auto band = [](unique_ptr<GUI::Layout> content, int left, int right) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addSpace(left);
+    row->addStretch(std::move(content));
+    row->addSpace(right);
+    return row;
   };
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Rect DebuggerDialog::getTabBounds() const
-{
-  // The tab area is the full area below the TIA image
-  const Common::Rect& tia    = getTiaBounds();
-  const Common::Rect& status = getStatusBounds();
+  // The RAM area spans the full width below the CPU and asks for the height its
+  // content comes to; the disassembly tab takes everything that is left, and
+  // says what its widest cart tab needs so the window minimum accounts for it
+  const Common::Size romNatural = myRomTab->naturalSize();
 
-  return {
-    0, tia.y() + tia.h() + 1,
-    status.x() + status.w() + 1, static_cast<uInt32>(_h)
-  };
+  auto column = std::make_unique<BoxLayout>(Dir::Vertical);
+  column->addSpace(HGAP);
+  column->addAuto(band(std::move(topRow), HBORDER, HGAP));
+  column->addSpace(SECTION_GAP);
+  column->addAuto(band(alignedItem(myRam, HAlign::Fill, VAlign::Top), HBORDER, 0));
+  column->addSpace(HGAP);
+  column->addStretch(band(widgetItem(myRomTab, static_cast<int>(romNatural.w),
+                                               static_cast<int>(romNatural.h)),
+                          VBORDER, 1));
+  column->addSpace(1);
+
+  return column;
 }

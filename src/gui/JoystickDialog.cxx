@@ -23,34 +23,25 @@
 #include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Variant.hxx"
+#include "Layout.hxx"
 #include "JoystickDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
-                               int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent(), font, "Controller database", 0, 0, max_w, max_h)
+JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
+  : Dialog(boss->instance(), boss->parent(), font, "Controller database")
 {
   WidgetArray wid;
-  const int lineHeight   = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Remove"),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder();
+
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Joystick list
-  int xpos = HBORDER, ypos = VBORDER + _th;
-  const int w = _w - 2 * xpos;
-  const int h = _h - buttonHeight - ypos - VBORDER * 2;
-  myJoyList = new StringListWidget(this, font, xpos, ypos, w, h);
+  myJoyList = new StringListWidget(this, font);
   myJoyList->setEditable(false);
   wid.push_back(myJoyList);
 
   // Joystick ID
-  ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
-  const auto* t = new StaticTextWidget(this, font, xpos, ypos, "Controller ID ");
-  xpos += t->getWidth();
-  myJoyText = new EditTextWidget(this, font, xpos, ypos - 2,
-      font.getStringWidth("Unplugged "), lineHeight, "");
+  myIDLbl = new LabelWidget(this, font, "Controller ID");
+  myJoyText = new EditTextWidget(this, font,
+      static_cast<int>(string_view("Unplugged").size()));
   myJoyText->setEditable(false);
 
   // Port
@@ -59,27 +50,75 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
   VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
 
-  myJoyPort = new PopUpWidget(this, font, myJoyText->getRight() + fontWidth * 2, ypos - 1,
-    font.getStringWidth("Right"), lineHeight, ports, "Port ", 0, kPortCmd);
+  myJoyPortLbl = new LabelWidget(this, font, "Port");
+  myJoyPort = new PopUpWidget(this, font, ports, Cmd::Port);
   myJoyPort->setToolTip("Define default mapping port.");
   wid.push_back(myJoyPort);
 
-  // Add buttons at bottom
-  xpos = _w - buttonWidth - HBORDER;
-  ypos = _h - VBORDER - buttonHeight;
-  myCloseBtn = new ButtonWidget(this, font, xpos, ypos,
-      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
+  // Buttons at bottom
+  myCloseBtn = new ButtonWidget(this, font, "Close", GuiObject::Cmd::Close);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
-  xpos -= buttonWidth + fontWidth;
-  myRemoveBtn = new ButtonWidget(this, font, xpos, ypos,
-      buttonWidth, buttonHeight, "Remove", kRemoveCmd);
-  myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
+  myRemoveBtn = new ButtonWidget(this, font, "Remove", Cmd::Remove);
+  myRemoveBtn->clearFlags(Widget::Flag::Enabled);
 
   // Now we can finally add the widgets to the focus list
   wid.push_back(myRemoveBtn);
   wid.push_back(myCloseBtn);
   addToFocusList(wid);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void JoystickDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::widgetItem;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
+  // Remove and Close share one width, the wider of the two
+  GUI::alignButtons({myRemoveBtn, myCloseBtn});
+
+  GUI::alignLabels({{myJoyPortLbl}});
+
+  // The list shows a reasonable number of joysticks by default -- which, with
+  // the room device names need, is what sizes the dialog; more entries scroll.
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addStretch(widgetItem(myJoyList, 60 * fontWidth,
+                              ListWidget::calcHeight(_font, 12)));
+  root->addSpace(VBORDER);
+  root->addSpace(buttonHeight);  // reserve the button row
+
+  // The list STRETCHES, so the band for the button group has to be reserved
+  // above (see CheatCodeDialog for the same gotcha)
+  const Common::Size natural = root->naturalSize();
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h);
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // The button band is entirely this dialog's own: the controller ID readout on
+  // the left, Remove / Close (which keep their natural widths, not the standard
+  // group's) on the right.  Everything keeps its own size and is centered in the
+  // (taller) band, so all the texts line up
+  auto band = std::make_unique<BoxLayout>(Dir::Horizontal);
+  band->addAuto(anchoredItem(myIDLbl));
+  band->addSpace(fontWidth);
+  band->addAuto(anchoredItem(myJoyText));
+  band->addSpace(fontWidth * 2);
+  band->addAuto(labeledRow(myJoyPortLbl, myJoyPort));
+  band->addStretchSpace();
+  band->addAuto(anchoredItem(myRemoveBtn));
+  band->addSpace(fontWidth);
+  band->addAuto(anchoredItem(myCloseBtn));
+  layoutButtonBand(std::move(band));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,28 +150,29 @@ void JoystickDialog::handleEvent(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void JoystickDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       close();
       break;
 
-    case kPortCmd:
+    case Cmd::Port:
       myJoyPorts[myJoyList->getSelected()] = myJoyPort->getSelected();
       instance().eventHandler().setPhysicalJoystickPortInDatabase(
           myJoyList->getSelectedString(),
           static_cast<PhysicalJoystick::Port>(myJoyPort->getSelected()));
       break;
 
-    case kRemoveCmd:
+    case Cmd::Remove:
       instance().eventHandler().removePhysicalJoystickFromDatabase(
           myJoyList->getSelectedString());
       loadConfig();
       break;
 
-    case ListWidget::kSelectionChangedCmd:
+    case ListWidget::Cmd::SelectionChanged:
     {
       const bool isPlugged = myJoyIDs[data] >= 0;
       if(isPlugged)
@@ -145,10 +185,12 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
         myJoyText->setText("Unplugged");
         myJoyPort->setText("");
       }
+      myJoyPortLbl->setEnabled(isPlugged);
       myJoyPort->setEnabled(isPlugged);
       myRemoveBtn->setEnabled(!isPlugged);
       break;
     }
+
     default:
       Dialog::handleCommand(sender, cmd, data, id);
       break;

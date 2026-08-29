@@ -30,26 +30,17 @@
 #include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::Widget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h)
-  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
+Widget::Widget(GuiObject* boss, const GUI::Font& font)
+  : GuiObject(boss->instance(), boss->parent(), boss->dialog(), 0, 0),
     _boss{boss},
     _font{font},
-    _next{_boss->_firstWidget},
     _fontWidth{_font.getMaxCharWidth()},
+    _fontHeight{_font.getFontHeight()},
     _lineHeight{_font.getLineHeight()}
 {
-  // Insert into the widget list of the boss
-  _boss->_firstWidget = this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget::~Widget()
-{
-  delete _next;
-  _next = nullptr;
-
-  _focusList.clear();
+  // Insert into the widget list of the boss, which owns this widget from
+  // here on; everything else holds non-owning aliases
+  _boss->_children.emplace_back(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,14 +69,9 @@ void Widget::tick()
     if(wantsToolTip())
       dialog().tooltip().request();
 
-    // Recursively tick widget and all child dialogs and widgets
-    Widget* w = _firstWidget;
-
-    while(w)
-    {
+    // Recursively tick all child widgets
+    for(const auto& w: _children)
       w->tick();
-      w = w->_next;
-    }
   }
 }
 
@@ -118,7 +104,7 @@ void Widget::draw()
         x++; y++; w -= 2; h -= 2;
       }
       if(hasBackground())
-        s.fillRect(x, y, w, h, (_flags & Widget::FLAG_HILITED) && isEnabled()
+        s.fillRect(x, y, w, h, hasFlag(Flag::Hilited) && isEnabled()
                    ? _bgcolorhi : _bgcolor);
       else
         s.invalidateRect(x, y, w, h);
@@ -127,7 +113,7 @@ void Widget::draw()
     // Draw border
     if(hasBorder())
     {
-      s.frameRect(_x, _y, _w, _h, (_flags & Widget::FLAG_HILITED) && isEnabled()
+      s.frameRect(_x, _y, _w, _h, hasFlag(Flag::Hilited) && isEnabled()
                   ? kWidColorHi : kColor);
       _x += 4;
       _y += 4;
@@ -136,7 +122,7 @@ void Widget::draw()
     }
 
     // Now perform the actual widget draw
-    drawWidget((_flags & Widget::FLAG_HILITED) != 0);
+    drawWidget(hasFlag(Flag::Hilited));
 
     // Restore w/hy
     if(hasBorder())
@@ -158,17 +144,12 @@ void Widget::draw()
 void Widget::drawChain()
 {
   // Clear chain *before* drawing, because some widgets may set it again when
-  //   being drawn (e.g. RomListWidget)
+  // being drawn (e.g. RomListWidget)
   clearDirtyChain();
 
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
+  for(const auto& w: _children)
     if(w->needsRedraw())
       w->draw();
-    w = w->_next;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,17 +213,25 @@ void Widget::setSize(const Common::Point& pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setArea(int x, int y, int w, int h)
+{
+  setPos(x, y);
+  setWidth(w);
+  setHeight(h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -252,7 +241,7 @@ void Widget::receivedFocus()
     return;
 
   _hasFocus = true;
-  setFlags(Widget::FLAG_HILITED);
+  setFlags(Widget::Flag::Hilited);
   receivedFocusWidget();
 }
 
@@ -263,15 +252,41 @@ void Widget::lostFocus()
     return;
 
   _hasFocus = false;
-  clearFlags(Widget::FLAG_HILITED);
+  clearFlags(Widget::Flag::Hilited);
   lostFocusWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
-  if(e) setFlags(Widget::FLAG_ENABLED);
-  else  clearFlags(Widget::FLAG_ENABLED);
+  if(e) setFlags(Widget::Flag::Enabled);
+  else  clearFlags(Widget::Flag::Enabled);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setVisible(bool visible)
+{
+  if(visible == isVisible())
+    return;
+
+  if(visible)
+    clearFlags(Widget::Flag::Invisible);
+  else
+  {
+    setFlags(Widget::Flag::Invisible);
+
+    // Going invisible leaves whatever we were covering unpainted: marking
+    // ourselves dirty only ever redraws US, and we now draw nothing.  So the
+    // boss has to repaint that area -- it is the one that owns the background
+    _boss->setDirty();
+
+    // Going invisible while holding the dialog's focus would otherwise leave
+    // Dialog::drawDialog()'s per-frame focus highlight drawn over us forever
+    // (it redraws at the focused widget's last position regardless of
+    // visibility) -- so hand focus to the next enabled widget instead
+    if(_hasFocus)
+      dialog().releaseFocus(this);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -384,45 +399,34 @@ string Widget::getHelpURL() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget* start, int x, int y)
+Widget* Widget::findWidgetInList(const WidgetList& list, int x, int y)
 {
-  while(start)
+  // Search newest-first, so where widgets overlap the one added last wins
+  for(const auto& w: std::views::reverse(list))
   {
-    // Stop as soon as starte find a startidget that contains the point (x,y)
-    if(x >= start->_x && x < start->_x + start->_w &&
-       y >= start->_y && y < start->_y + start->_h)
-      break;
-    start = start->_next;
+    // Stop as soon as we find a VISIBLE widget containing the point (x,y).  A
+    // hidden widget keeps its coordinates, so without this test it would go on
+    // taking the clicks meant for whatever it is covering -- and a dialog that
+    // hides part of itself would have to move the remains off-screen to be rid
+    // of them.  Nothing can want events while invisible: it cannot be aimed at
+    if(w->isVisible() &&
+       x >= w->_x && x < w->_x + w->_w &&
+       y >= w->_y && y < w->_y + w->_h)
+      return w->findWidget(x - w->_x, y - w->_y);
   }
-
-  if(start)
-    start = start->findWidget(x - start->_x, y - start->_y);
-
-  return start;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(Widget* start, const Widget* find)
-{
-  while(start)
-  {
-    // Stop as soon as starte find the startidget
-    if(start == find)  return true;
-    start = start->_next;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
+bool Widget::isWidgetInList(const WidgetArray& list, Widget* find)
 {
   return BSPF::contains(list, find);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
-                                 const Widget* wid, int direction,
-                                 bool emitFocusEvents)
+Widget* Widget::setFocusForList(const GuiObject* boss, WidgetArray& arr,
+                                const Widget* wid, int direction,
+                                bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
   const int size = static_cast<int>(arr.size());
@@ -502,7 +506,7 @@ Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
     tmp->receivedFocus();
   else {
     tmp->_hasFocus = true;
-    tmp->setFlags(Widget::FLAG_HILITED);
+    tmp->setFlags(Widget::Flag::Hilited);
   }
 
   s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
@@ -511,29 +515,46 @@ Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setDirtyInChain(Widget* start)
+void Widget::setDirtyInList(const WidgetList& list)
 {
-  while(start)
+  for(const auto& w: list)
+    w->setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::refreshFont()
+{
+  _fontWidth = _font.getMaxCharWidth();
+  _fontHeight = _font.getFontHeight();
+  _lineHeight = _font.getLineHeight();
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::refreshFontInList(const WidgetList& list)
+{
+  for(const auto& w: list)
   {
-  #ifdef DEBUG_BUILD
-    //cerr << "setDirtyInChain " << typeid(*start).name() << '\n';
-  #endif
-    start->setDirty();
-    start = start->_next;
+    w->refreshFont();
+    // Composite widgets parent their children to themselves, forming separate
+    // child lists that the boss-level walk does not reach; recurse into them
+    refreshFontInList(w->_children);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h,
-                                   string_view text, TextAlign align,
-                                   ColorId shadowColor)
-  : Widget(boss, font, x, y, w, h),
+LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
+                         int w, int h, string_view text,
+                         TextAlign align, ColorId shadowColor)
+  : Widget(boss, font),
     CommandSender(boss),
     _label{text},
     _align{align}
 {
-  _flags = Widget::FLAG_ENABLED | FLAG_CLEARBG;
+  _w = w;
+  _h = h;
+
+  _flags = Widget::Flag::Enabled | Flag::ClearBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
@@ -543,47 +564,59 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y,
-                                   string_view text, TextAlign align,
-                                   ColorId shadowColor)
-  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text),
-                     font.getLineHeight(), text, align, shadowColor)
+LabelWidget::LabelWidget(GuiObject* boss, const GUI::Font& font,
+                         string_view text, TextAlign align,
+                         ColorId shadowColor)
+  : LabelWidget(boss, font, font.getStringWidth(text),
+                font.getLineHeight(), text, align, shadowColor)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setValue(int value)
+void LabelWidget::refreshFont()
+{
+  Widget::refreshFont();
+
+  // Recompute the natural (font + label derived) size, matching the short ctor.
+  // Runs only during a live font-change broadcast; the owning dialog's layout()
+  // re-runs immediately after and overrides this where it sets an explicit size.
+  _w = _font.getStringWidth(_label);
+  _h = _font.getLineHeight();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LabelWidget::setValue(int value)
 {
   setLabel(std::to_string(value));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setLabel(string_view label)
+void LabelWidget::setLabel(string_view label)
 {
   if(_label != label)
   {
     _label = label;
+    if(_autoResize)
+      _w = _font.getStringWidth(label);
     setDirty();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setLink(size_t start, int len, bool underline)
+void LabelWidget::setLink(size_t start, int len, bool underline)
 {
   if(_linkStart != start || _linkLen != len || _linkUnderline != underline)
   {
     _linkStart = start;
     _linkLen = len;
     _linkUnderline = underline;
-    setCmd(len ? kClickedCmd : 0);
+    setCmd(len ? Cmd::Clicked : GuiCmd::None);
     setDirty();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StaticTextWidget::setUrl(string_view url, string_view label,
-                              string_view placeHolder)
+bool LabelWidget::setUrl(string_view url, string_view label, string_view placeHolder)
 {
   size_t start = string::npos, len = 0;
   const string_view text = !label.empty() ? label : url;
@@ -636,7 +669,7 @@ bool StaticTextWidget::setUrl(string_view url, string_view label,
   if(len)
   {
     setLink(start, static_cast<int>(len), true);
-    setCmd(kOpenUrlCmd);
+    setCmd(Cmd::OpenUrl);
     return true;
   }
   else
@@ -648,48 +681,47 @@ bool StaticTextWidget::setUrl(string_view url, string_view label,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseEntered()
+void LabelWidget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseLeft()
+void LabelWidget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+void LabelWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(_cmd && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if(_cmd != GuiCmd::None && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::drawWidget(bool hilite)
+void LabelWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-  s.drawString(_font, _label, _x, _y, _w,
+  s.drawString(_font, _label, _x, _y + firstTextY(), _w,
                 isEnabled() ? _textcolor : kColor, _align, 0, true,
                 _shadowcolor, _linkStart, _linkLen, _linkUnderline && hilite);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           string_view label, int cmd, bool repeat)
-  : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
+                           int w, int h, string_view label, GuiCmd::Code cmd, bool repeat)
+  : LabelWidget(boss, font, w, h, label, TextAlign::Center),
     _repeat{repeat}
 {
   _cmd = cmd;
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::ClearBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _bgcolorlo = kColor;
@@ -700,74 +732,78 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int dw,
-                           string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw,
-                 font.getLineHeight() + 4, label, cmd, repeat)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
-                           string_view label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, 20, label, cmd, repeat)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           const uInt32* bitmap, int bmw, int bmh,
-                           int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w, h, "", cmd, repeat)
-{
-  _useBitmap = true;
-  _useText = false;
-  _bitmap = bitmap;
-  _bmw = bmw;
-  _bmh = bmh;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           const GUI::Icon& icon,
-                           int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w, h,
-                 icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           const GUI::Icon& icon, int bmx,
-                           string_view label,
-                           int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, w + bmx * 1.5 + font.getStringWidth(label), h,
+                           string_view label, GuiCmd::Code cmd, bool repeat)
+  : ButtonWidget(boss, font, calcWidth(font, label), calcHeight(font),
                  label, cmd, repeat)
 {
-  _useBitmap = true;
-  _bitmap = icon.bitmap();
-  _bmw = icon.width();
-  _bmh = icon.height();
-  _bmx = bmx;
+  _autoSize = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font, int w, int h,
+                           const GUI::Icon& icon, GuiCmd::Code cmd, bool repeat)
+  : ButtonWidget(boss, font, w, h, "", cmd, repeat)
+{
+  _useText = false;
+  _icon = &icon;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           const GUI::Icon& icon, GuiCmd::Code cmd, bool repeat)
+  : ButtonWidget(boss, font, icon.width() + iconGap(font), calcHeight(font),
+                 icon, cmd, repeat)
+{
+  _autoSize = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           const GUI::Icon& icon, string_view label,
+                           GuiCmd::Code cmd, bool repeat)
+  : ButtonWidget(boss, font,
+                 icon.width() + iconGap(font) * 1.5 + font.getStringWidth(label),
+                 calcHeight(font), label, cmd, repeat)
+{
+  _icon = &icon;
+  _bmx = iconGap(font);
   _align = TextAlign::Left;
+  _autoSize = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::refreshFont()
+{
+  // Deliberately skips LabelWidget's recompute, which would shrink a button
+  // to its bare label width (and would be inherited by the checkbox, radio button
+  // and slider below).
+  // NOLINTNEXTLINE(bugprone-parent-virtual-call)
+  Widget::refreshFont();
+
+  // A button that sized itself from its content re-derives that size, so it
+  // follows the font on its own.  Any other size came from outside — a width
+  // shared with its neighbours — and is re-applied by the owning layout().  An
+  // icon-and-label button keeps whichever icon it holds; a dialog that swaps in a
+  // different variant for the new font does so with setIcon(), which re-sizes it
+  if(_autoSize)
+  {
+    _w = autoWidth();
+    _h = autoHeight();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseEntered()
 {
   if(isEnabled())
-    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    setFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft()
 {
   if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+    clearFlags(Widget::Flag::Hilited | Widget::Flag::MouseFocus);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -792,7 +828,7 @@ void ButtonWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
@@ -802,26 +838,21 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(!_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(Widget::FLAG_HILITED);
+    clearFlags(Widget::Flag::Hilited);
     sendCommand(_cmd, 0, _id);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
-{
-  _useBitmap = true;
-  _bitmap = bitmap;
-  _bmh = bmh;
-  _bmw = bmw;
-
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::setIcon(const GUI::Icon& icon)
 {
-  setBitmap(icon.bitmap(), icon.width(), icon.height());
+  _icon = &icon;
+  setDirty();
+
+  // A button that sized itself around its icon re-sizes around the new one; one
+  // whose width came from outside keeps it (the layout re-applies that)
+  if(_autoSize)
+    setWidth(autoWidth());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -832,30 +863,28 @@ void ButtonWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
   int x = _x;
-  if(_useBitmap)
+  if(_icon != nullptr)
   {
-    const int xb = _useText ? _x + _bmx / 2 : _x + (_w - _bmw) / 2;
-    s.drawBitmap(_bitmap, xb, _y + (_h - _bmh) / 2,
-                 !isEnabled() ? _textcolorlo :
-                 hilite ? _textcolorhi : _textcolor,
-                 _bmw, _bmh);
-    x = _x + _bmw + _bmx;
+    const int xb = _useText ? _x + _bmx / 2 : _x + (_w - _icon->width()) / 2;
+    s.drawIcon(*_icon, xb, _y + (_h - _icon->height()) / 2,
+               !isEnabled() ? _textcolorlo :
+               hilite ? _textcolorhi : _textcolor);
+    x = _x + _icon->width() + _bmx;
   }
   if(_useText)
-    s.drawString(_font, _label, x, _y + (_h - _lineHeight)/2 + 1, _w,
+    s.drawString(_font, _label, x, _y + firstTextY(), _w,
                  !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, string_view label,
-                               int cmd)
-  : ButtonWidget(boss, font, x, y, font.getFontHeight() < 24 ? 16 : 24,
-                 font.getFontHeight() < 24 ? 16 : 24, label, cmd),
+                               string_view label, GuiCmd::Code cmd)
+  : ButtonWidget(boss, font, font.isLarge() ? 24 : 16,
+                 font.isLarge() ? 24 : 16, label, cmd),
     _boxSize{boxSize(font)}
 {
-  _flags = Widget::FLAG_ENABLED;
+  _flags = Widget::Flag::Enabled;
   _bgcolor = _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
 
@@ -865,16 +894,36 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _w = _boxSize;
   else
     _w = font.getStringWidth(label) + _boxSize + font.getMaxCharWidth() * 0.75;
-  _h = font.getFontHeight() < _boxSize ? _boxSize : font.getFontHeight();
+  alignBox(_boxSize);
 
-  // Depending on font size, either the font or box will need to be
-  // centered vertically
-  if(_h > _boxSize)  // center box
-    _boxY = (_h - _boxSize) / 2;
-  else         // center text
-    _textY = (_boxSize - _font.getFontHeight()) / 2;
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
+  setFill(CheckboxWidget::FillType::Normal);
+}
 
-  setFill(CheckboxWidget::FillType::Normal);  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::alignBox(int boxSize)
+{
+  // The label is centered in the height, as any other control centers its text
+  // (firstTextY()), and the box is centered on the label.  With a small enough
+  // font the box is the taller of the two, and it sets the height instead
+  _h = std::max(_lineHeight, boxSize);
+  _boxY = (_h - boxSize) / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::refreshFont()
+{
+  ButtonWidget::refreshFont();
+
+  // Recompute the box + label geometry from the live font (mirrors the ctor).
+  // A checkbox is fully font + label derived, so this is the complete size.
+  _boxSize = boxSize(_font);
+
+  if(_label.empty())
+    _w = _boxSize;
+  else
+    _w = _font.getStringWidth(_label) + _boxSize + _font.getMaxCharWidth() * 0.75;
+  alignBox(_boxSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -908,54 +957,42 @@ void CheckboxWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setFill(FillType type)
 {
-  /* 10x10 checkbox bitmap */
-  // small versions
-  static constexpr std::array<uInt32, 10> checked_img_active = {
-    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,
-    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111
-  };
-
-  static constexpr std::array<uInt32, 10> checked_img_inactive = {
+  static constexpr std::array<uInt32, 10> checked_img_inactive_bits = {
     0b1111111111,  0b1111111111,  0b1111001111,  0b1110000111,  0b1100000011,
     0b1100000011,  0b1110000111,  0b1111001111,  0b1111111111,  0b1111111111
   };
+  static constexpr GUI::Icon checked_img_inactive(10, 10, checked_img_inactive_bits);
 
-  static constexpr std::array<uInt32, 10> checked_img_circle = {
+  static constexpr std::array<uInt32, 10> checked_img_circle_bits = {
     0b0001111000,  0b0111111110,  0b0111111110,  0b1111111111,  0b1111111111,
     0b1111111111,  0b1111111111,  0b0111111110,  0b0111111110,  0b0001111000
   };
+  static constexpr GUI::Icon checked_img_circle(10, 10, checked_img_circle_bits);
 
-  /* 18x18 checkbox bitmap */
-  // large versions
-  static constexpr std::array<uInt32, 18> checked_img_active_large = {
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
-    0b111111111111111111,  0b111111111111111111
-  };
 
-  static constexpr std::array<uInt32, 18> checked_img_inactive_large = {
+  static constexpr std::array<uInt32, 18> checked_img_inactive_large_bits = {
     0b111111111111111111, 0b111111111111111111, 0b111111111111111111,
     0b111111110011111111, 0b111111100001111111, 0b111111000000111111, 0b111110000000011111,
     0b111100000000001111, 0b111000000000000111, 0b111000000000000111, 0b111100000000001111,
     0b111110000000011111, 0b111111000000111111, 0b111111100001111111, 0b111111110011111111,
     0b111111111111111111, 0b111111111111111111, 0b111111111111111111
   };
+  static constexpr GUI::Icon checked_img_inactive_large(18, 18, checked_img_inactive_large_bits);
 
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      _img = _boxSize == 14 ? checked_img_active.data() : checked_img_active_large.data();
+      // A solid square, which needs no bitmap -- drawWidget fills it
+      _img = nullptr;
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Inactive:
-      _img = _boxSize == 14 ? checked_img_inactive.data() : checked_img_inactive_large.data();
+      _img = _boxSize == 14 ? &checked_img_inactive : &checked_img_inactive_large;
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Circle:
       // only used in debugger which only has smaller fonts
-      _img = checked_img_circle.data();
+      _img = &checked_img_circle;
       _drawBox = false;
       break;
     default:
@@ -987,52 +1024,47 @@ void CheckboxWidget::drawWidget(bool hilite)
   s.fillRect(_x + 1, _y + _boxY + 1, _boxSize - 2, _boxSize - 2,
       _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kDlgColor);
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
-                 : kColor, _boxSize - 4);
+  {
+    const ColorId color = isEnabled()
+        ? hilite && isEditable() ? kWidColorHi : kCheckColor
+        : kColor;
+
+    // A plain tick is a solid square, so it is filled rather than blitted; the
+    // inactive and circle fills are hand-drawn and stay as icons
+    if(_img != nullptr)
+      s.drawIcon(*_img, _x + 2, _y + _boxY + 2, color);
+    else
+      s.fillRect(_x + 2, _y + _boxY + 2, _boxSize - 4, _boxSize - 4, color);
+  }
 
   // Finally draw the label
-  s.drawString(_font, _label, _x + prefixSize(_font), _y + _textY, _w,
+  s.drawString(_font, _label, _x + prefixSize(_font), _y + firstTextY(), _w,
                isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int w, int h,
-                           string_view label, int labelWidth, int cmd,
-                           int valueLabelWidth, string_view valueUnit, int valueLabelGap,
+                           int trackChars, GuiCmd::Code cmd, int valueChars,
+                           string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
-  : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _labelWidth{labelWidth},
+  : ButtonWidget(boss, font,
+                 (trackChars != 0 ? trackChars : 10) * font.getMaxCharWidth(),
+                 font.getLineHeight(), "", cmd),
     _valueUnit{valueUnit},
     _valueLabelGap{valueLabelGap},
-    _valueLabelWidth{valueLabelWidth},
+    _valueLabelWidth{valueChars * font.getMaxCharWidth()},
     _forceLabelSign{forceLabelSign}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
+  _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
-
-  if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
 
   if(_valueLabelWidth == 0)
     _valueLabelGap = 0;
   if(_valueLabelGap == 0)
     _valueLabelGap = font.getMaxCharWidth() / 2;
 
-  _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y,
-                           string_view label, int labelWidth, int cmd,
-                           int valueLabelWidth, string_view valueUnit, int valueLabelGap,
-                           bool forceLabelSign)
-  : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
-                 label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
-                 forceLabelSign)
-{
+  _w += _valueLabelGap + _valueLabelWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1106,9 +1138,9 @@ void SliderWidget::handleMouseMoved(int x, int y)
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging &&
-     x >= (_labelWidth - 4) &&
+     x >= -4 &&
      x <= (_w - _valueLabelGap - _valueLabelWidth + 4))
-    setValue(posToValue(x - _labelWidth));
+    setValue(posToValue(x));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1181,17 +1213,13 @@ void SliderWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth, isEnabled() ? kTextColor : kColor);
-
   const int p = valueToPos(_value),
     h = _h - _font.getFontHeight() / 2 - 1,
-    x = _x + _labelWidth,
+    x = _x,
     y = _y + 2 + _font.desc().ascent - (_font.getFontHeight() + 1) / 2 - 1; // align to bottom of font
 
   // Fill the box
-  s.fillRect(x, y, _w - _labelWidth - _valueLabelGap - _valueLabelWidth, h,
+  s.fillRect(x, y, _w - _valueLabelGap - _valueLabelWidth, h,
              !isEnabled() ? kSliderBGColorLo : hilite ? kSliderBGColorHi : kSliderBGColor);
   // Draw the 'bar'
   s.fillRect(x, y, p, h,
@@ -1200,7 +1228,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'tickmarks'
   for(int i = 1; i < _numIntervals; ++i)
   {
-    const int xt = x + (_w - _labelWidth - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
+    const int xt = x + (_w - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
     ColorId color = kNone;
 
     if(isEnabled())
@@ -1225,8 +1253,9 @@ void SliderWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
-                 _valueLabelWidth, isEnabled() ? kTextColor : kColor);
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth,
+                 _y + firstTextY(), _valueLabelWidth,
+                 isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1236,14 +1265,14 @@ int SliderWidget::valueToPos(int value) const
   else if(value > _valueMax) value = _valueMax;
   const int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
 
-  return ((_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 2) * (value - _valueMin) / range);
+  return ((_w - _valueLabelGap - _valueLabelWidth - 2) * (value - _valueMin) / range);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SliderWidget::posToValue(int pos) const
 {
   const int value = pos * (_valueMax - _valueMin) /
-      (_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
+      (_w - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
 
   // Scale the position to the correct interval (according to step value)
   return value - (value % _stepValue);

@@ -20,6 +20,7 @@
 #include "EventHandler.hxx"
 #include "Widget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "Variant.hxx"
 #include "Props.hxx"
@@ -30,21 +31,14 @@
 #include "QuadTariDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
+QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
                                Properties& properties)
-  : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers", 0, 0, max_w, max_h),
+  : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers"),
     myGameProperties{properties}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = Dialog::lineHeight(),
-            fontWidth    = Dialog::fontWidth(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap();
   WidgetArray wid;
-  VariantList ctrls;
-
-  int xpos = HBORDER, ypos = VBORDER + _th;
+  VariantList& ctrls = myCtrls;
 
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
@@ -66,64 +60,137 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  const int pwidth = font.getStringWidth("Auto-detect  "); // a bit wider looks better overall
+  // A couple of characters more than the items strictly need, which looks better
+  // overall -- so these state a width instead of taking the self-sizing ctor.
+  // layout() re-applies it, so it follows a live font change
+  const int pwidth = PopUpWidget::calcWidth(font, ctrls) + Dialog::fontWidth() * 2;
 
-  myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
+  // Widgets are only created here (at placeholder position); layout() assigns
+  // all geometry from the current font.  The two ports are laid out as two
+  // side-by-side columns of identical structure.
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
+  // An auto-detect label is filled in at load time and takes its width from the
+  // column it sits in, so it starts out empty
+  const auto detectedLabel = [&]() {
+    return new LabelWidget(this, ifont, "");
+  };
 
-  ypos += lineHeight + VGAP * 2;
-  myLeft1Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P1 ");
+  myLeftPortLbl = new LabelWidget(this, font, "Left port");
+  myLeft1PortLbl = new LabelWidget(this, font, "P1");
+  myLeft1Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myLeft1Port);
-  ypos += lineHeight + VGAP;
-
-  myLeft1PortDetected = new StaticTextWidget(this, ifont,
-    myLeft1Port->getLeft() + fontWidth * 3, ypos, "                 ");
-  ypos += lineHeight + VGAP;
-
-  myLeft2Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P3 ");
+  myLeft1PortDetected = detectedLabel();
+  myLeft2PortLbl = new LabelWidget(this, font, "P3");
+  myLeft2Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myLeft2Port);
-  ypos += lineHeight + VGAP;
+  myLeft2PortDetected = detectedLabel();
 
-  myLeft2PortDetected = new StaticTextWidget(this, ifont,
-    myLeft2Port->getLeft() + fontWidth * 3, ypos, "                 ");
-
-  xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
-  ypos = myLeftPortLabel->getTop() - 1;
-  myRightPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Right port");
-
-  ypos += lineHeight + VGAP * 2;
-  myRight1Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P2 ");
+  myRightPortLbl = new LabelWidget(this, font, "Right port");
+  myRight1PortLbl = new LabelWidget(this, font, "P2");
+  myRight1Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myRight1Port);
-  ypos += lineHeight + VGAP;
-
-  myRight1PortDetected = new StaticTextWidget(this, ifont,
-    myRight1Port->getLeft() + fontWidth * 3, ypos, "                 ");
-  ypos += lineHeight + VGAP;
-
-  myRight2Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P4 ");
+  myRight1PortDetected = detectedLabel();
+  myRight2PortLbl = new LabelWidget(this, font, "P4");
+  myRight2Port = new PopUpWidget(this, font, pwidth, ctrls);
   wid.push_back(myRight2Port);
-  ypos += lineHeight + VGAP;
-
-  myRight2PortDetected = new StaticTextWidget(this, ifont,
-    myRight2Port->getLeft() + fontWidth * 3, ypos, "                 ");
+  myRight2PortDetected = detectedLabel();
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
 
   setHelpAnchor("Quadtari");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void QuadTariDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // See the c'tor: the width is the dialog's choice, so it is re-applied here
+  // from the live font rather than left at whatever the c'tor computed
+  const int pwidth = PopUpWidget::calcWidth(_font, myCtrls) + fontWidth * 2;
+  for(auto* p: {myLeft1Port, myLeft2Port, myRight1Port, myRight2Port})
+    p->setBoxWidth(pwidth);
+
+  // The four popups' labels ("P1".."P4") share one column, keeping their
+  // value boxes the same width and in line across both ports
+  GUI::alignLabels({{myLeft1PortLbl},  {myLeft2PortLbl},
+                    {myRight1PortLbl}, {myRight2PortLbl}});
+
+  // Both ports have the same structure: a header label, then two popups each
+  // followed by its (indented) auto-detect label, which fills the column
+  const auto portColumn = [&](LabelWidget* label,
+                              LabelWidget* popup1Label, PopUpWidget* popup1,
+                              LabelWidget* detected1,
+                              LabelWidget* popup2Label, PopUpWidget* popup2,
+                              LabelWidget* detected2)
+  {
+    const auto detectedRow = [&](LabelWidget* detected) {
+      auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+      row->addSpace(fontWidth * 3);
+      row->addStretch(stretchedItem(detected));
+      return row;
+    };
+
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
+    col->addAuto(anchoredItem(label));
+    col->addSpace(VGAP * 2);
+    col->addAuto(labeledRow(popup1Label, popup1));
+    col->addSpace(VGAP);
+    col->addAuto(detectedRow(detected1));
+    col->addSpace(VGAP);
+    col->addAuto(labeledRow(popup2Label, popup2));
+    col->addSpace(VGAP);
+    col->addAuto(detectedRow(detected2));
+    return col;
+  };
+
+  // The two port columns side by side, each as wide as its popups need
+  auto root = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, VBORDER);
+  root->addAuto(portColumn(myLeftPortLbl,
+                           myLeft1PortLbl, myLeft1Port, myLeft1PortDetected,
+                           myLeft2PortLbl, myLeft2Port, myLeft2PortDetected));
+  root->addSpace(fontWidth * 3);
+  root->addAuto(portColumn(myRightPortLbl,
+                           myRight1PortLbl, myRight1Port, myRight1PortDetected,
+                           myRight2PortLbl, myRight2Port, myRight2PortDetected));
+
+  // The dialog is as large as the two columns ask to be, and at least wide
+  // enough for the button row below them
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::show(bool enableLeft, bool enableRight)
 {
-  myLeftPortLabel->setEnabled(enableLeft);
+  myLeftPortLbl->setEnabled(enableLeft);
+  myLeft1PortLbl->setEnabled(enableLeft);
   myLeft1Port->setEnabled(enableLeft);
+  myLeft2PortLbl->setEnabled(enableLeft);
   myLeft2Port->setEnabled(enableLeft);
-  myRightPortLabel->setEnabled(enableRight);
+  myRightPortLbl->setEnabled(enableRight);
+  myRight1PortLbl->setEnabled(enableRight);
   myRight1Port->setEnabled(enableRight);
+  myRight2PortLbl->setEnabled(enableRight);
   myRight2Port->setEnabled(enableRight);
 
   open();
@@ -132,7 +199,7 @@ void QuadTariDialog::show(bool enableLeft, bool enableRight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::loadControllerProperties(const Properties& props)
 {
-  if(myLeftPortLabel->isEnabled())
+  if(myLeftPortLbl->isEnabled())
   {
     defineController(props, PropType::Controller_Left1, Controller::Jack::Left,
       myLeft1Port, myLeft1PortDetected);
@@ -140,7 +207,7 @@ void QuadTariDialog::loadControllerProperties(const Properties& props)
       myLeft2Port, myLeft2PortDetected, false);
   }
 
-  if(myRightPortLabel->isEnabled())
+  if(myRightPortLbl->isEnabled())
   {
     defineController(props, PropType::Controller_Right1, Controller::Jack::Right,
       myRight1Port, myRight1PortDetected);
@@ -151,7 +218,7 @@ void QuadTariDialog::loadControllerProperties(const Properties& props)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::defineController(const Properties& props, PropType key,
-  Controller::Jack jack, PopUpWidget* popupWidget, StaticTextWidget* labelWidget, bool first)
+  Controller::Jack jack, PopUpWidget* popupWidget, LabelWidget* labelWidget, bool first)
 {
   ByteArray image;
   string_view controllerName = props.get(key);
@@ -202,7 +269,7 @@ void QuadTariDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariDialog::saveConfig()
 {
-  if(myLeftPortLabel->isEnabled())
+  if(myLeftPortLbl->isEnabled())
   {
     string controller = myLeft1Port->getSelectedTag().toString();
     myGameProperties.set(PropType::Controller_Left1, controller);
@@ -215,7 +282,7 @@ void QuadTariDialog::saveConfig()
     myGameProperties.set(PropType::Controller_Left2, "");
   }
 
-  if(myRightPortLabel->isEnabled())
+  if(myRightPortLbl->isEnabled())
   {
     string controller = myRight1Port->getSelectedTag().toString();
     myGameProperties.set(PropType::Controller_Right1, controller);
@@ -241,16 +308,17 @@ void QuadTariDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void QuadTariDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void QuadTariDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
+                                   int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 

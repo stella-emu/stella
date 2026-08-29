@@ -36,7 +36,7 @@ CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
 
   // Extract tune data if it exists
   if(size > 32_KB)
-    std::copy_n(image.data() + 32_KB, size - 32_KB, myTuneData.begin());
+    std::copy_n(image.data() + 32_KB, std::min(size - 32_KB, myTuneData.size()), myTuneData.begin());
 
   // Subspan pointing to the first tune
   myFrequencyImage = myTuneData;

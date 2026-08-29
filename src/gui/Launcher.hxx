@@ -21,6 +21,7 @@
 class Properties;
 class OSystem;
 class FSNode;
+class LauncherDialog;
 
 #include "Rect.hxx"
 #include "FrameBufferConstants.hxx"
@@ -38,6 +39,7 @@ class Launcher : public DialogContainer
       Create a new menu stack
     */
     explicit Launcher(OSystem& osystem);
+    // Out-of-line: myBaseDialog (unique_ptr<LauncherDialog>) needs its complete type here
     ~Launcher() override;
 
     /**
@@ -75,11 +77,40 @@ class Launcher : public DialogContainer
     */
     Dialog* baseDialog() override;
 
+    /**
+      Live window-resize handling.  EventHandler records the latest dragged size
+      (FrameBuffer::liveResize) and drives applyResize() to apply + re-flow it,
+      so the window shows live content as it is dragged rather than a stretched
+      snapshot updated at the end.  updateTime() flushes any size the throttle
+      skipped and, once the drag settles, runs one final re-flow with
+      resizeInProgress() false so the deferred finalization (minimum-size hint,
+      size persistence) happens exactly once per drag.
+    */
+    void updateTime(uInt64 time) override;
+    bool applyResize() override;
+    bool resizeInProgress() const override { return mySettleCountdown > 0; }
+
   private:
-    Dialog* myBaseDialog{nullptr};
+    /**
+      (Re)load the launcher window size from the 'launcherres' setting,
+      clamping it to the allowed bounds.  Called both at construction and each
+      time the launcher video is (re)initialized, so a size the user changed
+      by resizing the window is picked up again.
+    */
+    void loadSize();
+
+  private:
+    // The launcher's root dialog
+    unique_ptr<LauncherDialog> myBaseDialog;
 
     // The dimensions of this dialog
     Common::Size mySize;
+
+    // Frames of idle left before a live resize counts as settled
+    int mySettleCountdown{0};
+
+    // Time (microseconds) of the last applied live resize, for throttling
+    uInt64 myLastResizeTime{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -20,15 +20,28 @@
 
 #include "Dialog.hxx"
 
+class WrappedTextWidget;
+
+/**
+  Shows the bullet list of changes for the current Stella release.
+
+  @author  Stephen Anthony and Thomas Jentzsch
+*/
 class WhatsNewDialog : public Dialog
 {
   public:
-    WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
-                   int max_w, int max_h);
+    // Builds the bullet list of this release's changes
+    WhatsNewDialog(OSystem& osystem, DialogContainer& parent);
     ~WhatsNewDialog() override = default;
 
+  protected:
+    // Sizes to a comfortable reading width (capped by the window), then
+    // asks myText how tall it wraps to at that width
+    void layout() override;
+
   private:
-    void add(int& ypos, string_view text);
+    // The bullet list, which wraps itself to whatever width layout() gives it
+    WrappedTextWidget* myText{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

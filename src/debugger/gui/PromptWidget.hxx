@@ -30,8 +30,7 @@ class FSNode;
 class PromptWidget : public Widget, public CommandSender
 {
   public:
-    PromptWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h);
+    PromptWidget(GuiObject* boss, const GUI::Font& font);
     ~PromptWidget() override = default;
 
     void loadConfig() override;
@@ -51,6 +50,17 @@ class PromptWidget : public Widget, public CommandSender
 
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
+
+    using Widget::setPos;
+    void setPos(const Common::Point& pos) override;
+    void setWidth(int w) override;
+    void setHeight(int h) override;
+    void setArea(int x, int y, int w, int h) override;
+
+    // I fill whatever area I am given, so I have no height of my own to
+    // constrain the window with (see the note in TabWidget::naturalSize)
+    Common::Size naturalSize() const override { return {}; }
+    void refreshFont() override;
 
     bool wantsFocus() const override { return true; }
 
@@ -94,7 +104,7 @@ class PromptWidget : public Widget, public CommandSender
     bool autoComplete(int direction);
     void resetFunctions();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void lostFocusWidget() override
     {
       _selectSize = 0;
@@ -141,9 +151,14 @@ class PromptWidget : public Widget, public CommandSender
     bool _firstTime{true};
     bool _exitedEarly{false};
 
+    // Set once the line width changes, meaning the buffer no longer matches the
+    // geometry it was wrapped for; cleared by the next clearScreen()
+    bool _bufferStale{false};
+
     int historyDir(int& index, int direction);
     void historyAdd(string_view entry);
     ContextMenu& mouseMenu();
+    void recalcMetrics();
 
     int selectStartPos() const {
       return _selectSize < 0 ? _currentPos + _selectSize : _currentPos;

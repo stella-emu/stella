@@ -28,6 +28,7 @@ char* Base::toChars(char* out, int value, Fmt fmt)
   switch(fmt)
   {
     case Fmt::_2:
+    case Fmt::_2_2:
     case Fmt::_2_8:
     case Fmt::_2_16:
       return writeBinary(out, value, fmt);
@@ -113,6 +114,7 @@ char* Base::writeBinary(char* out, int value, Fmt fmt)
   const auto uval = static_cast<unsigned int>(value);
   const int bits = (fmt == Fmt::_2_16) ? 16 :
                    (fmt == Fmt::_2_8)  ? 8 :
+                   (fmt == Fmt::_2_2)  ? 2 :
                    (uval < 0x100U ? 8 : 16);
 
   for(int i = bits - 1; i >= 0; --i)

@@ -35,7 +35,6 @@ class CartridgeEnhancedWidget : public CartDebugWidget
   public:
     CartridgeEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
                             const GUI::Font& nfont,
-                            int x, int y, int w, int h,
                             CartridgeEnhanced& cart);
     ~CartridgeEnhancedWidget() override = default;
 
@@ -55,8 +54,9 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // End of functions for Cartridge RAM tab
 
   protected:
-    int initialize();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    // Create then lay out all of this widget's content; called by each leaf ctor
+    void initialize();
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
 
     virtual size_t size();
     virtual string manufacturer() = 0;
@@ -64,14 +64,28 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual int descriptionLines();
     virtual string ramDescription();
     virtual string romDescription();
-    virtual void plusROMInfo(int& ypos);
-    virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
-    virtual void bankSelect(int& ypos);
+    // The bank pop-up's entries; it sizes its own box to the widest of them
+    virtual void bankList(uInt16 bankCount, int seg, VariantList& items);
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
-    virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
+    virtual uInt16 bankSegs() const; // { return myCart.myBankSegs; }
+
+    // Create this widget's content at placeholder positions (create-only ctor)
+    void createWidgets();
+    void createPlusROM();
+    virtual void createBankWidgets();
+
+    // The PlusROM fields and the bank selectors, which every enhanced cart has.
+    // A leaf adding rows of its own overrides layoutContent() and calls this
+    // first; one that selects its banks differently overrides layoutBankSelect()
+    void layoutContent(GUI::BoxLayout& col) const override;
+    void layoutPlusROM(GUI::BoxLayout& col) const;
+    virtual void layoutBankSelect(GUI::BoxLayout& col) const;
 
   protected:
-    enum { kBankChanged = 'bkCH' };
+    struct Cmd {
+      static constexpr GuiCmd::Code
+        BankChanged = GuiCmd::of("CartridgeEnhancedWidget.BankChanged");
+    };
 
     struct CartState {
       ByteArray internalRam;
@@ -86,12 +100,18 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     // Distance between two hotspots
     int myHotspotDelta{1};
 
+    LabelWidget* myPlusROMLbl{nullptr};
+    LabelWidget* myPlusROMHostLbl{nullptr};
+    LabelWidget* myPlusROMPathLbl{nullptr};
+    LabelWidget* myPlusROMSendLbl{nullptr};
+    LabelWidget* myPlusROMReceiveLbl{nullptr};
     EditTextWidget* myPlusROMHostWidget{nullptr};
     EditTextWidget* myPlusROMPathWidget{nullptr};
     EditTextWidget* myPlusROMSendWidget{nullptr};
     EditTextWidget* myPlusROMReceiveWidget{nullptr};
 
-    std::unique_ptr<PopUpWidget* []> myBankWidgets{nullptr};
+    std::vector<LabelWidget*> myBankWidgetLabels;
+    std::vector<PopUpWidget*> myBankWidgets;
 
     // Display all addresses based on this
     static constexpr uInt16 ADDR_BASE = 0xF000;
