@@ -1158,6 +1158,7 @@ void VideoAudioDialog::setDefaults()
     case 0:  // General
     {
       myRenderer->setSelectedIndex(0);
+      handleRendererChanged();
       myTIAInterpolate->setState(false);
       // screen size
       myFullscreen->setState(false);
