@@ -56,6 +56,9 @@
     - Added mouse support (selection, cut/copy/paste)
     - All actions have keyboard shortcuts
 
+  * Huge rework of the UI code, allowing dynamic layout of widgets,
+    fonts and resizing of windows (issue #291).
+
   * Added 'sscrop' commandline argument and associated UI item that
     crops saved PNG snapshots, removing black borders (issue #1106).
 
