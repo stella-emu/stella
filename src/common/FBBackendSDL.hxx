@@ -295,6 +295,11 @@ class FBBackendSDL : public FBBackend
     */
     bool vsyncWanted() const;
 
+    /**
+      Which renderer an 'auto' preference asks SDL for; empty lets SDL choose.
+    */
+    static string autoRenderer();
+
   private:
     OSystem& myOSystem;
 
