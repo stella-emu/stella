@@ -183,7 +183,7 @@ BoxLayout(Dir dir, int spacing = 0, int marginH = 0, int marginV = 0);
 | `addFixed(child, px)`               | child gets exactly `px` along the main axis         |
 | `addStretch(child, weight=1, base=0)` | child gets `base`, then shares leftover (by weight) |
 | `addPercent(child, pct, min=0, max=0)` | child gets `max(min, pct% of the available length)` |
-| `addSpace(px)`                      | an empty gap of `px`                                |
+| `addSpace(px)`                      | an empty gap of `px` (it is also its own floor)     |
 | `addStretchSpace(weight=1, base=0)` | an empty gap of at least `base`, which also grows   |
 
 `addAuto` sizes the cell from `Widget::naturalSize()`, so a row is exactly as
@@ -194,6 +194,49 @@ stops following the font the moment the row's contents change. Use `addFixed`
 only where the size is genuinely the *dialog's* choice (a shared button width, a
 column width several rows must agree on), and `addStretch` for a widget with no
 size of its own — a list, an image.
+
+### Two questions, one tree: what a cell **reports** vs what it **reserves**
+
+Every layout answers two different questions, and a cell can give inconsistent
+answers to them. That inconsistency is invisible until a window is dragged to
+its minimum, where it shows up as **content clipped off the bottom (or right) of
+a container that was given exactly the size it asked for**. Two rules keep them
+honest, and both have cost real debugging time:
+
+1. **A stretch cell reserves its `basePx`, not its item's `minW`/`minH`.** An
+   item's `minW`/`minH` (`widgetItem(w, minW, minH)`) only say what a *filled*
+   axis **reports** to `naturalSize()`/`minSize()`. What `doLayout()` **sets
+   aside** before sharing out the leftover is the *cell's* `basePx`. So
+   `addStretch(widgetItem(w, natW, natH))` reports the right size and reserves
+   nothing. With one stretch cell that is harmless — it gets the leftover
+   anyway. With **two**, where the other is capped by a `maxMain` larger than
+   the size it reports (a scrolling description, whose cap is its full wrapped
+   height but which reports only its floor), the capped cell expands into the
+   first one's space. Say it on the cell — cross axis on the item, main axis on
+   the cell:
+
+   ```cpp
+   // CartRamWidget: the RAM view grows with the tab but has a height of its own
+   const Common::Size natural = myRam->naturalSize();
+   col->addStretch(widgetItem(myRam, static_cast<int>(natural.w)), 1,
+                   static_cast<int>(natural.h));
+   ```
+
+2. **A `Fixed` cell is never squeezed, so `minSize()` must count it.**
+   `doLayout()` gives a `Fixed` cell exactly its `value`, always — there is no
+   compression pass. A fixed cell that reports a *smaller* floor is therefore
+   claiming a flexibility the engine does not have, and every pixel of the
+   difference comes out of the last stretching cell. This is why `addSpace(px)`
+   declares `px` as its own floor, and why `addFixed`'s `minPx` defaults to
+   `-1` ("cannot be squeezed") rather than 0. Pass an explicit `0` only when the
+   **dialog itself recomputes** that value as space shrinks — `DebuggerDialog`'s
+   TIA image does exactly that, deriving its width from the window each layout,
+   and says so in its cell.
+
+> 🔍 **When a container clips at its minimum, measure — don't re-derive.** Print
+> the height each row was actually *given* against its `naturalSize()` in the
+> owner's `reflow()`. Both bugs above were "obvious" from reading the code in
+> two different, wrong ways before one print settled them in seconds.
 
 The `base` of a stretch cell is its **natural size**: it is reserved before any
 leftover is shared out. That is what lets several cells grow from *different*
@@ -813,6 +856,45 @@ If a ctor param becomes genuinely unused after conversion (a `max_w`/`max_h` tha
 only fed a dropped `setSize`), delete it and fix the call sites — don't leave
 dead parameters.
 
+### The debugger window's minimum size
+
+The debugger (`DebuggerDialog`) is both tabbed and live-resizable, and its
+window can never be shrunk — by drag or by a stale saved size from a previous
+session — below what its **current** ROM's tabs need. This falls out of the
+same `naturalSize()`/`minSize()` machinery as everywhere else, with no special
+case for the debugger to get wrong, but it is worth stating explicitly because
+nothing forces you to trace it before adding content to a cart tab:
+
+1. Every self-contained cart tab widget (`CartDebugWidget` and its
+   subclasses, `CartRamWidget`) answers `naturalSize()` from its own
+   `buildLayout()` tree — the same "build without positioning, ask it two
+   questions" shape as any other widget in this doc.
+2. `TabWidget::naturalSize()` asks **every** tab this way, active or not
+   (`getMaxContentHeight()`/`naturalSize()` in `TabWidget.cxx`) — so the tab
+   widget's own answer already reflects whichever cart tab, of the ones the
+   *current* ROM happens to have, needs the most room. A tab you never
+   switch to still counts.
+3. `DebuggerDialog::layout()` sets `myMinSize = root->minSize()` from that
+   same tree on every layout pass; `Debugger::dialogMinSize()` just returns
+   it. `Debugger::initialize()` clamps the window's actual size up to at
+   least this before it is ever shown, and `initializeVideo()` calls
+   `frameBuffer().setWindowMinSize(dialogMinSize())` so the user cannot drag
+   it smaller either.
+
+The upshot for a cart widget: **you do not need to do anything to get a
+correctly-sized window** — add rows via `layoutContent()` (or the RAM tab's
+`internalRam*()` hooks) exactly as this doc already describes, and the window
+grows to fit them, on this ROM's very first debugger open.
+
+The two ways to break it are both a row that **lies** about its size, and both
+are in the checklist below. A row can report *less* than it needs (a filled
+axis with no declared minimum), so the window never grows for it; or a row can
+report its floor while being allowed to *expand* past it, so it steals from a
+sibling that reserved nothing. If a tab's content is clipped rather than
+pushing the window taller, suspect one of those before suspecting this
+mechanism — and measure which row actually got what, rather than re-deriving
+the arithmetic.
+
 ---
 
 ## Live font change (context — you don't implement this)
@@ -868,6 +950,24 @@ Two corollaries:
   text at the top, so the lines below it have somewhere to go — and a label
   beside it belongs on that *first* line, so pair them with `VAlign::Baseline`,
   not `labeledRow`. Centering is only ever right for a *single* line of text.
+- **Reported size ≠ reserved size.** A stretch cell reserves its `basePx` (not
+  its item's `minW`/`minH`), and a `Fixed` cell is never squeezed so `minSize()`
+  must count it in full. Getting either wrong clips content off the bottom of a
+  container at its minimum size — see "Two questions, one tree" above, which has
+  both rules and the worked cases.
+- **A "squeezable" text block reports its FLOOR, not its text.** That is the
+  other half of the case above, and it is deliberate: a `WrappedTextWidget` in
+  `addStretch(widgetItem(desc, 0, desc->minHeight()), …, maxMain =
+  desc->naturalSize().h)` (`CartDebugWidget::layoutBaseInformation()`,
+  `CartRamWidget::buildLayout()`) reports only `minLines` (default 4) so a
+  description can scroll instead of forcing the window taller. Two consequences
+  worth knowing: a cart description longer than the floor never grows the
+  window to fit (it just scrolls), and — because its *cap* is the full wrapped
+  height — it will happily take space from any sibling stretch cell that failed
+  to declare a base. Keep `createBaseInformation()` /
+  `internalRamDescription()` text short, as every existing cart widget does,
+  and put a fact that must stay visible in an ordinary `layoutContent()` row
+  (`col.addAuto(anchoredItem(myFactLbl))`), which counts its full height.
 - **A label's box is `lineHeight` tall and clears its background**, so it carries
   ~2px of padding *below* its glyphs. Stacking one directly above another widget
   by measuring up `getFontHeight()` makes that padding erase the widget's top
