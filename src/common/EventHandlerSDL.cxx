@@ -64,6 +64,7 @@ EventHandlerSDL::~EventHandlerSDL()
     SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
+#ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL::copyText(const string& text) const
 {
@@ -86,6 +87,7 @@ bool EventHandlerSDL::hasClipboardText() const
 {
   return SDL_HasClipboardText();
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL::pollEvent()
