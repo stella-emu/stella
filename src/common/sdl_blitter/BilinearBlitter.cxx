@@ -21,6 +21,15 @@
 
 namespace {
   constexpr float ALPHA_SCALE = 255.F / 100.F;
+
+  // Texture allocation granularity: rounding a growing source up to this
+  // gives the allocation headroom, so a live-resize drag recreates the
+  // textures roughly once per block instead of on every ~15px growth step.
+  constexpr int TEXTURE_ALLOC_BLOCK = 128;
+
+  constexpr int roundUpToBlock(int size) {
+    return (size + TEXTURE_ALLOC_BLOCK - 1) / TEXTURE_ALLOC_BLOCK * TEXTURE_ALLOC_BLOCK;
+  }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,11 +131,12 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     ? SDL_TEXTUREACCESS_STREAMING
     : SDL_TEXTUREACCESS_STATIC;
 
-  // Size the textures to the larger of the current source and the previous
-  // allocation, so they never shrink; only the rendered sub-rect (mySrcFRect)
-  // shrinks.  (Static surfaces have a fixed source, so this is exact for them.)
-  myTexW = std::max(mySrcRect.w, myTexW);
-  myTexH = std::max(mySrcRect.h, myTexH);
+  // Size the textures to the larger of the current source (rounded up for
+  // headroom) and the previous allocation, so they never shrink; only the
+  // rendered sub-rect (mySrcFRect) shrinks.  (Static surfaces have a fixed
+  // source, so the rounding just wastes a little VRAM for them.)
+  myTexW = std::max(roundUpToBlock(mySrcRect.w), myTexW);
+  myTexH = std::max(roundUpToBlock(mySrcRect.h), myTexH);
 
   myTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
       texAccess, myTexW, myTexH);
