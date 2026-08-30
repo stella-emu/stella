@@ -107,6 +107,7 @@
     - Added developer option for disabling PlusROM support
     - Fixed location of debugger script not matching documentation
       (issue #1120)
+    - Fix controller widget crash in I/O tab in certain cases (issue #954)
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

@@ -35,34 +35,37 @@ class ControllerLowLevel
 {
   public:
     explicit ControllerLowLevel(Controller& controller)
-      : myController{controller} { }
+      : myController{&controller} { }
     virtual ~ControllerLowLevel() = default;
 
     bool setPin(Controller::DigitalPin pin, bool value) {
-      return myController.setPin(pin, value);
+      return myController->setPin(pin, value);
     }
     bool togglePin(Controller::DigitalPin pin) {
-      return myController.setPin(pin, !myController.getPin(pin));
+      return myController->setPin(pin, !myController->getPin(pin));
     }
     bool getPin(Controller::DigitalPin pin) const {
-      return myController.getPin(pin);
+      return myController->getPin(pin);
     }
     void setPin(Controller::AnalogPin pin, AnalogReadout::Connection value) {
-      myController.setPin(pin, value);
+      myController->setPin(pin, value);
     }
     AnalogReadout::Connection getPin(Controller::AnalogPin pin) const {
-      return myController.getPin(pin);
+      return myController->getPin(pin);
     }
     void resetDigitalPins() {
-      myController.resetDigitalPins();
+      myController->resetDigitalPins();
     }
     void resetAnalogPins() {
-      myController.resetAnalogPins();
+      myController->resetAnalogPins();
     }
-    Controller& controller() const { return myController; }
+    Controller& controller() const { return *myController; }
+
+    // Re-point at a new same-type instance
+    void rebindController(Controller& controller) { myController = &controller; }
 
   protected:
-    Controller& myController;
+    Controller* myController;
 
   private:
     // Following constructors and assignment operators not supported
