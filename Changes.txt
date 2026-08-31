@@ -36,6 +36,9 @@
     Special thanks to Golden Child for their initial implementation
     in MAME, and for sharing this with Stella (issue# 79).
 
+  * Added support for AR/Supercharger cassette load from MP3 and WAV,
+    using real Supercharger BIOS (issue #286).
+
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
 
@@ -75,8 +78,6 @@
     - Implemented 'Late RESPx' behaviour exhibited on some consoles
       (Light sixer, Jr.) (issue #699)
     - Properly initialise HMxy shadow registers (issue #1081)
-    - Enhanced VSYNC emulation, considers VBLANK now too, and only
-      takes effect when at least 2 scanlines have passed (issue #1150)
     - Polling SWCHA multiple times per frame now detects events and
       works as expected; fixes California Games not passing BMX event,
       and others (issue #858, #689)
@@ -108,6 +109,7 @@
     - Fixed location of debugger script not matching documentation
       (issue #1120)
     - Fix controller widget crash in I/O tab in certain cases (issue #954)
+    - Improve AR/Supercharger debugger area (issue #200)
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,
