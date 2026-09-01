@@ -69,6 +69,7 @@
 #include "CartX07.hxx"
 #include "CartELF.hxx"
 #include "MD5.hxx"
+#include "Logger.hxx"
 #include "Settings.hxx"
 
 #include "CartDetector.hxx"
@@ -404,26 +405,26 @@ namespace  // anonymous namespace, to keep these functions private
 
     if(biosData.empty())
     {
-      cerr << std::format(
+      Logger::error(std::format(
         "CartCreator: Supercharger BIOS not found in '{}' or '{}'\n"
         " (searched for SUPERCHARGER_BIOS_NTSC.BIN, SUPERCHARGER_BIOS_PAL.BIN)\n",
-        file.getParent().getPath(), baseDir.getPath());
+        file.getParent().getPath(), baseDir.getPath()));
       throw std::runtime_error("Supercharger BIOS not found");
     }
 
     auto [pcmData, sampleRate] = CartridgeAR::loadPCM(file);
     if(pcmData.empty())
     {
-      cerr << std::format("CartCreator: failed to load PCM from '{}'\n", file.getPath());
+      Logger::error(std::format("CartCreator: failed to load PCM from '{}'\n",
+                                file.getPath()));
       return nullptr;
     }
 
     // Every message here also goes to the cart's own load log, which the
-    // debugger widget shows verbatim -- cerr gets a source prefix since it is
-    // a stream shared with everything else, the log does not need one
+    // debugger widget shows verbatim
     string log;
     const auto record = [&log](string_view msg) {
-      cerr << "CartCreator: " << msg << '\n';
+      Logger::debug(std::format("CartCreator: {}\n", msg));
       log += msg;
       log += '\n';
     };
@@ -500,9 +501,9 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,
   {
     detectedType = CartDetector::autodetectType(image);
     if(type != Bankswitch::Type::AUTO && type != detectedType)
-      cerr << "Auto-detection not consistent: "
-           << Bankswitch::typeToName(type) << ", "
-           << Bankswitch::typeToName(detectedType) << '\n';
+      Logger::error(std::format("Auto-detection not consistent: {}, {}\n",
+                                Bankswitch::typeToName(type),
+                                Bankswitch::typeToName(detectedType)));
 
     type = detectedType;
     autodetected = true;

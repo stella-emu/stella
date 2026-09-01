@@ -192,10 +192,9 @@ void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeARWidget::bankState()
 {
-  return std::format("{}, RAM write {}, ROM power {}",
+  return std::format("{}, RAM write {}",
     SliceMap[myCart.myCurrentBank >> 2],
-    myCart.myWriteEnabled ? "enabled" : "disabled",
-    myCart.myPower ? "on" : "off");
+    myCart.myWriteEnabled ? "enabled" : "disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
