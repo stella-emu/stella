@@ -550,6 +550,10 @@ void RiotWidget::loadConfig()
   mySelect->setState(!riot.select(), state.swchbReadBits[6] != oldstate.swchbReadBits[6]);
   myReset->setState(!riot.reset(), state.swchbReadBits[7] != oldstate.swchbReadBits[7]);
 
+  // Controllers may have been rebuilt since our last refresh
+  myLeftControl->rebindController(instance().console().leftController());
+  myRightControl->rebindController(instance().console().rightController());
+
   myLeftControl->loadConfig();
   myRightControl->loadConfig();
 

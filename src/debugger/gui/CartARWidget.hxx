@@ -19,7 +19,10 @@
 #define CARTRIDGE_AR_WIDGET_HXX
 
 class CartridgeAR;
+class CheckboxWidget;
+class EditTextWidget;
 class PopUpWidget;
+class WrappedTextWidget;
 
 #include "CartDebugWidget.hxx"
 
@@ -31,8 +34,19 @@ class CartridgeARWidget : public CartDebugWidget
                       CartridgeAR& cart);
     ~CartridgeARWidget() override = default;
 
+    void saveOldState() override;
     void loadConfig() override;
     string bankState() override;
+
+    // Start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    // End of functions for Cartridge RAM tab
 
   protected:
     void layoutContent(GUI::BoxLayout& col) const override;
@@ -40,12 +54,29 @@ class CartridgeARWidget : public CartDebugWidget
 
   private:
     CartridgeAR& myCart;
-    LabelWidget* myBankLbl{nullptr};
-    PopUpWidget* myBank{nullptr};
+
+    LabelWidget* myModeInfo{nullptr};
+    LabelWidget* myModeDetail{nullptr};
+    LabelWidget* mySliceLbl{nullptr};
+    PopUpWidget* mySlice{nullptr};
+    CheckboxWidget* myWriteEnable{nullptr};
+    CheckboxWidget* myRomPower{nullptr};
+    LabelWidget* myWriteStateLbl{nullptr};
+    EditTextWidget* myWriteState{nullptr};
+
+    // Sound-load carts only (myIsSoundLoad is fixed for the cart's lifetime,
+    // so whether these exist at all is a one-time ctor decision, not a
+    // runtime show/hide): the tape(s) CartCreator located, plus playback
+    // start/exhaustion events as they occur
+    WrappedTextWidget* myLoadLog{nullptr};
+
+    // Snapshot of the full 6K of RAM, refreshed each saveOldState(); backs the
+    // Cartridge RAM tab's change tracking (see internalRamOld())
+    ByteArray myOldRAM;
 
     struct Cmd {
       static constexpr GuiCmd::Code
-        BankChanged = GuiCmd::of("CartridgeARWidget.BankChanged");
+        ConfigChanged = GuiCmd::of("CartridgeARWidget.ConfigChanged");
     };
 
   private:

@@ -237,9 +237,12 @@ class BoxLayout : public Layout
     BoxLayout& addAuto(unique_ptr<Layout> child, int minPx = 0)
       { return add(std::move(child), SizePolicy::Auto, 0, 0, minPx); }
 
-    // A fixed empty gap
+    // A fixed empty gap.  It declares its own size as its floor, because
+    // doLayout() always gives a Fixed cell exactly that: a gap minSize() did
+    // not count is one the window can be sized too small to hold
     BoxLayout& addSpace(int px)
-      { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed, px); }
+      { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Fixed,
+                   px, 0, px); }
     // An empty gap of at least 'basePx', which grows with the leftover space
     BoxLayout& addStretchSpace(int weight = 1, int basePx = 0)
       { return add(std::make_unique<WidgetLayout>(nullptr), SizePolicy::Stretch,

@@ -47,9 +47,11 @@
 #include "System.hxx"
 #include "Cart.hxx"
 #include "Console.hxx"
-#include "Launcher.hxx"
 #include "Base.hxx"
 #include "MD5.hxx"
+#ifdef GUI_SUPPORT
+  #include "Launcher.hxx"
+#endif
 
 #include "HighScoresManager.hxx"
 
@@ -104,11 +106,13 @@ json HighScoresManager::properties(json& jprops) const
   {
     props = myOSystem.console().properties();
   }
+#ifdef GUI_SUPPORT
   else
   {
     const string& md5 = myOSystem.launcher().selectedRomMD5();
     myOSystem.propSet().getMD5(md5, props);
   }
+#endif
 
   return jprops = properties(props);
 }

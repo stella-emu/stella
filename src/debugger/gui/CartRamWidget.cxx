@@ -95,7 +95,12 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
            static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
 
   col->addSpace(_fontHeight / 2);
-  col->addStretch(widgetItem(myRam));
+
+  // The view's own height is its cell's BASE (the 1 is addStretch's default
+  // weight), or the description's cap would expand into the space it needs
+  const Common::Size ramNatural = myRam->naturalSize();
+  col->addStretch(widgetItem(myRam, static_cast<int>(ramNatural.w)), 1,
+                  static_cast<int>(ramNatural.h));
 
   return col;
 }

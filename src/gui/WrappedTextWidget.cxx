@@ -32,6 +32,16 @@ WrappedTextWidget::WrappedTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void WrappedTextWidget::setContent(string_view text)
+{
+  if(myText != text)
+  {
+    myText = text;
+    rewrap();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WrappedTextWidget::setWidth(int w)
 {
   StringListWidget::setWidth(w);
