@@ -110,8 +110,23 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::alignedItem;
   using GUI::labeledRow;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
+
+  // A label beside a DataGrid sits on the grid's first row, not the middle of
+  // its box, so the two share the row's baseline (CpuWidget)
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  const auto baselineRow = [&](LabelWidget* label, Widget* grid) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(label), label->getWidth());
+    row->addAuto(onBaseline(grid));
+    return row;
+  };
 
   // Every register row shares one label column
   GUI::alignLabels({{myTopsLbl}, {myBottomsLbl}, {myCountersLbl},
@@ -123,15 +138,19 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
   col.addAuto(labeledRow(myBankLbl, myBank));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(labeledRow(myTopsLbl,             myTops));
-  col.addAuto(labeledRow(myBottomsLbl,          myBottoms));
-  col.addAuto(labeledRow(myCountersLbl,         myCounters));
-  col.addAuto(labeledRow(myFracCountersLbl,     myFracCounters));
-  col.addAuto(labeledRow(myFracIncrementsLbl,   myFracIncrements));
-  col.addAuto(labeledRow(myParameterLbl,        myParameter));
-  col.addAuto(labeledRow(myMusicCountersLbl,    myMusicCounters));
-  col.addAuto(labeledRow(myMusicFrequenciesLbl, myMusicFrequencies));
-  col.addAuto(labeledRow(myMusicWaveformsLbl,   myMusicWaveforms));
+
+  // Packed with no gap between rows -- the grids' own borders are enough to
+  // tell them apart, and the tab has a lot of these to fit
+  auto registers = std::make_unique<BoxLayout>(Dir::Vertical);
+  registers->addAuto(baselineRow(myTopsLbl,             myTops));
+  registers->addAuto(baselineRow(myBottomsLbl,          myBottoms));
+  registers->addAuto(baselineRow(myCountersLbl,         myCounters));
+  registers->addAuto(baselineRow(myFracCountersLbl,     myFracCounters));
+  registers->addAuto(baselineRow(myFracIncrementsLbl,   myFracIncrements));
+  registers->addAuto(baselineRow(myParameterLbl,        myParameter));
+  registers->addAuto(baselineRow(myMusicCountersLbl,    myMusicCounters));
+  registers->addAuto(baselineRow(myMusicFrequenciesLbl, myMusicFrequencies));
+  registers->addAuto(baselineRow(myMusicWaveformsLbl,   myMusicWaveforms));
 
   // The random number, with the two fetcher flags stacked beside it
   auto flags = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
@@ -139,10 +158,11 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
   flags->addAuto(anchoredItem(myIMLDA));
 
   auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  row->addAuto(labeledRow(myRandomLbl, myRandom));
+  row->addAuto(baselineRow(myRandomLbl, myRandom));
   row->addAuto(std::move(flags));
+  registers->addAuto(std::move(row));
 
-  col.addAuto(std::move(row));
+  col.addAuto(std::move(registers));
 
   // ...and the ARM cycle counters below everything
   CartridgeARMWidget::layoutContent(col);
