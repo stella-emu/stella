@@ -542,6 +542,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   if(myConsole)
   {
   #ifdef DEBUGGER_SUPPORT
+  #ifdef GUI_SUPPORT
+    // Drop dialogs cached from the outgoing debugger before it's replaced below
+    // Otherwise we can get a segfault in certain situations
+    BrowserDialog::hide();
+    GUI::MessageBox::hide();
+  #endif
     myDebugger = std::make_unique<Debugger>(*this, *myConsole);
     myDebugger->initialize();
     myConsole->attachDebugger(*myDebugger);
