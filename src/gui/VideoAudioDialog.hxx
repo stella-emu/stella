@@ -137,6 +137,7 @@ class VideoAudioDialog : public Dialog
     // General options
     LabelWidget* myRendererLbl{nullptr};
     PopUpWidget*    myRenderer{nullptr};
+    LabelWidget*    myRendererDetected{nullptr};
     CheckboxWidget* myTIAInterpolate{nullptr};
     CheckboxWidget* myFullscreen{nullptr};
     CheckboxWidget* myUseStretch{nullptr};

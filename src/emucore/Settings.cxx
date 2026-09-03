@@ -339,6 +339,9 @@ Settings::Settings()
 
   setTemporary("elf.dump", false);
 
+  // Must flip only after the setPermanent/setTemporary calls above;
+  // see the assert(!myConstructed) in each
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myConstructed = true;
 }
 
@@ -391,8 +394,9 @@ void Settings::migrate()
   if(version < 800)  // Stella 8.0.0
   {
     // Older versions saved the *detected* renderer into the preference, so no
-    // persisted value reflects a choice made under SDL3 (and on Windows it
-    // pins the legacy D3D9 backend).  Hand everyone back to auto-detection.
+    // persisted value reflects a choice made under SDL3.  Hand everyone back to
+    // auto-detection, which each platform then resolves for itself
+    // (FBBackendSDL::autoRenderer).
     // (setValue, not setPermanent: the latter ignores an existing key.)
     setValue("video", "auto");
   }

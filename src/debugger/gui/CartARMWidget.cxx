@@ -37,7 +37,7 @@ void CartridgeARMWidget::createCycleWidgets()
   VariantList items;
 
   // Everything is created at a placeholder position; layoutContent() positions it
-  myArmCyclesLbl = new LabelWidget(_boss, _font, "ARM emulation cycles:");
+  myArmCyclesLbl = new LabelWidget(_boss, _font, "ARM emulation cycles");
   myArmCyclesLbl->setToolTip("Cycle count enabled by developer settings.");
 
   myIncCycles = new CheckboxWidget(_boss, _font, "Increase 6507 cycles",

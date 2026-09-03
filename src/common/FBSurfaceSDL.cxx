@@ -228,7 +228,8 @@ void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
     Logger::error("Resizing static texture!");
 
   createSurface(width, height, nullptr);
-  reinitializeBlitter(true);
+  // Reuse the blitter so its own growth/headroom logic can decide
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

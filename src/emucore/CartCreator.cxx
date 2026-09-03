@@ -69,6 +69,7 @@
 #include "CartX07.hxx"
 #include "CartELF.hxx"
 #include "MD5.hxx"
+#include "Logger.hxx"
 #include "Settings.hxx"
 
 #include "CartDetector.hxx"
@@ -404,27 +405,38 @@ namespace  // anonymous namespace, to keep these functions private
 
     if(biosData.empty())
     {
-      cerr << std::format(
+      Logger::error(std::format(
         "CartCreator: Supercharger BIOS not found in '{}' or '{}'\n"
         " (searched for SUPERCHARGER_BIOS_NTSC.BIN, SUPERCHARGER_BIOS_PAL.BIN)\n",
-        file.getParent().getPath(), baseDir.getPath());
+        file.getParent().getPath(), baseDir.getPath()));
       throw std::runtime_error("Supercharger BIOS not found");
     }
 
     auto [pcmData, sampleRate] = CartridgeAR::loadPCM(file);
     if(pcmData.empty())
     {
-      cerr << std::format("CartCreator: failed to load PCM from '{}'\n", file.getPath());
+      Logger::error(std::format("CartCreator: failed to load PCM from '{}'\n",
+                                file.getPath()));
       return nullptr;
     }
-    cerr << std::format("CartCreator: tape 1: '{}' ({} samples @ {} Hz)\n",
-                        file.getName(), pcmData.size(), sampleRate);
+
+    // Every message here also goes to the cart's own load log, which the
+    // debugger widget shows verbatim
+    string log;
+    const auto record = [&log](string_view msg) {
+      Logger::debug(std::format("CartCreator: {}\n", msg));
+      log += msg;
+      log += '\n';
+    };
+
+    record(std::format("tape 1: '{}' ({} samples @ {} Hz)",
+                       file.getName(), pcmData.size(), sampleRate));
 
     // Probe for sequentially-numbered companion tapes and concatenate them
     // with a ~2-second silence gap so the BIOS can sync to each in turn.
     const auto companions = findCompanionTapes(file);
     if(companions.empty())
-      cerr << "CartCreator: no companion tapes found\n";
+      record("no companion tapes found");
 
     // Sample offset in the PCM stream where each tape's data begins; the first
     // tape always starts at 0.  CartridgeAR uses these to capture each tape
@@ -436,9 +448,8 @@ namespace  // anonymous namespace, to keep these functions private
       auto [nextPCM, nextRate] = CartridgeAR::loadPCM(companion);
       if(nextPCM.empty() || nextRate != sampleRate)
       {
-        cerr << std::format(
-          "CartCreator: skipping companion tape '{}' (load failed or "
-          "sample rate mismatch)\n", companion.getName());
+        record(std::format("skipping companion tape '{}' (load failed or "
+                           "sample rate mismatch)", companion.getName()));
         break;
       }
       const size_t silenceSamples = static_cast<size_t>(sampleRate) * 2;
@@ -446,16 +457,16 @@ namespace  // anonymous namespace, to keep these functions private
       pcmData.insert(pcmData.end(), silenceSamples, 1.F);
       tapeStarts.push_back(pcmData.size());  // this tape begins after the silence
       pcmData.insert(pcmData.end(), nextPCM.begin(), nextPCM.end());
-      cerr << std::format("CartCreator: tape {}: '{}' ({} samples @ {} Hz)\n",
-                          tapeNum++, companion.getName(), nextPCM.size(), nextRate);
+      record(std::format("tape {}: '{}' ({} samples @ {} Hz)",
+                         tapeNum++, companion.getName(), nextPCM.size(), nextRate));
     }
-    cerr << std::format("CartCreator: total PCM stream: {} samples ({:.1f}s)\n",
-                        pcmData.size(),
-                        static_cast<double>(pcmData.size()) / sampleRate);
+    record(std::format("total PCM stream: {} samples ({:.1f}s)",
+                       pcmData.size(),
+                       static_cast<double>(pcmData.size()) / sampleRate));
 
     auto cart = std::make_unique<CartridgeAR>(
       ByteSpan{biosData}, std::move(pcmData), sampleRate, std::move(tapeStarts),
-      md5, settings);
+      std::move(log), md5, settings);
     // One 8448-byte load per tape, so the size matches the equivalent BIN
     cart->setAbout(std::format("AR ({}K) ", cart->getImage().size() / 1_KB),
                    "AR", "");
@@ -490,9 +501,9 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,
   {
     detectedType = CartDetector::autodetectType(image);
     if(type != Bankswitch::Type::AUTO && type != detectedType)
-      cerr << "Auto-detection not consistent: "
-           << Bankswitch::typeToName(type) << ", "
-           << Bankswitch::typeToName(detectedType) << '\n';
+      Logger::error(std::format("Auto-detection not consistent: {}, {}\n",
+                                Bankswitch::typeToName(type),
+                                Bankswitch::typeToName(detectedType)));
 
     type = detectedType;
     autodetected = true;

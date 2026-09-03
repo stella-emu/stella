@@ -64,14 +64,16 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(ByteSpan biosImage, vector<float> pcmData,
                          uInt32 sampleRate, vector<size_t> tapeStarts,
-                         string_view md5, const Settings& settings)
+                         string loadLog, string_view md5,
+                         const Settings& settings)
   : Cartridge(settings, md5),
     myNumberOfLoadImages{static_cast<uInt8>(tapeStarts.size())},
     myTapeStartSamples{std::move(tapeStarts)},
     myPCMData{std::move(pcmData)},
     myPCMSampleRate{sampleRate},
     myPCMSamplesPerCycle{static_cast<double>(sampleRate) / 1190000.0},
-    myIsSoundLoad{true}
+    myIsSoundLoad{true},
+    myLoadLog{std::move(loadLog)}
 {
   // Lay the load image out as one 8448-byte slot per tape, matching the
   // standard multi-load BIN format: 6K RAM + 2K blank (the copyrighted BIOS is
@@ -163,9 +165,12 @@ uInt8 CartridgeAR::peek(uInt16 addr)
       {
         myPCMStarted = true;
         myPCMStartCycle = now;
-        cerr << std::format("CartridgeAR: PCM stream started at cycle {}, "
-                            "{} samples @ {} Hz\n",
-                            myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
+
+        auto info = std::format("PCM stream started at cycle {}, "
+                                "{} samples @ {} Hz\n",
+                                myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
+        Logger::debug("CartridgeAR: " + info);
+        myLoadLog += info;
       }
 
       const uInt64 elapsed = now - myPCMStartCycle;
@@ -253,8 +258,10 @@ void CartridgeAR::finalizeSoundLoad()
   // Finalise the load that was streaming in when the PCM ran out
   finalizeLoad(myCurrentLoadBlock);
 
-  cerr << std::format("CartridgeAR: PCM exhausted at cycle {}, "
-                      "finalising load image\n", mySystem->cycles());
+  auto info = std::format("PCM exhausted at cycle {}, finalising load image\n",
+                           mySystem->cycles());
+  Logger::debug("CartridgeAR: " + info);
+  myLoadLog += info;
 
   // Free the (potentially large) PCM buffer; myIsSoundLoad stays true so that
   // the real BIOS remains active and the fake $1850 hotspot stays suppressed.

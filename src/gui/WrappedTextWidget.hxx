@@ -50,6 +50,8 @@ class WrappedTextWidget : public StringListWidget
                       uInt16 minLines = 4);
     ~WrappedTextWidget() override = default;
 
+    // Replace the text and re-wrap it (not setText(), EditableWidget's own)
+    void setContent(string_view text);
     // Re-wraps to the new width (see rewrap())
     void setWidth(int w) override;
     // Re-wraps for the live font (line height and character widths both changed)

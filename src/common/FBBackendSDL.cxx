@@ -469,15 +469,17 @@ bool FBBackendSDL::createRenderer()
   // - different renderer vsync
   const bool enableVSync = vsyncWanted();
   const string& video = myOSystem.settings().getString("video");
-  // An empty or "auto" preference lets SDL pick the renderer
-  const bool autoVideo = video.empty() || video == "auto";
+  // An empty or "auto" preference defers to the platform, which may still have
+  // nothing to say -- an empty request lets SDL choose
+  const string request =
+      (video.empty() || video == "auto") ? autoRenderer() : video;
 
   bool recreate = myRenderer == nullptr;
   if(myRenderer)
   {
-    // Under 'auto', whatever SDL already gave us satisfies the preference
+    // With no request, whatever SDL already gave us satisfies the preference
     recreate = recreate ||
-        (!autoVideo && video != SDL_GetRendererName(myRenderer));
+        (!request.empty() && request != SDL_GetRendererName(myRenderer));
 
     const SDL_PropertiesID props = SDL_GetRendererProperties(myRenderer);
     const bool currentVSync = SDL_GetNumberProperty(props,
@@ -492,9 +494,9 @@ bool FBBackendSDL::createRenderer()
 
     // Re-create with new properties
     const SDL_PropertiesID props = SDL_CreateProperties();
-    if(!autoVideo)
+    if(!request.empty())
       SDL_SetStringProperty(props, SDL_PROP_RENDERER_CREATE_NAME_STRING,
-                            video.c_str());
+                            request.c_str());
     SDL_SetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER,
                           enableVSync ? 1 : 0);
     SDL_SetPointerProperty(props, SDL_PROP_RENDERER_CREATE_WINDOW_POINTER,
@@ -569,6 +571,20 @@ void FBBackendSDL::resizeWindow(const Common::Size& size)
 void FBBackendSDL::refreshDimensions()
 {
   determineDimensions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FBBackendSDL::autoRenderer()
+{
+#ifdef BSPF_WINDOWS
+  // SDL3 would pick Direct3D 11, whose flip-model swapchain leaves the edge
+  // opposite a dragged left/top edge uncovered during an interactive resize.
+  // D3D9 has no such gap and costs the same during emulation, so prefer it
+  // until SDL fixes D3D11
+  return "direct3d";
+#else
+  return "";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

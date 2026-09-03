@@ -100,11 +100,13 @@ class CartridgeAR : public Cartridge
       @param sampleRate Audio sample rate of pcmData (Hz)
       @param tapeStarts Sample offset in pcmData where each tape begins (the
                         first element is 0); its size is the number of tapes
+      @param loadLog    Human-readable log of the tape(s) CartCreator located
+                        and concatenated, shown verbatim by the debugger widget
       @param md5        The md5sum of the source audio file
       @param settings   A reference to the various settings (read-only)
     */
     CartridgeAR(ByteSpan biosImage, vector<float> pcmData, uInt32 sampleRate,
-                vector<size_t> tapeStarts, string_view md5,
+                vector<size_t> tapeStarts, string loadLog, string_view md5,
                 const Settings& settings);
     ~CartridgeAR() override = default;
 
@@ -322,6 +324,10 @@ class CartridgeAR : public Cartridge
     // Precomputed ratio: sampleRate / cpuFreq; avoids repeated division in peek()
     double myPCMSamplesPerCycle{0.0};
     bool myIsSoundLoad{false};
+    // Sound-load mode: tape(s) located/concatenated (CartCreator) plus
+    // playback start/exhaustion events (peek()/finalizeSoundLoad()), appended
+    // as they occur; shown verbatim by the debugger widget
+    string myLoadLog;
     // CPU cycle when tape playback began (latched after play-delay expires)
     uInt64 myPCMStartCycle{0};
     bool myPCMStarted{false};

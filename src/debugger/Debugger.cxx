@@ -1046,8 +1046,12 @@ void Debugger::renderTiaWindow()
   // Once the countdown reaches zero, run the settle pass.  Driven here rather
   // than from updateTime(): the companion is not the active overlay, so this is
   // its only per-frame tick
-  if(myTiaSettleCountdown > 0 && --myTiaSettleCountdown == 0)
-    fb.settleSecondaryWindow(*myTiaWindow);
+  if(myTiaSettleCountdown > 0)
+  {
+    --myTiaSettleCountdown;
+    if(myTiaSettleCountdown == 0)
+      fb.settleSecondaryWindow(*myTiaWindow);
+  }
 
   // Render on demand: the companion is presented only when its dialog/widget is
   // dirty.  That covers user interaction (zoom/pan mark the widget dirty) and

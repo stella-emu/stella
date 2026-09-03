@@ -62,7 +62,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   if(isCDFJplus())
   {
-    myFastFetchOffsetLbl = new LabelWidget(_boss, _font, "Fast Fetch Offset:");
+    myFastFetchOffsetLbl = new LabelWidget(_boss, _font, "Fast Fetch Offset");
 
     myFastFetcherOffset = new DataGridWidget(boss, _nfont, 1, 1, 2, 8,
                                              Common::Base::Fmt::_16_2);
@@ -101,7 +101,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                             jump2 ? "Jump Data (21|22)" : "Jump Data (21)");
 
   // Music states
-  myMusicLbl = new LabelWidget(_boss, _font, "Music States:");
+  myMusicLbl = new LabelWidget(_boss, _font, "Music States");
 
   myCountersLbl = new LabelWidget(boss, _font, "Counters");
   addGrid(myMusicCounters,      3, 1, 8, 32, Common::Base::Fmt::_16_8);
@@ -182,11 +182,29 @@ void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::alignedItem;
   using GUI::indentedItem;
   using GUI::labeledRow;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
 
   const int indent = _fontWidth * 2;
+
+  // A label beside a DataGrid sits on the grid's first row, not the middle of
+  // its box, so the two share the row's baseline (CpuWidget)
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  // A label + DataGrid row built on that baseline, indented and using the
+  // shared column width an earlier alignLabels() call gave the label
+  const auto baselineRow = [&](LabelWidget* label, Widget* grid) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addSpace(indent);
+    row->addFixed(onBaseline(label), label->getWidth());
+    row->addAuto(onBaseline(grid));
+    return row;
+  };
 
   // The music rows share a label column, as do the sample rows below them
   GUI::alignLabels({{myCountersLbl, indent}, {myFrequenciesLbl, indent},
@@ -200,21 +218,36 @@ void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
   col.addAuto(std::move(top));
 
   if(myFastFetcherOffset != nullptr)
-    col.addAuto(labeledRow(myFastFetchOffsetLbl, myFastFetcherOffset, 0, indent));
+  {
+    GUI::alignLabels({{myFastFetchOffsetLbl, indent}});
+    col.addAuto(baselineRow(myFastFetchOffsetLbl, myFastFetcherOffset));
+  }
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(layoutDatastreams());
 
   col.addSpace(_lineHeight / 2);
   col.addAuto(anchoredItem(myMusicLbl));
-  col.addAuto(labeledRow(myCountersLbl,      myMusicCounters,      0, indent));
-  col.addAuto(labeledRow(myFrequenciesLbl,   myMusicFrequencies,   0, indent));
-  col.addAuto(labeledRow(myWaveformsLbl,     myMusicWaveforms,     0, indent));
-  col.addAuto(labeledRow(myWaveformSizesLbl, myMusicWaveformSizes, 0, indent));
+
+  // Packed with no gap between rows -- the grids' own borders are enough to
+  // tell them apart, and the tab has a lot of these to fit
+  auto music = std::make_unique<BoxLayout>(Dir::Vertical);
+  music->addAuto(baselineRow(myCountersLbl,      myMusicCounters));
+  music->addAuto(baselineRow(myFrequenciesLbl,   myMusicFrequencies));
+  music->addAuto(baselineRow(myWaveformsLbl,     myMusicWaveforms));
+  music->addAuto(baselineRow(myWaveformSizesLbl, myMusicWaveformSizes));
+  col.addAuto(std::move(music));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(anchoredItem(myDigitalSample));
-  col.addAuto(labeledRow(mySamplePointerLbl, mySamplePointer, 0, indent));
+
+  // The sample pointer shares the digital-sample checkbox's line, to its right
+  GUI::alignLabels({{mySamplePointerLbl, indent}});
+  auto sample = std::make_unique<BoxLayout>(Dir::Horizontal);
+  sample->addAuto(onBaseline(myDigitalSample));
+  sample->addSpace(_fontWidth * 3);
+  sample->addFixed(onBaseline(mySamplePointerLbl), mySamplePointerLbl->getWidth());
+  sample->addAuto(onBaseline(mySamplePointer));
+  col.addAuto(std::move(sample));
 
   // ...and the ARM cycle counters below everything
   CartridgeARMWidget::layoutContent(col);

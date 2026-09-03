@@ -156,8 +156,10 @@ void EventHandler::addPhysicalJoystick(const PhysicalJoystickPtr& joy)
   setActionMappings(EventMode::kEmulationMode);
   setActionMappings(EventMode::kMenuMode);
 
+#ifdef GUI_SUPPORT
   if(myOverlay)
     myOverlay->handleEvent(Event::UIReload);
+#endif
 #endif
 }
 
@@ -167,8 +169,10 @@ void EventHandler::removePhysicalJoystick(int id)
 #ifdef JOYSTICK_SUPPORT
   myPJoyHandler->remove(id);
 
+#ifdef GUI_SUPPORT
   if(myOverlay)
     myOverlay->handleEvent(Event::UIReload);
+#endif
 #endif
 }
 
@@ -2587,7 +2591,7 @@ void EventHandler::changeMouseControllerMode(int direction)
     }
     ++i;
   }
-  if(i >= static_cast<int>(MODES.size()))
+  if(std::cmp_greater_equal(i, MODES.size()))
   {
     // 'usemouse' held a value that isn't one of the known modes (e.g. a
     // hand-edited or corrupted settings file); fall back to the documented
