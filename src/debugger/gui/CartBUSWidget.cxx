@@ -92,13 +92,13 @@ CartridgeBUSWidget::CartridgeBUSWidget(GuiObject* boss, const GUI::Font& lfont,
       Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
 
   static constexpr std::array<string_view, 4> named{
-    "Write Data 0 (stream 16)", "Write Data 1 (stream 17)",
-    "Write Data 2 (stream 18)", "Write Data 3 (stream 19)"
+    "Write Data 0 (str. 16)", "Write Data 1 (str. 17)",
+    "Write Data 2 (str. 18)", "Write Data 3 (str. 19)"
   };
   if(isBUS3)
   {
-    myDatastreamLabels[4] = new LabelWidget(_boss, _font, "Write Data (stream 16)");
-    myDatastreamLabels[5] = new LabelWidget(_boss, _font, "Jump Data (stream 17)");
+    myDatastreamLabels[4] = new LabelWidget(_boss, _font, "Write Data (str. 16)");
+    myDatastreamLabels[5] = new LabelWidget(_boss, _font, "Jump Data (str. 17)");
   }
   else
     for(uInt32 row = 0; row < 4; ++row)
@@ -193,8 +193,23 @@ void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::alignedItem;
   using GUI::labeledRow;
+  using GUI::HAlign;
+  using GUI::VAlign;
   using Dir = BoxLayout::Dir;
+
+  // A label beside a DataGrid sits on the grid's first row, not the middle of
+  // its box, so the two share the row's baseline (CpuWidget)
+  const auto onBaseline = [](Widget* wid) {
+    return alignedItem(wid, HAlign::Left, VAlign::Baseline);
+  };
+  const auto baselineRow = [&](LabelWidget* label, Widget* grid) {
+    auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
+    row->addFixed(onBaseline(label), label->getWidth());
+    row->addAuto(onBaseline(grid));
+    return row;
+  };
 
   // The music rows share a label column
   GUI::alignLabels({{myCountersLbl}, {myFrequenciesLbl},
@@ -210,29 +225,41 @@ void CartridgeBUSWidget::layoutContent(GUI::BoxLayout& col) const
   col.addAuto(anchoredItem(myAddressMaps));
 
   col.addSpace(_lineHeight / 2);
-  col.addAuto(labeledRow(myCountersLbl,      myMusicCounters));
-  col.addAuto(labeledRow(myFrequenciesLbl,   myMusicFrequencies));
+
+  // Packed with no gap between rows -- the grids' own borders are enough to
+  // tell them apart, and the tab has a lot of these to fit
+  auto music = std::make_unique<BoxLayout>(Dir::Vertical);
+  music->addAuto(baselineRow(myCountersLbl,    myMusicCounters));
+  music->addAuto(baselineRow(myFrequenciesLbl, myMusicFrequencies));
 
   // Only BUS3 has a sample pointer, and it sits beside the waveforms
   auto waveforms = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  waveforms->addAuto(labeledRow(myWaveformsLbl, myMusicWaveforms));
+  waveforms->addAuto(baselineRow(myWaveformsLbl, myMusicWaveforms));
   if(mySamplePointer != nullptr)
   {
     GUI::alignLabels({{mySamplePointerLbl}});
-    waveforms->addAuto(labeledRow(mySamplePointerLbl, mySamplePointer));
+    waveforms->addAuto(baselineRow(mySamplePointerLbl, mySamplePointer));
   }
-  col.addAuto(std::move(waveforms));
 
-  col.addAuto(labeledRow(myWaveformSizesLbl, myMusicWaveformSizes));
+  // The last two rows are narrow, with empty space to their right at this
+  // width; BUS Overdrive shares it, centered against the pair
+  auto lastTwo = std::make_unique<BoxLayout>(Dir::Vertical);
+  lastTwo->addAuto(std::move(waveforms));
+  lastTwo->addAuto(baselineRow(myWaveformSizesLbl, myMusicWaveformSizes));
 
-  // ...the two flags, then the ARM cycle counters below everything
-  auto flags = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
-  flags->addAuto(anchoredItem(myBusOverdrive));
+  auto overdriveRow = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth * 3);
+  overdriveRow->addAuto(std::move(lastTwo));
+  overdriveRow->addAuto(anchoredItem(myBusOverdrive));
+  music->addAuto(std::move(overdriveRow));
+
+  col.addAuto(std::move(music));
+
+  // ...only BUS3 plays digital samples; the ARM cycle counters go below everything
   if(myDigitalSample != nullptr)
-    flags->addAuto(anchoredItem(myDigitalSample));
-
-  col.addSpace(_lineHeight / 2);
-  col.addAuto(std::move(flags));
+  {
+    col.addSpace(_lineHeight / 2);
+    col.addAuto(anchoredItem(myDigitalSample));
+  }
 
   CartridgeARMWidget::layoutContent(col);
 }
