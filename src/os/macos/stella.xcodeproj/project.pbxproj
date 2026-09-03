@@ -243,8 +243,6 @@
 		DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */; };
 		DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */; };
 		DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */; };
-		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
-		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
 		DC2AADB0194F389C0026C7A4 /* Television.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADAC194F389C0026C7A4 /* Television.cxx */; };
 		DC2AADB1194F389C0026C7A4 /* Television.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAD194F389C0026C7A4 /* Television.hxx */; };
@@ -657,6 +655,25 @@
 		DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */; };
 		DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */; };
 		DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */; };
+		DCCFE44E3049CB7C0064EB7A /* TiaWindowDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE44D3049CB7C0064EB7A /* TiaWindowDialog.cxx */; };
+		DCCFE44F3049CB7C0064EB7A /* ControllerWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4463049CB7C0064EB7A /* ControllerWidget.cxx */; };
+		DCCFE4503049CB7C0064EB7A /* NullControlWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4473049CB7C0064EB7A /* NullControlWidget.cxx */; };
+		DCCFE4513049CB7C0064EB7A /* CartMVCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4453049CB7C0064EB7A /* CartMVCWidget.cxx */; };
+		DCCFE4523049CB7C0064EB7A /* TiaWindow.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE44B3049CB7C0064EB7A /* TiaWindow.cxx */; };
+		DCCFE4533049CB7C0064EB7A /* TiaDisplayWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4493049CB7C0064EB7A /* TiaDisplayWidget.cxx */; };
+		DCCFE4543049CB7C0064EB7A /* CartMVCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE4443049CB7C0064EB7A /* CartMVCWidget.hxx */; };
+		DCCFE4553049CB7C0064EB7A /* TiaWindow.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE44A3049CB7C0064EB7A /* TiaWindow.hxx */; };
+		DCCFE4563049CB7C0064EB7A /* TiaDisplayWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE4483049CB7C0064EB7A /* TiaDisplayWidget.hxx */; };
+		DCCFE4573049CB7C0064EB7A /* TiaWindowDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE44C3049CB7C0064EB7A /* TiaWindowDialog.hxx */; };
+		DCCFE4613049CBD10064EB7A /* FontManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4593049CBD10064EB7A /* FontManager.cxx */; };
+		DCCFE4623049CBD10064EB7A /* TabPaneWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE45E3049CBD10064EB7A /* TabPaneWidget.cxx */; };
+		DCCFE4633049CBD10064EB7A /* WrappedTextWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE4603049CBD10064EB7A /* WrappedTextWidget.cxx */; };
+		DCCFE4643049CBD10064EB7A /* GuiObject.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE45A3049CBD10064EB7A /* GuiObject.cxx */; };
+		DCCFE4653049CBD10064EB7A /* Layout.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCFE45C3049CBD10064EB7A /* Layout.cxx */; };
+		DCCFE4663049CBD10064EB7A /* WrappedTextWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE45F3049CBD10064EB7A /* WrappedTextWidget.hxx */; };
+		DCCFE4673049CBD10064EB7A /* Layout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE45B3049CBD10064EB7A /* Layout.hxx */; };
+		DCCFE4683049CBD10064EB7A /* FontManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE4583049CBD10064EB7A /* FontManager.hxx */; };
+		DCCFE4693049CBD10064EB7A /* TabPaneWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCFE45D3049CBD10064EB7A /* TabPaneWidget.hxx */; };
 		DCD043A02FCDE2B10053802F /* DisasmColorsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD0439E2FCDE2B10053802F /* DisasmColorsDialog.hxx */; };
 		DCD043A12FCDE2B10053802F /* DisasmColorsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD0439F2FCDE2B10053802F /* DisasmColorsDialog.cxx */; };
 		DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD2839612E39F1200A808DC /* Thumbulator.cxx */; };
@@ -697,8 +714,6 @@
 		DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
 		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
-		DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */; };
-		DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */; };
 		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
 		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
 		DCE1FF42286DFB76003568AD /* Joy2BPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */; };
@@ -1140,8 +1155,6 @@
 		DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariWidget.cxx; sourceTree = "<group>"; };
 		DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariDialog.hxx; sourceTree = "<group>"; };
 		DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariDialog.cxx; sourceTree = "<group>"; };
-		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
-		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
 		DC2AADAC194F389C0026C7A4 /* Television.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Television.cxx; sourceTree = "<group>"; };
 		DC2AADAD194F389C0026C7A4 /* Television.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Television.hxx; sourceTree = "<group>"; };
@@ -1558,6 +1571,25 @@
 		DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DrivingWidget.hxx; sourceTree = "<group>"; };
 		DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardWidget.cxx; sourceTree = "<group>"; };
 		DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyboardWidget.hxx; sourceTree = "<group>"; };
+		DCCFE4443049CB7C0064EB7A /* CartMVCWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CartMVCWidget.hxx; sourceTree = "<group>"; };
+		DCCFE4453049CB7C0064EB7A /* CartMVCWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CartMVCWidget.cxx; sourceTree = "<group>"; };
+		DCCFE4463049CB7C0064EB7A /* ControllerWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerWidget.cxx; sourceTree = "<group>"; };
+		DCCFE4473049CB7C0064EB7A /* NullControlWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NullControlWidget.cxx; sourceTree = "<group>"; };
+		DCCFE4483049CB7C0064EB7A /* TiaDisplayWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaDisplayWidget.hxx; sourceTree = "<group>"; };
+		DCCFE4493049CB7C0064EB7A /* TiaDisplayWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaDisplayWidget.cxx; sourceTree = "<group>"; };
+		DCCFE44A3049CB7C0064EB7A /* TiaWindow.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaWindow.hxx; sourceTree = "<group>"; };
+		DCCFE44B3049CB7C0064EB7A /* TiaWindow.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaWindow.cxx; sourceTree = "<group>"; };
+		DCCFE44C3049CB7C0064EB7A /* TiaWindowDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TiaWindowDialog.hxx; sourceTree = "<group>"; };
+		DCCFE44D3049CB7C0064EB7A /* TiaWindowDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TiaWindowDialog.cxx; sourceTree = "<group>"; };
+		DCCFE4583049CBD10064EB7A /* FontManager.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FontManager.hxx; sourceTree = "<group>"; };
+		DCCFE4593049CBD10064EB7A /* FontManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FontManager.cxx; sourceTree = "<group>"; };
+		DCCFE45A3049CBD10064EB7A /* GuiObject.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiObject.cxx; sourceTree = "<group>"; };
+		DCCFE45B3049CBD10064EB7A /* Layout.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Layout.hxx; sourceTree = "<group>"; };
+		DCCFE45C3049CBD10064EB7A /* Layout.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Layout.cxx; sourceTree = "<group>"; };
+		DCCFE45D3049CBD10064EB7A /* TabPaneWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TabPaneWidget.hxx; sourceTree = "<group>"; };
+		DCCFE45E3049CBD10064EB7A /* TabPaneWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TabPaneWidget.cxx; sourceTree = "<group>"; };
+		DCCFE45F3049CBD10064EB7A /* WrappedTextWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WrappedTextWidget.hxx; sourceTree = "<group>"; };
+		DCCFE4603049CBD10064EB7A /* WrappedTextWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WrappedTextWidget.cxx; sourceTree = "<group>"; };
 		DCD0439E2FCDE2B10053802F /* DisasmColorsDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DisasmColorsDialog.hxx; sourceTree = "<group>"; };
 		DCD0439F2FCDE2B10053802F /* DisasmColorsDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DisasmColorsDialog.cxx; sourceTree = "<group>"; };
 		DCD2839612E39F1200A808DC /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thumbulator.cxx; sourceTree = "<group>"; };
@@ -1598,8 +1630,6 @@
 		DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SnapshotDialog.hxx; sourceTree = "<group>"; };
-		DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageDialog.cxx; sourceTree = "<group>"; };
-		DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MessageDialog.hxx; sourceTree = "<group>"; };
 		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
 		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
 		DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Joy2BPlusWidget.cxx; sourceTree = "<group>"; };
@@ -1946,6 +1976,8 @@
 				DC85734D2C10A371007AB2FE /* CartJANEWidget.cxx */,
 				DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */,
 				DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */,
+				DCCFE4443049CB7C0064EB7A /* CartMVCWidget.hxx */,
+				DCCFE4453049CB7C0064EB7A /* CartMVCWidget.cxx */,
 				DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */,
 				DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */,
 				DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */,
@@ -1961,6 +1993,7 @@
 				DC676A401729A0B000E4E73D /* CartX07Widget.hxx */,
 				DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */,
 				DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */,
+				DCCFE4463049CB7C0064EB7A /* ControllerWidget.cxx */,
 				2D20F9E708C603EC00A73076 /* CpuWidget.hxx */,
 				2D20F9E608C603EC00A73076 /* CpuWidget.cxx */,
 				2D20F9E908C603EC00A73076 /* DataGridOpsWidget.hxx */,
@@ -1988,6 +2021,7 @@
 				DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */,
 				DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */,
 				DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */,
+				DCCFE4473049CB7C0064EB7A /* NullControlWidget.cxx */,
 				DCCF49B614B7544A00814FAB /* PaddleWidget.hxx */,
 				DCCF49B514B7544A00814FAB /* PaddleWidget.cxx */,
 				DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */,
@@ -2009,12 +2043,18 @@
 				2D20F9F508C603EC00A73076 /* RomWidget.hxx */,
 				2D20F9F408C603EC00A73076 /* RomWidget.cxx */,
 				DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */,
+				DCCFE4483049CB7C0064EB7A /* TiaDisplayWidget.hxx */,
+				DCCFE4493049CB7C0064EB7A /* TiaDisplayWidget.cxx */,
 				2D20F9F708C603EC00A73076 /* TiaInfoWidget.hxx */,
 				2D20F9F608C603EC00A73076 /* TiaInfoWidget.cxx */,
 				2D20F9F908C603EC00A73076 /* TiaOutputWidget.hxx */,
 				2D20F9F808C603EC00A73076 /* TiaOutputWidget.cxx */,
 				2D20F9FB08C603EC00A73076 /* TiaWidget.hxx */,
 				2D20F9FA08C603EC00A73076 /* TiaWidget.cxx */,
+				DCCFE44A3049CB7C0064EB7A /* TiaWindow.hxx */,
+				DCCFE44B3049CB7C0064EB7A /* TiaWindow.cxx */,
+				DCCFE44C3049CB7C0064EB7A /* TiaWindowDialog.hxx */,
+				DCCFE44D3049CB7C0064EB7A /* TiaWindowDialog.cxx */,
 				DC4130A52F435E6900E4DE9B /* TiaZoomWidget.hxx */,
 				DC4130A62F435E6900E4DE9B /* TiaZoomWidget.cxx */,
 				2D20F9FD08C603EC00A73076 /* ToggleBitWidget.hxx */,
@@ -2411,11 +2451,14 @@
 				DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */,
 				2D9217FC0857CC88001D664B /* Font.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
+				DCCFE4583049CBD10064EB7A /* FontManager.hxx */,
+				DCCFE4593049CBD10064EB7A /* FontManager.cxx */,
 				2DDBEAB3084578BF00812C11 /* GameInfoDialog.hxx */,
 				2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */,
 				DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */,
 				DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */,
 				2DDBEAB6084578BF00812C11 /* GuiObject.hxx */,
+				DCCFE45A3049CBD10064EB7A /* GuiObject.cxx */,
 				2DDBEAB9084578BF00812C11 /* HelpDialog.hxx */,
 				2DDBEAB8084578BF00812C11 /* HelpDialog.cxx */,
 				DC816CFE25757DC200FBCCDA /* HighScoresDialog.hxx */,
@@ -2434,16 +2477,14 @@
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
 				DCE9681027553F1000E99839 /* LauncherFileListWidget.hxx */,
 				DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */,
+				DCCFE45B3049CBD10064EB7A /* Layout.hxx */,
+				DCCFE45C3049CBD10064EB7A /* Layout.cxx */,
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				2DDBEAC0084578BF00812C11 /* ListWidget.cxx */,
 				DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */,
 				DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */,
 				DC98F35511F5B56200AA520F /* MessageBox.hxx */,
 				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
-				DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */,
-				DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */,
-				DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */,
-				DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */,
 				DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */,
 				DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
@@ -2480,6 +2521,8 @@
 				DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
+				DCCFE45D3049CBD10064EB7A /* TabPaneWidget.hxx */,
+				DCCFE45E3049CBD10064EB7A /* TabPaneWidget.cxx */,
 				2DDBEAD1084578BF00812C11 /* TabWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
 				DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */,
@@ -2500,6 +2543,8 @@
 				DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */,
 				2DDBEAD5084578BF00812C11 /* Widget.hxx */,
 				2DDBEAD4084578BF00812C11 /* Widget.cxx */,
+				DCCFE45F3049CBD10064EB7A /* WrappedTextWidget.hxx */,
+				DCCFE4603049CBD10064EB7A /* WrappedTextWidget.cxx */,
 			);
 			name = gui;
 			path = ../gui;
@@ -2882,7 +2927,6 @@
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				E07DF4472C0A81ED00E1FB07 /* CartWF8Widget.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
-				DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
@@ -2975,6 +3019,10 @@
 				DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */,
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
 				DCB1502A2A814E6C0036F9EC /* Cart03E0.hxx in Headers */,
+				DCCFE4543049CB7C0064EB7A /* CartMVCWidget.hxx in Headers */,
+				DCCFE4553049CB7C0064EB7A /* TiaWindow.hxx in Headers */,
+				DCCFE4563049CB7C0064EB7A /* TiaDisplayWidget.hxx in Headers */,
+				DCCFE4573049CB7C0064EB7A /* TiaWindowDialog.hxx in Headers */,
 				E08D2F3F23089B9B000BD709 /* JoyMap.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
@@ -3012,6 +3060,10 @@
 				DC41309F2F435E4400E4DE9B /* MicroChip24LC.hxx in Headers */,
 				DC4130A02F435E4400E4DE9B /* CartEFF.hxx in Headers */,
 				DC4130A12F435E4400E4DE9B /* MT24LC16B.hxx in Headers */,
+				DCCFE4663049CBD10064EB7A /* WrappedTextWidget.hxx in Headers */,
+				DCCFE4673049CBD10064EB7A /* Layout.hxx in Headers */,
+				DCCFE4683049CBD10064EB7A /* FontManager.hxx in Headers */,
+				DCCFE4693049CBD10064EB7A /* TabPaneWidget.hxx in Headers */,
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
 				E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */,
 				E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */,
@@ -3275,7 +3327,6 @@
 				DC676A4A1729A0B000E4E73D /* CartCTYWidget.hxx in Headers */,
 				DC676A4C1729A0B000E4E73D /* CartDPCPlusWidget.hxx in Headers */,
 				DC676A4E1729A0B000E4E73D /* CartDPCWidget.hxx in Headers */,
-				DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */,
 				DCE9681B2761128200E99839 /* Icon.hxx in Headers */,
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
@@ -3556,6 +3607,12 @@
 				2D9174BB09BA90380026E9FF /* TabWidget.cxx in Sources */,
 				DC2ABA7825A0E178007E57D3 /* StellaDb.cxx in Sources */,
 				DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */,
+				DCCFE44E3049CB7C0064EB7A /* TiaWindowDialog.cxx in Sources */,
+				DCCFE44F3049CB7C0064EB7A /* ControllerWidget.cxx in Sources */,
+				DCCFE4503049CB7C0064EB7A /* NullControlWidget.cxx in Sources */,
+				DCCFE4513049CB7C0064EB7A /* CartMVCWidget.cxx in Sources */,
+				DCCFE4523049CB7C0064EB7A /* TiaWindow.cxx in Sources */,
+				DCCFE4533049CB7C0064EB7A /* TiaDisplayWidget.cxx in Sources */,
 				DCB150272A814E510036F9EC /* Cart03E0Widget.cxx in Sources */,
 				DC564F6F28C1154F00177588 /* tinyexif.cxx in Sources */,
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
@@ -3582,7 +3639,6 @@
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				DC6DC920205DB879004A5FC3 /* PJoystickHandler.cxx in Sources */,
-				DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
@@ -3730,13 +3786,17 @@
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 				DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
+				DCCFE4613049CBD10064EB7A /* FontManager.cxx in Sources */,
+				DCCFE4623049CBD10064EB7A /* TabPaneWidget.cxx in Sources */,
+				DCCFE4633049CBD10064EB7A /* WrappedTextWidget.cxx in Sources */,
+				DCCFE4643049CBD10064EB7A /* GuiObject.cxx in Sources */,
+				DCCFE4653049CBD10064EB7A /* Layout.cxx in Sources */,
 				DC1E89082C4033280033E15F /* ElfUtil.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DC0E98E42801CD1600097C68 /* Cart0FA0.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
-				DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */,
 				DCF7F127223D796000701A47 /* ProfilingRunner.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
