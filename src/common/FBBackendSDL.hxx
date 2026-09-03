@@ -184,6 +184,7 @@ class FBBackendSDL : public FBBackend
     void refreshDimensions() override;
     void beginLiveResize() override;
     void endLiveResize() override;
+    void setVSyncEnabled(bool enable) override;
 
     /**
       The SDL window ID of this backend's window, or 0 if none.

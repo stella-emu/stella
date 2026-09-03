@@ -350,7 +350,7 @@ void TimeMachineDialog::layout()
 void TimeMachineDialog::setPosition()
 {
   // Place on the bottom of the screen, centered horizontally
-  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Size& screen = instance().frameBuffer().screenSize(window());
   const Common::Rect& dst = surface().dstRect();
   surface().setDstPos((screen.w - dst.w()) >> 1, screen.h - dst.h() - 10);
 }
@@ -423,7 +423,7 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
       if(!repeated)
       {
         instance().eventHandler().handleEvent(Event::TakeSnapshot);
-        instance().frameBuffer().setPendingRender();
+        instance().frameBuffer().setPendingRender(window());
       }
       break;
 

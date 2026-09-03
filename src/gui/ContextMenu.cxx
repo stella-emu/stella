@@ -113,7 +113,8 @@ bool ContextMenu::isEnabled(int index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int item)
 {
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  FrameBuffer& fb = instance().frameBuffer();
+  const uInt32 scale = fb.hidpiScaleFactor(window());
   _xorig = bossRect.x() + x * scale;
   _yorig = bossRect.y() + y * scale;
 
@@ -121,7 +122,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int ite
   if(!bossRect.contains(_xorig, _yorig))
     return;
 
-  recalc(instance().frameBuffer().imageRect());
+  recalc(fb.imageRect(window()));
   open();
   setSelectedIndex(item);
   moveToSelected();
@@ -135,7 +136,7 @@ void ContextMenu::setPosition()
 
   // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().screenRect().adjustToFit(
+  if(!instance().frameBuffer().screenRect(window()).adjustToFit(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

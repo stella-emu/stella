@@ -27,7 +27,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
-  : myOSystem{osystem}
+  : myOSystem{osystem},
+    myWindow{&osystem.frameBuffer().primaryWindow()}
 {
   S_DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
   S_REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
@@ -155,8 +156,8 @@ bool DialogContainer::baseDialogIsActive() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DialogContainer::addDialog(Dialog* d)
 {
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = myOSystem.frameBuffer().imageRect(*myWindow);
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor(*myWindow);
 
   if(static_cast<uInt32>(d->getWidth()  * scale) > r.w() ||
      static_cast<uInt32>(d->getHeight() * scale) > r.h())
@@ -184,8 +185,7 @@ void DialogContainer::removeDialog()
   #endif
     myDialogStack.pop();
 
-    // Inform the frame buffer that it has to render all surfaces
-    myOSystem.frameBuffer().setPendingRender();
+    myOSystem.frameBuffer().setPendingRender(*myWindow);
   }
 }
 

@@ -78,15 +78,15 @@ bool TiaWindow::applyResize()
   FrameBuffer& fb = myOSystem.frameBuffer();
 
   // Nothing to do unless a new size is pending
-  if(!fb.applyLiveResize())
+  if(!fb.applyLiveResize(window()))
     return false;
 
   // Derive the new (logical) size from the updated window.  Unlike the debugger
   // this is not throttled: the window holds a single scale-to-fit image, so a
   // re-flow is cheap, and applying every event means the drag always ends on
   // the size the user released at
-  const uInt32 scale = fb.hidpiScaleFactor();
-  const Common::Rect& r = fb.imageRect();
+  const uInt32 scale = fb.hidpiScaleFactor(window());
+  const Common::Rect& r = fb.imageRect(window());
   const Common::Size& d = fb.desktopSize(BufferType::TiaWindow);
   const Common::Size& m = minSize();
 

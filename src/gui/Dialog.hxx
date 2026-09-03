@@ -38,6 +38,7 @@ namespace GUI {
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
 #include "EventHandlerConstants.hxx"
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
 /**
@@ -147,6 +148,9 @@ class Dialog : public GuiObject
 
     /** Returns the base surface associated with this dialog. */
     FBSurface& surface() const { return *_surface; }
+
+    // FrameBuffer window this dialog belongs to; see DialogContainer::window()
+    FrameBuffer::WindowState& window() const;
 
     /**
       This method is called each time the main Dialog::render is called.

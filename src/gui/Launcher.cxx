@@ -117,7 +117,7 @@ bool Launcher::applyResize()
     return false;
 
   // Nothing to do unless a new size is pending
-  if(!myOSystem.frameBuffer().applyLiveResize())
+  if(!myOSystem.frameBuffer().applyLiveResize(window()))
     return false;
 
   myLastResizeTime = now;
@@ -137,7 +137,7 @@ void Launcher::updateTime(uInt64 time)
   // the drag stops — and, once idle, run one settle pass with
   // resizeInProgress() false so layout() performs the finalization it defers
   // during the drag (window minimum-size hint, persisting the final size).
-  if(myOSystem.frameBuffer().applyLiveResize())
+  if(myOSystem.frameBuffer().applyLiveResize(window()))
   {
     relayout();
     mySettleCountdown = 15;

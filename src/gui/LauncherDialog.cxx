@@ -384,8 +384,8 @@ void LauncherDialog::layout()
   // minimum computed at the end of the previous layout (the widgets have no
   // usable geometry until this method runs, so the minimum can't be read up
   // front).  Most WMs honour SDL's minimum-size hint; this clamp is a fallback.
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-  const Common::Rect& image = instance().frameBuffer().imageRect();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(window());
+  const Common::Rect& image = instance().frameBuffer().imageRect(window());
   const int w = std::max(static_cast<int>(image.w() / scale),
                          static_cast<int>(myMinSize.w));
   const int h = std::max(static_cast<int>(image.h() / scale),

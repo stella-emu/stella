@@ -36,35 +36,35 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // Action buttons
-  mySetPC = new ButtonWidget(this, font,
-                             "Set PC @ current line", RomListWidget::Cmd::SetPC);
+  mySetPC = new ButtonWidget(this, font, "Set PC @ current line",
+                             RomListWidget::Cmd::SetPC);
   wid.push_back(mySetPC);
-  myRuntoPC = new ButtonWidget(this, font,
-                               "RunTo PC @ current line", RomListWidget::Cmd::RunToPC);
+  myRuntoPC = new ButtonWidget(this, font, "RunTo PC @ current line",
+                               RomListWidget::Cmd::RunToPC);
   wid.push_back(myRuntoPC);
-  mySetTimer = new ButtonWidget(this, font,
-                                "Set timer @ current line", RomListWidget::Cmd::SetTimer);
+  mySetTimer = new ButtonWidget(this, font, "Set timer @ current line",
+                                RomListWidget::Cmd::SetTimer);
   wid.push_back(mySetTimer);
-  myDisassemble = new ButtonWidget(this, font,
-                                   "Disassemble @ current line", RomListWidget::Cmd::Disassemble);
+  myDisassemble = new ButtonWidget(this, font, "Disassemble @ current line",
+                                   RomListWidget::Cmd::Disassemble);
   wid.push_back(myDisassemble);
 
   // Settings for Distella
-  myShowTentative = new CheckboxWidget(this, font,
-                                       "Show tentative code", RomListWidget::Cmd::TentativeCode);
+  myShowTentative = new CheckboxWidget(this, font, "Show tentative code",
+                                       RomListWidget::Cmd::TentativeCode);
   myShowTentative->setToolTip("Check to differentiate between tentative code\n"
                               "vs. data sections via static code analysis.");
   wid.push_back(myShowTentative);
-  myShowAddresses = new CheckboxWidget(this, font,
-                                       "Show PC addresses", RomListWidget::Cmd::PCAddresses);
+  myShowAddresses = new CheckboxWidget(this, font, "Show PC addresses",
+                                       RomListWidget::Cmd::PCAddresses);
   myShowAddresses->setToolTip("Check to show program counter addresses as labels.");
   wid.push_back(myShowAddresses);
-  myShowGFXBinary = new CheckboxWidget(this, font,
-                                       "Show GFX as binary", RomListWidget::Cmd::GfxAsBinary);
+  myShowGFXBinary = new CheckboxWidget(this, font, "Show GFX as binary",
+                                       RomListWidget::Cmd::GfxAsBinary);
   myShowGFXBinary->setToolTip("Check to allow editing GFX sections in binary format.");
   wid.push_back(myShowGFXBinary);
-  myUseRelocation = new CheckboxWidget(this, font,
-                                       "Use address relocation", RomListWidget::Cmd::AddressRelocation);
+  myUseRelocation = new CheckboxWidget(this, font, "Use address relocation",
+                                       RomListWidget::Cmd::AddressRelocation);
   myUseRelocation->setToolTip("Check to relocate calls out of address range.");
   wid.push_back(myUseRelocation);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
@@ -116,7 +116,7 @@ void RomListSettings::layout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListSettings::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data)
 {
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(window());
   _xorig = bossRect.x() + x * scale;
   _yorig = bossRect.y() + y * scale;
 
@@ -136,7 +136,7 @@ void RomListSettings::setPosition()
 
   // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().screenRect().adjustToFit(
+  if(!instance().frameBuffer().screenRect(window()).adjustToFit(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

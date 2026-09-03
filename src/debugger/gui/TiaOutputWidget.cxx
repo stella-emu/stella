@@ -59,8 +59,8 @@ TiaOutputWidget::~TiaOutputWidget()
   // The framebuffer keeps a reference to every allocated surface, so release
   // ours explicitly (the dialog can be recreated, which would otherwise leak)
   FrameBuffer& fb = instance().frameBuffer();
-  if(myTiaSurface)  fb.deallocateSurface(myTiaSurface);
-  if(myMarkSurface) fb.deallocateSurface(myMarkSurface);
+  if(myTiaSurface)  fb.deallocateSurface(dialog().window(), myTiaSurface);
+  if(myMarkSurface) fb.deallocateSurface(dialog().window(), myMarkSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -248,7 +248,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     FrameBuffer& fb = instance().frameBuffer();
 
     // 'none' (nearest-neighbour) scaling keeps the TIA pixels crisp at any size
-    myTiaSurface = fb.allocateSurface(
+    myTiaSurface = fb.allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
@@ -256,7 +256,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     // Pixel-locked overlay for the electron-beam cursor: same size/scaling as
     // the image so it can share the image's src/dst rectangles; blended so its
     // transparent background lets the image show through
-    myMarkSurface = fb.allocateSurface(
+    myMarkSurface = fb.allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myMarkSurface->setVisible(true);
@@ -340,7 +340,7 @@ void TiaOutputWidget::recalcRects()
   // Map widget-local logical coordinates to physical surface coordinates,
   // accounting for the dialog's on-screen position and any HiDPI scaling
   const Common::Rect& s_dst = dialog().surface().dstRect();
-  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor();
+  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
   myTiaSurface->setDstPos(s_dst.x() + (_x + myImgX) * dpi,
                           s_dst.y() + (_y + myImgY) * dpi);
   myTiaSurface->setDstSize(myImgW * dpi, myImgH * dpi);

@@ -83,7 +83,7 @@ bool Lightgun::read(DigitalPin pin)
   {
     case DigitalPin::Six: // INPT4/5
     {
-      const Common::Rect& rect = myFrameBuffer.imageRect();
+      const Common::Rect& rect = myFrameBuffer.imageRect(myFrameBuffer.primaryWindow());
 
       // abort when no valid framebuffer exists
       if(rect.w() == 0 || rect.h() == 0)

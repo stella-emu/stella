@@ -51,7 +51,7 @@ void RomImageWidget::setArea(int x, int y, int w, int h)
                             _w * 9 / 16, myImageHeight * 9 / 16);
 
   // Resize the navigation overlay (redrawn from scratch in drawWidget())
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(dialog().window());
   if(myNavSurface)
   {
     myNavSurface->resize(_w, myImageHeight);
@@ -125,9 +125,9 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   if(myNavSurface == nullptr)
   {
     // Create navigation surface
-    const uInt32 scale = fb.hidpiScaleFactor();
+    const uInt32 scale = fb.hidpiScaleFactor(dialog().window());
 
-    myNavSurface = fb.allocateSurface(_w, myImageHeight);
+    myNavSurface = fb.allocateSurface(dialog().window(), _w, myImageHeight);
     myNavSurface->setDstSize(_w * scale, myImageHeight * scale);
     myNavSurface->setBlendLevel(60);
     myNavSurface->enableBlend(true);
@@ -138,8 +138,8 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   // only draw certain parts of it
   if(mySurface == nullptr)
   {
-    mySurface = fb.allocateSurface(_w, myImageHeight, ScalingInterpolation::blur);
-    myFrameSurface = fb.allocateSurface(1, 1, ScalingInterpolation::sharp);
+    mySurface = fb.allocateSurface(dialog().window(), _w, myImageHeight, ScalingInterpolation::blur);
+    myFrameSurface = fb.allocateSurface(dialog().window(), 1, 1, ScalingInterpolation::sharp);
     myFrameSurface->setVisible(true);
 
     dialog().addRenderCallback([this]() {
@@ -383,7 +383,7 @@ void RomImageWidget::zoomSurfaces(bool zoomed, bool force)
 {
   if(zoomed != myIsZoomed || force)
   {
-    const uInt32 scaleDpi = instance().frameBuffer().hidpiScaleFactor();
+    const uInt32 scaleDpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
 
     myIsZoomed = zoomed;
 
@@ -405,7 +405,7 @@ void RomImageWidget::zoomSurfaces(bool zoomed, bool force)
 
       const Int32 b = 3 * scaleDpi;
       const Common::Size maxSize = instance().frameBuffer().fullScreen()
-        ? instance().frameBuffer().screenSize()
+        ? instance().frameBuffer().screenSize(dialog().window())
         : dialog().surface().dstRect().size();
       const Int32 lw = maxSize.w - b * 2;
       const Int32 lh = maxSize.h - b * 2;
@@ -436,7 +436,7 @@ void RomImageWidget::positionSurfaces()
   // Make sure when positioning the image surface that we take
   // the dialog surface position into account
   const Common::Rect& s_dst = dialog().surface().dstRect();
-  const Int32 scaleDpi = instance().frameBuffer().hidpiScaleFactor();
+  const Int32 scaleDpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
   const Int32 w = mySurface->dstRect().w();
   const Int32 h = mySurface->dstRect().h();
 
@@ -459,7 +459,7 @@ void RomImageWidget::positionSurfaces()
     const Int32 b = 3 * scaleDpi;
     const bool fs = instance().frameBuffer().fullScreen();
     const Common::Size maxSize = fs
-      ? instance().frameBuffer().screenSize()
+      ? instance().frameBuffer().screenSize(dialog().window())
       : dialog().surface().dstRect().size();
     const Int32 lw = maxSize.w - b * 2;
     const Int32 lh = maxSize.h - b * 2;

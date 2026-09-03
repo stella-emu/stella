@@ -74,6 +74,12 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::WindowState& Dialog::window() const
+{
+  return parent().window();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
   // Drop out of the container's registry first, so nothing can reach a
@@ -83,8 +89,9 @@ Dialog::~Dialog()
 
   if(instance().hasFrameBuffer())
   {
-    instance().frameBuffer().deallocateSurface(_surface);
-    instance().frameBuffer().deallocateSurface(_shadeSurface);
+    FrameBuffer& fb = instance().frameBuffer();
+    fb.deallocateSurface(window(), _surface);
+    fb.deallocateSurface(window(), _shadeSurface);
   }
   else
     cerr << "!!! framebuffer not available\n";
@@ -114,16 +121,20 @@ void Dialog::open()
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
-  if (_surface == nullptr)
-    _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  else if (static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
-    _surface->resize(_w, _h);
-  _surface->setSrcSize(_w, _h);
-  _layer = parent().addDialog(this);
+  {
+    FrameBuffer& fb = instance().frameBuffer();
 
-  // Take hidpi scaling into account
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-  _surface->setDstSize(_w * scale, _h * scale);
+    if (_surface == nullptr)
+      _surface = fb.allocateSurface(window(), _w, _h);
+    else if (static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
+      _surface->resize(_w, _h);
+    _surface->setSrcSize(_w, _h);
+
+    // Take hidpi scaling into account
+    const uInt32 scale = fb.hidpiScaleFactor(window());
+    _surface->setDstSize(_w * scale, _h * scale);
+  }
+  _layer = parent().addDialog(this);
 
   setPosition();
 
@@ -307,7 +318,7 @@ void Dialog::positionAt(uInt32 pos)
 {
   const bool fullscreen = instance().settings().getBool("fullscreen");
   const double overscan = fullscreen ? instance().settings().getInt("tia.fs_overscan") / 200.0 : 0.0;
-  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Size& screen = instance().frameBuffer().screenSize(window());
   const Common::Rect& dst = _surface->dstRect();
   // shift stacked dialogs
   const Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
@@ -391,7 +402,7 @@ void Dialog::render()
       constexpr uInt32 data = 0xff000000;
 
       _shadeSurface = instance().frameBuffer().allocateSurface(
-        1, 1, ScalingInterpolation::sharp, &data);
+        window(), 1, 1, ScalingInterpolation::sharp, &data);
       _shadeSurface->enableBlend(true);
       _shadeSurface->setBlendLevel(25); // darken background dialogs by 25%
     }
@@ -413,13 +424,15 @@ void Dialog::relayout()
   layoutHelp();
 
   // Grow the backing surface if needed, then refresh src/dst scaling
-  if(static_cast<uInt32>(_w) > _surface->width() ||
-     static_cast<uInt32>(_h) > _surface->height())
-    _surface->resize(_w, _h);
-  _surface->setSrcSize(_w, _h);
+  {
+    if(static_cast<uInt32>(_w) > _surface->width() ||
+       static_cast<uInt32>(_h) > _surface->height())
+      _surface->resize(_w, _h);
+    _surface->setSrcSize(_w, _h);
 
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-  _surface->setDstSize(_w * scale, _h * scale);
+    const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(window());
+    _surface->setDstSize(_w * scale, _h * scale);
+  }
 
   setPosition();
 
@@ -452,7 +465,7 @@ bool Dialog::exceedsScreen() const
 
   // Compare in the same (hidpi-scaled) units positionAt() uses: the surface's
   // destination rect against the screen size
-  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Size& screen = instance().frameBuffer().screenSize(window());
   const Common::Rect& dst = _surface->dstRect();
   return dst.w() > screen.w || dst.h() > screen.h;
 }
@@ -1320,8 +1333,8 @@ Widget* Dialog::TabFocus::getNewFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
-  const Common::Rect& r = instance().frameBuffer().imageRect();
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = instance().frameBuffer().imageRect(window());
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(window());
 
   if(r.w() <= FBMinimum::Width || r.h() <= FBMinimum::Height)
   {

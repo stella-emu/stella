@@ -617,6 +617,16 @@ void FBBackendSDL::endLiveResize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setVSyncEnabled(bool enable)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myRenderer)
+    SDL_SetRenderVSync(myRenderer,
+        enable && vsyncWanted() ? 1 : SDL_RENDERER_VSYNC_DISABLED);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FBBackendSDL::windowId() const
 {
   return myWindow ? SDL_GetWindowID(myWindow) : 0;
@@ -779,7 +789,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   ASSERT_MAIN_THREAD;
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const Common::Rect& rectUnscaled = fb.imageRect();
+  const Common::Rect& rectUnscaled = fb.imageRect(fb.primaryWindow());
   const Common::Rect rect(
     Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())

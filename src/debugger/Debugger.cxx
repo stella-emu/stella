@@ -158,13 +158,15 @@ void Debugger::detach()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  const FBInitStatus status = myOSystem.frameBuffer().createDisplay(
+  auto& fb = myOSystem.frameBuffer();
+
+  const FBInitStatus status = fb.createDisplay(
     string{STELLA_FULL_TITLE} + ": Debugger mode",
     BufferType::Debugger, mySize);
 
   // The debugger window may be resized, but not below its usable minimum
   // (which depends on the configured debugger font size)
-  myOSystem.frameBuffer().setWindowMinSize(dialogMinSize());
+  fb.setWindowMinSize(dialogMinSize());
 
   return status;
 }
@@ -172,9 +174,11 @@ FBInitStatus Debugger::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::updateSize()
 {
-  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+  const auto& fb = myOSystem.frameBuffer();
+
+  const uInt32 scale = fb.hidpiScaleFactor(window());
+  const Common::Rect& r = fb.imageRect(window());
+  const Common::Size& d = fb.desktopSize(BufferType::Debugger);
   const Common::Size minSize = dialogMinSize();
 
   mySize = Common::Size(r.w() / scale, r.h() / scale);
@@ -192,7 +196,7 @@ bool Debugger::applyResize()
     return false;
 
   // Nothing to do unless a new size is pending
-  if(!myOSystem.frameBuffer().applyLiveResize())
+  if(!myOSystem.frameBuffer().applyLiveResize(window()))
     return false;
 
   myLastResizeTime = now;
@@ -220,7 +224,8 @@ void Debugger::updateTime(uInt64 time)
   // (applyResize(), which also covers the Windows/macOS modal resize loop).
   // Here we catch any size the handler's throttle skipped — notably the final
   // one when the drag stops — and, once idle, persist the settled size
-  if(myOSystem.frameBuffer().applyLiveResize())
+  auto& fb = myOSystem.frameBuffer();
+  if(fb.applyLiveResize(window()))
   {
     updateSize();
     relayout();
@@ -230,7 +235,7 @@ void Debugger::updateTime(uInt64 time)
   {
     if(--mySettleCountdown == 0)
     {
-      myOSystem.frameBuffer().resizeSettled();
+      fb.resizeSettled();
       myOSystem.settings().setValue("dbg.res", mySize);
     }
   }
@@ -963,8 +968,10 @@ void Debugger::applyTiaWindowMode()
 
   // The (single) FrameBuffer owns the secondary window/backend; palette, fonts
   // and TIASurface are shared with the main window, so nothing can be clobbered.
+  string title{STELLA_FULL_TITLE};
+  title += ": TIA";
   const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
-    *myTiaWindow, string{STELLA_FULL_TITLE} + ": TIA",
+    *myTiaWindow, title,
     BufferType::TiaWindow, myTiaWindow->size(), TiaWindow::minSize());
 
   myTiaWindowOpen = (status == FBInitStatus::Success);
@@ -979,10 +986,10 @@ void Debugger::resizeTiaWindow(int width, int height)
   // The companion window resizes independently of the debugger's, and re-flows
   // and presents itself here rather than waiting for the next rendered frame
   // (during a modal resize loop there isn't one)
-  if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
+  auto& fb = myOSystem.frameBuffer();
+  if(fb.resizeSecondaryWindow(*myTiaWindow, width, height))
   {
-    myOSystem.frameBuffer().renderSecondaryWindow(
-      *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
+    fb.renderSecondaryWindow(*myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
 
     // Restart the settle: applying the resize suspended vsync on the companion's
     // backend, and only settling puts it back
@@ -1012,7 +1019,7 @@ void Debugger::closeTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
-  myOSystem.frameBuffer().closeSecondaryWindow();
+  myOSystem.frameBuffer().closeSecondaryWindow(*myTiaWindow);
   myTiaWindowOpen = false;
 
   // Nothing left to tick the countdown, and re-opening restores vsync anyway
@@ -1034,19 +1041,20 @@ void Debugger::renderTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
+  auto& fb = myOSystem.frameBuffer();
+
   // Once the countdown reaches zero, run the settle pass.  Driven here rather
   // than from updateTime(): the companion is not the active overlay, so this is
   // its only per-frame tick
   if(myTiaSettleCountdown > 0 && --myTiaSettleCountdown == 0)
-    myOSystem.frameBuffer().settleSecondaryWindow(*myTiaWindow);
+    fb.settleSecondaryWindow(*myTiaWindow);
 
   // Render on demand: the companion is presented only when its dialog/widget is
   // dirty.  That covers user interaction (zoom/pan mark the widget dirty) and
   // the initial open (Dialog::open() marks it dirty); content changes from
   // stepping the emulation come in via invalidateTiaWindow().  When nothing is
   // dirty this neither redraws nor presents, so an idle companion is free.
-  myOSystem.frameBuffer().renderSecondaryWindow(
-    *myTiaWindow, FrameBuffer::UpdateMode::NONE);
+  fb.renderSecondaryWindow(*myTiaWindow, FrameBuffer::UpdateMode::NONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

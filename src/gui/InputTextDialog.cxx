@@ -161,7 +161,7 @@ void InputTextDialog::show()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show(uInt32 x, uInt32 y, const Common::Rect& bossRect)
 {
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor(window());
   myXOrig = bossRect.x() + x * scale;
   myYOrig = bossRect.y() + y * scale;
 
@@ -183,7 +183,7 @@ void InputTextDialog::setPosition()
 
     // Now make sure that the entire menu can fit inside the screen bounds
     // If not, we reset its position
-    if(!instance().frameBuffer().screenRect().adjustToFit(
+    if(!instance().frameBuffer().screenRect(window()).adjustToFit(
         myXOrig, myXOrig, surface().dstRect()))
       surface().setDstPos(myXOrig, myYOrig);
   }
