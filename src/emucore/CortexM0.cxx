@@ -20,6 +20,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 #include <algorithm>
 #include <bit>
 
@@ -2515,3 +2517,5 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       return errIntrinsic(ERR_UNDEFINED_INST, read_register(15) - 4);
   }
 }
+
+// NOLINTEND(bugprone-signed-bitwise)

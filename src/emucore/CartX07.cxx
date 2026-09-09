@@ -46,12 +46,12 @@ bool CartridgeX07::checkSwitchBank(uInt16 address, uInt8)
   // Switch banks if necessary
   if((address & 0x180fU) == 0x080d)
   {
-    bank((address & 0xf0U) >> 4);
+    bank((address & 0xf0U) >> 4U);
     return true;
   }
   else if((address & 0x1880U) == 0 && (getBank() & 0xeU) == 0xe)
   {
-    bank(((address & 0x40U) >> 6) | 0xe);
+    bank(((address & 0x40U) >> 6U) | 0xeU);
     return true;
   }
 

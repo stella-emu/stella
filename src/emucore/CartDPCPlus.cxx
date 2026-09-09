@@ -277,7 +277,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     const uInt32 function = (address >> 3U) & 0x07;
 
     // Update flag for selected data fetcher
-    const uInt8 flag = (((myTops[index]-(myCounters[index] & 0x00ffU)) & 0xFF) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
+    const uInt8 flag = (((myTops[index]-(myCounters[index] & 0x00ffU)) & 0xFFU) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
 
     switch(function)
     {
@@ -459,7 +459,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
       // DFxFRACHI - fractional data pointer high byte
       case 0x01:
-        myFractionalCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 16) |
+        myFractionalCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 16U) |
                                        (myFractionalCounters[index] & 0x00ffffU);
         break;
 
@@ -526,7 +526,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxHI - data pointer high byte
       case 0x08:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 8) | (myCounters[index] & 0x00ffU);
+        myCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 8U) | (myCounters[index] & 0x00ffU);
         break;
       }
 

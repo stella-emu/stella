@@ -363,7 +363,7 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
     3 * BANK_SIZE, 3 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE,
     3 * BANK_SIZE, 3 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE
   };
-  const int bankConfig = (configuration & 0b11100U) >> 2;
+  const int bankConfig = (configuration & 0b11100U) >> 2U;
 
   myCurrentBank = configuration & 0b11111U; // remember for the bank() method
 
@@ -442,7 +442,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       for(auto j = 0UZ; j < numPages; ++j)
       {
         const size_t bank = myHeader[16 + j] & 0b00011U;
-        const size_t page = (myHeader[16 + j] & 0b11100U) >> 2;
+        const size_t page = (myHeader[16 + j] & 0b11100U) >> 2U;
         const ByteSpan src = ByteSpan{myLoadImages}.subspan(image_off + j * 256, 256);
         const uInt8 sum = checksum(src) + myHeader[16 + j] + myHeader[64 + j];
 

@@ -88,7 +88,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
-  const int hotspot = ((address & 0x80U) >> 7);
+  const int hotspot = ((address & 0x80U) >> 7U);
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -103,7 +103,7 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
   // doing a write to TIA or cart; we ignore the cart write
   if (!(address & 0x1000U))
   {
-    const int hotspot = ((address & 0x80U) >> 7);
+    const int hotspot = ((address & 0x80U) >> 7U);
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

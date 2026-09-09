@@ -303,7 +303,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       // DFx counter high
       case 0x03:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x07U) << 8) |
+        myCounters[index] = ((static_cast<uInt16>(value) & 0x07U) << 8U) |
             (myCounters[index] & 0x00ffU);
 
         // Execute special code for music mode data fetchers

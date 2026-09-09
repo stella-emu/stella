@@ -229,7 +229,7 @@ class AtariNTSC
         kernel0  [(index)       ] + kernel1  [((index)+10)%7+14] +\
         kernelx0 [((index)+7)%14] + kernelx1 [((index)+ 3)%7+14+7];\
       ATARI_NTSC_CLAMP( raw_, 0 );\
-      (rgb_out) = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
+      (rgb_out) = (raw_>>5U & 0x00FF0000U)|(raw_>>3U & 0x0000FF00U)|(raw_>>1U & 0x000000FFU);\
     }
     // NOLINTEND(cppcoreguidelines-macro-usage)
 

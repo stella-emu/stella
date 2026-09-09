@@ -299,7 +299,7 @@ bool CartridgeE7::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::getBank(uInt16 address) const
 {
-  return myCurrentBank[(address & 0xFFFU) >> 11]; // 2K segments
+  return myCurrentBank[(address & 0xFFFU) >> 11U]; // 2K segments
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -529,7 +529,7 @@ uInt8 TIADebug::nusizM0(int newVal)
     mySystem.pokeOob(NUSIZ0, tmp);
   }
 
-  return (myTIA.registerValue(NUSIZ0) & 0x30U) >> 4;
+  return (myTIA.registerValue(NUSIZ0) & 0x30U) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -542,7 +542,7 @@ uInt8 TIADebug::nusizM1(int newVal)
     mySystem.pokeOob(NUSIZ1, tmp);
   }
 
-  return (myTIA.registerValue(NUSIZ1) & 0x30U) >> 4;
+  return (myTIA.registerValue(NUSIZ1) & 0x30U) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -627,7 +627,7 @@ uInt8 TIADebug::sizeBL(int newVal)
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
-  return (myTIA.registerValue(CTRLPF) & 0x30U) >> 4;
+  return (myTIA.registerValue(CTRLPF) & 0x30U) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

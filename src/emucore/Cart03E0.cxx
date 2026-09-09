@@ -91,7 +91,7 @@ uInt8 Cartridge03E0::peek(uInt16 address)
 
   // Because of the way we've set up accessing above, we can only
   // get here when the addresses are from 0x380 - 0x3FF
-  const int hotspot = ((address & 0x40U) >> 6);
+  const int hotspot = ((address & 0x40U) >> 6U);
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -104,7 +104,7 @@ bool Cartridge03E0::poke(uInt16 address, uInt8 value)
   {
     checkSwitchBank(address, 0);
 
-    const int hotspot = ((address & 0x40U) >> 6);
+    const int hotspot = ((address & 0x40U) >> 6U);
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

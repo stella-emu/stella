@@ -68,7 +68,7 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 
   checkSwitchBank(address, 0);
 
-  const int hotspot = ((address & 0x0F00U) >> 8) - 8;
+  const int hotspot = ((address & 0x0F00U) >> 8U) - 8;
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -81,7 +81,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
   {
     checkSwitchBank(address, 0);
 
-    const int hotspot = ((address & 0x0F00U) >> 8) - 8;
+    const int hotspot = ((address & 0x0F00U) >> 8U) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

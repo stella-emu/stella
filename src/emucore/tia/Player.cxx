@@ -367,14 +367,14 @@ void Player::updatePattern()
 
   if (!myIsReflected) {
     myPattern = (
-      ((myPattern & 0x01U) << 7) |
-      ((myPattern & 0x02U) << 5) |
-      ((myPattern & 0x04U) << 3) |
-      ((myPattern & 0x08U) << 1) |
-      ((myPattern & 0x10U) >> 1) |
-      ((myPattern & 0x20U) >> 3) |
-      ((myPattern & 0x40U) >> 5) |
-      ((myPattern & 0x80U) >> 7)
+      ((myPattern & 0x01U) << 7U) |
+      ((myPattern & 0x02U) << 5U) |
+      ((myPattern & 0x04U) << 3U) |
+      ((myPattern & 0x08U) << 1U) |
+      ((myPattern & 0x10U) >> 1U) |
+      ((myPattern & 0x20U) >> 3U) |
+      ((myPattern & 0x40U) >> 5U) |
+      ((myPattern & 0x80U) >> 7U)
     );
   }
 

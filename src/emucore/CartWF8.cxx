@@ -31,7 +31,7 @@ bool CartridgeWF8::checkSwitchBank(uInt16 address, uInt8 value)
   // Note: addresses could be calculated from hotspot and bank count
   if (address == 0x1FF8)
   {
-    bank((value & 0b100U) >> 2);
+    bank((value & 0b100U) >> 2U);
     return true;
   }
   return false;

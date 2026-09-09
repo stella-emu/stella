@@ -22,6 +22,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)  TODO: Too many macros for now
 #include "bspf.hxx"
 #include "Base.hxx"
@@ -3271,3 +3273,4 @@ bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
   return false;
 }
 // NOLINTEND(cppcoreguidelines-macro-usage)
+// NOLINTEND(bugprone-signed-bitwise)

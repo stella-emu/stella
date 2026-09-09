@@ -118,8 +118,8 @@ uInt8 Cartridge4A50::peek(uInt16 address)
       value = myImage[(address & 0xffU) + 0x1ff00];
       if(!hotspotsLocked() && ((myLastData & 0xe0U) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
-        mySliceHigh = (mySliceHigh & 0xf0ffU) | ((address & 0x8U) << 8) |
-                      ((address & 0x70U) << 4);
+        mySliceHigh = (mySliceHigh & 0xf0ffU) | ((address & 0x8U) << 8U) |
+                      ((address & 0x70U) << 4U);
     }
   }
   myLastData = value;
@@ -173,8 +173,8 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
             !hotspotsLocked() && ((myLastData & 0xe0U) == 0x60) &&
             ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
     {
-      mySliceHigh = (mySliceHigh & 0xf0ffU) | ((address & 0x8U) << 8) |
-                    ((address & 0x70U) << 4);
+      mySliceHigh = (mySliceHigh & 0xf0ffU) | ((address & 0x8U) << 8U) |
+                    ((address & 0x70U) << 4U);
       myBankChanged = true;
     }
   }
@@ -314,7 +314,7 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
     else if((value & 0xf0U) == 0x40)   // Enable 2K of RAM at 0x1000 - 0x17ff
       bankRAMLower(value & 0xfU);
     else if((value & 0xf0U) == 0x90)   // Enable 1.5K of ROM at 0x1800 - 0x1dff
-      bankROMMiddle((value & 0xfU) | 0x10);
+      bankROMMiddle((value & 0xfU) | 0x10U);
     else if((value & 0xf0U) == 0xc0)   // Enable 1.5K of RAM at 0x1800 - 0x1dff
       bankRAMMiddle(value & 0xfU);
   }

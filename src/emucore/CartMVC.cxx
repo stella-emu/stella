@@ -35,7 +35,7 @@ namespace {
     return b & 0xffU;
   }
   constexpr uInt8 HI_JUMP_BYTE(uInt16 b) {
-    return ((b & 0xff00U) >> 8) | 0x10;
+    return ((b & 0xff00U) >> 8U) | 0x10U;
   }
 
   constexpr uInt8 COLOR_BLUE = 0x9A;
@@ -984,7 +984,7 @@ void MovieCart::updateTransport()
   {
     if(myBufferIndex)
     {
-      const uInt8 temp = ~(myA10_Count & 0x1eU) & 0x1e;
+      const uInt8 temp = ~(myA10_Count & 0x1eU) & 0x1eU;
 
       if(temp == myDirectionValue)
         myInputs.updateDirection(temp);
@@ -993,7 +993,7 @@ void MovieCart::updateTransport()
     }
     else
     {
-      const uInt8 temp = ~(myA10_Count & 0x17U) & 0x17;
+      const uInt8 temp = ~(myA10_Count & 0x17U) & 0x17U;
 
       if(temp == myButtonsValue)
         myInputs.updateTransport(temp);

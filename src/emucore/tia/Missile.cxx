@@ -149,7 +149,7 @@ void Missile::nusiz(uInt8 value)
   static constexpr std::array<uInt8, 4> ourWidths = { 1, 2, 4, 8 };
 
   myDecodesOffset = value & 0x07U;
-  myWidth = ourWidths[(value & 0x30U) >> 4];
+  myWidth = ourWidths[(value & 0x30U) >> 4U];
   myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
   if (myIsRendering && std::cmp_greater_equal(myRenderCounter, myWidth))

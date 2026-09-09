@@ -25,6 +25,8 @@
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 class Cartridge;
 
 #include "bspf.hxx"
@@ -338,5 +340,7 @@ class Thumbulator
     Thumbulator& operator=(const Thumbulator&) = delete;
     Thumbulator& operator=(Thumbulator&&) = delete;
 };
+
+// NOLINTEND(bugprone-signed-bitwise)
 
 #endif  // THUMBULATOR_HXX

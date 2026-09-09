@@ -23,6 +23,8 @@
 #ifndef CORTEX_M0_HXX
 #define CORTEX_M0_HXX
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 #include <variant>
 
 #include "Serializable.hxx"
@@ -238,5 +240,7 @@ class CortexM0: public Serializable
     CortexM0& operator=(const CortexM0&) = delete;
     CortexM0& operator=(CortexM0&&) = delete;
 };
+
+// NOLINTEND(bugprone-signed-bitwise)
 
 #endif  // CORTEX_M0_HXX
