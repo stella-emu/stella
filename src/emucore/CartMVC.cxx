@@ -32,10 +32,10 @@
 
 namespace {
   constexpr uInt8 LO_JUMP_BYTE(uInt16 b) {
-    return b & 0xff;
+    return b & 0xffU;
   }
   constexpr uInt8 HI_JUMP_BYTE(uInt16 b) {
-    return ((b & 0xff00) >> 8) | 0x10;
+    return ((b & 0xff00U) >> 8) | 0x10;
   }
 
   constexpr uInt8 COLOR_BLUE = 0x9A;
@@ -129,7 +129,7 @@ namespace {
           static_cast<size_t>(ff->vsync) + ff->vblank + ff->overscan + ff->visible + // sound
           static_cast<size_t>(11) * ff->visible;                    // graph+color+bkcolor
 
-        if((ff->format & 0x80) && requiredSize <= CartridgeMVC::MVC_FIELD_SIZE)
+        if((ff->format & 0x80U) && requiredSize <= CartridgeMVC::MVC_FIELD_SIZE)
         {
           myVSyncLines = ff->vsync;
           myBlankLines = ff->vblank;
@@ -797,11 +797,11 @@ class MovieCart : public Serializable
     bool load(Serializer& in) override;
 
     [[nodiscard]] uInt8 readROM(uInt16 address) const {
-      return myROM[address & 1023];
+      return myROM[address & 1023U];
     }
 
     void writeROM(uInt16 address, uInt8 data) {
-      myROM[address & 1023] = data;
+      myROM[address & 1023U] = data;
     }
 
   void setConsoleTiming(ConsoleTiming timing);
@@ -965,12 +965,12 @@ void MovieCart::setConsoleTiming(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::writeColor(uInt16 address, uInt8 v)
 {
-  v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
+  v = (v & 0xf0U) | shiftBright[(v & 0x0fU) + myBright];
 
   if(myForceColor)
     v = myForceColor;
   if(myInputs.bw)
-    v &= 0x0f;
+    v &= 0x0fU;
 
   writeROM(address, v);
 }
@@ -984,7 +984,7 @@ void MovieCart::updateTransport()
   {
     if(myBufferIndex)
     {
-      const uInt8 temp = ~(myA10_Count & 0x1e) & 0x1e;
+      const uInt8 temp = ~(myA10_Count & 0x1eU) & 0x1e;
 
       if(temp == myDirectionValue)
         myInputs.updateDirection(temp);
@@ -993,7 +993,7 @@ void MovieCart::updateTransport()
     }
     else
     {
-      const uInt8 temp = ~(myA10_Count & 0x17) & 0x17;
+      const uInt8 temp = ~(myA10_Count & 0x17U) & 0x17;
 
       if(temp == myButtonsValue)
         myInputs.updateTransport(temp);
@@ -1042,7 +1042,7 @@ void MovieCart::updateTransport()
     mySpeed = 1;
   }
 
-  if(myJoyRepeat & 16)
+  if(myJoyRepeat & 16U)
   {
     myJoyRepeat = 0;
 
@@ -1311,7 +1311,7 @@ void MovieCart::fill_addr_end_lines()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_blank_lines()
 {
-  myOdd = (myStream.getEmbeddedFrame() & 1);
+  myOdd = (myStream.getEmbeddedFrame() & 1U);
 
   const uInt8 blankTotal = (myStream.getOverscanLines() +
       myStream.getVSyncLines() + myStream.getBlankLines()-1); // 70-1
@@ -1470,18 +1470,18 @@ void MovieCart::runStateMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::process(uInt16 address)
 {
-  const bool a12 = (address & (1 << 12));
-  const bool a11 = (address & (1 << 11));
+  const bool a12 = (address & (1U << 12U));
+  const bool a11 = (address & (1U << 11U));
 
   // count a10 pulses
-  const bool a10i = (address & (1 << 10));
+  const bool a10i = (address & (1U << 10U));
   if(a10i && !myA10)
     myA10_Count++;
   myA10 = a10i;
 
   // latch a7 state
   if(a11)  // a12
-    myA7 = (address & (1 << 7));    // each 128
+    myA7 = (address & (1U << 7U));   // each 128
 
   switch(myTitleState)
   {

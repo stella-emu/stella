@@ -193,7 +193,7 @@ void PromptWidget::drawWidget(bool hilite)
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, kTextColorHi);
         s.drawChar(_font, c & 0x7f, x, y, kTextColorInv);
       }
-      else if(c & (1 << 17))  // inverse video flag
+      else if(c & (1U << 17U))  // inverse video flag
       {
         fgcolor = _bgcolor;
         bgcolor = static_cast<ColorId>((c & 0x1ffff) >> 8);
@@ -1338,7 +1338,7 @@ void PromptWidget::putcharIntern(int c)
   }
   else if(isprint(c) || c == 0x1e || c == 0x1f) // graphic bits chars
   {
-    buffer(_currentPos) = c | (_textcolor << 8) | (_inverse << 17);
+    buffer(_currentPos) = c | (_textcolor << 8U) | (_inverse << 17U);
     _currentPos++;
     if ((_scrollLine + 1) * _lineWidth == _currentPos
         && _scrollLine < _scrollStopLine)

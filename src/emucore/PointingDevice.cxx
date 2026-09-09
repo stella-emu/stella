@@ -71,15 +71,15 @@ uInt8 PointingDevice::read()
     myCycleCountV += myTrackBallCyclesV;
   }
 
-  myCountH &= 0b11;
-  myCountV &= 0b11;
+  myCountH &= 0b11U;
+  myCountV &= 0b11U;
 
   const uInt8 portA = ioPortA(myCountH, myCountV, myTrackBallLeft, myTrackBallDown);
 
-  setPin(DigitalPin::One,   portA & 0b0001);
-  setPin(DigitalPin::Two,   portA & 0b0010);
-  setPin(DigitalPin::Three, portA & 0b0100);
-  setPin(DigitalPin::Four,  portA & 0b1000);
+  setPin(DigitalPin::One,   portA & 0b0001U);
+  setPin(DigitalPin::Two,   portA & 0b0010U);
+  setPin(DigitalPin::Three, portA & 0b0100U);
+  setPin(DigitalPin::Four,  portA & 0b1000U);
 
   return portA;
 }
@@ -175,6 +175,6 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
 
     // Define offset factor for first change, move randomly forward by up to 1/8th
     firstOffset = (((firstOffset << 3) + mySystem.randGenerator().next() %
-                  (1 << 12)) >> 3) & ((1 << 12) - 1);
+                  (1U << 12U)) >> 3U) & ((1U << 12U) - 1U);
   }
 }

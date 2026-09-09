@@ -37,7 +37,7 @@ string Cartridge3EWidget::description()
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
   const auto* end = image.data() + image.size();
-  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8) |
+  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8U) |
                                              end[-4]) & ~uInt16{0xFFF};
 
   const string startupLine = myCart.startBank() < numRomBanks

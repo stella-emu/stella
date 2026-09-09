@@ -248,16 +248,16 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 #ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
-  switch(address & 0x1FFF)
+  switch(address & 0x1FFFU)
   {
     // invalid reads from write addresses
     case WRITE_TO_BUFFER:     // Write byte to Tx buffer
-      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      myTxBuffer[myTxPos++] = address & 0xffU; // TODO: value is undetermined
       break;
 
     case WRITE_SEND_BUFFER:   // Write byte to Tx buffer and send to backend
                               // (and receive into Rx buffer)
-      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      myTxBuffer[myTxPos++] = address & 0xffU; // TODO: value is undetermined
       send();
       break;
 
@@ -286,7 +286,7 @@ bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 #ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
-  switch(address & 0x1FFF)
+  switch(address & 0x1FFFU)
   {
     // valid writes
     case WRITE_TO_BUFFER:     // Write byte to Tx buffer

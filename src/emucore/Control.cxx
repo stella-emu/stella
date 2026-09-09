@@ -33,10 +33,10 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
-  return (static_cast<uInt8>(read(DigitalPin::One))   << 0) |
-         (static_cast<uInt8>(read(DigitalPin::Two))   << 1) |
-         (static_cast<uInt8>(read(DigitalPin::Three)) << 2) |
-         (static_cast<uInt8>(read(DigitalPin::Four))  << 3);
+  return (static_cast<uInt8>(read(DigitalPin::One))   << 0U) |
+         (static_cast<uInt8>(read(DigitalPin::Two))   << 1U) |
+         (static_cast<uInt8>(read(DigitalPin::Three)) << 2U) |
+         (static_cast<uInt8>(read(DigitalPin::Four))  << 3U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

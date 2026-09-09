@@ -259,7 +259,7 @@ bool FBMessageHandler::draw()
         break;
 
       case MessagePosition::TopCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1;
+        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
         myMsg.y = 5;
         break;
 
@@ -270,17 +270,17 @@ bool FBMessageHandler::draw()
 
       case MessagePosition::MiddleLeft:
         myMsg.x = 5;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1;
+        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1;
+        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
+        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleRight:
         myMsg.x = myFB.imageRect().w() - dst.w() - 5;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1;
+        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::BottomLeft:
@@ -289,7 +289,7 @@ bool FBMessageHandler::draw()
         break;
 
       case MessagePosition::BottomCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1;
+        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
         myMsg.y = myFB.imageRect().h() - dst.h() - 5;
         break;
 

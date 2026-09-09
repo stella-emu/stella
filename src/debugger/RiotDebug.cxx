@@ -159,7 +159,7 @@ uInt8 RiotDebug::inpt(int x)
   static constexpr std::array<TIARegister, 6> _inpt = {
     INPT0, INPT1, INPT2, INPT3, INPT4, INPT5
   };
-  return mySystem.peekOob(_inpt[x] | 0x40); // fix for 3E/3F bankswitching
+  return mySystem.peekOob(_inpt[x] | 0x40U); // fix for 3E/3F bankswitching
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,7 +274,7 @@ bool RiotDebug::diffP0(int newVal)
   if(newVal > -1)
     switches = Debugger::set_bit(switches, 6, newVal > 0);
 
-  return switches & 0x40;
+  return switches & 0x40U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,7 +284,7 @@ bool RiotDebug::diffP1(int newVal)
   if(newVal > -1)
     switches = Debugger::set_bit(switches, 7, newVal > 0);
 
-  return switches & 0x80;
+  return switches & 0x80U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,7 +294,7 @@ bool RiotDebug::tvType(int newVal)
   if(newVal > -1)
     switches = Debugger::set_bit(switches, 3, newVal > 0);
 
-  return switches & 0x08;
+  return switches & 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -304,7 +304,7 @@ bool RiotDebug::select(int newVal)
   if(newVal > -1)
     switches = Debugger::set_bit(switches, 1, newVal > 0);
 
-  return switches & 0x02;
+  return switches & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -314,7 +314,7 @@ bool RiotDebug::reset(int newVal)
   if(newVal > -1)
     switches = Debugger::set_bit(switches, 0, newVal > 0);
 
-  return switches & 0x01;
+  return switches & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -322,15 +322,15 @@ string RiotDebug::dirP0String()
 {
   const uInt8 reg = swcha();
 
-  if((reg & 0xf0) == 0xf0)
+  if((reg & 0xf0U) == 0xf0)
     return "(no directions) ";
 
   string result;
   result.reserve(24);
-  if (!(reg & 0x80)) result += "right ";
-  if (!(reg & 0x40)) result += "left ";
-  if (!(reg & 0x20)) result += "down ";
-  if (!(reg & 0x10)) result += "up ";
+  if (!(reg & 0x80U)) result += "right ";
+  if (!(reg & 0x40U)) result += "left ";
+  if (!(reg & 0x20U)) result += "down ";
+  if (!(reg & 0x10U)) result += "up ";
   return result;
 }
 
@@ -339,34 +339,34 @@ string RiotDebug::dirP1String()
 {
   const uInt8 reg = swcha();
 
-  if((reg & 0x0F) == 0x0F)
+  if((reg & 0x0FU) == 0x0F)
     return "(no directions) ";
 
   string result;
   result.reserve(24);
-  if (!(reg & 0x08)) result += "right ";
-  if (!(reg & 0x04)) result += "left ";
-  if (!(reg & 0x02)) result += "down ";
-  if (!(reg & 0x01)) result += "up ";
+  if (!(reg & 0x08U)) result += "right ";
+  if (!(reg & 0x04U)) result += "left ";
+  if (!(reg & 0x02U)) result += "down ";
+  if (!(reg & 0x01U)) result += "up ";
   return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view RiotDebug::diffP0String()
 {
-  return (swchb() & 0x40) ? "hard/A" : "easy/B";
+  return (swchb() & 0x40U) ? "hard/A" : "easy/B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view RiotDebug::diffP1String()
 {
-  return (swchb() & 0x80) ? "hard/A" : "easy/B";
+  return (swchb() & 0x80U) ? "hard/A" : "easy/B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view RiotDebug::tvTypeString()
 {
-  return (swchb() & 0x8) ? "Color" : "B&W";
+  return (swchb() & 0x8U) ? "Color" : "B&W";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -374,8 +374,8 @@ string RiotDebug::switchesString()
 {
   const auto reg = swchb();
   return std::format("{}select {}reset",
-    (reg & 0x2) ? "-" : "+",
-    (reg & 0x1) ? "-" : "+");
+    (reg & 0x2U) ? "-" : "+",
+    (reg & 0x1U) ? "-" : "+");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -418,8 +418,8 @@ string RiotDebug::toString()
     tvTypeString(), switchesString(),
     // Yes, the fire buttons are in the TIA, but we might as well
     // show them here for convenience.
-    dirP0String(), (mySystem.peekOob(0x03c) & 0x80) ? "" : "(button) ",
-    dirP1String(), (mySystem.peekOob(0x03d) & 0x80) ? "" : "(button) "
+    dirP0String(), (mySystem.peekOob(0x03c) & 0x80U) ? "" : "(button) ",
+    dirP1String(), (mySystem.peekOob(0x03d) & 0x80U) ? "" : "(button) "
   );
 
   return buf;

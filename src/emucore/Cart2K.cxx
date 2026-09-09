@@ -33,7 +33,7 @@ Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
   auto newSize = 1UZ; myBankShift = 0;
   while(newSize < size)
   {
-    newSize <<= 1;
+    newSize <<= 1U;
     myBankShift++;
   }
 

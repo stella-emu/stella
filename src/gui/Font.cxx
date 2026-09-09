@@ -78,9 +78,9 @@ GlyphSet::GlyphSet(const FontDesc& desc)
       {
         const uInt16 word = bits[(y * words) + (x >> 4)];
 
-        if(word & (0x8000 >> (x & 15)))
+        if(word & (0x8000U >> (x & 15)))
           myMask[base + (static_cast<size_t>(y) * stride) + (x >> 3)] |=
-              0x80 >> (x & 7);
+              0x80U >> (x & 7);
       }
   }
 }

@@ -111,7 +111,7 @@ class CartridgeEnhanced : public Cartridge
       @return  true, if code execution is allowed
     */
     bool canExecute(uInt16 PC) const override {
-      return !(PC & 0x1000) || (PC & ROM_MASK) >= myRomOffset || executableCartRam();
+      return !(PC & 0x1000U) || (PC & ROM_MASK) >= myRomOffset || executableCartRam();
     }
 
     /**

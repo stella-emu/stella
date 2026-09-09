@@ -116,7 +116,7 @@ bool CartridgeDevCard::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDevCard::bankOrigin(uInt16 /*bank*/, uInt16 PC) const
 {
-  const uInt32 win = (static_cast<uInt32>(PC >> 12) - 5U) / 2U;
+  const uInt32 win = (static_cast<uInt32>(PC >> 12U) - 5U) / 2U;
   return win < NUM_WINDOWS ? WINDOWS[win] : WINDOWS[0];
 }
 #endif

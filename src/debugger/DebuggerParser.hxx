@@ -69,7 +69,7 @@ class DebuggerParser
 
     /** Prefix msg with the PromptWidget color-red control byte */
     static string red(string_view msg = {}) {
-      return static_cast<char>(kDbgColorRed & 0xff) + string{msg};
+      return static_cast<char>(kDbgColorRed & 0xffU) + string{msg};
     }
     /** Prefix msg with the PromptWidget inverse-video control byte (ASCII DEL, 0x7f) */
     static string inverse(string_view msg = {}) {

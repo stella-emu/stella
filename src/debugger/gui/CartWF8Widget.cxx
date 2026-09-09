@@ -33,7 +33,7 @@ string CartridgeWF8Widget::description()
 {
   const auto image = myCart.getImage();
   const auto* end = image.data() + image.size();
-  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8) | end[-4]) & ~uInt16{0xFFF};
+  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8U) | end[-4]) & ~uInt16{0xFFF};
 
   return std::format(
     "Coleco (some white carts) 8K cartridge, two 4K banks\n"

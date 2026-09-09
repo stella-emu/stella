@@ -66,19 +66,19 @@ bool Cartridge03E0::checkSwitchBank(uInt16 address, uInt8)
 {
   bool switched = false;
 
-  if((address & 0x10) == 0)
+  if((address & 0x10U) == 0)
   {
-    bank(address & 0x0007, 0);
+    bank(address & 0x0007U, 0);
     switched = true;
   }
-  if((address & 0x20) == 0)
+  if((address & 0x20U) == 0)
   {
-    bank(address & 0x0007, 1);
+    bank(address & 0x0007U, 1);
     switched = true;
   }
-  if((address & 0x40) == 0)
+  if((address & 0x40U) == 0)
   {
-    bank(address & 0x0007, 2);
+    bank(address & 0x0007U, 2);
     switched = true;
   }
   return switched;
@@ -91,7 +91,7 @@ uInt8 Cartridge03E0::peek(uInt16 address)
 
   // Because of the way we've set up accessing above, we can only
   // get here when the addresses are from 0x380 - 0x3FF
-  const int hotspot = ((address & 0x40) >> 6);
+  const int hotspot = ((address & 0x40U) >> 6);
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -100,11 +100,11 @@ bool Cartridge03E0::poke(uInt16 address, uInt8 value)
 {
   // Because of the way accessing is set up, we will may get here by
   // doing a write to 0x380 - 0x3FF or cart; we ignore the cart write
-  if(!(address & 0x1000))
+  if(!(address & 0x1000U))
   {
     checkSwitchBank(address, 0);
 
-    const int hotspot = ((address & 0x40) >> 6);
+    const int hotspot = ((address & 0x40U) >> 6);
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

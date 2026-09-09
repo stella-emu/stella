@@ -838,9 +838,9 @@ const FBSurface& FBBackendSDL::compositedSurface()
     auto* pixels = static_cast<uInt32*>(sdlSurface->pixels);
 
     const auto applyGamma = [rShift, gShift, bShift, aMask_](uInt32 px) -> uInt32 {
-      const uInt8 r = gammaLUT[(px >> rShift) & 0xFF];
-      const uInt8 g = gammaLUT[(px >> gShift) & 0xFF];
-      const uInt8 b = gammaLUT[(px >> bShift) & 0xFF];
+      const uInt8 r = gammaLUT[(px >> rShift) & 0xFFU];
+      const uInt8 g = gammaLUT[(px >> gShift) & 0xFFU];
+      const uInt8 b = gammaLUT[(px >> bShift) & 0xFFU];
       return aMask_ | (r << rShift) | (g << gShift) | (b << bShift);
     };
 

@@ -286,16 +286,16 @@ class Debugger : public DialogContainer
     static constexpr uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return static_cast<uInt8>(input | (1 << bit));
+        return static_cast<uInt8>(input | (1U << bit));
       else
-        return static_cast<uInt8>(input & ~(1 << bit));
+        return static_cast<uInt8>(input & ~(1U << bit));
     }
     static constexpr void set_bits(uInt8 reg, BoolArray& bits)
     {
       bits.clear();
       for(int i = 0; i < 8; ++i)
       {
-        if(reg & (1<<(7-i)))
+        if(reg & (1U<<(7-i)))
           bits.push_back(true);
         else
           bits.push_back(false);
@@ -306,7 +306,7 @@ class Debugger : public DialogContainer
       uInt8 result = 0x0;
       for(int i = 0; i < 8; ++i)
         if(bits[i])
-          result |= (1<<(7-i));
+          result |= (1U<<(7-i));
       return result;
     }
 

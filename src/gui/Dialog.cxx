@@ -311,8 +311,8 @@ void Dialog::positionAt(uInt32 pos)
   const Common::Size& screen = instance().frameBuffer().screenSize();
   const Common::Rect& dst = _surface->dstRect();
   // shift stacked dialogs
-  const Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
-  const Int32 vgap = (screen.w >> 6) * _layer + screen.h * overscan;
+  const Int32 hgap = (screen.w >> 6U) * _layer + screen.w * overscan;
+  const Int32 vgap = (screen.w >> 6U) * _layer + screen.h * overscan;
   const int top = std::min(std::max(0, static_cast<Int32>(screen.h - dst.h())), vgap);
   const int btm = std::max(0, static_cast<Int32>(screen.h - dst.h() - vgap));
   const int left = std::min(std::max(0, static_cast<Int32>(screen.w - dst.w())), hgap);

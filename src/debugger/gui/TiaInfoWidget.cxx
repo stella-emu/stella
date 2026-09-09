@@ -292,8 +292,8 @@ void TiaInfoWidget::loadConfig()
   myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::Fmt::_10_5),
                          tia.frameCycles() != oldTia.info[1]);
 
-  const uInt64 total = tia.cyclesLo() + (static_cast<uInt64>(tia.cyclesHi()) << 32);
-  const uInt64 totalOld = oldTia.info[2] + (static_cast<uInt64>(oldTia.info[3]) << 32);
+  const uInt64 total = tia.cyclesLo() + (static_cast<uInt64>(tia.cyclesHi()) << 32U);
+  const uInt64 totalOld = oldTia.info[2] + (static_cast<uInt64>(oldTia.info[3]) << 32U);
   myTotalCycles->setText(Common::Base::toString(static_cast<uInt32>(total) / 1000000,
                          Common::Base::Fmt::_10_6) + "e6",
                          total / 1000000 != totalOld / 1000000);

@@ -105,7 +105,7 @@ class AbstractFrameManager : public Serializable
       color loss emulation.
      */
     bool scanlineParityChanged() const {
-      return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
+      return (myPreviousFrameFinalLines & 1U) != (myCurrentFrameFinalLines & 1U);
     }
 
     /**

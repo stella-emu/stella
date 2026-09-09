@@ -325,10 +325,10 @@ class Thumbulator
       ROMSIZE = ROMADDMASK + 1,  // 512KB
       RAMSIZE = RAMADDMASK + 1,  // 32KB
 
-      CPSR_N = 1U << 31,
-      CPSR_Z = 1U << 30,
-      CPSR_C = 1U << 29,
-      CPSR_V = 1U << 28;
+      CPSR_N = 1U << 31U,
+      CPSR_Z = 1U << 30U,
+      CPSR_C = 1U << 29U,
+      CPSR_V = 1U << 28U;
 
   private:
     // Following constructors and assignment operators not supported

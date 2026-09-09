@@ -351,7 +351,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
   constexpr float PB = .1140F;
   // Generate adjust table
   constexpr int ADJUST_SIZE = 256;
-  constexpr int RGB_UNIT = 1 << 8;
+  constexpr int RGB_UNIT = 1U << 8U;
   constexpr float RGB_OFFSET = 0.5F;
   const float hue = myHue;
   const float brightness = myBrightness * (0.5F * RGB_UNIT) + RGB_OFFSET;
@@ -373,9 +373,9 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
   for(auto i = 0UZ; i < destPalette.size(); i += 2)
   {
     const uInt32 pixel = palette[i];
-    int r = (pixel >> 16) & 0xff;
-    int g = (pixel >> 8)  & 0xff;
-    int b = (pixel >> 0)  & 0xff;
+    int r = (pixel >> 16U) & 0xffU;
+    int g = (pixel >> 8U)  & 0xffU;
+    int b = (pixel >> 0U)  & 0xffU;
 
     // Adjust hue (different for NTSC and PAL?) and saturation
     adjustHueSaturation(r, g, b, su, sw);
@@ -396,7 +396,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     // Used for PAL color-loss data and 'greying out' the frame in the debugger.
     const auto lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
 
-    destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
+    destPalette[i + 1] = (lum << 16U) + (lum << 8U) + lum;
   }
   return destPalette;
 }

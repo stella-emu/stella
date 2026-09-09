@@ -54,7 +54,7 @@ void Ball::enabl(uInt8 value)
 {
   const auto enabledNewOldValue = myIsEnabledNew;
 
-  myIsEnabledNew = (value & 0x02) > 0;
+  myIsEnabledNew = (value & 0x02U) > 0;
 
   if (myIsEnabledNew != enabledNewOldValue && !myIsDelaying) {
     // Without VDEL the new ENABL value is what's actually rendered — flush
@@ -70,7 +70,7 @@ void Ball::enabl(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::hmbl(uInt8 value)
 {
-  myHmmClocks = (value >> 4) ^ 0x08;
+  myHmmClocks = (value >> 4U) ^ 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,7 +90,7 @@ void Ball::ctrlpf(uInt8 value)
 {
   static constexpr std::array<uInt8, 4> ourWidths = { 1, 2, 4, 8 };
 
-  const uInt8 newWidth = ourWidths[(value & 0x30) >> 4];
+  const uInt8 newWidth = ourWidths[(value & 0x30U) >> 4];
 
   if (newWidth != myWidth) {
     // CTRLPF ball width determines how many clocks the signal stays active
@@ -105,7 +105,7 @@ void Ball::vdelbl(uInt8 value)
 {
   const auto oldIsDelaying = myIsDelaying;
 
-  myIsDelaying = (value & 0x01) > 0;
+  myIsDelaying = (value & 0x01U) > 0;
 
   if (oldIsDelaying != myIsDelaying) {
     // VDELBL flip switches between myIsEnabledOld and myIsEnabledNew as
@@ -118,7 +118,7 @@ void Ball::vdelbl(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,8 +237,8 @@ void Ball::applyColors()
 {
   if (!myDebugEnabled)
   {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01U;
+    else                          myObjectColor &= 0xfeU;
     myColor = myObjectColor;
   }
   else

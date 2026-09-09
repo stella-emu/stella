@@ -24,7 +24,7 @@
 constexpr BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionYield(
   uInt16 address, uInt64 timestamp, uInt16 mask)
 {
-  address &= 0x1fff;
+  address &= 0x1fffU;
   return {.address = address, .mask = mask, .value = 0, .timestamp = timestamp, .yield = true};
 }
 
@@ -32,7 +32,7 @@ constexpr BusTransactionQueue::Transaction BusTransactionQueue::Transaction::tra
 constexpr BusTransactionQueue::Transaction BusTransactionQueue::Transaction::transactionDrive(
   uInt16 address, uInt8 value, uInt64 timestamp)
 {
-  address &= 0x1fff;
+  address &= 0x1fffU;
   return {.address = address, .mask = 0xffff, .value = value, .timestamp = timestamp, .yield = false};
 }
 
@@ -195,7 +195,7 @@ BusTransactionQueue::Transaction* BusTransactionQueue::getNextTransaction(uInt16
 
   Transaction* nextTransaction = &myQueue[myQueueNext];
   if (
-    nextTransaction->address != (address & 0x1fff & nextTransaction->mask) ||
+    nextTransaction->address != (address & 0x1fffU & nextTransaction->mask) ||
     nextTransaction->timestamp > timestamp
   ) return nullptr;
 

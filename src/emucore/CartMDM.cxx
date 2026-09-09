@@ -52,9 +52,9 @@ void CartridgeMDM::install(System& system)
 bool CartridgeMDM::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if((address & 0x1C00) == 0x0800)
+  if((address & 0x1C00U) == 0x0800)
   {
-    bank(address & 0x0FF);
+    bank(address & 0x0FFU);
     return true;
   }
   return false;
@@ -68,7 +68,7 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 
   checkSwitchBank(address, 0);
 
-  const int hotspot = ((address & 0x0F00) >> 8) - 8;
+  const int hotspot = ((address & 0x0F00U) >> 8) - 8;
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -77,11 +77,11 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
 {
   // All possible addresses can appear here, but we only care
   // about those below $1000
-  if(!(address & 0x1000))
+  if(!(address & 0x1000U))
   {
     checkSwitchBank(address, 0);
 
-    const int hotspot = ((address & 0x0F00) >> 8) - 8;
+    const int hotspot = ((address & 0x0F00U) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

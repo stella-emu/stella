@@ -115,17 +115,17 @@ class ElfLinker {
 
     static constexpr uInt32 read32(const uInt8* address) {
       uInt32 value = *(address++);
-      value |= *(address++) << 8;
-      value |= *(address++) << 16;
-      value |= *(address++) << 24;
+      value |= *(address++) << 8U;
+      value |= *(address++) << 16U;
+      value |= *(address++) << 24U;
 
       return value;
     }
     static constexpr void write32(uInt8* address, uInt32 value) {
       *(address++) = value;
-      *(address++) = value >> 8;
-      *(address++) = value >> 16;
-      *(address++) = value >> 24;
+      *(address++) = value >> 8U;
+      *(address++) = value >> 16U;
+      *(address++) = value >> 24U;
     }
 
   private:

@@ -427,7 +427,7 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   const uInt32 rport = readPort(start);
-  int page = rport & 0xf0;
+  int page = rport & 0xf0U;
   string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
 
   label[2] = label[3] = 'x';

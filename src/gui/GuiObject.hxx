@@ -43,17 +43,17 @@ using WidgetList = vector<unique_ptr<Widget>>;
 // specialization declared after the closing brace.
 enum class GuiObjectFlag: uInt16 {
   None         = 0,
-  Enabled      = 1 << 0,
-  Invisible    = 1 << 1,
-  Hilited      = 1 << 2,
-  Border       = 1 << 3,
-  ClearBG      = 1 << 4,
-  TrackMouse   = 1 << 5,
-  RetainFocus  = 1 << 6,
-  WantsTab     = 1 << 7,
-  WantsRawData = 1 << 8,
-  NoBG         = 1 << 9,
-  MouseFocus   = 1 << 10
+  Enabled      = Bitmask::bit<GuiObjectFlag>(0),
+  Invisible    = Bitmask::bit<GuiObjectFlag>(1),
+  Hilited      = Bitmask::bit<GuiObjectFlag>(2),
+  Border       = Bitmask::bit<GuiObjectFlag>(3),
+  ClearBG      = Bitmask::bit<GuiObjectFlag>(4),
+  TrackMouse   = Bitmask::bit<GuiObjectFlag>(5),
+  RetainFocus  = Bitmask::bit<GuiObjectFlag>(6),
+  WantsTab     = Bitmask::bit<GuiObjectFlag>(7),
+  WantsRawData = Bitmask::bit<GuiObjectFlag>(8),
+  NoBG         = Bitmask::bit<GuiObjectFlag>(9),
+  MouseFocus   = Bitmask::bit<GuiObjectFlag>(10),
 };
 template<> inline constexpr bool Bitmask::is_enum_v<GuiObjectFlag> = true;
 

@@ -142,7 +142,7 @@ bool TIADebug::vdelP0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(VDELP0, static_cast<bool>(newVal));
 
-  return myTIA.registerValue(VDELP0) & 0x01;
+  return myTIA.registerValue(VDELP0) & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,7 +151,7 @@ bool TIADebug::vdelP1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(VDELP1, static_cast<bool>(newVal));
 
-  return myTIA.registerValue(VDELP1) & 0x01;
+  return myTIA.registerValue(VDELP1) & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,70 +160,70 @@ bool TIADebug::vdelBL(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(VDELBL, static_cast<bool>(newVal));
 
-  return myTIA.registerValue(VDELBL) & 0x01;
+  return myTIA.registerValue(VDELBL) & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(ENAM0, static_cast<bool>(newVal) << 1);
+    mySystem.pokeOob(ENAM0, static_cast<bool>(newVal) << 1U);
 
-  return myTIA.registerValue(ENAM0) & 0x02;
+  return myTIA.registerValue(ENAM0) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM1(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(ENAM1, static_cast<bool>(newVal) << 1);
+    mySystem.pokeOob(ENAM1, static_cast<bool>(newVal) << 1U);
 
-  return myTIA.registerValue(ENAM1) & 0x02;
+  return myTIA.registerValue(ENAM1) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(ENABL, static_cast<bool>(newVal) << 1);
+    mySystem.pokeOob(ENABL, static_cast<bool>(newVal) << 1U);
 
-  return myTIA.registerValue(ENABL) & 0x02;
+  return myTIA.registerValue(ENABL) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(RESMP0, static_cast<bool>(newVal) << 1);
+    mySystem.pokeOob(RESMP0, static_cast<bool>(newVal) << 1U);
 
-  return myTIA.registerValue(RESMP0) & 0x02;
+  return myTIA.registerValue(RESMP0) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(RESMP1, static_cast<bool>(newVal) << 1);
+    mySystem.pokeOob(RESMP1, static_cast<bool>(newVal) << 1U);
 
-  return myTIA.registerValue(RESMP1) & 0x02;
+  return myTIA.registerValue(RESMP1) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(REFP0, static_cast<bool>(newVal) << 3);
+    mySystem.pokeOob(REFP0, static_cast<bool>(newVal) << 3U);
 
-  return myTIA.registerValue(REFP0) & 0x08;
+  return myTIA.registerValue(REFP0) & 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(REFP1, static_cast<bool>(newVal) << 3);
+    mySystem.pokeOob(REFP1, static_cast<bool>(newVal) << 3U);
 
-  return myTIA.registerValue(REFP1) & 0x08;
+  return myTIA.registerValue(REFP1) & 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,11 +235,11 @@ bool TIADebug::refPF(int newVal)
     if(newVal)
       tmp |= 0x01;
     else
-      tmp &= ~0x01;
+      tmp &= ~0x01U;
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
-  return myTIA.registerValue(CTRLPF) & 0x01;
+  return myTIA.registerValue(CTRLPF) & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -251,11 +251,11 @@ bool TIADebug::scorePF(int newVal)
     if(newVal)
       tmp |= 0x02;
     else
-      tmp &= ~0x02;
+      tmp &= ~0x02U;
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
-  return myTIA.registerValue(CTRLPF) & 0x02;
+  return myTIA.registerValue(CTRLPF) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -267,11 +267,11 @@ bool TIADebug::priorityPF(int newVal)
     if(newVal)
       tmp |= 0x04;
     else
-      tmp &= ~0x04;
+      tmp &= ~0x04U;
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
-  return myTIA.registerValue(CTRLPF) & 0x04;
+  return myTIA.registerValue(CTRLPF) & 0x04U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,76 +282,76 @@ bool TIADebug::collision(CollisionBit id, bool toggle) const
     case CollisionBit::M0P1:
       if(toggle)
         myTIA.toggleCollP1M0();
-      return myTIA.collCXM0P()  & 0x80;
+      return myTIA.collCXM0P()  & 0x80U;
 
     case CollisionBit::M0P0:
       if(toggle)
         myTIA.toggleCollP0M0();
-      return myTIA.collCXM0P()  & 0x40;
+      return myTIA.collCXM0P()  & 0x40U;
 
     case CollisionBit::M1P0:
       if(toggle)
         myTIA.toggleCollP0M1();
-      return myTIA.collCXM1P()  & 0x80;
+      return myTIA.collCXM1P()  & 0x80U;
 
     case CollisionBit::M1P1:
       if(toggle)
         myTIA.toggleCollP1M1();
-      return myTIA.collCXM1P()  & 0x40;
+      return myTIA.collCXM1P()  & 0x40U;
 
     case CollisionBit::P0PF:
       if(toggle)
         myTIA.toggleCollP0PF();
-      return myTIA.collCXP0FB() & 0x80;
+      return myTIA.collCXP0FB() & 0x80U;
     case CollisionBit::P0BL:
       if(toggle)
         myTIA.toggleCollP0BL();
-      return myTIA.collCXP0FB() & 0x40;
+      return myTIA.collCXP0FB() & 0x40U;
 
     case CollisionBit::P1PF:
       if(toggle)
         myTIA.toggleCollP1PF();
-      return myTIA.collCXP1FB() & 0x80;
+      return myTIA.collCXP1FB() & 0x80U;
 
     case CollisionBit::P1BL:
       if(toggle)
         myTIA.toggleCollP1BL();
-      return myTIA.collCXP1FB() & 0x40;
+      return myTIA.collCXP1FB() & 0x40U;
 
     case CollisionBit::M0PF:
       if(toggle)
         myTIA.toggleCollM0PF();
-      return myTIA.collCXM0FB() & 0x80;
+      return myTIA.collCXM0FB() & 0x80U;
 
     case CollisionBit::M0BL:
       if(toggle)
         myTIA.toggleCollM0BL();
-      return myTIA.collCXM0FB() & 0x40;
+      return myTIA.collCXM0FB() & 0x40U;
 
     case CollisionBit::M1PF:
       if(toggle)
         myTIA.toggleCollM1PF();
-      return myTIA.collCXM1FB() & 0x80;
+      return myTIA.collCXM1FB() & 0x80U;
 
     case CollisionBit::M1BL:
       if(toggle)
         myTIA.toggleCollM1BL();
-      return myTIA.collCXM1FB() & 0x40;
+      return myTIA.collCXM1FB() & 0x40U;
 
     case CollisionBit::BLPF:
       if(toggle)
         myTIA.toggleCollBLPF();
-      return myTIA.collCXBLPF() & 0x80;
+      return myTIA.collCXBLPF() & 0x80U;
 
     case CollisionBit::P0P1:
       if(toggle)
         myTIA.toggleCollP0P1();
-      return myTIA.collCXPPMM() & 0x80;
+      return myTIA.collCXPPMM() & 0x80U;
 
     case CollisionBit::M0M1:
       if(toggle)
         myTIA.toggleCollM0M1();
-      return myTIA.collCXPPMM() & 0x40;
+      return myTIA.collCXPPMM() & 0x40U;
 
     default:
       return false;  // Not supposed to get here
@@ -364,7 +364,7 @@ uInt8 TIADebug::audC0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDC0, newVal);
 
-  return myTIA.registerValue(AUDC0) & 0x0f;
+  return myTIA.registerValue(AUDC0) & 0x0fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -373,7 +373,7 @@ uInt8 TIADebug::audC1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDC1, newVal);
 
-  return myTIA.registerValue(AUDC1) & 0x0f;
+  return myTIA.registerValue(AUDC1) & 0x0fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -382,7 +382,7 @@ uInt8 TIADebug::audV0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDV0, newVal);
 
-  return myTIA.registerValue(AUDV0) & 0x0f;
+  return myTIA.registerValue(AUDV0) & 0x0fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -391,7 +391,7 @@ uInt8 TIADebug::audV1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDV1, newVal);
 
-  return myTIA.registerValue(AUDV1) & 0x0f;
+  return myTIA.registerValue(AUDV1) & 0x0fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,7 +400,7 @@ uInt8 TIADebug::audF0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDF0, newVal);
 
-  return myTIA.registerValue(AUDF0) & 0x1f;
+  return myTIA.registerValue(AUDF0) & 0x1fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,7 +409,7 @@ uInt8 TIADebug::audF1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(AUDF1, newVal);
 
-  return myTIA.registerValue(AUDF1) & 0x1f;
+  return myTIA.registerValue(AUDF1) & 0x1fU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -418,7 +418,7 @@ uInt8 TIADebug::pf0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(PF0, newVal << 4);
 
-  return myTIA.registerValue(PF0) >> 4;
+  return myTIA.registerValue(PF0) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -498,12 +498,12 @@ uInt8 TIADebug::nusizP0(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x07;
+    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x07U;
     tmp |= (newVal & 0x07);
     mySystem.pokeOob(NUSIZ0, tmp);
   }
 
-  return myTIA.registerValue(NUSIZ0) & 0x07;
+  return myTIA.registerValue(NUSIZ0) & 0x07U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -511,12 +511,12 @@ uInt8 TIADebug::nusizP1(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x07;
+    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x07U;
     tmp |= newVal & 0x07;
     mySystem.pokeOob(NUSIZ1, tmp);
   }
 
-  return myTIA.registerValue(NUSIZ1) & 0x07;
+  return myTIA.registerValue(NUSIZ1) & 0x07U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -524,12 +524,12 @@ uInt8 TIADebug::nusizM0(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x30U;
     tmp |= (newVal & 0x04) << 4;
     mySystem.pokeOob(NUSIZ0, tmp);
   }
 
-  return (myTIA.registerValue(NUSIZ0) & 0x30) >> 4;
+  return (myTIA.registerValue(NUSIZ0) & 0x30U) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -537,12 +537,12 @@ uInt8 TIADebug::nusizM1(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x30U;
     tmp |= (newVal & 0x04) << 4;
     mySystem.pokeOob(NUSIZ1, tmp);
   }
 
-  return (myTIA.registerValue(NUSIZ1) & 0x30) >> 4;
+  return (myTIA.registerValue(NUSIZ1) & 0x30U) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -622,12 +622,12 @@ uInt8 TIADebug::sizeBL(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.registerValue(CTRLPF) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(CTRLPF) & ~0x30U;
     tmp |= (newVal & 0x04) << 4;
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
-  return (myTIA.registerValue(CTRLPF) & 0x30) >> 4;
+  return (myTIA.registerValue(CTRLPF) & 0x30U) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -636,7 +636,7 @@ uInt8 TIADebug::hmP0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(HMP0, newVal << 4);
 
-  return myTIA.registerValue(HMP0) >> 4;
+  return myTIA.registerValue(HMP0) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -645,7 +645,7 @@ uInt8 TIADebug::hmP1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(HMP1, newVal << 4);
 
-  return myTIA.registerValue(HMP1) >> 4;
+  return myTIA.registerValue(HMP1) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,7 +654,7 @@ uInt8 TIADebug::hmM0(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(HMM0, newVal << 4);
 
-  return myTIA.registerValue(HMM0) >> 4;
+  return myTIA.registerValue(HMM0) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -663,7 +663,7 @@ uInt8 TIADebug::hmM1(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(HMM1, newVal << 4);
 
-  return myTIA.registerValue(HMM1) >> 4;
+  return myTIA.registerValue(HMM1) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -672,7 +672,7 @@ uInt8 TIADebug::hmBL(int newVal)
   if(newVal > -1)
     mySystem.pokeOob(HMBL, newVal << 4);
 
-  return myTIA.registerValue(HMBL) >> 4;
+  return myTIA.registerValue(HMBL) >> 4U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -780,7 +780,7 @@ int TIADebug::cyclesLo() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesHi() const
 {
-  return static_cast<int>(mySystem.cycles() >> 32);
+  return static_cast<int>(mySystem.cycles() >> 32U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -813,13 +813,13 @@ bool TIADebug::vsync(int newVal)
   if (newVal > -1)
     mySystem.pokeOob(VSYNC, newVal);
 
-  return myTIA.registerValue(VSYNC) & 0x02;
+  return myTIA.registerValue(VSYNC) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
-  return myTIA.registerValue(VSYNC) & 0x02;
+  return myTIA.registerValue(VSYNC) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -828,13 +828,13 @@ bool TIADebug::vblank(int newVal)
   if (newVal > -1)
     mySystem.pokeOob(VBLANK, newVal);
 
-  return myTIA.registerValue(VBLANK) & 0x02;
+  return myTIA.registerValue(VBLANK) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vblank() const
 {
-  return myTIA.registerValue(VBLANK) & 0x02;
+  return myTIA.registerValue(VBLANK) & 0x02U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -848,7 +848,7 @@ string TIADebug::colorSwatch(uInt8 c)
 {
   string ret;
 
-  ret += static_cast<char>((c >> 1) | 0x80);
+  ret += static_cast<char>((c >> 1U) | 0x80);
   ret += "\177     ";
   ret += "\177\001 ";
 
@@ -886,8 +886,8 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 string TIADebug::stringOnly(string_view value, bool changed)
 {
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + string{value} +
-           static_cast<char>(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xffU) + string{value} +
+           static_cast<char>(kTextColor & 0xffU);
 
   return string{value};
 }
@@ -905,8 +905,8 @@ string TIADebug::decWithLabel(string_view label, uInt16 value,
   result += std::format("#{:<{}}", value, width);
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + result +
-           static_cast<char>(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xffU) + result +
+           static_cast<char>(kTextColor & 0xffU);
 
   return result;
 }
@@ -926,8 +926,8 @@ string TIADebug::hexWithLabel(string_view label, uInt16 value,
     : std::format("${}", Base::hex2(value));
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + result +
-           static_cast<char>(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xffU) + result +
+           static_cast<char>(kTextColor & 0xffU);
 
   return result;
 }
@@ -945,8 +945,8 @@ string TIADebug::binWithLabel(string_view label, uInt16 value, bool changed)
   result += Common::Base::toString(value, Common::Base::Fmt::_2_8);
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + result +
-           static_cast<char>(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xffU) + result +
+           static_cast<char>(kTextColor & 0xffU);
 
   return result;
 }
@@ -966,8 +966,8 @@ string TIADebug::boolWithLabel(string_view label, bool value, bool changed)
     result += label;
 
   if(changed)
-    return static_cast<char>(kDbgColorRed & 0xff) + result +
-           static_cast<char>(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xffU) + result +
+           static_cast<char>(kTextColor & 0xffU);
 
   return result;
 }
@@ -1175,18 +1175,18 @@ string TIADebug::toString()
       << boolWithLabel("score",    scorePF(),    state.pf[4] != oldState.pf[4]) << " "
       << boolWithLabel("priority", priorityPF(), state.pf[5] != oldState.pf[5])
       << '\n'
-      << boolWithLabel("inpt0", myTIA.peek(0x08) & 0x80,
-                        (riotState.INPT0 & 0x80) != (oldRiotState.INPT0 & 0x80)) << " "
-      << boolWithLabel("inpt1", myTIA.peek(0x09) & 0x80,
-                        (riotState.INPT1 & 0x80) != (oldRiotState.INPT1 & 0x80)) << " "
-      << boolWithLabel("inpt2", myTIA.peek(0x0a) & 0x80,
-                        (riotState.INPT2 & 0x80) != (oldRiotState.INPT2 & 0x80)) << " "
-      << boolWithLabel("inpt3", myTIA.peek(0x0b) & 0x80,
-                        (riotState.INPT3 & 0x80) != (oldRiotState.INPT3 & 0x80)) << " "
-      << boolWithLabel("inpt4", myTIA.peek(0x0c) & 0x80,
-                        (riotState.INPT4 & 0x80) != (oldRiotState.INPT4 & 0x80)) << " "
-      << boolWithLabel("inpt5", myTIA.peek(0x0d) & 0x80,
-                        (riotState.INPT5 & 0x80) != (oldRiotState.INPT5 & 0x80)) << " "
+      << boolWithLabel("inpt0", myTIA.peek(0x08) & 0x80U,
+                        (riotState.INPT0 & 0x80U) != (oldRiotState.INPT0 & 0x80U)) << " "
+      << boolWithLabel("inpt1", myTIA.peek(0x09) & 0x80U,
+                        (riotState.INPT1 & 0x80U) != (oldRiotState.INPT1 & 0x80U)) << " "
+      << boolWithLabel("inpt2", myTIA.peek(0x0a) & 0x80U,
+                        (riotState.INPT2 & 0x80U) != (oldRiotState.INPT2 & 0x80U)) << " "
+      << boolWithLabel("inpt3", myTIA.peek(0x0b) & 0x80U,
+                        (riotState.INPT3 & 0x80U) != (oldRiotState.INPT3 & 0x80U)) << " "
+      << boolWithLabel("inpt4", myTIA.peek(0x0c) & 0x80U,
+                        (riotState.INPT4 & 0x80U) != (oldRiotState.INPT4 & 0x80U)) << " "
+      << boolWithLabel("inpt5", myTIA.peek(0x0d) & 0x80U,
+                        (riotState.INPT5 & 0x80U) != (oldRiotState.INPT5 & 0x80U)) << " "
       << boolWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped(),
                         riotState.INPTDump != oldRiotState.INPTDump)
       << '\n'

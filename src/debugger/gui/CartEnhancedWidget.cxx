@@ -108,7 +108,7 @@ string CartridgeEnhancedWidget::romDescription()
     for(int bank = 0, offset = 0xFFC; std::cmp_less(bank, myCart.romBankCount());
         ++bank, offset += 0x1000)
     {
-      const uInt16 start = (((static_cast<uInt16>(image[offset + 1]) << 8) | image[offset]) / 0x1000) * 0x1000;
+      const uInt16 start = (((static_cast<uInt16>(image[offset + 1]) << 8U) | image[offset]) / 0x1000) * 0x1000;
       const string_view hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
       info += std::format("Bank {}{} @ ${} - ${}",
         hash, bank, Base::hex4(start + myCart.myRomOffset), Base::hex4(start + 0xFFF));
@@ -126,7 +126,7 @@ string CartridgeEnhancedWidget::romDescription()
   else
   {
     const auto* end = image.data() + image.size();
-    uInt16 start = (((static_cast<uInt16>(end[-3]) << 8) | end[-4]) / 0x1000) * 0x1000;
+    uInt16 start = (((static_cast<uInt16>(end[-3]) << 8U) | end[-4]) / 0x1000) * 0x1000;
     const uInt16 last = start + static_cast<uInt16>(image.size()) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < image.size())
@@ -291,7 +291,7 @@ string CartridgeEnhancedWidget::bankState()
 string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
   uInt16 hotspot = myCart.hotspot();
-  if(hotspot & 0x1000)
+  if(hotspot & 0x1000U)
     hotspot |= ADDR_BASE;
   return std::format("({}${})",
     prefix ? "hotspot " : "",
@@ -392,7 +392,7 @@ string CartridgeEnhancedWidget::internalRamDescription()
 
   if(myCart.ramBankCount())
   {
-    const int halfBank = myCart.bankSize() >> 1;
+    const int halfBank = myCart.bankSize() >> 1U;
     desc = halfBank >= 1024
       ? std::format("Accessible {}K at a time via:\n", halfBank / 1024)
       : std::format("Accessible {} bytes at a time via:\n", halfBank);

@@ -132,10 +132,10 @@ class AtariNTSC
       kernel_half = 16,
       kernel_size = kernel_half * 2 + 1,
 
-      rgb_builder = ((1 << 21) | (1 << 11) | (1 << 1)),
+      rgb_builder = ((1U << 21U) | (1U << 11U) | (1U << 1U)),
       rgb_kernel_size = burst_size / alignment_count,
       rgb_bits = 8,
-      rgb_unit = (1 << rgb_bits),
+      rgb_unit = (1U << rgb_bits),
       rgb_bias = rgb_unit * 2 * rgb_builder,
 
       std_decoder_hue = 0,

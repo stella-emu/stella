@@ -149,18 +149,18 @@ uInt8 ElfParser::read8(uInt32 offset) const
 uInt16 ElfParser::read16(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 8) | read8(offset + 1))
-    : ((read8(offset + 1) << 8) | read8(offset));
+    ? ((read8(offset) << 8U) | read8(offset + 1))
+    : ((read8(offset + 1) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
-      (read8(offset + 2) << 8) | read8(offset + 3))
-    : ((read8(offset + 3) << 24) | (read8(offset + 2) << 16) |
-      (read8(offset + 1) << 8) | read8(offset));
+    ? ((read8(offset) << 24U) | (read8(offset + 1) << 16U) |
+      (read8(offset + 2) << 8U) | read8(offset + 3))
+    : ((read8(offset + 3) << 24U) | (read8(offset + 2) << 16U) |
+      (read8(offset + 1) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -217,8 +217,8 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
   )
     ElfParseError::raise("symbol: section index out of range");
 
-  sym.bind = sym.info >> 4;
-  sym.type = sym.info & 0x0f;
+  sym.bind = sym.info >> 4U;
+  sym.type = sym.info & 0x0fU;
 
   sym.name = sym.type == STT_SECTION ? mySections[sym.section].name : getName(strSec, sym.nameOffset);
 
@@ -247,8 +247,8 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
     ElfParseError::raise("failed to read relocation: " + string(e.what()));
   }
 
-  rel.symbol = rel.info >> 8;
-  rel.type = rel.info & 0xff;
+  rel.symbol = rel.info >> 8U;
+  rel.type = rel.info & 0xffU;
 
   if (rel.symbol >=mySymbols.size())
     ElfParseError::raise("bad relocation: symbol out of bounds");

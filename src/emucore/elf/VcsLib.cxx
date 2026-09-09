@@ -28,17 +28,17 @@ using namespace elfEnvironment;
 namespace {
   CortexM0::err_t memset(uInt32 target, uInt8 value, uInt32 size, CortexM0& cortex)
   {
-    const uInt16 value16 = value | (value << 8);
-    const uInt32 value32 = value16 | (value16 << 16);
+    const uInt16 value16 = value | (value << 8U);
+    const uInt32 value32 = value16 | (value16 << 16U);
     CortexM0::err_t err = CortexM0::ERR_NONE;
     uInt32 ptr = target;
 
     while (ptr < target + size) {
-      if ((ptr & 0x03) == 0 && size - (ptr - target) >= 4) {
+      if ((ptr & 0x03U) == 0 && size - (ptr - target) >= 4) {
         err = cortex.write32(ptr, value32);
         ptr += 4;
       }
-      else if ((ptr & 0x01) == 0 && size - (ptr - target) >= 2) {
+      else if ((ptr & 0x01U) == 0 && size - (ptr - target) >= 2) {
         err = cortex.write16(ptr, value16);
         ptr += 2;
       }
@@ -60,7 +60,7 @@ namespace {
     const uInt32 destOrig = dest;
 
     while (size > 0) {
-      if (((dest | src) & 0x03) == 0 && size >= 4) {
+      if (((dest | src) & 0x03U) == 0 && size >= 4) {
         uInt32 value = 0;
 
         err = cortex.read32(src, value);
@@ -72,7 +72,7 @@ namespace {
         dest += 4;
         src += 4;
       }
-      else if (((dest | src) & 0x01) == 0 && size >= 2) {
+      else if (((dest | src) & 0x01U) == 0 && size >= 2) {
         uInt16 value = 0;
 
         err = cortex.read16(src, value);
@@ -188,10 +188,10 @@ void VcsLib::vcsCopyOverblankToRiotRam()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VcsLib::vcsStartOverblank()
 {
-	myTransactionQueue
+  myTransactionQueue
     .injectROM(0x4c)
-	  .injectROM(0x80)
-	  .injectROM(0x00)
+    .injectROM(0x80)
+    .injectROM(0x00)
     .yield(0x0080);
 }
 
@@ -218,7 +218,7 @@ void VcsLib::vcsNop2n(uInt16 n)
 void VcsLib::vcsLda2(uInt8 value)
 {
   myTransactionQueue
-	  .injectROM(0xa9)
+    .injectROM(0xa9)
     .injectROM(value);
 }
 
@@ -284,14 +284,14 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       myTransactionQueue
         .injectROM(0x8d)
         .injectROM(arg)
-        .injectROM(arg >> 8)
+        .injectROM(arg >> 8U)
         .stuffByte(cortex.getRegister(1), arg);
 
       return returnFromStub(value, op);
 
     case ADDR_VCS_JMP3:
       myTransactionQueue
-    	  .injectROM(0x4c)
+        .injectROM(0x4c)
         .injectROM(0x00)
         .injectROM(0x10)
         .setNextInjectAddress(0x1000);
@@ -314,12 +314,12 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-    	  .injectROM(0xa9)
-	      .injectROM(cortex.getRegister(1))
-	      .injectROM(0x8d)
-	      .injectROM(arg)
-	      .injectROM(arg >> 8)
-	      .yield(arg);
+        .injectROM(0xa9)
+        .injectROM(cortex.getRegister(1))
+        .injectROM(0x8d)
+        .injectROM(arg)
+        .injectROM(arg >> 8U)
+        .yield(arg);
 
       return returnFromStub(value, op);
 
@@ -329,14 +329,14 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
     case ADDR_VCS_LDX2:
       myTransactionQueue
-	      .injectROM(0xa2)
+        .injectROM(0xa2)
         .injectROM(cortex.getRegister(0));
 
       return returnFromStub(value, op);
 
     case ADDR_VCS_LDY2:
       myTransactionQueue
-	      .injectROM(0xa0)
+        .injectROM(0xa0)
         .injectROM(cortex.getRegister(0));
 
       return returnFromStub(value, op);
@@ -346,8 +346,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
       myTransactionQueue
         .injectROM(0x87)
-	      .injectROM(arg)
-	      .yield(arg);
+        .injectROM(arg)
+        .yield(arg);
 
       return returnFromStub(value, op);
 
@@ -355,7 +355,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-    	  .injectROM(0x85)
+        .injectROM(0x85)
         .injectROM(arg)
         .yield(arg);
 
@@ -365,7 +365,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-    	  .injectROM(0x86)
+        .injectROM(0x86)
         .injectROM(arg)
         .yield(arg);
 
@@ -375,7 +375,7 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-    	  .injectROM(0x84)
+        .injectROM(0x84)
         .injectROM(arg)
         .yield(arg);
 
@@ -385,10 +385,10 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-      	.injectROM(0x8d)
-	      .injectROM(arg)
-	      .injectROM(arg >> 8)
-	      .yield(arg);
+        .injectROM(0x8d)
+        .injectROM(arg)
+        .injectROM(arg >> 8U)
+        .yield(arg);
 
       return returnFromStub(value, op);
 
@@ -396,10 +396,10 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-      	.injectROM(0x8e)
-	      .injectROM(arg)
-	      .injectROM(arg >> 8)
-	      .yield(arg);
+        .injectROM(0x8e)
+        .injectROM(arg)
+        .injectROM(arg >> 8U)
+        .yield(arg);
 
       return returnFromStub(value, op);
 
@@ -407,10 +407,10 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-      	.injectROM(0x8c)
-	      .injectROM(arg)
-	      .injectROM(arg >> 8)
-	      .yield(arg);
+        .injectROM(0x8c)
+        .injectROM(arg)
+        .injectROM(arg >> 8U)
+        .yield(arg);
 
       return returnFromStub(value, op);
 
@@ -443,8 +443,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
 
         myTransactionQueue
           .injectROM(0xad)
-	        .injectROM(arg)
-	        .injectROM(arg >> 8)
+          .injectROM(arg)
+          .injectROM(arg >> 8U)
           .yield(arg);
 
         return CortexM0::errCustom(ERR_STOP_EXECUTION);
@@ -465,8 +465,8 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
         .injectROM(0x20)
         .injectROM(arg)
         .yield(0, 0x1000)
-        .injectROM(arg >> 8)
-        .setNextInjectAddress(arg & 0x1fff);
+        .injectROM(arg >> 8U)
+        .setNextInjectAddress(arg & 0x1fffU);
 
       return returnFromStub(value, op);
 
@@ -492,10 +492,10 @@ CortexM0::err_t VcsLib::fetch16(uInt32 address, uInt16& value, uInt8& op, Cortex
       arg = cortex.getRegister(0);
 
       myTransactionQueue
-      	.injectROM(0x4c)
-      	.injectROM(arg)
-      	.injectROM(arg >> 8)
-      	.yield(arg);
+        .injectROM(0x4c)
+        .injectROM(arg)
+        .injectROM(arg >> 8U)
+        .yield(arg);
 
       return returnFromStub(value, op);
 

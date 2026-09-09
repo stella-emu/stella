@@ -105,14 +105,14 @@ void DrivingWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
   {
     case Cmd::GrayCodeUp:
       myGrayIndex = (myGrayIndex + 1) % 4;
-      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
-      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1U) != 0);
+      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2U) != 0);
       setValue(myGrayIndex);
       break;
     case Cmd::GrayCodeDown:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
-      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
-      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1U) != 0);
+      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2U) != 0);
       setValue(myGrayIndex);
       break;
     case Cmd::Fire:

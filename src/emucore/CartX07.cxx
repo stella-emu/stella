@@ -44,14 +44,14 @@ void CartridgeX07::install(System& system)
 bool CartridgeX07::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if((address & 0x180f) == 0x080d)
+  if((address & 0x180fU) == 0x080d)
   {
-    bank((address & 0xf0) >> 4);
+    bank((address & 0xf0U) >> 4);
     return true;
   }
-  else if((address & 0x1880) == 0 && (getBank() & 0xe) == 0xe)
+  else if((address & 0x1880U) == 0 && (getBank() & 0xeU) == 0xe)
   {
-    bank(((address & 0x40) >> 6) | 0xe);
+    bank(((address & 0x40U) >> 6) | 0xe);
     return true;
   }
 
@@ -63,11 +63,11 @@ uInt8 CartridgeX07::peek(uInt16 address)
 {
   uInt8 value = 0; // JTZ: is this correct?
   // Check for RAM or TIA mirroring
-  const uInt16 lowAddress = address & 0x3ff;
+  const uInt16 lowAddress = address & 0x3ffU;
 
-  if(lowAddress & 0x80)
+  if(lowAddress & 0x80U)
     value = mySystem->m6532().peek(address);
-  else if(!(lowAddress & 0x200))
+  else if(!(lowAddress & 0x200U))
     value = mySystem->tia().peek(address);
 
   checkSwitchBank(address, 0);
@@ -79,11 +79,11 @@ uInt8 CartridgeX07::peek(uInt16 address)
 bool CartridgeX07::poke(uInt16 address, uInt8 value)
 {
   // Check for RAM or TIA mirroring
-  const uInt16 lowAddress = address & 0x3ff;
+  const uInt16 lowAddress = address & 0x3ffU;
 
-  if(lowAddress & 0x80)
+  if(lowAddress & 0x80U)
     mySystem->m6532().poke(address, value);
-  else if(!(lowAddress & 0x200))
+  else if(!(lowAddress & 0x200U))
     mySystem->tia().poke(address, value);
 
   checkSwitchBank(address, 0);

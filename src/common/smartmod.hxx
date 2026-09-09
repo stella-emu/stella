@@ -31,56 +31,56 @@ constexpr uInt8 smartmod(uInt8 x)
 template<>
 constexpr uInt8 smartmod<2>(uInt8 x)
 {
-  return x & 0x01;
+  return x & 0x01U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<4>(uInt8 x)
 {
-  return x & 0x03;
+  return x & 0x03U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<8>(uInt8 x)
 {
-  return x & 0x07;
+  return x & 0x07U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<16>(uInt8 x)
 {
-  return x & 0x0F;
+  return x & 0x0FU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<32>(uInt8 x)
 {
-  return x & 0x1F;
+  return x & 0x1FU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<64>(uInt8 x)
 {
-  return x & 0x3F;
+  return x & 0x3FU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<128>(uInt8 x)
 {
-  return x & 0x7F;
+  return x & 0x7FU;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<>
 constexpr uInt8 smartmod<256>(uInt8 x)
 {
-  return x & 0xFF;
+  return x & 0xFFU;
 }
 
 #endif  // SMARTMOD_HXX

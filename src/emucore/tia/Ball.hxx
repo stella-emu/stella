@@ -141,7 +141,7 @@ class Ball : public Serializable
       Is the ball visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000U); }
 
     /**
       Get the current color.

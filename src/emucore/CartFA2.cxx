@@ -129,7 +129,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       }
     }
     // Bit 6 is 1, busy
-    return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40;
+    return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40U;
   }
   else
   {
@@ -140,11 +140,11 @@ uInt8 CartridgeFA2::ramReadWrite()
       myRAM[255] = 0;          // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[myCurrentSegOffset[0] + 0xFF4] & ~0x40;
+      return myImage[myCurrentSegOffset[0] + 0xFF4] & ~0x40U;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40;
+      return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40U;
   }
 }
 

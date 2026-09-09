@@ -42,7 +42,7 @@ bool CartridgeEFF::checkSwitchBank(uInt16 address, uInt8)
 uInt8 CartridgeEFF::peek(uInt16 address)
 {
   const uInt16 romAddress = address & ROM_MASK;
-  if((address & 0x1000) && (romAddress >= 0x0FF0) && (romAddress <= 0x0FF4))
+  if((address & 0x1000U) && (romAddress >= 0x0FF0) && (romAddress <= 0x0FF4))
   {
     switch(romAddress)
     {
@@ -71,7 +71,7 @@ uInt8 CartridgeEFF::peek(uInt16 address)
 bool CartridgeEFF::poke(uInt16 address, uInt8 value)
 {
   const uInt16 romAddress = address & ROM_MASK;
-  if((address & 0x1000) && (romAddress >= 0x0FF0) && (romAddress <= 0x0FF3))
+  if((address & 0x1000U) && (romAddress >= 0x0FF0) && (romAddress <= 0x0FF3))
   {
     switch(romAddress)
     {

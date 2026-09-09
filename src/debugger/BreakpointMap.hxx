@@ -31,8 +31,8 @@ class BreakpointMap
 {
   public:
     // breakpoint flags
-    static constexpr uInt32 ONE_SHOT = 1 << 0;    // used for 'trace' command
-    static constexpr uInt16 ANY_BANK = 0xffff;    // breakpoint valid in any bank
+    static constexpr uInt32 ONE_SHOT = 1U;     // used for 'trace' command
+    static constexpr uInt16 ANY_BANK = 0xffff; // breakpoint valid in any bank
 
     struct Breakpoint
     {

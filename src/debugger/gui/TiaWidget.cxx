@@ -925,11 +925,11 @@ void TiaWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       break;
 
     case Cmd::VSync:
-      tia.vsync((tia.vsyncAsInt() & ~0x02) | (myVSync->getState() ? 0x02 : 0x00));
+      tia.vsync((tia.vsyncAsInt() & ~0x02U) | (myVSync->getState() ? 0x02 : 0x00));
       break;
 
     case Cmd::VBlank:
-      tia.vblank((tia.vblankAsInt() & ~0x02) | (myVBlank->getState() ? 0x02 : 0x00));
+      tia.vblank((tia.vblankAsInt() & ~0x02U) | (myVBlank->getState() ? 0x02 : 0x00));
       break;
 
     case DataGridWidget::Cmd::ItemDataChanged:

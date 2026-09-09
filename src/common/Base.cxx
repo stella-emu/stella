@@ -76,7 +76,7 @@ char* Base::writeHex(char* out, uInt32 v, int width)
   const char* table = myHexUppercase ? HEX_UPPER : HEX_LOWER;
 
   for(int i = (width - 1) * 4; i >= 0; i -= 4)
-    *out++ = table[(v >> i) & 0xF];
+    *out++ = table[(v >> i) & 0xFU];
 
   return out;
 }

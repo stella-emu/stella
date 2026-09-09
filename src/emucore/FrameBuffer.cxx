@@ -945,9 +945,9 @@ void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
   {
     const uInt32 rgb = rgb_palette[i];
     tia_palette[i] = aMask_
-                   | (((rgb >> 16) & 0xFF) << rShift)
-                   | (((rgb >>  8) & 0xFF) << gShift)
-                   | (( rgb        & 0xFF) << bShift);
+                   | (((rgb >> 16U) & 0xFFU) << rShift)
+                   | (((rgb >>  8U) & 0xFFU) << gShift)
+                   | (( rgb        & 0xFFU) << bShift);
   }
   // Remember the TIA palette; place it at the beginning of the full palette
   std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
@@ -981,9 +981,9 @@ void FrameBuffer::setUIPalette()
   {
     const uInt32 rgb = ui_palette[i];
     myFullPalette[kColor + i] = aMask_
-                              | (((rgb >> 16) & 0xFF) << rShift)
-                              | (((rgb >>  8) & 0xFF) << gShift)
-                              | (( rgb        & 0xFF) << bShift);
+                              | (((rgb >> 16U) & 0xFFU) << rShift)
+                              | (((rgb >>  8U) & 0xFFU) << gShift)
+                              | (( rgb        & 0xFFU) << bShift);
   }
   setDisasmPalette();  // fills disasm slots and calls FBSurface::setPalette
 }
@@ -1006,9 +1006,9 @@ void FrameBuffer::setDisasmPalette()
   {
     const uInt32 rgb = dp[i];
     myFullPalette[kUINColors + i] = aMask_
-                                  | (((rgb >> 16) & 0xFF) << rShift)
-                                  | (((rgb >>  8) & 0xFF) << gShift)
-                                  | (( rgb        & 0xFF) << bShift);
+                                  | (((rgb >> 16U) & 0xFFU) << rShift)
+                                  | (((rgb >>  8U) & 0xFFU) << gShift)
+                                  | (( rgb        & 0xFFU) << bShift);
   }
   FBSurface::setPalette(myFullPalette);
 }

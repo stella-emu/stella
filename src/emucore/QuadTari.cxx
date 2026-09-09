@@ -129,7 +129,7 @@ bool QuadTari::isFirst() const
     return mySystem.randGenerator().next() % 2;
   else
     // If bit 7 of VBlank is not set, read first, else second controller
-    return !(mySystem.tia().registerValue(VBLANK) & 0x80);
+    return !(mySystem.tia().registerValue(VBLANK) & 0x80U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

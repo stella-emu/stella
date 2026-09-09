@@ -291,7 +291,7 @@ void CartridgeBUSWidget::saveOldState()
     // I = Increment
     // F = Fractional
 
-    myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12);
+    myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12U);
     if(i < 16)
       myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
     else
@@ -310,7 +310,7 @@ void CartridgeBUSWidget::saveOldState()
   for(uInt32 i = 0; i < 3; ++i)
   {
     myOldState.mfreqs.push_back(myCart.myMusicFrequencies[i]);
-    myOldState.mwaves.push_back(myCart.getWaveform(i) >> 5);
+    myOldState.mwaves.push_back(myCart.getWaveform(i) >> 5U);
     myOldState.mwavesizes.push_back(myCart.getWaveformSize(i));
   }
 
@@ -349,7 +349,7 @@ void CartridgeBUSWidget::loadConfig()
     // I = Increment
     // F = Fractional
 
-    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12U;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -358,7 +358,7 @@ void CartridgeBUSWidget::loadConfig()
   clearAll();
   for(int i = 16; i < myDatastreamCount; ++i)
   {
-    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12U;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -418,8 +418,8 @@ void CartridgeBUSWidget::loadConfig()
   clearAll();
   for(int i = 0; i < 3; ++i)
   {
-    alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
-    changed.push_back(std::cmp_not_equal(myCart.getWaveform(i) >> 5,
+    alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5U);
+    changed.push_back(std::cmp_not_equal(myCart.getWaveform(i) >> 5U,
                                          myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
@@ -442,11 +442,11 @@ void CartridgeBUSWidget::loadConfig()
     mySamplePointer->setList(alist, vlist, changed);
   }
 
-  myBusOverdrive->setState((myCart.myMode & 0x0f) == 0);
+  myBusOverdrive->setState((myCart.myMode & 0x0fU) == 0);
   if(myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
-    myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
+    myDigitalSample->setState((myCart.myMode & 0xf0U) == 0);
 
-  if((myCart.myMode & 0xf0) == 0)
+  if((myCart.myMode & 0xf0U) == 0)
   {
     myMusicWaveforms->setCrossed(true);
     myMusicWaveformSizes->setCrossed(true);

@@ -40,7 +40,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   const CartDebug::AddressList& debuggerAddresses = info.addressList;
   const uInt16 start = *debuggerAddresses.cbegin();
 
-  if (start & 0x1000) {
+  if (start & 0x1000U) {
     info.start = myAppData.start = 0x0000;
     info.end = myAppData.end = static_cast<uInt16>(info.size - 1);
     // Keep previous offset; it may be different between banks
@@ -344,8 +344,8 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
 
             if(labelFound == AddressType::ROM) {
               labelA12High(nextLine, ad);
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12High(ad);
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
@@ -358,15 +358,15 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad;
-                nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                              << Base::HEX2 << (ad >> 8);
+                nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                              << Base::HEX2 << (ad >> 8U);
                 myLine.operandColor = CartDebug::DisasmSegColor::ROM;
               }
             }
             else {
               labelA12Low(nextLine, opcode, ad, labelFound);
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12Low(ad, labelFound,
                 ourLookup[opcode].rw_mode == RWMode::READ);
             }
@@ -424,8 +424,8 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             if(labelFound == AddressType::ROM) {
               labelA12High(nextLine, ad);
               nextLine << ",x";
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12High(ad);
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
@@ -439,16 +439,16 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad << ",x";
-                nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                              << Base::HEX2 << (ad >> 8);
+                nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                              << Base::HEX2 << (ad >> 8U);
                 myLine.operandColor = CartDebug::DisasmSegColor::ROM;
               }
             }
             else {
               labelA12Low(nextLine, opcode, ad, labelFound);
               nextLine << ",x";
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12Low(ad, labelFound,
                 ourLookup[opcode].rw_mode == RWMode::READ);
             }
@@ -476,8 +476,8 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             if(labelFound == AddressType::ROM) {
               labelA12High(nextLine, ad);
               nextLine << ",y";
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12High(ad);
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
@@ -491,16 +491,16 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad << ",y";
-                nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                              << Base::HEX2 << (ad >> 8);
+                nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                              << Base::HEX2 << (ad >> 8U);
                 myLine.operandColor = CartDebug::DisasmSegColor::ROM;
               }
             }
             else {
               labelA12Low(nextLine, opcode, ad, labelFound);
               nextLine << ",y";
-              nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                            << Base::HEX2 << (ad >> 8);
+              nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                            << Base::HEX2 << (ad >> 8U);
               myLine.operandColor = colorA12Low(ad, labelFound,
                 ourLookup[opcode].rw_mode == RWMode::READ);
             }
@@ -634,8 +634,8 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                 ourLookup[opcode].rw_mode == RWMode::READ);
             }
 
-            nextLineBytes << Base::HEX2 << (ad & 0xff) << " "
-                          << Base::HEX2 << (ad >> 8);
+            nextLineBytes << Base::HEX2 << (ad & 0xffU) << " "
+                          << Base::HEX2 << (ad >> 8U);
           }
           break;
         }
@@ -650,7 +650,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         myLine.disasm = nextLine.str();
         const string_view branchSuffix =
           (addrMode == AddressingMode::RELATIVE)
-            ? ((ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 ")
+            ? ((ad & 0xf00U) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 ")
             : "   ";
         myLine.ccount = std::format(";{}{}", static_cast<int>(ourLookup[opcode].cycles), branchSuffix);
         if((opcode == OP_RTI || opcode == OP_RTS || opcode == OP_JMP || opcode == OP_BRK // code block end
@@ -1198,7 +1198,7 @@ void DiStella::outputGraphics()
   {
     std::ostringstream s;
     s << ".byte $" << Base::HEX2 << static_cast<int>(byte) << "  |";
-    for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
+    for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1U)
       s << ((c > 127) ? bitString : " ");
     s << "|   $" << Base::HEX4 << myPC + myOffset;
     myLine.disasm = s.str();
@@ -1277,11 +1277,11 @@ string DiStella::getColor(uInt8 byte)
   };
 
   if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
-    return std::format("{}|${}", NTSC_COLOR[byte >> 4], Base::hex1(byte & 0xf));
+    return std::format("{}|${}", NTSC_COLOR[byte >> 4U], Base::hex1(byte & 0xfU));
   else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
-    return std::format("{}|${}", PAL_COLOR[byte >> 4], Base::hex1(byte & 0xf));
+    return std::format("{}|${}", PAL_COLOR[byte >> 4U], Base::hex1(byte & 0xfU));
   else
-    return std::format("${}|{}", Base::hex1(byte >> 4), SECAM_COLOR[(byte >> 1) & 0x7]);
+    return std::format("${}|{}", Base::hex1(byte >> 4U), SECAM_COLOR[(byte >> 1U) & 0x7]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

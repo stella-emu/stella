@@ -259,12 +259,12 @@ void TIA::reset()
   {
     for(uInt32 i = 0; i < 0x4000; ++i)
     {
-      const uInt16 address = mySystem->randGenerator().next() & 0x3F;
+      const uInt16 address = mySystem->randGenerator().next() & 0x3FU;
 
       if(address <= 0x2F)
       {
         poke(address, mySystem->randGenerator().next());
-        cycle(1 + (mySystem->randGenerator().next() & 7)); // process delay queue
+        cycle(1 + (mySystem->randGenerator().next() & 7U)); // process delay queue
       }
     }
     cycle(76 * 3); // just to be sure :)
@@ -532,67 +532,67 @@ uInt8 TIA::peek(uInt16 address)
   // one register); CXBLPF and INPT* only use D7.
   uInt8 result = 0b0000000;
 
-  switch (address & 0x0F) {
+  switch (address & 0x0FU) {
     case CXM0P:
-      result = collCXM0P() & 0b11000000;
+      result = collCXM0P() & 0b11000000U;
       break;
 
     case CXM1P:
-      result = collCXM1P() & 0b11000000;
+      result = collCXM1P() & 0b11000000U;
       break;
 
     case CXP0FB:
-      result = collCXP0FB() & 0b11000000;
+      result = collCXP0FB() & 0b11000000U;
       break;
 
     case CXP1FB:
-      result = collCXP1FB() & 0b11000000;
+      result = collCXP1FB() & 0b11000000U;
       break;
 
     case CXM0FB:
-      result = collCXM0FB() & 0b11000000;
+      result = collCXM0FB() & 0b11000000U;
       break;
 
     case CXM1FB:
-      result = collCXM1FB() & 0b11000000;
+      result = collCXM1FB() & 0b11000000U;
       break;
 
     case CXPPMM:
-      result = collCXPPMM() & 0b11000000;
+      result = collCXPPMM() & 0b11000000U;
       break;
 
     case CXBLPF:
-      result = collCXBLPF() & 0b10000000;
+      result = collCXBLPF() & 0b10000000U;
       break;
 
     case INPT0:
       updateAnalogReadout(0);
-      result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT1:
       updateAnalogReadout(1);
-      result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT2:
       updateAnalogReadout(2);
-      result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT3:
       updateAnalogReadout(3);
-      result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT4:
       result = myInput0.inpt(!myConsole.leftController().read(Controller::DigitalPin::Six))
-          & 0b10000000;
+          & 0b10000000U;
       break;
 
     case INPT5:
       result = myInput1.inpt(!myConsole.rightController().read(Controller::DigitalPin::Six))
-          & 0b10000000;
+          & 0b10000000U;
       break;
 
     default:
@@ -604,7 +604,7 @@ uInt8 TIA::peek(uInt16 address)
   // on real chips with weaker pull-downs) shows up. The 'tiapinsdriven'
   // setting picks random noise to surface games that read these bits.
   return result | ((!myTIAPinsDriven ? mySystem->getDataBusState() :
-    mySystem->randGenerator().next()) & 0b00111111);
+    mySystem->randGenerator().next()) & 0b00111111U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -623,7 +623,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
   //   - Pipelined writes (PFx/GRPx/ENAxx/HMxx/HMOVE/REFPx/VBLANK/...) that
   //     go through myDelayQueue with a per-register color-clock delay
   //     defined in the Delay enum above; delayedWrite() dispatches them.
-  address &= 0x3F;
+  address &= 0x3FU;
 
   switch (address)
   {
@@ -640,7 +640,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VSYNC:
-      myFrameManager->setVsync(value & 0x02, myTimestamp / 3);
+      myFrameManager->setVsync(value & 0x02U, myTimestamp / 3);
       myShadowRegisters[address] = value;
       break;
 
@@ -733,7 +733,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUBK:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       if(myBKColorDelay)
         myDelayQueue.push(COLUBK, value, 1);
       else
@@ -751,7 +751,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUP0:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
       myPlayer0.setColor(value);
@@ -766,7 +766,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUP1:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
       myPlayer1.setColor(value);
@@ -784,8 +784,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // width can all change here — any of these may alter pixels already
       // rendered on the current line.
       flushLineCache();
-      myPriority = (value & 0x04) ? Priority::pfp :
-                   (value & 0x02) ? Priority::score : Priority::normal;
+      myPriority = (value & 0x04U) ? Priority::pfp :
+                   (value & 0x02U) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
       myShadowRegisters[address] = value;
@@ -797,7 +797,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // to "only when value differs and PF/BL is emitting" like the
       // per-sprite setColor guards, but isn't.)
       flushLineCache();
-      value &= 0xFE;
+      value &= 0xFEU;
       if(myPFColorDelay)
         myDelayQueue.push(COLUPF, value, 1);
       else
@@ -1185,7 +1185,7 @@ bool TIA::enableColorLoss(bool enabled)
   if(allowColorLoss && enabled)
   {
     myColorLossEnabled = true;
-    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1U;
   }
   else
   {
@@ -1510,7 +1510,7 @@ void TIA::onFrameStart()
   // the graphical object forces the TIA cached line to be flushed
   if (myColorLossEnabled && myFrameManager->scanlineParityChanged())
   {
-    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1U;
 
     myMissile0.applyColorLoss();
     myMissile1.applyColorLoss();
@@ -1713,7 +1713,7 @@ FORCE_INLINE void TIA::tickMovement()
 {
   if (!myMovementInProgress) [[likely]] return;
 
-  if ((myHctr & 0x03) == 0) {
+  if ((myHctr & 0x03U) == 0) {
     const bool hblank = myHstate == HState::blank;
     const uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
 
@@ -1874,8 +1874,8 @@ FORCE_INLINE void TIA::nextLine()
         myPosBL[y][myFlickerFrame] = myBall.getPosition();
       // Note: code checks only right side of playfield
       myPatPF[y][myFlickerFrame] =
-          (static_cast<uInt32>(registerValue(PF0))) << 16
-        | (static_cast<uInt32>(registerValue(PF1))) << 8
+          (static_cast<uInt32>(registerValue(PF0))) << 16U
+        | (static_cast<uInt32>(registerValue(PF1))) << 8U
         | (static_cast<uInt32>(registerValue(PF2)));
       // Define end of frame for faster auto-phosphor calculation
       if(!cloned)
@@ -2163,7 +2163,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       // VBLANK gates updateCollision and (via the frame manager) the visible
       // window; a mid-line transition changes what subsequent pixels do.
       flushLineCache();
-      myFrameManager->setVblank(value & 0x02, myTimestamp / 3);
+      myFrameManager->setVblank(value & 0x02U, myTimestamp / 3);
       break;
 
     case HMOVE:
@@ -2488,7 +2488,7 @@ void TIA::toggleCollBLPF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateDumpPorts(uInt8 value)
 {
-  const bool newIsDumped = value & 0x80;
+  const bool newIsDumped = value & 0x80U;
 
   if(myArePortsDumped != newIsDumped)
   {

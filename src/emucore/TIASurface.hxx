@@ -169,7 +169,7 @@ class TIASurface
       Enable/disable/query NTSC filtering effects.
     */
     void enableNTSC(bool enable);
-    bool ntscEnabled() const { return static_cast<uInt8>(myFilter) & 0x10; }
+    bool ntscEnabled() const { return static_cast<uInt8>(myFilter) & 0x10U; }
     string effectsInfo() const;
 
     /**
@@ -218,7 +218,7 @@ class TIASurface
     FORCE_INLINE uInt32 averageBuffers(uInt32 bufOfs) const {
       const uInt32 c = myRGBFramebuffer[bufOfs];
       const uInt32 p = myPrevRGBFramebuffer[bufOfs];
-      return (((c ^ p) >> 1) & 0x7F7F7FU) + (c & p);
+      return (((c ^ p) >> 1U) & 0x7F7F7FU) + (c & p);
     }
 
     // Is plain video mode enabled?

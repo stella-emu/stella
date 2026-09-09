@@ -155,7 +155,7 @@ void CartridgeARWidget::loadConfig()
   const auto& oldstate = static_cast<const CartState&>(cart.getOldState());
   const bool changed = state.bank != oldstate.bank;
 
-  mySlice->setSelectedIndex(myCart.myCurrentBank >> 2, changed);
+  mySlice->setSelectedIndex(myCart.myCurrentBank >> 2U, changed);
   myWriteEnable->setState(myCart.myWriteEnabled, changed);
   myRomPower->setState(myCart.myPower, changed);
 
@@ -195,7 +195,7 @@ void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 string CartridgeARWidget::bankState()
 {
   return std::format("{}, RAM write {}",
-    SliceMap[myCart.myCurrentBank >> 2],
+    SliceMap[myCart.myCurrentBank >> 2U],
     myCart.myWriteEnabled ? "enabled" : "disabled");
 }
 

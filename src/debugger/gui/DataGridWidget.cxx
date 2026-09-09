@@ -820,7 +820,7 @@ void DataGridWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::negateCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -832,7 +832,7 @@ void DataGridWidget::negateCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::invertCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -844,7 +844,7 @@ void DataGridWidget::invertCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::decrementCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value <= _lowerBound)        // take care of wrap-around
     value = static_cast<int>(_upperBound);
@@ -856,7 +856,7 @@ void DataGridWidget::decrementCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::incrementCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value >= _upperBound - 1)    // take care of wrap-around
     value = static_cast<int>(_lowerBound) - 1;
@@ -868,7 +868,7 @@ void DataGridWidget::incrementCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::lshiftCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -880,7 +880,7 @@ void DataGridWidget::lshiftCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::rshiftCell()
 {
-  const int mask  = (1 << _bits) - 1;
+  const int mask  = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;

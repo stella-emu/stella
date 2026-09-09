@@ -148,7 +148,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
     // reads without advancing the PCM index.  This gives the BIOS time to
     // display "REWIND TAPE / PRESS PLAY" and enter its sync loop before PCM
     // streaming starts from position 0.
-    if((addr & 0x1FFF) == 0x1FF9)
+    if((addr & 0x1FFFU) == 0x1FF9)
     {
       if(myPCMData.empty())
         return 0x01;
@@ -192,11 +192,11 @@ uInt8 CartridgeAR::peek(uInt16 addr)
     }
   }
   // Fake-BIOS fast-load hotspot (not used in sound-load mode)
-  else if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
+  else if(((addr & 0x1FFFU) == 0x1850) && (myImageOffset[1] == RAM_SIZE))
   {
     // BIOS places load number at 0x80
     loadIntoRAM(mySystem->peek(0x0080));
-    return myImage[(addr & 0x07FF) + myImageOffset[1]];
+    return myImage[(addr & 0x07FFU) + myImageOffset[1]];
   }
 
   if(handleHotspot(addr))
@@ -231,7 +231,7 @@ void CartridgeAR::finalizeLoad(uInt32 block)
 
   // Page-map: page j in the block lives at bank (j/8), page (j%8) in bank
   for(auto j = 0UZ; j < NUM_PAGES; ++j)
-    myHeader[16 + j] = static_cast<uInt8>(((j % 8) << 2) | (j / 8));
+    myHeader[16 + j] = static_cast<uInt8>(((j % 8) << 2U) | (j / 8));
 
   // Per-page checksums: must satisfy checksum(data) + map + ck == 0x55
   const size_t base = static_cast<size_t>(block) * LOAD_SIZE;
@@ -281,14 +281,14 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
   }
 
   // Is the data hold register being set?
-  if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
+  if(!(addr & 0x0F00U) && (!myWriteEnabled || !myWritePending))
   {
     myDataHoldRegister = static_cast<uInt8>(addr);
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
   // Is the bank configuration hotspot being accessed?
-  else if((addr & 0x1FFF) == 0x1FF8)
+  else if((addr & 0x1FFFU) == 0x1FF8)
   {
     myWritePending = false;
     bankConfiguration(myDataHoldRegister);
@@ -298,9 +298,9 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
       (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     bool written = false;
-    if((addr & 0x0800) == 0)
+    if((addr & 0x0800U) == 0)
     {
-      const size_t offset = (addr & 0x07FF) + myImageOffset[0];
+      const size_t offset = (addr & 0x07FFU) + myImageOffset[0];
       myImage[offset] = myDataHoldRegister;
       if(myIsSoundLoad && offset < RAM_SIZE)
         myLoadImages[myCurrentLoadBlock * LOAD_SIZE + offset] = myDataHoldRegister;
@@ -308,7 +308,7 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
     }
     else if(myImageOffset[1] != (3 * BANK_SIZE))    // Can't poke to ROM :-)
     {
-      const size_t offset = (addr & 0x07FF) + myImageOffset[1];
+      const size_t offset = (addr & 0x07FFU) + myImageOffset[1];
       myImage[offset] = myDataHoldRegister;
       if(myIsSoundLoad && offset < RAM_SIZE)
         myLoadImages[myCurrentLoadBlock * LOAD_SIZE + offset] = myDataHoldRegister;
@@ -363,14 +363,14 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
     3 * BANK_SIZE, 3 * BANK_SIZE, 0 * BANK_SIZE, 2 * BANK_SIZE,
     3 * BANK_SIZE, 3 * BANK_SIZE, 1 * BANK_SIZE, 2 * BANK_SIZE
   };
-  const int bankConfig = (configuration & 0b11100) >> 2;
+  const int bankConfig = (configuration & 0b11100U) >> 2;
 
-  myCurrentBank = configuration & 0b11111; // remember for the bank() method
+  myCurrentBank = configuration & 0b11111U; // remember for the bank() method
 
   // Handle ROM power configuration
-  myPower = !(configuration & 0b00001);
+  myPower = !(configuration & 0b00001U);
 
-  myWriteEnabled = configuration & 0b00010;
+  myWriteEnabled = configuration & 0b00010U;
 
   myImageOffset[0] = OFFSET_0[bankConfig];
   myImageOffset[1] = OFFSET_1[bankConfig];
@@ -441,8 +441,8 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       const size_t numPages = std::min<size_t>(myHeader[3], RAM_SIZE / 256);
       for(auto j = 0UZ; j < numPages; ++j)
       {
-        const size_t bank = myHeader[16 + j] & 0b00011;
-        const size_t page = (myHeader[16 + j] & 0b11100) >> 2;
+        const size_t bank = myHeader[16 + j] & 0b00011U;
+        const size_t page = (myHeader[16 + j] & 0b11100U) >> 2;
         const ByteSpan src = ByteSpan{myLoadImages}.subspan(image_off + j * 256, 256);
         const uInt8 sum = checksum(src) + myHeader[16 + j] + myHeader[64 + j];
 
@@ -698,7 +698,7 @@ CartridgeAR::loadPCM(const FSNode& file)
   else
   {
     const bool isID3  = (magic[0] == 'I' && magic[1] == 'D' && magic[2] == '3');
-    const bool isSync = (magic[0] == 0xFF && (magic[1] & 0xE0) == 0xE0);
+    const bool isSync = (magic[0] == 0xFF && (magic[1] & 0xE0U) == 0xE0);
     if(!isID3 && !isSync)
     {
       cerr << std::format("CartridgeAR: unrecognised audio format in '{}'\n",

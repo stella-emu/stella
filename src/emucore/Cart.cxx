@@ -94,7 +94,7 @@ uInt16 Cartridge::bankSize(uInt16 bank) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 {
-  const uInt8 value = myRWPRandomValues[address & 0xFF];
+  const uInt8 value = myRWPRandomValues[address & 0xFFU];
 
   // Reading from the write port triggers an unwanted write
   // But this only happens when in normal emulation mode
@@ -200,7 +200,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
   //addrMask;
 
   if(PC)
-    count[PC >> 13]++;
+    count[PC >> 13U]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
     const Device::AccessFlags flags = myRomAccessBase[offset + addr];
@@ -220,7 +220,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
       maxIdx = idx;
     }
   }
-  return maxIdx << 13 | 0x1000; //| (offset & 0xfff);
+  return maxIdx << 13U | 0x1000; //| (offset & 0xfff);
 }
 #endif
 

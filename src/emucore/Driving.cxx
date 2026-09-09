@@ -81,8 +81,8 @@ void Driving::update()
 
   // Determine which bits are set
   const uInt8 gray = graytable[myGrayIndex];
-  setPin(DigitalPin::One, (gray & 0x1) != 0);
-  setPin(DigitalPin::Two, (gray & 0x2) != 0);
+  setPin(DigitalPin::One, (gray & 0x1U) != 0);
+  setPin(DigitalPin::Two, (gray & 0x2U) != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

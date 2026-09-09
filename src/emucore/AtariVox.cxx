@@ -111,19 +111,19 @@ void AtariVox::clockDataIn(bool value)
   // since the last write, shift this bit into the current byte.
   if((cycle < myLastDataWriteCycle) || (cycle >= myLastDataWriteCycle + 62))
   {
-    myShiftRegister >>= 1;
-    myShiftRegister |= (value << 15);
+    myShiftRegister >>= 1U;
+    myShiftRegister |= (value << 15U);
     if(++myShiftCount == 10)
     {
       myShiftCount = 0;
-      myShiftRegister >>= 6;
-      if(!(myShiftRegister & (1<<9)))
+      myShiftRegister >>= 6U;
+      if(!(myShiftRegister & (1U<<9U)))
         cerr << "AtariVox: bad start bit\n";
-      else if((myShiftRegister & 1))
+      else if((myShiftRegister & 1U))
         cerr << "AtariVox: bad stop bit\n";
       else
       {
-        const uInt8 data = ((myShiftRegister >> 1) & 0xff);
+        const uInt8 data = ((myShiftRegister >> 1U) & 0xff);
         mySerialPort->writeByte(data);
       }
       myShiftRegister = 0;

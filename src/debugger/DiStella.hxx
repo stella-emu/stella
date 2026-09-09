@@ -150,15 +150,15 @@ class DiStella
       if (labfound == AddressType::TIA)
       {
         if(ourLookup[op].rw_mode == RWMode::READ)
-          myReserved.TIARead[addr & 0x0F] = true;
+          myReserved.TIARead[addr & 0x0FU] = true;
         else
-          myReserved.TIAWrite[addr & 0x3F] = true;
+          myReserved.TIAWrite[addr & 0x3FU] = true;
       }
       else if(labfound == AddressType::RIOT) {
-        myReserved.IOReadWrite[addr & 0x1F] = true;
+        myReserved.IOReadWrite[addr & 0x1FU] = true;
       }
       else if (labfound == AddressType::ZP_RAM)
-        myReserved.ZPRAM[addr & 0x7F] = true;
+        myReserved.ZPRAM[addr & 0x7FU] = true;
     }
 
     // Colour helpers: called from disasm() during the Output pass to assign

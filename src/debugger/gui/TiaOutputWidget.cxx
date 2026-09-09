@@ -220,7 +220,7 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
   const uInt32 height = instance().console().tia().height();
   // limit to 274 lines (PAL default without scaling)
   const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
-    ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
+    ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1U;
   const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
   const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
 
@@ -311,11 +311,11 @@ void TiaOutputWidget::updateSurface()
       myLineBuffer[lineIdx++] = pixel;
       myLineBuffer[lineIdx++] = pixel;
     }
-    myTiaSurface->drawPixels(myLineBuffer.data(), 0, y, width << 1);
+    myTiaSurface->drawPixels(myLineBuffer.data(), 0, y, width << 1U);
   }
 
   myTiaSurface->setSrcPos(0, 0);
-  myTiaSurface->setSrcSize(width << 1, height);
+  myTiaSurface->setSrcSize(width << 1U, height);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -366,8 +366,8 @@ void TiaOutputWidget::drawMarkers()
     {
       // A small box in (doubled) surface pixels, so it inherits the 2:1 aspect
       // and scales/pans with the image via the shared src/dst rectangles
-      const uInt32 bx = scanx << 1, by = scany - yStart;
-      myMarkSurface->fillRect(bx, by, std::min<uInt32>(3, (width << 1) - bx),
+      const uInt32 bx = scanx << 1U, by = scany - yStart;
+      myMarkSurface->fillRect(bx, by, std::min<uInt32>(3, (width << 1U) - bx),
                               std::min<uInt32>(3, height - by), kColorInfo);
     }
   }

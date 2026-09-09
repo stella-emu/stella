@@ -337,7 +337,7 @@ uInt8 CartridgeELF::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::peekOob(uInt16 address)
 {
-  return myLastPeekResult[address & 0xfff];
+  return myLastPeekResult[address & 0xfffU];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,9 +363,9 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 {
   value = driveBus(address, value);
 
-  if (address & 0x1000) {
+  if (address & 0x1000U) {
     if (!myIsBusDriven) value = mySystem->getDataBusState();
-    myLastPeekResult[address & 0xfff] = value;
+    myLastPeekResult[address & 0xfffU] = value;
   }
 
   return value;
@@ -640,7 +640,7 @@ void CartridgeELF::runArm()
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
   uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
 ) {
-  if (address == (RETURN_ADDR & ~1)) return CortexM0::errCustom(ERR_RETURN);
+  if (address == (RETURN_ADDR & ~1U)) return CortexM0::errCustom(ERR_RETURN);
 
   return handleError("fetch16", address, CortexM0::ERR_UNMAPPED_FETCH16, cortex);
 }

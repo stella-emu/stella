@@ -472,7 +472,7 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
     : ceil(log(maxVal) / BSPF::ln2);
 
   // limit to maxVal's bits
-  val %= 1 << bits;
+  val %= 1U << bits;
 
   if (isBCD)
     val = fromBCD(val);
@@ -561,10 +561,10 @@ uInt16 HighScoresManager::fromHexStr(string_view addr)
 Int32 HighScoresManager::fromBCD(uInt8 bcd)
 {
   // verify if score is legit
-  if ((bcd & 0xF0) >= 0xA0 || (bcd & 0xF) >= 0xA)
+  if ((bcd & 0xF0U) >= 0xA0 || (bcd & 0xFU) >= 0xA)
     return NO_VALUE;
 
-  return (bcd >> 4) * 10 + bcd % 16;
+  return (bcd >> 4U) * 10 + bcd % 16;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

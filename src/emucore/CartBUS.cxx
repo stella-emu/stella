@@ -34,8 +34,8 @@ namespace {
     COMMSTREAM = 0x10,
     JUMPSTREAM = 0x11;
 
-  constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
-  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
+  constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0FU) == 0; }
+  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0U) == 0; }
 
 }  // namespace
 
@@ -238,18 +238,18 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       return value;
   }
 
-  if(!(address & 0x1000))                      // Hotspots below 0x1000
+  if(!(address & 0x1000U))                      // Hotspots below 0x1000
   {
     // Check for RAM or TIA mirroring
-    const uInt16 lowAddress = address & 0x3ff;
-    if(lowAddress & 0x80)
+    const uInt16 lowAddress = address & 0x3ffU;
+    if(lowAddress & 0x80U)
       return mySystem->m6532().peek(address);
-    else if(!(lowAddress & 0x200))
+    else if(!(lowAddress & 0x200U))
       return mySystem->tia().peek(address);
   }
   else
   {
-    address &= 0x0FFF;
+    address &= 0x0FFFU;
 
     uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
@@ -269,7 +269,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         ++myJMPoperandAddress;
 
         uInt32 pointer = getDatastreamPointer(JUMPSTREAM);
-        const uInt8 value = myDisplayImage[pointer >> 20];
+        const uInt8 value = myDisplayImage[pointer >> 20U];
         pointer += 0x100000;  // always increment by 1
         setDatastreamPointer(JUMPSTREAM, pointer);
 
@@ -302,8 +302,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       uInt8 result = 0;
 
       // Get the index of the data fetcher that's being accessed
-      const uInt32 index = address & 0x0f;
-      const uInt32 function = (address >> 4) & 0x01;
+      const uInt32 index = address & 0x0fU;
+      const uInt32 function = (address >> 4U) & 0x01;
 
       switch(function)
       {
@@ -365,7 +365,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           if (DIGITAL_AUDIO_ON(myMode))
           {
             // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-            const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
+            const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21U);
 
             // get sample value from ROM or RAM
             if (sampleaddress < 0x8000)
@@ -376,9 +376,9 @@ uInt8 CartridgeBUS::peek(uInt16 address)
               peekvalue = 0;
 
             // make sure current volume value is in the lower nybble
-            if ((myMusicCounters[0] & (1<<20)) == 0)
-              peekvalue >>= 4;
-            peekvalue &= 0x0f;
+            if ((myMusicCounters[0] & (1U<<20U)) == 0)
+              peekvalue >>= 4U;
+            peekvalue &= 0x0fU;
           }
           else
           {
@@ -512,24 +512,24 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
   if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
     return true;
 
-  if (!(address & 0x1000))
+  if (!(address & 0x1000U))
   {
     value &= busOverdrive(address);
 
     // Check for RAM or TIA mirroring
-    const uInt16 lowAddress = address & 0x3ff;
-    if(lowAddress & 0x80)
+    const uInt16 lowAddress = address & 0x3ffU;
+    if(lowAddress & 0x80U)
       mySystem->m6532().poke(address, value);
-    else if(!(lowAddress & 0x200))
+    else if(!(lowAddress & 0x200U))
       mySystem->tia().poke(address, value);
   }
   else
   {
-    address &= 0x0FFF;
+    address &= 0x0FFFU;
 
     if (myBUSSubtype == BUSSubtype::BUS0)
     {
-      uInt32 index = address & 0x0f;
+      uInt32 index = address & 0x0fU;
       uInt32 pointer = 0, increment = 0;
 
       switch(address)
@@ -545,7 +545,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           // F = Fractional
 
           pointer = getDatastreamPointer(index);
-          myDisplayImage[ pointer >> 20 ] = value;
+          myDisplayImage[ pointer >> 20U ] = value;
           pointer += 0x100000;  // always increment by 1 when writing
           setDatastreamPointer(index, pointer);
           break;
@@ -571,9 +571,9 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           // P = Pointer
           // F = Fractional
           pointer = getDatastreamPointer(index);
-          pointer <<=8;
+          pointer <<=8U;
           pointer &= 0xf0000000;
-          pointer |= (value << 20);
+          pointer |= (value << 20U);
           setDatastreamPointer(index, pointer);
           break;
 
@@ -587,9 +587,9 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           // I = Increment
           // F = Fractional
           increment = getDatastreamIncrement(index);
-          index <<= 8;
+          index <<= 8U;
           index |= value;
-          index &= 0xffff;
+          index &= 0xffffU;
           setDatastreamIncrement(index, increment);
           break;
 
@@ -684,16 +684,16 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
 
         case 0xFF0: // DSWRITE
           pointer = getDatastreamPointer(COMMSTREAM);
-          myDisplayImage[ pointer >> 20 ] = value;
+          myDisplayImage[ pointer >> 20U ] = value;
           pointer += 0x100000;  // always increment by 1 when writing
           setDatastreamPointer(COMMSTREAM, pointer);
           break;
 
         case 0xFF1: // DSPTR
           pointer = getDatastreamPointer(COMMSTREAM);
-          pointer <<=8;
+          pointer <<=8U;
           pointer &= 0xf0000000;
-          pointer |= (value << 20);
+          pointer |= (value << 20U);
           setDatastreamPointer(COMMSTREAM, pointer);
           break;
 
@@ -714,7 +714,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
       if ((address >= 0x10) && (address <= 0x1F))
       {
         // Get the index of the data fetcher that's being accessed
-        uInt32 index = address & 0x0f;
+        uInt32 index = address & 0x0fU;
         uInt32 pointer = 0;
 
         switch (index)
@@ -730,7 +730,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             // F = Fractional
 
             pointer = getDatastreamPointer(index);
-            myDisplayImage[ pointer >> 20 ] = value;
+            myDisplayImage[ pointer >> 20U ] = value;
             pointer += 0x100000;  // always increment by 1 when writing
             setDatastreamPointer(index, pointer);
             break;
@@ -745,11 +745,11 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             // P = Pointer
             // F = Fractional
 
-            index &= 0x03;
+            index &= 0x03U;
             pointer = getDatastreamPointer(index);
-            pointer <<=8;
+            pointer <<=8U;
             pointer &= 0xf0000000;
-            pointer |= (value << 20);
+            pointer |= (value << 20U);
             setDatastreamPointer(index, pointer);
             break;
 
@@ -790,9 +790,9 @@ bool CartridgeBUS::bank(uInt16 bank, uInt16)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -801,7 +801,7 @@ bool CartridgeBUS::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeBUS::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -815,12 +815,12 @@ uInt16 CartridgeBUS::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // For now, we ignore attempts to patch the BUS address space
   if(address >= 0x0040)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFFU)] = value;
     return myBankChanged = true;
   }
   else
@@ -841,16 +841,16 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
   // only overdrive if the address matches
   if (address == myBusOverdriveAddress)
   {
-    const uInt8 map = address & 0x7f;
+    const uInt8 map = address & 0x7fU;
     if (map <= 0x24) // map TIA registers VSYNC thru HMBL inclusive
     {
       uInt32 alldatastreams = getAddressMap(map);
-      const uInt8 datastream = alldatastreams & 0x0f;  // lowest nybble has the current datastream to use
+      const uInt8 datastream = alldatastreams & 0x0fU;  // lowest nybble has the current datastream to use
       overdrive = readFromDatastream(datastream);
 
       // rotate map nybbles for next time
-      alldatastreams >>= 4;
-      alldatastreams |= (datastream << 28);
+      alldatastreams >>= 4U;
+      alldatastreams |= (datastream << 28U);
       setAddressMap(map, alldatastreams);
     }
   }
@@ -988,7 +988,7 @@ bool CartridgeBUS::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myBankOffset >> 12);
+  bank(myBankOffset >> 12U);
 
   return true;
 }
@@ -1089,8 +1089,8 @@ uInt8 CartridgeBUS::readFromDatastream(uInt8 index)
 
   uInt32 pointer = getDatastreamPointer(index);
   const uInt16 increment = getDatastreamIncrement(index);
-  const uInt8 value = myDisplayImage[pointer >> 20];
-  pointer += (increment << 12);
+  const uInt8 value = myDisplayImage[pointer >> 20U];
+  pointer += (increment << 12U);
   setDatastreamPointer(index, pointer);
   return value;
 }

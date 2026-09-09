@@ -926,7 +926,7 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
   {
     uInt32 rb = (inst >> 0) & 0x7FF;
 
-    if(rb & (1 << 10))
+    if(rb & (1U << 10U))
       rb |= (~0U) << 11;
     rb <<= 1;
     rb += pc;
@@ -1520,8 +1520,8 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     case Op::bl: {
       // branch to label
       DO_DISS(statusMsg << '\n');
-      rb = inst & ((1 << 11) - 1);
-      if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
+      rb = inst & ((1U << 11U) - 1U);
+      if(rb & 1U << 10U) rb |= (~((1U << 11U) - 1U)); //sign extend
       rb <<= 12;
       rb += pc;
       write_register(14, rb);
@@ -1531,7 +1531,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     case Op::blx_thumb: {
       // branch to label, switch to thumb
       rb = read_register(14);
-      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += (inst & ((1U << 11U) - 1U)) << 1U;
       rb += 2;
       DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (pc-2) | 1);
@@ -1545,7 +1545,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       // fxq: this should exit the code without having to detect it
       // TJ: seems to be not used
       rb = read_register(14);
-      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += (inst & ((1U << 11U) - 1U)) << 1U;
       rb &= 0xFFFFFFFC;
       rb += 2;
       DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');

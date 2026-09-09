@@ -136,7 +136,7 @@ class Playfield : public Serializable
       Is the playfield visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000U); }
 
     /**
       Get the current color.
@@ -291,24 +291,24 @@ void Playfield::tick(uInt32 x)
   // Reflected flag is updated only at x = 0 or x = 79
   if (myX == TIAConstants::H_PIXEL / 2-1 || myX == 0) [[unlikely]] myRefp = myReflected;
 
-  if (x & 0x03) [[likely]] return;
+  if (x & 0x03U) [[likely]] return;
 
   uInt32 currentPixel;  // NOLINT(cppcoreguidelines-init-variables)
 
   if (myEffectivePattern == 0) {
       currentPixel = 0;
   } else if (x < TIAConstants::H_PIXEL / 2 - 1) {
-      currentPixel = myEffectivePattern & (1 << (x >> 2));
+      currentPixel = myEffectivePattern & (1U << (x >> 2U));
   } else if (myRefp) {
       // x is normally < 160, giving x >> 2 <= 39, but RSYNC strobed at the
       // last color clock(s) of a scanline can briefly push it further (see
       // TIA::applyRsync()'s negative myHctrDelta); 39 - (x >> 2) would
       // underflow and shift by an out-of-range amount, so treat that as no
       // pixel rather than reaching into undefined behavior
-      const uInt32 col = x >> 2;
-      currentPixel = (col <= 39) ? (myEffectivePattern & (1 << (39 - col))) : 0;
+      const uInt32 col = x >> 2U;
+      currentPixel = (col <= 39) ? (myEffectivePattern & (1U << (39U - col))) : 0;
   } else {
-      currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
+      currentPixel = myEffectivePattern & (1U << ((x >> 2U) - 20U));
   }
 
   collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;

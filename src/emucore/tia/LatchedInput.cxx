@@ -27,7 +27,7 @@ void LatchedInput::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LatchedInput::vblank(uInt8 value)
 {
-  if (value & 0x40)
+  if (value & 0x40U)
     myModeLatched = true;
   else {
     myModeLatched = false;

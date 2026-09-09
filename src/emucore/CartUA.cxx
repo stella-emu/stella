@@ -34,7 +34,7 @@ void CartridgeUA::install(System& system)
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
   myHotSpotPageAccess[0] = mySystem->getPageAccess(0x0220);
-  myHotSpotPageAccess[1] = mySystem->getPageAccess(0x0220 | 0x80);
+  myHotSpotPageAccess[1] = mySystem->getPageAccess(0x0220U | 0x80U);
 
   // Set the page accessing methods for the hot spots
   const System::PageAccess access(this, System::PageAccessType::READ);
@@ -48,10 +48,10 @@ void CartridgeUA::install(System& system)
       for(uInt16 a8 = 0; a8 <= 1; ++a8)
         for(uInt16 a7 = 0; a7 <= 1; ++a7)
         {
-          const uInt16 addr = (a11 << 11) + (a10 << 10) + (a8 << 8) + (a7 << 7);
+          const uInt16 addr = (a11 << 11U) + (a10 << 10U) + (a8 << 8U) + (a7 << 7U);
 
-          mySystem->setPageAccess(0x0220 | addr, access);
-          mySystem->setPageAccess(0x0240 | addr, access);
+          mySystem->setPageAccess(0x0220U | addr, access);
+          mySystem->setPageAccess(0x0240U | addr, access);
         }
   // Install pages for the startup bank
   bank(startBank());
@@ -61,7 +61,7 @@ void CartridgeUA::install(System& system)
 bool CartridgeUA::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  switch(address & 0x1260)
+  switch(address & 0x1260U)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
@@ -88,7 +88,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
-  const int hotspot = ((address & 0x80) >> 7);
+  const int hotspot = ((address & 0x80U) >> 7);
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -101,9 +101,9 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
 
   // Because of the way accessing is set up, we will may get here by
   // doing a write to TIA or cart; we ignore the cart write
-  if (!(address & 0x1000))
+  if (!(address & 0x1000U))
   {
-    const int hotspot = ((address & 0x80) >> 7);
+    const int hotspot = ((address & 0x80U) >> 7);
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

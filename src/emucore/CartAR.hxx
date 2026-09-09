@@ -272,7 +272,7 @@ class CartridgeAR : public Cartridge
     // address, selecting the lower ($F000-$F7FF) or upper ($F800-$FFFF) 2K
     // window's currently-mapped bank offset
     size_t imageIndex(uInt16 address) const {
-      return (address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0];
+      return (address & 0x07FFU) + myImageOffset[(address & 0x0800U) ? 1 : 0];
     }
 
   private:

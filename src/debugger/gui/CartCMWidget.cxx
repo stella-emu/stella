@@ -178,23 +178,23 @@ void CartridgeCMWidget::loadConfig()
   myColumn->setList(0, myCart.column(), myCart.column() != myOldState.column);
 
   // Various bits from SWCHA and INPTx
-  myIncrease->setState(swcha & 0x40);
-  myReset->setState(swcha & 0x20);
-  myRow[0]->setState(!(state.INPT4 & 0x80));
-  myRow[1]->setState(!(swcha & 0x04));
-  myRow[2]->setState(!(state.INPT5 & 0x80));
-  myRow[3]->setState(!(swcha & 0x08));
-  myFunc->setState(state.INPT0 & 0x80);
-  myShift->setState(state.INPT3 & 0x80);
+  myIncrease->setState(swcha & 0x40U);
+  myReset->setState(swcha & 0x20U);
+  myRow[0]->setState(!(state.INPT4 & 0x80U));
+  myRow[1]->setState(!(swcha & 0x04U));
+  myRow[2]->setState(!(state.INPT5 & 0x80U));
+  myRow[3]->setState(!(swcha & 0x08U));
+  myFunc->setState(state.INPT0 & 0x80U);
+  myShift->setState(state.INPT3 & 0x80U);
 
   // Audio in and out (used for communicating with the external cassette)
-  myAudIn->setState(swcha & 0x80);
-  myAudOut->setState(swcha & 0x40);
+  myAudIn->setState(swcha & 0x80U);
+  myAudOut->setState(swcha & 0x40U);
 
   // RAM state (several bits from SWCHA)
-  const string_view ram = (swcha & 0x10) ? " Inactive" :
-                          (swcha & 0x20) ? " Read-only" : " Write-only";
-  myRAM->setText(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
+  const string_view ram = (swcha & 0x10U) ? " Inactive" :
+                          (swcha & 0x20U) ? " Read-only" : " Write-only";
+  myRAM->setText(ram, (swcha & 0x30U) != (myOldState.swcha & 0x30U));
 
   CartDebugWidget::loadConfig();
 }
@@ -206,9 +206,9 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
   if(cmd == Cmd::BankChanged)
   {
     myCart.unlockHotspots();
-    myCart.mySWCHA &= 0xFC;
+    myCart.mySWCHA &= 0xFCU;
     myCart.mySWCHA |= myBank->getSelected();
-    myCart.bank(myCart.mySWCHA & 0x03);
+    myCart.bank(myCart.mySWCHA & 0x03U);
     myCart.lockHotspots();
     invalidate();
   }
@@ -219,8 +219,8 @@ string CartridgeCMWidget::bankState()
 {
   return std::format("Bank = {}, RAM is{}",
     myCart.getBank(),
-    (myCart.mySWCHA & 0x10) ? " Inactive" :
-    (myCart.mySWCHA & 0x20) ? " Read-only" : " Write-only");
+    (myCart.mySWCHA & 0x10U) ? " Inactive" :
+    (myCart.mySWCHA & 0x20U) ? " Read-only" : " Write-only");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

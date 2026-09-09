@@ -53,7 +53,7 @@ void M6532::reset()
   else
     myRAM.fill(0);
 
-  myTimer = mySystem->randGenerator().next() & 0xff;
+  myTimer = mySystem->randGenerator().next() & 0xffU;
   myDivider = 1024;
   myDividerShift = 10;
   mySubTimer = 0;
@@ -106,8 +106,8 @@ void M6532::bindToControllers()
 FORCE_INLINE bool M6532::samplePA7Raw() const
 {
   // If PA7 configured as output, RIOT drives the line
-  if(myDDRA & 0x80) [[unlikely]]
-    return (myOutA & 0x80) != 0;
+  if(myDDRA & 0x80U) [[unlikely]]
+    return (myOutA & 0x80U) != 0;
 
   // Otherwise sample external input
   return myLeftPort->getPin(Controller::DigitalPin::Four);
@@ -174,7 +174,7 @@ void M6532::updateEmulation()
 
   if((myInterruptFlag & TimerBit) != 0) [[unlikely]]
   {
-    myTimer = (myTimer - cycles) & 0xFF;
+    myTimer = (myTimer - cycles) & 0xFFU;
     myWrappedThisCycle = myTimer == 0xFF;
   }
 
@@ -210,7 +210,7 @@ void M6532::installDelegate(System& system, Device& device)
   //    (addr & 0x0300) == 0x0100 is Stack  (A8 is 1, A9 is 0)
   //    (addr & 0x0300) == 0x0000 is ZP RAM (A8 is 0, A9 is 0)
   for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if((addr & 0x0080) == 0x0080)
+    if((addr & 0x0080U) == 0x0080)
       mySystem->setPageAccess(addr, access);
 }
 
@@ -222,14 +222,14 @@ uInt8 M6532::peek(uInt16 addr)
   // A9 distinguishes I/O registers from ZP RAM
   // A9 = 1 is read from I/O
   // A9 = 0 is read from RAM
-  if((addr & 0x0200) == 0x0000) [[likely]]
-    return myRAM[addr & 0x007f];
+  if((addr & 0x0200U) == 0x0000) [[likely]]
+    return myRAM[addr & 0x007fU];
 
-  switch(addr & 0x07)
+  switch(addr & 0x07U)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      const uInt8 value = (myLeftPort->read() << 4) | myRightPort->read();
+      const uInt8 value = (myLeftPort->read() << 4U) | myRightPort->read();
 
       // Each pin is high (1) by default and will only go low (0) if either
       //  (a) External device drives the pin low
@@ -294,27 +294,27 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   // A9 distinguishes I/O registers from ZP RAM
   // A9 = 1 is write to I/O
   // A9 = 0 is write to RAM
-  if((addr & 0x0200) == 0x0000) [[likely]]
+  if((addr & 0x0200U) == 0x0000) [[likely]]
   {
-    myRAM[addr & 0x007f] = value;
+    myRAM[addr & 0x007fU] = value;
     return true;
   }
 
   // A2 distinguishes I/O registers from the timer
   // A2 = 1 is write to timer
   // A2 = 0 is write to I/O
-  if((addr & 0x04) != 0)
+  if((addr & 0x04U) != 0)
   {
     // A4 = 1 is write to TIMxT (x = 1, 8, 64, 1024)
     // A4 = 0 is write to edge detect control
-    if((addr & 0x10) != 0)
-      setTimerRegister(value, addr & 0x03);  // A1A0 determines interval
+    if((addr & 0x10U) != 0)
+      setTimerRegister(value, addr & 0x03U);  // A1A0 determines interval
     else
-      myEdgeDetectPositive = addr & 0x01;    // A0 determines direction
+      myEdgeDetectPositive = addr & 0x01U;    // A0 determines direction
   }
   else
   {
-    switch(addr & 0x03)
+    switch(addr & 0x03U)
     {
       case 0:     // SWCHA - Port A I/O Register (Joystick)
         myOutA = value;
@@ -379,14 +379,14 @@ void M6532::setPinState(bool swcha)
   */
   const uInt8 ioport = myOutA | ~myDDRA;
 
-  myLeftPort->write (Controller::DigitalPin::One,   ioport & 0b00010000);
-  myLeftPort->write (Controller::DigitalPin::Two,   ioport & 0b00100000);
-  myLeftPort->write (Controller::DigitalPin::Three, ioport & 0b01000000);
-  myLeftPort->write (Controller::DigitalPin::Four,  ioport & 0b10000000);
-  myRightPort->write(Controller::DigitalPin::One,   ioport & 0b00000001);
-  myRightPort->write(Controller::DigitalPin::Two,   ioport & 0b00000010);
-  myRightPort->write(Controller::DigitalPin::Three, ioport & 0b00000100);
-  myRightPort->write(Controller::DigitalPin::Four,  ioport & 0b00001000);
+  myLeftPort->write (Controller::DigitalPin::One,   ioport & 0b00010000U);
+  myLeftPort->write (Controller::DigitalPin::Two,   ioport & 0b00100000U);
+  myLeftPort->write (Controller::DigitalPin::Three, ioport & 0b01000000U);
+  myLeftPort->write (Controller::DigitalPin::Four,  ioport & 0b10000000U);
+  myRightPort->write(Controller::DigitalPin::One,   ioport & 0b00000001U);
+  myRightPort->write(Controller::DigitalPin::Two,   ioport & 0b00000010U);
+  myRightPort->write(Controller::DigitalPin::Three, ioport & 0b00000100U);
+  myRightPort->write(Controller::DigitalPin::Four,  ioport & 0b00001000U);
 
   if(swcha)
   {

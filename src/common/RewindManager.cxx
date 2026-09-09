@@ -359,7 +359,7 @@ string RewindManager::getUnitString(Int64 cycles)
     "cycle", "scanline", "frame", "second", "minute"
   };
   const std::array<uInt64, UNIT_NAMES.size() + 1> UNIT_CYCLES = {
-    1, 76, 76 * scanlines, freq, freq * 60, uInt64{1} << 62
+    1, 76, 76 * scanlines, freq, freq * 60, uInt64{1} << 62U
   };
 
   const uInt64 u_cycles = std::abs(cycles);

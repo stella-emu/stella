@@ -24,5 +24,5 @@ Cartridge3EX::Cartridge3EX(ByteSpan image, string_view md5,
 {
   // 0xFFFA contains RAM bank count - 1;
   myRamBankCount = image[image.size() - 6] + 1;
-  myRamSize = static_cast<size_t>(myBankSize >> 1) * myRamBankCount;
+  myRamSize = static_cast<size_t>(myBankSize >> 1U) * myRamBankCount;
 }

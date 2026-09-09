@@ -58,11 +58,11 @@ void CartridgeEnhanced::install(System& system)
     myRamBankShift = myBankShift - 1;
 
   // limit banked RAM size to the size of one RAM bank
-  const uInt16 ramSize = myRamBankCount > 0 ? 1 << myRamBankShift :
+  const uInt16 ramSize = myRamBankCount > 0 ? 1U << myRamBankShift :
     static_cast<uInt16>(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
-  myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
+  myBankSize = 1U << myBankShift;                   // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
   myBankSegs = calcNumSegments();
   // ROM has an offset if RAM inside a bank (e.g. for F8SC)
@@ -155,7 +155,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 
   // hotspots in TIA range are reacting to pokes only
   if(hotspot() >= 0x80 && checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
-    return myRWPRandomValues[address & 0xFF];
+    return myRWPRandomValues[address & 0xFFU];
 
   if(isRamBank(address))
   {
@@ -201,7 +201,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 
     if(isRamBank(address))
     {
-      if(static_cast<bool>(address & (myBankSize >> 1)) == myRamWpHigh
+      if(static_cast<bool>(address & (myBankSize >> 1U)) == myRamWpHigh
         || myBankShift == myRamBankShift)
       {
         address &= myRamMask;
@@ -243,8 +243,8 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Remember what bank is in this segment
     const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     const uInt16 hotspot = this->hotspot();
-    const uInt16 hotSpotAddr = (hotspot & 0x1000) ? (hotspot & ~System::PAGE_MASK) : 0xFFFF;
-    const uInt16 plusROMAddr = myPlusROM->isValid() ? (0x1FF0 & ~System::PAGE_MASK) : 0xFFFF;
+    const uInt16 hotSpotAddr = (hotspot & 0x1000U) ? (hotspot & ~System::PAGE_MASK) : 0xFFFF;
+    const uInt16 plusROMAddr = myPlusROM->isValid() ? (0x1FF0U & ~System::PAGE_MASK) : 0xFFFF;
 
     // Skip extra RAM; if existing it is only mapped into first segment
     const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
@@ -345,8 +345,8 @@ uInt16 CartridgeEnhanced::calcNumSegments() const
 {
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
-  return std::min(1 << (MAX_BANK_SHIFT - myBankShift),
-                  static_cast<int>(myImage.size()) / myBankSize);  // e.g. = 1
+  return std::min(1U << (MAX_BANK_SHIFT - myBankShift),
+                  static_cast<uInt32>(myImage.size()) / myBankSize);  // e.g. = 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

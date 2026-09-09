@@ -204,12 +204,12 @@ string CartDebug::toString()
     {
       out += DebuggerParser::red(std::format(
         "{}xx: (rport = {}, wport = {})\n",
-        Base::hex2(state.rport[i] >> 8), Base::hex4(state.rport[i]), Base::hex4(state.wport[i])
+        Base::hex2(state.rport[i] >> 8U), Base::hex4(state.rport[i]), Base::hex4(state.wport[i])
       ));
       bytesSoFar = 0;
     }
     curraddr = state.rport[i];
-    out += Base::hex2(curraddr & 0x00ff);
+    out += Base::hex2(curraddr & 0x00ffU);
     out += ": ";
 
     for(uInt32 j = 0; j < bytesPerLine; ++j)
@@ -230,7 +230,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
   const Cartridge& cart = myConsole.cartridge();
   const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
-  const int addrBank = (address & 0x1000)
+  const int addrBank = (address & 0x1000U)
     ? getBank(address) : static_cast<int>(myBankInfo.size()) - 1;
 
   if(segCount > 1)
@@ -300,8 +300,8 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
   const int pcline = addressToLine(PC);
   const bool pcfound = (pcline != -1) && (static_cast<uInt32>(pcline) < disassembly.list.size()) &&
                        (disassembly.list[pcline].disasm[0] != '.');
-  const bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
-                                         mySystem.isPageDirty(0x80, 0xFF);
+  const bool pagedirty = (PC & 0x1000U) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
+                                          mySystem.isPageDirty(0x80, 0xFF);
   const bool changed = !mySystem.autodetectMode() &&
                        (force || bankChanged || !pcfound || pagedirty);
   if(changed)
@@ -316,7 +316,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // $bxxx, it must be changed
     const uInt16 bankSz = myConsole.cartridge().bankSize(bank);
     const auto addrMask = static_cast<uInt16>(bankSz - 1);
-    const uInt16 offset = (PC & 0x1000)
+    const uInt16 offset = (PC & 0x1000U)
       ? myConsole.cartridge().bankOrigin(bank, PC)
       : 0;
     if (offset && (info.offset == 0 || mySystem.addressBits() == 16))
@@ -367,7 +367,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
   // We place those parts in separate maps, to speed up access
   bool found = false;
 
-  myAddrToLineIsROM = info.offset & 0x1000;
+  myAddrToLineIsROM = info.offset & 0x1000U;
   for(uInt32 i = 0; i < disassembly.list.size(); ++i)
   {
     const DisassemblyTag& tag = disassembly.list[i];
@@ -392,7 +392,7 @@ int CartDebug::addressToLine(uInt16 address) const
 {
   // Switching between ZP RAM address space and Cart/ROM address space
   // means the line isn't present
-  if(!myAddrToLineIsROM != !(address & 0x1000))
+  if(!myAddrToLineIsROM != !(address & 0x1000U))
     return -1;
 
   const auto& iter = myAddrToLineList.find(address & mySystem.addressMask());
@@ -649,14 +649,14 @@ bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
     {
       if(isRead)
       {
-        const uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
+        const uInt16 a = addr & 0x0FU, offset = addr & 0xFFF0U;
         buf << ourTIAMnemonicR[a];
         if(offset > 0)
           buf << "|$" << Base::HEX2 << offset;
       }
       else
       {
-        const uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
+        const uInt16 a = addr & 0x3FU, offset = addr & 0xFFC0U;
         buf << ourTIAMnemonicW[a];
         if(offset > 0)
           buf << "|$" << Base::HEX2 << offset;
@@ -666,7 +666,7 @@ bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
 
     case AddrType::IO:
     {
-      const uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
+      const uInt16 a = addr & 0xFFU, offset = addr & 0xFD00U;
       if(a <= 0x9F)
       {
         buf << ourIOMnemonic[a - 0x80];
@@ -687,7 +687,7 @@ bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
     {
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
-      const uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
+      const uInt16 a = addr & 0xFFU, offset = addr & 0xFF00U;
       bool found = false;
 
       // Search for nearest label
@@ -716,7 +716,7 @@ bool CartDebug::getLabel(std::ostream& buf, uInt16 addr, bool isRead,
       if(isRam) // cartridge RAM
       {
         // Search for nearest label
-        for(uInt16 i = addr; i >= (addr & 0xf000); --i)
+        for(uInt16 i = addr; i >= (addr & 0xf000U); --i)
         {
           if(const auto& iter = myUserLabels.find(i); iter != myUserLabels.end())
           {
@@ -1201,11 +1201,11 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr)
   // map, found at http://www.qotile.net/minidig/docs/2600_mem_map.txt
   if(addr % 0x2000 < 0x1000)
   {
-    if((addr & 0x00ff) < 0x80)
+    if((addr & 0x00ffU) < 0x80)
       return AddrType::TIA;
     else
     {
-      switch(addr & 0x0f00)
+      switch(addr & 0x0f00U)
       {
         case 0x100:
           return AddrType::STACK;
@@ -1261,11 +1261,11 @@ string CartDebug::getBankDirectives(const BankInfo& info) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::accessTypeAsString(uInt16 addr) const
 {
-  if(!(addr & 0x1000))
+  if(!(addr & 0x1000U))
     return DebuggerParser::red("type only defined for cart address space");
 
-  const uInt8 directive = myDisDirectives[addr & mySystem.addressMask()] & 0xFC,
-              debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
+  const uInt8 directive = myDisDirectives[addr & mySystem.addressMask()] & 0xFCU,
+              debugger  = myDebugger.getAccessFlags(addr) & 0xFCU,
               label     = myDisLabels[addr & mySystem.addressMask()];
 
   string out;

@@ -201,7 +201,7 @@ void FrameLayoutDetector::onNextLine()
 void FrameLayoutDetector::pixelColor(uInt8 color)
 {
   if(myTotalFrames > Metrics::initialGarbageFrames)
-    myColorCount[color >> 1]++;
+    myColorCount[color >> 1U]++;
   // Ideas:
   // - contrast to previous pixels (left/top)
   // - ???

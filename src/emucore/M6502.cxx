@@ -85,7 +85,7 @@ void M6502::reset()
   // Load PC from the reset vector
   // Note: ELF needs the correct order here!
   PC = static_cast<uInt16>(mySystem->peek(0xfffc));
-  PC |= (static_cast<uInt16>(mySystem->peek(0xfffd)) << 8);
+  PC |= (static_cast<uInt16>(mySystem->peek(0xfffd)) << 8U);
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress =
     myLastPeekBaseAddress = myLastPokeBaseAddress = 0;

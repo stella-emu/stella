@@ -57,27 +57,27 @@ public:
       }
 
       // Minimal UTF-8 decoding (assumes valid input)
-      if((cp >> 5) == 0x6)               // 2-byte
+      if((cp >> 5U) == 0x6)               // 2-byte
       {
         if(s >= end) break;
         const uInt32 b1 = *s++;
-        cp = ((cp & 0x1F) << 6) | (b1 & 0x3F);
+        cp = ((cp & 0x1FU) << 6U) | (b1 & 0x3FU);
       }
-      else if((cp >> 4) == 0xE)          // 3-byte
+      else if((cp >> 4U) == 0xE)          // 3-byte
       {
         if(end - s < 2) break;
         const uInt32 b1 = *s++;
         const uInt32 b2 = *s++;
-        cp = ((cp & 0x0F) << 12) | ((b1 & 0x3F) << 6) | (b2 & 0x3F);
+        cp = ((cp & 0x0FU) << 12U) | ((b1 & 0x3FU) << 6U) | (b2 & 0x3FU);
       }
-      else if((cp >> 3) == 0x1E)         // 4-byte
+      else if((cp >> 3U) == 0x1E)         // 4-byte
       {
         if(end - s < 3) break;
         const uInt32 b1 = *s++;
         const uInt32 b2 = *s++;
         const uInt32 b3 = *s++;
-        cp = ((cp & 0x07) << 18) | ((b1 & 0x3F) << 12) |
-             ((b2 & 0x3F) << 6)  |  (b3 & 0x3F);
+        cp = ((cp & 0x07U) << 18U) | ((b1 & 0x3FU) << 12U) |
+             ((b2 & 0x3FU) << 6U)  |  (b3 & 0x3FU);
       }
 
       // Branch-minimized folding

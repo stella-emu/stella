@@ -166,7 +166,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   for(int y = 0; y < glyph.h; ++y)
   {
     for(int x = 0; x < glyph.w; ++x)
-      if(mask[x >> 3] & (0x80 >> (x & 7)))
+      if(mask[x >> 3] & (0x80U >> (x & 7)))
         buffer[x] = ink;
 
     mask += glyph.stride;
@@ -191,9 +191,9 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
 
   for(uInt32 y = 0; y < h; ++y)
   {
-    uInt32 mask = 1 << (w - 1);
+    uInt32 mask = 1U << (w - 1);
 
-    for(uInt32 x = 0; x < w; ++x, mask >>= 1)
+    for(uInt32 x = 0; x < w; ++x, mask >>= 1U)
       if(rows[y] & mask)
         buffer[x] = ink;
 

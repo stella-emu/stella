@@ -74,13 +74,13 @@ void Player::grp(uInt8 pattern)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::hmp(uInt8 value)
 {
-  myHmmClocks = (value >> 4) ^ 0x08;
+  myHmmClocks = (value >> 4U) ^ 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::nusiz(uInt8 value, bool hblank)
 {
-  myDecodesOffset = value & 0x07;
+  myDecodesOffset = value & 0x07U;
 
   switch (myDecodesOffset) {
     case 5:
@@ -128,7 +128,7 @@ void Player::nusiz(uInt8 value, bool hblank)
   if (myIsRendering) {
     const Int8 delta = myRenderCounter - Count::renderCounterOffset;
 
-    switch ((myDivider << 4) | myDividerPending) {
+    switch ((myDivider << 4U) | myDividerPending) {
       case 0x12:
       case 0x14:
         if (hblank) {
@@ -196,7 +196,7 @@ void Player::refp(uInt8 value)
 {
   const bool oldIsReflected = myIsReflected;
 
-  myIsReflected = (value & 0x08) > 0;
+  myIsReflected = (value & 0x08U) > 0;
 
   if (oldIsReflected != myIsReflected) {
     // REFP changed: updatePattern() will re-bit-reverse myPattern, so
@@ -212,7 +212,7 @@ void Player::vdelp(uInt8 value)
 {
   const bool oldIsDelaying = myIsDelaying;
 
-  myIsDelaying = (value & 0x01) > 0;
+  myIsDelaying = (value & 0x01U) > 0;
 
   if (oldIsDelaying != myIsDelaying) {
     // VDEL flip switches which of myPatternOld/New is rendered — the live
@@ -235,7 +235,7 @@ void Player::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -308,7 +308,7 @@ void Player::nextLine()
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -367,19 +367,19 @@ void Player::updatePattern()
 
   if (!myIsReflected) {
     myPattern = (
-      ((myPattern & 0x01) << 7) |
-      ((myPattern & 0x02) << 5) |
-      ((myPattern & 0x04) << 3) |
-      ((myPattern & 0x08) << 1) |
-      ((myPattern & 0x10) >> 1) |
-      ((myPattern & 0x20) >> 3) |
-      ((myPattern & 0x40) >> 5) |
-      ((myPattern & 0x80) >> 7)
+      ((myPattern & 0x01U) << 7) |
+      ((myPattern & 0x02U) << 5) |
+      ((myPattern & 0x04U) << 3) |
+      ((myPattern & 0x08U) << 1) |
+      ((myPattern & 0x10U) >> 1) |
+      ((myPattern & 0x20U) >> 3) |
+      ((myPattern & 0x40U) >> 5) |
+      ((myPattern & 0x80U) >> 7)
     );
   }
 
   if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
   }
 }
 
@@ -395,8 +395,8 @@ void Player::applyColors()
 {
   if (!myDebugEnabled)
   {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01U;
+    else                          myObjectColor &= 0xfeU;
     myColor = myObjectColor;
   }
   else
@@ -529,12 +529,12 @@ bool Player::load(Serializer& in)
     // Masked as myDecodesOffset is below: used as a shift count (1 <<
     // mySampleCounter) in tick(), so a corrupt save file must not push it
     // past the 8 pixels a player sprite actually has
-    mySampleCounter = in.getByte() & 0x07;
+    mySampleCounter = in.getByte() & 0x07U;
     myDividerChangeCounter = in.getByte();
 
     // Mask as in setNusiz(); the decode table has only 8 entries, so an
     // out-of-range offset from a corrupt save file must not index past it
-    myDecodesOffset = in.getByte() & 0x07;
+    myDecodesOffset = in.getByte() & 0x07U;
     myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
 
     myPatternOld = in.getByte();

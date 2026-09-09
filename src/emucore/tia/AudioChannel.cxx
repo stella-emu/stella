@@ -29,16 +29,16 @@ void AudioChannel::reset()
 void AudioChannel::phase0()
 {
   if (myClockEnable) {
-    myNoiseCounterBit4 = myNoiseCounter & 0x01;
+    myNoiseCounterBit4 = myNoiseCounter & 0x01U;
 
-    switch (myAudc & 0x03) {
+    switch (myAudc & 0x03U) {
       case 0x00:
       case 0x01:
         myPulseCounterHold = false;
         break;
 
       case 0x02:
-        myPulseCounterHold = (myNoiseCounter & 0x1e) != 0x02;
+        myPulseCounterHold = (myNoiseCounter & 0x1eU) != 0x02;
         break;
 
       case 0x03:
@@ -49,14 +49,14 @@ void AudioChannel::phase0()
         std::unreachable();
     }
 
-    if ((myAudc & 0x03) == 0x00) {
+    if ((myAudc & 0x03U) == 0x00) {
       myNoiseFeedback =
         ((myPulseCounter ^ myNoiseCounter) & 0x01) ||
         !(myNoiseCounter || (myPulseCounter != 0x0a)) ||
-        !(myAudc & 0x0c);
+        !(myAudc & 0x0cU);
     } else {
       myNoiseFeedback =
-        (((myNoiseCounter & 0x04) ? 1 : 0) ^ (myNoiseCounter & 0x01)) ||
+        (((myNoiseCounter & 0x04U) ? 1 : 0) ^ (myNoiseCounter & 0x01U)) ||
         myNoiseCounter == 0;
     }
   }
@@ -75,16 +75,16 @@ void AudioChannel::phase1()
 {
   if (myClockEnable) {
     bool pulseFeedback = false;
-    switch (myAudc >> 2) {
+    switch (myAudc >> 2U) {
       case 0x00:
         pulseFeedback =
-          (((myPulseCounter & 0x02) ? 1 : 0) ^ (myPulseCounter & 0x01)) &&
+          (((myPulseCounter & 0x02U) ? 1 : 0) ^ (myPulseCounter & 0x01U)) &&
           (myPulseCounter != 0x0a) &&
-          (myAudc & 0x03);
+          (myAudc & 0x03U);
         break;
 
       case 0x01:
-        pulseFeedback = !(myPulseCounter & 0x08);
+        pulseFeedback = !(myPulseCounter & 0x08U);
         break;
 
       case 0x02:
@@ -92,23 +92,23 @@ void AudioChannel::phase1()
         break;
 
       case 0x03:
-        pulseFeedback = !((myPulseCounter & 0x02) || !(myPulseCounter & 0x0e));
+        pulseFeedback = !((myPulseCounter & 0x02U) || !(myPulseCounter & 0x0eU));
         break;
 
       default:
         break;
     }
 
-    myNoiseCounter >>= 1;
+    myNoiseCounter >>= 1U;
     if (myNoiseFeedback) {
-      myNoiseCounter |= 0x10;
+      myNoiseCounter |= 0x10U;
     }
 
     if (!myPulseCounterHold) {
-      myPulseCounter = ~(myPulseCounter >> 1) & 0x07;
+      myPulseCounter = ~(myPulseCounter >> 1U) & 0x07;
 
       if (pulseFeedback) {
-        myPulseCounter |= 0x08;
+        myPulseCounter |= 0x08U;
       }
     }
   }

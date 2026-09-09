@@ -53,15 +53,15 @@ void Playfield::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf0(uInt8 value)
 {
-  if (myPf0 == value >> 4) return;
+  if (myPf0 == value >> 4U) return;
 
   // PF0 nibble changed — the low 4 bits of the 20-bit pattern shift in,
   // and any pixels already drawn on this line used the old pattern. The
   // early return above is an optimization.
   myTIA->flushLineCache();
 
-  myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
-  myPf0 = value >> 4;
+  myPattern = (myPattern & 0x000FFFF0U) | (value >> 4U);
+  myPf0 = value >> 4U;
 
   updatePattern();
 }
@@ -74,15 +74,15 @@ void Playfield::pf1(uInt8 value)
   // PF1 byte changed — bit-shuffled into the middle 8 bits of myPattern.
   myTIA->flushLineCache();
 
-  myPattern = (myPattern & 0x000FF00F)
-    | ((value & 0x80) >> 3)
-    | ((value & 0x40) >> 1)
-    | ((value & 0x20) << 1)
-    | ((value & 0x10) << 3)
-    | ((value & 0x08) << 5)
-    | ((value & 0x04) << 7)
-    | ((value & 0x02) << 9)
-    | ((value & 0x01) << 11);
+  myPattern = (myPattern & 0x000FF00FU)
+    | ((value & 0x80U) >> 3)
+    | ((value & 0x40U) >> 1)
+    | ((value & 0x20U) << 1)
+    | ((value & 0x10U) << 3)
+    | ((value & 0x08U) << 5)
+    | ((value & 0x04U) << 7)
+    | ((value & 0x02U) << 9)
+    | ((value & 0x01U) << 11);
 
   myPf1 = value;
   updatePattern();
@@ -96,7 +96,7 @@ void Playfield::pf2(uInt8 value)
   // PF2 byte changed — slotted into the high 8 bits of myPattern.
   myTIA->flushLineCache();
 
-  myPattern = (myPattern & 0x00000FFF) | (value << 12);
+  myPattern = (myPattern & 0x00000FFFU) | (value << 12U);
   myPf2 = value;
 
   updatePattern();
@@ -105,8 +105,8 @@ void Playfield::pf2(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::ctrlpf(uInt8 value)
 {
-  const bool reflected = (value & 0x01) > 0;
-  const ColorMode colorMode = (value & 0x06) == 0x02 ? ColorMode::score : ColorMode::normal;
+  const bool reflected = (value & 0x01U) > 0;
+  const ColorMode colorMode = (value & 0x06U) == 0x02 ? ColorMode::score : ColorMode::normal;
 
   if (myReflected == reflected && myColorMode == colorMode) return;
 
@@ -132,7 +132,7 @@ void Playfield::toggleEnabled(bool enabled)
 void Playfield::toggleCollisions(bool enabled)
 {
   // Only keep bit 15 active if collisions are disabled.
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,9 +180,9 @@ void Playfield::setDebugColor(uInt8 color)
   // Debug palette override changed.
   myTIA->flushLineCache();
   // allow slight luminance variations without changing color
-  if((color & 0xe) == 0xe)
+  if((color & 0xeU) == 0xe)
     color -= 2;
-  if((color & 0xe) == 0x0)
+  if((color & 0xeU) == 0x0)
     color += 2;
   myDebugColor = color;
   applyColors();
@@ -222,21 +222,21 @@ void Playfield::applyColors()
     {
       case ColorMode::normal:
         if (myTIA->colorLossActive())
-          myColorLeft = myColorRight = myObjectColor |= 0x01;
+          myColorLeft = myColorRight = myObjectColor |= 0x01U;
         else
-          myColorLeft = myColorRight = myObjectColor &= 0xfe;
+          myColorLeft = myColorRight = myObjectColor &= 0xfeU;
         break;
 
       case ColorMode::score:
         if (myTIA->colorLossActive())
         {
-          myColorLeft  = myColorP0 |= 0x01;
-          myColorRight = myColorP1 |= 0x01;
+          myColorLeft  = myColorP0 |= 0x01U;
+          myColorRight = myColorP1 |= 0x01U;
         }
         else
         {
-          myColorLeft  = myColorP0 &= 0xfe;
-          myColorRight = myColorP1 &= 0xfe;
+          myColorLeft  = myColorP0 &= 0xfeU;
+          myColorRight = myColorP1 &= 0xfeU;
         }
         break;
 

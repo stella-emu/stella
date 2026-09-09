@@ -57,13 +57,13 @@ class System : public Serializable
     static constexpr uInt16 PAGE_SHIFT = 6;
 
     // Size of a page
-    static constexpr uInt16 PAGE_SIZE = (1 << PAGE_SHIFT);
+    static constexpr uInt16 PAGE_SIZE = (1U << PAGE_SHIFT);
 
     // Mask to apply to an address to obtain its page offset
     static constexpr uInt16 PAGE_MASK = PAGE_SIZE - 1;
 
     // Maximum number of pages (sized for full 16-bit address space)
-    static constexpr uInt16 MAX_NUM_PAGES = 1 << (16 - PAGE_SHIFT);
+    static constexpr uInt16 MAX_NUM_PAGES = 1U << (16U - PAGE_SHIFT);
 
   public:
     // Determines the number of address lines to use for this System
@@ -289,8 +289,8 @@ class System : public Serializable
       Describes how a page can be accessed
     */
     enum class PageAccessType: uInt8 {
-      READ      = 1 << 0,
-      WRITE     = 1 << 1,
+      READ      = 1U,
+      WRITE     = 2U,
       READWRITE = READ | WRITE
     };
 

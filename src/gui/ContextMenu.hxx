@@ -138,7 +138,7 @@ class ContextMenu : public Dialog, public CommandSender
       font this is 8, the size the old small bitmap had.
     */
     static int arrowSize(const GUI::Font& font) {
-      return (font.getMaxCharWidth() * 8 / 9) & ~1;
+      return (font.getMaxCharWidth() * 8 / 9) & ~1U;
     }
 
     /**

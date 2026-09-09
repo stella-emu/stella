@@ -44,7 +44,7 @@ void AnalogReadout::vblank(uInt8 value, uInt64 timestamp)
 
   const bool oldIsDumped = myIsDumped;
 
-  if (value & 0x80) {
+  if (value & 0x80U) {
     myIsDumped = true;
   } else if (oldIsDumped) {
     myIsDumped = false;

@@ -75,7 +75,7 @@ void Audio::createSample()
 
   addSample(sample0, sample1);
   if(myRewindMode)
-    mySamples.push_back(sample0 | (sample1 << 4));
+    mySamples.push_back(sample0 | (sample1 << 4U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,8 +206,8 @@ bool Audio::loadSamples(Serializer& in)
     for(auto i = 0UZ; i < sampleSize; ++i)
     {
       const uInt8 sample = samples[i];
-      const uInt8 sample0 = sample & 0x0f;
-      const uInt8 sample1 = sample >> 4;
+      const uInt8 sample0 = sample & 0x0fU;
+      const uInt8 sample1 = sample >> 4U;
 
       addSample(sample0, sample1);
     }

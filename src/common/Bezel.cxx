@@ -178,7 +178,7 @@ bool Bezel::load()
       const uInt32 xCenter = w >> 1;
       top = borderSize(xCenter, 0, h, w);
       bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);
-      const uInt32 yCenter = (bottom + top) >> 1;
+      const uInt32 yCenter = (bottom + top) >> 1U;
       left = borderSize(0, yCenter, w, 1);
       right = w - 1 - borderSize(w - 1, yCenter, w, -1);
     }

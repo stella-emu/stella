@@ -164,7 +164,7 @@ class Player : public Serializable
     /**
       Is the player currently visible? Determined from bit 15 of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000U); }
 
     /**
       True when the player is actively rendering its main copy and the graphics
@@ -377,7 +377,7 @@ void Player::tickClkpInHblank()
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -394,7 +394,7 @@ void Player::tick()
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   if (myDecodes[myCounter]) [[unlikely]] {
     myIsRendering = true;

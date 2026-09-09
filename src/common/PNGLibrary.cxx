@@ -269,7 +269,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 void PNGLibrary::updateTime(uInt64 time)
 {
   if(mySnapInterval > 0 && (++mySnapCounter) % mySnapInterval == 0)
-    takeSnapshot(static_cast<uInt32>(time >> 10));  // not quite milliseconds, but close enough
+    takeSnapshot(static_cast<uInt32>(time >> 10U));  // not quite milliseconds, but close enough
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,7 +325,7 @@ Common::Rect PNGLibrary::croppedRect(const FBSurface& surface,
   // A pixel is 'black' once its color channels are all zero (the high
   // byte is alpha/filler and is ignored)
   const auto isBlack = [](uInt32 pixel) {
-    return (pixel & 0x00FFFFFF) == 0;
+    return (pixel & 0x00FFFFFFU) == 0;
   };
   const auto rowIsBlack = [&](uInt32 y, uInt32 x0, uInt32 x1) {
     const uInt32* row = base + static_cast<size_t>(y) * pitch;

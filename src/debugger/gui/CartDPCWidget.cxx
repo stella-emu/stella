@@ -32,7 +32,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   const size_t size = cart.myImage.size();
 
   const auto bankStart = [&](uInt32 offset) -> uInt16 {
-    const uInt16 s = (cart.myImage[offset + 1] << 8) | cart.myImage[offset];
+    const uInt16 s = (cart.myImage[offset + 1] << 8U) | cart.myImage[offset];
     return s - s % 0x1000;
   };
   string info =

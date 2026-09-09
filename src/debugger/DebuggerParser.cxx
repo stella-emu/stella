@@ -2715,18 +2715,18 @@ void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
     switch(CartDebug::addressType(static_cast<uInt16>(addr)))
     {
       case CartDebug::AddrType::TIA:
-        tiaReadKeys  |= static_cast<uInt16>(1U << (addr & 0x000F));
-        tiaWriteKeys |= 1ULL << (addr & 0x003F);
+        tiaReadKeys  |= static_cast<uInt16>(1U << (addr & 0x000FU));
+        tiaWriteKeys |= 1ULL << (addr & 0x003FU);
         break;
       case CartDebug::AddrType::IO:
-        ioKeys.set(addr & 0x029F);
+        ioKeys.set(addr & 0x029FU);
         break;
       case CartDebug::AddrType::ZPRAM:
-        zpramKeys.set(addr & 0x00FF);
+        zpramKeys.set(addr & 0x00FFU);
         break;
       case CartDebug::AddrType::ROM:
         if(addr >= 0x1000)
-          romKeys.set(addr & 0x0FFF);
+          romKeys.set(addr & 0x0FFFU);
         break;
       default:
         break;
@@ -2736,18 +2736,18 @@ void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
   // Single pass through the mirror space to apply traps
   for(uInt32 i = 0; i <= 0xFFFF; ++i)
   {
-    if((i & 0x1080) == 0x0000)  // TIA mirror
+    if((i & 0x1080U) == 0x0000)  // TIA mirror
     {
-      if(read  && (tiaReadKeys  & (1U   << (i & 0x000F))))
+      if(read  && (tiaReadKeys  & (1U   << (i & 0x000FU))))
         add ? debugger.addReadTrap(i)  : debugger.removeReadTrap(i);
-      if(write && (tiaWriteKeys & (1ULL << (i & 0x003F))))
+      if(write && (tiaWriteKeys & (1ULL << (i & 0x003FU))))
         add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
     }
-    else if((i & 0x1280) == 0x0280 && ioKeys.test(i & 0x029F))
+    else if((i & 0x1280U) == 0x0280 && ioKeys.test(i & 0x029FU))
       setTraps(i);
-    else if((i & 0x1280) == 0x0080 && zpramKeys.test(i & 0x00FF))
+    else if((i & 0x1280U) == 0x0080 && zpramKeys.test(i & 0x00FFU))
       setTraps(i);
-    else if((i % 0x2000 >= 0x1000) && romKeys.test(i & 0x0FFF))
+    else if((i % 0x2000 >= 0x1000) && romKeys.test(i & 0x0FFFU))
       setTraps(i);
   }
 }

@@ -174,37 +174,37 @@ class Cartridge4A50 : public Cartridge
     */
     void bankROMLower(uInt16 value) {
       myIsRomLow = true;
-      mySliceLow = value << 11;
+      mySliceLow = value << 11U;
       myBankChanged = true;
     }
 
     void bankRAMLower(uInt16 value) {
       myIsRomLow = false;
-      mySliceLow = value << 11;
+      mySliceLow = value << 11U;
       myBankChanged = true;
     }
 
     void bankROMMiddle(uInt16 value) {
       myIsRomMiddle = true;
-      mySliceMiddle = value << 11;
+      mySliceMiddle = value << 11U;
       myBankChanged = true;
     }
 
     void bankRAMMiddle(uInt16 value) {
       myIsRomMiddle = false;
-      mySliceMiddle = value << 11;
+      mySliceMiddle = value << 11U;
       myBankChanged = true;
     }
 
     void bankROMHigh(uInt16 value) {
       myIsRomHigh = true;
-      mySliceHigh = value << 8;
+      mySliceHigh = value << 8U;
       myBankChanged = true;
     }
 
     void bankRAMHigh(uInt16 value) {
       myIsRomHigh = false;
-      mySliceHigh = value << 8;
+      mySliceHigh = value << 8U;
       myBankChanged = true;
     }
 

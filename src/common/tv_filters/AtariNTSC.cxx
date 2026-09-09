@@ -34,9 +34,9 @@ void AtariNTSC::setPalette(const PaletteArray& palette)
   uInt8* ptr = myRGBPalette.data();  // NOLINT(misc-const-correctness)
   for(const auto p: palette)
   {
-    *ptr++ = (p >> 16) & 0xff;
-    *ptr++ = (p >> 8) & 0xff;
-    *ptr++ = p & 0xff;
+    *ptr++ = (p >> 16U) & 0xffU;
+    *ptr++ = (p >> 8U) & 0xffU;
+    *ptr++ = p & 0xffU;
   }
   generateKernels();
 }

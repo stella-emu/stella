@@ -71,7 +71,7 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
   // implementing a stricter scheme here to get Decathlon to start in bank 0.
   if(myLastAccessWasFE)
   {
-    bank((value >> 5) ^ 0b111);
+    bank((value >> 5U) ^ 0b111);
     myLastAccessWasFE = false; // was: address == 0x01FE;
     return true;
   }

@@ -398,7 +398,7 @@ string CartDisassemblyWriter::save(string path)
   for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
     addrUsed = addrUsed || myCartDebug.myReserved.ZPRAM[addr-0x80]
       || (myCartDebug.mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE))
-      || (myCartDebug.mySystem.getAccessFlags(addr|0x100) &
+      || (myCartDebug.mySystem.getAccessFlags(addr|0x100U) &
          (Device::DATA | Device::WRITE));
   if(addrUsed)
   {
@@ -412,7 +412,7 @@ string CartDisassemblyWriter::save(string path)
       const bool ramUsed = (myCartDebug.mySystem.getAccessFlags(addr) &
                            (Device::DATA | Device::WRITE));
       const bool codeUsed = (myCartDebug.mySystem.getAccessFlags(addr) & Device::CODE);
-      const bool stackUsed = (myCartDebug.mySystem.getAccessFlags(addr|0x100) &
+      const bool stackUsed = (myCartDebug.mySystem.getAccessFlags(addr|0x100U) &
                              (Device::DATA | Device::WRITE));
 
       if(myCartDebug.myReserved.ZPRAM[addr - 0x80] &&

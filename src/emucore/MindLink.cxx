@@ -61,7 +61,7 @@ void MindLink::nextMindlinkBit()
     setPin(DigitalPin::Four, false);
     if(myMindlinkPos & myMindlinkShift)
       setPin(DigitalPin::Four, true);
-    myMindlinkShift <<= 1; // next bit
+    myMindlinkShift <<= 1U; // next bit
   }
 }
 

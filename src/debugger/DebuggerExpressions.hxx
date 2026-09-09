@@ -189,7 +189,7 @@ class HiByteExpression : public Expression
     explicit HiByteExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return 0xff & (myLHS->evaluate() >> 8); }
+      { return 0xffU & (myLHS->evaluate() >> 8); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -219,7 +219,7 @@ class LoByteExpression : public Expression
     explicit LoByteExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return 0xff & myLHS->evaluate(); }
+      { return 0xffU & myLHS->evaluate(); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

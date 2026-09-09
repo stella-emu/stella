@@ -79,11 +79,11 @@ enum class JoyHatDir: uInt8 {
 
 enum class JoyHatMask: uInt8 {
   NONE   = 0,
-  UP     = 1 << 0,
-  DOWN   = 1 << 1,
-  LEFT   = 1 << 2,
-  RIGHT  = 1 << 3,
-  CENTER = 1 << 4
+  UP     = Bitmask::bit<JoyHatMask>(0),
+  DOWN   = Bitmask::bit<JoyHatMask>(1),
+  LEFT   = Bitmask::bit<JoyHatMask>(2),
+  RIGHT  = Bitmask::bit<JoyHatMask>(3),
+  CENTER = Bitmask::bit<JoyHatMask>(4)
 };
 template<> inline constexpr bool Bitmask::is_enum_v<JoyHatMask> = true;
 

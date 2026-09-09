@@ -33,7 +33,7 @@ string Cartridge3FWidget::description()
 {
   const ByteSpan image = myCart.getImage();
   const auto* end = image.data() + image.size();
-  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8) |
+  const uInt16 start = ((static_cast<uInt16>(end[-3]) << 8U) |
                             end[-4]) & ~uInt16{0xFFF};
 
   return std::format(

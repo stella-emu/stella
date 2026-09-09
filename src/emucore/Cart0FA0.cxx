@@ -44,10 +44,10 @@ void Cartridge0FA0::install(System& system)
   {
     for(uInt16 a8 = 0; a8 <= 1; ++a8)
     {
-      const uInt16 addr = (a11 << 11) + (a8 << 8);
+      const uInt16 addr = (a11 << 11U) + (a8 << 8U);
 
-      mySystem->setPageAccess(0x06a0 | addr, access);
-      mySystem->setPageAccess(0x06c0 | addr, access);
+      mySystem->setPageAccess(0x06a0U | addr, access);
+      mySystem->setPageAccess(0x06c0U | addr, access);
     }
   }
   // Install pages for the startup bank
@@ -58,7 +58,7 @@ void Cartridge0FA0::install(System& system)
 bool Cartridge0FA0::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  switch(address & 0x16e0)
+  switch(address & 0x16e0U)
   {
     case 0x06a0:
       // Set the current bank to the lower 4k bank
@@ -97,7 +97,7 @@ bool Cartridge0FA0::poke(uInt16 address, uInt8 value)
 
   // Because of the way accessing is set up, we will may get here by
   // doing a write to TIA or cart; we ignore the cart write
-  if (!(address & 0x1000))
+  if (!(address & 0x1000U))
   {
     myHotSpotPageAccess.device->poke(address, value);
   }

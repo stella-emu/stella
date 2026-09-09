@@ -68,8 +68,8 @@ void Background::applyColors()
 {
   if (!myDebugEnabled)
   {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01U;
+    else                          myObjectColor &= 0xfeU;
     myColor = myObjectColor;
   }
   else

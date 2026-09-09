@@ -357,8 +357,8 @@ void ElfLinker::relocateInitArrays()
     }
   }
 
-  myInitArray.resize(initArraySize >> 2);
-  myPreinitArray.resize(preinitArraySize >> 2);
+  myInitArray.resize(initArraySize >> 2U);
+  myPreinitArray.resize(preinitArraySize >> 2U);
 
   copyInitArrays(myInitArray, relocatedInitArrays);
   copyInitArrays(myPreinitArray, relocatedPreinitArrays);
@@ -435,7 +435,7 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray, const std::unordered_m
     const auto& section = sections[iSection];
 
     for (auto i = 0UZ; i < section.size; i += 4)
-      initArray[(offset + i) >> 2] = read32(elfData + section.offset + i);
+      initArray[(offset + i) >> 2U] = read32(elfData + section.offset + i);
   }
 }
 
@@ -548,7 +548,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
       if (static_cast<uInt64>(relocation.offset) + 4 > section.size)
         ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 
-      const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
+      const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2U;
       const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
       initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
     }

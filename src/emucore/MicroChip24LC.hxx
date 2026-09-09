@@ -598,9 +598,9 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   switch(jpee_state)
   {
     case JPEEState::ByteIn:
-      jpee_nb <<= 1;
+      jpee_nb <<= 1U;
       jpee_nb |= static_cast<int>(jpee_mdat);
-      if(jpee_nb & 256)
+      if(jpee_nb & 256U)
       {
         if(!jpee_pptr)
         {
@@ -608,13 +608,13 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
 
           if constexpr(jpee_smallmode)
           {
-            if((jpee_nb & 0xF0) == 0xA0)
+            if((jpee_nb & 0xF0U) == 0xA0)
             {
-              jpee_packet[1] = (jpee_nb >> 1) & 7;
+              jpee_packet[1] = (jpee_nb >> 1U) & 7U;
               if constexpr(DEBUG_EEPROM_LOG)
-                if(jpee_packet[1] != (jpee_address >> 8) && (jpee_packet[0] & 1))
+                if(jpee_packet[1] != (jpee_address >> 8U) && (jpee_packet[0] & 1))
                   jpee_logproc("I2C_WARNING ADDRESS MSB CHANGED");
-              jpee_nb &= 0x1A1;
+              jpee_nb &= 0x1A1U;
             }
           }
 
@@ -666,7 +666,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
         {
           JPEE_LOG1("I2C_SENT({:02X})", jpee_nb);
           jpee_packet[jpee_pptr++] = static_cast<uInt8>(jpee_nb);
-          jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
+          jpee_address = (jpee_packet[1] << 8U) | jpee_packet[2];
           if(jpee_pptr > 2)
             jpee_ad_known = true;
         }
@@ -696,15 +696,15 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
           myCallback("AtariVox/SaveKey EEPROM read");
       }
 
-      jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;
-      JPEE_LOG2("I2C_READ({:04X}={:02X})", jpee_address, jpee_nb >> 1);
+      jpee_nb = (myData[jpee_address & jpee_sizemask] << 1U) | 1;
+      JPEE_LOG2("I2C_READ({:04X}={:02X})", jpee_address, jpee_nb >> 1U);
 
       [[fallthrough]];
 
     case JPEEState::ByteOut:
-      jpee_sdat = jpee_nb & 256;
-      jpee_nb <<= 1;
-      if(!(jpee_nb & 510))
+      jpee_sdat = jpee_nb & 256U;
+      jpee_nb <<= 1U;
+      if(!(jpee_nb & 510U))
       {
         jpee_state = JPEEState::WaitAck;
         jpee_sdat = true;

@@ -148,7 +148,7 @@ class Missile : public Serializable
     /**
       Is the missile currently visible? Determined from bit 15 of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return (collision & 0x8000U); }
 
     /**
       Get the current missile color.

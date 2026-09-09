@@ -281,8 +281,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   {
     myPBlend = blend;
     myFilter = static_cast<Filter>(
-        enable ? static_cast<uInt8>(myFilter) | 0x01
-               : static_cast<uInt8>(myFilter) & 0x10);
+        enable ? static_cast<uInt8>(myFilter) | 0x01U
+               : static_cast<uInt8>(myFilter) & 0x10U);
     myRGBFramebuffer0.fill(0);
     myRGBFramebuffer1.fill(0);
   }
@@ -416,8 +416,8 @@ void TIASurface::createScanlineSurface()
 void TIASurface::enableNTSC(bool enable)
 {
   myFilter = static_cast<Filter>(
-      enable ? static_cast<uInt8>(myFilter) | 0x10
-             : static_cast<uInt8>(myFilter) & 0x01);
+      enable ? static_cast<uInt8>(myFilter) | 0x10U
+             : static_cast<uInt8>(myFilter) & 0x01U);
 
   const uInt32 surfaceWidth = enable ?
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;
@@ -527,7 +527,7 @@ void TIASurface::render(bool shade)
 
     case Filter::BlarggNormal:
     {
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2U);
       break;
     }
 
@@ -536,7 +536,7 @@ void TIASurface::render(bool shade)
       if(mySaveSnapFlag)
         std::swap(myRGBFramebuffer, myPrevRGBFramebuffer);
 
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2,
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2U,
                           myRGBFramebuffer);
       break;
     }

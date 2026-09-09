@@ -134,13 +134,13 @@ void Cartridge4A50Widget::loadConfig()
 
   // Lower bank
   setRomRam(myROMLower,  myRAMLower,  myCart.myIsRomLow,
-    (myCart.mySliceLow    >> 11) & 0x1F, (myCart.mySliceLow    >> 11) & 0x0F);
+    (myCart.mySliceLow    >> 11U) & 0x1F, (myCart.mySliceLow    >> 11U) & 0x0F);
   // Middle bank
   setRomRam(myROMMiddle, myRAMMiddle, myCart.myIsRomMiddle,
-    (myCart.mySliceMiddle >> 11) & 0x1F, (myCart.mySliceMiddle >> 11) & 0x0F);
+    (myCart.mySliceMiddle >> 11U) & 0x1F, (myCart.mySliceMiddle >> 11U) & 0x0F);
   // High bank
   setRomRam(myROMHigh,   myRAMHigh,   myCart.myIsRomHigh,
-    (myCart.mySliceHigh   >> 11) & 0xFF, (myCart.mySliceHigh   >> 11) & 0x7F);
+    (myCart.mySliceHigh   >> 11U) & 0xFF, (myCart.mySliceHigh   >> 11U) & 0x7F);
 
   CartDebugWidget::loadConfig();
 }
@@ -250,12 +250,12 @@ string Cartridge4A50Widget::bankState()
 {
   return std::format("L/M/H = {} bank {} / {} bank {} / {} bank {}",
     myCart.myIsRomLow    ? "ROM" : "RAM",
-    myCart.myIsRomLow    ? (myCart.mySliceLow    >> 11) & 0x1F
-                         : (myCart.mySliceLow    >> 11) & 0x0F,
+    myCart.myIsRomLow    ? (myCart.mySliceLow    >> 11U) & 0x1F
+                         : (myCart.mySliceLow    >> 11U) & 0x0F,
     myCart.myIsRomMiddle ? "ROM" : "RAM",
-    myCart.myIsRomMiddle ? (myCart.mySliceMiddle >> 11) & 0x1F
-                         : (myCart.mySliceMiddle >> 11) & 0x0F,
+    myCart.myIsRomMiddle ? (myCart.mySliceMiddle >> 11U) & 0x1F
+                         : (myCart.mySliceMiddle >> 11U) & 0x0F,
     myCart.myIsRomHigh   ? "ROM" : "RAM",
-    myCart.myIsRomHigh   ? (myCart.mySliceHigh   >> 11) & 0xFF
-                         : (myCart.mySliceHigh   >> 11) & 0x7F);
+    myCart.myIsRomHigh   ? (myCart.mySliceHigh   >> 11U) & 0xFF
+                         : (myCart.mySliceHigh   >> 11U) & 0x7F);
 }

@@ -106,7 +106,7 @@ void CartridgeE7::install(System& system)
 
   // The hotspots at $1FE0-$1FE7 live in the page starting here; that page is
   // handled separately below since it must dispatch through peek()/poke()
-  constexpr uInt16 HOTSPOT_PAGE = 0x1FE0 & ~System::PAGE_MASK;
+  constexpr uInt16 HOTSPOT_PAGE = 0x1FE0U & ~System::PAGE_MASK;
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = HOTSPOT_PAGE; addr < 0x2000; addr += System::PAGE_SIZE)
@@ -135,7 +135,7 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
   // Switch banks if necessary
   if(romBankCount() == 4 && (address >= 0x0FE4) && (address <= 0x0FE7))
   {
-    bank(address & 0x0003);
+    bank(address & 0x0003U);
   }
   else if(romBankCount() == 6 && (address >= 0x0FE0) && (address <= 0x0FE7))
   {
@@ -143,15 +143,15 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
       0, 1, 0, 1, 2, 3, 4 ,5
     };
 
-    bank(banks[address & 0x0007]);
+    bank(banks[address & 0x0007U]);
   }
   else if(romBankCount() == 8 && (address >= 0x0FE0) && (address <= 0x0FE7))
   {
-    bank(address & 0x0007);
+    bank(address & 0x0007U);
   }
   else if((address >= 0x0FE8) && (address <= 0x0FEB))
   {
-    bankRAM(address & 0x0003);
+    bankRAM(address & 0x0003U);
   }
 }
 
@@ -168,7 +168,7 @@ uInt8 CartridgeE7::peek(uInt16 address)
           return value;
   }
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // Switch banks if necessary
   checkSwitchBank(address);
@@ -181,10 +181,10 @@ uInt8 CartridgeE7::peek(uInt16 address)
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
     // Reading from the 256B write port @ $1800 triggers an unwanted write
-    return peekRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
+    return peekRAM(myRAM[0x0400 + (myCurrentRAM << 8U) + (address & 0x00FFU)], peekAddress);
   }
   else
-    return myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
+    return myImage[(myCurrentBank[address >> 11U] << 11U) + (address & (BANK_SIZE - 1))];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,7 +195,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
     return true;
 
   const uInt16 pokeAddress = address;
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // Switch banks if necessary
   checkSwitchBank(address);
@@ -204,7 +204,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
   if((myCurrentBank[0] == myRAMBank) && (address < BANK_SIZE / 2))
   {
     // RAM banks
-    if(!(address & 0x0400))
+    if(!(address & 0x0400U))
     {
       pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
       return true;
@@ -224,9 +224,9 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
     // fixed 256 bytes of RAM
     if((address >= 0x0800) && (address <= 0x09FF))
     {
-      if(!(address & 0x100))
+      if(!(address & 0x100U))
       {
-        pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+        pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8U) + (address & 0x00FFU)], pokeAddress, value);
         return true;
       }
       else
@@ -251,11 +251,11 @@ void CartridgeE7::bankRAM(uInt16 bank)
 
   // Constrain to a valid RAM bank (there are 4, as in the 0x1800 hotspots)
   // so a corrupt value can't map page access outside myRAM
-  bank &= 0x03;
+  bank &= 0x03U;
 
   // Remember what bank we're in
   myCurrentRAM = bank;
-  const uInt16 offset = bank << 8; // * RAM_BANK_SIZE (256)
+  const uInt16 offset = bank << 8U; // * RAM_BANK_SIZE (256)
 
   // Setup the page access methods for the current bank
   // Set the page accessing method for the 256 bytes of RAM reading pages
@@ -281,7 +281,7 @@ bool CartridgeE7::bank(uInt16 bank, uInt16)
   // Setup the page access methods for the current bank
   if(bank != myRAMBank)
   {
-    const uInt16 offset = bank << 11; // * BANK_SIZE (2048)
+    const uInt16 offset = bank << 11U; // * BANK_SIZE (2048)
 
     // Map ROM image into first segment
     setAccess(0x1000, BANK_SIZE, offset, myImage.data(), offset, System::PageAccessType::READ);
@@ -299,7 +299,7 @@ bool CartridgeE7::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::getBank(uInt16 address) const
 {
-  return myCurrentBank[(address & 0xFFF) >> 11]; // 2K segments
+  return myCurrentBank[(address & 0xFFFU) >> 11]; // 2K segments
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -311,7 +311,7 @@ uInt16 CartridgeE7::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
+  address = address & 0x0FFFU;
 
   if(address < 0x0800)
   {
@@ -320,20 +320,20 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such
       // cart restrictions
-      myRAM[address & 0x03FF] = value;
+      myRAM[address & 0x03FFU] = value;
     }
     else
-      myImage[(myCurrentBank[0] << 11) + (address & (BANK_SIZE-1))] = value;
+      myImage[(myCurrentBank[0] << 11U) + (address & (BANK_SIZE-1))] = value;
   }
   else if(address < 0x0900)
   {
     // Normally, a write to the read port won't do anything
     // However, the patch command is special in that ignores such
     // cart restrictions
-    myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+    myRAM[0x0400 + (myCurrentRAM << 8U) + (address & 0x00FFU)] = value;
   }
   else
-    myImage[(myCurrentBank[address >> 11] << 11) + (address & (BANK_SIZE-1))] = value;
+    myImage[(myCurrentBank[address >> 11U] << 11U) + (address & (BANK_SIZE-1))] = value;
 
   return myBankChanged = true;
 }
@@ -391,7 +391,7 @@ bool CartridgeE7::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::romBankCount() const
 {
-  return static_cast<uInt16>(myImage.size() >> 11);
+  return static_cast<uInt16>(myImage.size() >> 11U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

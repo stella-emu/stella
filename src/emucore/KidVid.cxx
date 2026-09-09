@@ -60,7 +60,7 @@ void KidVid::update()
   if(myContinueSong)
   {
     // Continue playing song after state load
-    const uInt8 temp = ourSongPositions[mySongPointer - 1] & 0x7f;
+    const uInt8 temp = ourSongPositions[mySongPointer - 1] & 0x7fU;
     assert(std::cmp_less(temp + 1, ourSongStart.size()));
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
@@ -130,7 +130,7 @@ void KidVid::update()
   if(myTape && getPin(DigitalPin::One) && !myTapeBusy)
   {
     setPin(DigitalPin::Four,
-           static_cast<uInt8>(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U);
+           static_cast<uInt8>(ourData[myIdx >> 3U] << (myIdx & 0x07U)) & 0x80U);
 
   #ifdef DEBUG_BUILD
     cerr << (static_cast<uInt8>(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U ? "X" : ".");
@@ -228,7 +228,7 @@ bool KidVid::load(Serializer& in)
   // defeating the periodic re-clamp that otherwise keeps myIdx in range
   if(myTape > 4 ||
      mySongPointer >= ourSongPositions.size() ||
-     (myIdx >> 3) >= ourData.size() ||
+     (myIdx >> 3U) >= ourData.size() ||
      myBlockIdx == 0 || myBlockIdx > NumBlockBits)
     return false;
 
@@ -305,9 +305,9 @@ void KidVid::setNextSong()
 {
   if(myFilesFound)
   {
-    myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
+    myBeep = (ourSongPositions[mySongPointer] & 0x80U) == 0;
 
-    const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
+    const uInt8 temp = ourSongPositions[mySongPointer] & 0x7fU;
     assert(std::cmp_less(temp + 1, ourSongStart.size()));
     mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 

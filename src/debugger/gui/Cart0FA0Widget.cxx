@@ -43,5 +43,5 @@ string Cartridge0FA0Widget::hotspotStr(int bank, int, bool prefix)
   const uInt16 hotspot = myCart.hotspot() + bank * myHotspotDelta;
   return std::format("({}${}, ${})",
     prefix ? "hotspot " : "",
-    Base::hex4(hotspot), Base::hex4(hotspot | 0xf80));
+    Base::hex4(hotspot), Base::hex4(hotspot | 0xf80U));
 }

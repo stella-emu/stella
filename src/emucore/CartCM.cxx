@@ -39,7 +39,7 @@ void CartridgeCM::reset()
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled
   mySWCHA = 0xFF;
-  initializeStartBank(mySWCHA & 0x3);
+  initializeStartBank(mySWCHA & 0x3U);
 
   // Upon reset we switch to the startup bank
   bank(startBank());
@@ -67,8 +67,8 @@ uInt8 CartridgeCM::peek(uInt16 address)
   uInt8 value = mySystem->m6532().peek(address);
 
   // Inject cassette audio into SWCHA D7 (A9=1 selects I/O; offset 0 = SWCHA)
-  if((address & 0x0200) && !(address & 0x07) && myCompuMate)
-    value = (value & 0x7F) | (myCompuMate->cassetteBit() << 7);
+  if((address & 0x0200U) && !(address & 0x07U) && myCompuMate)
+    value = (value & 0x7FU) | (myCompuMate->cassetteBit() << 7U);
 
   return value;
 }
@@ -78,20 +78,20 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
 {
   // NOTE: This could be called for RIOT writes or cart ROM writes
   // In the latter case, the write is ignored
-  if(!(address & 0x1000))
+  if(!(address & 0x1000U))
   {
     // RIOT mirroring, check bankswitch
     if(address == 0x280)
     {
       const uInt8 prevSWCHA = mySWCHA;
       mySWCHA = value;
-      bank(mySWCHA & 0x3);
+      bank(mySWCHA & 0x3U);
       if(myCompuMate)
       {
         uInt8& column = myCompuMate->column();
-        if(value & 0x20)
+        if(value & 0x20U)
           column = 0;
-        if(value & 0x40)
+        if(value & 0x40U)
           column = (column + 1) % 10;
 
         if((value ^ prevSWCHA) & 0x40)
@@ -132,7 +132,7 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   // Lower 2K (always ROM)
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    const uInt16 offset = myBankOffset + (addr & 0x0FFF);
+    const uInt16 offset = myBankOffset + (addr & 0x0FFFU);
     access.directPeekBase  = &myImage[offset];
     access.romAccessBase   = &myRomAccessBase[offset];
     access.romPeekCounter  = &myRomAccessCounter[offset];
@@ -145,9 +145,9 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   {
     access.type = System::PageAccessType::READWRITE;
 
-    if(mySWCHA & 0x10)
+    if(mySWCHA & 0x10U)
     {
-      const uInt16 offset = myBankOffset + (addr & 0x0FFF);
+      const uInt16 offset = myBankOffset + (addr & 0x0FFFU);
       access.directPeekBase  = &myImage[offset];
       access.romAccessBase   = &myRomAccessBase[offset];
       access.romPeekCounter  = &myRomAccessCounter[offset];
@@ -155,7 +155,7 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
     }
     else
     {
-      const uInt16 ramOffset = addr & 0x7FF;
+      const uInt16 ramOffset = addr & 0x7FFU;
       const uInt16 offset    = myBankOffset + ramOffset;
       access.directPeekBase  = &myRAM[ramOffset];
       access.romAccessBase   = &myRomAccessBase[offset];
@@ -163,8 +163,8 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
       access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
     }
 
-    access.directPokeBase = ((mySWCHA & 0x30) == 0x20)
-      ? &myRAM[addr & 0x7FF]
+    access.directPokeBase = ((mySWCHA & 0x30U) == 0x20)
+      ? &myRAM[addr & 0x7FFU]
       : nullptr;
 
     mySystem->setPageAccess(addr, access);
@@ -176,7 +176,7 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCM::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,8 +192,8 @@ uInt16 CartridgeCM::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCM::patch(uInt16 address, uInt8 value)
 {
-  if((mySWCHA & 0x30) == 0x20)
-    myRAM[address & 0x7FF] = value;
+  if((mySWCHA & 0x30U) == 0x20)
+    myRAM[address & 0x7FFU] = value;
   else
     myImage[myBankOffset + address] = value;
 
@@ -243,7 +243,7 @@ bool CartridgeCM::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myBankOffset >> 12);
+  bank(myBankOffset >> 12U);
 
   return true;
 }

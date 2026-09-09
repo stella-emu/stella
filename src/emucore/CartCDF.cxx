@@ -29,8 +29,8 @@
 #include "exception/FatalEmulationError.hxx"
 
 namespace {
-  constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
-  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
+  constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0FU) == 0; }
+  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0U) == 0; }
 
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
   {
@@ -212,7 +212,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       return value;
   }
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
   uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
@@ -230,11 +230,11 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     uInt32 pointer = getDatastreamPointer(myFastJumpStream);
     uInt8 value = 0;
     if (isCDFJplus()) {
-      const uInt32 idx = pointer >> 16;
+      const uInt32 idx = pointer >> 16U;
       value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
       pointer += 0x00010000;  // always increment by 1
     } else {
-      value = myDisplayImage[ pointer >> 20 ];
+      value = myDisplayImage[ pointer >> 20U ];
       pointer += 0x00100000;  // always increment by 1
     }
 
@@ -293,9 +293,9 @@ uInt8 CartridgeCDF::peek(uInt16 address)
           peekvalue = 0;
 
         // make sure current volume value is in the lower nybble
-        if ((myMusicCounters[0] & (1<<(isCDFJplus() ? 12 : 20))) == 0)
-          peekvalue >>= 4;
-        peekvalue &= 0x0f;
+        if ((myMusicCounters[0] & (1U<<(isCDFJplus() ? 12 : 20))) == 0)
+          peekvalue >>= 4U;
+        peekvalue &= 0x0fU;
       }
       else
       {
@@ -378,18 +378,18 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
   if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
     return true;
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
   switch(address)
   {
     case 0x0FF0:   // DSWRITE
       pointer = getDatastreamPointer(COMMSTREAM);
       if (isCDFJplus()) {
-        const uInt32 idx = pointer >> 16;
+        const uInt32 idx = pointer >> 16U;
         if (idx < myDisplayImage.size())
           myDisplayImage[idx] = value;
         pointer += 0x00010000;  // always increment by 1 when writing
       } else {
-        myDisplayImage[ pointer >> 20 ] = value;
+        myDisplayImage[ pointer >> 20U ] = value;
         pointer += 0x00100000;  // always increment by 1 when writing
       }
       setDatastreamPointer(COMMSTREAM, pointer);
@@ -397,13 +397,13 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 
     case 0x0FF1:   // DSPTR
       pointer = getDatastreamPointer(COMMSTREAM);
-      pointer <<= 8;
+      pointer <<= 8U;
       if (isCDFJplus()) {
         pointer &= 0xff000000;
-        pointer |= (value << 16);
+        pointer |= (value << 16U);
       } else {
         pointer &= 0xf0000000;
-        pointer |= (value << 20);
+        pointer |= (value << 20U);
       }
       setDatastreamPointer(COMMSTREAM, pointer);
       break;
@@ -471,9 +471,9 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -482,7 +482,7 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCDF::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -494,12 +494,12 @@ uInt16 CartridgeCDF::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // For now, we ignore attempts to patch the CDF address space
   if(address >= 0x0040)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFFU)] = value;
     return myBankChanged = true;
   }
   return false;
@@ -637,7 +637,7 @@ bool CartridgeCDF::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myBankOffset >> 12);
+  bank(myBankOffset >> 12U);
 
   return true;
 }
@@ -669,7 +669,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 
   if (!isCDFJplus()) {
     if (result >= 4096)
-      result &= 4095;
+      result &= 4095U;
   } else {
     if (result >= myDisplayImage.size())
       result = 0;
@@ -708,14 +708,14 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   uInt8 value = 0;
   if (isCDFJplus())
   {
-    const uInt32 idx = pointer >> 16;
+    const uInt32 idx = pointer >> 16U;
     value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
-    pointer += (increment << 8);
+    pointer += (increment << 8U);
   }
   else
   {
-    value = myDisplayImage[ pointer >> 20 ];
-    pointer += (increment << 12);
+    value = myDisplayImage[ pointer >> 20U ];
+    pointer += (increment << 12U);
   }
 
   setDatastreamPointer(index, pointer);

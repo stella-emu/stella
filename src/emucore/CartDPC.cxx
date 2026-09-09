@@ -82,11 +82,11 @@ FORCE_INLINE void CartridgeDPC::clockRandomNumberGenerator()
 
   // Using bits 7, 5, 4, & 3 of the shift register compute the input
   // bit for the shift register
-  const uInt8 bit = f[((myRandomNumber >> 3) & 0x07) |
-      ((myRandomNumber & 0x80) ? 0x08 : 0x00)];
+  const uInt8 bit = f[((myRandomNumber >> 3U) & 0x07) |
+      ((myRandomNumber & 0x80U) ? 0x08 : 0x00)];
 
   // Update the shift register
-  myRandomNumber = (myRandomNumber << 1) | bit;
+  myRandomNumber = (myRandomNumber << 1U) | bit;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,7 +111,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
     if(myMusicMode[x - 5])
     {
       const Int32 top = myTops[x] + 1;
-      auto newLow = static_cast<Int32>(myCounters[x] & 0x00ff);
+      auto newLow = static_cast<Int32>(myCounters[x] & 0x00ffU);
 
       if(myTops[x] != 0)
       {
@@ -128,7 +128,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
       else if(std::cmp_less_equal(newLow, myTops[x]))
         myFlags[x] = 0xff;
 
-      myCounters[x] = (myCounters[x] & 0x0700) | static_cast<uInt16>(newLow);
+      myCounters[x] = (myCounters[x] & 0x0700U) | static_cast<uInt16>(newLow);
     }
   }
 }
@@ -138,7 +138,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
 {
   const uInt16 peekAddress = address;
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
@@ -155,15 +155,15 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     uInt8 result = 0;
 
     // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = (address >> 3) & 0x07;
+    const uInt32 index = address & 0x07U;
+    const uInt32 function = (address >> 3U) & 0x07;
 
     // Update flag register for selected data fetcher
-    if((myCounters[index] & 0x00ff) == myTops[index])
+    if((myCounters[index] & 0x00ffU) == myTops[index])
     {
       myFlags[index] = 0xff;
     }
-    else if((myCounters[index] & 0x00ff) == myBottoms[index])
+    else if((myCounters[index] & 0x00ffU) == myBottoms[index])
     {
       myFlags[index] = 0x00;
     }
@@ -190,15 +190,15 @@ uInt8 CartridgeDPC::peek(uInt16 address)
           uInt8 i = 0;
           if(myMusicMode[0] && myFlags[5])
           {
-            i |= 0x01;
+            i |= 0x01U;
           }
           if(myMusicMode[1] && myFlags[6])
           {
-            i |= 0x02;
+            i |= 0x02U;
           }
           if(myMusicMode[2] && myFlags[7])
           {
-            i |= 0x04;
+            i |= 0x04U;
           }
 
           result = musicAmplitudes[i];
@@ -250,7 +250,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
 {
   const uInt16 pokeAddress = address;
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // Clock the random number generator.  This should be done for every
   // cartridge access, however, we're only doing it for the DPC and
@@ -260,8 +260,8 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
   if((address >= 0x0040) && (address < 0x0080))
   {
     // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = (address >> 3) & 0x07;
+    const uInt32 index = address & 0x07U;
+    const uInt32 function = (address >> 3U) & 0x07;
 
     switch(function)
     {
@@ -287,7 +287,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
         {
           // Data fetcher is in music mode so its low counter value
           // should be loaded from the top register not the poked value
-          myCounters[index] = (myCounters[index] & 0x0700) |
+          myCounters[index] = (myCounters[index] & 0x0700U) |
             static_cast<uInt16>(myTops[index]);
         }
         else
@@ -295,7 +295,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
           // Data fetcher is either not a music mode data fetcher or it
           // isn't in music mode so it's low counter value should be loaded
           // with the poked value
-          myCounters[index] = (myCounters[index] & 0x0700) | static_cast<uInt16>(value);
+          myCounters[index] = (myCounters[index] & 0x0700U) | static_cast<uInt16>(value);
         }
         break;
       }
@@ -303,13 +303,13 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       // DFx counter high
       case 0x03:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x07) << 8) |
-            (myCounters[index] & 0x00ff);
+        myCounters[index] = ((static_cast<uInt16>(value) & 0x07U) << 8) |
+            (myCounters[index] & 0x00ffU);
 
         // Execute special code for music mode data fetchers
         if(index >= 5)
         {
-          myMusicMode[index - 5] = (value & 0x10);
+          myMusicMode[index - 5] = (value & 0x10U);
 
           // NOTE: We are not handling the clock source input for
           // the music mode data fetchers.  We're going to assume
@@ -405,7 +405,7 @@ bool CartridgeDPC::load(Serializer& in)
     // Counters are 11-bit in hardware and index the 2K display image via
     // (2047 - counter); mask so a corrupt save file can't index out of bounds
     for(auto& counter: myCounters)
-      counter &= 0x07ff;
+      counter &= 0x07ffU;
 
     // The flag registers for the data fetchers
     in.getByteArray(myFlags);

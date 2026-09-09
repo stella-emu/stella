@@ -35,9 +35,9 @@ class Device : public Serializable
   public:
     enum AccessType: uInt16 {
       NONE        = 0,
-      REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
+      REFERENCED  = 1U << 0U, /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1 << 1, /* 0x02, addresses that can have a label placed in front of it.
+      VALID_ENTRY = 1U << 1U, /* 0x02, addresses that can have a label placed in front of it.
                                A good counterexample would be "FF00: LDA $FE00"; $FF01
                                would be in the middle of a multi-byte instruction, and
                                therefore cannot be labelled. */
@@ -46,18 +46,18 @@ class Device : public Serializable
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of increasing hierarchy
       //
-      ROW   = 1 << 2,  // 0x004, all other addresses
-      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
-      AUD   = 1 << 4,  // 0x010, addresses loaded into audio registers
-      BCOL  = 1 << 5,  // 0x020, addresses loaded into COLUBK register
-      PCOL  = 1 << 6,  // 0x040, addresses loaded into COLUPF register
-      COL   = 1 << 7,  // 0x080, addresses loaded into COLUPx registers
-      PGFX  = 1 << 8,  // 0x100, addresses loaded into PFx registers
-      GFX   = 1 << 9,  // 0x200, addresses loaded into GRPx registers
-      TCODE = 1 << 10, // 0x400, (tentative) disassemble-able code segments
-      CODE  = 1 << 11, // 0x800, disassemble-able code segments
+      ROW   = 1U << 2U,  // 0x004, all other addresses
+      DATA  = 1U << 3U,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
+      AUD   = 1U << 4U,  // 0x010, addresses loaded into audio registers
+      BCOL  = 1U << 5U,  // 0x020, addresses loaded into COLUBK register
+      PCOL  = 1U << 6U,  // 0x040, addresses loaded into COLUPF register
+      COL   = 1U << 7U,  // 0x080, addresses loaded into COLUPx registers
+      PGFX  = 1U << 8U,  // 0x100, addresses loaded into PFx registers
+      GFX   = 1U << 9U,  // 0x200, addresses loaded into GRPx registers
+      TCODE = 1U << 10U, // 0x400, (tentative) disassemble-able code segments
+      CODE  = 1U << 11U, // 0x800, disassemble-able code segments
       // special bits for address
-      HADDR = 1 << 13 | 1 << 14 | 1 << 15, // 0xe000, // highest 3 address bits
+      HADDR = 1U << 13U | 1U << 14U | 1U << 15U, // 0xe000, // highest 3 address bits
       // special type for poke()
       WRITE = TCODE    // 0x200, address written to
     };
