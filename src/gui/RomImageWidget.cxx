@@ -142,7 +142,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     myFrameSurface = fb.allocateSurface(1, 1, ScalingInterpolation::sharp);
     myFrameSurface->setVisible(true);
 
-    dialog().addRenderCallback([this]() {
+    dialog().addRenderCallback([this] {
       if(mySurfaceIsValid)
       {
         if(myIsZoomed)

@@ -71,7 +71,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   // An auto-detect label is filled in at load time and takes its width from the
   // column it sits in, so it starts out empty
-  const auto detectedLabel = [&]() {
+  const auto detectedLabel = [&] {
     return new LabelWidget(this, ifont, "");
   };
 

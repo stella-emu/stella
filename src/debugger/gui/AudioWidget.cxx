@@ -176,7 +176,7 @@ void AudioWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  const auto clearAll = [&]() {
+  const auto clearAll = [&] {
     alist.clear(); vlist.clear(); changed.clear();
   };
 

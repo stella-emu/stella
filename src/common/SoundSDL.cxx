@@ -78,7 +78,7 @@ bool SoundSDL::openDevice()
 {
   ASSERT_MAIN_THREAD;
 
-  const auto SOUND_ERROR = [this]() -> bool
+  const auto SOUND_ERROR = [this] -> bool
   {
     Logger::error(std::format("WARNING: Couldn't open SDL audio device! \n"
       "         {}\n", SDL_GetError()));
@@ -241,7 +241,7 @@ void SoundSDL::adjustVolume(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SoundSDL::about() const
 {
-  const string_view presetStr = [this]() -> string_view {
+  const string_view presetStr = [this] -> string_view {
     switch(myAudioSettings.preset())
     {
       using enum AudioSettings::Preset;
@@ -254,7 +254,7 @@ string SoundSDL::about() const
     }
   }();
 
-  const string_view resampleStr = [this]() -> string_view {
+  const string_view resampleStr = [this] -> string_view {
     switch(myAudioSettings.resamplingQuality())
     {
       using enum AudioSettings::ResamplingQuality;
@@ -288,7 +288,7 @@ string SoundSDL::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::initResampler()
 {
-  const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
+  const Resampler::NextFragmentCallback nextFragmentCallback = [this] -> Int16* {
     Int16* nextFragment = nullptr;
 
     if(myUnderrun)

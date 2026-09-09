@@ -73,7 +73,7 @@ string DebuggerParser::run(string_view command)
   std::ostringstream outerResult;
   outerResult.swap(commandResult);
 
-  const auto restoreCtx = [&]() {
+  const auto restoreCtx = [&] {
     args       = std::move(outerArgs);
     argStrings = std::move(outerArgStrings);
     argCount   = outerArgCount;
@@ -1551,7 +1551,7 @@ void DebuggerParser::executeHelp()
 {
   if(argCount == 0)  // normal help, show all commands
   {
-    static const size_t clen = []() {
+    static const size_t clen = [] {
       auto len = 0UZ;
       for(const auto& c: commands)
         len = std::max(len, c.cmdString.length());

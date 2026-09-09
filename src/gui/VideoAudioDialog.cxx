@@ -627,7 +627,7 @@ void VideoAudioDialog::addBezelTab()
   myManualWindow->setToolTip("Enable if automatic window detection fails.");
   wid.push_back(myManualWindow);
 
-  const auto winSlider = [&]() {
+  const auto winSlider = [&] {
     auto* s = new SliderWidget(pane, _font, 1,  GuiCmd::None, 4, "%");
     s->setMinValue(0);
     s->setMaxValue(40);

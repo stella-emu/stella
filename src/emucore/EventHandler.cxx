@@ -141,7 +141,7 @@ void EventHandler::reset(EventHandlerState state)
   // We wait a little while (0.5s), since 'hold' events may be present,
   // and we want time for the ROM to process them
   if(state == EventHandlerState::EMULATION)
-    myOSystem.timer().setTimeout([&ev = myEvent]() { ev.clear(); }, 500);
+    myOSystem.timer().setTimeout([&ev = myEvent] { ev.clear(); }, 500);
   // Toggle 7800 mode
   set7800Mode();
 }
@@ -2075,7 +2075,7 @@ void EventHandler::setComboMap()
   }
 
   // Erase the 'combo' array
-  const auto ERASE_ALL = [&]() {
+  const auto ERASE_ALL = [&] {
     for(int i = 0; i < COMBO_SIZE; ++i)
       for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         myComboTable[i][j] = Event::NoType;

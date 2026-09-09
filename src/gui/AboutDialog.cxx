@@ -139,7 +139,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 {
   int i = 0;
   const auto ADD_ATEXT = [&](string_view d) { myDescStr[i] = d; i++; };
-  const auto ADD_ALINE = [&]() { ADD_ATEXT(""); };
+  const auto ADD_ALINE = [&] { ADD_ATEXT(""); };
 
   switch(page)
   {

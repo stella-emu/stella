@@ -51,7 +51,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _font{font},
     _title{title},
     _builtTitle{title},
-    _renderCallback{[]() { return; }}
+    _renderCallback{[] { return; }}
 {
   _flags = Widget::Flag::Enabled | Widget::Flag::Border | Widget::Flag::ClearBG;
   setTitle(title);

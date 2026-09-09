@@ -138,7 +138,7 @@ void HelpDialog::updateStrings(int page, int lines, string& title)
     ADD_BIND(!desc.empty() ? desc : "None", d);
   };
   const auto ADD_TEXT = [&](string_view d) { ADD_BIND("", d); };
-  const auto ADD_LINE = [&]() { ADD_BIND("", ""); };
+  const auto ADD_LINE = [&] { ADD_BIND("", ""); };
 
   setHelpAnchor("Hotkeys");
   switch(page)

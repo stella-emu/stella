@@ -298,7 +298,7 @@ void TiaDisplayWidget::drawWidget(bool hilite)
     // Composite order on every render: the TIA image first, then the overlay
     // layers on top of it.  The screen-space HUD layer (myHudSurface) is
     // created lazily by its first user and may still be null here.
-    dialog().addRenderCallback([this]() {
+    dialog().addRenderCallback([this] {
       if(myTiaSurface)  myTiaSurface->render();
       if(myMarkSurface) myMarkSurface->render();
       if(myHudSurface)  myHudSurface->render();

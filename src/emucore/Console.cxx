@@ -130,7 +130,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
       std::format("Phosphor effect automatically {}", enable ? "enabled" : "disabled"));
   #endif
   };
-  myTIA  = std::make_unique<TIA>(*this, [this]() { return timing(); }, myOSystem.settings(), callback);
+  myTIA  = std::make_unique<TIA>(*this, [this] { return timing(); }, myOSystem.settings(), callback);
   myFrameManager = std::make_unique<FrameManager>();
   mySwitches = std::make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
@@ -151,7 +151,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myRightControl = std::make_unique<Joystick>(Controller::Jack::Right, myEvent, *mySystem);
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
-  myCart->setStartBankFromPropsFunc([this]() {
+  myCart->setStartBankFromPropsFunc([this] {
     const string_view startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank.empty() || BSPF::equalsIgnoreCase(startbank, "AUTO"))
         ? -1 : BSPF::stoi(startbank);

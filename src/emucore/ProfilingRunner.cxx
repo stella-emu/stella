@@ -128,7 +128,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   const TIA::onPhosphorCallback callback = [] (bool enable) {};
 
-  TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings, callback);
+  TIA tia(consoleIO, [] { return ConsoleTiming::ntsc; }, mySettings, callback);
   System system(rng, cpu, riot, tia, *cartridge);
 
   consoleIO.myLeftControl = std::make_unique<Joystick>(Controller::Jack::Left, event, system);
@@ -136,7 +136,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   consoleIO.mySwitches = std::make_unique<Switches>(event, myProps, mySettings);
 
   tia.bindToControllers();
-  cartridge->setStartBankFromPropsFunc([]() { return -1; });
+  cartridge->setStartBankFromPropsFunc([] { return -1; });
   system.initialize();
 
   FrameLayoutDetector frameLayoutDetector;

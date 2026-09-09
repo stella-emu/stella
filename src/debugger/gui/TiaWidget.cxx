@@ -70,7 +70,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // is inset a little within its row; buildLayout() re-applies both, so they
   // follow the font.  A swatch draws no text, so it carries the tab's own font --
   // the one its size is derived from -- rather than the grids' narrow one
-  const auto swatch = [&]() {
+  const auto swatch = [&] {
     auto* c = new ColorWidget(boss, lfont,
                               ColorWidget::calcWidth(lfont), lineHeight - 4);
     c->setTarget(this);

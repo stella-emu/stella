@@ -127,7 +127,7 @@ string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
   // axis description
   if(mapping.axis != JoyAxis::NONE)
   {
-    const string_view axisName = [&]() -> string_view {
+    const string_view axisName = [&] -> string_view {
       switch(mapping.axis)
       {
         case JoyAxis::X: return "X";
@@ -149,7 +149,7 @@ string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
   // hat description
   if(mapping.hat != JOY_CTRL_NONE)
   {
-    const string_view hatDir = [&]() -> string_view {
+    const string_view hatDir = [&] -> string_view {
       switch(mapping.hdir)
       {
         case JoyHatDir::UP:    return "Y+";

@@ -547,7 +547,7 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
   }
 #endif
 
-  const uInt8 result = [&]() -> uInt8 {
+  const uInt8 result = [&] -> uInt8 {
     uInt8 val;  // NOLINT(cppcoreguidelines-init-variables)
     if(access.directPeekBase) [[likely]]
       val = *(access.directPeekBase + pageOffset);

@@ -136,7 +136,7 @@ class FSNode
     bool getAllChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
                         const NameFilter& filter = [](const FSNode&) { return true; },
                         bool includeParentDirectory = true,
-                        const CancelCheck& isCancelled = []() { return false; }) const;
+                        const CancelCheck& isCancelled = [] { return false; }) const;
 
     /**
      * Return a list of child nodes of this directory node. If called on a node
@@ -149,7 +149,7 @@ class FSNode
                      const NameFilter& filter = [](const FSNode&){ return true; },
                      bool includeChildDirectories = false,
                      bool includeParentDirectory = true,
-                     const CancelCheck& isCancelled = []() { return false; }) const;
+                     const CancelCheck& isCancelled = [] { return false; }) const;
 
     /**
      * Set/get a string representation of the name of the file. This can be

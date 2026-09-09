@@ -444,7 +444,7 @@ void LauncherDialog::layout()
   // Filtering row: the filter field absorbs the slack; everything else packs
   // around it.  This row is the widest thing in the dialog, so it is what the
   // window minimum ends up being -- which is why everything in it always fits
-  const auto makeFilterRow = [&]() {
+  const auto makeFilterRow = [&] {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
     row->addAuto(anchoredItem(myReloadButton));
     row->addSpace(LBL_GAP * 2);
@@ -465,7 +465,7 @@ void LauncherDialog::layout()
 
   // Path / navigation row: the bar fills the width, the help button anchors
   // to the right
-  const auto makePathRow = [&]() {
+  const auto makePathRow = [&] {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, BTN_GAP, HBORDER, 0);
     row->addStretch(widgetItem(myNavigationBar, MIN_LAUNCHER_CHARS * fontWidth));
     if(myHelpButton)
@@ -476,7 +476,7 @@ void LauncherDialog::layout()
   // Bottom button row (optional): four equal-width buttons
   const bool hasButtonRow = myShowButtons && myStartButton && myGoUpButton
                          && myOptionsButton && myQuitButton;
-  const auto makeButtonRow = [&]() {
+  const auto makeButtonRow = [&] {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, Dialog::buttonGap(),
                                            HBORDER, 0);
 #ifndef BSPF_MACOS
@@ -1514,11 +1514,11 @@ void LauncherDialog::removeAll(string_view name, const std::function<void()>& ac
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllPopular()
 {
-  removeAll("Most Popular", [this]() { myList->removeAllPopular(); });
+  removeAll("Most Popular", [this] { myList->removeAllPopular(); });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::removeAllRecent()
 {
-  removeAll("Recently Played", [this]() { myList->removeAllRecent(); });
+  removeAll("Recently Played", [this] { myList->removeAllRecent(); });
 }

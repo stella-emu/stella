@@ -27,7 +27,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
 {
   // Create the controls at a placeholder position; reflow() lays them out
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  const auto grayValue = [&]() {
+  const auto grayValue = [&] {
     auto* g = new DataGridWidget(boss, font, 1, 1, 2, 2,
                                  Common::Base::Fmt::_2_2);
     g->setTarget(this);

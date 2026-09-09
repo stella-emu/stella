@@ -128,12 +128,8 @@ void TIA::setFrameManager(AbstractFrameManager* frameManager, bool layoutDetecto
   myIsLayoutDetector = layoutDetector;
 
   myFrameManager->setHandlers(
-    [this] () {
-      onFrameStart();
-    },
-    [this] () {
-      onFrameComplete();
-    }
+    [this] { onFrameStart();    },
+    [this] { onFrameComplete(); }
   );
 
   myFrameManager->enableJitter(myEnableJitter);
@@ -298,11 +294,7 @@ void TIA::installDelegate(System& system, Device& device)
     if((addr & TIA_BIT) == 0x0000)
       mySystem->setPageAccess(addr, access);
 
-  mySystem->m6502().setOnHaltCallback(
-    [this] () {
-      onHalt();
-    }
-  );
+  mySystem->m6502().setOnHaltCallback([this] { onHalt(); });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,7 +302,7 @@ bool TIA::save(Serializer& out) const
 {
   try
   {
-    if(!myDelayQueue.save(out))   return false;
+    if(!myDelayQueue.save(out))    return false;
     if(!myFrameManager->save(out)) return false;
 
     if(!myBackground.save(out)) return false;
@@ -322,7 +314,7 @@ bool TIA::save(Serializer& out) const
     if(!myBall.save(out))       return false;
     if(!myAudio.save(out))      return false;
 
-    for (const AnalogReadout& analogReadout : myAnalogReadouts)
+    for (const AnalogReadout& analogReadout: myAnalogReadouts)
       if(!analogReadout.save(out)) return false;
 
     // Cache of the last analog connection pushed to each readout; preserved so

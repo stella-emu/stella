@@ -264,7 +264,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     myMarkSurface->setBlendLevel(100);
 
     // Composite order on every render: TIA image first, then the beam overlay
-    dialog().addRenderCallback([this]() {
+    dialog().addRenderCallback([this] {
       if(myTiaSurface)  myTiaSurface->render();
       if(myMarkSurface) myMarkSurface->render();
     });

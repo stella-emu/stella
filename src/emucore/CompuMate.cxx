@@ -136,7 +136,7 @@ void CompuMate::update()
   }
 
   // Returns true if any non-Enter character key is currently pressed
-  const auto anyCharPressed = [&]() -> bool {
+  const auto anyCharPressed = [&] -> bool {
     return std::ranges::any_of(columns, [&](const auto& cc) {
       return (cc.lp6     != E::NoType && myEvent.get(cc.lp6))
           || (cc.rp3     != E::NoType && myEvent.get(cc.rp3))
