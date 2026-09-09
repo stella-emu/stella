@@ -121,7 +121,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fullscreen)
   {
-    auto rounded = [](double v) noexcept -> uInt32 {
+    const auto rounded = [](double v) noexcept -> uInt32 {
         return static_cast<uInt32>(std::round(v));
     };
 

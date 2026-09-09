@@ -49,13 +49,10 @@ bool CartridgeX07::checkSwitchBank(uInt16 address, uInt8)
     bank((address & 0xf0) >> 4);
     return true;
   }
-  else if((address & 0x1880) == 0)
+  else if((address & 0x1880) == 0 && (getBank() & 0xe) == 0xe)
   {
-    if((getBank() & 0xe) == 0xe)
-    {
-      bank(((address & 0x40) >> 6) | 0xe);
-      return true;
-    }
+    bank(((address & 0x40) >> 6) | 0xe);
+    return true;
   }
 
   return false;

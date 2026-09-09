@@ -471,8 +471,8 @@ bool FBBackendSDL::createRenderer()
   const string& video = myOSystem.settings().getString("video");
   // An empty or "auto" preference defers to the platform, which may still have
   // nothing to say -- an empty request lets SDL choose
-  const string request =
-      (video.empty() || video == "auto") ? autoRenderer() : video;
+  const string request{
+      (video.empty() || video == "auto") ? autoRenderer() : video};
 
   bool recreate = myRenderer == nullptr;
   if(myRenderer)
@@ -574,7 +574,7 @@ void FBBackendSDL::refreshDimensions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FBBackendSDL::autoRenderer()
+string_view FBBackendSDL::autoRenderer()
 {
 #ifdef BSPF_WINDOWS
   // SDL3 would pick Direct3D 11, whose flip-model swapchain leaves the edge

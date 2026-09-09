@@ -46,16 +46,12 @@ bool SaveKey::read(DigitalPin pin)
   // We need to override the Controller::read() method, since the timing
   // of the actual read is important for the EEPROM (we can't just read
   // 60 times per second in the ::update() method)
-  switch(pin)
-  {
-    // Pin 3: EEPROM SDA
-    //        input data from the 24LC256 EEPROM using the I2C protocol
-    case DigitalPin::Three:
-      return setPin(pin, myEEPROM->readSDA());
+  // Pin 3: EEPROM SDA
+  //        input data from the 24LC256 EEPROM using the I2C protocol
+  if(pin == DigitalPin::Three)
+    return setPin(pin, myEEPROM->readSDA());
 
-    default:
-      return Controller::read(pin);
-  }
+  return Controller::read(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

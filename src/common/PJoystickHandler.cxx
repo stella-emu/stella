@@ -29,7 +29,7 @@
   #include "DialogContainer.hxx"
 #endif
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
@@ -141,7 +141,7 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   if(erased)
     // We have to add all Stelladaptors again, because they have changed
     // name due to being reordered when mapping them
-    for(const auto& [_id, _stick] : mySticks)
+    for(const auto& [_id, _stick]: mySticks)
     {
       if(_stick->name.contains(" (emulates "))
         addToDatabase(_stick);
@@ -152,8 +152,8 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
-  for(const auto& axisList : SA_Axis)
-    for(const auto axis : axisList)
+  for(const auto& axisList: SA_Axis)
+    for(const auto axis: axisList)
       myEvent.set(axis, 0);
 
   return stick->ID;
@@ -363,7 +363,7 @@ void PhysicalJoystickHandler::setDefaultAction(int stick,
 void PhysicalJoystickHandler::applyDefaultActions(int stick, EventMappingSpan mappings,
   Event::Type event, EventMode mode, bool updateDefaults)
 {
-  for(const auto& item : mappings)
+  for(const auto& item: mappings)
     setDefaultAction(stick, item, event, mode, updateDefaults);
 }
 
@@ -551,7 +551,7 @@ EventMode PhysicalJoystickHandler::getMode(Controller::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::enableEmulationMappings()
 {
-  for (auto& stick : mySticks)
+  for(const auto& stick: mySticks)
   {
     const PhysicalJoystickPtr j = stick.second;
 
@@ -646,7 +646,7 @@ void PhysicalJoystickHandler::enableCommonMappings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::enableMappings(const Event::EventSet& events, EventMode mode)
 {
-  for (const auto& event : events)
+  for (const auto& event: events)
     enableMapping(event, mode);
 }
 
@@ -654,13 +654,13 @@ void PhysicalJoystickHandler::enableMappings(const Event::EventSet& events, Even
 void PhysicalJoystickHandler::enableMapping(Event::Type event, EventMode mode)
 {
   // copy from controller mode into emulation mode
-  for (auto& stick : mySticks)
+  for(const auto& stick: mySticks)
   {
     const PhysicalJoystickPtr j = stick.second;
 
     const JoyMap::JoyMappingArray joyMappings = j->joyMap.getEventMapping(event, mode);
 
-    for (const auto& mapping : joyMappings)
+    for (const auto& mapping: joyMappings)
       j->joyMap.add(event, EventMode::kEmulationMode, mapping.button,
                     mapping.axis, mapping.adir, mapping.hat, mapping.hdir);
   }
@@ -736,7 +736,7 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
   // Otherwise, only reset the given event
   if(event == Event::NoType)
   {
-    for (const auto& [_id, _joyptr]: mySticks)
+    for(const auto& [_id, _joyptr]: mySticks)
     {
       _joyptr->eraseMap(mode);          // erase all events
       if(mode == EventMode::kEmulationMode)
@@ -751,7 +751,7 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
   }
   else
   {
-    for (const auto& [_id, _joyptr]: mySticks)
+    for(const auto& [_id, _joyptr]: mySticks)
     {
       _joyptr->eraseEvent(event, mode); // only reset the specific event
       _joyptr->eraseEvent(event, getEventMode(event, mode));

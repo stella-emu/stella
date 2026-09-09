@@ -22,7 +22,7 @@
 #include "PKeyboardHandler.hxx"
 #include "json/json_lib.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"

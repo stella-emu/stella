@@ -992,10 +992,10 @@ string TIADebug::debugColors() const
 
   for(const auto& [index, label]: entries)
   {
-    result += " ";  result += myTIA.myFixedColorNames[index];
-    result += " ";  result += colorSwatch(myTIA.myFixedColorPalette[timing][index]);
-    result += " ";  result += label;
-    result += "\n";
+    result += ' ';  result += myTIA.myFixedColorNames[index];
+    result += ' ';  result += colorSwatch(myTIA.myFixedColorPalette[timing][index]);
+    result += ' ';  result += label;
+    result += '\n';
   }
 
   result += " Grey   ";
@@ -1056,7 +1056,7 @@ string TIADebug::toString()
     "p1_pf", "p1_bl", "m1_p1", "m0_p1", "m0_pf",
     "m0_bl", "m0_m1", "m1_pf", "m1_bl", "bl_pf"
   };
-  auto writeCx = [&](int start, int end)
+  const auto writeCx = [&](int start, int end)
   {
     for(int i = start; i < end; ++i)
     {

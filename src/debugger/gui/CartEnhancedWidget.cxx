@@ -119,7 +119,7 @@ string CartridgeEnhancedWidget::romDescription()
           info += "\n ";
         info += " " + hs;
       }
-      info += "\n";
+      info += '\n';
     }
     info += std::format("Startup bank = #{} or undetermined\n", myCart.startBank());
   }
@@ -331,7 +331,7 @@ void CartridgeEnhancedWidget::loadConfig()
     const auto formatBytes = [](const ByteArray& arr) {
       string result;
       result.reserve(arr.size() * 3);
-      for(auto i : arr)
+      for(const auto i: arr)
         result += std::format("{} ", Base::hex2(static_cast<int>(i)));
       return result;
     };

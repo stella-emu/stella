@@ -387,23 +387,21 @@ void EventMappingWidget::handleJoyDown(int stick, int button, bool longPress)
 void EventMappingWidget::handleJoyUp(int stick, int button)
 {
   // Remap joystick buttons in remap mode
-  if(myRemapStatus && myActionSelected >= 0)
+  if(myRemapStatus && myActionSelected >= 0 &&
+     myLastStick == stick && myLastButton == button)
   {
-    if(myLastStick == stick && myLastButton == button)
-    {
-      EventHandler& eh = instance().eventHandler();
-      const Event::Type event =
-          EventHandler::eventAtIndex(myActionSelected, myEventGroup);
+    EventHandler& eh = instance().eventHandler();
+    const Event::Type event =
+        EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
-      // map either button/hat, solo button or button/axis combinations
-      if(myLastHat != JOY_CTRL_NONE)
-      {
-        if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, myLastHatDir))
-          stopRemapping();
-      }
-      else if(eh.addJoyMapping(event, myEventMode, stick, button, myLastAxis, myLastDir))
+    // map either button/hat, solo button or button/axis combinations
+    if(myLastHat != JOY_CTRL_NONE)
+    {
+      if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, myLastHatDir))
         stopRemapping();
     }
+    else if(eh.addJoyMapping(event, myEventMode, stick, button, myLastAxis, myLastDir))
+      stopRemapping();
   }
 }
 

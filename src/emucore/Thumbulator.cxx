@@ -173,6 +173,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// NOLINTNEXTLINE(modernize-use-string-view): THUMB_DISS/THUMB_DBUG below return a real built string
 string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 {
   _irqDrivenAudio = irqDrivenAudio;
@@ -774,13 +775,10 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
   reg &= 0xF;
   uInt32 data = reg_norm[reg];
   DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << '\n');
-  if(reg == 15)
+  if(reg == 15 && (data & 1))
   {
-    if(data & 1)
-    {
-      DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << '\n');
-      data &= ~1;
-    }
+    DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << '\n');
+    data &= ~1;
   }
   return data;
 }
@@ -1474,11 +1472,10 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
 
     case Op::bgt: {
       THUMB_STAT(_stats.branches)
-      if(znFlags)
-      {
-        if(((znFlags & 0x80000000) && vFlag) ||
-           ((!(znFlags & 0x80000000)) && !vFlag))
-          write_register(15, decodedParam[decodedParamIdx]);      }
+      if(znFlags &&
+         (((znFlags & 0x80000000) && vFlag) ||
+          ((!(znFlags & 0x80000000)) && !vFlag)))
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
@@ -3268,9 +3265,8 @@ bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
   // The pattern is always aligned to 4
   for(uInt32 i = 0; i < romSize/2 - 2; i += 2)
   {
-    if(rom[i] == patternLo && rom[i + 1] == patternHi)
-      if(++count == repeats)
-        return true;
+    if(rom[i] == patternLo && rom[i + 1] == patternHi && ++count == repeats)
+      return true;
   }
   return false;
 }

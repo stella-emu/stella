@@ -54,7 +54,7 @@ TimerManager::TimerId TimerManager::addTimer(
     worker = std::thread(&TimerManager::timerThreadWorker, this);
 
   // Assign an ID and insert it into function storage
-  auto id = nextId++;
+  const auto id = nextId++;
   const auto iter = active.emplace(id, Timer(id, Clock::now() + Duration(msDelay),
       Duration(msPeriod), func));
 

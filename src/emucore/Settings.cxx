@@ -407,14 +407,14 @@ void Settings::migrate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
-  auto clampSetting = [&](string_view key, int lo, int hi, int def) {
+  const auto clampSetting = [&](string_view key, int lo, int hi, int def) {
     int v = getInt(key);
     BSPF::clamp(v, lo, hi, def);
     setValue(key, v);
   };
-  auto requireOneOf = [&](string_view key,
-                          std::initializer_list<string_view> valid,
-                          string_view def) {
+  const auto requireOneOf = [&](string_view key,
+                                std::initializer_list<string_view> valid,
+                                string_view def) {
     string_view s = getString(key);
     if(std::ranges::none_of(valid, [&](string_view v){ return s == v; }))
       setValue(key, def);
@@ -484,7 +484,7 @@ void Settings::validate()
   // checked against it rather than against a copy of the list here.  The
   // debugger's roles take a subset of the names the rest of the UI does
   using FontRole = FontManager::FontRole;
-  auto requireFont = [&](FontRole role, string_view def) {
+  const auto requireFont = [&](FontRole role, string_view def) {
     const string_view key = FontManager::settingKey(role);
     if(!FontManager::isRoleFont(role, getString(key)))
       setValue(key, def);
@@ -859,10 +859,10 @@ void Settings::usage()
 const Variant& Settings::value(string_view key) const
 {
   // Try to find the named setting and answer its value
-  if(auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
+  if(const auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
     return it->second;
 
-  if(auto it = myTemporarySettings.find(key); it != myTemporarySettings.end())
+  if(const auto it = myTemporarySettings.find(key); it != myTemporarySettings.end())
     return it->second;
 
   return EmptyVariant();

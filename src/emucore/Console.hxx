@@ -448,7 +448,7 @@ class Console : public Serializable, public ConsoleIO
       * Determine display format by signature string (only PAL?60 so far)
       * Returns "AUTO" if nothing is found
     */
-    string formatFromSignature() const;
+    string_view formatFromSignature() const;
 
     /**
       Create the audio queue

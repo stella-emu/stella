@@ -114,10 +114,11 @@ void Dialog::open()
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
-  if (_surface == nullptr)
+  if(_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  else if (static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
+  else if(static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
     _surface->resize(_w, _h);
+
   _surface->setSrcSize(_w, _h);
   _layer = parent().addDialog(this);
 
@@ -130,7 +131,7 @@ void Dialog::open()
   if(!_myTabList.empty())
     // Re-select the tab this dialog was last left on, then (re)-build the
     // focus list to use for all widgets of all tabs
-    for(auto& tabfocus : _myTabList)
+    for(const auto& tabfocus: _myTabList)
     {
       restoreActiveTab(tabfocus.widget);
       buildCurrentFocusList(tabfocus.widget->getID());
@@ -797,12 +798,9 @@ void Dialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(_focusedWidget)
-  {
-    // Lose focus on mouseup unless the widget requested to retain the focus
-    if(!_focusedWidget->hasFlag(Widget::Flag::RetainFocus))
-      releaseFocus();
-  }
+  // Lose focus on mouseup unless the widget requested to retain the focus
+  if(_focusedWidget && !_focusedWidget->hasFlag(Widget::Flag::RetainFocus))
+    releaseFocus();
 
   Widget* w = _dragWidget;
   if(w)

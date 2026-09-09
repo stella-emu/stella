@@ -349,7 +349,7 @@ string Console::formatFromFilename() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Console::formatFromSignature() const
+string_view Console::formatFromSignature() const
 {
   static constexpr std::array<uInt8, 5> PAL60_v1 = { 'P', 'A', 'L', '6', '0' };
   static constexpr std::array<uInt8, 6> PAL60_v2 = { 'P', 'A', 'L', ' ', '6', '0' };
@@ -635,7 +635,7 @@ void Console::cyclePhosphorMode(int direction)
   if(direction)
   {
     mode = static_cast<PhosphorHandler::PhosphorMode>
-      (BSPF::clampw(mode + direction, 0, static_cast<int>(PhosphorHandler::NumTypes - 1)));
+      (BSPF::clampw(mode + direction, 0, PhosphorHandler::NumTypes - 1));
     switch(mode)
     {
       case PhosphorHandler::Always:

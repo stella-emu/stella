@@ -102,9 +102,9 @@ class RiotDebug : public DebuggerSystem
     string dirP1String();
 
     /* Port B description */
-    string diffP0String();
-    string diffP1String();
-    string tvTypeString();
+    string_view diffP0String();
+    string_view diffP1String();
+    string_view tvTypeString();
     string switchesString();
 
   private:

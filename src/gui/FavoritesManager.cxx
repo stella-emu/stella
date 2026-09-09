@@ -21,7 +21,7 @@
 
 #include "FavoritesManager.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FavoritesManager::FavoritesManager(Settings& settings)

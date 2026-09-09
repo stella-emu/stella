@@ -423,7 +423,7 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
   int idx = 0;
   const auto* label = labels.begin();
 
-  for(auto* s: sliders)
+  for(const auto* s: sliders)
   {
     const Widget* l = label != labels.end() ? *label++ : nullptr;
     if(s == nullptr)

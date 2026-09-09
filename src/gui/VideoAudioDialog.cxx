@@ -1372,7 +1372,7 @@ void VideoAudioDialog::handlePaletteUpdate()
   {
     instance().frameBuffer().tiaSurface().paletteHandler().setPalette();
 
-    for(auto& row: myColor)
+    for(const auto& row: myColor)
       for(auto* w: row)
         w->setDirty();
   }

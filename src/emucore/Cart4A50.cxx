@@ -169,15 +169,13 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
         myBankChanged = true;
       }
     }
-    else if((address & 0x1f00) == 0x1f00)      // 256B region at 0x1f00 - 0x1fff
+    else if((address & 0x1f00) == 0x1f00 &&    // 256B region at 0x1f00 - 0x1fff
+            !hotspotsLocked() && ((myLastData & 0xe0) == 0x60) &&
+            ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
     {
-      if(!hotspotsLocked() && ((myLastData & 0xe0) == 0x60) &&
-         ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
-      {
-        mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
-                      ((address & 0x70) << 4);
-        myBankChanged = true;
-      }
+      mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
+                    ((address & 0x70) << 4);
+      myBankChanged = true;
     }
   }
   myLastData = value;

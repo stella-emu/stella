@@ -241,11 +241,8 @@ void EditableWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       }
       copySelectedText();
     }
-    else if(rmb == "paste")
-    {
-      if(pasteSelectedText())
-        sendCommand(Cmd::Changed, 0, _id);
-    }
+    else if(rmb == "paste" && pasteSelectedText())
+      sendCommand(Cmd::Changed, 0, _id);
     setDirty();
   }
   else
@@ -622,14 +619,12 @@ bool EditableWidget::killChar(int direction, bool addEdit)
       handled = true;
     }
   }
-  else if(direction == 1)  // Delete next character (delete)
+  // Delete next character (delete)
+  else if(direction == 1 && std::cmp_less(_caretPos, _editString.size()))
   {
-    if(std::cmp_less(_caretPos, _editString.size()))
-    {
-      if(_selectSize > 0)
-        _selectSize--;
-      handled = true;
-    }
+    if(_selectSize > 0)
+      _selectSize--;
+    handled = true;
   }
 
   if(handled)

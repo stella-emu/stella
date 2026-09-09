@@ -56,17 +56,15 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
   // Autodetect QuadTari controllers:
   // This will detect the same controller for 1st and 2nd controller
   const ByteSpan image = cart.getImage();
-  if(!image.empty())
+  if(!image.empty() &&
+     (firstType == Controller::Type::Unknown || secondType == Controller::Type::Unknown))
   {
-    if(firstType == Controller::Type::Unknown || secondType == Controller::Type::Unknown)
-    {
-      const Controller::Type autodetected =
-        ControllerDetector::detectType(image, Controller::Type::Unknown,
-                                       jack, myOSystem.settings(), true);
+    const Controller::Type autodetected =
+      ControllerDetector::detectType(image, Controller::Type::Unknown,
+                                     jack, myOSystem.settings(), true);
 
-      if(firstType == Controller::Type::Unknown)  firstType = autodetected;
-      if(secondType == Controller::Type::Unknown) secondType = autodetected;
-    }
+    if(firstType == Controller::Type::Unknown)  firstType = autodetected;
+    if(secondType == Controller::Type::Unknown) secondType = autodetected;
   }
 
   myFirstController = addController(firstType, false);

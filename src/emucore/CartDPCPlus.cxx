@@ -263,12 +263,9 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     return peekvalue;
 
   // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
-  if(myFastFetch && myLDAimmediate)
-  {
-    if(peekvalue < 0x0028)
-      // if #value is a read-register then we want to use that as the address
-      address = peekvalue;
-  }
+  if(myFastFetch && myLDAimmediate && peekvalue < 0x0028)
+    // if #value is a read-register then we want to use that as the address
+    address = peekvalue;
   myLDAimmediate = false;
 
   if(address < 0x0028)

@@ -360,13 +360,11 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       break;
   }
 
-  if (FAST_FETCH_ON(myMode))
-  {
-    if ((peekvalue == 0xA9) ||
-        (myLDXenabled && peekvalue == 0xA2 ) ||
-        (myLDYenabled && peekvalue == 0xA0))
-      myLDAXYimmediateOperandAddress = address + 1;
-  }
+  if (FAST_FETCH_ON(myMode) &&
+      ((peekvalue == 0xA9) ||
+       (myLDXenabled && peekvalue == 0xA2 ) ||
+       (myLDYenabled && peekvalue == 0xA0)))
+    myLDAXYimmediateOperandAddress = address + 1;
 
   return peekvalue;
 }
@@ -781,13 +779,13 @@ void CartridgeCDF::setupVersion()
   for (uInt32 i = 0; i < 2048; i += 4)
   {
     // CDF signature occurs 3 times in a row, i+3 (+7 or +11) is version
-    if (    myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43) // C
-      if (  myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44) // D
-        if (myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46) // F
-        {
-          subversion = myImage[i+3];
-          break;
-        }
+    if (myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43 && // C
+        myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44 && // D
+        myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46)   // F
+    {
+      subversion = myImage[i+3];
+      break;
+    }
   }
 
   switch (subversion)

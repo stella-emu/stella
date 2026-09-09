@@ -51,11 +51,11 @@ namespace {
       i++;
     }
 
-    auto symbols = elf.getSymbols();
+    const auto& symbols = elf.getSymbols();
     stream << "\nELF symbols:\n\n";
     if (!symbols.empty()) {
       i = 0;
-      for (auto& symbol: symbols)
+      for (const auto& symbol: symbols)
         stream << (i++) << " " << symbol << '\n';
     }
 
@@ -68,7 +68,7 @@ namespace {
         << "\nELF relocations for section "
         << section.name << ":\n\n";
 
-      for (auto& rel: *rels) stream << rel << '\n';
+      for (const auto& rel: *rels) stream << rel << '\n';
     }
   }
 
@@ -160,11 +160,12 @@ namespace {
     constexpr size_t IMAGE_SIZE = 4L * 0x00100000;
     static constexpr string_view IMAGE_FILE_NAME = "elf_executable_image.bin";
 
-    auto binary = std::make_unique<uInt8[]>(IMAGE_SIZE);
+    const auto binary = std::make_unique<uInt8[]>(IMAGE_SIZE);
     std::fill_n(binary.get(), IMAGE_SIZE, uInt8{0});
 
-    for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data,
-                        ElfLinker::SegmentType::rodata})
+    for (const auto segment: {ElfLinker::SegmentType::text,
+                              ElfLinker::SegmentType::data,
+                              ElfLinker::SegmentType::rodata})
       std::copy_n(linker.getSegmentData(segment),
                   linker.getSegmentSize(segment),
                   binary.get() + linker.getSegmentBase(segment));

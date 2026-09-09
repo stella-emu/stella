@@ -354,13 +354,10 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 void RomListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
-  // send the double click command
-  if(clickCount == 2 && (_selectedItem == findItem(x, y)))
-  {
-    // Start edit mode
-    if(isEditable() && !_editMode)
-      startEditMode();
-  }
+  // send the double click command; start edit mode
+  if(clickCount == 2 && (_selectedItem == findItem(x, y)) &&
+     isEditable() && !_editMode)
+    startEditMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,20 +394,17 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   }
   else
   {
-    switch(key)
+    if(key == StellaKey::SPACE)
     {
-      case StellaKey::SPACE:
-        // Snap list back to currently highlighted line
-        if(_highlightedItem >= 0)
-        {
-          _currentPos = _highlightedItem;
-          scrollToHighlighted();
-        }
-        break;
-
-      default:
-        handled = false;
+      // Snap list back to currently highlighted line
+      if(_highlightedItem >= 0)
+      {
+        _currentPos = _highlightedItem;
+        scrollToHighlighted();
+      }
     }
+    else
+      handled = false;
   }
 
   if(_selectedItem != oldSelectedItem)
@@ -443,11 +437,8 @@ bool RomListWidget::handleEvent(Event::Type e)
   switch(e)
   {
     case Event::UISelect:
-      if(_selectedItem >= 0)
-      {
-        if(isEditable())
-          startEditMode();
-      }
+      if(_selectedItem >= 0 && isEditable())
+        startEditMode();
       break;
 
     case Event::UIUp:

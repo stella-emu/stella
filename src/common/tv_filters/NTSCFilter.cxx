@@ -68,7 +68,7 @@ string NTSCFilter::setPreset(Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string NTSCFilter::getPreset() const
+string_view NTSCFilter::getPreset() const
 {
   switch(myPreset)
   {

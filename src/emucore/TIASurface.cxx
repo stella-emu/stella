@@ -77,7 +77,7 @@ TIASurface::~TIASurface() = default;
 void TIASurface::initialize(const Console& console,
                             const VideoModeHandler::Mode& mode)
 {
-  myTIA = &(console.tia());
+  myTIA = &console.tia();
 
   myTiaSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
   myTiaSurface->setDstSize(mode.imageR.w(), mode.imageR.h());

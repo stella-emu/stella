@@ -426,8 +426,8 @@ void RiotWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  auto IO_REGS_UPDATE = [&](ToggleBitWidget* bits,
-                            const BoolArray& s_bits, const BoolArray& old_bits)
+  const auto IO_REGS_UPDATE = [&](ToggleBitWidget* bits, const BoolArray& s_bits,
+                                  const BoolArray& old_bits)
   {
     changed.clear();
     for(uInt32 i = 0; i < s_bits.size(); ++i)

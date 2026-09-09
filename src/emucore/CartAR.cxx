@@ -166,9 +166,9 @@ uInt8 CartridgeAR::peek(uInt16 addr)
         myPCMStarted = true;
         myPCMStartCycle = now;
 
-        auto info = std::format("PCM stream started at cycle {}, "
-                                "{} samples @ {} Hz\n",
-                                myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
+        const auto info = std::format("PCM stream started at cycle {}, "
+                                      "{} samples @ {} Hz\n",
+                                      myPCMStartCycle, myPCMData.size(), myPCMSampleRate);
         Logger::debug("CartridgeAR: " + info);
         myLoadLog += info;
       }
@@ -258,8 +258,8 @@ void CartridgeAR::finalizeSoundLoad()
   // Finalise the load that was streaming in when the PCM ran out
   finalizeLoad(myCurrentLoadBlock);
 
-  auto info = std::format("PCM exhausted at cycle {}, finalising load image\n",
-                           mySystem->cycles());
+  const auto info = std::format("PCM exhausted at cycle {}, finalising load image\n",
+                                mySystem->cycles());
   Logger::debug("CartridgeAR: " + info);
   myLoadLog += info;
 

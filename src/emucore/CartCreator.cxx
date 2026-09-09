@@ -89,7 +89,7 @@ namespace  // anonymous namespace, to keep these functions private
   */
   unique_ptr<Cartridge>
   createFromImage(ByteSpan image, Bankswitch::Type type, string_view md5,
-                  Settings& settings)
+                  const Settings& settings)
   {
     // We should know the cart's type by now so let's create it
     switch(type)
@@ -376,7 +376,7 @@ namespace  // anonymous namespace, to keep these functions private
   */
   unique_ptr<Cartridge>
   createFromSoundLoad(const FSNode& file, string& md5,
-                      Settings& settings, const FSNode& baseDir)
+                      const Settings& settings, const FSNode& baseDir)
   {
     if(!file.hasExtension({".mp3", ".wav"}))
       return nullptr;

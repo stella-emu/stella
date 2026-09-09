@@ -26,7 +26,7 @@ class OSystem;
 #include "repository/CompositeKeyValueRepository.hxx"
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 /**
   This class provides an interface to all things related to high scores.

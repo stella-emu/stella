@@ -60,6 +60,7 @@ CartridgeARWidget::CartridgeARWidget(
 
   createBaseInformation(size, "Starpath", info);
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myModeInfo = new LabelWidget(boss, _font,
     myCart.myIsSoundLoad ? "Sound-load mode" : "Fast-load mode");
   myModeDetail = new LabelWidget(boss, _font, myCart.myIsSoundLoad
@@ -105,6 +106,7 @@ CartridgeARWidget::CartridgeARWidget(
 
   // The selector's box lines up with the info fields above it
   myLabelColumn.emplace_back(mySliceLbl);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   reflow();
 }

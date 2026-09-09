@@ -108,7 +108,7 @@ void EventHandlerSDL::pollEvent()
         break;
 
       case SDL_EVENT_TEXT_INPUT:
-        handleTextEvent(*(myEvent.text.text));
+        handleTextEvent(*myEvent.text.text);
         break;
 
       case SDL_EVENT_MOUSE_MOTION:

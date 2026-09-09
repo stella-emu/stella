@@ -398,7 +398,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
     int w2 = font.getStringWidth(ELLIPSIS);
 
     // SLOW algorithm to find the acceptable length. But it is good enough for now.
-    for(auto c: s)
+    for(const auto c: s)
     {
       const int charWidth = font.getCharWidth(c);
       if(w2 + charWidth > w)

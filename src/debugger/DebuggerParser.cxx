@@ -350,7 +350,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
 
   // Walk the remainder parsing space-separated tokens,
   // with {brace} quoting for tokens containing spaces
-  auto rest = command.substr(verbEnd + 1);
+  const auto rest = command.substr(verbEnd + 1);
   string curArg;
   curArg.reserve(32);
   ParseState state = ParseState::IN_SPACE;

@@ -64,12 +64,10 @@ void FrameManager::onNextLine()
   switch (myState)
   {
     case State::waitForVsyncStart:
-      if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
-      {
-        // if vertical blank is not enabled, bail out after too many frame  lines:
-        if (myVblank || myCurrentFrameTotalLines > Metrics::frameSizePAL * 2)
-          ++myVsyncLineCount;
-      }
+      // if vertical blank is not enabled, bail out after too many frame  lines:
+      if (((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0) &&
+          (myVblank || myCurrentFrameTotalLines > Metrics::frameSizePAL * 2))
+        ++myVsyncLineCount;
 
       if (myVsyncLineCount > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
 

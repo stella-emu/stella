@@ -294,8 +294,8 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
   }
   else
   {
-    auto msg = std::format("Disabling snapshots, generated {} files",
-                           mySnapCounter / mySnapInterval);
+    const auto msg = std::format("Disabling snapshots, generated {} files",
+                                 mySnapCounter / mySnapInterval);
     myOSystem.frameBuffer().showTextMessage(msg);
     setContinuousSnapInterval(0);
   }

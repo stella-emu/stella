@@ -226,13 +226,11 @@ void Debugger::updateTime(uInt64 time)
     relayout();
     mySettleCountdown = 15;
   }
-  else if(mySettleCountdown > 0)
+  // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
   {
-    if(--mySettleCountdown == 0)
-    {
-      myOSystem.frameBuffer().resizeSettled();
-      myOSystem.settings().setValue("dbg.res", mySize);
-    }
+    myOSystem.frameBuffer().resizeSettled();
+    myOSystem.settings().setValue("dbg.res", mySize);
   }
 }
 
@@ -362,9 +360,9 @@ string Debugger::invIfChanged(int reg, int oldReg)
   string ret;
 
   const bool changed = reg != oldReg;
-  if(changed) ret += "\177";
+  if(changed) ret += '\177';
   ret += Common::Base::toString(reg, Common::Base::Fmt::_16_2);
-  if(changed) ret += "\177";
+  if(changed) ret += '\177';
 
   return ret;
 }
@@ -634,10 +632,10 @@ void Debugger::log(string_view triggerMsg)
     msg += (romBanks > 9)
       ? Base::toString(bank, Base::Fmt::_10)
       : (" " + std::to_string(bank));
-    msg += "/";
+    msg += '/';
   }
   else
-    msg += " ";
+    msg += ' ';
 
   // First find the lines in the range, and determine the longest string
   const auto& disasm = myCartDebug->disassembly();
@@ -787,7 +785,7 @@ void Debugger::nextFrame(int frames)
 
   DispatchResult dispatchResult;
   auto& tia = myOSystem.console().tia();
-  auto& emuTiming = myOSystem.console().emulationTiming();
+  const auto& emuTiming = myOSystem.console().emulationTiming();
 
   while(frames)
   {
@@ -1112,7 +1110,7 @@ bool Debugger::delFunction(string_view name)
 const Expression& Debugger::getFunction(string_view name) const
 {
   const auto& iter = myFunctions.find(name);
-  return iter != myFunctions.end() ? *(iter->second) : EmptyExpression();
+  return iter != myFunctions.end() ? *iter->second : EmptyExpression();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

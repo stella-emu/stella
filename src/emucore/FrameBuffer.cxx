@@ -913,7 +913,7 @@ void FrameBuffer::deallocateSurface(const shared_ptr<FBSurface>& surface)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
-  for(auto& surface: mySurfaceList)
+  for(const auto& surface: mySurfaceList)
     surface->reload();
 
   update(UpdateMode::REDRAW); // force full update
@@ -1023,7 +1023,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getDisplayKey(BufferType bufferType) const
+string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
 {
   if(bufferType == BufferType::None)
     bufferType = myWindow.bufferType;
@@ -1051,7 +1051,7 @@ string FrameBuffer::getDisplayKey(BufferType bufferType) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getPositionKey(BufferType bufferType) const
+string_view FrameBuffer::getPositionKey(BufferType bufferType) const
 {
   if(bufferType == BufferType::None)
     bufferType = myWindow.bufferType;

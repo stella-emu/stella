@@ -298,7 +298,7 @@ class FBBackendSDL : public FBBackend
     /**
       Which renderer an 'auto' preference asks SDL for; empty lets SDL choose.
     */
-    static string autoRenderer();
+    static string_view autoRenderer();
 
   private:
     OSystem& myOSystem;

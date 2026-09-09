@@ -329,20 +329,17 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   bool handled = true;
   if(!_editMode)
   {
-    switch(key)
+    if(key == StellaKey::SPACE)
     {
-      case StellaKey::SPACE:
-        // Snap list back to currently highlighted line
-        if(_highlightedItem >= 0)
-        {
-          _currentPos = _highlightedItem;
-          scrollToHighlighted();
-        }
-        break;
-
-      default:
-        handled = false;
+      // Snap list back to currently highlighted line
+      if(_highlightedItem >= 0)
+      {
+        _currentPos = _highlightedItem;
+        scrollToHighlighted();
+      }
     }
+    else
+      handled = false;
   }
 
   return handled;
@@ -448,16 +445,13 @@ void ListWidget::lostFocusWidget()
 void ListWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                int data, int id)
 {
-  if(cmd == GuiObject::Cmd::SetPosition)
+  if(cmd == GuiObject::Cmd::SetPosition && _currentPos != data)
   {
-    if(_currentPos != data)
-    {
-      _currentPos = data;
-      setDirty();
+    _currentPos = data;
+    setDirty();
 
-      // Let boss know the list has scrolled
-      sendCommand(Cmd::Scrolled, _currentPos, _id);
-    }
+    // Let boss know the list has scrolled
+    sendCommand(Cmd::Scrolled, _currentPos, _id);
   }
 }
 

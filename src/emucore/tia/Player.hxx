@@ -404,28 +404,22 @@ void Player::tick()
   } else if (myIsRendering) {
     ++myRenderCounter;
 
-    switch (myDivider) {
-      case 1:
-        if (myRenderCounter > 0)
-          ++mySampleCounter;
+    if (myDivider == 1) {
+      if (myRenderCounter > 0)
+        ++mySampleCounter;
 
-        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
-          setDivider(myDividerPending);
+      // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+      if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
+        setDivider(myDividerPending);
+    } else {
+      // myDivider is always 2 or 4 in this branch (NUSIZ only produces 1, 2, or 4),
+      // so replace % with a bitmask to avoid an integer divide on the per-pixel path
+      if (myRenderCounter > 1 && (((myRenderCounter - 1) & (myDivider - 1)) == 0))
+        ++mySampleCounter;
 
-        break;
-
-      default:
-        // myDivider is always 2 or 4 in this branch (NUSIZ only produces 1, 2, or 4),
-        // so replace % with a bitmask to avoid an integer divide on the per-pixel path
-        if (myRenderCounter > 1 && (((myRenderCounter - 1) & (myDivider - 1)) == 0))
-          ++mySampleCounter;
-
-        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
-          setDivider(myDividerPending);
-
-        break;
+      // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+      if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
+        setDivider(myDividerPending);
     }
 
     if (mySampleCounter > 7) myIsRendering = false;

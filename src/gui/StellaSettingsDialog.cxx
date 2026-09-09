@@ -475,16 +475,11 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   // in launcher mode
   bool enable = false;
 
-  switch(instance().eventHandler().state())
-  {
-    case EventHandlerState::LAUNCHER:
-      enable = !instance().launcher().selectedRomMD5().empty();
-      break;
-    default:
-      // Any in-game menu: enabled whenever a console is running behind it
-      enable = instance().hasConsole();
-      break;
-  }
+  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
+    enable = !instance().launcher().selectedRomMD5().empty();
+  else
+    // Any in-game menu: enabled whenever a console is running behind it
+    enable = instance().hasConsole();
 
   myGameSettings->setEnabled(enable);
   myLeftPort->setEnabled(enable);

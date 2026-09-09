@@ -32,7 +32,7 @@ void AtariNTSC::initialize(const Setup& setup)
 void AtariNTSC::setPalette(const PaletteArray& palette)
 {
   uInt8* ptr = myRGBPalette.data();  // NOLINT(misc-const-correctness)
-  for(auto p: palette)
+  for(const auto p: palette)
   {
     *ptr++ = (p >> 16) & 0xff;
     *ptr++ = (p >> 8) & 0xff;

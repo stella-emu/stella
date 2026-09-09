@@ -77,7 +77,7 @@ class FixedStack
     template <typename Func>
     constexpr void applyAll(Func&& func) {
       // Create a subrange of active stack elements, and apply func to each
-      auto r = std::ranges::subrange(_stack.begin(), _stack.begin() + _size);
+      const auto r = std::ranges::subrange(_stack.begin(), _stack.begin() + _size);
       std::ranges::for_each(r, std::forward<Func>(func));
     }
     template <typename Func>

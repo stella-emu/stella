@@ -77,15 +77,13 @@ void KidVid::update()
     myFilesFound = mySongPlaying = false;
     myOSystem.sound().stopWav();
   }
-  else if(myEvent.get(Event::RightKeyboard6) || myEvent.get(Event::ConsoleSelect) ||
-          (myOSystem.hasConsole() && !myOSystem.console().switches().tvColor()))
-  {
-    // Some first songs trigger a sequence of timed actions, they cannot be skipped
-    if(mySongPointer &&
-        ourSongPositions[mySongPointer - 1] != 0 && // First song of all BBears games
-        ourSongPositions[mySongPointer - 1] != 11)  // First song of Harmony Smurf
-      myOSystem.sound().stopWav();
-  }
+  // Some first songs trigger a sequence of timed actions, they cannot be skipped
+  else if((myEvent.get(Event::RightKeyboard6) || myEvent.get(Event::ConsoleSelect) ||
+           (myOSystem.hasConsole() && !myOSystem.console().switches().tvColor())) &&
+          mySongPointer &&
+          ourSongPositions[mySongPointer - 1] != 0 && // First song of all BBears games
+          ourSongPositions[mySongPointer - 1] != 11)  // First song of Harmony Smurf
+    myOSystem.sound().stopWav();
 
   if(!myTape)
   {

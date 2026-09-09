@@ -65,7 +65,7 @@
 #endif
 
 using namespace std::placeholders;
-using json = nlohmann::json;
+using nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
@@ -2378,11 +2378,10 @@ StringList EventHandler::getActionList(const Event::EventSet& events,
         l.push_back(item.action);
   };
 
-  switch(mode)
-  {
-    case EventMode::kMenuMode: collectMatchingActions(ourMenuActionList); break;
-    default:                   collectMatchingActions(ourEmulActionList); break;
-  }
+  if(mode == EventMode::kMenuMode)
+    collectMatchingActions(ourMenuActionList);
+  else
+    collectMatchingActions(ourEmulActionList);
   return l;
 }
 

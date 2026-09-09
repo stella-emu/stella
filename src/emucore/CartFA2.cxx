@@ -43,12 +43,9 @@ bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFA2::peek(uInt16 address)
 {
-  if((address & ROM_MASK) == 0x0FF4)
-  {
-    // Load/save RAM to/from Harmony cart flash
-    if(myImage.size() == 28_KB && !hotspotsLocked())
-      return ramReadWrite();
-  }
+  // Load/save RAM to/from Harmony cart flash
+  if((address & ROM_MASK) == 0x0FF4 && myImage.size() == 28_KB && !hotspotsLocked())
+    return ramReadWrite();
 
   return CartridgeEnhanced::peek(address);
 }

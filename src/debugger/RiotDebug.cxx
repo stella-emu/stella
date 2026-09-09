@@ -352,19 +352,19 @@ string RiotDebug::dirP1String()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RiotDebug::diffP0String()
+string_view RiotDebug::diffP0String()
 {
   return (swchb() & 0x40) ? "hard/A" : "easy/B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RiotDebug::diffP1String()
+string_view RiotDebug::diffP1String()
 {
   return (swchb() & 0x80) ? "hard/A" : "easy/B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RiotDebug::tvTypeString()
+string_view RiotDebug::tvTypeString()
 {
   return (swchb() & 0x8) ? "Color" : "B&W";
 }

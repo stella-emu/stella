@@ -154,9 +154,8 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   }
 
   // hotspots in TIA range are reacting to pokes only
-  if(hotspot() >= 0x80)
-    if(checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
-      return myRWPRandomValues[address & 0xFF];
+  if(hotspot() >= 0x80 && checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
+    return myRWPRandomValues[address & 0xFF];
 
   if(isRamBank(address))
   {
@@ -245,7 +244,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     const uInt16 hotspot = this->hotspot();
     const uInt16 hotSpotAddr = (hotspot & 0x1000) ? (hotspot & ~System::PAGE_MASK) : 0xFFFF;
-    const uInt16 plusROMAddr = (myPlusROM->isValid()) ? (0x1FF0 & ~System::PAGE_MASK) : 0xFFFF;
+    const uInt16 plusROMAddr = myPlusROM->isValid() ? (0x1FF0 & ~System::PAGE_MASK) : 0xFFFF;
 
     // Skip extra RAM; if existing it is only mapped into first segment
     const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;

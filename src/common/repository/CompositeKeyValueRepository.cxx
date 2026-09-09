@@ -27,7 +27,7 @@ bool CompositeKeyValueRepositoryAtomic::get(string_view key1, string_view key2,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepositoryAtomic> CompositeKeyValueRepositoryAtomic::getAtomic(string_view key)
 {
-  auto repo = get(key);
+  const auto repo = get(key);
   return {repo, repo->atomic()};
 }
 

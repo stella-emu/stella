@@ -290,11 +290,8 @@ void RadioButtonWidget::refreshFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RadioButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
-  {
-    if(!_state)
-      setState(true);
-  }
+  if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h && !_state)
+    setState(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

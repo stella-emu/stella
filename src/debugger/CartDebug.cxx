@@ -62,7 +62,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // ROM sizes greater than 4096 indicate multi-bank ROMs, but we handle only
   // 4K pieces at a time
   // ROM sizes less than 4K use the actual value
-  auto image = myConsole.cartridge().getImage();
+  const auto image = myConsole.cartridge().getImage();
 
   BankInfo info;
   info.size = std::min<size_t>(image.size(), myConsole.cartridge().bankSize());
@@ -126,7 +126,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
-  for(auto addr: myState.rport)
+  for(const auto addr: myState.rport)
     myState.ram.push_back(myDebugger.peek(addr));
 
   myState.bank = myDebugWidget->bankState();
@@ -138,7 +138,7 @@ const DebuggerState& CartDebug::getState()
 void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
-  for(auto addr: myOldState.rport)
+  for(const auto addr: myOldState.rport)
     myOldState.ram.push_back(myDebugger.peek(addr));
 
   myOldState.bank = myDebugWidget->bankState();
@@ -327,14 +327,11 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
 
     // Only add addresses when absolutely necessary, to cut down on the
     // work that Distella has to do
-    if(bankChanged || !pcfound)
+    if((bankChanged || !pcfound) && std::ranges::find(addresses, PC) == addresses.cend())
     {
-      if(std::ranges::find(addresses, PC) == addresses.cend())
-      {
-        addresses.push_back(PC);
-        if(!DiStella::settings.resolveCode)
-          addDirective(Device::AccessType::CODE, PC, PC, bank);
-      }
+      addresses.push_back(PC);
+      if(!DiStella::settings.resolveCode)
+        addDirective(Device::AccessType::CODE, PC, PC, bank);
     }
     // Always attempt to resolve code sections unless it's been
     // specifically disabled

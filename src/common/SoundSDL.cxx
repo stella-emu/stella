@@ -78,7 +78,7 @@ bool SoundSDL::openDevice()
 {
   ASSERT_MAIN_THREAD;
 
-  auto SOUND_ERROR = [this]() -> bool
+  const auto SOUND_ERROR = [this]() -> bool
   {
     Logger::error(std::format("WARNING: Couldn't open SDL audio device! \n"
       "         {}\n", SDL_GetError()));
@@ -130,8 +130,8 @@ void SoundSDL::open(shared_ptr<AudioQueue> audioQueue,
 
   const string pre_about = myAboutString;
 
-  myAudioQueue = audioQueue;
-  myEmulationTiming = emulationTiming;
+  myAudioQueue = std::move(audioQueue);
+  myEmulationTiming = std::move(emulationTiming);
   myUnderrun = true;
   myCurrentFragment = nullptr;
 

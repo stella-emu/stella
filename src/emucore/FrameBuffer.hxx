@@ -572,8 +572,8 @@ class FrameBuffer
       These methods are used to load/save position and display of the
       current window.
     */
-    string getPositionKey(BufferType bufferType = BufferType::None) const;
-    string getDisplayKey(BufferType bufferType = BufferType::None) const;
+    string_view getPositionKey(BufferType bufferType = BufferType::None) const;
+    string_view getDisplayKey(BufferType bufferType = BufferType::None) const;
     void saveCurrentWindowPosition() const;
 
     /**

@@ -29,7 +29,7 @@ class Serializer;
 #include "HighScoresManager.hxx"
 #include "json/json_lib.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 /**
   The dialog for displaying high scores in Stella.

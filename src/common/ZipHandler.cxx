@@ -113,7 +113,7 @@ std::optional<std::pair<string_view, size_t>> ZipHandler::firstRom() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipFilePtr ZipHandler::findCached(string_view filename)
 {
-  auto it = myZipCache.find(filename);
+  const auto it = myZipCache.find(filename);
   if(it == myZipCache.end())
     return {};
 
@@ -149,7 +149,7 @@ void ZipHandler::addToCache()
 
   // Insert the new entry at the back (most recently used)
   myCacheOrder.push_back(key);
-  auto iter = std::prev(myCacheOrder.end());
+  const auto iter = std::prev(myCacheOrder.end());
   myZipCache.emplace(key, std::make_pair(std::move(myZip), iter));
 }
 
@@ -362,7 +362,7 @@ const ZipHandler::ZipHeader* ZipHandler::ZipFile::findHeader(string_view name) c
   if(myHeaders.size() >= 256)
   {
     ensureIndex();
-    auto it = myHeaderIndex.find(name);
+    const auto it = myHeaderIndex.find(name);
     if(it != myHeaderIndex.end())
       return &myHeaders[it->second];
     return nullptr;

@@ -249,13 +249,13 @@ void MD5::finalize()
 // Return hex representation of digest as string
 string MD5::hexdigest() const
 {
-  if (!finalized)
+  if(!finalized)
     return "";
 
   static constexpr char hex[] = "0123456789abcdef";
   string result;
   result.reserve(32);
-  for (auto c: digest)
+  for(const auto c: digest)
   {
     result += hex[(c >> 4) & 0x0f];
     result += hex[c & 0x0f];

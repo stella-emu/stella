@@ -76,7 +76,7 @@ class NTSCFilter
     string setPreset(Preset preset);
 
     // Get current preset info encoded as a string
-    string getPreset() const;
+    string_view getPreset() const;
 
     // Get adjustables for the given preset
     // Values will be scaled to 0 - 100 range, independent of how

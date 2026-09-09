@@ -814,15 +814,13 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
   for(const FontDesc* font: FontManager::romInfoFonts())
   {
     // only use fonts <= launcher fonts
-    if(Dialog::fontHeight() >= font->height)
-    {
-      if(std::cmp_greater_equal(area.h,
+    if(Dialog::fontHeight() >= font->height
+       && std::cmp_greater_equal(area.h,
             MIN_ROMINFO_ROWS * font->height + 2 + MIN_ROMINFO_LINES * font->height)
-         && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font->maxwidth))
-      {
-        instance().fonts().changeRomInfoFont(*font);
-        return;
-      }
+       && std::cmp_greater_equal(area.w, MIN_ROMINFO_CHARS * font->maxwidth))
+    {
+      instance().fonts().changeRomInfoFont(*font);
+      return;
     }
   }
   instance().fonts().changeRomInfoFont(FontManager::smallestDesc());
@@ -1058,10 +1056,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       handled = true;
     }
   }
-  if(!handled)
-    // Required because BrowserDialog does not want raw input
-    if(repeated || !myList->handleKeyDown(key, mod))
-      Dialog::handleKeyDown(key, mod, repeated);
+  // Required because BrowserDialog does not want raw input
+  if(!handled && (repeated || !myList->handleKeyDown(key, mod)))
+    Dialog::handleKeyDown(key, mod, repeated);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1370,7 +1367,7 @@ void LauncherDialog::openContextMenu(int x, int y)
   // Format items for menu, aligning all shortcuts to the right
   VariantList varItems;
   auto maxLen = 0UZ;
-  for(auto& item: items)
+  for(const auto& item: items)
     maxLen = std::max(maxLen, item.label.length());
 
   for(auto& item: items)

@@ -163,7 +163,7 @@ string Cartridge::getAccessCounters() const
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
         Common::Base::toString(myRomAccessCounter[offset + addr],
                               Common::Base::Fmt::_10_8));
-    out += "\n";
+    out += '\n';
 
     out += header + " writes:\n";
     for(uInt16 addr = 0; addr < bankSz; ++addr)
@@ -171,7 +171,7 @@ string Cartridge::getAccessCounters() const
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
         Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize],
                               Common::Base::Fmt::_10_8));
-    out += "\n";
+    out += '\n';
 
     offset += bankSz;
   }

@@ -182,7 +182,8 @@ void TIA::initialize()
   myXAtRenderingStart = 0;
 
   myShadowRegisters.fill(0);
-  for (auto reg: {HMP0, HMP1, HMM0, HMM1, HMBL}) myShadowRegisters[reg] = 0x80;
+  for (const auto reg: {HMP0, HMP1, HMM0, HMM1, HMBL})
+    myShadowRegisters[reg] = 0x80;
 
   myBackground.reset();
   myPlayfield.reset();
@@ -1513,22 +1514,19 @@ void TIA::onFrameStart()
 #endif
 
   // Check for colour-loss emulation
-  if (myColorLossEnabled)
+  // Only activate it when necessary, since changing colours in
+  // the graphical object forces the TIA cached line to be flushed
+  if (myColorLossEnabled && myFrameManager->scanlineParityChanged())
   {
-    // Only activate it when necessary, since changing colours in
-    // the graphical object forces the TIA cached line to be flushed
-    if (myFrameManager->scanlineParityChanged())
-    {
-      myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
 
-      myMissile0.applyColorLoss();
-      myMissile1.applyColorLoss();
-      myPlayer0.applyColorLoss();
-      myPlayer1.applyColorLoss();
-      myBall.applyColorLoss();
-      myPlayfield.applyColorLoss();
-      myBackground.applyColorLoss();
-    }
+    myMissile0.applyColorLoss();
+    myMissile1.applyColorLoss();
+    myPlayer0.applyColorLoss();
+    myPlayer1.applyColorLoss();
+    myBall.applyColorLoss();
+    myPlayfield.applyColorLoss();
+    myBackground.applyColorLoss();
   }
 }
 
@@ -1615,13 +1613,11 @@ void TIA::onFrameComplete()
         }
       }
     }
-    else if(myFlickerCount)
+    // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+    else if(myFlickerCount && --myFlickerCount == 0 && myAutoPhosphorActive)
     {
-      if(--myFlickerCount == 0 && myAutoPhosphorActive)
-      {
-        myAutoPhosphorActive = false;
-        myPhosphorCallback(false);
-      }
+      myAutoPhosphorActive = false;
+      myPhosphorCallback(false);
     }
     //cerr << "|" << myFlickerCount;
     //if(myAutoPhosphorActive)
@@ -2572,7 +2568,7 @@ string TIA::getAccessCounters() const
       Common::Base::toString(addr, Common::Base::Fmt::_16_4),
       Common::Base::toString(myAccessCounter[TIA_SIZE + addr],
                              Common::Base::Fmt::_10_8));
-  out += "\n";
+  out += '\n';
 
   out += "TIA writes:\n";
   for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
@@ -2580,7 +2576,7 @@ string TIA::getAccessCounters() const
       Common::Base::toString(addr, Common::Base::Fmt::_16_4),
       Common::Base::toString(myAccessCounter[addr],
                              Common::Base::Fmt::_10_8));
-  out += "\n";
+  out += '\n';
 
   return out;
 }

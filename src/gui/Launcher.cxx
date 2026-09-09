@@ -142,13 +142,11 @@ void Launcher::updateTime(uInt64 time)
     relayout();
     mySettleCountdown = 15;
   }
-  else if(mySettleCountdown > 0)
+  // Once the countdown reaches zero, run the settle pass
+  // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
   {
-    // Once the countdown reaches zero, run the settle pass
-    if(--mySettleCountdown == 0)
-    {
-      relayout();
-      myOSystem.frameBuffer().resizeSettled();
-    }
+    relayout();
+    myOSystem.frameBuffer().resizeSettled();
   }
 }

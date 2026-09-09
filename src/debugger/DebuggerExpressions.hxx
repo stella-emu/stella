@@ -50,7 +50,7 @@ class BinNotExpression : public Expression
     explicit BinNotExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return ~(myLHS->evaluate()); }
+      { return ~myLHS->evaluate(); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,7 +239,7 @@ class LogNotExpression : public Expression
     explicit LogNotExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return !(myLHS->evaluate()); }
+      { return !myLHS->evaluate(); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -369,7 +369,7 @@ class UnaryMinusExpression : public Expression
     explicit UnaryMinusExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return -(myLHS->evaluate()); }
+      { return -myLHS->evaluate(); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

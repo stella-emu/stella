@@ -49,21 +49,15 @@ void AudioChannel::phase0()
         std::unreachable();
     }
 
-    switch (myAudc & 0x03) {
-      case 0x00:
-        myNoiseFeedback =
-          ((myPulseCounter ^ myNoiseCounter) & 0x01) ||
-          !(myNoiseCounter || (myPulseCounter != 0x0a)) ||
-          !(myAudc & 0x0c);
-
-        break;
-
-      default:
-        myNoiseFeedback =
-          (((myNoiseCounter & 0x04) ? 1 : 0) ^ (myNoiseCounter & 0x01)) ||
-          myNoiseCounter == 0;
-
-      break;
+    if ((myAudc & 0x03) == 0x00) {
+      myNoiseFeedback =
+        ((myPulseCounter ^ myNoiseCounter) & 0x01) ||
+        !(myNoiseCounter || (myPulseCounter != 0x0a)) ||
+        !(myAudc & 0x0c);
+    } else {
+      myNoiseFeedback =
+        (((myNoiseCounter & 0x04) ? 1 : 0) ^ (myNoiseCounter & 0x01)) ||
+        myNoiseCounter == 0;
     }
   }
 
