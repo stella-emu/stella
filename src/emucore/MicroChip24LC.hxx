@@ -599,7 +599,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   {
     case JPEEState::ByteIn:
       jpee_nb <<= 1U;
-      jpee_nb |= static_cast<int>(jpee_mdat);
+      jpee_nb |= static_cast<uInt32>(jpee_mdat);
       if(jpee_nb & 256U)
       {
         if(!jpee_pptr)
@@ -666,7 +666,8 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
         {
           JPEE_LOG1("I2C_SENT({:02X})", jpee_nb);
           jpee_packet[jpee_pptr++] = static_cast<uInt8>(jpee_nb);
-          jpee_address = (jpee_packet[1] << 8U) | jpee_packet[2];
+          jpee_address = static_cast<uInt32>(jpee_packet[1] << 8U) |
+                         static_cast<uInt32>(jpee_packet[2]);
           if(jpee_pptr > 2)
             jpee_ad_known = true;
         }
@@ -696,7 +697,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
           myCallback("AtariVox/SaveKey EEPROM read");
       }
 
-      jpee_nb = (myData[jpee_address & jpee_sizemask] << 1U) | 1;
+      jpee_nb = static_cast<uInt32>(myData[jpee_address & jpee_sizemask] << 1U) | 1U;
       JPEE_LOG2("I2C_READ({:04X}={:02X})", jpee_address, jpee_nb >> 1U);
 
       [[fallthrough]];

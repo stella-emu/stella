@@ -298,7 +298,7 @@ class M6502 : public Serializable
 
     // Returns non-zero if the two addresses are on different pages
     static constexpr uInt16 NOTSAMEPAGE(uInt16 a, uInt16 b) noexcept {
-      return (a ^ b) & 0xff00;
+      return (a ^ b) & 0xff00U;
     }
 
     /**
@@ -309,13 +309,13 @@ class M6502 : public Serializable
     uInt8 PS() const {
       return static_cast<uInt8>(
         0x20U
-        | (static_cast<uInt8>(N)     << 7U)
-        | (static_cast<uInt8>(V)     << 6U)
-        | (static_cast<uInt8>(B)     << 4U)
-        | (static_cast<uInt8>(D)     << 3U)
-        | (static_cast<uInt8>(I)     << 2U)
-        | (static_cast<uInt8>(!notZ) << 1U)
-        | static_cast<uInt8>(C)
+        | (static_cast<uInt32>(N)     << 7U)
+        | (static_cast<uInt32>(V)     << 6U)
+        | (static_cast<uInt32>(B)     << 4U)
+        | (static_cast<uInt32>(D)     << 3U)
+        | (static_cast<uInt32>(I)     << 2U)
+        | (static_cast<uInt32>(!notZ) << 1U)
+        | static_cast<uInt32>(C)
       );
     }
 

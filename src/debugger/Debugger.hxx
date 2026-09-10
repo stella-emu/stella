@@ -293,7 +293,7 @@ class Debugger : public DialogContainer
     static constexpr void set_bits(uInt8 reg, BoolArray& bits)
     {
       bits.clear();
-      for(int i = 0; i < 8; ++i)
+      for(uInt32 i = 0; i < 8; ++i)
       {
         if(reg & (1U<<(7-i)))
           bits.push_back(true);
@@ -304,7 +304,7 @@ class Debugger : public DialogContainer
     static constexpr uInt8 get_bits(const BoolArray& bits)
     {
       uInt8 result = 0x0;
-      for(int i = 0; i < 8; ++i)
+      for(uInt32 i = 0; i < 8; ++i)
         if(bits[i])
           result |= (1U<<(7-i));
       return result;

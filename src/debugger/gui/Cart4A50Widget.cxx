@@ -133,14 +133,17 @@ void Cartridge4A50Widget::loadConfig()
   };
 
   // Lower bank
+  const auto low  = static_cast<uInt32>(myCart.mySliceLow),
+             mid  = static_cast<uInt32>(myCart.mySliceMiddle),
+             high = static_cast<uInt32>(myCart.mySliceHigh);
   setRomRam(myROMLower,  myRAMLower,  myCart.myIsRomLow,
-    (myCart.mySliceLow    >> 11U) & 0x1F, (myCart.mySliceLow    >> 11U) & 0x0F);
+    (low  >> 11U) & 0x1FU, (low  >> 11U) & 0x0FU);
   // Middle bank
   setRomRam(myROMMiddle, myRAMMiddle, myCart.myIsRomMiddle,
-    (myCart.mySliceMiddle >> 11U) & 0x1F, (myCart.mySliceMiddle >> 11U) & 0x0F);
+    (mid  >> 11U) & 0x1FU, (mid  >> 11U) & 0x0FU);
   // High bank
   setRomRam(myROMHigh,   myRAMHigh,   myCart.myIsRomHigh,
-    (myCart.mySliceHigh   >> 11U) & 0xFF, (myCart.mySliceHigh   >> 11U) & 0x7F);
+    (high >> 11U) & 0xFFU, (high >> 11U) & 0x7FU);
 
   CartDebugWidget::loadConfig();
 }
@@ -248,14 +251,18 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge4A50Widget::bankState()
 {
+  const auto low  = static_cast<uInt32>(myCart.mySliceLow),
+             mid  = static_cast<uInt32>(myCart.mySliceMiddle),
+             high = static_cast<uInt32>(myCart.mySliceHigh);
+
   return std::format("L/M/H = {} bank {} / {} bank {} / {} bank {}",
     myCart.myIsRomLow    ? "ROM" : "RAM",
-    myCart.myIsRomLow    ? (myCart.mySliceLow    >> 11U) & 0x1F
-                         : (myCart.mySliceLow    >> 11U) & 0x0F,
+    myCart.myIsRomLow    ? (low  >> 11U) & 0x1FU
+                         : (low  >> 11U) & 0x0FU,
     myCart.myIsRomMiddle ? "ROM" : "RAM",
-    myCart.myIsRomMiddle ? (myCart.mySliceMiddle >> 11U) & 0x1F
-                         : (myCart.mySliceMiddle >> 11U) & 0x0F,
+    myCart.myIsRomMiddle ? (mid  >> 11U) & 0x1FU
+                         : (mid  >> 11U) & 0x0FU,
     myCart.myIsRomHigh   ? "ROM" : "RAM",
-    myCart.myIsRomHigh   ? (myCart.mySliceHigh   >> 11U) & 0xFF
-                         : (myCart.mySliceHigh   >> 11U) & 0x7F);
+    myCart.myIsRomHigh   ? (high >> 11U) & 0xFFU
+                         : (high >> 11U) & 0x7FU);
 }

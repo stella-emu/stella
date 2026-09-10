@@ -71,8 +71,9 @@ class PhosphorHandler
                  gp = static_cast<uInt8>(p >> 8U),
                  bp = static_cast<uInt8>(p >> 16U);
 
-      return  ourPhosphorLUT[rc][rp] | (ourPhosphorLUT[gc][gp] << 8U) |
-              (ourPhosphorLUT[bc][bp] << 16U);
+      return static_cast<uInt32>(ourPhosphorLUT[rc][rp])       |
+             static_cast<uInt32>(ourPhosphorLUT[gc][gp] << 8U) |
+             static_cast<uInt32>(ourPhosphorLUT[bc][bp] << 16U);
     }
 
   private:
