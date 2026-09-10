@@ -2579,9 +2579,6 @@
     <ClInclude Include="..\..\debugger\gui\CartEFFWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\SpanStream.hxx">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\BitmaskEnum.hxx">
       <Filter>Header Files\common</Filter>
     </ClInclude>
