@@ -39,19 +39,20 @@ struct BBX
 /* based on The Microwindows Project http://microwindows.org */
 struct FontDesc
 {
-  string_view   name;                   /* font name */
-  int           maxwidth;               /* max width in pixels */
-  int           height;                 /* height in pixels */
-  int           fbbw, fbbh, fbbx, fbby;	/* max bounding box */
-  int           ascent;                 /* ascent (baseline) height */
-  int           firstchar;              /* first character in bitmap */
-  int           size;                   /* font size in glyphs */
-  const uInt16* bits;                   /* 16-bit right-padded bitmap data */
-  const uInt32* offset;                 /* offsets into bitmap data*/
-  const uInt8*  width;                  /* character widths or nullptr if fixed */
-  const BBX*    bbx;                    /* character bounding box or nullptr if fixed */
-  int           defaultchar;            /* default char (not glyph index) */
-  Int64         bits_size;              /* # words of bitmap_t bits */
+  string_view   name;         // font name
+  uInt32        maxwidth;     // max width in pixels
+  uInt32        height;       // height in pixels
+  uInt32        fbbw, fbbh;   // max bounding box size
+  Int32         fbbx, fbby;   // max bounding box origin; can be negative
+  uInt32        ascent;       // ascent (baseline) height
+  uInt32        firstchar;    // first character in bitmap
+  uInt32        size;         // font size in glyphs
+  const uInt16* bits;         // 16-bit right-padded bitmap data
+  const uInt32* offset;       // offsets into bitmap data
+  const uInt8*  width;        // character widths or nullptr if fixed
+  const BBX*    bbx;          // character bounding box or nullptr if fixed
+  uInt32        defaultchar;  // default char (not glyph index)
+  Int64         bits_size;    // # words of bitmap_t bits
 };
 
 namespace GUI {
@@ -69,9 +70,9 @@ namespace GUI {
 struct Glyph
 {
   const uInt8* mask{nullptr};  // h rows of 'stride' bytes, one bit per pixel
-  int w{0}, h{0};              // size of the mask, in pixels
-  int stride{0};               // bytes from one row of the mask to the next
-  int dx{0}, dy{0};            // where it goes, relative to the pen
+  uInt32 w{0}, h{0};           // size of the mask, in pixels
+  uInt32 stride{0};            // bytes from one row of the mask to the next
+  Int32 dx{0}, dy{0};          // where it goes, relative to the pen; can be negative
 };
 
 /**
@@ -102,9 +103,9 @@ class GlyphSet
     // Where one glyph lives in myMask, and where it goes once drawn
     struct GlyphInfo
     {
-      uInt32 offset{0};  // byte offset of this glyph's mask
-      Int16 w{0}, h{0};  // its size, in pixels
-      Int16 dx{0}, dy{0};
+      uInt32 offset{0};   // byte offset of this glyph's mask
+      uInt16 w{0}, h{0};  // its size, in pixels
+      Int16 dx{0}, dy{0}; // where it goes, relative to the pen; can be negative
     };
 
     // Every glyph's mask, one bit per pixel, back to back
@@ -114,7 +115,7 @@ class GlyphSet
     vector<GlyphInfo> myGlyphs;
 
     // First character in the font, and the glyph substituted for one outside it
-    int myFirstChar{0}, myDefaultChar{0};
+    uInt32 myFirstChar{0}, myDefaultChar{0};
 
   private:
     // Following constructors and assignment operators not supported

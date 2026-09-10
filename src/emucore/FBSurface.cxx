@@ -163,10 +163,10 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   uInt32* buffer = myPixels + (cy * static_cast<size_t>(myPitch)) + cx;
   const uInt32 ink = myPalette[color];
 
-  for(int y = 0; y < glyph.h; ++y)
+  for(uInt32 y = 0; y < glyph.h; ++y)
   {
-    for(int x = 0; x < glyph.w; ++x)
-      if(mask[x >> 3] & (0x80U >> (x & 7)))
+    for(uInt32 x = 0; x < glyph.w; ++x)
+      if(mask[x >> 3U] & (0x80U >> (x & 7U)))
         buffer[x] = ink;
 
     mask += glyph.stride;

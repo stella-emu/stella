@@ -25,10 +25,10 @@ namespace GUI {
 namespace {
   // A source glyph row is packed MSB-first into 16-bit words, so it takes
   // this many of them (the BITMAP_WORDS of src/tools/convbdf.c)
-  constexpr int wordsPerRow(int w) { return (w + 15) / 16; }
+  constexpr uInt32 wordsPerRow(uInt32 w) { return (w + 15) / 16; }
 
   // Our own rows are padded out to whole bytes instead
-  constexpr int bytesPerRow(int w) { return (w + 7) / 8; }
+  constexpr uInt32 bytesPerRow(uInt32 w) { return (w + 7) / 8; }
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,25 +36,25 @@ GlyphSet::GlyphSet(const FontDesc& desc)
   : myFirstChar{desc.firstchar},
     myDefaultChar{desc.defaultchar}
 {
-  if(desc.size <= 0 || desc.bits == nullptr)
+  if(desc.size == 0 || desc.bits == nullptr)
     return;
 
   myGlyphs.resize(desc.size);
   myMask.reserve(static_cast<size_t>(desc.size) * bytesPerRow(desc.fbbw) *
                  desc.fbbh);
 
-  for(int i = 0; i < desc.size; ++i)
+  for(uInt32 i = 0; i < desc.size; ++i)
   {
     // The bounding box of this glyph, which only a proportional font varies
-    const int bbw = desc.bbx ? desc.bbx[i].w : desc.fbbw;
-    const int bbh = desc.bbx ? desc.bbx[i].h : desc.fbbh;
+    const uInt32 bbw = desc.bbx ? desc.bbx[i].w : desc.fbbw;
+    const uInt32 bbh = desc.bbx ? desc.bbx[i].h : desc.fbbh;
     const int bbx = desc.bbx ? desc.bbx[i].x : desc.fbbx;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
     const int bby = desc.bbx ? desc.bbx[i].y : desc.fbby;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
 
     GlyphInfo& info = myGlyphs[i];
     info.offset = static_cast<uInt32>(myMask.size());
-    info.w = static_cast<Int16>(bbw);
-    info.h = static_cast<Int16>(bbh);
+    info.w = static_cast<uInt16>(bbw);
+    info.h = static_cast<uInt16>(bbh);
     info.dx = static_cast<Int16>(bbx);
     info.dy = static_cast<Int16>(desc.ascent - bby - bbh);
 
@@ -62,19 +62,19 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     // the other
     const uInt16* bits = desc.bits +
         (desc.offset ? desc.offset[i]
-                     : static_cast<uInt32>(i) * desc.fbbh * wordsPerRow(desc.fbbw));
+                     : i * desc.fbbh * wordsPerRow(desc.fbbw));
 
     // Repack the rows from 16-bit words into byte-aligned ones.  Both are
     // left-aligned and most significant bit first, so nothing here cares how
     // wide the glyph is
-    const int words = wordsPerRow(bbw);
-    const int stride = bytesPerRow(bbw);
+    const uInt32 words = wordsPerRow(bbw);
+    const uInt32 stride = bytesPerRow(bbw);
     const size_t base = myMask.size();
 
     myMask.resize(base + (static_cast<size_t>(stride) * bbh));
 
-    for(int y = 0; y < bbh; ++y)
-      for(int x = 0; x < bbw; ++x)
+    for(uInt32 y = 0; y < bbh; ++y)
+      for(uInt32 x = 0; x < bbw; ++x)
       {
         const uInt16 word = bits[(y * words) + (x >> 4)];
 
@@ -148,7 +148,8 @@ int Font::getCharWidth(uInt8 chr) const
     return myFontDesc.maxwidth;
 
   // If this character is not included in the font, use the default char.
-  if(std::cmp_less(chr, myFontDesc.firstchar) || myFontDesc.firstchar + myFontDesc.size < chr)
+  if(std::cmp_less(chr, myFontDesc.firstchar) ||
+     std::cmp_greater(chr, myFontDesc.firstchar + myFontDesc.size))
   {
     if(chr == ' ')
       return myFontDesc.maxwidth / 2;
@@ -163,7 +164,7 @@ int Font::getStringWidth(string_view str) const
 {
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)
-    return myFontDesc.maxwidth * static_cast<int>(str.size());
+    return static_cast<int>(myFontDesc.maxwidth * str.size());
 
   int width = 0;
   for(const char c: str)

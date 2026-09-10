@@ -506,7 +506,7 @@ class ButtonWidget : public LabelWidget
     // The room a button leaves around its bitmap: an icon-only button centers
     // its bitmap in this, and an icon-and-label one draws its label after it
     static int iconGap(const GUI::Font& font) {
-      return ((font.getMaxCharWidth() + 1) & ~1U) + 1;
+      return (static_cast<uInt32>(font.getMaxCharWidth() + 1) & ~1U) + 1;
     }
 
   protected:
