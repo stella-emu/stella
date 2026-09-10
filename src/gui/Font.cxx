@@ -76,11 +76,11 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     for(uInt32 y = 0; y < bbh; ++y)
       for(uInt32 x = 0; x < bbw; ++x)
       {
-        const uInt16 word = bits[(y * words) + (x >> 4)];
+        const uInt16 word = bits[(y * words) + (x >> 4U)];
 
-        if(word & (0x8000U >> (x & 15)))
-          myMask[base + (static_cast<size_t>(y) * stride) + (x >> 3)] |=
-              0x80U >> (x & 7);
+        if(word & (0x8000U >> (x & 15U)))
+          myMask[base + (static_cast<size_t>(y) * stride) + (x >> 3U)] |=
+              0x80U >> (x & 7U);
       }
   }
 }

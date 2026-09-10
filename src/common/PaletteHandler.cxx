@@ -389,7 +389,9 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     g = BSPF::clamp(g, 0, 255);
     b = BSPF::clamp(b, 0, 255);
 
-    destPalette[i] = (r << 16) + (g << 8) + b;
+    destPalette[i] = (static_cast<uInt32>(r) << 16U) +
+                     (static_cast<uInt32>(g) << 8U)  +
+                      static_cast<uInt32>(b);
 
     // Fill the odd numbered palette entries with gray values (calculated
     // using the standard RGB -> grayscale conversion formula)
@@ -412,29 +414,29 @@ void PaletteHandler::loadUserPalette()
   catch(...) { return; }
 
   const uInt8* pixbuf = in.data();
-  for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
+  for(uInt32 i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    ourUserNTSCPalette[(i<<1)] = pixel;
+    const auto pixel = (static_cast<uInt32>(pixbuf[0]) << 16U) +
+                       (static_cast<uInt32>(pixbuf[1]) << 8U)  +
+                        static_cast<uInt32>(pixbuf[2]);
+    ourUserNTSCPalette[(i<<1U)] = pixel;
   }
-  for(int i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
+  for(uInt32 i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    ourUserPALPalette[(i<<1)] = pixel;
+    const auto pixel = (static_cast<uInt32>(pixbuf[0]) << 16U) +
+                       (static_cast<uInt32>(pixbuf[1]) << 8U)  +
+                        static_cast<uInt32>(pixbuf[2]);
+    ourUserPALPalette[(i<<1U)] = pixel;
   }
 
   std::array<uInt32, 16> secam{0};  // All 8 24-bit pixels, plus 8 colorloss pixels
-  for(int i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
+  for(uInt32 i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    secam[(i<<1)  ] = pixel;
-    secam[(i<<1)+1] = 0;
+    const auto pixel = (static_cast<uInt32>(pixbuf[0]) << 16U) +
+                       (static_cast<uInt32>(pixbuf[1]) << 8U)  +
+                        static_cast<uInt32>(pixbuf[2]);
+    secam[(i<<1U)  ] = pixel;
+    secam[(i<<1U)+1] = 0;
   }
   uInt32* ptr = ourUserSECAMPalette.data();  // NOLINT(misc-const-correctness)
   for(int i = 0; i < 16; ++i)
@@ -491,11 +493,12 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 0.9F);
         B = powf(B, 0.9F);
 
-        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
-                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
-                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const auto r = static_cast<uInt32>(BSPF::clamp(R * 255.F, 0.F, 255.F)),
+                   g = static_cast<uInt32>(BSPF::clamp(G * 255.F, 0.F, 255.F)),
+                   b = static_cast<uInt32>(BSPF::clamp(B * 255.F, 0.F, 255.F));
 
-        ourCustomNTSCPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+        ourCustomNTSCPalette[static_cast<uInt32>(chroma * NUM_LUMA + luma) << 1U] =
+            (r << 16U) + (g << 8U) + b;
       }
     }
   }
@@ -513,7 +516,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
       const int idx = NUM_CHROMA - 1 - chroma;
 
       UV[idx].x = SATURATION * sinf(offset - fixedShift * chroma);
-      if ((idx & 1) == 0)
+      if((static_cast<uInt32>(idx) & 1U) == 0)
         UV[idx].y = SATURATION * sinf(offset - shift * (chroma - 3.5F) / 2.F);
       else
         UV[idx].y = SATURATION * -sinf(offset - shift * chroma / 2.F);
@@ -545,11 +548,12 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 1.2F);
         B = powf(B, 1.2F);
 
-        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
-                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
-                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const auto r = static_cast<uInt32>(BSPF::clamp(R * 255.F, 0.F, 255.F)),
+                   g = static_cast<uInt32>(BSPF::clamp(G * 255.F, 0.F, 255.F)),
+                   b = static_cast<uInt32>(BSPF::clamp(B * 255.F, 0.F, 255.F));
 
-        ourCustomPALPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+        ourCustomPALPalette[static_cast<uInt32>(chroma * NUM_LUMA + luma) << 1U] =
+            (r << 16U) + (g << 8U) + b;
       }
     }
   }

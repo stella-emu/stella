@@ -76,7 +76,7 @@ class System : public Serializable
     void setAddressBits(AddressSpace space) {
       const auto bits = static_cast<uInt16>(space);
       myAddressMask   = static_cast<uInt16>((1U << bits) - 1);
-      myNumPages      = static_cast<uInt16>(1U << (bits - PAGE_SHIFT));
+      myNumPages      = static_cast<uInt16>(1U << static_cast<uInt32>(bits - PAGE_SHIFT));
     }
 
     // The current address mask (0x1FFF for 13-bit, 0xFFFF for 16-bit)
@@ -368,7 +368,7 @@ class System : public Serializable
       @param access The accessing methods to be used by the page
     */
     void setPageAccess(uInt16 addr, const PageAccess& access) {
-      myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT] = access;
+      myPageAccessTable[pageIndex(addr)] = access;
     }
 
     /**
@@ -378,7 +378,7 @@ class System : public Serializable
       @return The accessing methods used by the page
     */
     const PageAccess& getPageAccess(uInt16 addr) const {
-      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT];
+      return myPageAccessTable[pageIndex(addr)];
     }
 
     /**
@@ -388,7 +388,7 @@ class System : public Serializable
       @return  The type of page that contains the given address
     */
     System::PageAccessType getPageAccessType(uInt16 addr) const {
-      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT].type;
+      return myPageAccessTable[pageIndex(addr)].type;
     }
 
     /**
@@ -397,7 +397,7 @@ class System : public Serializable
       @param addr  Determines the page that is dirty
     */
     void setDirtyPage(uInt16 addr) {
-      myPageIsDirtyTable[(addr & myAddressMask) >> PAGE_SHIFT] = true;
+      myPageIsDirtyTable[pageIndex(addr)] = true;
     }
 
     /**
@@ -431,6 +431,18 @@ class System : public Serializable
     bool load(Serializer& in) override;
 
   private:
+    /**
+      Convert the given address to its index into myPageAccessTable and
+      myPageIsDirtyTable.
+
+      @param addr  The address to convert
+
+      @return  The page index
+    */
+    uInt16 pageIndex(uInt16 addr) const {
+      return static_cast<uInt16>(static_cast<uInt32>(addr & myAddressMask) >> PAGE_SHIFT);
+    }
+
     /**
       Get the byte at the specified address.  No masking of the
       address occurs before it's sent to the device mapped at
@@ -527,8 +539,8 @@ class System : public Serializable
 template<bool oob>
 inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
 {
-  const uInt16 pageOffset = addr & PAGE_MASK;
-  const uInt16 page       = (addr & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 pageOffset  = addr & PAGE_MASK;
+  const uInt16 page        = pageIndex(addr);
   const PageAccess& access = myPageAccessTable[page];
 
 #ifdef DEBUGGER_SUPPORT
@@ -573,11 +585,12 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
 template<bool oob>
 inline void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
-  if(!oob && myCartridgeDoesBusStuffing) [[unlikely]]
-    value = myCart.overdrivePoke(addr, value);
+  if constexpr(!oob)
+    if(myCartridgeDoesBusStuffing) [[unlikely]]
+      value = myCart.overdrivePoke(addr, value);
 
-  const uInt16 pageOffset = addr & PAGE_MASK;
-  const uInt16 page = (addr & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 pageOffset  = addr & PAGE_MASK;
+  const uInt16 page        = pageIndex(addr);
   const PageAccess& access = myPageAccessTable[page];
 
 #ifdef DEBUGGER_SUPPORT

@@ -467,7 +467,7 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
 {
   //maxVal += zeroBased ? 0 : 1;
   maxVal -= zeroBased ? 1 : 0;
-  const Int32 bits = isBCD
+  const uInt32 bits = isBCD
     ? ceil(log(maxVal) / BSPF::ln10 * 4)
     : ceil(log(maxVal) / BSPF::ln2);
 

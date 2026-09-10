@@ -80,8 +80,8 @@ void System::consoleChanged(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
-  const uInt16 start_page = (start_addr & myAddressMask) >> PAGE_SHIFT;
-  const uInt16 end_page   = (end_addr   & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 start_page = pageIndex(start_addr);
+  const uInt16 end_page   = pageIndex(end_addr);
   const auto pages = std::span{myPageIsDirtyTable}.subspan(
       start_page, end_page - start_page + 1U);
   return std::ranges::any_of(pages, std::identity{});
