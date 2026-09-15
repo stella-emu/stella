@@ -252,10 +252,10 @@ libretro-build-tvos-arm64:
 
 ################################### CONSOLES #################################
 # Nintendo Switch
-# libretro-build-libnx-aarch64:
-#   extends:
-#     - .libretro-libnx-static-retroarch-master
-#     - .core-defs
+libretro-build-libnx-aarch64:
+  extends:
+    - .libretro-libnx-static-retroarch-master
+    - .core-defs
 
 #################################### MISC ##################################
 # webOS 32-bit
