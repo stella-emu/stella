@@ -168,7 +168,10 @@ else ifeq ($(platform), libnx)
    include $(DEVKITPRO)/libnx/switch_rules
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    DEFINES := -DSWITCH=1 -D__SWITCH__ -DARM
-   CXXFLAGS += $(DEFINES) -fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -specs=$(LIBNX)/switch.specs
+   # -std=c++23 defines __STRICT_ANSI__, which is what newlib reads to decide
+   # whether POSIX names exist at all - and libretro.cxx calls strdup. devkitA64
+   # has it; the header just will not declare it without this.
+   CXXFLAGS += $(DEFINES) -D_GNU_SOURCE -fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -specs=$(LIBNX)/switch.specs
    CXXFLAGS += -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd -ffast-math $(ASFLAGS)
    STATIC_LINKING = 1
 

@@ -205,16 +205,40 @@ libretro-build-ios-arm64:
     - git checkout "$OSX_BUILD_COMMIT"
 
 # iOS (armv7, iOS 9)
-libretro-build-ios9:
-  tags:
-    - mac-apple-silicon
-  extends:
-    - .libretro-ios9-make-default
-    - .core-defs
-  before_script:
-    - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
-    - git fetch origin
-    - git checkout "$OSX_BUILD_COMMIT"
+#
+# Off again after one run, and off for a reason that is worth writing down.
+#
+# It compiles the pinned commit and then does not link:
+#
+#     Undefined symbols for architecture armv7:
+#       "std::bad_optional_access::~bad_optional_access()"
+#       "vtable for std::bad_variant_access"
+#       "vtable for std::bad_optional_access"
+#
+# Those members came to Apple's libc++ with iOS 12 and 32-bit iOS stopped at
+# 10, so no armv7 slice of any SDK has them. That part can be carried in the
+# core, but it is not the wall. Building the tip for armv7 stops earlier, in
+# libc++ itself:
+#
+#     __format/formatter_floating_point.h:74: error: 'to_chars' is unavailable:
+#     introduced in iOS 16.3
+#
+# std::format with a floating-point argument reaches the floating-point half of
+# <charconv>, which Apple shipped in iOS 16.3 / macOS 13.3 / tvOS 16.3 - above
+# every deployment minimum used here, and the reason OSX_BUILD_COMMIT exists at
+# all. So this stays a comment until floating-point formatting stops needing a
+# library version armv7 can never have; the include above stays with it.
+#
+# libretro-build-ios9:
+#   tags:
+#     - mac-apple-silicon
+#   extends:
+#     - .libretro-ios9-make-default
+#     - .core-defs
+#   before_script:
+#     - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+#     - git fetch origin
+#     - git checkout "$OSX_BUILD_COMMIT"
 
 # tvOS
 libretro-build-tvos-arm64:
@@ -228,10 +252,10 @@ libretro-build-tvos-arm64:
 
 ################################### CONSOLES #################################
 # Nintendo Switch
-# libretro-build-libnx-aarch64:
-#   extends:
-#     - .libretro-libnx-static-retroarch-master
-#     - .core-defs
+libretro-build-libnx-aarch64:
+  extends:
+    - .libretro-libnx-static-retroarch-master
+    - .core-defs
 
 #################################### MISC ##################################
 # webOS 32-bit
