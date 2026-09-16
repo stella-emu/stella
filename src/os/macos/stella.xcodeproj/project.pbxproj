@@ -539,6 +539,21 @@
 		DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */; };
 		DCA935482FBDD9B800FA4510 /* CompuMateCassette.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */; };
 		DCA935492FBDD9B800FA4510 /* CompuMateCassette.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */; };
+		FA7100000000000000000002 /* CartFUJI.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000001 /* CartFUJI.cxx */; };
+		FA7100000000000000000004 /* CartFUJI.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000003 /* CartFUJI.hxx */; };
+		FA7100000000000000000006 /* CartFUJIWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000005 /* CartFUJIWidget.cxx */; };
+		FA7100000000000000000008 /* CartFUJIWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000007 /* CartFUJIWidget.hxx */; };
+		FA710000000000000000000A /* FujiNetLink.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000009 /* FujiNetLink.cxx */; };
+		FA710000000000000000000C /* FujiNetLink.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA710000000000000000000B /* FujiNetLink.hxx */; };
+		FA710000000000000000000E /* fuji_mailbox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA710000000000000000000D /* fuji_mailbox.hxx */; };
+		FA7100000000000000000010 /* fujibus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA710000000000000000000F /* fujibus.cxx */; };
+		FA7100000000000000000012 /* fujibus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000011 /* fujibus.hxx */; };
+		FA7100000000000000000014 /* fujimail.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000013 /* fujimail.cxx */; };
+		FA7100000000000000000016 /* fujimail.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000015 /* fujimail.hxx */; };
+		FA7100000000000000000018 /* vcs_cart.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000017 /* vcs_cart.hxx */; };
+		FA710000000000000000001A /* vcs_font.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA7100000000000000000019 /* vcs_font.hxx */; };
+		FA710000000000000000001C /* vcs_render.cxx in Sources */ = {isa = PBXBuildFile; fileRef = FA710000000000000000001B /* vcs_render.cxx */; };
+		FA710000000000000000001E /* vcs_render.hxx in Headers */ = {isa = PBXBuildFile; fileRef = FA710000000000000000001D /* vcs_render.hxx */; };
 		DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAA68402A3CD026006A1E5F /* CartGL.cxx */; };
 		DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68412A3CD026006A1E5F /* CartGL.hxx */; };
 		DCAA68462A3CD04C006A1E5F /* CartGLWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */; };
@@ -1443,6 +1458,21 @@
 		DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachineDialog.hxx; sourceTree = "<group>"; };
 		DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CompuMateCassette.hxx; sourceTree = "<group>"; };
 		DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMateCassette.cxx; sourceTree = "<group>"; };
+		FA7100000000000000000001 /* CartFUJI.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFUJI.cxx; sourceTree = "<group>"; };
+		FA7100000000000000000003 /* CartFUJI.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFUJI.hxx; sourceTree = "<group>"; };
+		FA7100000000000000000005 /* CartFUJIWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFUJIWidget.cxx; sourceTree = "<group>"; };
+		FA7100000000000000000007 /* CartFUJIWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFUJIWidget.hxx; sourceTree = "<group>"; };
+		FA7100000000000000000009 /* FujiNetLink.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FujiNetLink.cxx; sourceTree = "<group>"; };
+		FA710000000000000000000B /* FujiNetLink.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FujiNetLink.hxx; sourceTree = "<group>"; };
+		FA710000000000000000000D /* fuji_mailbox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fuji_mailbox.hxx; sourceTree = "<group>"; };
+		FA710000000000000000000F /* fujibus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fujibus.cxx; sourceTree = "<group>"; };
+		FA7100000000000000000011 /* fujibus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fujibus.hxx; sourceTree = "<group>"; };
+		FA7100000000000000000013 /* fujimail.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fujimail.cxx; sourceTree = "<group>"; };
+		FA7100000000000000000015 /* fujimail.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fujimail.hxx; sourceTree = "<group>"; };
+		FA7100000000000000000017 /* vcs_cart.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vcs_cart.hxx; sourceTree = "<group>"; };
+		FA7100000000000000000019 /* vcs_font.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vcs_font.hxx; sourceTree = "<group>"; };
+		FA710000000000000000001B /* vcs_render.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcs_render.cxx; sourceTree = "<group>"; };
+		FA710000000000000000001D /* vcs_render.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vcs_render.hxx; sourceTree = "<group>"; };
 		DCAA68402A3CD026006A1E5F /* CartGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartGL.cxx; sourceTree = "<group>"; };
 		DCAA68412A3CD026006A1E5F /* CartGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGL.hxx; sourceTree = "<group>"; };
 		DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartGLWidget.hxx; sourceTree = "<group>"; };
@@ -1948,6 +1978,8 @@
 				DCE801E4236DC27400D43EDD /* CartFCWidget.cxx */,
 				DC676A3A1729A0B000E4E73D /* CartFEWidget.hxx */,
 				DC676A391729A0B000E4E73D /* CartFEWidget.cxx */,
+				FA7100000000000000000005 /* CartFUJIWidget.cxx */,
+				FA7100000000000000000007 /* CartFUJIWidget.hxx */,
 				DCAA68442A3CD04B006A1E5F /* CartGLWidget.hxx */,
 				DCAA68452A3CD04B006A1E5F /* CartGLWidget.cxx */,
 				DC85734C2C10A371007AB2FE /* CartJANEWidget.hxx */,
@@ -2262,6 +2294,8 @@
 				DCE801E0236DC25600D43EDD /* CartFC.cxx */,
 				2DE2DF330627AE07006BEC99 /* CartFE.hxx */,
 				2DE2DF320627AE07006BEC99 /* CartFE.cxx */,
+				FA7100000000000000000001 /* CartFUJI.cxx */,
+				FA7100000000000000000003 /* CartFUJI.hxx */,
 				DCAA68412A3CD026006A1E5F /* CartGL.hxx */,
 				DCAA68402A3CD026006A1E5F /* CartGL.cxx */,
 				DC8573502C10A389007AB2FE /* CartJANE.hxx */,
@@ -2304,6 +2338,7 @@
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				DC1E89032C4033280033E15F /* elf */,
+				FA710000000000000000001F /* fujinet */,
 				E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */,
 				E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */,
 				DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */,
@@ -2578,6 +2613,24 @@
 				2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */,
 			);
 			path = yacc;
+			sourceTree = "<group>";
+		};
+		FA710000000000000000001F /* fujinet */ = {
+			isa = PBXGroup;
+			children = (
+				FA7100000000000000000009 /* FujiNetLink.cxx */,
+				FA710000000000000000000B /* FujiNetLink.hxx */,
+				FA710000000000000000000D /* fuji_mailbox.hxx */,
+				FA710000000000000000000F /* fujibus.cxx */,
+				FA7100000000000000000011 /* fujibus.hxx */,
+				FA7100000000000000000013 /* fujimail.cxx */,
+				FA7100000000000000000015 /* fujimail.hxx */,
+				FA7100000000000000000017 /* vcs_cart.hxx */,
+				FA7100000000000000000019 /* vcs_font.hxx */,
+				FA710000000000000000001B /* vcs_render.cxx */,
+				FA710000000000000000001D /* vcs_render.hxx */,
+			);
+			path = fujinet;
 			sourceTree = "<group>";
 		};
 		DC1E89032C4033280033E15F /* elf */ = {
@@ -2999,6 +3052,7 @@
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */,
 				DC2ABA7725A0E178007E57D3 /* StellaDb.hxx in Headers */,
+				FA7100000000000000000008 /* CartFUJIWidget.hxx in Headers */,
 				DCAA68462A3CD04C006A1E5F /* CartGLWidget.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
@@ -3174,6 +3228,14 @@
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
 				DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
+				FA7100000000000000000004 /* CartFUJI.hxx in Headers */,
+				FA710000000000000000000C /* FujiNetLink.hxx in Headers */,
+				FA710000000000000000000E /* fuji_mailbox.hxx in Headers */,
+				FA7100000000000000000012 /* fujibus.hxx in Headers */,
+				FA7100000000000000000016 /* fujimail.hxx in Headers */,
+				FA7100000000000000000018 /* vcs_cart.hxx in Headers */,
+				FA710000000000000000001A /* vcs_font.hxx in Headers */,
+				FA710000000000000000001E /* vcs_render.hxx in Headers */,
 				DCAA68432A3CD026006A1E5F /* CartGL.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				E0D4153C25A120340031A8D6 /* SettingsRepositoryMACOS.hxx in Headers */,
@@ -3493,6 +3555,11 @@
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
 				DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */,
+				FA7100000000000000000002 /* CartFUJI.cxx in Sources */,
+				FA710000000000000000000A /* FujiNetLink.cxx in Sources */,
+				FA7100000000000000000010 /* fujibus.cxx in Sources */,
+				FA7100000000000000000014 /* fujimail.cxx in Sources */,
+				FA710000000000000000001C /* vcs_render.cxx in Sources */,
 				DCAA68422A3CD026006A1E5F /* CartGL.cxx in Sources */,
 				DCE1FF47286DFB98003568AD /* Joy2BPlus.cxx in Sources */,
 				DC843980247B297A00C6A4FC /* CartTVBoyWidget.cxx in Sources */,
@@ -3663,6 +3730,7 @@
 				DC0E98E02801CC8900097C68 /* Cart0FA0Widget.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
+				FA7100000000000000000006 /* CartFUJIWidget.cxx in Sources */,
 				DCAA68472A3CD04C006A1E5F /* CartGLWidget.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC3EE8691E2C0E6D00905161 /* trees.c in Sources */,
@@ -3890,6 +3958,8 @@
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
 					HTTP_LIB_SUPPORT,
+					VCS_CART_HOST_MAPPER,
+					FUJINET_SUPPORT,
 					JOYSTICK_SUPPORT,
 					IMAGE_SUPPORT,
 					ZIP_SUPPORT,
@@ -3907,6 +3977,7 @@
 					../../debugger/gui,
 					../../debugger/yacc,
 					../../emucore,
+					../../emucore/fujinet,
 					../../emucore/tia,
 					../../gui,
 					../../lib,
@@ -3958,6 +4029,8 @@
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
 					HTTP_LIB_SUPPORT,
+					VCS_CART_HOST_MAPPER,
+					FUJINET_SUPPORT,
 					JOYSTICK_SUPPORT,
 					IMAGE_SUPPORT,
 					ZIP_SUPPORT,
@@ -3975,6 +4048,7 @@
 					../../debugger/gui,
 					../../debugger/yacc,
 					../../emucore,
+					../../emucore/fujinet,
 					../../emucore/tia,
 					../../gui,
 					../../lib,

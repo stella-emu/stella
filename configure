@@ -31,6 +31,7 @@ _build_debugger=yes
 _build_joystick=yes
 _build_cheats=yes
 _build_httplib=yes
+_build_fujinet=yes
 _build_png=yes
 _build_sqlite3=yes
 _build_zip=yes
@@ -178,6 +179,8 @@ Optional Features:
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
   --disable-cheats
+  --enable-fujinet       enable/disable FujiNet cartridge support [enabled]
+  --disable-fujinet
   --enable-png           enable/disable PNG image support [enabled]
   --disable-png
   --enable-zip           enable/disable ZIP file support [enabled]
@@ -229,6 +232,8 @@ for ac_option in $@; do
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
       --disable-cheats)         _build_cheats=no     ;;
+      --enable-fujinet)         _build_fujinet=yes   ;;
+      --disable-fujinet)        _build_fujinet=no    ;;
       --enable-png)             _build_png=yes       ;;
       --disable-png)            _build_png=no        ;;
       --enable-zip)             _build_zip=yes       ;;
@@ -784,6 +789,7 @@ CORE="$SRC/emucore"
 COMMON="$SRC/common"
 TIA="$SRC/emucore/tia"
 ELF="$SRC/emucore/elf"
+FUJINET="$SRC/emucore/fujinet"
 TIA_FRAME_MANAGER="$SRC/emucore/tia/frame-manager"
 TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
@@ -795,7 +801,7 @@ LIBPNG="$SRC_LIB/libpng"
 LIBJPGEXIF="$SRC_LIB/tinyexif"
 ZLIB="$SRC_LIB/zlib"
 SQLITE_LIB="$SRC_LIB/sqlite"
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$SRC_LIB"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$ELF -I$FUJINET -I$SRC_LIB"
 LIBS="$LIBS `$_pkg_config --libs sdl3`"
 INCLUDES="$INCLUDES `$_pkg_config --cflags sdl3`"
 
@@ -863,6 +869,18 @@ fi
 
 if test "$_build_httplib" = yes ; then
   DEFINES="$DEFINES -DHTTP_LIB_SUPPORT"
+fi
+
+# The FujiNet cartridge talks to a fujinet-pc instance over a TCP socket.
+# VCS_CART_HOST_MAPPER is not optional and is not a user setting: it tells the
+# vendored cartridge decode that Stella -- not the cartridge's own nine-scheme
+# vcsmap -- owns the mapper of a game booted over the network.
+DEFINES="$DEFINES -DVCS_CART_HOST_MAPPER"
+if test "$_build_fujinet" = yes ; then
+  DEFINES="$DEFINES -DFUJINET_SUPPORT"
+  case $_host_os in
+    win32)  LIBS="$LIBS -lws2_32" ;;
+  esac
 fi
 
 if test "$_build_png" = yes ; then

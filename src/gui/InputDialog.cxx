@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "Cart.hxx"
 #include "EventHandler.hxx"
 #include "Paddles.hxx"
 #include "MindLink.hxx"
@@ -64,6 +65,9 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // 3) Mouse
   addMouseTab();
+
+  // 4) FujiNet
+  addFujiNetTab();
 
   // Finalize the tabs, and activate the first tab
   myTab->activateTabs();
@@ -458,6 +462,83 @@ void InputDialog::addMouseTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addFujiNetTab()
+{
+  WidgetArray wid;
+
+  const int tabID = myTab->addTab(" FujiNet ", TabWidget::AUTO_WIDTH);
+  auto* pane = new TabPaneWidget(myTab, _font);
+  myTab->setPaneWidget(tabID, pane);
+
+  myFujiEnable = new CheckboxWidget(pane, _font, "Enable FujiNet",
+                                    Cmd::FujiNetEnableChanged);
+  myFujiEnable->setToolTip("Let a FujiNet cartridge reach a fujinet-pc "
+                           "instance over the network.");
+  wid.push_back(myFujiEnable);
+
+  // Built with no text: what they hold arrives at loadConfig() time, and the
+  // layout fills them, so neither needs a width of its own here
+  myFujiHostLbl = new LabelWidget(pane, _font, "Host");
+  myFujiHost = new EditTextWidget(pane, _font, 1);
+  myFujiHost->setToolTip("Host running fujinet-pc; 127.0.0.1 for a local one.");
+  wid.push_back(myFujiHost);
+
+  myFujiPortLbl = new LabelWidget(pane, _font, "Port");
+  myFujiPort = new EditTextWidget(pane, _font, 5);
+  myFujiPort->setTextFilter([](char c) { return c >= '0' && c <= '9'; });
+  myFujiPort->setMaxLen(5);
+  myFujiPort->setToolTip("TCP port of its Bus-over-IP listener (default 9995).");
+  wid.push_back(myFujiPort);
+
+  myFujiStatusLbl = new LabelWidget(pane, _font, "Status");
+  myFujiStatus = new EditTextWidget(pane, _font, 1);
+  myFujiStatus->setEditable(false, true);
+
+  myFujiNote1 = new LabelWidget(pane, _font,
+    "A FujiNet cartridge serves its client ROM from the cartridge itself and");
+  myFujiNote2 = new LabelWidget(pane, _font,
+    "talks to a real server, so the Time Machine is unavailable while one runs.");
+
+  addToFocusList(wid, myTab, tabID);
+  pane->setHelpAnchor("FujiNet");
+
+  pane->setLayout([this](GUI::BoxLayout& col) {
+    using GUI::anchoredItem;
+    using GUI::labeledRow;
+
+    const int VGAP   = Dialog::vGap(),
+              INDENT = Dialog::indent();
+
+    // The three fields share one column, indented under the checkbox that
+    // switches them on
+    GUI::alignLabels({{myFujiHostLbl, INDENT}, {myFujiPortLbl, INDENT},
+                      {myFujiStatusLbl, INDENT}});
+
+    col.addAuto(anchoredItem(myFujiEnable));
+    col.addSpace(VGAP);
+    // Host and status take whatever width the tab has; the port is five
+    // digits wide and says so
+    col.addAuto(labeledRow(myFujiHostLbl, myFujiHost, 0, INDENT, true));
+    col.addSpace(VGAP);
+    col.addAuto(labeledRow(myFujiPortLbl, myFujiPort, 0, INDENT));
+    col.addSpace(VGAP);
+    col.addAuto(labeledRow(myFujiStatusLbl, myFujiStatus, 0, INDENT, true));
+    col.addSpace(VGAP * 3);
+    col.addAuto(anchoredItem(myFujiNote1));
+    col.addAuto(anchoredItem(myFujiNote2));
+  });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::updateFujiNetEnabled()
+{
+  const bool enable = myFujiEnable->getState();
+
+  myFujiHost->setEnabled(enable);
+  myFujiPort->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
@@ -529,6 +610,17 @@ void InputDialog::loadConfig()
   else
     myEraseEEPROMButton->setEnabled(false);
 
+  // FujiNet
+  myFujiEnable->setState(settings.getBool("fujinet"));
+  myFujiHost->setText(settings.getString("fujinet.host"));
+  myFujiPort->setText(std::to_string(settings.getInt("fujinet.port")));
+  myFujiStatus->setText(instance().hasConsole()
+    ? instance().console().cartridge().externalStateInfo()
+    : "");
+  if(myFujiStatus->getText().empty())
+    myFujiStatus->setText("no FujiNet cartridge running");
+  updateFujiNetEnabled();
+
   // Allow all 4 joystick directions
   myAllowAll4->setState(settings.getBool("joyallow4"));
 
@@ -599,6 +691,18 @@ void InputDialog::saveConfig()
 
   // AtariVox serial port
   settings.setValue("avoxport", myAVoxPort->getText());
+
+  // FujiNet.  A running cartridge is told directly, so the link opens or
+  // closes without reloading the ROM
+  settings.setValue("fujinet.host", myFujiHost->getText());
+  {
+    int port = BSPF::stoi(myFujiPort->getText(), 9995);
+    BSPF::clamp(port, 1, 65535, 9995);
+    settings.setValue("fujinet.port", port);
+  }
+  settings.setValue("fujinet", myFujiEnable->getState());
+  if(instance().hasConsole())
+    instance().console().cartridge().enableFujiNet(myFujiEnable->getState());
 
   // *** Mouse ***
   // Use mouse as a controller
@@ -699,6 +803,13 @@ void InputDialog::setDefaults()
 
       handleMouseControlState();
       handleCursorState();
+      break;
+
+    case 3:  // FujiNet
+      myFujiEnable->setState(false);
+      myFujiHost->setText("127.0.0.1");
+      myFujiPort->setText("9995");
+      updateFujiNetEnabled();
       break;
 
     default:
@@ -880,6 +991,10 @@ void InputDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 
     case Cmd::CursorStateChanged:
       handleCursorState();
+      break;
+
+    case Cmd::FujiNetEnableChanged:
+      updateFujiNetEnabled();
       break;
 
     case Cmd::MousePaddleSpeedChanged:

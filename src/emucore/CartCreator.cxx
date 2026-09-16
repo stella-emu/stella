@@ -57,6 +57,7 @@
 #include "CartFA2.hxx"
 #include "CartFC.hxx"
 #include "CartFE.hxx"
+#include "CartFUJI.hxx"
 #include "CartGL.hxx"
 #include "CartJANE.hxx"
 #include "CartMDM.hxx"
@@ -89,7 +90,7 @@ namespace  // anonymous namespace, to keep these functions private
   */
   unique_ptr<Cartridge>
   createFromImage(ByteSpan image, Bankswitch::Type type, string_view md5,
-                  const Settings& settings)
+                  Settings& settings)
   {
     // We should know the cart's type by now so let's create it
     switch(type)
@@ -147,6 +148,7 @@ namespace  // anonymous namespace, to keep these functions private
       case WF8:   return std::make_unique<CartridgeWF8>(image, md5, settings);
       case X07:   return std::make_unique<CartridgeX07>(image, md5, settings);
       case ELF:   return std::make_unique<CartridgeELF>(image, md5, settings);
+      case FUJI:  return std::make_unique<CartridgeFUJI>(image, md5, settings);
       default:    return nullptr;  // The remaining types have already been handled
     }
   }
@@ -474,6 +476,16 @@ namespace  // anonymous namespace, to keep these functions private
   }
 
 };  // namespace
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Cartridge> CartCreator::createFromKnownImage(
+    ByteSpan image, Bankswitch::Type type, string_view md5, Settings& settings)
+{
+  return createFromImage(
+    image,
+    type == Bankswitch::Type::AUTO ? CartDetector::autodetectType(image) : type,
+    md5, settings);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,

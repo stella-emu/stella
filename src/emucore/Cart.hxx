@@ -171,6 +171,50 @@ class Cartridge : public Device
     virtual void enablePlusROM(bool enable) { }
 
     /**
+      Answer whether this cartridge is currently bound to state that lives
+      outside the emulation -- a live network link, say -- which rewinding
+      cannot undo.  The Time Machine is disabled while this is true, because
+      winding the console back would leave the cartridge and whatever it is
+      talking to disagreeing about what has already happened.
+
+      @return  Whether the cart holds state the emulator cannot rewind
+    */
+    virtual bool hasExternalState() const { return false; }
+
+    /**
+      Enable or disable FujiNet support, so a cartridge's link can be opened
+      or closed without reloading the ROM.  Mirrors enablePlusROM().
+
+      @param enable  Whether the network link should be live
+    */
+    virtual void enableFujiNet(bool enable) { }
+
+    /**
+      A short description of that external state, for the UI to show -- what
+      a link is connected to, or why it is not.  Empty when the cartridge has
+      none.  Paired with hasExternalState(), which stays allocation-free
+      because it is asked every frame; this one is asked only by a dialog.
+
+      @return  Human-readable status, or an empty string
+    */
+    virtual string externalStateInfo() const { return {}; }
+
+    /**
+      Answer, and clear, whether this cartridge has replaced the machine
+      under the console since this was last asked -- a FujiNet client
+      booting a game it pulled over the network is the only case today.
+
+      The console caches a great deal from the image it was built with (the
+      frame layout, the controllers, the properties, the debugger's bank
+      table), and all of it goes stale at that moment.  The swap itself
+      happens on the bus, mid-instruction, where none of that can safely be
+      redone; the main loop polls this at a frame boundary instead.
+
+      @return  Whether a swap has happened that the console must react to
+    */
+    virtual bool takePendingSwap() { return false; }
+
+    /**
       Set the callback for displaying messages
     */
     virtual void setMessageCallback(const messageCallback& callback)

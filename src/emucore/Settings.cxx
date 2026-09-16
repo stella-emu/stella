@@ -38,6 +38,13 @@
 #endif
 
 #include "Settings.hxx"
+
+namespace {
+  // fujinet-pc's Bus-over-IP listener.  Its own compiled-in default varies by
+  // target -- 9997 for the Atari build, 1985 for the RS232 one -- so it is a
+  // config value there; 9995 is what the 2600 work has standardised on.
+  constexpr int FUJINET_DEFAULT_PORT = 9995;
+}
 #include "repository/KeyValueRepositoryNoop.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,6 +240,13 @@ Settings::Settings()
   setPermanent("plusroms.fixedid", "");
   setPermanent("filterbstypes", "true");
 
+  // FujiNet cartridge: the link to a fujinet-pc instance.  Off by default,
+  // because enabling it makes the emulation talk to an external process --
+  // and, while a FujiNet cartridge is running, gives up rewind.
+  setPermanent("fujinet", "false");
+  setPermanent("fujinet.host", "127.0.0.1");
+  setPermanent("fujinet.port", FUJINET_DEFAULT_PORT);
+
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
   setPermanent("dbg.fontstyle", "0");
@@ -412,6 +426,8 @@ void Settings::validate()
     BSPF::clamp(v, lo, hi, def);
     setValue(key, v);
   };
+
+  clampSetting("fujinet.port", 1, 65535, FUJINET_DEFAULT_PORT);
   const auto requireOneOf = [&](string_view key,
                                 std::initializer_list<string_view> valid,
                                 string_view def) {
@@ -701,6 +717,9 @@ void Settings::usage()
     << "  -ctrlrate     <rate>           Rate per second of repeated controller input in\n"
     << "                                  UI\n"
     << "  -basic_settings <0|1>          Display only a basic settings dialog\n"
+    << "  -fujinet      <1|0>            Enable the FujiNet cartridge's network link\n"
+    << "  -fujinet.host <name>           Host running fujinet-pc (default: 127.0.0.1)\n"
+    << "  -fujinet.port <number>         TCP port of its Bus-over-IP listener\n"
     << "  -avoxport     <name>           The name of the serial port where an AtariVox is\n"
     << "                                  connected\n"
     << "  -holdreset                     Start the emulator with the Game Reset switch\n"

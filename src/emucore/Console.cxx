@@ -20,6 +20,7 @@
 #include "AtariVox.hxx"
 #include "Booster.hxx"
 #include "Cart.hxx"
+#include "MD5.hxx"
 #include "Control.hxx"
 #include "CartCM.hxx"
 #include "Driving.hxx"
@@ -854,6 +855,36 @@ void Console::createAudioQueue()
     myEmulationTiming->audioQueueCapacity(),
     useStereo
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::cartridgeSwapped()
+{
+  // The image is a different game now, so its md5 -- and everything keyed on
+  // it -- has to be taken again rather than carried over from the client
+  const string md5 = MD5::hash(myCart->getImage());
+
+  myOSystem.propSet().getMD5(md5, myProperties);
+  myCart->setProperties(&myProperties);
+
+  // The client ROM needed nothing but a joystick, so that is what controller
+  // detection gave every port.  The game may want paddles, or a keypad
+  setControllers(md5);
+
+  // An NTSC client can perfectly well boot a PAL game
+  redetectFrameLayout();
+
+  mySystem->consoleChanged(myConsoleTiming);
+
+  myConsoleInfo.CartName   = myProperties.get(PropType::Cart_Name);
+  myConsoleInfo.CartMD5    = myProperties.get(PropType::Cart_MD5);
+  myConsoleInfo.BankSwitch = myCart->about();
+  myCart->setNVRamFile(myOSystem.nvramDir().getPath() + myConsoleInfo.CartName);
+
+  // The debugger sized its bank table from the client's bank count and
+  // indexes it with the cart's own, so it has to be built again for the
+  // machine that is actually running now
+  myOSystem.recreateDebugger();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -223,6 +223,16 @@ class OSystem
       @return The debugger object
     */
     Debugger& debugger() const { return *myDebugger; }
+
+    /**
+      Rebuild the debugger against the current console.
+
+      The debugger sizes tables from the cartridge it was created with -- the
+      bank table most visibly -- so a cartridge that replaces the machine
+      under the console (a FujiNet client booting a game) leaves it indexing
+      the wrong one.  Does nothing in a build without debugger support.
+    */
+    void recreateDebugger();
   #endif
 
   #ifdef GUI_SUPPORT

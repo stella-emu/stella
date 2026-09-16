@@ -489,6 +489,25 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::recreateDebugger()
+{
+#ifdef DEBUGGER_SUPPORT
+  if(myConsole == nullptr)
+    return;
+
+  #ifdef GUI_SUPPORT
+  // Drop dialogs cached from the outgoing debugger before it's replaced below
+  // Otherwise we can get a segfault in certain situations
+  BrowserDialog::hide();
+  GUI::MessageBox::hide();
+  #endif
+  myDebugger = std::make_unique<Debugger>(*this, *myConsole);
+  myDebugger->initialize();
+  myConsole->attachDebugger(*myDebugger);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom)
 {
   bool showmessage = false;
@@ -541,17 +560,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
   if(myConsole)
   {
-  #ifdef DEBUGGER_SUPPORT
-  #ifdef GUI_SUPPORT
-    // Drop dialogs cached from the outgoing debugger before it's replaced below
-    // Otherwise we can get a segfault in certain situations
-    BrowserDialog::hide();
-    GUI::MessageBox::hide();
-  #endif
-    myDebugger = std::make_unique<Debugger>(*this, *myConsole);
-    myDebugger->initialize();
-    myConsole->attachDebugger(*myDebugger);
-  #endif
+    recreateDebugger();
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
@@ -1005,6 +1014,12 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
   // Stop the worker and wait until it has finished
   const uInt64 totalCycles = emulationWorker.stop();
+
+  // With the emulation thread joined, this is the one point in the frame
+  // where the console can safely be rebuilt.  A cartridge that has replaced
+  // the machine under it -- a FujiNet client booting a game -- says so here
+  if(myConsole && myConsole->cartridge().takePendingSwap())
+    myConsole->cartridgeSwapped();
 
   // Handle the dispatch result
   switch (dispatchResult.getStatus()) {
