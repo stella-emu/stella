@@ -43,7 +43,7 @@ class DataGridWidget : public EditableWidget
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int cols, int rows,
-                   int colchars, int bits,
+                   int colchars, uInt32 bits,
                    Common::Base::Fmt base = Common::Base::Fmt::DEFAULT,
                    bool useScrollbar = false);
     ~DataGridWidget() override = default;
@@ -152,7 +152,7 @@ class DataGridWidget : public EditableWidget
     int   _currentCol{0};
     int   _rowHeight{0};
     int   _colWidth{0};
-    int   _bits{0};
+    uInt32 _bits{0};
     Int64 _lowerBound{0};
     Int64 _upperBound{0};
     bool  _crossGrid{false};

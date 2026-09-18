@@ -70,8 +70,8 @@ void TiaZoomWidget::loadConfig()
 void TiaZoomWidget::setPos(int x, int y)
 {
   // Center on given x,y point
-  myOffX = x - (myNumCols >> 1);
-  myOffY = y - (myNumRows >> 1);
+  myOffX = x - (U32(myNumCols) >> 1U);
+  myOffY = y - (U32(myNumRows) >> 1U);
 
   recalc();
 }
@@ -112,7 +112,7 @@ void TiaZoomWidget::zoom(int level)
   myOffY = round(myOffY + clicky / myZoomLevel - clicky / level);
 
   myZoomLevel = level;
-  myNumCols = (_w - 4) / myZoomLevel & 0xfffe; // must be even!
+  myNumCols = U32((_w - 4) / myZoomLevel) & 0xfffeU; // must be even!
   myNumRows = (_h - 4) / myZoomLevel;
 
   recalc();
@@ -127,7 +127,7 @@ void TiaZoomWidget::recalc()
   // Don't go past end of framebuffer.  When the viewport is larger than the
   // image (e.g. the companion TIA window at low zoom), the available range can
   // go negative, so pin the upper bound at 0 to keep the offset at top-left.
-  myOffX = BSPF::clamp(myOffX, 0, std::max(0, (tw << 1) - myNumCols));
+  myOffX = BSPF::clamp(myOffX, 0, std::max(0, I32(U32(tw) << 1U) - myNumCols));
   myOffY = BSPF::clamp(myOffY, 0, std::max(0, th - myNumRows));
 
   setDirty();
@@ -305,7 +305,7 @@ Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
   // doubled pixels, so 'col' is a native column, as getToolTip() indexes with
   const Int32 width = instance().console().tia().width();
   const Int32 height = instance().console().tia().height();
-  const int col = (pos.x - 1 - getAbsX()) / (myZoomLevel << 1) + (myOffX >> 1);
+  const int col = (pos.x - 1 - getAbsX()) / I32(U32(myZoomLevel) << 1U) + (U32(myOffX) >> 1U);
   const int row = (pos.y - 1 - getAbsY()) / myZoomLevel + myOffY;
 
   if(col < 0 || col >= width || row < 0 || row >= height)
@@ -354,7 +354,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   const uInt8* currentFrame  = instance().console().tia().outputBuffer();
   const int width = instance().console().tia().width(),
             height = instance().console().tia().height(),
-            wzoom = myZoomLevel << 1,
+            wzoom = U32(myZoomLevel) << 1U,
             hzoom = myZoomLevel;
 
   // Get current scanline position
@@ -365,15 +365,15 @@ void TiaZoomWidget::drawWidget(bool hilite)
 
   // The view may be larger than the image, in which case it shows all of it and
   // leaves the rest blank; never read beyond the frame buffer
-  const int xEnd = std::min((myNumCols + myOffX) >> 1, width),
+  const int xEnd = std::min(I32(U32(myNumCols + myOffX) >> 1U), width),
             yEnd = std::min(myNumRows + myOffY, height);
 
   for(int y = myOffY, row = 0; y < yEnd; ++y, row += hzoom)
   {
-    for(int x = myOffX >> 1, col = 0; x < xEnd; ++x, col += wzoom)
+    for(int x = U32(myOffX) >> 1U, col = 0; x < xEnd; ++x, col += wzoom)
     {
       const uInt32 idx = std::max(y * width + x, 0);
-      const auto color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
+      const auto color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1U : 0U));
       s.fillRect(_x + col + 1, _y + row + 1, wzoom, hzoom, color);
     }
   }

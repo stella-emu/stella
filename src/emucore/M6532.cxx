@@ -159,7 +159,7 @@ void M6532::updateEmulation()
 
     if(timerTicks > myTimer) [[unlikely]]
     {
-      cycles -= ((myTimer + 1) << myDividerShift) - subTimer;
+      cycles -= ((U32(myTimer) + 1) << myDividerShift) - subTimer;
 
       myWrappedThisCycle = cycles == 0;
       myTimer = 0xFF;
@@ -229,13 +229,13 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      const uInt8 value = (myLeftPort->read() << 4U) | myRightPort->read();
+      const uInt8 value = (U32(myLeftPort->read()) << 4U) | myRightPort->read();
 
       // Each pin is high (1) by default and will only go low (0) if either
       //  (a) External device drives the pin low
       //  (b) Corresponding bit in SWACNT = 1 and SWCHA = 0
       // Thanks to A. Herbert for this info
-      return (myOutA | ~myDDRA) & value;
+      return (U32(myOutA) | ~U32(myDDRA)) & value;
     }
 
     case 0x01:    // SWACNT - Port A Data Direction Register
@@ -247,8 +247,8 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Sample the console switches at the current position within the input
       // window so a momentary Select/Reset press is seen between reads
-      return (myOutB | ~myDDRB) &
-             (myConsole.switches().read(mySystem->cycles()) | myDDRB);
+      return (U32(myOutB) | ~U32(myDDRB)) &
+             (U32(myConsole.switches().read(mySystem->cycles())) | myDDRB);
     }
 
     case 0x03:    // SWBCNT - Port B Data Direction Register
@@ -261,7 +261,7 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Timer Flag is always cleared when accessing INTIM
       if(!myWrappedThisCycle)
-        myInterruptFlag &= ~TimerBit;
+        myInterruptFlag &= ~U32(TimerBit);
   #ifdef DEBUGGER_SUPPORT
       myTimWrappedOnRead = myWrappedThisCycle;
       myTimReadCycles += 7;
@@ -274,7 +274,7 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // PA7 Flag is always cleared after accessing TIMINT
       const uInt8 result = myInterruptFlag;
-      myInterruptFlag &= ~PA7Bit;
+      myInterruptFlag &= ~U32(PA7Bit);
     #ifdef DEBUGGER_SUPPORT
       myTimReadCycles += 7;
     #endif
@@ -356,7 +356,7 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
   if(!myWrappedThisCycle)
-    myInterruptFlag &= ~TimerBit;
+    myInterruptFlag &= ~U32(TimerBit);
 #ifdef DEBUGGER_SUPPORT
   myTimWrappedOnWrite = myWrappedThisCycle;
 #endif
@@ -377,7 +377,7 @@ void M6532::setPinState(bool swcha)
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA
   */
-  const uInt8 ioport = myOutA | ~myDDRA;
+  const uInt8 ioport = U32(myOutA) | ~U32(myDDRA);
 
   myLeftPort->write (Controller::DigitalPin::One,   ioport & 0b00010000U);
   myLeftPort->write (Controller::DigitalPin::Two,   ioport & 0b00100000U);

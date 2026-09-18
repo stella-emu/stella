@@ -303,7 +303,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
       // Get the index of the data fetcher that's being accessed
       const uInt32 index = address & 0x0fU;
-      const uInt32 function = (address >> 4U) & 0x01;
+      const uInt32 function = (U32(address) >> 4U) & 0x01U;
 
       switch(function)
       {
@@ -573,7 +573,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           pointer = getDatastreamPointer(index);
           pointer <<=8U;
           pointer &= 0xf0000000;
-          pointer |= (value << 20U);
+          pointer |= (U32(value) << 20U);
           setDatastreamPointer(index, pointer);
           break;
 
@@ -693,7 +693,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           pointer = getDatastreamPointer(COMMSTREAM);
           pointer <<=8U;
           pointer &= 0xf0000000;
-          pointer |= (value << 20U);
+          pointer |= (U32(value) << 20U);
           setDatastreamPointer(COMMSTREAM, pointer);
           break;
 
@@ -749,7 +749,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             pointer = getDatastreamPointer(index);
             pointer <<=8U;
             pointer &= 0xf0000000;
-            pointer |= (value << 20U);
+            pointer |= (U32(value) << 20U);
             setDatastreamPointer(index, pointer);
             break;
 
@@ -782,7 +782,7 @@ bool CartridgeBUS::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myProgramImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = U32(bank % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
@@ -850,7 +850,7 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
 
       // rotate map nybbles for next time
       alldatastreams >>= 4U;
-      alldatastreams |= (datastream << 28U);
+      alldatastreams |= (U32(datastream) << 28U);
       setAddressMap(map, alldatastreams);
     }
   }

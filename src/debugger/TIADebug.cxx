@@ -231,9 +231,9 @@ bool TIADebug::refPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.registerValue(CTRLPF);
+    uInt32 tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
-      tmp |= 0x01;
+      tmp |= 0x01U;
     else
       tmp &= ~0x01U;
     mySystem.pokeOob(CTRLPF, tmp);
@@ -247,9 +247,9 @@ bool TIADebug::scorePF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.registerValue(CTRLPF);
+    uInt32 tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
-      tmp |= 0x02;
+      tmp |= 0x02U;
     else
       tmp &= ~0x02U;
     mySystem.pokeOob(CTRLPF, tmp);
@@ -263,9 +263,9 @@ bool TIADebug::priorityPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.registerValue(CTRLPF);
+    uInt32 tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
-      tmp |= 0x04;
+      tmp |= 0x04U;
     else
       tmp &= ~0x04U;
     mySystem.pokeOob(CTRLPF, tmp);
@@ -416,7 +416,7 @@ uInt8 TIADebug::audF1(int newVal)
 uInt8 TIADebug::pf0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(PF0, newVal << 4);
+    mySystem.pokeOob(PF0, U32(newVal) << 4U);
 
   return myTIA.registerValue(PF0) >> 4U;
 }
@@ -499,7 +499,7 @@ uInt8 TIADebug::nusizP0(int newVal)
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x07U;
-    tmp |= (newVal & 0x07);
+    tmp |= (U32(newVal) & 0x07U);
     mySystem.pokeOob(NUSIZ0, tmp);
   }
 
@@ -512,7 +512,7 @@ uInt8 TIADebug::nusizP1(int newVal)
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x07U;
-    tmp |= newVal & 0x07;
+    tmp |= U32(newVal) & 0x07U;
     mySystem.pokeOob(NUSIZ1, tmp);
   }
 
@@ -525,7 +525,7 @@ uInt8 TIADebug::nusizM0(int newVal)
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x30U;
-    tmp |= (newVal & 0x04) << 4;
+    tmp |= (U32(newVal) & 0x04U) << 4U;
     mySystem.pokeOob(NUSIZ0, tmp);
   }
 
@@ -538,7 +538,7 @@ uInt8 TIADebug::nusizM1(int newVal)
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x30U;
-    tmp |= (newVal & 0x04) << 4;
+    tmp |= (U32(newVal) & 0x04U) << 4U;
     mySystem.pokeOob(NUSIZ1, tmp);
   }
 
@@ -623,7 +623,7 @@ uInt8 TIADebug::sizeBL(int newVal)
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.registerValue(CTRLPF) & ~0x30U;
-    tmp |= (newVal & 0x04) << 4;
+    tmp |= (U32(newVal) & 0x04U) << 4U;
     mySystem.pokeOob(CTRLPF, tmp);
   }
 
@@ -634,7 +634,7 @@ uInt8 TIADebug::sizeBL(int newVal)
 uInt8 TIADebug::hmP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(HMP0, newVal << 4);
+    mySystem.pokeOob(HMP0, U32(newVal) << 4U);
 
   return myTIA.registerValue(HMP0) >> 4U;
 }
@@ -643,7 +643,7 @@ uInt8 TIADebug::hmP0(int newVal)
 uInt8 TIADebug::hmP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(HMP1, newVal << 4);
+    mySystem.pokeOob(HMP1, U32(newVal) << 4U);
 
   return myTIA.registerValue(HMP1) >> 4U;
 }
@@ -652,7 +652,7 @@ uInt8 TIADebug::hmP1(int newVal)
 uInt8 TIADebug::hmM0(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(HMM0, newVal << 4);
+    mySystem.pokeOob(HMM0, U32(newVal) << 4U);
 
   return myTIA.registerValue(HMM0) >> 4U;
 }
@@ -661,7 +661,7 @@ uInt8 TIADebug::hmM0(int newVal)
 uInt8 TIADebug::hmM1(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(HMM1, newVal << 4);
+    mySystem.pokeOob(HMM1, U32(newVal) << 4U);
 
   return myTIA.registerValue(HMM1) >> 4U;
 }
@@ -670,7 +670,7 @@ uInt8 TIADebug::hmM1(int newVal)
 uInt8 TIADebug::hmBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.pokeOob(HMBL, newVal << 4);
+    mySystem.pokeOob(HMBL, U32(newVal) << 4U);
 
   return myTIA.registerValue(HMBL) >> 4U;
 }
@@ -848,7 +848,7 @@ string TIADebug::colorSwatch(uInt8 c)
 {
   string ret;
 
-  ret += static_cast<char>((c >> 1U) | 0x80);
+  ret += static_cast<char>((U32(c) >> 1U) | 0x80U);
   ret += "\177     ";
   ret += "\177\001 ";
 

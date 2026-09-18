@@ -445,7 +445,7 @@ bool Paddles::setMouseControl(
   {
     myMPaddleID = ((myJack == Jack::Left && (xid == 0 || xid == 1)) ||
                    (myJack == Jack::Right && (xid == 2 || xid == 3))
-                  ) ? xid & 0x01 : -1;
+                  ) ? I32(U32(xid) & 0x01U) : -1;
     myMPaddleIDX = myMPaddleIDY = -1;
   }
   else
@@ -456,16 +456,16 @@ bool Paddles::setMouseControl(
     if(myJack == Jack::Left)
     {
       if(xtype == Controller::Type::Paddles)
-        myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
+        myMPaddleIDX = (xid == 0 || xid == 1) ? I32(U32(xid) & 0x01U) : -1;
       if(ytype == Controller::Type::Paddles)
-        myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
+        myMPaddleIDY = (yid == 0 || yid == 1) ? I32(U32(yid) & 0x01U) : -1;
     }
     else if(myJack == Jack::Right)
     {
       if(xtype == Controller::Type::Paddles)
-        myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+        myMPaddleIDX = (xid == 2 || xid == 3) ? I32(U32(xid) & 0x01U) : -1;
       if(ytype == Controller::Type::Paddles)
-        myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
+        myMPaddleIDY = (yid == 2 || yid == 3) ? I32(U32(yid) & 0x01U) : -1;
     }
   }
 

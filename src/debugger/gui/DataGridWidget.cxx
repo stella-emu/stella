@@ -32,7 +32,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int cols, int rows,
-                               int colchars, int bits,
+                               int colchars, uInt32 bits,
                                Common::Base::Fmt base,
                                bool useScrollbar)
   : EditableWidget(boss, font,
@@ -59,7 +59,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   _hiliteList.assign(size, false);
 
   // Set lower and upper bounds to sane values
-  setRange(0, Int64{1} << bits);
+  setRange(0, I64(uInt64{1} << bits));
   // Limit number of chars allowed
   setMaxLen(colchars);
 
@@ -221,7 +221,7 @@ void DataGridWidget::setValue(int position, int value, bool changed,
 void DataGridWidget::setRange(Int64 lower, Int64 upper)
 {
   _lowerBound = std::max(Int64{0}, lower);
-  _upperBound = std::min(Int64{1} << _bits, upper);
+  _upperBound = std::min(I64(uInt64{1} << _bits), upper);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -820,72 +820,72 @@ void DataGridWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::negateCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
 
-  value = ((~value) + 1) & mask;
+  value = I32((~U32(value) + 1) & mask);
   setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::invertCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
 
-  value = ~value & mask;
+  value = I32(~U32(value) & mask);
   setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::decrementCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value <= _lowerBound)        // take care of wrap-around
     value = static_cast<int>(_upperBound);
 
-  value = (value - 1) & mask;
+  value = I32((U32(value) - 1) & mask);
   setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::incrementCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value >= _upperBound - 1)    // take care of wrap-around
     value = static_cast<int>(_lowerBound) - 1;
 
-  value = (value + 1) & mask;
+  value = I32((U32(value) + 1) & mask);
   setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::lshiftCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
 
-  value = (value << 1) & mask;
+  value = I32((U32(value) << 1U) & mask);
   setSelectedValue(value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::rshiftCell()
 {
-  const int mask  = (1U << _bits) - 1;
+  const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
 
-  value = (value >> 1) & mask;
+  value = I32((U32(value) >> 1U) & mask);
   setSelectedValue(value);
 }
 

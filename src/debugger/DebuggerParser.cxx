@@ -279,8 +279,8 @@ int DebuggerParser::decipherArg(string_view str)
   }
 
   // Byte-select
-  if     (lobyte) result = result & 0xFF;
-  else if(hibyte) result = (result >> 8) & 0xFF;
+  if     (lobyte) result = U32(result) & 0xFFU;
+  else if(hibyte) result = (U32(result) >> 8U) & 0xFFU;
 
   // Dereference
   if(derefByte) result = debugger.peek(result);
@@ -1186,7 +1186,7 @@ void DebuggerParser::executeCol()
 void DebuggerParser::executeColorTest()
 {
   commandResult << "test color: "
-                << static_cast<char>((args[0]>>1) | 0x80)
+                << static_cast<char>((U32(args[0]) >> 1U) | 0x80U)
                 << inverse("        ");
 }
 
@@ -1360,7 +1360,7 @@ void DebuggerParser::executeDump()
     return;
   }
 
-  if((args[2] & 0x07) == 0)
+  if((U32(args[2]) & 0x07U) == 0)
   {
     commandResult << red("dump flags must be 1..7");
     return;
@@ -1382,40 +1382,40 @@ void DebuggerParser::executeDump()
   commandResult << "dumped ";
 
   std::ostringstream out;
-  if((args[2] & 0x01) != 0)
+  if((U32(args[2]) & 0x01U) != 0)
   {
     dump(out, args[0], args[1]);
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "bytes from ${:x} to ${:x}", args[0], args[1]);
-    if((args[2] & 0x06) != 0)
+    if((U32(args[2]) & 0x06U) != 0)
       commandResult << ", ";
   }
-  if((args[2] & 0x02) != 0)
+  if((U32(args[2]) & 0x02U) != 0)
   {
     const CpuDebug& cpu = debugger.cpuDebug();
     out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n"
            "XC: "
-        << Base::toString(cpu.pc() & 0xff) << ' ' // PC lsb
-        << Base::toString(cpu.pc() >> 8)   << ' ' // PC msb
-        << Base::toString(cpu.sp()) << ' '        // SP
-        << Base::toString(cpu.a())  << ' '        // A
-        << Base::toString(cpu.x())  << ' '        // X
-        << Base::toString(cpu.y())  << ' '        // Y
-        << Base::toString(0) << ' '               // unused
-        << Base::toString(0) << " - "             // unused
-        << Base::toString(cpu.n()) << ' '         // N (flag)
-        << Base::toString(cpu.v()) << ' '         // V (flag)
-        << Base::toString(cpu.b()) << ' '         // B (flag)
-        << Base::toString(cpu.d()) << ' '         // D (flag)
-        << Base::toString(cpu.i()) << ' '         // I (flag)
-        << Base::toString(cpu.z()) << ' '         // Z (flag)
-        << Base::toString(cpu.c()) << ' '         // C (flag)
-        << Base::toString(0) << '\n';             // unused
+        << Base::toString(U32(cpu.pc()) & 0xffU) << ' ' // PC lsb
+        << Base::toString(U32(cpu.pc()) >> 8U)   << ' ' // PC msb
+        << Base::toString(cpu.sp()) << ' '              // SP
+        << Base::toString(cpu.a())  << ' '              // A
+        << Base::toString(cpu.x())  << ' '              // X
+        << Base::toString(cpu.y())  << ' '              // Y
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(0) << " - "                   // unused
+        << Base::toString(cpu.n()) << ' '               // N (flag)
+        << Base::toString(cpu.v()) << ' '               // V (flag)
+        << Base::toString(cpu.b()) << ' '               // B (flag)
+        << Base::toString(cpu.d()) << ' '               // D (flag)
+        << Base::toString(cpu.i()) << ' '               // I (flag)
+        << Base::toString(cpu.z()) << ' '               // Z (flag)
+        << Base::toString(cpu.c()) << ' '               // C (flag)
+        << Base::toString(0) << '\n';                   // unused
     commandResult << "CPU state";
-    if((args[2] & 0x04) != 0)
+    if((U32(args[2]) & 0x04U) != 0)
       commandResult << ", ";
   }
-  if((args[2] & 0x04) != 0)
+  if((U32(args[2]) & 0x04U) != 0)
   {
     out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n"
            "XS: "

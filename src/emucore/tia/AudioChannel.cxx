@@ -51,12 +51,12 @@ void AudioChannel::phase0()
 
     if ((myAudc & 0x03U) == 0x00) {
       myNoiseFeedback =
-        ((myPulseCounter ^ myNoiseCounter) & 0x01) ||
+        ((U32(myPulseCounter) ^ myNoiseCounter) & 0x01U) ||
         !(myNoiseCounter || (myPulseCounter != 0x0a)) ||
         !(myAudc & 0x0cU);
     } else {
       myNoiseFeedback =
-        (((myNoiseCounter & 0x04U) ? 1 : 0) ^ (myNoiseCounter & 0x01U)) ||
+        (((myNoiseCounter & 0x04U) ? 1U : 0U) ^ (myNoiseCounter & 0x01U)) ||
         myNoiseCounter == 0;
     }
   }
@@ -78,7 +78,7 @@ void AudioChannel::phase1()
     switch (myAudc >> 2U) {
       case 0x00:
         pulseFeedback =
-          (((myPulseCounter & 0x02U) ? 1 : 0) ^ (myPulseCounter & 0x01U)) &&
+          (((myPulseCounter & 0x02U) ? 1U : 0U) ^ (myPulseCounter & 0x01U)) &&
           (myPulseCounter != 0x0a) &&
           (myAudc & 0x03U);
         break;
@@ -105,7 +105,7 @@ void AudioChannel::phase1()
     }
 
     if (!myPulseCounterHold) {
-      myPulseCounter = ~(myPulseCounter >> 1U) & 0x07;
+      myPulseCounter = ~(U32(myPulseCounter) >> 1U) & 0x07U;
 
       if (pulseFeedback) {
         myPulseCounter |= 0x08U;

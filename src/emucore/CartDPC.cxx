@@ -82,11 +82,11 @@ FORCE_INLINE void CartridgeDPC::clockRandomNumberGenerator()
 
   // Using bits 7, 5, 4, & 3 of the shift register compute the input
   // bit for the shift register
-  const uInt8 bit = f[((myRandomNumber >> 3U) & 0x07) |
-      ((myRandomNumber & 0x80U) ? 0x08 : 0x00)];
+  const uInt8 bit = f[((U32(myRandomNumber) >> 3U) & 0x07U) |
+      ((myRandomNumber & 0x80U) ? 0x08U : 0x00U)];
 
   // Update the shift register
-  myRandomNumber = (myRandomNumber << 1U) | bit;
+  myRandomNumber = (U32(myRandomNumber) << 1U) | bit;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,7 +156,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
 
     // Get the index of the data fetcher that's being accessed
     const uInt32 index = address & 0x07U;
-    const uInt32 function = (address >> 3U) & 0x07;
+    const uInt32 function = (U32(address) >> 3U) & 0x07U;
 
     // Update flag register for selected data fetcher
     if((myCounters[index] & 0x00ffU) == myTops[index])
@@ -236,7 +236,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     // Clock the selected data fetcher's counter if needed
     if(index < 5 || !myMusicMode[index - 5])
     {
-      myCounters[index] = (myCounters[index] - 1) & 0x07ff;
+      myCounters[index] = (U32(myCounters[index]) - 1) & 0x07ffU;
     }
 
     return result;
@@ -261,7 +261,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
   {
     // Get the index of the data fetcher that's being accessed
     const uInt32 index = address & 0x07U;
-    const uInt32 function = (address >> 3U) & 0x07;
+    const uInt32 function = (U32(address) >> 3U) & 0x07U;
 
     switch(function)
     {

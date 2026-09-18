@@ -36,6 +36,17 @@ using uInt32 = uint32_t;
 using Int64  = int64_t;
 using uInt64 = uint64_t;
 
+// Short-named stand-ins for static_cast<...> to the types above, for the common
+// case of narrowing/re-signing a value at the point it feeds a bitwise operator.
+template<typename T> constexpr Int8   I8 (T x) { return static_cast<Int8>(x);   }
+template<typename T> constexpr uInt8  U8 (T x) { return static_cast<uInt8>(x);  }
+template<typename T> constexpr Int16  I16(T x) { return static_cast<Int16>(x);  }
+template<typename T> constexpr uInt16 U16(T x) { return static_cast<uInt16>(x); }
+template<typename T> constexpr Int32  I32(T x) { return static_cast<Int32>(x);  }
+template<typename T> constexpr uInt32 U32(T x) { return static_cast<uInt32>(x); }
+template<typename T> constexpr Int64  I64(T x) { return static_cast<Int64>(x);  }
+template<typename T> constexpr uInt64 U64(T x) { return static_cast<uInt64>(x); }
+
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
 #include <array>

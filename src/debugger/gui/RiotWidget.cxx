@@ -597,44 +597,44 @@ void RiotWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       {
         case kSWCHABitsID:
           value = Debugger::get_bits(mySWCHAWriteBits->getState());
-          riot.swcha(value & 0xff);
+          riot.swcha(U32(value) & 0xffU);
           break;
         case kSWACNTBitsID:
           value = Debugger::get_bits(mySWACNTBits->getState());
-          riot.swacnt(value & 0xff);
+          riot.swacnt(U32(value) & 0xffU);
           break;
         case kSWCHBBitsID:
           value = Debugger::get_bits(mySWCHBWriteBits->getState());
-          riot.swchb(value & 0xff);
+          riot.swchb(U32(value) & 0xffU);
           break;
         case kSWBCNTBitsID:
           value = Debugger::get_bits(mySWBCNTBits->getState());
-          riot.swbcnt(value & 0xff);
+          riot.swbcnt(U32(value) & 0xffU);
           break;
         case kSWCHARBitsID:
         {
           value = Debugger::get_bits(mySWCHAReadBits->getState());
           ControllerLowLevel lport(instance().console().leftController());
           ControllerLowLevel rport(instance().console().rightController());
-          lport.setPin(Controller::DigitalPin::One,   value & 0b00010000);
-          lport.setPin(Controller::DigitalPin::Two,   value & 0b00100000);
-          lport.setPin(Controller::DigitalPin::Three, value & 0b01000000);
-          lport.setPin(Controller::DigitalPin::Four,  value & 0b10000000);
-          rport.setPin(Controller::DigitalPin::One,   value & 0b00000001);
-          rport.setPin(Controller::DigitalPin::Two,   value & 0b00000010);
-          rport.setPin(Controller::DigitalPin::Three, value & 0b00000100);
-          rport.setPin(Controller::DigitalPin::Four,  value & 0b00001000);
+          lport.setPin(Controller::DigitalPin::One,   U32(value) & 0b00010000U);
+          lport.setPin(Controller::DigitalPin::Two,   U32(value) & 0b00100000U);
+          lport.setPin(Controller::DigitalPin::Three, U32(value) & 0b01000000U);
+          lport.setPin(Controller::DigitalPin::Four,  U32(value) & 0b10000000U);
+          rport.setPin(Controller::DigitalPin::One,   U32(value) & 0b00000001U);
+          rport.setPin(Controller::DigitalPin::Two,   U32(value) & 0b00000010U);
+          rport.setPin(Controller::DigitalPin::Three, U32(value) & 0b00000100U);
+          rport.setPin(Controller::DigitalPin::Four,  U32(value) & 0b00001000U);
           break;
         }
         case kSWCHBRBitsID:
         {
           value = Debugger::get_bits(mySWCHBReadBits->getState());
 
-          riot.reset( value & 0b00000001);
-          riot.select(value & 0b00000010);
-          riot.tvType(value & 0b00001000);
-          riot.diffP0(value & 0b01000000);
-          riot.diffP1(value & 0b10000000);
+          riot.reset( U32(value) & 0b00000001U);
+          riot.select(U32(value) & 0b00000010U);
+          riot.tvType(U32(value) & 0b00001000U);
+          riot.diffP0(U32(value) & 0b01000000U);
+          riot.diffP1(U32(value) & 0b10000000U);
           break;
         }
         default:

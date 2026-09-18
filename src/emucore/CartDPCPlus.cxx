@@ -274,10 +274,13 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 
     // Get the index of the data fetcher that's being accessed
     const uInt32 index = address & 0x07U;
-    const uInt32 function = (address >> 3U) & 0x07;
+    const uInt32 function = (U32(address) >> 3U) & 0x07U;
 
     // Update flag for selected data fetcher
-    const uInt8 flag = (((myTops[index]-(myCounters[index] & 0x00ffU)) & 0xFFU) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
+    const uInt8 flag =
+      ((myTops[index]-(myCounters[index] & 0x00ffU)) & 0xFFU) >
+      (U32(myTops[index]-myBottoms[index]) & 0xFFU)
+      ? 0xFF : 0;
 
     switch(function)
     {
@@ -337,7 +340,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       case 0x01:
       {
         result = myDisplayImage[myCounters[index]];
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
@@ -345,7 +348,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       case 0x02:
       {
         result = myDisplayImage[myCounters[index]] & flag;
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
@@ -447,14 +450,14 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
   {
     // Get the index of the data fetcher that's being accessed
     const uInt32 index = address & 0x07U;
-    const uInt32 function = ((address - 0x28) >> 3) & 0x0f;
+    const uInt32 function = (U32(address - 0x28) >> 3U) & 0x0fU;
 
     switch(function)
     {
       // DFxFRACLOW - fractional data pointer low byte
       case 0x00:
         myFractionalCounters[index] =
-          (myFractionalCounters[index] & myFractionalLowMask) | (static_cast<uInt16>(value) << 8U);
+          (myFractionalCounters[index] & myFractionalLowMask) | (U32(value) << 8U);
         break;
 
       // DFxFRACHI - fractional data pointer high byte
@@ -518,7 +521,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxPUSH - Push value into data bank
       case 0x07:
       {
-        myCounters[index] = (myCounters[index] - 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) - 0x1) & 0x0fffU;
         myDisplayImage[myCounters[index]] = value;
         break;
       }
@@ -546,17 +549,17 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           }
           case 0x02:  // RWRITE1 - update byte 1 of random number
           {
-            myRandomNumber = (myRandomNumber & 0xFFFF00FF) | (value<<8U);
+            myRandomNumber = (myRandomNumber & 0xFFFF00FF) | (U32(value)<<8U);
             break;
           }
           case 0x03:  // RWRITE2 - update byte 2 of random number
           {
-            myRandomNumber = (myRandomNumber & 0xFF00FFFF) | (value<<16U);
+            myRandomNumber = (myRandomNumber & 0xFF00FFFF) | (U32(value)<<16U);
             break;
           }
           case 0x04:  // RWRITE3 - update byte 3 of random number
           {
-            myRandomNumber = (myRandomNumber & 0x00FFFFFFU) | (value<<24U);
+            myRandomNumber = (myRandomNumber & 0x00FFFFFFU) | (U32(value)<<24U);
             break;
           }
           case 0x05:  // NOTE0
@@ -574,7 +577,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       case 0x0a:
       {
         myDisplayImage[myCounters[index]] = value;
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
@@ -632,7 +635,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myProgramImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = U32(bank % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);

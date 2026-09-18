@@ -282,7 +282,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
 
-        const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
+        const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13U : 21U));
 
         // get sample value from ROM or RAM
         if (sampleaddress < myImage.size())
@@ -293,7 +293,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
           peekvalue = 0;
 
         // make sure current volume value is in the lower nybble
-        if ((myMusicCounters[0] & (1U<<(isCDFJplus() ? 12 : 20))) == 0)
+        if ((myMusicCounters[0] & (1U<<(isCDFJplus() ? 12U : 20U))) == 0)
           peekvalue >>= 4U;
         peekvalue &= 0x0fU;
       }
@@ -400,10 +400,10 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       pointer <<= 8U;
       if (isCDFJplus()) {
         pointer &= 0xff000000;
-        pointer |= (value << 16U);
+        pointer |= (U32(value) << 16U);
       } else {
         pointer &= 0xf0000000;
-        pointer |= (value << 20U);
+        pointer |= (U32(value) << 20U);
       }
       setDatastreamPointer(COMMSTREAM, pointer);
       break;
@@ -463,7 +463,7 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myProgramImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = U32(bank % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);

@@ -145,7 +145,7 @@ void Driving::updateControllerAxes()
 
   if(oldCounterHires != myCounterHires)
     // Only consider the lower-most bits (corresponding to pins 1 & 2)
-    myGrayIndex = static_cast<Int32>((myCounterHires / COUNTER_SCALE) * SENSITIVITY) & 0b11;
+    myGrayIndex = U32(I32((myCounterHires / COUNTER_SCALE) * SENSITIVITY)) & 0b11U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,7 +185,7 @@ void Driving::updateMouseAxes()
     }
   }
   if(myCounter != oldCounter)
-    myGrayIndex = (myCounter >> 2) & 0b11;
+    myGrayIndex = (U32(myCounter) >> 2U) & 0b11U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

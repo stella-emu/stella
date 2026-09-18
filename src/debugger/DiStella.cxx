@@ -350,10 +350,10 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
-                const int tmp = (ad & myAppData.end) + myOffset;
+                const uInt32 tmp = (ad & myAppData.end) + myOffset;
                 labelA12High(nextLine, tmp);
-                nextLineBytes << Base::HEX2 << (tmp & 0xff) << " "
-                              << Base::HEX2 << (tmp >> 8);
+                nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
+                              << Base::HEX2 << (tmp >> 8U);
                 myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
               }
               else {
@@ -430,11 +430,11 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
-                const int tmp = (ad & myAppData.end) + myOffset;
+                const uInt32 tmp = (ad & myAppData.end) + myOffset;
                 labelA12High(nextLine, tmp);
                 nextLine << ",x";
-                nextLineBytes << Base::HEX2 << (tmp & 0xff) << " "
-                              << Base::HEX2 << (tmp >> 8);
+                nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
+                              << Base::HEX2 << (tmp >> 8U);
                 myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
               }
               else {
@@ -482,11 +482,11 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             }
             else if(labelFound == AddressType::ROM_MIRROR) {
               if(mySettings.rFlag) {
-                const int tmp = (ad & myAppData.end) + myOffset;
+                const uInt32 tmp = (ad & myAppData.end) + myOffset;
                 labelA12High(nextLine, tmp);
                 nextLine << ",y";
-                nextLineBytes << Base::HEX2 << (tmp & 0xff) << " "
-                              << Base::HEX2 << (tmp >> 8);
+                nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
+                              << Base::HEX2 << (tmp >> 8U);
                 myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
               }
               else {
@@ -574,7 +574,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          ad = ((myPC + static_cast<Int8>(d1)) & 0xfff) + myOffset;
+          ad = (U32(myPC + static_cast<Int8>(d1)) & 0xfffU) + myOffset;
 
           labelFound = mark(ad, Device::REFERENCED);
           if(pass == DisasmPass::Output) {
@@ -616,7 +616,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             else if(labelFound == AddressType::ROM_MIRROR) {
               nextLine << "(";
               if(mySettings.rFlag) {
-                const int tmp = (ad & myAppData.end) + myOffset;
+                const uInt32 tmp = (ad & myAppData.end) + myOffset;
                 labelA12High(nextLine, tmp);
                 myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
               }
@@ -650,7 +650,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         myLine.disasm = nextLine.str();
         const string_view branchSuffix =
           (addrMode == AddressingMode::RELATIVE)
-            ? ((ad & 0xf00U) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 ")
+            ? ((ad & 0xf00U) != ((myPC + myOffset) & 0xf00U) ? "/3!" : "/3 ")
             : "   ";
         myLine.ccount = std::format(";{}{}", static_cast<int>(ourLookup[opcode].cycles), branchSuffix);
         if((opcode == OP_RTI || opcode == OP_RTS || opcode == OP_JMP || opcode == OP_BRK // code block end
@@ -896,7 +896,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // where wraparound occurred on a 32-bit int, and subsequent
         // indexing into the labels array caused a crash
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        ad = ((myPC + static_cast<Int8>(d1)) & 0xfff) + myOffset;
+        ad = (U32(myPC + static_cast<Int8>(d1)) & 0xfffU) + myOffset;
         mark(ad, Device::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
         if (!checkBit(ad - myOffset, Device::CODE | Device::ROW, false)) {
@@ -1281,7 +1281,7 @@ string DiStella::getColor(uInt8 byte)
   else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
     return std::format("{}|${}", PAL_COLOR[byte >> 4U], Base::hex1(byte & 0xfU));
   else
-    return std::format("${}|{}", Base::hex1(byte >> 4U), SECAM_COLOR[(byte >> 1U) & 0x7]);
+    return std::format("${}|{}", Base::hex1(byte >> 4U), SECAM_COLOR[(byte >> 1U) & 0x7U]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

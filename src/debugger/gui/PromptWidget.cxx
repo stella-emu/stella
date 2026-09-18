@@ -185,25 +185,25 @@ void PromptWidget::drawWidget(bool hilite)
     int x = _x + 1;
     for (int column = 0; column < _lineWidth; ++column) {
       const int bufPos = (start + line) * _lineWidth + column;
-      const int c = buffer(bufPos);
+      const uInt32 c = buffer(bufPos);
       const bool isSelected = (_selectSize != 0) && (bufPos >= selStart) && (bufPos < selEnd);
 
       if(isSelected)
       {
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, kTextColorHi);
-        s.drawChar(_font, c & 0x7f, x, y, kTextColorInv);
+        s.drawChar(_font, c & 0x7fU, x, y, kTextColorInv);
       }
       else if(c & (1U << 17U))  // inverse video flag
       {
         fgcolor = _bgcolor;
-        bgcolor = static_cast<ColorId>((c & 0x1ffff) >> 8);
+        bgcolor = static_cast<ColorId>((c & 0x1ffffU) >> 8U);
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
-        s.drawChar(_font, c & 0x7f, x, y, fgcolor);
+        s.drawChar(_font, c & 0x7fU, x, y, fgcolor);
       }
       else
       {
-        fgcolor = static_cast<ColorId>(c >> 8);
-        s.drawChar(_font, c & 0x7f, x, y, fgcolor);
+        fgcolor = static_cast<ColorId>(c >> 8U);
+        s.drawChar(_font, c & 0x7fU, x, y, fgcolor);
       }
       x += _kConsoleCharWidth;
     }
@@ -812,7 +812,7 @@ void PromptWidget::killWord(int direction)
     int cnt = 0;
     while(_currentPos > _promptStartPos)
     {
-      if((buffer(_currentPos - 1) & 0xff) == ' ')
+      if((buffer(_currentPos - 1) & 0xffU) == ' ')
       {
         if(!space) break;
       }
@@ -835,7 +835,7 @@ void PromptWidget::killWord(int direction)
     int pos = _currentPos;
     while(pos < _promptEndPos)
     {
-      if(pos > _promptStartPos && (buffer(pos - 1) & 0xff) == ' ')
+      if(pos > _promptStartPos && (buffer(pos - 1) & 0xffU) == ' ')
       {
         if(!space) break;
       }
@@ -864,7 +864,7 @@ void PromptWidget::moveWord(int direction, bool select)
   {
     while(pos > _promptStartPos)
     {
-      if((buffer(pos - 1) & 0xff) == ' ')
+      if((buffer(pos - 1) & 0xffU) == ' ')
       {
         if(!space) break;
       }
@@ -878,7 +878,7 @@ void PromptWidget::moveWord(int direction, bool select)
   {
     while(pos < _promptEndPos)
     {
-      if(pos > _promptStartPos && (buffer(pos - 1) & 0xff) == ' ')
+      if(pos > _promptStartPos && (buffer(pos - 1) & 0xffU) == ' ')
       {
         if(!space) break;
       }
@@ -899,12 +899,12 @@ void PromptWidget::markWord()
 
   // Extend selection rightward while non-space
   while(_currentPos + _selectSize < _promptEndPos &&
-        (buffer(_currentPos + _selectSize) & 0xff) != ' ')
+        (buffer(_currentPos + _selectSize) & 0xffU) != ' ')
     _selectSize++;
 
   // Walk cursor leftward while non-space, growing selection to cover the whole word
   while(_currentPos > bufStart &&
-        (buffer(_currentPos - 1) & 0xff) != ' ')
+        (buffer(_currentPos - 1) & 0xffU) != ' ')
   {
     _currentPos--;
     _selectSize++;
@@ -952,7 +952,7 @@ string PromptWidget::getLine() const
   string text;
   text.reserve(_promptEndPos - _promptStartPos);
   for(int i = _promptStartPos; i < _promptEndPos; i++)
-    text += static_cast<char>(buffer(i) & 0x7f);
+    text += static_cast<char>(buffer(i) & 0x7fU);
   return text;
 }
 
@@ -968,7 +968,7 @@ string PromptWidget::selectedText() const
   {
     // Entirely within the prompt area — preserve as-is (may include intentional spaces)
     for(int i = start; i < end; i++)
-      text += static_cast<char>(buffer(i) & 0x7f);
+      text += static_cast<char>(buffer(i) & 0x7fU);
   }
   else
   {
@@ -976,7 +976,7 @@ string PromptWidget::selectedText() const
     // Unwritten cells hold NUL (0), not space, so treat both as blank; an embedded
     // NUL would otherwise truncate the clipboard text at the end of the first line.
     const auto isBlank = [&](int idx) {
-      const int ch = buffer(idx) & 0x7f;
+      const int ch = buffer(idx) & 0x7fU;
       return ch == ' ' || ch == '\0';
     };
     int lineEnd = ((start / _lineWidth) + 1) * _lineWidth;
@@ -987,7 +987,7 @@ string PromptWidget::selectedText() const
       while(lastNonBlank >= i && isBlank(lastNonBlank))
         lastNonBlank--;
       for(int j = i; j <= lastNonBlank; j++)
-        text += static_cast<char>(buffer(j) & 0x7f);
+        text += static_cast<char>(buffer(j) & 0x7fU);
       i = segEnd;
       lineEnd += _lineWidth;
       if(i < end)
@@ -1214,7 +1214,7 @@ bool PromptWidget::autoComplete(int direction)
   {
     // copy the input at first tab press only
     if(_tabCount == -1)
-      _inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
+      _inputStr[i] = buffer(_promptStartPos + i) & 0x7fU;
     if(string_view{"{*@<> =[]()+-/&|!^~%"}.contains(_inputStr[i]))
     {
       lastDelimPos = i;
@@ -1321,13 +1321,13 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::putcharIntern(int c)
+void PromptWidget::putcharIntern(uInt32 c)
 {
   if (c == '\n')
     nextLine();
-  else if(c & 0x80) { // set foreground color to TIA color
-                      // don't print or advance cursor
-    _textcolor = static_cast<ColorId>((c & 0x7f) << 1);
+  else if(c & 0x80U) { // set foreground color to TIA color
+                       // don't print or advance cursor
+    _textcolor = static_cast<ColorId>((c & 0x7fU) << 1U);
   }
   else if(c && c < 0x1e) { // first actual character is large dash
     // More colors (the regular GUI ones)
@@ -1338,7 +1338,7 @@ void PromptWidget::putcharIntern(int c)
   }
   else if(isprint(c) || c == 0x1e || c == 0x1f) // graphic bits chars
   {
-    buffer(_currentPos) = c | (_textcolor << 8U) | (_inverse << 17U);
+    buffer(_currentPos) = c | (_textcolor << 8U) | (U32(_inverse) << 17U);
     _currentPos++;
     if ((_scrollLine + 1) * _lineWidth == _currentPos
         && _scrollLine < _scrollStopLine)
@@ -1422,7 +1422,7 @@ string PromptWidget::saveBuffer(const FSNode& file)
     int end = std::min(start + _lineWidth, last) - 1;
 
     // Look for first non-space, printing char from end of line
-    while(end >= start && static_cast<char>(buffer(end) & 0xff) <= ' ')
+    while(end >= start && static_cast<char>(buffer(end) & 0xffU) <= ' ')
       end--;
 
     // Skip entirely blank lines rather than letting end stay < start
@@ -1435,7 +1435,7 @@ string PromptWidget::saveBuffer(const FSNode& file)
     // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
-      out += static_cast<char>(buffer(j) & 0xff);
+      out += static_cast<char>(buffer(j) & 0xffU);
 
     out += '\n';
   }

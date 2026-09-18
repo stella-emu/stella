@@ -72,12 +72,12 @@ class PromptWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
   protected:
-    int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
-    int  buffer(int idx) const { return _buffer[idx % kBufferSize]; }
+    uInt32& buffer(int idx) { return _buffer[idx % kBufferSize]; }
+    uInt32  buffer(int idx) const { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite) override;
     void drawCaret();
-    void putcharIntern(int c);
+    void putcharIntern(uInt32 c);
     void updateScrollBuffer();
     void scrollToCurrent();
 
@@ -119,7 +119,7 @@ class PromptWidget : public Widget, public CommandSender
       kHistorySize = 1000
     };
 
-    std::array<int, kBufferSize> _buffer{};
+    std::array<uInt32, kBufferSize> _buffer{};
     int  _linesInBuffer{0};
 
     int  _lineWidth{0};
