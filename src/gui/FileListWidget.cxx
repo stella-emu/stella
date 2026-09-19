@@ -277,7 +277,7 @@ const FSNode& FileListWidget::selected()
 {
   if(!_fileList.empty())
   {
-    _selected = std::min(_selected, static_cast<uInt32>(_fileList.size() - 1));
+    _selected = std::min(_selected, U32(_fileList.size() - 1));
     return _fileList[_selected];
   }
   else
@@ -733,7 +733,7 @@ const GUI::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110
   });
   static constexpr GUI::Icon up_large(24, 22, up_large_bits);
-  constexpr int idx = static_cast<int>(IconType::numTypes);
+  constexpr int idx = I32(IconType::numTypes);
   static constexpr const GUI::Icon* small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &cassette_small, &up_small
   };
@@ -741,7 +741,7 @@ const GUI::Icon* FileListWidget::getIcon(int i) const
     &unknown_large, &rom_large, &directory_large, &zip_large, &cassette_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = static_cast<int>(_iconTypeList[i]);
+  const int iconType = I32(_iconTypeList[i]);
 
   assert(iconType < idx);
 
@@ -762,7 +762,7 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 
   const string& value = _list[idx];
 
-  if(static_cast<uInt32>(_font.getStringWidth(value)) > rect.w() - iconWidth())
+  if(U32(_font.getStringWidth(value)) > rect.w() - iconWidth())
     return _toolTipText + value;
   else
     return _toolTipText;

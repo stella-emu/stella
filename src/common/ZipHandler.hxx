@@ -220,21 +220,21 @@ class ZipHandler
         }
         constexpr uInt32 read_dword(size_t offs) const
         {
-          return (static_cast<uInt32>(myBuf[offs + 3]) << 24U) |
-                 (static_cast<uInt32>(myBuf[offs + 2]) << 16U) |
-                 (static_cast<uInt32>(myBuf[offs + 1]) << 8U)  |
-                 (static_cast<uInt32>(myBuf[offs + 0]) << 0U);
+          return (U32(myBuf[offs + 3]) << 24U) |
+                 (U32(myBuf[offs + 2]) << 16U) |
+                 (U32(myBuf[offs + 1]) << 8U)  |
+                 (U32(myBuf[offs + 0]) << 0U);
         }
         constexpr uInt64 read_qword(size_t offs) const
         {
-          return (static_cast<uInt64>(myBuf[offs + 7]) << 56U) |
-                 (static_cast<uInt64>(myBuf[offs + 6]) << 48U) |
-                 (static_cast<uInt64>(myBuf[offs + 5]) << 40U) |
-                 (static_cast<uInt64>(myBuf[offs + 4]) << 32U) |
-                 (static_cast<uInt64>(myBuf[offs + 3]) << 24U) |
-                 (static_cast<uInt64>(myBuf[offs + 2]) << 16U) |
-                 (static_cast<uInt64>(myBuf[offs + 1]) << 8U)  |
-                 (static_cast<uInt64>(myBuf[offs + 0]) << 0U);
+          return (U64(myBuf[offs + 7]) << 56U) |
+                 (U64(myBuf[offs + 6]) << 48U) |
+                 (U64(myBuf[offs + 5]) << 40U) |
+                 (U64(myBuf[offs + 4]) << 32U) |
+                 (U64(myBuf[offs + 3]) << 24U) |
+                 (U64(myBuf[offs + 2]) << 16U) |
+                 (U64(myBuf[offs + 1]) << 8U)  |
+                 (U64(myBuf[offs + 0]) << 0U);
         }
         string_view read_string(size_t offs, size_t len = string_view::npos) const
         {

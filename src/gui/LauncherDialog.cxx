@@ -235,12 +235,12 @@ int LauncherDialog::addRomWidgets()
   int imageWidth = 0;
   if(savedFraction > 0.F)
     imageWidth = clampRomInfoWidth(
-      static_cast<int>(std::round(savedFraction * (_w - HBORDER * 2))), listHeight);
+      I32(std::round(savedFraction * (_w - HBORDER * 2))), listHeight);
   else
   {
     const float zoom = myShowRomInfo
       ? instance().settings().getFloat("romviewer") : 1.F;
-    imageWidth = static_cast<int>(getRomInfoZoom(listHeight, zoom)
+    imageWidth = I32(getRomInfoZoom(listHeight, zoom)
                                   * TIAConstants::viewableWidth);
   }
   // Remember the ROM info width as a fraction of the content width, so it scales
@@ -386,10 +386,10 @@ void LauncherDialog::layout()
   // front).  Most WMs honour SDL's minimum-size hint; this clamp is a fallback.
   const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   const Common::Rect& image = instance().frameBuffer().imageRect();
-  const int w = std::max(static_cast<int>(image.w() / scale),
-                         static_cast<int>(myMinSize.w));
-  const int h = std::max(static_cast<int>(image.h() / scale),
-                         static_cast<int>(myMinSize.h));
+  const int w = std::max(I32(image.w() / scale),
+                         I32(myMinSize.w));
+  const int h = std::max(I32(image.h() / scale),
+                         I32(myMinSize.h));
 
   // Persist the launcher window size, so it is restored next time (on restart
   // and when returning from a game).  While an interactive resize is in
@@ -399,7 +399,7 @@ void LauncherDialog::layout()
   const bool resizing = parent().resizeInProgress();
   if(!resizing)
     instance().settings().setValue("launcherres",
-        Common::Size(static_cast<uInt32>(w), static_cast<uInt32>(h)));
+        Common::Size(U32(w), U32(h)));
   _w = w;
   _h = h;
 
@@ -548,7 +548,7 @@ void LauncherDialog::layout()
   {
     makeRoot(0)->doLayout(0, 0, _w, _h);
     imageWidth = clampRomInfoWidth(
-        static_cast<int>(std::round(myRomInfoFraction * (_w - HBORDER * 2))),
+        I32(std::round(myRomInfoFraction * (_w - HBORDER * 2))),
         myList->getHeight());
   }
 

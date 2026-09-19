@@ -136,7 +136,7 @@ class MicroChip24LC
         out.putLong(myCyclesWhenSDASet);
         out.putLong(myCyclesWhenSCLSet);
 
-        out.putByte(static_cast<uInt8>(jpee_state));
+        out.putByte(U8(jpee_state));
         out.putBool(jpee_mdat);
         out.putBool(jpee_sdat);
         out.putBool(jpee_mclk);
@@ -256,9 +256,9 @@ class MicroChip24LC
     std::array<uInt8, 2 * PAGE_SIZE> jpee_packet{};
 
     // Bitmask for wrapping addresses to the EEPROM flash size
-    static constexpr auto jpee_sizemask = static_cast<uInt32>(FLASH_SIZE - 1);
+    static constexpr auto jpee_sizemask = U32(FLASH_SIZE - 1);
     // Bitmask for detecting page boundary crossings during writes
-    static constexpr auto jpee_pagemask = static_cast<uInt32>(PAGE_SIZE - 1);
+    static constexpr auto jpee_pagemask = U32(PAGE_SIZE - 1);
     // True for 24LC16B (small/page-16 mode); selects I2C address encoding variant
     static constexpr bool jpee_smallmode = (PAGE_SIZE == 16);  // EFF (Grizzards)
 
@@ -599,12 +599,12 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
   {
     case JPEEState::ByteIn:
       jpee_nb <<= 1U;
-      jpee_nb |= static_cast<uInt32>(jpee_mdat);
+      jpee_nb |= U32(jpee_mdat);
       if(jpee_nb & 256U)
       {
         if(!jpee_pptr)
         {
-          jpee_packet[0] = static_cast<uInt8>(jpee_nb);
+          jpee_packet[0] = U8(jpee_nb);
 
           if constexpr(jpee_smallmode)
           {
@@ -656,18 +656,18 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
       {
         if(!jpee_pptr)
         {
-          jpee_packet[0] = static_cast<uInt8>(jpee_nb);
+          jpee_packet[0] = U8(jpee_nb);
           if constexpr(jpee_smallmode)
             jpee_pptr = 2;
           else
             jpee_pptr = 1;
         }
-        else if(jpee_pptr < static_cast<uInt32>(jpee_packet.size()))
+        else if(jpee_pptr < U32(jpee_packet.size()))
         {
           JPEE_LOG1("I2C_SENT({:02X})", jpee_nb);
-          jpee_packet[jpee_pptr++] = static_cast<uInt8>(jpee_nb);
-          jpee_address = static_cast<uInt32>(jpee_packet[1] << 8U) |
-                         static_cast<uInt32>(jpee_packet[2]);
+          jpee_packet[jpee_pptr++] = U8(jpee_nb);
+          jpee_address = U32(jpee_packet[1] << 8U) |
+                         U32(jpee_packet[2]);
           if(jpee_pptr > 2)
             jpee_ad_known = true;
         }
@@ -697,7 +697,7 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
           myCallback("AtariVox/SaveKey EEPROM read");
       }
 
-      jpee_nb = static_cast<uInt32>(myData[jpee_address & jpee_sizemask] << 1U) | 1U;
+      jpee_nb = U32(myData[jpee_address & jpee_sizemask] << 1U) | 1U;
       JPEE_LOG2("I2C_READ({:04X}={:02X})", jpee_address, jpee_nb >> 1U);
 
       [[fallthrough]];
@@ -735,7 +735,7 @@ bool MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
     The chip must not receive a new START condition until this timer expires.
   */
   static constexpr auto TIMER_CYCLES =
-      static_cast<uInt64>(5.0e-3 * 3'579'545.0 / 3.0);  // 5ms × CPU clock
+      U64(5.0e-3 * 3'579'545.0 / 3.0);  // 5ms × CPU clock
 
   if(mode == TimerMode::Set)
   {

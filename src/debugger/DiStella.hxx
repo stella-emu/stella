@@ -139,9 +139,9 @@ class DiStella
     {
       if(!myDbg.getLabel(buf, addr, true)) {
         const uInt32 la = mySettings.useOrgLabels
-            ? static_cast<uInt32>(addr - myOffset) + mySettings.orgBase
+            ? U32(addr - myOffset) + mySettings.orgBase
             : addr;
-        buf << 'L' << Common::Base::hexN(static_cast<int>(la), mySettings.labelDigits);
+        buf << 'L' << Common::Base::hexN(I32(la), mySettings.labelDigits);
       }
     }
     void labelA12Low(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)

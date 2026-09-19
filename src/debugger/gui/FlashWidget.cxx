@@ -102,7 +102,7 @@ void FlashWidget::loadConfig()
         string label = Base::hex3(startPage);
         if(!myEmbedded)
         {
-          if(static_cast<int>(page) - 1 != startPage)
+          if(I32(page) - 1 != startPage)
             label += std::format("-{}", Base::hex3(page - 1));
           else
             label += "    ";

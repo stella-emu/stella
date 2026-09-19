@@ -121,8 +121,8 @@ void RomAuditDialog::layout()
   // for the button row below it (which the content knows nothing about)
   const Common::Size natural = root->naturalSize();
 
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -159,7 +159,7 @@ void RomAuditDialog::auditRoms()
   // the ROMs, since this is usually a time-consuming operation
   ProgressDialog progress(this, instance().frameBuffer().font());
   progress.setMessage("Auditing ROM files" + ELLIPSIS);
-  progress.setRange(0, static_cast<int>(files.size()) - 1, 5);
+  progress.setRange(0, I32(files.size()) - 1, 5);
   progress.open();
 
   Properties props;

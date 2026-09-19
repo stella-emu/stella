@@ -143,7 +143,7 @@ FORCE_INLINE void M6532::updatePA7EdgeDetect()
 void M6532::updateEmulation()
 {
   const uInt64 currentCycle = mySystem->cycles();
-  auto cycles = static_cast<uInt32>(currentCycle - myLastCycle);
+  auto cycles = U32(currentCycle - myLastCycle);
   const uInt32 subTimer = mySubTimer;
 
   // Guard against further state changes if the debugger alread forwarded emulation
@@ -450,7 +450,7 @@ bool M6532::load(Serializer& in)
     // bit masks used on the hot path
     if(myDivider != 1 && myDivider != 8 && myDivider != 64 && myDivider != 1024)
       return false;
-    myDividerShift = static_cast<uInt8>(std::bit_width(myDivider) - 1);
+    myDividerShift = U8(std::bit_width(myDivider) - 1);
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
@@ -513,7 +513,7 @@ Int32 M6532::intimClocks()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6532::timerClocks() const
 {
-  return static_cast<uInt32>(mySystem->cycles() - mySetTimerCycle);
+  return U32(mySystem->cycles() - mySetTimerCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

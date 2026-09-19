@@ -50,7 +50,7 @@ void ContextMenu::addItems(const VariantList& items)
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
-  _scrollDnColor = (_firstEntry + _numEntries < static_cast<int>(_entries.size())) ?
+  _scrollDnColor = (_firstEntry + _numEntries < I32(_entries.size())) ?
       kScrollColor : kColor;
 }
 
@@ -155,7 +155,7 @@ void ContextMenu::recalc(const Common::Rect& image)
   }
   else
   {
-    _numEntries = static_cast<int>(_entries.size());
+    _numEntries = I32(_entries.size());
     _h = _numEntries * _rowHeight + 2;
     _showScroll = false;
   }
@@ -198,7 +198,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelectedIndex(static_cast<int>(_entries.size()) - 1);
+  setSelectedIndex(I32(_entries.size()) - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,7 +246,7 @@ bool ContextMenu::sendSelectionUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ContextMenu::sendSelectionDown()
 {
-  if(isVisible() || _selectedItem >= static_cast<int>(_entries.size()) - 1)
+  if(isVisible() || _selectedItem >= I32(_entries.size()) - 1)
     return false;
 
   _selectedItem++;
@@ -271,7 +271,7 @@ bool ContextMenu::sendSelectionLast()
   if(isVisible())
     return false;
 
-  _selectedItem = static_cast<int>(_entries.size()) - 1;
+  _selectedItem = I32(_entries.size()) - 1;
   sendCommand(_cmd != GuiCmd::None ? _cmd : Cmd::ItemSelected, _selectedItem, _id);
   return true;
 }
@@ -519,7 +519,7 @@ void ContextMenu::moveToFirst()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToLast()
 {
-  _firstEntry = static_cast<int>(_entries.size()) - _numEntries;
+  _firstEntry = I32(_entries.size()) - _numEntries;
   _scrollUpColor = kScrollColor;
   _scrollDnColor = kColor;
 
@@ -538,7 +538,7 @@ void ContextMenu::moveToSelected()
 
   // Now check if we've gone past the current 'window' size, and scale
   // back accordingly
-  const int max_offset = static_cast<int>(_entries.size()) - _numEntries;
+  const int max_offset = I32(_entries.size()) - _numEntries;
   if(_firstEntry > max_offset)
   {
     offset = _firstEntry - max_offset;
@@ -567,7 +567,7 @@ void ContextMenu::scrollUp(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollDown(int distance)
 {
-  const int max_offset = static_cast<int>(_entries.size()) - _numEntries;
+  const int max_offset = I32(_entries.size()) - _numEntries;
   if(_firstEntry == max_offset)
     return;
 

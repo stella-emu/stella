@@ -167,7 +167,7 @@ class Variant
     void ensureCache() const {
       if(!myCache) myCache = CachedValues{};
 
-      constexpr uInt8 bit = 1U << static_cast<uInt8>(F);
+      constexpr uInt8 bit = 1U << U8(F);
       if(myCache->populated & bit) return;  // already computed
       myCache->populated |= bit;            // mark before computing
 
@@ -192,7 +192,7 @@ class Variant
           using T = std::decay_t<decltype(v)>;
 
           if constexpr(std::is_same_v<T, bool>)       return v ? 1 : 0;
-          else if constexpr(std::is_arithmetic_v<T>)  return static_cast<Int32>(v);
+          else if constexpr(std::is_arithmetic_v<T>)  return I32(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             Int32 result{};
             auto sv = string_view(v);

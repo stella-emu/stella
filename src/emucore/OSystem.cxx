@@ -185,7 +185,7 @@ bool OSystem::initialize(const Settings::Options& options)
 
   // Create random number generator
   const int seed = mySettings->getInt("seed");
-  myRandom = std::make_unique<Random>(seed ? seed : static_cast<uInt32>(TimerManager::getTicks()));
+  myRandom = std::make_unique<Random>(seed ? seed : U32(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = std::make_unique<CheatManager>(*this);

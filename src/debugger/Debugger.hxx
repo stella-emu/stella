@@ -286,9 +286,9 @@ class Debugger : public DialogContainer
     static constexpr uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return static_cast<uInt8>(input | (1U << bit));
+        return U8(input | (1U << bit));
       else
-        return static_cast<uInt8>(input & ~(1U << bit));
+        return U8(input & ~(1U << bit));
     }
     static constexpr void set_bits(uInt8 reg, BoolArray& bits)
     {

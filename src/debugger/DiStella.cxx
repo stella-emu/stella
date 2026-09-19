@@ -42,7 +42,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   if (start & 0x1000U) {
     info.start = myAppData.start = 0x0000;
-    info.end = myAppData.end = static_cast<uInt16>(info.size - 1);
+    info.end = myAppData.end = U16(info.size - 1);
     // Keep previous offset; it may be different between banks
     if (info.offset == 0)
       info.offset = myOffset = (start - (start % info.size));
@@ -55,7 +55,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // Resolve code is never used in ZP RAM mode
     resolveCode = false;
   }
-  myAppData.length = static_cast<uInt16>(info.size);
+  myAppData.length = U16(info.size);
 
   myLabels.fill(Device::NONE);
   myDirectives.fill(Device::NONE);
@@ -77,7 +77,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       Device::DATA | Device::GFX | Device::PGFX |
       Device::COL | Device::PCOL | Device::BCOL | Device::AUD;
     for (int k = myAppData.start; std::cmp_less_equal(k, myAppData.end); ++k) {
-      const auto addr = static_cast<uInt16>(k);
+      const auto addr = U16(k);
       const Bitmask::Enum flags{Debugger::debugger().getAccessFlags(addr)};
       if (flags.any_of(Device::CODE))
         mark(addr, Device::CODE);
@@ -99,11 +99,11 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     if((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED &&
        CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
       const uInt32 labelAddr = mySettings.useOrgLabels
-          ? static_cast<uInt32>(k) + mySettings.orgBase
-          : static_cast<uInt32>(k + myOffset);
+          ? U32(k) + mySettings.orgBase
+          : U32(k + myOffset);
       myReserved.Label.emplace(
-        'L' + Base::hexN(static_cast<int>(labelAddr), mySettings.labelDigits),
-        static_cast<uInt16>(k + myOffset));
+        'L' + Base::hexN(I32(labelAddr), mySettings.labelDigits),
+        U16(k + myOffset));
     }
   }
 
@@ -229,15 +229,15 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           // output the byte of the opcode incl. cycles
           const uInt8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
 
-          cycles += static_cast<int>(ourLookup[opcode].cycles) -
-                    static_cast<int>(ourLookup[nextOpcode].cycles);
-          nextLine << ".byte   $" << Base::HEX2 << static_cast<int>(opcode) << " ;";
+          cycles += I32(ourLookup[opcode].cycles) -
+                    I32(ourLookup[nextOpcode].cycles);
+          nextLine << ".byte   $" << Base::HEX2 << I32(opcode) << " ;";
           nextLine << ourLookup[opcode].mnemonic;
 
           myLine.disasm = nextLine.str();
           myLine.ccount = std::format(";{}-{} ",
-            static_cast<int>(ourLookup[opcode].cycles),
-            static_cast<int>(ourLookup[nextOpcode].cycles));
+            I32(ourLookup[opcode].cycles),
+            I32(ourLookup[nextOpcode].cycles));
           myLine.ctotal = std::format("= {:3}", cycles);
 
           nextLine.str("");
@@ -251,12 +251,12 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
       // Undefined opcodes start with a '.'
       // These are undefined wrt DASM
       if(ourLookup[opcode].mnemonic[0] == '.' && pass == DisasmPass::Output) {
-        nextLine << ".byte   $" << Base::HEX2 << static_cast<int>(opcode) << " ;";
+        nextLine << ".byte   $" << Base::HEX2 << I32(opcode) << " ;";
       }
 
       if(pass == DisasmPass::Output) {
         nextLine << ourLookup[opcode].mnemonic;
-        nextLineBytes << Base::HEX2 << static_cast<int>(opcode) << " ";
+        nextLineBytes << Base::HEX2 << I32(opcode) << " ";
         myLine.mnemonicColor = mnemonicColorForOpcode(opcode);
       }
 
@@ -276,7 +276,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                  binary file */
               {
                 std::ostringstream s;
-                s << ".byte $" << Base::HEX2 << static_cast<int>(opcode)
+                s << ".byte $" << Base::HEX2 << I32(opcode)
                   << " ;" << ourLookup[opcode].mnemonic;
                 myLine.disasm = s.str();
               }
@@ -288,7 +288,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
 
                 opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
                 std::ostringstream s;
-                s << ".byte $" << Base::HEX2 << static_cast<int>(opcode);
+                s << ".byte $" << Base::HEX2 << I32(opcode);
                 myLine.disasm = s.str();
                 addEntry(Device::DATA);
               }
@@ -307,7 +307,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               /* Line information is already printed, but we can remove the
                   Instruction (i.e. BMI) by simply clearing the buffer to print */
               std::ostringstream s;
-              s << ".byte $" << Base::HEX2 << static_cast<int>(opcode);
+              s << ".byte $" << Base::HEX2 << I32(opcode);
               myLine.disasm = s.str();
               addEntry(Device::ROW);
               nextLine.str("");
@@ -355,7 +355,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                 labelA12High(nextLine, tmp);
                 nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
                               << Base::HEX2 << (tmp >> 8U);
-                myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
+                myLine.operandColor = colorA12High(U16(tmp));
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad;
@@ -382,7 +382,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           if(pass == DisasmPass::Output) {
             nextLine << "     ";
             labelA12Low(nextLine, opcode, d1, labelFound);
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = colorA12Low(d1, labelFound,
               ourLookup[opcode].rw_mode == RWMode::READ);
           }
@@ -397,8 +397,8 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                 Device::GFX | Device::PGFX))  // CODE does not block color display
               nextLine << "     #" << getColor(d1);
             else
-              nextLine << "     #$" << Base::HEX2 << static_cast<int>(d1) << " ";
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+              nextLine << "     #$" << Base::HEX2 << I32(d1) << " ";
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = CartDebug::DisasmSegColor::Immediate;
           }
           ++myPC;
@@ -436,7 +436,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                 nextLine << ",x";
                 nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
                               << Base::HEX2 << (tmp >> 8U);
-                myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
+                myLine.operandColor = colorA12High(U16(tmp));
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad << ",x";
@@ -488,7 +488,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
                 nextLine << ",y";
                 nextLineBytes << Base::HEX2 << (tmp & 0xffU) << " "
                               << Base::HEX2 << (tmp >> 8U);
-                myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
+                myLine.operandColor = colorA12High(U16(tmp));
               }
               else {
                 nextLine << "$" << Base::HEX4 << ad << ",y";
@@ -517,7 +517,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             nextLine << "     (";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",x)";
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = colorA12Low(d1, labelFound,
               ourLookup[opcode].rw_mode == RWMode::READ);
           }
@@ -532,7 +532,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             nextLine << "     (";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << "),y";
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = colorA12Low(d1, labelFound,
               ourLookup[opcode].rw_mode == RWMode::READ);
           }
@@ -547,7 +547,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             nextLine << "     ";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",x";
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = colorA12Low(d1, labelFound,
               ourLookup[opcode].rw_mode == RWMode::READ);
           }
@@ -562,7 +562,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
             nextLine << "     ";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",y";
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
             myLine.operandColor = colorA12Low(d1, labelFound,
               ourLookup[opcode].rw_mode == RWMode::READ);
           }
@@ -575,7 +575,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          ad = (U32(myPC + static_cast<Int8>(d1)) & 0xfffU) + myOffset;
+          ad = (U32(myPC + I8(d1)) & 0xfffU) + myOffset;
 
           labelFound = mark(ad, Device::REFERENCED);
           if(pass == DisasmPass::Output) {
@@ -589,7 +589,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               myLine.operandColor = CartDebug::DisasmSegColor::Default;
             }
 
-            nextLineBytes << Base::HEX2 << static_cast<int>(d1);
+            nextLineBytes << Base::HEX2 << I32(d1);
           }
           break;
         }
@@ -619,7 +619,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
               if(mySettings.rFlag) {
                 const uInt32 tmp = (ad & myAppData.end) + myOffset;
                 labelA12High(nextLine, tmp);
-                myLine.operandColor = colorA12High(static_cast<uInt16>(tmp));
+                myLine.operandColor = colorA12High(U16(tmp));
               }
               else {
                 labelA12Low(nextLine, opcode, ad, labelFound);
@@ -646,14 +646,14 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
       } // end switch
 
       if(pass == DisasmPass::Output) {
-        cycles += static_cast<int>(ourLookup[opcode].cycles);
+        cycles += I32(ourLookup[opcode].cycles);
         // A complete line of disassembly (text, cycle count, and bytes)
         myLine.disasm = nextLine.str();
         const string_view branchSuffix =
           (addrMode == AddressingMode::RELATIVE)
             ? ((U32(ad) & 0xf00U) != (U32(myPC + myOffset) & 0xf00U) ? "/3!" : "/3 ")
             : "   ";
-        myLine.ccount = std::format(";{}{}", static_cast<int>(ourLookup[opcode].cycles), branchSuffix);
+        myLine.ccount = std::format(";{}{}", I32(ourLookup[opcode].cycles), branchSuffix);
         if((opcode == OP_RTI || opcode == OP_RTS || opcode == OP_JMP || opcode == OP_BRK // code block end
            || checkBit(myPC, Device::REFERENCED)                              // referenced address
            || (ourLookup[opcode].rw_mode == RWMode::WRITE                        // strobe WSYNC
@@ -699,7 +699,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   using RuntimeHint = std::pair<Device::AccessCounter, uInt16>;
   std::vector<RuntimeHint> runtimeHints;
   for (int i = 0; std::cmp_less_equal(i, myAppData.end); ++i) {
-    const auto addr = static_cast<uInt16>(i + myOffset);
+    const auto addr = U16(i + myOffset);
     if (Bitmask::Enum{Debugger::debugger().getAccessFlags(addr)}.any_of(Device::CODE))
       runtimeHints.emplace_back(Debugger::debugger().getAccessCounter(addr), addr);
   }
@@ -897,7 +897,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // where wraparound occurred on a 32-bit int, and subsequent
         // indexing into the labels array caused a crash
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        ad = (U32(myPC + static_cast<Int8>(d1)) & 0xfffU) + myOffset;
+        ad = (U32(myPC + I8(d1)) & 0xfffU) + myOffset;
         mark(ad, Device::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
         if (!checkBit(ad - myOffset, Device::CODE | Device::ROW, false)) {
@@ -1118,9 +1118,9 @@ void DiStella::addEntry(Device::AccessType type)
       if (tag.label.empty()) {
         if (myLine.hasAutoLabel) {
           const uInt32 labelAddr = mySettings.useOrgLabels
-              ? static_cast<uInt32>(tag.address - myOffset) + mySettings.orgBase
+              ? U32(tag.address - myOffset) + mySettings.orgBase
               : tag.address;
-          tag.label = 'L' + Base::hexN(static_cast<int>(labelAddr), mySettings.labelDigits);
+          tag.label = 'L' + Base::hexN(I32(labelAddr), mySettings.labelDigits);
           tag.labelColor = CartDebug::DisasmSegColor::AutoLabel;
         }
         else if (mySettings.showAddresses && type == Device::CODE) {
@@ -1200,7 +1200,7 @@ void DiStella::outputGraphics()
 
   {
     std::ostringstream s;
-    s << ".byte $" << Base::HEX2 << static_cast<int>(byte) << "  |";
+    s << ".byte $" << Base::HEX2 << I32(byte) << "  |";
     for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1U)
       s << ((c > 127) ? bitString : " ");
     s << "|   $" << Base::HEX4 << myPC + myOffset;
@@ -1210,7 +1210,7 @@ void DiStella::outputGraphics()
     myLine.bytes = Base::toString(byte, Base::Fmt::_2_8);
   else {
     std::ostringstream s;
-    s << Base::HEX2 << static_cast<int>(byte);
+    s << Base::HEX2 << I32(byte);
     myLine.bytes = s.str();
   }
 
@@ -1246,13 +1246,13 @@ void DiStella::outputColors()
   {
     std::ostringstream s;
     s << ".byte " << color
-      << std::setw(static_cast<int>(16 + 3 - color.length())) << std::setfill(' ')
+      << std::setw(I32(16 + 3 - color.length())) << std::setfill(' ')
       << "; $" << Base::HEX4 << myPC + myOffset << " " << colorLabel;
     myLine.disasm = s.str();
   }
   {
     std::ostringstream s;
-    s << Base::HEX2 << static_cast<int>(byte);
+    s << Base::HEX2 << I32(byte);
     myLine.bytes = s.str();
   }
 
@@ -1315,7 +1315,7 @@ void DiStella::outputBytes(Device::AccessType type)
       myLine.address      = myPC + myOffset;
       myLine.hasAutoLabel = true;
       disasmStream << ".byte $" << Base::HEX2
-        << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+        << I32(Debugger::debugger().peek(myPC + myOffset));
       ++myPC;
       numBytes = 1;
       lineEmpty = false;
@@ -1324,7 +1324,7 @@ void DiStella::outputBytes(Device::AccessType type)
       myLine.address      = myPC + myOffset;
       myLine.hasAutoLabel = false;
       disasmStream << ".byte $" << Base::HEX2
-        << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+        << I32(Debugger::debugger().peek(myPC + myOffset));
       ++myPC;
       numBytes = 1;
       lineEmpty = false;
@@ -1337,7 +1337,7 @@ void DiStella::outputBytes(Device::AccessType type)
       lineEmpty = true;
     } else {
       disasmStream << ",$" << Base::HEX2
-        << static_cast<int>(Debugger::debugger().peek(myPC + myOffset));
+        << I32(Debugger::debugger().peek(myPC + myOffset));
       ++myPC;
     }
     isType = checkBits(myPC, type,

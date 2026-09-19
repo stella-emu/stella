@@ -336,7 +336,7 @@ void Serializer::putDouble(double value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(string_view str)
 {
-  putInt(static_cast<uInt32>(str.size()));
+  putInt(U32(str.size()));
   putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(str.data()), str.size()));
 }
 

@@ -249,7 +249,7 @@ unique_ptr<GUI::Layout> RiotWidget::buildLayout() const
             lineHeight = _lineHeight,
             fontHeight = _font.getFontHeight(),
             VGAP    = fontHeight / 4,
-            HBORDER = static_cast<int>(fontWidth * 1.25),
+            HBORDER = I32(fontWidth * 1.25),
             VBORDER = fontHeight / 2,
             HGAP    = fontWidth,
             lwidth  = 9 * fontWidth;   // shared left-column label width
@@ -408,8 +408,8 @@ void RiotWidget::reflow()
   // This tab does not fill its area, it sizes itself to its content: take the
   // size the tree comes to, then lay out within it
   const Common::Size natural = root->naturalSize();
-  _w = static_cast<int>(natural.w);
-  _h = static_cast<int>(natural.h);
+  _w = I32(natural.w);
+  _h = I32(natural.h);
   root->doLayout(_x, _y, _w, _h);
 }
 

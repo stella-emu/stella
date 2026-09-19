@@ -32,7 +32,7 @@
 namespace {
   // Compute the sum of the array of bytes
   constexpr uInt8 checksum(ByteSpan s) {
-    return static_cast<uInt8>(std::accumulate(s.begin(), s.end(), 0));
+    return U8(std::accumulate(s.begin(), s.end(), 0));
   }
 }  // namespace
 
@@ -45,7 +45,7 @@ CartridgeAR::CartridgeAR(ByteSpan image, string_view md5,
   myLoadImages.assign(loadSize, 0);
 
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myNumberOfLoadImages = static_cast<uInt8>(myLoadImages.size() / LOAD_SIZE);
+  myNumberOfLoadImages = U8(myLoadImages.size() / LOAD_SIZE);
 
   // Copy the given image and add header if not present
   std::ranges::copy(image, myLoadImages.begin());
@@ -67,7 +67,7 @@ CartridgeAR::CartridgeAR(ByteSpan biosImage, vector<float> pcmData,
                          string loadLog, string_view md5,
                          const Settings& settings)
   : Cartridge(settings, md5),
-    myNumberOfLoadImages{static_cast<uInt8>(tapeStarts.size())},
+    myNumberOfLoadImages{U8(tapeStarts.size())},
     myTapeStartSamples{std::move(tapeStarts)},
     myPCMData{std::move(pcmData)},
     myPCMSampleRate{sampleRate},
@@ -227,26 +227,26 @@ void CartridgeAR::finalizeLoad(uInt32 block)
   myHeader[2] = mySystem->peek(0x00fd);  // start address hi (convention)
 
   static constexpr size_t NUM_PAGES = 24;  // 3 banks × 8 pages
-  myHeader[3] = static_cast<uInt8>(NUM_PAGES);
+  myHeader[3] = U8(NUM_PAGES);
 
   // Page-map: page j in the block lives at bank (j/8), page (j%8) in bank
   for(auto j = 0UZ; j < NUM_PAGES; ++j)
-    myHeader[16 + j] = static_cast<uInt8>(((j % 8) << 2U) | (j / 8));
+    myHeader[16 + j] = U8(((j % 8) << 2U) | (j / 8));
 
   // Per-page checksums: must satisfy checksum(data) + map + ck == 0x55
   const size_t base = static_cast<size_t>(block) * LOAD_SIZE;
   for(auto j = 0UZ; j < NUM_PAGES; ++j)
   {
     const ByteSpan src = ByteSpan{myLoadImages}.subspan(base + j * 256, 256);
-    myHeader[64 + j] = static_cast<uInt8>(
+    myHeader[64 + j] = U8(
       0x55U - checksum(src) - myHeader[16 + j]);
   }
 
   // Header checksum: first 8 bytes must sum to 0x55; patch byte 7
-  const auto partial = static_cast<uInt8>(
+  const auto partial = U8(
     myHeader[0] + myHeader[1] + myHeader[2] + myHeader[3] +
     myHeader[4] + myHeader[5] + myHeader[6]);
-  myHeader[7] = static_cast<uInt8>(0x55U - partial);
+  myHeader[7] = U8(0x55U - partial);
 
   // Commit header into the block's header area
   std::ranges::copy(myHeader, myLoadImages.begin() + base + myImage.size());
@@ -283,7 +283,7 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
   // Is the data hold register being set?
   if(!(addr & 0x0F00U) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = static_cast<uInt8>(addr);
+    myDataHoldRegister = U8(addr);
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
@@ -479,7 +479,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 bool CartridgeAR::bank(uInt16 bank, uInt16)
 {
   if(!hotspotsLocked())
-    return bankConfiguration(static_cast<uInt8>(bank));
+    return bankConfiguration(U8(bank));
   else
     return false;
 }
@@ -752,7 +752,7 @@ CartridgeAR::loadPCM(const FSNode& file)
   if(freeAsWAV) drwav_free(buf, nullptr);
   else          drmp3_free(buf, nullptr);
 
-  return {std::move(result), static_cast<uInt32>(sampleRate)};
+  return {std::move(result), U32(sampleRate)};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

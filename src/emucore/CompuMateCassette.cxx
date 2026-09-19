@@ -87,11 +87,11 @@ uInt8 CompuMateCassette::cassetteBit() const
   // Header: SYNC_BYTES bytes of 0xFF precede the program data (~10 seconds of sync tone)
 
   const auto samplePos = static_cast<double>(mySystem.cycles() - myCasStartCycle) * myCasFreqRatio;
-  const auto streamBitIdx = static_cast<uInt64>(samplePos / SAMPLES_PER_BIT);
+  const auto streamBitIdx = U64(samplePos / SAMPLES_PER_BIT);
   const auto phase = samplePos - static_cast<double>(streamBitIdx) * SAMPLES_PER_BIT;
 
   const uInt64 byteIdx = streamBitIdx / FRAME_BITS;
-  const auto bitInByte = static_cast<uInt32>(streamBitIdx % FRAME_BITS);
+  const auto bitInByte = U32(streamBitIdx % FRAME_BITS);
 
   const uInt64 totalBytes = SYNC_BYTES + myCasData.size();
   const uInt64 pct = byteIdx < totalBytes ? byteIdx * 100 / totalBytes : 100;
@@ -220,7 +220,7 @@ void CompuMateCassette::cassetteD6Toggled(uInt64 cycles)
     // myCyclesPerBit/16 is wider than any expected jitter and still well
     // within the bin 12 upper bound.
     const auto cyclesSinceT0 = static_cast<double>(cycles - mySaveT0);
-    const auto bitWindow = static_cast<int>(
+    const auto bitWindow = I32(
         (cyclesSinceT0 + myCyclesPerBit / 16.0) / myCyclesPerBit);
     // A complete 1-bit stop bit holds exactly 4 transitions; once bit 12 is
     // "full", any further transition belongs to the next byte's start bit.

@@ -52,11 +52,11 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     const int bby = desc.bbx ? desc.bbx[i].y : desc.fbby;  // NOLINT(bugprone-signed-char-misuse,cert-str34-c)
 
     GlyphInfo& info = myGlyphs[i];
-    info.offset = static_cast<uInt32>(myMask.size());
-    info.w = static_cast<uInt16>(bbw);
-    info.h = static_cast<uInt16>(bbh);
-    info.dx = static_cast<Int16>(bbx);
-    info.dy = static_cast<Int16>(desc.ascent - bby - bbh);
+    info.offset = U32(myMask.size());
+    info.w = U16(bbw);
+    info.h = U16(bbh);
+    info.dx = I16(bbx);
+    info.dy = I16(desc.ascent - bby - bbh);
 
     // Without an encode table the glyphs are fixed-size cells, one after
     // the other
@@ -94,7 +94,7 @@ Glyph GlyphSet::glyph(uInt8 chr) const
   {
     if(chr == ' ')
       return {};
-    chr = static_cast<uInt8>(myDefaultChar);
+    chr = U8(myDefaultChar);
   }
 
   const int idx = chr - myFirstChar;
@@ -164,7 +164,7 @@ int Font::getStringWidth(string_view str) const
 {
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)
-    return static_cast<int>(myFontDesc.maxwidth * str.size());
+    return I32(myFontDesc.maxwidth * str.size());
 
   int width = 0;
   for(const char c: str)

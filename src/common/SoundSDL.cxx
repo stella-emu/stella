@@ -91,7 +91,7 @@ bool SoundSDL::openDevice()
     myStream = nullptr;
   }
 
-  mySpec = { SDL_AUDIO_F32, 2, static_cast<int>(myAudioSettings.sampleRate()) };
+  mySpec = { SDL_AUDIO_F32, 2, I32(myAudioSettings.sampleRate()) };
 
   myDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &mySpec);
   if(myDevice == 0)
@@ -140,7 +140,7 @@ void SoundSDL::open(shared_ptr<AudioQueue> audioQueue,
 
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
-  if(myAudioSettings.sampleRate() != static_cast<uInt32>(mySpec.freq))
+  if(myAudioSettings.sampleRate() != U32(mySpec.freq))
     openDevice();
 
   Logger::debug("SoundSDL::open started ...");
@@ -275,10 +275,10 @@ string SoundSDL::about() const
     "    Headroom:      {:.1f} frames\n"
     "    Buffer size:   {:.1f} frames\n",
     myAudioSettings.volume(),
-    static_cast<uInt32>(mySpec.channels),
+    U32(mySpec.channels),
     myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)",
     presetStr,
-    static_cast<uInt32>(mySpec.freq),
+    U32(mySpec.freq),
     resampleStr,
     0.5 * myAudioSettings.headroom(),
     0.5 * myAudioSettings.bufferSize()
@@ -455,13 +455,13 @@ void SoundSDL::WavHandler::wavCallback(void* object, SDL_AudioStream* stream,
                                        int additional_amt, int)
 {
   auto* self = static_cast<WavHandler*>(object);
-  auto len = static_cast<uInt32>(additional_amt);
+  auto len = U32(additional_amt);
   auto& remaining = self->myRemaining;
 
   if(remaining)
   {
     if(self->mySpeed != 1.0)
-      len = static_cast<uInt32>(std::round(len / self->mySpeed));
+      len = U32(std::round(len / self->mySpeed));
 
     if(len > remaining)  // NOLINT(readability-use-std-min-max)
       len = remaining;

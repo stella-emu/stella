@@ -88,8 +88,8 @@ namespace {
 #define do_cflag_bit(x) cFlag = (x)
 #define do_vflag_bit(x) vFlag = (x)
 
-#define branch_target_9(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 24) >> 23))
-#define branch_target_12(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 21) >> 20))
+#define branch_target_9(inst) (read_register(15) + 2 + ((I32(inst) << 24) >> 23))
+#define branch_target_12(inst) (read_register(15) + 2 + ((I32(inst) << 21) >> 20))
 // NOLINTEND(cppcoreguidelines-macro-usage)
 
 namespace {
@@ -476,7 +476,7 @@ namespace {
     }
 
     return std::format("unknown intrinsic error {}",
-      static_cast<uInt32>(CortexM0::getErrIntrinsic(err)));
+      U32(CortexM0::getErrIntrinsic(err)));
   }
 }  // namespace
 
@@ -801,7 +801,7 @@ bool CortexM0::getV() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
 {
-  return static_cast<uInt8>(::decodeInstructionWord(instructionWord));
+  return U8(::decodeInstructionWord(instructionWord));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1801,7 +1801,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       const err_t err = read8(rb, val8);
       if (err) return err;
 
-      rc = (static_cast<Int32>(val8) << 24) >> 24;
+      rc = (I32(val8) << 24) >> 24;
 
       write_register(rd, rc);
       return ERR_NONE;
@@ -1819,7 +1819,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       const err_t err = read16(rb, val16);
       if (err) return err;
 
-      rc = (static_cast<Int16>(val16) << 8) >> 8;
+      rc = (I16(val16) << 8) >> 8;
 
       write_register(rd, rc);
       return ERR_NONE;

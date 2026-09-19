@@ -94,7 +94,7 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
   SDL_DisplayID* displays = SDL_GetDisplays(&count);
   if(!displays || count == 0)
     return;
-  myNumDisplays = static_cast<uInt32>(count);
+  myNumDisplays = U32(count);
 
   // Get the maximum fullscreen and windowed desktop resolutions
   for(uInt32 i = 0; i < myNumDisplays; ++i)
@@ -252,7 +252,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
           y1 = std::max(y1, rect.y + rect.h);
         }
       }
-      posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
+      posX = BSPF::clamp(posX, x0 - I32(mode.screenS.w) + 50, x1 - 50);
       posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
     }
   }
@@ -548,7 +548,7 @@ void FBBackendSDL::setWindowMinSize(const Common::Size& minSize)
 
   if(myWindow)
     SDL_SetWindowMinimumSize(myWindow,
-        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
+        I32(minSize.w), I32(minSize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,7 +558,7 @@ void FBBackendSDL::resizeWindow(const Common::Size& size)
 
   if(myWindow)
   {
-    SDL_SetWindowSize(myWindow, static_cast<int>(size.w), static_cast<int>(size.h));
+    SDL_SetWindowSize(myWindow, I32(size.w), I32(size.h));
     // Block until the window manager has actually applied the new size, the
     // same way the video-mode reuse-path above does -- so the resize event
     // we rely on to re-flow (see EventHandler::handleSystemEvent) reports the
@@ -822,8 +822,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
     static const std::array<uInt8, 256> gammaLUT = [] {
       std::array<uInt8, 256> lut{};
       for(int i = 0; i < 256; ++i)
-        lut[i] = static_cast<uInt8>(
-          std::lround(std::pow(i / 255.0, 1.0 / 1.35) * 255.0));
+        lut[i] = U8(std::lround(std::pow(i / 255.0, 1.0 / 1.35) * 255.0));
       return lut;
     }();
 
@@ -832,8 +831,8 @@ const FBSurface& FBBackendSDL::compositedSurface()
     const uInt32 bShift = std::countr_zero(bMask());
     const uInt32 aMask_ = aMask();
 
-    const auto w = static_cast<uInt32>(surfaceRect.w);
-    const auto h = static_cast<uInt32>(surfaceRect.h);
+    const auto w = U32(surfaceRect.w);
+    const auto h = U32(surfaceRect.h);
     const uInt32 pitch = sdlSurface->pitch / sizeof(uInt32);
     auto* pixels = static_cast<uInt32*>(sdlSurface->pixels);
 

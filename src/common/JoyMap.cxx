@@ -141,7 +141,7 @@ string JoyMap::getDesc(Event::Type event, const JoyMapping& mapping)
       : mapping.adir == JoyDir::NEG ? "-" : "+";
 
     if(axisName.empty())
-      desc += std::format("/A{}{}", static_cast<int>(mapping.axis), axisDir);
+      desc += std::format("/A{}{}", I32(mapping.axis), axisDir);
     else
       desc += std::format("/A{}{}", axisName, axisDir);
   }

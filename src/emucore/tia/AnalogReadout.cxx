@@ -198,7 +198,7 @@ bool AnalogReadout::Connection::load(Serializer& in)
     // Reject a corrupt save state before an out-of-range type can reach
     // updateCharge()'s switch, whose default case throws with nothing to
     // catch it once emulation is under way
-    if(t > static_cast<uInt32>(ConnectionType::disconnected))
+    if(t > U32(ConnectionType::disconnected))
       return false;
     type = static_cast<ConnectionType>(t);
     resistance = in.getInt();

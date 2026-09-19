@@ -47,7 +47,7 @@ void CartridgeDevCard::install(System& system)
 
   for(auto win = 0UZ; win < NUM_WINDOWS; ++win)
   {
-    const auto winBase = static_cast<uInt32>(win * WINDOW_SIZE);
+    const auto winBase = U32(win * WINDOW_SIZE);
     for(uInt32 addr = WINDOWS[win]; addr < WINDOWS[win] + WINDOW_SIZE;
         addr += System::PAGE_SIZE)
     {
@@ -57,7 +57,7 @@ void CartridgeDevCard::install(System& system)
       access.romAccessBase  = myRomAccessBase.get() + offset;
       access.romPeekCounter = myRomAccessCounter.get() + offset;
       access.romPokeCounter = myRomAccessCounter.get() + offset + RAM_SIZE;
-      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
+      mySystem->setPageAccess(U16(addr), access);
     }
   }
 }
@@ -116,7 +116,7 @@ bool CartridgeDevCard::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDevCard::bankOrigin(uInt16 /*bank*/, uInt16 PC) const
 {
-  const uInt32 win = (static_cast<uInt32>(PC >> 12U) - 5U) / 2U;
+  const uInt32 win = (U32(PC >> 12U) - 5U) / 2U;
   return win < NUM_WINDOWS ? WINDOWS[win] : WINDOWS[0];
 }
 #endif

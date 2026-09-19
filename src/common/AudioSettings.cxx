@@ -27,16 +27,16 @@ namespace {
   constexpr AudioSettings::Preset normalizedPreset(int numericPreset)
   {
     return (
-      numericPreset >= static_cast<int>(AudioSettings::Preset::custom) &&
-      numericPreset <= static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag)
+      numericPreset >= I32(AudioSettings::Preset::custom) &&
+      numericPreset <= I32(AudioSettings::Preset::ultraQualityMinimalLag)
     ) ? static_cast<AudioSettings::Preset>(numericPreset) : AudioSettings::DEFAULT_PRESET;
   }
 
   constexpr AudioSettings::ResamplingQuality normalizeResamplingQuality(int numericResamplingQuality)
   {
     return (
-      numericResamplingQuality >= static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour) &&
-      numericResamplingQuality <= static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3)
+      numericResamplingQuality >= I32(AudioSettings::ResamplingQuality::nearestNeighbour) &&
+      numericResamplingQuality <= I32(AudioSettings::ResamplingQuality::lanczos_3)
     ) ? static_cast<AudioSettings::ResamplingQuality>(numericResamplingQuality) : AudioSettings::DEFAULT_RESAMPLING_QUALITY;
   }
 } // namespace
@@ -53,8 +53,8 @@ void AudioSettings::normalize(Settings& settings)
 {
   const int settingPreset = settings.getInt(SETTING_PRESET);
   const Preset preset = normalizedPreset(settingPreset);
-  if (static_cast<int>(preset) != settingPreset)
-    settings.setValue(SETTING_PRESET, static_cast<int>(DEFAULT_PRESET));
+  if (I32(preset) != settingPreset)
+    settings.setValue(SETTING_PRESET, I32(DEFAULT_PRESET));
 
   switch (settings.getInt(SETTING_SAMPLE_RATE)) {
     case 44100:
@@ -79,8 +79,8 @@ void AudioSettings::normalize(Settings& settings)
   const int settingResamplingQuality = settings.getInt(SETTING_RESAMPLING_QUALITY);
   const ResamplingQuality resamplingQuality =
       normalizeResamplingQuality(settingResamplingQuality);
-  if (static_cast<int>(resamplingQuality) != settingResamplingQuality)
-    settings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(DEFAULT_RESAMPLING_QUALITY));
+  if (I32(resamplingQuality) != settingResamplingQuality)
+    settings.setValue(SETTING_RESAMPLING_QUALITY, I32(DEFAULT_RESAMPLING_QUALITY));
 
   const int settingVolume = settings.getInt(SETTING_VOLUME);
   if (settingVolume < 0 || settingVolume > 100)
@@ -207,7 +207,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       throw std::runtime_error("invalid preset");
   }
 
-  if (myIsPersistent) mySettings.setValue(SETTING_PRESET, static_cast<int>(myPreset));
+  if (myIsPersistent) mySettings.setValue(SETTING_PRESET, I32(myPreset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -242,7 +242,7 @@ void AudioSettings::setResamplingQuality(AudioSettings::ResamplingQuality resamp
 {
   if (!myIsPersistent) return;
 
-  mySettings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(resamplingQuality));
+  mySettings.setValue(SETTING_RESAMPLING_QUALITY, I32(resamplingQuality));
   normalize(mySettings);
 }
 

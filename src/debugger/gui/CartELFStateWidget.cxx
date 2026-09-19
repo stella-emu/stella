@@ -44,7 +44,7 @@ namespace {
         return "PC (R15) = ";
 
       default:
-        return std::format("R{} = ", static_cast<int>(reg));
+        return std::format("R{} = ", I32(reg));
     }
   }
 

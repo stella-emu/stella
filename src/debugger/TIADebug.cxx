@@ -774,13 +774,13 @@ int TIADebug::frameWsyncCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesLo() const
 {
-  return static_cast<int>(mySystem.cycles());
+  return I32(mySystem.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesHi() const
 {
-  return static_cast<int>(mySystem.cycles() >> 32U);
+  return I32(mySystem.cycles() >> 32U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1191,27 +1191,27 @@ string TIADebug::toString()
                         riotState.INPTDump != oldRiotState.INPTDump)
       << '\n'
       << "AUDF0: "
-      << hexWithLabel("", static_cast<int>(audF0()),
+      << hexWithLabel("", I32(audF0()),
                       state.aud[0] != oldState.aud[0]) << "/"
       << std::setw(9) << std::right << stringOnly(audFreq0(),
                     state.aud[0] != oldState.aud[0]) << " "
       << "AUDC0: "
-      << hexWithLabel("", static_cast<int>(audC0()),
+      << hexWithLabel("", I32(audC0()),
                       state.aud[2] != oldState.aud[2], 1) << " "
       << "AUDV0: "
-      << hexWithLabel("", static_cast<int>(audV0()),
+      << hexWithLabel("", I32(audV0()),
                       state.aud[4] != oldState.aud[4], 1)
       << '\n'
       << "AUDF1: "
-      << hexWithLabel("", static_cast<int>(audF1()),
+      << hexWithLabel("", I32(audF1()),
                       state.aud[1] != oldState.aud[1]) << "/"
       << std::setw(9) << std::right << stringOnly(audFreq1(),
                     state.aud[1] != oldState.aud[1]) << " "
       << "AUDC1: "
-      << hexWithLabel("", static_cast<int>(audC1()),
+      << hexWithLabel("", I32(audC1()),
                       state.aud[3] != oldState.aud[3], 1) << " "
       << "AUDV1: "
-      << hexWithLabel("", static_cast<int>(audV1()),
+      << hexWithLabel("", I32(audV1()),
                       state.aud[5] != oldState.aud[5], 1);
   // note: last line should not contain \n, caller will add.
   return buf.str();

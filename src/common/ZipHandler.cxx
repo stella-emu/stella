@@ -179,7 +179,7 @@ bool ZipHandler::ZipFile::open()
   if(!myStream)
     return false;
 
-  myLength = static_cast<uInt64>(myStream.tellg());
+  myLength = U64(myStream.tellg());
 
   myStream.seekg(0, std::ios::beg);
   return static_cast<bool>(myStream);
@@ -301,13 +301,13 @@ void ZipHandler::ZipFile::readEcd()
       throw ZipException(ZipError::FILE_ERROR);
 
     // Scan backwards for ECD signature
-    for(auto offset = static_cast<Int32>(buflen - EcdReader::minimumLength());
+    for(auto offset = I32(buflen - EcdReader::minimumLength());
         offset >= 0; --offset)
     {
       // Extract ECD info
       const EcdReader reader(buffer.data() + offset);
       if(reader.signatureCorrect() &&
-         ((static_cast<uInt64>(offset) + reader.totalLength()) <= buflen))
+         ((U64(offset) + reader.totalLength()) <= buflen))
       {
         myEcd.diskNumber        = reader.thisDiskNo();
         myEcd.cdStartDiskNumber = reader.dirStartDisk();
@@ -336,7 +336,7 @@ bool ZipHandler::ZipFile::readStream(uInt8* out, uInt64 offset,
   if(!myStream) return false;
 
   myStream.read(reinterpret_cast<char*>(out), length);
-  actual = static_cast<uInt64>(myStream.gcount());
+  actual = U64(myStream.gcount());
 
   // If we hit EOF early, that's OK (caller checks size)
   return myStream || myStream.eof();
@@ -465,7 +465,7 @@ void ZipHandler::ZipFile::decompressDataType8(const ZipHeader& header,
 
   z_stream stream{};
   stream.next_out  = out.data();
-  stream.avail_out = static_cast<uInt32>(out.size());
+  stream.avail_out = U32(out.size());
 
   // RAII cleanup
   struct InflateGuard {
@@ -494,7 +494,7 @@ void ZipHandler::ZipFile::decompressDataType8(const ZipHeader& header,
 
       myStream.read(reinterpret_cast<char*>(myBuffer.data()), chunkSize);
       const auto read_length =
-        static_cast<uInt64>(myStream.gcount());
+        U64(myStream.gcount());
 
       // If we read nothing, but still have data left, the file is truncated
       if(read_length == 0)
@@ -506,7 +506,7 @@ void ZipHandler::ZipFile::decompressDataType8(const ZipHeader& header,
 
       // Fill out the input data
       stream.next_in  = myBuffer.data();
-      stream.avail_in = static_cast<uInt32>(read_length);
+      stream.avail_in = U32(read_length);
 
       input_remaining -= read_length;
     }

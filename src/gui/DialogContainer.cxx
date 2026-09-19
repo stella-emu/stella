@@ -158,8 +158,8 @@ int DialogContainer::addDialog(Dialog* d)
   const Common::Rect& r = myOSystem.frameBuffer().imageRect();
   const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
 
-  if(static_cast<uInt32>(d->getWidth()  * scale) > r.w() ||
-     static_cast<uInt32>(d->getHeight() * scale) > r.h())
+  if(U32(d->getWidth()  * scale) > r.w() ||
+     U32(d->getHeight() * scale) > r.h())
     myOSystem.frameBuffer().showTextMessage(
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
@@ -171,7 +171,7 @@ int DialogContainer::addDialog(Dialog* d)
     d->setDirty();
     myDialogStack.push(d);
   }
-  return static_cast<int>(myDialogStack.size());
+  return I32(myDialogStack.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

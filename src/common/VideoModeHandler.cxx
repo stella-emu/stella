@@ -68,7 +68,7 @@ const VideoModeHandler::Mode&
       // When aspect ratio correction is off, we want pixel-exact images,
       // so we default to integer zooming
       if(!settings.getBool("tia.correct_aspect"))
-        zoom = static_cast<uInt32>(zoom);
+        zoom = U32(zoom);
 
       if(!settings.getBool("tia.fs_stretch"))  // preserve aspect, use all space
       {
@@ -122,7 +122,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   if(fullscreen)
   {
     const auto rounded = [](double v) noexcept -> uInt32 {
-        return static_cast<uInt32>(std::round(v));
+        return U32(std::round(v));
     };
 
     switch(stretch)
@@ -140,10 +140,8 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 
       case Stretch::None: // UI Mode
         // Don't do any scaling at all
-        iw = rounded(std::min(static_cast<uInt32>
-            (iw * zoomLevel), screenS.w) * overscan);
-        ih = rounded(std::min(static_cast<uInt32>
-            (ih * zoomLevel), screenS.h) * overscan);
+        iw = rounded(std::min(U32(iw * zoomLevel), screenS.w) * overscan);
+        ih = rounded(std::min(U32(ih * zoomLevel), screenS.h) * overscan);
         break;
 
       default:
@@ -158,10 +156,10 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
-        iw = static_cast<uInt32>(iw * zoomLevel);
-        ih = static_cast<uInt32>(ih * zoomLevel);
-        screenS.w = static_cast<uInt32>(std::round(iw * bezelInfo.ratioW()));
-        screenS.h = static_cast<uInt32>(std::round(ih * bezelInfo.ratioH()));
+        iw = U32(iw * zoomLevel);
+        ih = U32(ih * zoomLevel);
+        screenS.w = U32(std::round(iw * bezelInfo.ratioW()));
+        screenS.h = U32(std::round(ih * bezelInfo.ratioH()));
         break;
 
       case Stretch::None: // UI Mode
@@ -181,9 +179,9 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   const uInt32 wx = bezelInfo.window().x() * iw / bezelInfo.window().w();
   const uInt32 wy = bezelInfo.window().y() * ih / bezelInfo.window().h();
   const uInt32 bezelW = std::min(screenS.w,
-      static_cast<uInt32>(std::round(iw * bezelInfo.ratioW())));
+      U32(std::round(iw * bezelInfo.ratioW())));
   const uInt32 bezelH = std::min(screenS.h,
-      static_cast<uInt32>(std::round(ih * bezelInfo.ratioH())));
+      U32(std::round(ih * bezelInfo.ratioH())));
 
   // Center image (no bezel) or move image relative to centered bezel
   imageR.moveTo((screenS.w - bezelW) / 2 + wx, (screenS.h - bezelH) / 2 + wy);

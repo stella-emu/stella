@@ -566,7 +566,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(ok)
       {
         setLine(newLine);
-        const auto diffPos = static_cast<int>(UndoHandler::lastDiff(newLine, oldLine));
+        const auto diffPos = I32(UndoHandler::lastDiff(newLine, oldLine));
         _currentPos = std::clamp(_promptStartPos + diffPos, _promptStartPos, _promptEndPos);
         scrollToCurrent();
         changeInput = true;
@@ -1052,9 +1052,9 @@ int PromptWidget::historyDir(int& index, int direction)
 {
   index += direction;
   if(index < 0)
-    index += static_cast<int>(_history.size());
+    index += I32(_history.size());
   else
-    index %= static_cast<int>(_history.size());
+    index %= I32(_history.size());
 
   return index;
 }
@@ -1121,7 +1121,7 @@ bool PromptWidget::historyScroll(int direction)
   do
   {
     const int idx = _historyLine
-      ? (_historyIndex - _historyLine + _history.size()) % static_cast<int>(_history.size())
+      ? (_historyIndex - _historyLine + _history.size()) % I32(_history.size())
       : _historyIndex;
 
     if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
@@ -1141,7 +1141,7 @@ bool PromptWidget::historyScroll(int direction)
 
   // Print the text from the history
   const int idx = _historyLine
-    ? (_historyIndex - _historyLine + _history.size()) % static_cast<int>(_history.size())
+    ? (_historyIndex - _historyLine + _history.size()) % I32(_history.size())
     : _historyIndex;
 
   _selectSize = 0;
@@ -1204,7 +1204,7 @@ bool PromptWidget::autoComplete(int direction)
   int len = _promptEndPos - _promptStartPos;
 
   if(_tabCount != -1)
-    len = static_cast<int>(strlen(_inputStr));
+    len = I32(strlen(_inputStr));
   len = std::min(len, kLineBufferSize - 1);
 
   int lastDelimPos = -1;
@@ -1256,7 +1256,7 @@ bool PromptWidget::autoComplete(int direction)
   if(direction < 0)
   {
     if(--_tabCount < 0)
-      _tabCount = static_cast<int>(lst.size()) - 1;
+      _tabCount = I32(lst.size()) - 1;
   }
   else
     _tabCount = (_tabCount + 1) % lst.size();

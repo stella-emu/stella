@@ -56,7 +56,7 @@ int TabWidget::addTab(string_view title, int tabWidth)
   updateTabSizes();
 
   // Activate the new tab
-  setActiveTab(static_cast<int>(_tabs.size()) - 1);
+  setActiveTab(I32(_tabs.size()) - 1);
 
   return _activeTab;
 }
@@ -87,7 +87,7 @@ void TabWidget::updateTabSizes()
 
   // Clamp the shared width so all the NO_WIDTH tabs still fit the current width
   _tabWidth = sharedWidth;
-  const int varTabs = static_cast<int>(_tabs.size()) - fixedTabs;
+  const int varTabs = I32(_tabs.size()) - fixedTabs;
   if(varTabs > 0)
   {
     const int maxWidth =
@@ -127,7 +127,7 @@ int TabWidget::getMaxContentHeight() const
   for(const auto& tab: _tabs)
     if(tab.parentWidget != nullptr)
       maxHeight = std::max(maxHeight,
-                           static_cast<int>(tab.parentWidget->naturalSize().h));
+                           I32(tab.parentWidget->naturalSize().h));
 
   return maxHeight;
 }
@@ -213,8 +213,8 @@ Common::Size TabWidget::naturalSize() const
     if(tab.parentWidget != nullptr)
     {
       const Common::Size natural = tab.parentWidget->naturalSize();
-      contentW = std::max(contentW, static_cast<int>(natural.w));
-      contentH = std::max(contentH, static_cast<int>(natural.h));
+      contentW = std::max(contentW, I32(natural.w));
+      contentH = std::max(contentH, I32(natural.h));
     }
 
   // The bar height is taken from the font rather than the cached _tabHeight,
@@ -268,7 +268,7 @@ void TabWidget::cycleTab(int direction)
     do {
       tabID--;
       if(tabID == -1)
-        tabID = static_cast<int>(_tabs.size()) - 1;
+        tabID = I32(_tabs.size()) - 1;
     } while(!_tabs[tabID].enabled);
   }
   else if(direction == 1)  // Go to the next tab, wrap around at end

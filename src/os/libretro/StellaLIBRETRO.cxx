@@ -90,7 +90,7 @@ bool StellaLIBRETRO::create(const SettingsLIBRETRO& cfg, bool logging)
   //fastscbios
   // Fast loading of Supercharger BIOS
 
-  settings.setValue("tv.filter", static_cast<int>(cfg.video_filter));
+  settings.setValue("tv.filter", I32(cfg.video_filter));
 
   settings.setValue("tv.phosphor", cfg.video_phosphor);
   settings.setValue("tv.phosblend", cfg.video_phosphor_blend);
@@ -101,11 +101,11 @@ bool StellaLIBRETRO::create(const SettingsLIBRETRO& cfg, bool logging)
   fs:2 hz:50 bs:314.4 -- not supported,      0 frame lag ideal
   fs:128 hz:50 bs:4.9 -- lowest supported, 0-1 frame lag measured
   */
-  settings.setValue(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::Preset::custom));
+  settings.setValue(AudioSettings::SETTING_PRESET, I32(AudioSettings::Preset::custom));
   settings.setValue(AudioSettings::SETTING_SAMPLE_RATE, getAudioRate());
   settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, 8);
   settings.setValue(AudioSettings::SETTING_HEADROOM, 0);
-  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
+  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, I32(AudioSettings::ResamplingQuality::nearestNeighbour));
   settings.setValue(AudioSettings::SETTING_VOLUME, 100);
   settings.setValue(AudioSettings::SETTING_STEREO, cfg.audio_mode);
 
@@ -294,7 +294,7 @@ void StellaLIBRETRO::setROM(const char* path, const void* data, size_t size)
 
   memcpy(rom_image.data(), data, size);
 
-  rom_size = static_cast<uInt32>(size);
+  rom_size = U32(size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,7 +302,7 @@ void StellaLIBRETRO::setVideoFilter(NTSCFilter::Preset mode)
 {
   if (system_ready)
   {
-    myOSystem->settings().setValue("tv.filter", static_cast<int>(mode));
+    myOSystem->settings().setValue("tv.filter", I32(mode));
     myOSystem->frameBuffer().tiaSurface().setNTSC(mode);
   }
 }

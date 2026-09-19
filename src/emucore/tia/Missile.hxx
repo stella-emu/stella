@@ -383,7 +383,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingRegulardClock)
         }
       }
 
-      if (++myRenderCounter >= static_cast<Int8>(isMoving ? myEffectiveWidth : myWidth))
+      if (++myRenderCounter >= I8(isMoving ? myEffectiveWidth : myWidth))
         myIsRendering = false;
   }
 

@@ -92,10 +92,10 @@ void TiaDisplayWidget::visibleRegion(uInt32& sx, uInt32& sy,
 {
   float vwf = 0.F, vhf = 0.F;
   visibleSize(vwf, vhf);
-  vw = static_cast<uInt32>(std::lround(vwf));
-  vh = static_cast<uInt32>(std::lround(vhf));
-  sx = static_cast<uInt32>(std::lround(mySrcX));
-  sy = static_cast<uInt32>(std::lround(mySrcY));
+  vw = U32(std::lround(vwf));
+  vh = U32(std::lround(vhf));
+  sx = U32(std::lround(mySrcX));
+  sy = U32(std::lround(mySrcY));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,8 +149,8 @@ void TiaDisplayWidget::recalcRects()
   const float contentW = vwf * 2.F, contentH = vhf;
   const float scale = std::min(availW / contentW, availH / contentH);
 
-  myImgW = static_cast<int>(contentW * scale);
-  myImgH = static_cast<int>(contentH * scale);
+  myImgW = I32(contentW * scale);
+  myImgH = I32(contentH * scale);
   myImgX = 1 + (availW - myImgW) / 2;
   myImgY = 1 + (availH - myImgH) / 2;
 

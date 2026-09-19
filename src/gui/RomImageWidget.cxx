@@ -214,7 +214,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
   // Update maximum load time
   myMaxLoadTime = std::min(
-    static_cast<uInt64>(500ULL / timeFactor),
+    U64(500ULL / timeFactor),
     std::max(myMaxLoadTime, TimerManager::getTicks() / 1000 - startTime));
 }
 
@@ -465,11 +465,11 @@ void RomImageWidget::positionSurfaces()
     const Int32 lh = maxSize.h - b * 2;
     // Position at right top
     const Int32 x = std::min(
-      static_cast<Int32>(s_dst.x()) + (_x + zx) * scaleDpi - w / 2 + b,
+      I32(s_dst.x()) + (_x + zx) * scaleDpi - w / 2 + b,
       lw - w + b);
     const Int32 y = std::min(
       lh - h + b,
-      std::max(static_cast<Int32>(s_dst.y()) + (zy + _y) * scaleDpi - h / 2 + b, b));
+      std::max(I32(s_dst.y()) + (zy + _y) * scaleDpi - h / 2 + b, b));
 
     mySurface->setDstPos(x, y);
     myFrameSurface->setDstPos(x - b, y - b);

@@ -537,7 +537,7 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
             // clear the frame, but far less than what separates the groups
             LBLGAP  = HGAP / 2,
             VGAP    = _fontHeight / 2,
-            HBORDER = static_cast<int>(_fontWidth * 1.25),
+            HBORDER = I32(_fontWidth * 1.25),
             VBORDER = _fontHeight / 2;
 
   // Every button in the tab takes the widest label's width

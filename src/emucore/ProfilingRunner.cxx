@@ -174,7 +174,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   const EmulationTiming emulationTiming(frameLayout, consoleTiming);
   uInt64 cycles = 0;
-  const uInt64 cyclesTarget = static_cast<uInt64>(run.runtime) * emulationTiming.cyclesPerSecond();
+  const uInt64 cyclesTarget = U64(run.runtime) * emulationTiming.cyclesPerSecond();
 
   DispatchResult dispatchResult;
   dispatchResult.setOk(0);
@@ -190,8 +190,8 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
     if (tia.newFramePending()) tia.renderToFrameBuffer();
 
-    const uInt32 percentNow = static_cast<uInt32>(std::min((100 * cycles) /
-      cyclesTarget, static_cast<uInt64>(100)));
+    const uInt32 percentNow = U32(std::min((100 * cycles) /
+      cyclesTarget, U64(100)));
     updateProgress(percent, percentNow);
 
     percent = percentNow;

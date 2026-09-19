@@ -94,7 +94,7 @@ string DebuggerParser::run(string_view command)
     return red("No such command (try \"help\")");
   }
 
-  const int i = static_cast<int>(it - commands.begin());
+  const int i = I32(it - commands.begin());
   myCommand = i;
   evalArgs(*it);
   if(validateArgs(i))
@@ -399,7 +399,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
   if(!curArg.empty())
     argStrings.push_back(std::move(curArg));
 
-  argCount = static_cast<uInt32>(argStrings.size());
+  argCount = U32(argStrings.size());
   args.assign(argCount, -1);
 }
 
@@ -547,7 +547,7 @@ string DebuggerParser::eval()
     if(arg < 0x10000)
       std::format_to(std::back_inserter(buf), " %{}", Base::toString(arg, Base::Fmt::_2));
 
-    std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(arg));
+    std::format_to(std::back_inserter(buf), " #{}", I32(arg));
 
     if(i != argCount - 1)
       buf += '\n';
@@ -618,7 +618,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
       commandResult << "/ *";
     else
       std::format_to(std::ostreambuf_iterator(commandResult),
-                     "/{:2}", static_cast<uInt16>(timer.from.bank));
+                     "/{:2}", U16(timer.from.bank));
   }
 
   commandResult << '|';
@@ -637,7 +637,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
         commandResult << "/ *";
       else
         std::format_to(std::ostreambuf_iterator(commandResult),
-                       "/{:2}", static_cast<uInt16>(timer.to.bank));
+                       "/{:2}", U16(timer.to.bank));
     }
 
     std::format_to(std::ostreambuf_iterator(commandResult),
@@ -678,7 +678,7 @@ string DebuggerParser::getTimerCmds()
         buf << '*';
       else
         std::format_to(std::ostreambuf_iterator(buf),
-                       "{}", static_cast<uInt16>(bank));
+                       "{}", U16(bank));
     }
     return string{buf.view()};
   };
@@ -936,7 +936,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
 // "a"
 void DebuggerParser::executeA()
 {
-  debugger.cpuDebug().setA(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setA(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1044,7 +1044,7 @@ void DebuggerParser::executeBreakIf()
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
-    args[0] = static_cast<int>(it - condNames.begin());
+    args[0] = I32(it - condNames.begin());
     executeDelBreakIf();
     return;
   }
@@ -1282,7 +1282,7 @@ void DebuggerParser::executeDelTrap()
   const bool  r = traps[index].read,  w = traps[index].write;
   const uInt32 b = traps[index].begin, e = traps[index].end;
 
-  debugger.m6502().delCondTrap(static_cast<uInt32>(index));
+  debugger.m6502().delCondTrap(U32(index));
 
   executeTrapRW(b, e, r, w, false);
 
@@ -1376,7 +1376,7 @@ void DebuggerParser::executeDump()
     path += execPrefix;
   else
     std::format_to(std::back_inserter(path), "{:08x}",
-                   static_cast<uInt32>(TimerManager::getTicks() / 1000));
+                   U32(TimerManager::getTicks() / 1000));
   path += ".dump";
 
   commandResult << "dumped ";
@@ -1482,7 +1482,7 @@ void DebuggerParser::executeExec()
     execPrefix = argStrings[1];
   else
     execPrefix = std::format("{:08x}",
-                             static_cast<uInt32>(TimerManager::getTicks() / 1000));
+                             U32(TimerManager::getTicks() / 1000));
 
   StringList history;
   const string execResult = exec(node, &history);
@@ -1747,7 +1747,7 @@ void DebuggerParser::executeListBreaks()
           buf += ", ";
         buf += debugger.cartDebug().getLabel(bp.addr, true, 4);
         if(bp.bank != BreakpointMap::ANY_BANK)
-          std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(bp.bank));
+          std::format_to(std::back_inserter(buf), " #{}", I32(bp.bank));
         else
           buf += " *";
         if(!(++count % 6)) buf += '\n';
@@ -2045,7 +2045,7 @@ void DebuggerParser::executeRunTo()
   progress.setMessage(std::format(
     "runTo searching through {} disassembled instructions{}",
     max_iterations, progress.ELLIPSIS));
-  progress.setRange(0, static_cast<int>(max_iterations), 5);
+  progress.setRange(0, I32(max_iterations), 5);
   progress.open();
 
   auto count = 0UZ;
@@ -2119,7 +2119,7 @@ void DebuggerParser::executeRunToPc()
 // "s"
 void DebuggerParser::executeS()
 {
-  debugger.cpuDebug().setSP(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setSP(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2293,7 +2293,7 @@ void DebuggerParser::executeSaveStateIf()
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
-    args[0] = static_cast<int>(it - condNames.begin());
+    args[0] = I32(it - condNames.begin());
     executeDelSaveStateIf();
     return;
   }
@@ -2364,7 +2364,7 @@ void DebuggerParser::executeSwchb()
 {
   debugger.riotDebug().switches(args[0]);
   std::format_to(std::ostreambuf_iterator(commandResult),
-                 "SWCHB set to {:02x}", static_cast<uInt8>(args[0]));
+                 "SWCHB set to {:02x}", U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2672,7 +2672,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
   if(it != traps.end())
   {
-    const auto i = static_cast<uInt32>(it - traps.begin());
+    const auto i = U32(it - traps.begin());
     if(!debugger.m6502().delCondTrap(i))
     {
       commandResult << "Internal error! Duplicate trap removal failed!";
@@ -2712,10 +2712,10 @@ void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
 
   for(uInt32 addr = begin; addr <= end; ++addr)
   {
-    switch(CartDebug::addressType(static_cast<uInt16>(addr)))
+    switch(CartDebug::addressType(U16(addr)))
     {
       case CartDebug::AddrType::TIA:
-        tiaReadKeys  |= static_cast<uInt16>(1U << (addr & 0x000FU));
+        tiaReadKeys  |= U16(1U << (addr & 0x000FU));
         tiaWriteKeys |= 1ULL << (addr & 0x003FU);
         break;
       case CartDebug::AddrType::IO:
@@ -2843,14 +2843,14 @@ void DebuggerParser::executeWinds(bool unwind)
 // "x"
 void DebuggerParser::executeX()
 {
-  debugger.cpuDebug().setX(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setX(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "y"
 void DebuggerParser::executeY()
 {
-  debugger.cpuDebug().setY(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setY(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

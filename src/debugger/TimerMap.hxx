@@ -137,7 +137,7 @@ class TimerMap : public Serializable
       }
 
       constexpr uInt64 averageCycles() const {
-        return execs ? static_cast<uInt64>(std::llround(
+        return execs ? U64(std::llround(
             static_cast<double>(totalCycles) / execs)) : 0;
       }
 
@@ -223,7 +223,7 @@ class TimerMap : public Serializable
 
     /** Get timer */
     const Timer& get(uInt32 idx) const { return myList[idx]; }
-    uInt32 size() const { return static_cast<uInt32>(myList.size()); }
+    uInt32 size() const { return U32(myList.size()); }
 
     /** Update timer */
     void update(uInt16 addr, uInt8 bank, uInt64 cycles);

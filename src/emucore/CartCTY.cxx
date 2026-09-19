@@ -573,7 +573,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR saving score table " << static_cast<int>(index) << '\n';
+      cerr << name() << ": ERROR saving score table " << I32(index) << '\n';
     }
   }
 }
@@ -602,12 +602,12 @@ void CartridgeCTY::wipeAllScores()
 FORCE_INLINE void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CTY OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = U32(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers

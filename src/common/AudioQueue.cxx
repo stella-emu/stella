@@ -38,7 +38,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioQueue::capacity() const
 {
-  return static_cast<uInt32>(myFragmentQueue.size());
+  return U32(myFragmentQueue.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,7 +77,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     return newFragment;
   }
 
-  const auto cap = static_cast<uInt32>(myFragmentQueue.size());
+  const auto cap = U32(myFragmentQueue.size());
   const uInt32 fragmentIndex = (myNextFragment + mySize) % cap;
 
   newFragment = myFragmentQueue[fragmentIndex];

@@ -75,7 +75,7 @@ class ListWidget : public EditableWidget
 
     // Scrolls so 'item' is the first visible row (clamped to the list's ends)
     void scrollTo(int item);
-    void scrollToEnd() { scrollToCurrent(static_cast<int>(_list.size())); }
+    void scrollToEnd() { scrollToCurrent(I32(_list.size())); }
 
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;

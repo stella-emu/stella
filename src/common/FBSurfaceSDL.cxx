@@ -174,8 +174,8 @@ void FBSurfaceSDL::setVisible(bool visible)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::translateCoords(Int32& x, Int32& y) const
 {
-  x = static_cast<Int32>((x - myDstR.x) * mySrcR.w / static_cast<float>(myDstR.w));
-  y = static_cast<Int32>((y - myDstR.y) * mySrcR.h / static_cast<float>(myDstR.h));
+  x = I32((x - myDstR.x) * mySrcR.w / static_cast<float>(myDstR.w));
+  y = I32((y - myDstR.y) * mySrcR.h / static_cast<float>(myDstR.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -301,8 +301,8 @@ void FBSurfaceSDL::setScalingInterpolation(ScalingInterpolation interpolation)
 {
   if(interpolation == ScalingInterpolation::sharp &&
       (
-        static_cast<int>(mySrcGUIR.h()) >= myBackend.scaleY(myDstGUIR.h()) ||
-        static_cast<int>(mySrcGUIR.w()) >= myBackend.scaleX(myDstGUIR.w())
+        I32(mySrcGUIR.h()) >= myBackend.scaleY(myDstGUIR.h()) ||
+        I32(mySrcGUIR.w()) >= myBackend.scaleX(myDstGUIR.w())
       )
   )
     interpolation = ScalingInterpolation::blur;

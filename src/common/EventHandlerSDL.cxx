@@ -29,8 +29,7 @@ EventHandlerSDL::EventHandlerSDL(OSystem& osystem)
   ASSERT_MAIN_THREAD;
 
 #ifdef GUI_SUPPORT
-  myQwertz = int{'y'} == static_cast<int>
-    (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(StellaKey::Z),
+  myQwertz = int{'y'} == I32(SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(StellaKey::Z),
                             static_cast<SDL_Keymod>(StellaMod::NONE), false));
   Logger::debug(std::format("Keyboard: {}", myQwertz ? "QWERTZ" : "QWERTY"));
 #endif
@@ -148,8 +147,8 @@ void EventHandlerSDL::pollEvent()
         // throughout; this is sufficient for our current needs.  The wheel
         // event carries the window-relative mouse position, which is what we
         // need so the correct (possibly secondary) window receives it.
-        const int x = static_cast<int>(myEvent.wheel.mouse_x);
-        const int y = static_cast<int>(myEvent.wheel.mouse_y);
+        const int x = I32(myEvent.wheel.mouse_x);
+        const int y = I32(myEvent.wheel.mouse_y);
         if(myEvent.wheel.y < 0)
           handleMouseButtonEvent(MouseButton::WHEELDOWN, true, x, y,
                                  myEvent.wheel.windowID);
@@ -220,20 +219,20 @@ void EventHandlerSDL::pollEvent()
         // Pass the window ID so a repaint of the secondary (companion) window
         // can be routed to it rather than forcing a primary-window render
         handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
-                          static_cast<int>(myEvent.window.windowID));
+                          I32(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MOVED:
         // Pass the window ID; each window remembers its own position
         handleSystemEvent(SystemEvent::WINDOW_MOVED,
                           myEvent.window.data1, myEvent.window.data2,
-                          static_cast<int>(myEvent.window.windowID));
+                          I32(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_RESIZED:
         // Pass the window ID: the debugger and its companion TIA window are
         // both resizable, and resize one another's windows programmatically
         handleSystemEvent(SystemEvent::WINDOW_RESIZED,
                           myEvent.window.data1, myEvent.window.data2,
-                          static_cast<int>(myEvent.window.windowID));
+                          I32(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MINIMIZED:
         handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
@@ -282,7 +281,7 @@ bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
     case SDL_EVENT_WINDOW_RESIZED:
       self->handleSystemEvent(SystemEvent::WINDOW_RESIZED,
                               event->window.data1, event->window.data2,
-                              static_cast<int>(event->window.windowID));
+                              I32(event->window.windowID));
       break;
     case SDL_EVENT_WINDOW_MOVED:
       // Dragging the left/top edge moves the window too, in its own event;
@@ -291,7 +290,7 @@ bool EventHandlerSDL::resizeWatch(void* userdata, SDL_Event* event)
       [[fallthrough]];
     case SDL_EVENT_WINDOW_EXPOSED:
       self->handleSystemEvent(SystemEvent::WINDOW_EXPOSED,
-                              static_cast<int>(event->window.windowID));
+                              I32(event->window.windowID));
       break;
     default:
       break;

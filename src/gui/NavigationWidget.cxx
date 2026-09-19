@@ -230,7 +230,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
   while(node.hasParent() && w >= fontWidth)
   {
     string_view name = node.getName();
-    int l = static_cast<int>(name.length() + 2);
+    int l = I32(name.length() + 2);
 
     if(name.back() == FSNode::PATH_SEPARATOR)
       l--;
@@ -260,7 +260,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       if(it + 1 != nodes.rend())
         name += " >";
     }
-    const int width = static_cast<int>(name.length() + 1) * fontWidth;
+    const int width = I32(name.length() + 1) * fontWidth;
 
     if(myFolderList.size() > idx)
     {
@@ -275,7 +275,7 @@ void NavigationWidget::PathWidget::setPath(string_view path)
       // Add new widget to list
       auto* s = new FolderLinkWidget(_boss, _font, name, curPath);
       s->setArea(x, _y, width, _h);
-      s->setID(static_cast<uInt32>(idx));
+      s->setID(U32(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
     }

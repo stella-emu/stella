@@ -74,12 +74,12 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
 
   const ScopeExit njGuard{njDone};
 
-  if(njDecode(fileBuffer.data(), static_cast<int>(size)))
+  if(njDecode(fileBuffer.data(), I32(size)))
     throw std::runtime_error{"Error decoding the JPG image"};
 
   // Read the entire image in one go
-  const auto width  = static_cast<uInt32>(njGetWidth());
-  const auto height = static_cast<uInt32>(njGetHeight());
+  const auto width  = U32(njGetWidth());
+  const auto height = U32(njGetHeight());
   const bool isColor       = njIsColor() != 0;
   const auto bytesPerPixel = isColor ? 3UZ : 1UZ;
 
@@ -113,9 +113,9 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
     for(uInt32 icol = 0; icol < width; ++icol, i_ptr += bytesPerPixel)
     {
-      const auto r = static_cast<uInt32>(i_ptr[0]);
-      const auto g = isColor ? static_cast<uInt32>(i_ptr[1]) : r;
-      const auto b = isColor ? static_cast<uInt32>(i_ptr[2]) : r;
+      const auto r = U32(i_ptr[0]);
+      const auto g = isColor ? U32(i_ptr[1]) : r;
+      const auto b = isColor ? U32(i_ptr[2]) : r;
       *s_ptr++ = aMask | (r << rShift) | (g << gShift) | (b << bShift);
     }
   }

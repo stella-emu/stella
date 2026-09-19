@@ -233,7 +233,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
   resetSelection();
   // First check whether the selection changed
   int newSelectedItem = findItem(x, y);
-  if(newSelectedItem > static_cast<int>(_valueList.size()) - 1)
+  if(newSelectedItem > I32(_valueList.size()) - 1)
     newSelectedItem = -1;
 
   if(_selectedItem != newSelectedItem)
@@ -847,7 +847,7 @@ void DataGridWidget::decrementCell()
   const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value <= _lowerBound)        // take care of wrap-around
-    value = static_cast<int>(_upperBound);
+    value = I32(_upperBound);
 
   value = I32((U32(value) - 1) & mask);
   setSelectedValue(value);
@@ -859,7 +859,7 @@ void DataGridWidget::incrementCell()
   const uInt32 mask = (1U << _bits) - 1;
   int value = getSelectedValue();
   if(value >= _upperBound - 1)    // take care of wrap-around
-    value = static_cast<int>(_lowerBound) - 1;
+    value = I32(_lowerBound) - 1;
 
   value = I32((U32(value) + 1) & mask);
   setSelectedValue(value);

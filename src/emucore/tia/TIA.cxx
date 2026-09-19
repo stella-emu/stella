@@ -1464,7 +1464,7 @@ void TIA::updateEmulation()
     throw std::runtime_error("subclock exceeds range");
 
   const uInt32 cyclesToRun = TIAConstants::CYCLE_CLOCKS *
-      static_cast<uInt32>(systemCycles - myLastCycle) + mySubClock;
+      U32(systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
   myLastCycle = systemCycles;
@@ -1643,9 +1643,9 @@ void TIA::cycle(uInt32 colorClocks)
       // (only poke() pushes entries), so nothing can change until the next
       // line boundary
       const uInt32 chunk =
-        std::min(colorClocks, static_cast<uInt32>(TIAConstants::H_CLOCKS - myHctr));
+        std::min(colorClocks, U32(TIAConstants::H_CLOCKS - myHctr));
 
-      myHctr = static_cast<uInt8>(myHctr + chunk);
+      myHctr = U8(myHctr + chunk);
       myTimestamp += chunk;
       colorClocks -= chunk;
 
@@ -1850,9 +1850,9 @@ FORCE_INLINE void TIA::nextLine()
         myPosBL[y][myFlickerFrame] = myBall.getPosition();
       // Note: code checks only right side of playfield
       myPatPF[y][myFlickerFrame] =
-          (static_cast<uInt32>(registerValue(PF0))) << 16U
-        | (static_cast<uInt32>(registerValue(PF1))) << 8U
-        | (static_cast<uInt32>(registerValue(PF2)));
+          (U32(registerValue(PF0))) << 16U
+        | (U32(registerValue(PF1))) << 8U
+        | (U32(registerValue(PF2)));
       // Define end of frame for faster auto-phosphor calculation
       if(!cloned)
         myFrameEnd = y;

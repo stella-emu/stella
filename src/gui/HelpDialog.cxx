@@ -89,7 +89,7 @@ void HelpDialog::layout()
   // Key / description table.  The key column is a fixed 15 characters rather
   // than sized to its content: the keys are refilled per page (see loadConfig),
   // and a column that followed them would shift as the user pages through
-  const int numRows = static_cast<int>(LINES_PER_PAGE);
+  const int numRows = I32(LINES_PER_PAGE);
   auto table = std::make_unique<GridLayout>(2, numRows);
   table->columnFixed(0, 15 * fontWidth);
   table->columnStretch(1);
@@ -109,7 +109,7 @@ void HelpDialog::layout()
   // The pages are written to 46 characters, so that is the dialog's width; its
   // height is however much room they ask for, plus the button row below them
   _w = 46 * fontWidth + HBORDER * 2;
-  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+  _h = _th + I32(root->naturalSize().h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

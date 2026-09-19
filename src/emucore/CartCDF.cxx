@@ -89,7 +89,7 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   myThumbEmulator = std::make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.data()),
     reinterpret_cast<uInt16*>(myRAM.data()),
-    static_cast<uInt32>(myImage.size()),
+    U32(myImage.size()),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
     devSettings ? static_cast<double>(
@@ -161,12 +161,12 @@ void CartridgeCDF::install(System& system)
 FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CDF OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = U32(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
@@ -185,7 +185,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        auto cycles = static_cast<uInt32>(mySystem->cycles() - myARMCycles);
+        auto cycles = U32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles, value == 254);
@@ -307,7 +307,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
         // value; the shift is also clamped since 32+ is UB.
         const auto waveformSample = [this](uInt8 index) -> uInt8 {
           const uInt8 shift = std::min<uInt8>(myMusicWaveformSize[index], 31);
-          const uInt64 idx = static_cast<uInt64>(getWaveform(index)) + (myMusicCounters[index] >> shift);
+          const uInt64 idx = U64(getWaveform(index)) + (myMusicCounters[index] >> shift);
           return myDisplayImage[idx % myDisplayImage.size()];
         };
         peekvalue = waveformSample(0) + waveformSample(1) + waveformSample(2);
@@ -665,7 +665,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result = getUInt32(myRAM.data(), myWaveformBase + index * 4);
 
-  result -= (0x40000000 + static_cast<uInt32>(2_KB));
+  result -= (0x40000000 + U32(2_KB));
 
   if (!isCDFJplus()) {
     if (result >= 4096)
@@ -845,13 +845,13 @@ bool CartridgeCDF::isCDFJplus() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::ramSize() const
 {
-  return static_cast<uInt32>(isCDFJplus() ? 32_KB : 8_KB);
+  return U32(isCDFJplus() ? 32_KB : 8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::romSize() const
 {
-  return static_cast<uInt32>(isCDFJplus() ? myImage.size() : 32_KB);
+  return U32(isCDFJplus() ? myImage.size() : 32_KB);
 }
 
 #ifdef DEBUGGER_SUPPORT

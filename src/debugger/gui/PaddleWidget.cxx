@@ -108,9 +108,9 @@ void PaddleWidget::layoutContent(GUI::BoxLayout& col)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleWidget::loadConfig()
 {
-  myP0Resistance->setValue(static_cast<Int32>(AnalogReadout::MAX_POT_RESISTANCE -
+  myP0Resistance->setValue(I32(AnalogReadout::MAX_POT_RESISTANCE -
       getPin(Controller::AnalogPin::Five).resistance));
-  myP1Resistance->setValue(static_cast<Int32>(AnalogReadout::MAX_POT_RESISTANCE -
+  myP1Resistance->setValue(I32(AnalogReadout::MAX_POT_RESISTANCE -
       getPin(Controller::AnalogPin::Nine).resistance));
   myP0Fire->setState(!getPin(Controller::DigitalPin::Four));
   myP1Fire->setState(!getPin(Controller::DigitalPin::Three));

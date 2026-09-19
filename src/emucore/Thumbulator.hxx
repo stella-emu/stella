@@ -203,7 +203,7 @@ class Thumbulator
     };
   #endif
     const std::array<ChipPropsType,
-        static_cast<uInt32>(ChipType::numTypes)> ChipProps =
+        U32(ChipType::numTypes)> ChipProps =
     {{
       { "LPC2101..3",    70.0, 4, 1 }, // LPC2101_02_03
       { "LPC2104..6 OC", 70.0, 4, 2 }, // LPC2104_05_06 Overclocked

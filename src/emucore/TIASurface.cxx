@@ -146,7 +146,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
     const string& mode = myNTSCFilter.setPreset(preset);
     if(show) myFB.showTextMessage(std::format("TV filtering ({} mode)", mode));
   }
-  myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
+  myOSystem.settings().setValue("tv.filter", I32(preset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,15 +160,15 @@ void TIASurface::changeNTSC(int direction)
 
   if(direction == +1)
   {
-    if(preset == static_cast<int>(NTSCFilter::Preset::CUSTOM))
-      preset = static_cast<int>(NTSCFilter::Preset::OFF);
+    if(preset == I32(NTSCFilter::Preset::CUSTOM))
+      preset = I32(NTSCFilter::Preset::OFF);
     else
       preset++;
   }
   else if(direction == -1)
   {
-    if(preset == static_cast<int>(NTSCFilter::Preset::OFF))
-      preset = static_cast<int>(NTSCFilter::Preset::CUSTOM);
+    if(preset == I32(NTSCFilter::Preset::OFF))
+      preset = I32(NTSCFilter::Preset::CUSTOM);
     else
       preset--;
   }
@@ -228,7 +228,7 @@ void TIASurface::changeScanlineIntensity(int direction)
 TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 {
   static constexpr
-  std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Masks = {
+  std::array<string_view, I32(ScanlineMask::NumMasks)> Masks = {
     SETTING_STANDARD,
     SETTING_THIN,
     SETTING_PIXELS,
@@ -244,7 +244,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
     {
       if(direction)
       {
-        i = BSPF::clampw(i + direction, 0, static_cast<int>(ScanlineMask::NumMasks) - 1);
+        i = BSPF::clampw(i + direction, 0, I32(ScanlineMask::NumMasks) - 1);
         myOSystem.settings().setValue("tv.scanmask", Masks[i]);
       }
       return static_cast<ScanlineMask>(i);
@@ -258,14 +258,14 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 void TIASurface::cycleScanlineMask(int direction)
 {
   static constexpr
-  std::array<string_view, static_cast<int>(ScanlineMask::NumMasks)> Names = {
+  std::array<string_view, I32(ScanlineMask::NumMasks)> Names = {
     "Standard",
     "Thin lines",
     "Pixelated",
     "Aperture Grille",
     "MAME"
   };
-  const int i = static_cast<int>(scanlineMaskType(direction));
+  const int i = I32(scanlineMaskType(direction));
 
   if(direction)
     createScanlineSurface();
@@ -281,8 +281,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   {
     myPBlend = blend;
     myFilter = static_cast<Filter>(
-        enable ? static_cast<uInt8>(myFilter) | 0x01U
-               : static_cast<uInt8>(myFilter) & 0x10U);
+        enable ? U8(myFilter) | 0x01U
+               : U8(myFilter) & 0x10U);
     myRGBFramebuffer0.fill(0);
     myRGBFramebuffer1.fill(0);
   }
@@ -307,7 +307,7 @@ void TIASurface::createScanlineSurface()
       : vRepeats(c_vRepeats), data(c_data)
     {}
   };
-  static const std::array<Pattern, static_cast<int>(ScanlineMask::NumMasks)> Patterns = {{
+  static const std::array<Pattern, I32(ScanlineMask::NumMasks)> Patterns = {{
     Pattern(1,  // standard
     {
       { 0x00000000 },
@@ -383,9 +383,9 @@ void TIASurface::createScanlineSurface()
       { 0xff000000, 0xff000000, 0xff000000 },
     }),
   }};
-  const auto mask = static_cast<int>(scanlineMaskType());
-  const auto pWidth = static_cast<uInt32>(Patterns[mask].data[0].size());
-  const auto pHeight = static_cast<uInt32>(Patterns[mask].data.size() / Patterns[mask].vRepeats);
+  const auto mask = I32(scanlineMaskType());
+  const auto pWidth = U32(Patterns[mask].data[0].size());
+  const auto pHeight = U32(Patterns[mask].data.size() / Patterns[mask].vRepeats);
   const auto vRepeats = Patterns[mask].vRepeats;
 
   // Single width pattern need no horizontal repeats
@@ -416,8 +416,8 @@ void TIASurface::createScanlineSurface()
 void TIASurface::enableNTSC(bool enable)
 {
   myFilter = static_cast<Filter>(
-      enable ? static_cast<uInt8>(myFilter) | 0x10U
-             : static_cast<uInt8>(myFilter) & 0x01U);
+      enable ? U8(myFilter) | 0x10U
+             : U8(myFilter) & 0x01U);
 
   const uInt32 surfaceWidth = enable ?
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;

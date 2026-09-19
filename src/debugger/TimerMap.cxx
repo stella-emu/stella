@@ -43,7 +43,7 @@ uInt32 TimerMap::add(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank)
   {
     // complete a partial timer:
     it->setTo(tp, mirrors, anyBank);
-    return static_cast<uInt32>(it - myList.begin());
+    return U32(it - myList.begin());
   }
 }
 
@@ -85,7 +85,7 @@ bool TimerMap::save(Serializer& out) const
 {
   try
   {
-    out.putInt(static_cast<uInt32>(myList.size()));
+    out.putInt(U32(myList.size()));
     for(const auto& t: myList)
       t.save(out);
   }

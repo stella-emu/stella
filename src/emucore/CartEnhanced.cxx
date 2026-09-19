@@ -59,14 +59,14 @@ void CartridgeEnhanced::install(System& system)
 
   // limit banked RAM size to the size of one RAM bank
   const uInt16 ramSize = myRamBankCount > 0 ? 1U << myRamBankShift :
-    static_cast<uInt16>(myRamSize);
+    U16(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1U << myBankShift;                   // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
   myBankSegs = calcNumSegments();
   // ROM has an offset if RAM inside a bank (e.g. for F8SC)
-  myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
+  myRomOffset = myRamBankCount > 0U ? 0U : U16(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
@@ -99,7 +99,7 @@ void CartridgeEnhanced::install(System& system)
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
-      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
+      mySystem->setPageAccess(U16(addr), access);
     }
 
     // Set the page accessing method for the RAM reading pages
@@ -112,7 +112,7 @@ void CartridgeEnhanced::install(System& system)
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
-      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
+      mySystem->setPageAccess(U16(addr), access);
     }
   }
 
@@ -278,11 +278,11 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Setup RAM bank
     const uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    const uInt32 bankOffset = static_cast<uInt32>(myImage.size()) +
+    const uInt32 bankOffset = U32(myImage.size()) +
       (ramBank << myRamBankShift);
 
     // Remember what bank is in this segment
-    myCurrentSegOffset[segment] = static_cast<uInt32>(myImage.size()) +
+    myCurrentSegOffset[segment] = U32(myImage.size()) +
       (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
@@ -337,7 +337,7 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::romBankCount() const
 {
-  return static_cast<uInt16>(myImage.size() >> myBankShift);
+  return U16(myImage.size() >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,7 +352,7 @@ uInt16 CartridgeEnhanced::calcNumSegments() const
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
   return std::min(1U << U32(MAX_BANK_SHIFT - myBankShift),
-                  static_cast<uInt32>(myImage.size()) / myBankSize);  // e.g. = 1
+                  U32(myImage.size()) / myBankSize);  // e.g. = 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

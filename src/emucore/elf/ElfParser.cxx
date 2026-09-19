@@ -181,7 +181,7 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     // 32-bit sum and slip past this bounds check (which would later let
     // getName() dereference out of bounds).
     if (section.type != SHT_NOBITS &&
-        static_cast<uInt64>(section.offset) + section.size >= mySize)
+        U64(section.offset) + section.size >= mySize)
       ElfParseError::raise("section exceeds bounds");
 
   } catch (const ElfParseError &e) {
@@ -264,7 +264,7 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   // Compute the absolute offset in 64-bit (avoids 32-bit wraparound) and
   // verify it lies within the image; the bytes below are read directly here,
   // not through the bounds-checked read8().
-  const uInt64 imageOffset = static_cast<uInt64>(section.offset) + offset;
+  const uInt64 imageOffset = U64(section.offset) + offset;
   if (imageOffset >= mySize) ElfParseError::raise("name out of bounds");
 
   const char* name = reinterpret_cast<const char*>(myData + imageOffset);
@@ -344,8 +344,8 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol)
     << " value=0x" << std::setw(8) << symbol.value
     << " size=0x" << std::setw(8) << symbol.size
     << std::setw(1)
-    << " bind=0x" << std::setw(2) << static_cast<int>(symbol.bind)
-    << " type=0x" << std::setw(2) << static_cast<int>(symbol.type);
+    << " bind=0x" << std::setw(2) << I32(symbol.bind)
+    << " type=0x" << std::setw(2) << I32(symbol.type);
 
   os.copyfmt(reset);
 
@@ -365,14 +365,14 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& rel)
     << std::hex << std::setfill('0')
     << " offset=0x" << std::setw(8) << rel.offset
     << " info=0x" << std::setw(8) << rel.info
-    << " type=0x" << std::setw(2) << static_cast<int>(rel.type);
+    << " type=0x" << std::setw(2) << I32(rel.type);
 
   if (rel.addend.has_value())
     os << " addend=0x" << std::setw(8) << *rel.addend;
 
   os.copyfmt(reset);
 
-  os << " symbol=" << static_cast<int>(rel.symbol);
+  os << " symbol=" << I32(rel.symbol);
 
   return os;
 }

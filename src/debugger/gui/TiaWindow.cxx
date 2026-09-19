@@ -65,8 +65,8 @@ TiaWindow::TiaWindow(OSystem& osystem)
   mySize.clamp(m.w, d.w, m.h, d.h);
 
   myBaseDialog = std::make_unique<TiaWindowDialog>(myOSystem, *this,
-                                                   static_cast<int>(mySize.w),
-                                                   static_cast<int>(mySize.h));
+                                                   I32(mySize.w),
+                                                   I32(mySize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

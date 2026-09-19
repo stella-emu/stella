@@ -105,8 +105,8 @@ void VideoAudioDialog::layout()
   const Common::Size tabSize = myTab->naturalSize();
 
   myTab->setPos(xpos, VGAP + _th);
-  myTab->setWidth(static_cast<int>(tabSize.w));
-  myTab->setHeight(static_cast<int>(tabSize.h));
+  myTab->setWidth(I32(tabSize.w));
+  myTab->setHeight(I32(tabSize.h));
 
   _w = myTab->getWidth() + 2 * xpos;
   _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
@@ -444,12 +444,12 @@ void VideoAudioDialog::addTVEffectsTab()
   myTab->setPaneWidget(tabID, pane);
 
   items.clear();
-  VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
-  VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
-  VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
-  VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
+  VarList::push_back(items, "Disabled", U32(NTSCFilter::Preset::OFF));
+  VarList::push_back(items, "RGB", U32(NTSCFilter::Preset::RGB));
+  VarList::push_back(items, "S-Video", U32(NTSCFilter::Preset::SVIDEO));
+  VarList::push_back(items, "Composite", U32(NTSCFilter::Preset::COMPOSITE));
+  VarList::push_back(items, "Bad adjust", U32(NTSCFilter::Preset::BAD));
+  VarList::push_back(items, "Custom", U32(NTSCFilter::Preset::CUSTOM));
   myTVModeLbl = new LabelWidget(pane, _font, "TV mode");
   myTVMode = new PopUpWidget(pane, _font, items, Cmd::TvModeChanged);
   myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
@@ -716,11 +716,11 @@ void VideoAudioDialog::addAudioTab()
 
   // Mode
   items.clear();
-  VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
-  VarList::push_back(items, "High quality, medium lag", static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
-  VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
-  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
-  VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
+  VarList::push_back(items, "Low quality, medium lag", I32(AudioSettings::Preset::lowQualityMediumLag));
+  VarList::push_back(items, "High quality, medium lag", I32(AudioSettings::Preset::highQualityMediumLag));
+  VarList::push_back(items, "High quality, low lag", I32(AudioSettings::Preset::highQualityLowLag));
+  VarList::push_back(items, "Ultra quality, minimal lag", I32(AudioSettings::Preset::ultraQualityMinimalLag));
+  VarList::push_back(items, "Custom", I32(AudioSettings::Preset::custom));
   myModePopupLbl = new LabelWidget(pane, _font, "Mode");
   myModePopup = new PopUpWidget(pane, _font, items, Cmd::ModeChanged);
   wid.push_back(myModePopup);
@@ -736,9 +736,9 @@ void VideoAudioDialog::addAudioTab()
 
   // Resampling quality
   items.clear();
-  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeighbour));
-  VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
-  VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
+  VarList::push_back(items, "Low", I32(AudioSettings::ResamplingQuality::nearestNeighbour));
+  VarList::push_back(items, "High", I32(AudioSettings::ResamplingQuality::lanczos_2));
+  VarList::push_back(items, "Ultra", I32(AudioSettings::ResamplingQuality::lanczos_3));
   myResamplingPopupLbl = new LabelWidget(pane, _font, "Resampling quality");
   myResamplingPopup = new PopUpWidget(pane, _font, items);
   wid.push_back(myResamplingPopup);
@@ -980,7 +980,7 @@ void VideoAudioDialog::loadConfig()
   myDpcPitch->setValue(audioSettings.dpcPitch());
 
   // Preset / mode
-  myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
+  myModePopup->setSelected(I32(audioSettings.preset()));
 
   updateSettingsWithPreset(instance().audioSettings());
 
@@ -1002,7 +1002,7 @@ void VideoAudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
   myBufferSizeSlider->setValue(audioSettings.bufferSize());
 
   // Resampling quality
-  myResamplingPopup->setSelected(static_cast<int>(audioSettings.resamplingQuality()));
+  myResamplingPopup->setSelected(I32(audioSettings.resamplingQuality()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1235,10 +1235,10 @@ void VideoAudioDialog::setDefaults()
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
       myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
-      myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
+      myModePopup->setSelected(I32(AudioSettings::DEFAULT_PRESET));
 
       if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
-        myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+        myResamplingPopup->setSelected(I32(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
         myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
         myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
         myBufferSizeSlider->setValue(AudioSettings::DEFAULT_BUFFER_SIZE);
@@ -1618,7 +1618,7 @@ unique_ptr<GUI::Layout> VideoAudioDialog::paletteLayout()
   // area it is given exactly -- whatever size that is, and with no gaps
   auto grid = std::make_unique<GridLayout>(1 + NUM_LUMA, NUM_CHROMA);
 
-  grid->columnFixed(0, static_cast<int>(ifont.getMaxCharWidth() * 1.5));
+  grid->columnFixed(0, I32(ifont.getMaxCharWidth() * 1.5));
   for(int lum = 0; lum < NUM_LUMA; ++lum)
     grid->columnStretch(1 + lum);
   for(int idx = 0; idx < NUM_CHROMA; ++idx)

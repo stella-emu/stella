@@ -130,7 +130,7 @@ void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col) const
   descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
   descRow->addStretch(GUI::widgetItem(myDesc, 0, myDesc->minHeight()));
   col.add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
-          static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
+          I32(myDesc->naturalSize().h), myDesc->minHeight());
 
   // Whatever the cart puts below the info block stands clear of it
   col.addSpace(_lineHeight / 2);

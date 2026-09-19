@@ -95,11 +95,11 @@ class CortexM0: public Serializable
     }
 
     static constexpr err_t errCustom(uInt32 code, uInt32 extra = 0) {
-      return ((static_cast<uInt64>(code) << 8) & 0xffffffff) | (static_cast<uInt64>(extra) << 32);
+      return ((U64(code) << 8) & 0xffffffff) | (U64(extra) << 32);
     }
 
     static constexpr err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
-      return static_cast<uInt64>(code) | (static_cast<uInt64>(extra) << 32);
+      return U64(code) | (U64(extra) << 32);
     }
 
     static string describeError(err_t error);
@@ -181,7 +181,7 @@ class CortexM0: public Serializable
       bool readOnly{false};
 
       bool dirty{false};
-      uInt32 accessWatermarkLow{static_cast<uInt32>(~0)};
+      uInt32 accessWatermarkLow{U32(~0)};
       uInt32 accessWatermarkHigh{0};
 
       std::variant<

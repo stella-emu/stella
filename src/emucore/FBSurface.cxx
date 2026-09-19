@@ -211,8 +211,8 @@ void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
     return;
 
-  const int aw = static_cast<int>(w), ah = static_cast<int>(h),
-            thick = static_cast<int>(thickness);
+  const int aw = I32(w), ah = I32(h),
+            thick = I32(thickness);
   uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
   const uInt32 ink = myPalette[color];
 
@@ -358,7 +358,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
     drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor,
                linkStart, linkLen, underline);
     if(linkStart != string::npos)
-      linkStart = std::max(0, static_cast<int>(linkStart - leftStr.length()));
+      linkStart = std::max(0, I32(linkStart - leftStr.length()));
 
     h -= font.getFontHeight();
     y += font.getFontHeight();

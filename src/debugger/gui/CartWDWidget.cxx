@@ -50,8 +50,8 @@ string CartridgeWDWidget::hotspotStr(int bank, int, bool prefix)
   return std::format("({}${}) [{}, {}, {}, {}]",
     prefix ? "hotspot " : "",
     Base::hex4(myCart.hotspot() + bank),
-    static_cast<uInt16>(banks.zero),
-    static_cast<uInt16>(banks.one),
-    static_cast<uInt16>(banks.two),
-    static_cast<uInt16>(banks.three));
+    U16(banks.zero),
+    U16(banks.one),
+    U16(banks.two),
+    U16(banks.three));
 }

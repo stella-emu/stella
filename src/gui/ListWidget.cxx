@@ -195,7 +195,7 @@ const string& ListWidget::getSelectedString() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
-  item = BSPF::clamp(item, 0, static_cast<int>(_list.size() - 1));
+  item = BSPF::clamp(item, 0, I32(_list.size() - 1));
 
   if(_currentPos != item)
   {
@@ -218,7 +218,7 @@ int ListWidget::getWidth() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::recalc()
 {
-  const int size = static_cast<int>(_list.size());
+  const int size = I32(_list.size());
 
   if(_currentPos >= size - _rows)
   {
@@ -233,7 +233,7 @@ void ListWidget::recalc()
 
   if(_useScrollbar)
   {
-    _scrollBar->setNumEntries(static_cast<int>(_list.size()));
+    _scrollBar->setNumEntries(I32(_list.size()));
     _scrollBar->setEntriesPerPage(_rows);
     // hide the scrollbar if no longer necessary, which hands its room back to
     // the list (and take it again once there is something to scroll)
@@ -368,7 +368,7 @@ bool ListWidget::handleEvent(Event::Type e)
 
   bool handled = true;
   const int oldSelectedItem = _selectedItem;
-  const int size = static_cast<int>(_list.size());
+  const int size = I32(_list.size());
 
   switch(e)
   {
@@ -472,8 +472,8 @@ void ListWidget::scrollToCurrent(int item)
 
   if(_currentPos < 0 || std::cmp_greater_equal(_rows, _list.size()))
     _currentPos = 0;
-  else if(_currentPos + _rows > static_cast<int>(_list.size()))
-    _currentPos = static_cast<int>(_list.size()) - _rows;
+  else if(_currentPos + _rows > I32(_list.size()))
+    _currentPos = I32(_list.size()) - _rows;
 
   if(_useScrollbar)
   {

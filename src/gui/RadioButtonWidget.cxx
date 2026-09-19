@@ -252,7 +252,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
     _w = _buttonSize;
   else
     _w = font.getStringWidth(label) + _buttonSize + font.getMaxCharWidth() * 0.75;
-  alignBox(static_cast<int>(_buttonSize));
+  alignBox(I32(_buttonSize));
 
   // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
   setFill(CheckboxWidget::FillType::Normal);
@@ -284,7 +284,7 @@ void RadioButtonWidget::refreshFont()
     _w = _buttonSize;
   else
     _w = _font.getStringWidth(_label) + _buttonSize + _font.getMaxCharWidth() * 0.75;
-  alignBox(static_cast<int>(_buttonSize));
+  alignBox(I32(_buttonSize));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -452,7 +452,7 @@ void Ball::tick(bool isReceivingRegularClock)
     }
 
   } else if (myIsRendering &&
-             ++myRenderCounter >= static_cast<Int8>(starfieldEffect ? myEffectiveWidth : myWidth))
+             ++myRenderCounter >= I8(starfieldEffect ? myEffectiveWidth : myWidth))
     myIsRendering = false;
 
   if (++myCounter >= TIAConstants::H_PIXEL) [[unlikely]]

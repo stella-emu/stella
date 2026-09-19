@@ -105,8 +105,8 @@ void GameInfoDialog::layout()
   const Common::Size tabSize = myTab->naturalSize();
 
   myTab->setPos(xpos, VGAP + _th);
-  myTab->setWidth(static_cast<int>(tabSize.w));
-  myTab->setHeight(static_cast<int>(tabSize.h));
+  myTab->setWidth(I32(tabSize.w));
+  myTab->setHeight(I32(tabSize.h));
 
   _w = myTab->getWidth() + 2 * xpos;
   _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
@@ -432,15 +432,15 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
-  VarList::push_back(ctrls, "None",           static_cast<uInt32>(MouseControl::Type::NoControl));
-  VarList::push_back(ctrls, "Left Paddle A",  static_cast<uInt32>(MouseControl::Type::LeftPaddleA));
-  VarList::push_back(ctrls, "Left Paddle B",  static_cast<uInt32>(MouseControl::Type::LeftPaddleB));
-  VarList::push_back(ctrls, "Right Paddle A", static_cast<uInt32>(MouseControl::Type::RightPaddleA));
-  VarList::push_back(ctrls, "Right Paddle B", static_cast<uInt32>(MouseControl::Type::RightPaddleB));
-  VarList::push_back(ctrls, "Left Driving",   static_cast<uInt32>(MouseControl::Type::LeftDriving));
-  VarList::push_back(ctrls, "Right Driving",  static_cast<uInt32>(MouseControl::Type::RightDriving));
-  VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
-  VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
+  VarList::push_back(ctrls, "None",           U32(MouseControl::Type::NoControl));
+  VarList::push_back(ctrls, "Left Paddle A",  U32(MouseControl::Type::LeftPaddleA));
+  VarList::push_back(ctrls, "Left Paddle B",  U32(MouseControl::Type::LeftPaddleB));
+  VarList::push_back(ctrls, "Right Paddle A", U32(MouseControl::Type::RightPaddleA));
+  VarList::push_back(ctrls, "Right Paddle B", U32(MouseControl::Type::RightPaddleB));
+  VarList::push_back(ctrls, "Left Driving",   U32(MouseControl::Type::LeftDriving));
+  VarList::push_back(ctrls, "Right Driving",  U32(MouseControl::Type::RightDriving));
+  VarList::push_back(ctrls, "Left MindLink",  U32(MouseControl::Type::LeftMindLink));
+  VarList::push_back(ctrls, "Right MindLink", U32(MouseControl::Type::RightMindLink));
 
   myMouseXLbl = new LabelWidget(pane, _font, "X-Axis is");
   myMouseX = new PopUpWidget(pane, _font, ctrls);
@@ -1736,7 +1736,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
-    valWidget->setText(std::format("{}", static_cast<uInt16>(val)));
+    valWidget->setText(std::format("{}", U16(val)));
   }
   else
     valWidget->setText("");

@@ -64,7 +64,7 @@ void EditableWidget::setText(string_view str, bool changed)
   (*myUndoHandler).reset();  // Make sure to call ::reset, not smartptr reset
   myUndoHandler->doo(_editString);
 
-  _caretPos = static_cast<int>(_editString.size());
+  _caretPos = I32(_editString.size());
   _selectSize = 0;
 
   _editScrollOffset = std::max<int>(0,
@@ -237,7 +237,7 @@ void EditableWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       {
         // Copy everything if widget is not editable
         _caretPos = 0;
-        _selectSize = static_cast<int>(_editString.length());
+        _selectSize = I32(_editString.length());
       }
       copySelectedText();
     }
@@ -326,7 +326,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::MoveEnd:
-      handled = setCaretPos(static_cast<int>(_editString.size()));
+      handled = setCaretPos(I32(_editString.size()));
       _selectSize = 0;
       break;
 
@@ -353,12 +353,12 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::SelectEnd:
-      handled = moveCaretPos(static_cast<int>(_editString.size()) - _caretPos);
+      handled = moveCaretPos(I32(_editString.size()) - _caretPos);
       break;
 
     case Event::SelectAll:
-      if(setCaretPos(static_cast<int>(_editString.size())))
-        _selectSize = -static_cast<int>(_editString.size());
+      if(setCaretPos(I32(_editString.size())))
+        _selectSize = -I32(_editString.size());
       break;
 
     case Event::Backspace:
@@ -366,7 +366,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(-1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::Delete:
@@ -374,37 +374,37 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       if(!handled)
         handled = killChar(+1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::DeleteLeftWord:
       handled = killWord(-1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::DeleteRightWord:
       handled = killWord(+1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::DeleteEnd:
       handled = killLine(+1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::DeleteHome:
       handled = killLine(-1);
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::Cut:
       handled = cutSelectedText();
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::Copy:
@@ -414,7 +414,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::Paste:
       handled = pasteSelectedText();
       if(handled)
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       break;
 
     case Event::Undo:
@@ -435,7 +435,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
         UndoHandler::lastDiff(_editString, oldString);
         setCaretPos(UndoHandler::lastDiff(_editString, oldString));
         _selectSize = 0;
-        sendCommand(Cmd::Changed, static_cast<int>(key), _id);
+        sendCommand(Cmd::Changed, I32(key), _id);
       }
       break;
     }
@@ -496,7 +496,7 @@ void EditableWidget::drawCaretSelection()
     int y = editRect.y();
     int w = editRect.w();
     const int h = editRect.h();
-    int wt = static_cast<int>(text.length()) * _boss->dialog().fontWidth() + 1;
+    int wt = I32(text.length()) * _boss->dialog().fontWidth() + 1;
     int dx = selectStartPos() * _boss->dialog().fontWidth() - _editScrollOffset;
 
     if(dx < 0)
@@ -648,7 +648,7 @@ bool EditableWidget::killLine(int direction)
   if(direction == -1)  // erase from current position to beginning of line
     count = _caretPos;
   else if(direction == +1)  // erase from current position to end of line
-    count = static_cast<int>(_editString.size()) - _caretPos;
+    count = I32(_editString.size()) - _caretPos;
 
   if(count > 0)
   {
@@ -767,7 +767,7 @@ bool EditableWidget::markWord()
 {
   _selectSize = 0;
 
-  while(_caretPos + _selectSize < static_cast<int>(_editString.size()))
+  while(_caretPos + _selectSize < I32(_editString.size()))
   {
     if(BSPF::isWhiteSpace(_editString[_caretPos + _selectSize]))
       break;
@@ -879,7 +879,7 @@ bool EditableWidget::pasteSelectedText()
       lastOk = false;
     }
   }
-  const auto filteredLen = static_cast<int>(filtered.size());
+  const auto filteredLen = I32(filtered.size());
   _editString.insert(_caretPos, filtered);
   // position cursor at the end of pasted text
   setCaretPos(_caretPos + filteredLen);

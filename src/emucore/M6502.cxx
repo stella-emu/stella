@@ -296,7 +296,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
               else
               {
                 result.setDebugger(currentCycles,
-                  std::format("BP: ${}, bank #{}", Base::hex4(PC), static_cast<int>(bank)),
+                  std::format("BP: ${}, bank #{}", Base::hex4(PC), I32(bank)),
                   "Breakpoint");
                 return;
               }
@@ -564,7 +564,7 @@ uInt32 M6502::addCondBreak(unique_ptr<Expression> e, string_view name, bool oneS
 
   updateStepStateByInstruction();
 
-  return static_cast<uInt32>(myCondBreaks.size() - 1);
+  return U32(myCondBreaks.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -605,7 +605,7 @@ uInt32 M6502::addCondSaveState(unique_ptr<Expression> e, string_view name)
 
   updateStepStateByInstruction();
 
-  return static_cast<uInt32>(myCondSaveStates.size() - 1);
+  return U32(myCondSaveStates.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -646,7 +646,7 @@ uInt32 M6502::addCondTrap(bool read, bool write, uInt32 begin, uInt32 end,
   myCondTraps.emplace_back(read, write, begin, end, condition, name,
                             std::move(expr));
   updateStepStateByInstruction();
-  return static_cast<uInt32>(myCondTraps.size() - 1);
+  return U32(myCondTraps.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

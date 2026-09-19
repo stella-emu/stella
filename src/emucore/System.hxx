@@ -74,9 +74,9 @@ class System : public Serializable
       from a cartridge's install() method before any pages are installed.
     */
     void setAddressBits(AddressSpace space) {
-      const auto bits = static_cast<uInt16>(space);
-      myAddressMask   = static_cast<uInt16>((1U << bits) - 1);
-      myNumPages      = static_cast<uInt16>(1U << static_cast<uInt32>(bits - PAGE_SHIFT));
+      const auto bits = U16(space);
+      myAddressMask   = U16((1U << bits) - 1);
+      myNumPages      = U16(1U << U32(bits - PAGE_SHIFT));
     }
 
     // The current address mask (0x1FFF for 13-bit, 0xFFFF for 16-bit)
@@ -440,7 +440,7 @@ class System : public Serializable
       @return  The page index
     */
     uInt16 pageIndex(uInt16 addr) const {
-      return static_cast<uInt16>(static_cast<uInt32>(addr & myAddressMask) >> PAGE_SHIFT);
+      return U16(U32(addr & myAddressMask) >> PAGE_SHIFT);
     }
 
     /**

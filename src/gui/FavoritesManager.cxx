@@ -287,9 +287,9 @@ void FavoritesManager::incPopular(string_view path)
     {
       for(auto it = myPopularMap.begin(); it != myPopularMap.end(); )
       {
-        if(it->second >= static_cast<uInt32>(scale * (1.0 - factor)))
+        if(it->second >= U32(scale * (1.0 - factor)))
         {
-          it->second = static_cast<uInt32>(it->second * factor); // age data
+          it->second = U32(it->second * factor); // age data
           ++it;
         }
         else

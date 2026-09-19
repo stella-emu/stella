@@ -202,13 +202,13 @@ string CartridgeARWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeARWidget::internalRamSize()
 {
-  return static_cast<uInt32>(CartridgeAR::RAM_SIZE);
+  return U32(CartridgeAR::RAM_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeARWidget::internalRamRPort(int start)
 {
-  return static_cast<uInt32>(start);
+  return U32(start);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

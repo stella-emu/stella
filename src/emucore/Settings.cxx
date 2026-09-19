@@ -109,9 +109,9 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
-  setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
+  setPermanent(AudioSettings::SETTING_PRESET, I32(AudioSettings::DEFAULT_PRESET));
   setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
-  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, I32(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
   setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
@@ -219,7 +219,7 @@ Settings::Settings()
   setPermanent("ui.font.debuggerdisasm", "auto");
 
   // Misc options
-  setPermanent("loglevel", static_cast<int>(Logger::Level::INFO));
+  setPermanent("loglevel", I32(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("fastscbios", "true");
@@ -474,9 +474,9 @@ void Settings::validate()
   clampSetting("tsense",     1, 20, 10);
   clampSetting("dcsense",    1, 20, 10);
   clampSetting("ssinterval", 1, 10, 2);
-  clampSetting("loglevel",   static_cast<int>(Logger::Level::MIN),
-                             static_cast<int>(Logger::Level::MAX),
-                             static_cast<int>(Logger::Level::INFO));
+  clampSetting("loglevel",   I32(Logger::Level::MIN),
+                             I32(Logger::Level::MAX),
+                             I32(Logger::Level::INFO));
   if(getInt("romviewer") < 0) setValue("romviewer", 0);
 
 #ifdef GUI_SUPPORT

@@ -803,7 +803,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode,
 
   if(j && event < Event::LastType &&
       (button == JOY_CTRL_NONE || (button >= 0 && button < j->numButtons)) &&
-      (axis == JoyAxis::NONE || static_cast<int>(axis) < j->numAxes))
+      (axis == JoyAxis::NONE || I32(axis) < j->numAxes))
   {
     const EventMode evMode = getEventMode(event, mode);
 
@@ -1107,7 +1107,7 @@ void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
 
   myOSystem.frameBuffer().showGaugeMessage(
     "Digital controller dead zone",
-    std::format("{}%", static_cast<int>(
+    std::format("{}%", I32(
       std::round(Controller::digitalDeadZoneValue(deadZone) * 100.F / 32768))),
     deadZone,
     Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
@@ -1125,7 +1125,7 @@ void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
 
   myOSystem.frameBuffer().showGaugeMessage(
     "Analog controller dead zone",
-    std::format("{}%", static_cast<int>(
+    std::format("{}%", I32(
       std::round(Controller::analogDeadZoneValue(deadZone) * 100.F / 32768))),
     deadZone,
     Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
@@ -1143,7 +1143,7 @@ void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
 
   myOSystem.frameBuffer().showGaugeMessage(
     "Analog paddle sensitivity",
-    std::format("{}%", static_cast<int>(
+    std::format("{}%", I32(
       std::round(Paddles::analogSensitivityValue(sense) * 100.F))),
     sense,
     Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);

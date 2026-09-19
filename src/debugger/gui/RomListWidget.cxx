@@ -172,7 +172,7 @@ void RomListWidget::reflowCheckboxes()
     auto* t = new CheckboxWidget(_boss, _font, "",
                                  CheckboxWidget::Cmd::CheckAction);
     t->setTarget(this);
-    t->setID(static_cast<int>(myCheckList.size()));
+    t->setID(I32(myCheckList.size()));
     t->setFill(CheckboxWidget::FillType::Circle);
     t->setTextColor(kTextColorEm);
     myCheckList.push_back(t);
@@ -202,7 +202,7 @@ void RomListWidget::recalcColumnWidths(int w)
   // with _fontWidth), so _font is what they are all measured in
   const int numchars = w / _fontWidth;
 
-  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * _fontWidth - 1;
+  _labelWidth = std::max(14, I32(0.45 * (numchars - 8 - 8 - 9 - 2))) * _fontWidth - 1;
   _bytesWidth = 9 * _fontWidth;
 }
 
@@ -217,7 +217,7 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
 
   // Then turn off any extras
   if(std::cmp_less(myDisasm->list.size(), _rows))
-    for(int i = static_cast<int>(myDisasm->list.size()); i < _rows; ++i)
+    for(int i = I32(myDisasm->list.size()); i < _rows; ++i)
       myCheckList[i]->clearFlags(Widget::Flag::Enabled);
 
   recalc();
@@ -271,7 +271,7 @@ int RomListWidget::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::recalc()
 {
-  const int size = static_cast<int>(myDisasm->list.size());
+  const int size = I32(myDisasm->list.size());
 
   _currentPos = BSPF::clamp(_currentPos, 0, size - 1);
 
@@ -280,7 +280,7 @@ void RomListWidget::recalc()
 
   _editMode = false;
 
-  myScrollBar->setNumEntries(static_cast<int>(myDisasm->list.size()));
+  myScrollBar->setNumEntries(I32(myDisasm->list.size()));
   myScrollBar->setEntriesPerPage(_rows);
 
   // Reset to normal data entry
@@ -304,7 +304,7 @@ void RomListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  const int size = static_cast<int>(myDisasm->list.size());
+  const int size = I32(myDisasm->list.size());
   if(_currentPos < 0 || _rows > size)
     _currentPos = 0;
   else if(_currentPos + _rows > size)
@@ -337,7 +337,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   {
     // First check whether the selection changed
     int newSelectedItem = findItem(x, y);
-    if(newSelectedItem > static_cast<int>(myDisasm->list.size()) - 1)
+    if(newSelectedItem > I32(myDisasm->list.size()) - 1)
       newSelectedItem = -1;
 
     if(_selectedItem != newSelectedItem)
@@ -447,7 +447,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIDown:
-      if(_selectedItem < static_cast<int>(myDisasm->list.size()) - 1)
+      if(_selectedItem < I32(myDisasm->list.size()) - 1)
         _selectedItem++;
       break;
 
@@ -457,7 +457,7 @@ bool RomListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgDown:
       _selectedItem = std::min(_selectedItem + (_rows - 1),
-          static_cast<int>(myDisasm->list.size()) - 1);
+          I32(myDisasm->list.size()) - 1);
       break;
 
     case Event::UIHome:
@@ -465,7 +465,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIEnd:
-      _selectedItem = static_cast<int>(myDisasm->list.size()) - 1;
+      _selectedItem = I32(myDisasm->list.size()) - 1;
       break;
 
     default:
@@ -533,7 +533,7 @@ Common::Point RomListWidget::getToolTipIndex(const Common::Point& pos) const
   const int row = (pos.y - getAbsY()) / _lineHeight;
 
   if(col < 0 || col >= 8
-     || row < 0 || row + _currentPos >= static_cast<int>(myDisasm->list.size()))
+     || row < 0 || row + _currentPos >= I32(myDisasm->list.size()))
     return Common::Point(-1, -1);
   else
     return Common::Point(col, row + _currentPos);
@@ -549,14 +549,14 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
   const string bytes = myDisasm->list[idx.y].bytes;
 
-  if(static_cast<Int32>(bytes.length()) < idx.x + 1)
+  if(I32(bytes.length()) < idx.x + 1)
     return {};
 
   Int32 val = 0;
   if(bytes.length() == 8 && bytes[2] != ' ')
   {
     // Binary value
-    val = static_cast<Int32>(stol(bytes, nullptr, 2));
+    val = I32(stol(bytes, nullptr, 2));
   }
   else
   {
@@ -574,7 +574,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
       // 3 hex bytes, get two rightmost hex bytes
       valStr = bytes.substr(6, 2) + bytes.substr(3, 2);
 
-    val = static_cast<Int32>(stol(valStr, nullptr, 16));
+    val = I32(stol(valStr, nullptr, 16));
   }
 
   string result = std::format("{}${} = #{}",
@@ -619,7 +619,7 @@ void RomListWidget::loadDisasmColorMap()
   {
     try
     {
-      const auto v = static_cast<uInt8>(std::stoi(token));
+      const auto v = U8(std::stoi(token));
       myDisasmColorMap[i] = (v == CartDebug::DISASM_COLOR_TEXT || v <= 15)
                             ? v
                             : CartDebug::ourDisasmThemes[0].map[i];
@@ -665,7 +665,7 @@ void RomListWidget::drawWidget(bool hilite)
       actualWidth = myDisasm->fieldwidth * _fontWidth,
       codeDisasmW = std::min(actualWidth, noCodeDisasmW - cycleCountW);
 
-  const int len = static_cast<int>(dlist.size());
+  const int len = I32(dlist.size());
   const int xpos = _x + CheckboxWidget::boxSize(_font) + 10;
   int ypos = _y + 2;
   for(int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
@@ -773,8 +773,8 @@ Common::Rect RomListWidget::getEditRect() const
   const uInt32 yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
 
   return {
-    static_cast<uInt32>(2 + _w - _bytesWidth), 1 + yoffset + 1,
-    static_cast<uInt32>(_w), _lineHeight + yoffset + 1
+    U32(2 + _w - _bytesWidth), 1 + yoffset + 1,
+    U32(_w), _lineHeight + yoffset + 1
   };
 }
 
@@ -814,7 +814,7 @@ void RomListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   // The parent then calls getText() to get the newly entered data
   _editMode = false;
-  sendCommand(Cmd::RomChanged, _selectedItem, static_cast<int>(_base));
+  sendCommand(Cmd::RomChanged, _selectedItem, I32(_base));
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

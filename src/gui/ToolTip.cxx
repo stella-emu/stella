@@ -142,11 +142,11 @@ void ToolTip::show(string_view tip)
   myTipPos = myMousePos;
 
   const uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2,
-                                   static_cast<uInt32>(myFont->getStringWidth(tip)));
+                                   U32(myFont->getStringWidth(tip)));
 
   surface()->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
   const int lines = std::min(MAX_ROWS,
-      static_cast<uInt32>(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
+      U32(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
                                                 maxWidth, myHeight - myTextYOfs * 2,
                                                 kTextColor)));
   // Calculate maximum width of drawn string lines
@@ -157,7 +157,7 @@ void ToolTip::show(string_view tip)
     string leftStr, rightStr;
 
     FBSurface::splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
-    width = std::max(width, static_cast<uInt32>(myFont->getStringWidth(leftStr)));
+    width = std::max(width, U32(myFont->getStringWidth(leftStr)));
     inStr = rightStr;
   }
   width += myTextXOfs * 2;
@@ -173,7 +173,7 @@ void ToolTip::show(string_view tip)
   // Limit position to app size and adjust accordingly
   const Int32 xAbs = myTipPos.x + dialogRect.x() / scale;
   const uInt32 yAbs = myTipPos.y + dialogRect.y() / scale;
-  Int32 x = std::min(xAbs, static_cast<Int32>(imageRect.w() / scale - width));
+  Int32 x = std::min(xAbs, I32(imageRect.w() / scale - width));
   const uInt32 y = (yAbs + height + H_CURSOR > imageRect.h() / scale)
     ? yAbs - height - V_GAP
     : yAbs + H_CURSOR / scale + V_GAP;

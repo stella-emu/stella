@@ -136,7 +136,7 @@ string CartDisassemblyWriter::save(string path)
       //   banks in segmented schemes) must have their individual bank label extension
       //   This won't work with the current, naive approach but is much more complicated!
       settings.orgBase = needsExtendedLabels
-          ? bankOrigins[bank] + static_cast<uInt32>(bank) * 0x10000
+          ? bankOrigins[bank] + U32(bank) * 0x10000
           : bankOrigins[bank];
     }
 
@@ -181,7 +181,7 @@ string CartDisassemblyWriter::save(string path)
 
     //}
 
-    origin += static_cast<uInt32>(info.size);
+    origin += U32(info.size);
 
     // Format in 'distella' style
     for(const auto& tag: disasm.list)
@@ -459,7 +459,7 @@ string CartDisassemblyWriter::save(string path)
         << ";-----------------------------------------------------------\n\n";
     int max_len = 16;
     for(const auto& [addr, label]: myCartDebug.myUserLabels)
-      max_len = std::max(max_len, static_cast<int>(label.size()));
+      max_len = std::max(max_len, I32(label.size()));
     for(const auto& [addr, label]: myCartDebug.myUserLabels)
       out << std::format("{:<{}}= ${}\n", label, max_len, Base::hex4(addr));
   }

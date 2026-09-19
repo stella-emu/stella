@@ -447,7 +447,7 @@ int Debugger::step(bool save)
 
   if(save)
     addState("step");
-  return static_cast<int>(mySystem->cycles() - startCycle);
+  return I32(mySystem->cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -484,7 +484,7 @@ int Debugger::trace()
     lockSystem();
 
     addState("trace");
-    return static_cast<int>(mySystem->cycles() - startCycle);
+    return I32(mySystem->cycles() - startCycle);
   }
   else
     return step();
@@ -686,7 +686,7 @@ M6502& Debugger::m6502() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peekAsInt(int addr, Device::AccessType flags)
 {
-  return mySystem->peekOob(static_cast<uInt16>(addr), flags);
+  return mySystem->peekOob(U16(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1142,9 +1142,9 @@ string Debugger::builtinHelp()
   buf << std::setfill(' ') << "\nBuilt-in functions:\n";
   for(const auto& func: ourBuiltinFunctions)
   {
-    buf << std::setw(static_cast<int>(c_maxlen)) << std::left << func.name
+    buf << std::setw(I32(c_maxlen)) << std::left << func.name
         << std::setw(2) << std::right << "{"
-        << std::setw(static_cast<int>(i_maxlen)) << std::left << func.defn
+        << std::setw(I32(i_maxlen)) << std::left << func.defn
         << std::setw(4) << "}"
         << func.help
         << '\n';
@@ -1158,9 +1158,9 @@ string Debugger::builtinHelp()
   buf << "\nPseudo-registers:\n";
   for(const auto& reg: ourPseudoRegisters)
   {
-    buf << std::setw(static_cast<int>(c_maxlen)) << std::left << reg.name
+    buf << std::setw(I32(c_maxlen)) << std::left << reg.name
         << std::setw(2) << " "
-        << std::setw(static_cast<int>(i_maxlen)) << std::left << reg.help
+        << std::setw(I32(i_maxlen)) << std::left << reg.help
         << '\n';
   }
 

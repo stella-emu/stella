@@ -107,8 +107,8 @@ void RomListSettings::layout()
   // No title bar (_th == 0); the dialog is exactly as large as its content
   const Common::Size natural = root->naturalSize();
 
-  _w = static_cast<int>(natural.w);
-  _h = static_cast<int>(natural.h);
+  _w = I32(natural.w);
+  _h = I32(natural.h);
 
   root->doLayout(0, _th, _w, _h - _th);
 }

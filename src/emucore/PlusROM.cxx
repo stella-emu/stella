@@ -74,7 +74,7 @@ class PlusROMRequest {
       : myState{State::created},
         myDestination{destination},
         myId{id},
-        myRequestSize{static_cast<uInt8>(request.size())}
+        myRequestSize{U8(request.size())}
     {
       std::ranges::copy(request, myRequest.begin());
     }
@@ -511,7 +511,7 @@ ByteArray PlusROM::getReceive() const
 {
   const uInt8 rxReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
   ByteArray arr;
-  arr.reserve(static_cast<uInt8>(myRxWritePos - rxReadPos));  // wrapping subtraction gives correct count
+  arr.reserve(U8(myRxWritePos - rxReadPos));  // wrapping subtraction gives correct count
 
   // uInt8 index wraps past 255 back to 0 intentionally
   for(uInt8 i = rxReadPos; i != myRxWritePos; ++i)

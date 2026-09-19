@@ -233,13 +233,13 @@ void Thumbulator::updateTimer(uInt32 cycles)
 #ifdef TIMER_0
   if(T0TCR & 1) // bit 0 controls timer on/off
   {
-    T0TC += static_cast<uInt32>(cycles * timing_factor);
+    T0TC += U32(cycles * timing_factor);
     tim0Total = tim0Start = 0;
   }
 #endif
   if(T1TCR & 1) // bit 0 controls timer on/off
   {
-    T1TC += static_cast<uInt32>(cycles * timing_factor);
+    T1TC += U32(cycles * timing_factor);
     tim1Total = tim1Start = 0;
   }
 }
@@ -649,7 +649,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
       if(addr == 0xE01FC000) //MAMCR
       {
         DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-        data = static_cast<uInt32>(mamcr);
+        data = U32(mamcr);
         return data;
       }
       break;
@@ -660,7 +660,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
     case 0xe0000000: //peripherals
     default:
       DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-      data = static_cast<uInt32>(mamcr);
+      data = U32(mamcr);
       return data;
   #endif
   }
@@ -702,7 +702,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
           DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-          data = static_cast<uInt32>(mamcr);
+          data = U32(mamcr);
           return data;
       #endif
 
@@ -1161,7 +1161,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     // instructionPtr is by construction outside the ROM range here, so
     // decode the halfword fetch16() already fetched (and bounds-checked)
     // instead of re-reading rom[] with an unmasked, out-of-range index
-    decodedOp = decodeInstructionWord(static_cast<uInt16>(inst), instructionPtr);
+    decodedOp = decodeInstructionWord(U16(inst), instructionPtr);
 
 #ifdef COUNT_OPS
   ++opCount[std::to_underlying(decodedOp)];
@@ -2937,7 +2937,7 @@ Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
       type = ChipType::LPC2104;
   }
 
-  ChipPropsType props = ChipProps[static_cast<uInt32>(type)];
+  ChipPropsType props = ChipProps[U32(type)];
 
   _chipType = type;
   _chipMHz = props.MHz;

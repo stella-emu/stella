@@ -116,7 +116,7 @@ void Dialog::open()
   // dialogs cause drawing to occur within loadConfig()
   if(_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  else if(static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
+  else if(U32(_w) > _surface->width() || U32(_h) > _surface->height())
     _surface->resize(_w, _h);
 
   _surface->setSrcSize(_w, _h);
@@ -313,10 +313,10 @@ void Dialog::positionAt(uInt32 pos)
   // shift stacked dialogs
   const Int32 hgap = (screen.w >> 6U) * _layer + screen.w * overscan;
   const Int32 vgap = (screen.w >> 6U) * _layer + screen.h * overscan;
-  const int top = std::min(std::max(0, static_cast<Int32>(screen.h - dst.h())), vgap);
-  const int btm = std::max(0, static_cast<Int32>(screen.h - dst.h() - vgap));
-  const int left = std::min(std::max(0, static_cast<Int32>(screen.w - dst.w())), hgap);
-  const int right = std::max(0, static_cast<Int32>(screen.w - dst.w() - hgap));
+  const int top = std::min(std::max(0, I32(screen.h - dst.h())), vgap);
+  const int btm = std::max(0, I32(screen.h - dst.h() - vgap));
+  const int left = std::min(std::max(0, I32(screen.w - dst.w())), hgap);
+  const int right = std::max(0, I32(screen.w - dst.w() - hgap));
 
   switch (pos)
   {
@@ -342,8 +342,8 @@ void Dialog::positionAt(uInt32 pos)
       // stays anchored at the top-left instead of wrapping off-screen via
       // unsigned underflow
       _surface->setDstPos(
-        std::max(0, (static_cast<Int32>(screen.w) - static_cast<Int32>(dst.w())) / 2),
-        std::max(0, (static_cast<Int32>(screen.h) - static_cast<Int32>(dst.h())) / 2));
+        std::max(0, (I32(screen.w) - I32(dst.w())) / 2),
+        std::max(0, (I32(screen.h) - I32(dst.h())) / 2));
       break;
   }
 }
@@ -414,8 +414,8 @@ void Dialog::relayout()
   layoutHelp();
 
   // Grow the backing surface if needed, then refresh src/dst scaling
-  if(static_cast<uInt32>(_w) > _surface->width() ||
-     static_cast<uInt32>(_h) > _surface->height())
+  if(U32(_w) > _surface->width() ||
+     U32(_h) > _surface->height())
     _surface->resize(_w, _h);
   _surface->setSrcSize(_w, _h);
 
@@ -440,7 +440,7 @@ void Dialog::refreshFont()
 
   // Recompute the title-bar height for the new font (setTitle only ran at
   // construction, with the old font); layout() reads _th to place its content
-  _th = _title.empty() ? 0 : static_cast<int>(_font.getLineHeight() * 1.25);
+  _th = _title.empty() ? 0 : I32(_font.getLineHeight() * 1.25);
 
   relayout();
 }
@@ -498,7 +498,7 @@ int Dialog::addToFocusList(const WidgetArray& list)
   if(!list.empty())
     _myFocus.widget = list[0];
 
-  return static_cast<int>(_focusList.size());
+  return I32(_focusList.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,7 +533,7 @@ int Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabI
   if(!list.empty())
     focus[id].widget = list[0];
 
-  return static_cast<int>(focus.size());
+  return I32(focus.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1329,8 +1329,8 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
   }
   else
   {
-    w = static_cast<uInt32>(0.95 * r.w() / scale);
-    h = static_cast<uInt32>(0.95 * r.h() / scale);
+    w = U32(0.95 * r.w() / scale);
+    h = U32(0.95 * r.h() / scale);
     return true;
   }
 }

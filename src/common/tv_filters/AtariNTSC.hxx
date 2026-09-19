@@ -258,9 +258,9 @@ class AtariNTSC
     }
     static constexpr void YIQ_TO_RGB(float y, float i, float q,
         const float* to_rgb, int& ir, int& ig, int& ib) {
-      ir = static_cast<int>(y + to_rgb[0] * i + to_rgb[1] * q);
-      ig = static_cast<int>(y + to_rgb[2] * i + to_rgb[3] * q);
-      ib = static_cast<int>(y + to_rgb[4] * i + to_rgb[5] * q);
+      ir = I32(y + to_rgb[0] * i + to_rgb[1] * q);
+      ig = I32(y + to_rgb[2] * i + to_rgb[3] * q);
+      ib = I32(y + to_rgb[4] * i + to_rgb[5] * q);
     }
 
     static constexpr uInt32 PACK_RGB( int r, int g, int b ) {

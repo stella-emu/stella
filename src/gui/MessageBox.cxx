@@ -115,10 +115,10 @@ void MessageBox::layout()
   // as any other dialog.
   int str_w = 0;
   for(const auto& s: myText)
-    str_w = std::max(static_cast<int>(s.length()), str_w);
+    str_w = std::max(I32(s.length()), str_w);
 
   _w = std::max(str_w * fontWidth + HBORDER * 2, Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+  _h = _th + I32(root->naturalSize().h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

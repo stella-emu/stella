@@ -43,7 +43,7 @@ namespace {
     speed = std::abs(speed);
 
     return BSPF::clamp(
-      static_cast<int>(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      I32(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
       MIN_SPEED, MAX_SPEED
     );
   }
@@ -229,8 +229,8 @@ void EmulationDialog::layout()
   // for the button row below it (which the content knows nothing about)
   const Common::Size natural = root->naturalSize();
 
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

@@ -298,7 +298,7 @@ class M6502 : public Serializable
 
     // Returns non-zero if the two addresses are on different pages
     static constexpr uInt16 NOTSAMEPAGE(uInt16 a, uInt16 b) noexcept {
-      return static_cast<uInt32>(a ^ b) & 0xff00U;
+      return U32(a ^ b) & 0xff00U;
     }
 
     /**
@@ -307,15 +307,15 @@ class M6502 : public Serializable
       @return The processor status register
     */
     uInt8 PS() const {
-      return static_cast<uInt8>(
+      return U8(
         0x20U
-        | (static_cast<uInt32>(N)     << 7U)
-        | (static_cast<uInt32>(V)     << 6U)
-        | (static_cast<uInt32>(B)     << 4U)
-        | (static_cast<uInt32>(D)     << 3U)
-        | (static_cast<uInt32>(I)     << 2U)
-        | (static_cast<uInt32>(!notZ) << 1U)
-        | static_cast<uInt32>(C)
+        | (U32(N)     << 7U)
+        | (U32(V)     << 6U)
+        | (U32(B)     << 4U)
+        | (U32(D)     << 3U)
+        | (U32(I)     << 2U)
+        | (U32(!notZ) << 1U)
+        | U32(C)
       );
     }
 
@@ -426,7 +426,7 @@ class M6502 : public Serializable
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks()
     {
-      for(Int32 i = static_cast<Int32>(myCondBreaks.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondBreaks.size()) - 1; i >= 0; --i)
         if(myCondBreaks[i]->evaluate())
           return i;
 
@@ -435,7 +435,7 @@ class M6502 : public Serializable
 
     Int32 evalCondSaveStates()
     {
-      for(Int32 i = static_cast<Int32>(myCondSaveStates.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondSaveStates.size()) - 1; i >= 0; --i)
         if(myCondSaveStates[i]->evaluate())
           return i;
 
@@ -444,7 +444,7 @@ class M6502 : public Serializable
 
     Int32 evalCondTraps()
     {
-      for(Int32 i = static_cast<Int32>(myCondTraps.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondTraps.size()) - 1; i >= 0; --i)
         if(myCondTraps[i].expr->evaluate())
           return i;
 

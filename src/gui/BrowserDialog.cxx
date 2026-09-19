@@ -232,9 +232,9 @@ void BrowserDialog::show(OSystem& osystem,
   const GUI::Font& font = osystem.frameBuffer().font();
   const Common::Rect& r = osystem.frameBuffer().imageRect();
   const uInt32 scale = osystem.frameBuffer().hidpiScaleFactor();
-  const auto w = std::min(static_cast<uInt32>(0.95 * r.w() / scale),
-                          static_cast<uInt32>(font.getMaxCharWidth() * 80));
-  const auto h = static_cast<uInt32>(0.95 * r.h() / scale);
+  const auto w = std::min(U32(0.95 * r.w() / scale),
+                          U32(font.getMaxCharWidth() * 80));
+  const auto h = U32(0.95 * r.h() / scale);
 
   auto& overlay = osystem.overlayMenu();
   if(ourBrowser == nullptr || &ourBrowser->parent() != &overlay ||

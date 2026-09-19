@@ -73,7 +73,7 @@ void WrappedTextWidget::rewrap()
   const StringParser bs(myText, std::max(usable / _fontWidth, 1));
   const StringList& lines = bs.stringList();
   setList(lines);
-  myLines = static_cast<int>(lines.size());
+  myLines = I32(lines.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,8 +81,8 @@ Common::Size WrappedTextWidget::naturalSize() const
 {
   // As many lines as the text came to, never fewer than the floor we always
   // show and never more than the cap beyond which we scroll
-  const int shown = std::clamp(myLines, static_cast<int>(myMinLines),
-                               static_cast<int>(myMaxLines));
+  const int shown = std::clamp(myLines, I32(myMinLines),
+                               I32(myMaxLines));
 
   return Common::Size(std::max(_w, 0), heightForLines(shown));
 }

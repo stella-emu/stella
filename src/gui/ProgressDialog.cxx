@@ -81,8 +81,8 @@ void ProgressDialog::layout()
 
   const Common::Size natural = root->naturalSize();
 
-  _w = static_cast<int>(natural.w);
-  _h = static_cast<int>(natural.h);
+  _w = I32(natural.w);
+  _h = I32(natural.h);
 
   root->doLayout(0, 0, _w, _h);
 }
@@ -100,7 +100,7 @@ void ProgressDialog::setRange(int start, int finish, int step)
 {
   myStart = start;
   myFinish = finish;
-  myStep = static_cast<int>((step / 100.0) * (myFinish - myStart + 1));
+  myStep = I32((step / 100.0) * (myFinish - myStart + 1));
 
   mySlider->setMinValue(myStart + myStep);
   mySlider->setMaxValue(myFinish);

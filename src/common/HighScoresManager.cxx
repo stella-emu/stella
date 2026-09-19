@@ -368,7 +368,7 @@ Int32 HighScoresManager::score() const
   const uInt32 numBytes = numAddrBytes(properties(jprops));
   const ScoreAddresses scoreAddr = getPropScoreAddr(jprops);
 
-  if(static_cast<uInt32>(scoreAddr.size()) < numBytes)
+  if(U32(scoreAddr.size()) < numBytes)
     return NO_VALUE;
   return score(numBytes, trailingZeroes(jprops), scoreBCD(jprops), scoreAddr);
 }
@@ -554,7 +554,7 @@ uInt16 HighScoresManager::fromHexStr(string_view addr)
   if(const auto pos = addr.find("0x"); pos != std::string::npos)
     addr = addr.substr(pos + 2);  // also +2, not +1, to skip "0x"
 
-  return static_cast<uInt16>(BSPF::stoi<16>(addr));
+  return U16(BSPF::stoi<16>(addr));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

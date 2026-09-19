@@ -98,7 +98,7 @@ char* Base::writeDec(char* out, int value, int width, char padChar)
 
   if(neg) *--p = '-';
 
-  const int len = static_cast<int>((tmp + sizeof(tmp)) - p);
+  const int len = I32((tmp + sizeof(tmp)) - p);
   int pad = width - len;
   while(pad-- > 0)
     *out++ = padChar;

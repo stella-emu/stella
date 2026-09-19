@@ -429,7 +429,7 @@ Widget* Widget::setFocusForList(const GuiObject* boss, WidgetArray& arr,
                                 bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
-  const int size = static_cast<int>(arr.size());
+  const int size = I32(arr.size());
   int pos = -1;
   Widget* tmp = nullptr;
 
@@ -668,7 +668,7 @@ bool LabelWidget::setUrl(string_view url, string_view label, string_view placeHo
 
   if(len)
   {
-    setLink(start, static_cast<int>(len), true);
+    setLink(start, I32(len), true);
     setCmd(Cmd::OpenUrl);
     return true;
   }

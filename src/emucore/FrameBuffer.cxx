@@ -589,7 +589,7 @@ void FrameBuffer::update(UpdateMode mode)
         success = r.unwindStates(1);
 
         // Determine playback speed, the faster the more the states are apart
-        const Int64 frameCycles = static_cast<Int64>(76) * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+        const Int64 frameCycles = I64(76) * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
         const Int64 intervalFrames = r.getInterval() / frameCycles;
         const Int64 stateFrames = (r.getCurrentCycles() - prevCycles) / frameCycles;
 
@@ -1172,10 +1172,10 @@ void FrameBuffer::toggleFullscreen(bool toggle)
           const string msg = isFullscreen
             ? std::format("Fullscreen {} ({} Hz, Zoom {}%)",
                 state_str, myBackend->refreshRate(),
-                static_cast<int>(round(myWindow.vidMode.zoom * 100)))
+                I32(round(myWindow.vidMode.zoom * 100)))
             : std::format("Fullscreen {} (Zoom {}%)",
                 state_str,
-                static_cast<int>(round(myWindow.vidMode.zoom * 100)));
+                I32(round(myWindow.vidMode.zoom * 100)));
           showTextMessage(msg);
         }
         else

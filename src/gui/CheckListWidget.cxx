@@ -65,7 +65,7 @@ void CheckListWidget::reflowCheckboxes()
                                  CheckboxWidget::Cmd::CheckAction);
     t->setTextColor(kTextColor);
     t->setTarget(this);
-    t->setID(static_cast<int>(_checkList.size()));
+    t->setID(I32(_checkList.size()));
     _checkList.push_back(t);
   }
 
@@ -99,7 +99,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 
   // Then turn off any extras
   if(std::cmp_less(_stateList.size(), _rows))
-    for(int i = static_cast<int>(_stateList.size()); i < _rows; ++i)
+    for(int i = I32(_stateList.size()); i < _rows; ++i)
       _checkList[i]->clearFlags(Widget::Flag::Enabled);
 
   ListWidget::recalc();
@@ -120,7 +120,7 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  const int len = static_cast<int>(_list.size());
+  const int len = I32(_list.size());
 
   // Draw a thin frame around the list and to separate columns
   s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);

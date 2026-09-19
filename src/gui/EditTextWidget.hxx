@@ -70,7 +70,7 @@ class EditTextWidget : public EditableWidget
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, string_view str)
     {
-      return calcWidth(font, static_cast<int>(str.size()));
+      return calcWidth(font, I32(str.size()));
     }
     // The height of a box built to show this many lines.  A dialog says it in
     // LINES; the pixels (and the frame the ctor adds) are the widget's business

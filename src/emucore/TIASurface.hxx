@@ -169,7 +169,7 @@ class TIASurface
       Enable/disable/query NTSC filtering effects.
     */
     void enableNTSC(bool enable);
-    bool ntscEnabled() const { return static_cast<uInt8>(myFilter) & 0x10U; }
+    bool ntscEnabled() const { return U8(myFilter) & 0x10U; }
     string effectsInfo() const;
 
     /**

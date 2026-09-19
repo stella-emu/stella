@@ -51,7 +51,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   myThumbEmulator = std::make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage.data()),
        reinterpret_cast<uInt16*>(myDPCRAM.data()),
-       static_cast<uInt32>(32_KB),
+       U32(32_KB),
       0x00000C00,
       0x00000C08,
       0x40001FFC,
@@ -164,12 +164,12 @@ FORCE_INLINE void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC+ OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = U32(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
@@ -194,9 +194,9 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       if(ROMdata < myProgramImage.size() && destBase < myDisplayImage.size())
       {
         const uInt32 count = std::min({
-          static_cast<uInt32>(myParameter[3]),
-          static_cast<uInt32>(myProgramImage.size() - ROMdata),
-          static_cast<uInt32>(myDisplayImage.size() - destBase)
+          U32(myParameter[3]),
+          U32(myProgramImage.size() - ROMdata),
+          U32(myDisplayImage.size() - destBase)
         });
         for(uInt32 i = 0; i < count; ++i)
           myDisplayImage[destBase + i] = myProgramImage[ROMdata + i];
@@ -210,8 +210,8 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       if(destBase < myDisplayImage.size())
       {
         const uInt32 count = std::min(
-          static_cast<uInt32>(myParameter[3]),
-          static_cast<uInt32>(myDisplayImage.size() - destBase)
+          U32(myParameter[3]),
+          U32(myDisplayImage.size() - destBase)
         );
         for(uInt32 i = 0; i < count; ++i)
           myDisplayImage[destBase + i] = myParameter[0];
@@ -224,7 +224,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        auto cycles = static_cast<uInt32>(mySystem->cycles() - myARMCycles);
+        auto cycles = U32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles, value == 254);
@@ -322,7 +322,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
                 myDisplayImage[(myMusicWaveforms[1] << 5U) + (myMusicCounters[1] >> 27U)] +
                 myDisplayImage[(myMusicWaveforms[2] << 5U) + (myMusicCounters[2] >> 27U)];
 
-            result = static_cast<uInt8>(i);
+            result = U8(i);
             break;
           }
 
@@ -462,7 +462,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
       // DFxFRACHI - fractional data pointer high byte
       case 0x01:
-        myFractionalCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 16U) |
+        myFractionalCounters[index] = ((U16(value) & 0x0FU) << 16U) |
                                        (myFractionalCounters[index] & 0x00ffffU);
         break;
 
@@ -529,7 +529,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxHI - data pointer high byte
       case 0x08:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x0FU) << 8U) | (myCounters[index] & 0x00ffU);
+        myCounters[index] = ((U16(value) & 0x0FU) << 8U) | (myCounters[index] & 0x00ffU);
         break;
       }
 

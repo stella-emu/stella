@@ -41,9 +41,9 @@ MouseControl::MouseControl(Console& console, string_view mode)
           m_mode[1] >= '0' && m_mode[1] <= '8')
   {
     const auto xaxis = static_cast<MouseControl::Type>
-        (static_cast<int>(m_mode[0]) - '0');
+        (I32(m_mode[0]) - '0');
     const auto yaxis = static_cast<MouseControl::Type>
-        (static_cast<int>(m_mode[1]) - '0');
+        (I32(m_mode[1]) - '0');
 
     Controller::Type xtype = Controller::Type::Joystick,
                      ytype = Controller::Type::Joystick;
@@ -114,7 +114,7 @@ MouseControl::MouseControl(Console& console, string_view mode)
 const string& MouseControl::change(int direction)
 {
   myCurrentModeNum = BSPF::clampw(myCurrentModeNum + direction, 0,
-                                  static_cast<int>(myModeList.size() - 1));
+                                  I32(myModeList.size() - 1));
   const MouseMode& mode = myModeList[myCurrentModeNum];
 
   const bool leftControl =

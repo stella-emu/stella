@@ -109,7 +109,7 @@ unique_ptr<GUI::Layout> AudioWidget::buildLayout() const
   // Standard dialog borders/gaps, font-derived (as Dialog::hBorder/vBorder/vGap)
   const int fontWidth = _font.getMaxCharWidth(),
             VGAP      = _font.getFontHeight() / 4,
-            HBORDER   = static_cast<int>(fontWidth * 1.25),
+            HBORDER   = I32(fontWidth * 1.25),
             VBORDER   = _font.getFontHeight() / 2;
 
   // One shared column for the three register labels

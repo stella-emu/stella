@@ -130,10 +130,10 @@ void KidVid::update()
   if(myTape && getPin(DigitalPin::One) && !myTapeBusy)
   {
     setPin(DigitalPin::Four,
-           static_cast<uInt8>(ourData[myIdx >> 3U] << (myIdx & 0x07U)) & 0x80U);
+           U8(ourData[myIdx >> 3U] << (myIdx & 0x07U)) & 0x80U);
 
   #ifdef DEBUG_BUILD
-    cerr << (static_cast<uInt8>(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U ? "X" : ".");
+    cerr << (U8(ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80U ? "X" : ".");
   #endif
 
     // increase to next bit

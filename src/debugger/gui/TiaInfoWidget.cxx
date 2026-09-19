@@ -217,8 +217,8 @@ unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
   // The two columns and the gap between them start at the size their contents
   // need and share any surplus in the proportion 1 : 2 : 1, so the gap always
   // outgrows the label clearances
-  const int leftW  = static_cast<int>(left->naturalSize().w),
-            rightW = static_cast<int>(right->naturalSize().w);
+  const int leftW  = I32(left->naturalSize().w),
+            rightW = I32(right->naturalSize().w);
 
   auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
   root->addStretch(std::move(left), 1, leftW);
@@ -242,7 +242,7 @@ int TiaInfoWidget::naturalWidthFor(bool longstr)
   // Called from our own ctor via reflow(), but this dispatches to our own
   // override regardless -- TiaInfoWidget has no subclasses to be incomplete
   // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
-  return static_cast<int>(naturalSize().w);
+  return I32(naturalSize().w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,16 +292,16 @@ void TiaInfoWidget::loadConfig()
   myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::Fmt::_10_5),
                          tia.frameCycles() != oldTia.info[1]);
 
-  const uInt64 total = tia.cyclesLo() + (static_cast<uInt64>(tia.cyclesHi()) << 32U);
-  const uInt64 totalOld = oldTia.info[2] + (static_cast<uInt64>(oldTia.info[3]) << 32U);
-  myTotalCycles->setText(Common::Base::toString(static_cast<uInt32>(total) / 1000000,
+  const uInt64 total = tia.cyclesLo() + (U64(tia.cyclesHi()) << 32U);
+  const uInt64 totalOld = oldTia.info[2] + (U64(oldTia.info[3]) << 32U);
+  myTotalCycles->setText(Common::Base::toString(U32(total) / 1000000,
                          Common::Base::Fmt::_10_6) + "e6",
                          total / 1000000 != totalOld / 1000000);
   myTotalCycles->setToolTip("Total CPU cycles (E notation) executed for this session ("
                             + std::to_string(total) + ").");
 
   const uInt64 delta = total - totalOld;
-  myDeltaCycles->setText(Common::Base::toString(static_cast<uInt32>(delta),
+  myDeltaCycles->setText(Common::Base::toString(U32(delta),
                          Common::Base::Fmt::_10_8)); // no coloring
 
   const int clk = tia.clocksThisLine();

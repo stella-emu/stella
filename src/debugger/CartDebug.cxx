@@ -232,7 +232,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
   const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
   const int addrBank = (address & 0x1000U)
-    ? getBank(address) : static_cast<int>(myBankInfo.size()) - 1;
+    ? getBank(address) : I32(myBankInfo.size()) - 1;
 
   if(segCount > 1)
   {
@@ -262,7 +262,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
         tag.address = 0;
         tag.disasm = " ";
         disassembly.list.push_back(tag);
-        addrToLineList.emplace(0, static_cast<uInt32>(disassembly.list.size() +
+        addrToLineList.emplace(0, U32(disassembly.list.size() +
                                myDisassembly.list.size()) - 1);
       }
       // Aggregate segment disassemblies
@@ -299,7 +299,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
   // Also check if the current PC is in the current list
   const bool bankChanged = myConsole.cartridge().bankChanged();
   const int pcline = addressToLine(PC);
-  const bool pcfound = (pcline != -1) && (static_cast<uInt32>(pcline) < disassembly.list.size()) &&
+  const bool pcfound = (pcline != -1) && (U32(pcline) < disassembly.list.size()) &&
                        (disassembly.list[pcline].disasm[0] != '.');
   const bool pagedirty = (PC & 0x1000U) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
                                           mySystem.isPageDirty(0x80, 0xFF);
@@ -316,7 +316,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
     const uInt16 bankSz = myConsole.cartridge().bankSize(bank);
-    const auto addrMask = static_cast<uInt16>(bankSz - 1);
+    const auto addrMask = U16(bankSz - 1);
     const uInt16 offset = (PC & 0x1000U)
       ? myConsole.cartridge().bankOrigin(bank, PC)
       : 0;
@@ -360,7 +360,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
 
   disassembly.fieldwidth = 24 + myLabelLength;
   // line offset must be set before calling DiStella!
-  const auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
+  const auto lineOfs = U32(myDisassembly.list.size());
   const DiStella distella(*this, disassembly.list, info, DiStella::settings,
                           myDisLabels, myDisDirectives, myReserved);
 
@@ -448,7 +448,7 @@ bool CartDebug::addDirective(Device::AccessType type,
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (U32(myDebugger.cpuDebug().pc()) & 0x1000U)
       ? getBank(myDebugger.cpuDebug().pc())
-      : static_cast<int>(myBankInfo.size())-1;
+      : I32(myBankInfo.size())-1;
 
   bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
@@ -602,7 +602,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       string newLabel = uniqueLabel(label);
       myUserAddresses.emplace(newLabel, address);
       myUserLabels.emplace(address, newLabel);
-      myLabelLength = std::max(myLabelLength, static_cast<uInt16>(newLabel.size()));
+      myLabelLength = std::max(myLabelLength, U16(newLabel.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -1115,7 +1115,7 @@ string CartDebug::saveAccessFile(string path)
 string CartDebug::listConfig(int bank)
 {
   const bool singleBank  = (bank >= 0 && bank < romBankCount());
-  const uInt32 startbank = singleBank ? static_cast<uInt32>(bank) : 0;
+  const uInt32 startbank = singleBank ? U32(bank) : 0;
   const uInt32 endbank   = singleBank ? startbank + 1 : romBankCount();
 
   string out;

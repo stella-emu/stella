@@ -26,7 +26,7 @@ namespace {
 
   Int16 mixingTableEntry(uInt8 v, uInt8 vMax)
   {
-    return static_cast<Int16>(
+    return I16(
       floor(0x7fff * static_cast<double>(v) / static_cast<double>(vMax) *
             (R_MAX + R * static_cast<double>(vMax)) / (R_MAX + R * static_cast<double>(v)))
     );
@@ -69,8 +69,8 @@ void Audio::createSample()
 {
   // Calculate average of all recent volume samples. the average for each
   // channel is mixed to create a single audible value
-  const auto sample0 = static_cast<uInt8>(mySumChannel0 / mySumCt);
-  const auto sample1 = static_cast<uInt8>(mySumChannel1 / mySumCt);
+  const auto sample0 = U8(mySumChannel0 / mySumCt);
+  const auto sample1 = U8(mySumChannel1 / mySumCt);
   mySumChannel0 = mySumChannel1 = mySumCt = 0;
 
   addSample(sample0, sample1);
@@ -171,7 +171,7 @@ bool Audio::saveSamples(Serializer& out) const
 {
   try
   {
-    out.putLong(static_cast<uInt64>(mySamples.size()));
+    out.putLong(U64(mySamples.size()));
     out.putByteArray(mySamples);
 
     // TODO: check if this improves sound of playback for larger state gaps

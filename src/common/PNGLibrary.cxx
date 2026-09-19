@@ -269,7 +269,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 void PNGLibrary::updateTime(uInt64 time)
 {
   if(mySnapInterval > 0 && (++mySnapCounter) % mySnapInterval == 0)
-    takeSnapshot(static_cast<uInt32>(time >> 10U));  // not quite milliseconds, but close enough
+    takeSnapshot(U32(time >> 10U));  // not quite milliseconds, but close enough
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -287,7 +287,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
     {
       interval = myOSystem.settings().getInt("ssinterval");
       msg = std::format("Enabling snapshots in {} second intervals", interval);
-      interval *= static_cast<uInt32>(myOSystem.frameRate());
+      interval *= U32(myOSystem.frameRate());
     }
     myOSystem.frameBuffer().showTextMessage(msg);
     setContinuousSnapInterval(interval);
@@ -471,7 +471,7 @@ void PNGLibrary::writeMetaData(png_structp png_ptr, png_infop info_ptr,
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }
-  png_set_text(png_ptr, info_ptr, text_ptr.data(), static_cast<int>(numMetaData));
+  png_set_text(png_ptr, info_ptr, text_ptr.data(), I32(numMetaData));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

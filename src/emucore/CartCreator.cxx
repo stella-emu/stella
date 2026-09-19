@@ -332,7 +332,7 @@ namespace  // anonymous namespace, to keep these functions private
     const string& fullPath = firstTape.getPath();
     const string dirPath = fullPath.substr(0, fullPath.size() - fileName.size());
 
-    int seqEnd = static_cast<int>(stem.size()) - 1;
+    int seqEnd = I32(stem.size()) - 1;
     while(seqEnd >= 0)
     {
       if(!std::isdigit(static_cast<unsigned char>(stem[seqEnd])))

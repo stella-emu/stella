@@ -144,8 +144,8 @@ void CheatCodeDialog::layout()
 
   const Common::Size natural = root->naturalSize();
 
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h);
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h);
 
   root->doLayout(0, _th, _w, _h - _th);
 

@@ -93,12 +93,12 @@ FORCE_INLINE void CartridgeDPC::clockRandomNumberGenerator()
 FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
   const double clocks = ((myDpcPitch * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = U32(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   if(wholeClocks == 0)
@@ -111,7 +111,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
     if(myMusicMode[x - 5])
     {
       const Int32 top = myTops[x] + 1;
-      auto newLow = static_cast<Int32>(myCounters[x] & 0x00ffU);
+      auto newLow = I32(myCounters[x] & 0x00ffU);
 
       if(myTops[x] != 0)
       {
@@ -128,7 +128,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
       else if(std::cmp_less_equal(newLow, myTops[x]))
         myFlags[x] = 0xff;
 
-      myCounters[x] = (myCounters[x] & 0x0700U) | static_cast<uInt16>(newLow);
+      myCounters[x] = (myCounters[x] & 0x0700U) | U16(newLow);
     }
   }
 }
@@ -288,14 +288,14 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
           // Data fetcher is in music mode so its low counter value
           // should be loaded from the top register not the poked value
           myCounters[index] = (myCounters[index] & 0x0700U) |
-            static_cast<uInt16>(myTops[index]);
+            U16(myTops[index]);
         }
         else
         {
           // Data fetcher is either not a music mode data fetcher or it
           // isn't in music mode so it's low counter value should be loaded
           // with the poked value
-          myCounters[index] = (myCounters[index] & 0x0700U) | static_cast<uInt16>(value);
+          myCounters[index] = (myCounters[index] & 0x0700U) | U16(value);
         }
         break;
       }
@@ -303,7 +303,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       // DFx counter high
       case 0x03:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x07U) << 8U) |
+        myCounters[index] = ((U16(value) & 0x07U) << 8U) |
             (myCounters[index] & 0x00ffU);
 
         // Execute special code for music mode data fetchers

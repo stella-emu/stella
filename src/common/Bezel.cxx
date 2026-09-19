@@ -75,7 +75,7 @@ string Bezel::getName(const Properties& props, int& index)
     " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
   };
   static constexpr int SUFFIX_START = 2;
-  static constexpr int SUFFIX_END = SUFFIX_START + static_cast<int>(suffixes.size());
+  static constexpr int SUFFIX_END = SUFFIX_START + I32(suffixes.size());
 
   if(index < SUFFIX_END && pos != string_view::npos && pos > 0)
   {
@@ -189,8 +189,8 @@ bool Bezel::load()
       // P1: 25, 25, 11, 22%
       // P2: 23, 23,  7, 20%
       const auto bezelBorder = [&](Int32 dim, string_view key) {
-        return std::min(dim - 1, static_cast<Int32>(
-            std::lround(dim * settings.getInt(key) / 100.0)));
+        return std::min(dim - 1,
+                        I32(std::lround(dim * settings.getInt(key) / 100.0)));
       };
       left   = bezelBorder(w, "bezel.win.left");
       right  = w - 1 - bezelBorder(w, "bezel.win.right");
@@ -230,10 +230,10 @@ void Bezel::apply()
   {
     const uInt32 bezelW =
       std::min(myFB.screenSize().w,
-      static_cast<uInt32>(std::round(myFB.imageRect().w() * myInfo.ratioW())));
+               U32(std::round(myFB.imageRect().w() * myInfo.ratioW())));
     const uInt32 bezelH =
       std::min(myFB.screenSize().h,
-      static_cast<uInt32>(std::round(myFB.imageRect().h() * myInfo.ratioH())));
+               U32(std::round(myFB.imageRect().h() * myInfo.ratioH())));
 
     // Position and scale bezel
     mySurface->setDstSize(bezelW, bezelH);

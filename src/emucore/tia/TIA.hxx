@@ -364,14 +364,14 @@ class TIA : public Device
       Answers the system cycles from the start of the current frame.
     */
     uInt32 frameCycles() const {
-      return static_cast<uInt32>(mySystem->cycles() - myCyclesAtFrameStart);
+      return U32(mySystem->cycles() - myCyclesAtFrameStart);
     }
 
     /**
       Answers the system cycles used by WSYNC from the start of the current frame.
     */
     uInt32 frameWSyncCycles() const {
-      return static_cast<uInt32>(myFrameWsyncCycles);
+      return U32(myFrameWsyncCycles);
     }
   #endif  // DEBUGGER_SUPPORT
 

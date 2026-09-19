@@ -47,7 +47,7 @@ void DelayQueueWidget::refreshFont()
 
   // Twenty characters wide, one row per line I show
   _w = 20 * _font.getMaxCharWidth() + 6;
-  _h = static_cast<int>(myLines.size() * _font.getLineHeight() + 6);
+  _h = I32(myLines.size() * _font.getLineHeight() + 6);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

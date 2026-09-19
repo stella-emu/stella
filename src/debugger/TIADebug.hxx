@@ -180,8 +180,8 @@ class TIADebug : public DebuggerSystem
     int cyclesThisLine() const;
     bool vsync() const;
     bool vblank() const;
-    int vsyncAsInt() const  { return static_cast<int>(vsync());  } // so we can use _vsync pseudo-register
-    int vblankAsInt() const { return static_cast<int>(vblank()); } // so we can use _vblank pseudo-register
+    int vsyncAsInt() const  { return I32(vsync());  } // so we can use _vsync pseudo-register
+    int vblankAsInt() const { return I32(vblank()); } // so we can use _vblank pseudo-register
 
     shared_ptr<DelayQueueIterator> delayQueueIterator() const;
 

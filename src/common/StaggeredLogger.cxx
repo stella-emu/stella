@@ -120,7 +120,7 @@ void StaggeredLogger::startInterval()
   while (std::cmp_greater(msecSinceLastIntervalEnd, myCooldownTime) &&
          myCurrentIntervalFactor > 1)
   {
-    msecSinceLastIntervalEnd -= static_cast<Int64>(myCooldownTime);
+    msecSinceLastIntervalEnd -= I64(myCooldownTime);
     decreaseInterval();
   }
 

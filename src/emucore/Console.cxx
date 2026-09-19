@@ -88,7 +88,7 @@ namespace {
     speed = std::abs(speed);
 
     return BSPF::clamp(
-      static_cast<int>(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      I32(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
       MIN_SPEED, MAX_SPEED
     );
   }
@@ -138,7 +138,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myOSystem.sound().stopWav();
 
   // Reinitialize the RNG
-  myOSystem.random().initSeed(static_cast<uInt32>(TimerManager::getTicks()));
+  myOSystem.random().initSeed(U32(TimerManager::getTicks()));
 
   // Construct the system and components
   mySystem = std::make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
@@ -822,7 +822,7 @@ void Console::toggleCorrectAspectRatio(bool toggle)
 void Console::setTIAProperties()
 {
   const Int32 vcenter = BSPF::clamp(
-    static_cast<Int32>(BSPF::stoi(myProperties.get(PropType::Display_VCenter))),
+    I32(BSPF::stoi(myProperties.get(PropType::Display_VCenter))),
                                   TIAConstants::minVcenter, TIAConstants::maxVcenter);
 
   if(gameRefreshRate() == 60)
@@ -1345,7 +1345,7 @@ void Console::changeJitterSense(int direction) const
   if(!myTIA->toggleJitter(3))
     direction = 0;
 
-  sensitivity = BSPF::clamp(static_cast<Int32>(sensitivity + direction),
+  sensitivity = BSPF::clamp(I32(sensitivity + direction),
     JitterEmulation::MIN_SENSITIVITY, JitterEmulation::MAX_SENSITIVITY);
   myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
 
@@ -1380,7 +1380,7 @@ void Console::changeJitterRecovery(int direction) const
   if(!myTIA->toggleJitter(3))
     direction = 0;
 
-  recovery = BSPF::clamp(static_cast<Int32>(recovery + direction),
+  recovery = BSPF::clamp(I32(recovery + direction),
     JitterEmulation::MIN_RECOVERY, JitterEmulation::MAX_RECOVERY);
   myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
 

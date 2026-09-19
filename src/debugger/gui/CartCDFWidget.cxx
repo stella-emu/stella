@@ -325,7 +325,7 @@ void CartridgeCDFWidget::loadConfig()
     clearAll();
     alist.push_back(0);  vlist.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
     changed.push_back(myCart.myRAM[myCart.myFastFetcherOffset] !=
-      static_cast<uInt32>(myOldState.fastfetchoffset[0]));
+      U32(myOldState.fastfetchoffset[0]));
     myFastFetcherOffset->setList(alist, vlist, changed);
   }
 

@@ -60,7 +60,7 @@ void Playfield::pf0(uInt8 value)
   // early return above is an optimization.
   myTIA->flushLineCache();
 
-  myPattern = (myPattern & 0x000FFFF0U) | static_cast<uInt32>(value >> 4U);
+  myPattern = (myPattern & 0x000FFFF0U) | U32(value >> 4U);
   myPf0 = value >> 4U;
 
   updatePattern();
@@ -96,7 +96,7 @@ void Playfield::pf2(uInt8 value)
   // PF2 byte changed — slotted into the high 8 bits of myPattern.
   myTIA->flushLineCache();
 
-  myPattern = (myPattern & 0x00000FFFU) | static_cast<uInt32>(value << 12U);
+  myPattern = (myPattern & 0x00000FFFU) | U32(value << 12U);
   myPf2 = value;
 
   updatePattern();
@@ -250,10 +250,10 @@ void Playfield::applyColors()
 uInt8 Playfield::getColor() const
 {
   if (!myDebugEnabled)
-    return myX < static_cast<uInt16>(TIAConstants::H_PIXEL / 2 - myScoreHaste) ? myColorLeft : myColorRight;
+    return myX < U16(TIAConstants::H_PIXEL / 2 - myScoreHaste) ? myColorLeft : myColorRight;
   else
   {
-    if (myX < static_cast<uInt16>(TIAConstants::H_PIXEL / 2 - myScoreHaste))
+    if (myX < U16(TIAConstants::H_PIXEL / 2 - myScoreHaste))
     {
       // left side:
       if(myX < 16)

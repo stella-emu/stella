@@ -113,7 +113,7 @@ void AboutDialog::layout()
   // The pages are written to 55 characters, so that is the dialog's width; its
   // height is however much room they ask for, plus the button row below them
   _w = 55 * fontWidth + HBORDER * 2;
-  _h = _th + static_cast<int>(root->naturalSize().h) + buttonHeight + VBORDER;
+  _h = _th + I32(root->naturalSize().h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 

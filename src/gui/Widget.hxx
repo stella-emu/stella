@@ -109,7 +109,7 @@ class Widget : public GuiObject
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
     int addToFocusList(const WidgetArray& list) override {
       Vec::append(_focusList, list);
-      return static_cast<int>(_focusList.size());
+      return I32(_focusList.size());
     }
 
     /** Set/clear Flag::Enabled */
@@ -506,7 +506,7 @@ class ButtonWidget : public LabelWidget
     // The room a button leaves around its bitmap: an icon-only button centers
     // its bitmap in this, and an icon-and-label one draws its label after it
     static int iconGap(const GUI::Font& font) {
-      return (static_cast<uInt32>(font.getMaxCharWidth() + 1) & ~1U) + 1;
+      return (U32(font.getMaxCharWidth() + 1) & ~1U) + 1;
     }
 
   protected:
@@ -531,11 +531,11 @@ class ButtonWidget : public LabelWidget
       if(_icon == nullptr)
         return _compact
           ? _font.getStringWidth(_label)
-              + static_cast<int>(_font.getMaxCharWidth() * 1.25)
+              + I32(_font.getMaxCharWidth() * 1.25)
           : calcWidth(_font, _label);
 
       return _useText
-        ? _icon->width() + static_cast<int>(_bmx * 1.5)
+        ? _icon->width() + I32(_bmx * 1.5)
             + _font.getStringWidth(_label)
         : _icon->width() + iconGap(_font);
     }

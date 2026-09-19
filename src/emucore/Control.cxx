@@ -146,7 +146,7 @@ Controller::Type Controller::getType(string_view propName)
   const auto it = std::ranges::find_if(CONTROLLER_INFO,
       [&](const auto& info) { return BSPF::equalsIgnoreCase(propName, info.propName); });
   if(it != CONTROLLER_INFO.end())
-    return Type{static_cast<uInt8>(std::distance(CONTROLLER_INFO.begin(), it))};
+    return Type{U8(std::distance(CONTROLLER_INFO.begin(), it))};
 
   // special case
   if(BSPF::equalsIgnoreCase(propName, "KEYPAD"))

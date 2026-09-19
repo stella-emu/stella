@@ -33,10 +33,10 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   recalcSize();
 
   // Changed state isn't used, but we still need to fill it
-  while(static_cast<int>(_changedList.size()) < rows * cols)
+  while(I32(_changedList.size()) < rows * cols)
     _changedList.push_back(false);
   // prepare _stateList for change tracking
-  while(static_cast<int>(_stateList.size()) < rows * cols)
+  while(I32(_stateList.size()) < rows * cols)
     _stateList.push_back(false);
 }
 

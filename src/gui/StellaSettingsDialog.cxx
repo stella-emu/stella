@@ -100,11 +100,11 @@ void StellaSettingsDialog::createVideoOptions(WidgetArray& wid)
   // GUI::alignLabels / GUI::alignPopUps), so none of them names a width here
 
   // TV Mode
-  VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
-  VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
-  VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
-  VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
-  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
+  VarList::push_back(items, "Disabled", U32(NTSCFilter::Preset::OFF));
+  VarList::push_back(items, "RGB", U32(NTSCFilter::Preset::RGB));
+  VarList::push_back(items, "S-Video", U32(NTSCFilter::Preset::SVIDEO));
+  VarList::push_back(items, "Composite", U32(NTSCFilter::Preset::COMPOSITE));
+  VarList::push_back(items, "Bad adjust", U32(NTSCFilter::Preset::BAD));
   myTVModeLbl = new LabelWidget(this, _font, "TV mode");
   myTVMode = new PopUpWidget(this, _font, items);
   wid.push_back(myTVMode);
@@ -254,8 +254,8 @@ void StellaSettingsDialog::layout()
   // for the button row below it (which the content knows nothing about)
   const Common::Size natural = root->naturalSize();
 
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -361,7 +361,7 @@ void StellaSettingsDialog::setDefaults()
   myPositionPopup->setSelected("0");
 
   // TV effects
-  myTVMode->setSelected("RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
+  myTVMode->setSelected("RGB", U32(NTSCFilter::Preset::RGB));
   // TV scanline intensity
   myTVScanIntense->setValue(3); // 18
   // TV phosphor blend

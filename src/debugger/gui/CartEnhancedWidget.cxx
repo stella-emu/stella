@@ -88,7 +88,7 @@ string CartridgeEnhancedWidget::ramDescription()
     info = std::format("{} bytes RAM @ ${} - ${}\n",
       myCart.myRamSize,
       Base::hex4(ADDR_BASE),
-      Base::hex4(static_cast<int>(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
+      Base::hex4(I32(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
 
   info += std::format("  ${} - ${} (R), ${} - ${} (W)\n",
     Base::hex4(ADDR_BASE | myCart.myReadOffset),
@@ -127,7 +127,7 @@ string CartridgeEnhancedWidget::romDescription()
   {
     const auto* end = image.data() + image.size();
     uInt16 start = (((U32(end[-3]) << 8U) | end[-4]) / 0x1000) * 0x1000;
-    const uInt16 last = start + static_cast<uInt16>(image.size()) - 1;
+    const uInt16 last = start + U16(image.size()) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < image.size())
       start += myCart.myRomOffset;
@@ -332,7 +332,7 @@ void CartridgeEnhancedWidget::loadConfig()
       string result;
       result.reserve(arr.size() * 3);
       for(const auto i: arr)
-        result += std::format("{} ", Base::hex2(static_cast<int>(i)));
+        result += std::format("{} ", Base::hex2(I32(i)));
       return result;
     };
 
@@ -372,7 +372,7 @@ void CartridgeEnhancedWidget::handleCommand(CommandSender* sender, GuiCmd::Code 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeEnhancedWidget::internalRamSize()
 {
-  return static_cast<uInt32>(myCart.myRamSize);
+  return U32(myCart.myRamSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

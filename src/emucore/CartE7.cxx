@@ -118,10 +118,10 @@ void CartridgeE7::install(System& system)
   }
 
   // Setup the second segment to always point to the last ROM bank
-  const auto offset = static_cast<uInt16>(myRAMBank * BANK_SIZE);
+  const auto offset = U16(myRAMBank * BANK_SIZE);
   setAccess(0x1A00, HOTSPOT_PAGE - 0x1A00,
             offset, myImage.data(), offset,
-            System::PageAccessType::READ, static_cast<uInt16>(BANK_SIZE - 1));
+            System::PageAccessType::READ, U16(BANK_SIZE - 1));
   myCurrentBank[1] = myRAMBank;
 
   // Install some default banks for the RAM and first segment
@@ -391,7 +391,7 @@ bool CartridgeE7::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::romBankCount() const
 {
-  return static_cast<uInt16>(myImage.size() >> 11U);
+  return U16(myImage.size() >> 11U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

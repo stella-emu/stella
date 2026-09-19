@@ -41,14 +41,14 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font)
   // Joystick ID
   myIDLbl = new LabelWidget(this, font, "Controller ID");
   myJoyText = new EditTextWidget(this, font,
-      static_cast<int>(string_view("Unplugged").size()));
+      I32(string_view("Unplugged").size()));
   myJoyText->setEditable(false);
 
   // Port
   VariantList ports;
-  VarList::push_back(ports, "Auto",  static_cast<Int32>(PhysicalJoystick::Port::AUTO));
-  VarList::push_back(ports, "Left",  static_cast<Int32>(PhysicalJoystick::Port::LEFT));
-  VarList::push_back(ports, "Right", static_cast<Int32>(PhysicalJoystick::Port::RIGHT));
+  VarList::push_back(ports, "Auto",  I32(PhysicalJoystick::Port::AUTO));
+  VarList::push_back(ports, "Left",  I32(PhysicalJoystick::Port::LEFT));
+  VarList::push_back(ports, "Right", I32(PhysicalJoystick::Port::RIGHT));
 
   myJoyPortLbl = new LabelWidget(this, font, "Port");
   myJoyPort = new PopUpWidget(this, font, ports, Cmd::Port);
@@ -99,8 +99,8 @@ void JoystickDialog::layout()
   // The list STRETCHES, so the band for the button group has to be reserved
   // above (see CheatCodeDialog for the same gotcha)
   const Common::Size natural = root->naturalSize();
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h);
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h);
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -131,7 +131,7 @@ void JoystickDialog::loadConfig()
   {
     sticks.push_back(entry.name);
     myJoyIDs.push_back(entry.ID);
-    myJoyPorts.push_back(static_cast<int>(entry.port));
+    myJoyPorts.push_back(I32(entry.port));
   }
   myJoyList->setList(sticks);
   myJoyList->setSelected(0);

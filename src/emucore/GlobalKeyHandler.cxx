@@ -67,8 +67,8 @@ bool GlobalKeyHandler::handleEvent(Event::Type event, bool pressed, bool repeate
       {
         const int direction = (event == Event::PreviousSettingGroup ? -1 : +1);
         const auto group = static_cast<Group>(
-            BSPF::clampw(static_cast<int>(getGroup()) + direction,
-            0, static_cast<int>(Group::NUM_GROUPS) - 1));
+            BSPF::clampw(I32(getGroup()) + direction,
+            0, I32(Group::NUM_GROUPS) - 1));
         static constexpr std::array<std::pair<Group, GroupData>, 3> GroupMap = {{
           {Group::AV,    {Setting::START_AV_ADJ,    "Audio & Video"}},
           {Group::INPUT, {Setting::START_INPUT_ADJ, "Input Devices & Ports"}},
@@ -205,7 +205,7 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool isCustomPalette =
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
-    myOSystem.settings().getInt("tv.filter") == static_cast<int>(NTSCFilter::Preset::CUSTOM);
+    myOSystem.settings().getInt("tv.filter") == I32(NTSCFilter::Preset::CUSTOM);
   const bool hasScanlines =
     myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
@@ -299,24 +299,24 @@ GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
     {
       case Group::AV:
         mySetting = static_cast<Setting>(
-            BSPF::clampw(static_cast<int>(mySetting) + direction,
-            static_cast<int>(Setting::START_AV_ADJ), static_cast<int>(Setting::END_AV_ADJ)));
+            BSPF::clampw(I32(mySetting) + direction,
+            I32(Setting::START_AV_ADJ), I32(Setting::END_AV_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipAVSetting();
         break;
 
       case Group::INPUT:
         mySetting = static_cast<Setting>(
-            BSPF::clampw(static_cast<int>(mySetting) + direction,
-            static_cast<int>(Setting::START_INPUT_ADJ), static_cast<int>(Setting::END_INPUT_ADJ)));
+            BSPF::clampw(I32(mySetting) + direction,
+            I32(Setting::START_INPUT_ADJ), I32(Setting::END_INPUT_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipInputSetting();
         break;
 
       case Group::DEBUG:
         mySetting = static_cast<Setting>(
-            BSPF::clampw(static_cast<int>(mySetting) + direction,
-            static_cast<int>(Setting::START_DEBUG_ADJ), static_cast<int>(Setting::END_DEBUG_ADJ)));
+            BSPF::clampw(I32(mySetting) + direction,
+            I32(Setting::START_DEBUG_ADJ), I32(Setting::END_DEBUG_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipDebugSetting();
         break;
@@ -368,11 +368,11 @@ void GlobalKeyHandler::buildSettingMap()
     {Setting::PALETTE_GAMMA,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(PaletteHandler::GAMMA, d); }}},
     // NTSC filter adjustables
     {Setting::NTSC_PRESET,            {false, [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSC(d); }}},
-    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::SHARPNESS), d); }}},
-    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::RESOLUTION), d); }}},
-    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::ARTIFACTS), d); }}},
-    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::FRINGING), d); }}},
-    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(static_cast<int>(NTSCFilter::Adjustables::BLEEDING), d); }}},
+    {Setting::NTSC_SHARPNESS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(I32(NTSCFilter::Adjustables::SHARPNESS), d); }}},
+    {Setting::NTSC_RESOLUTION,        {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(I32(NTSCFilter::Adjustables::RESOLUTION), d); }}},
+    {Setting::NTSC_ARTIFACTS,         {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(I32(NTSCFilter::Adjustables::ARTIFACTS), d); }}},
+    {Setting::NTSC_FRINGING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(I32(NTSCFilter::Adjustables::FRINGING), d); }}},
+    {Setting::NTSC_BLEEDING,          {true,  [this](int d) { myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(I32(NTSCFilter::Adjustables::BLEEDING), d); }}},
     // Other TV effects adjustables
     {Setting::PHOSPHOR_MODE,          {true,  [this](int d) { myOSystem.console().cyclePhosphorMode(d); }}},
     {Setting::PHOSPHOR,               {true,  [this](int d) { myOSystem.console().changePhosphor(d); }}},
@@ -443,7 +443,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(Setting setting) 
   if(result != mySettingMap.end())
     return result->second;
 
-  cerr << "Error: setting " << static_cast<int>(setting)
+  cerr << "Error: setting " << I32(setting)
        << " missing in SettingMap!\n";
   return mySettingMap.find(Setting::VOLUME)->second; // default function!
 }

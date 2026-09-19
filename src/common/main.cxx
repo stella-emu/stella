@@ -310,7 +310,7 @@ int main(int ac, char* av[])
     {
       Debugger& dbg = theOSystem->debugger();
       const auto bp =
-        static_cast<uInt16>(dbg.stringToValue(it->second.toString()));
+        U16(dbg.stringToValue(it->second.toString()));
       dbg.setBreakPoint(bp);
     }
 #endif

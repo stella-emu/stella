@@ -92,7 +92,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles, Int3
         const Int32 scanlineDifference = scanlineCount - myLastFrameScanlines;
 
         if(abs(scanlineDifference) >= myScanlineDelta
-          && abs(myJitter) < static_cast<Int32>(myRandom.next() % myJitterLines))
+          && abs(myJitter) < I32(myRandom.next() % myJitterLines))
         {
           // Repeated invalid frames cause randomly repeated jitter
           myJitter = std::max(std::min(scanlineDifference, myJitterLines), -myYStart);

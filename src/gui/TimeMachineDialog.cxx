@@ -341,7 +341,7 @@ void TimeMachineDialog::layout()
   root->addAuto(std::move(row1));
   root->addAuto(std::move(row2));
 
-  _h = _th + static_cast<int>(root->naturalSize().h);
+  _h = _th + I32(root->naturalSize().h);
 
   root->doLayout(0, _th, _w, _h - _th);
 }
@@ -521,7 +521,7 @@ void TimeMachineDialog::initBar()
 
   // Set range and intervals for timeline
   const uInt32 maxValue = cycles.size() > 1
-    ? static_cast<uInt32>(cycles.size() - 1)
+    ? U32(cycles.size() - 1)
     : 0;
   myTimeline->setMaxValue(maxValue);
   myTimeline->setStepValues(cycles);
@@ -541,11 +541,11 @@ string TimeMachineDialog::getTimeString(uInt64 cycles, size_t scanlines)
   constexpr size_t PAL_FREQ  = 1182298; // ~76*312*50
   const size_t freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  const auto minutes = static_cast<uInt32>(cycles / (freq * 60));
+  const auto minutes = U32(cycles / (freq * 60));
   cycles -= minutes * (freq * 60);
-  const auto seconds = static_cast<uInt32>(cycles / freq);
+  const auto seconds = U32(cycles / freq);
   cycles -= seconds * freq;
-  const auto frames  = static_cast<uInt32>(cycles / (scanlines * 76));
+  const auto frames  = U32(cycles / (scanlines * 76));
 
   return std::format("{:02}:{:02}.{:02}", minutes, seconds, frames);
 }

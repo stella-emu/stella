@@ -352,10 +352,10 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
     switch(b)
     {
       case MouseButton::LEFT:
-        myEvent.set(Event::MouseButtonLeftValue, static_cast<int>(pressed));
+        myEvent.set(Event::MouseButtonLeftValue, I32(pressed));
         break;
       case MouseButton::RIGHT:
-        myEvent.set(Event::MouseButtonRightValue, static_cast<int>(pressed));
+        myEvent.set(Event::MouseButtonRightValue, I32(pressed));
         break;
       default:
         return;
@@ -390,7 +390,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
     case SystemEvent::WINDOW_RESIZED:
     {
       auto& fb = myOSystem.frameBuffer();
-      const auto windowID = static_cast<uInt32>(data3);
+      const auto windowID = U32(data3);
 
     #ifdef DEBUGGER_SUPPORT
       // The companion TIA window resizes independently of the debugger window
@@ -433,7 +433,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       // Remember where the user put this window (data3 carries the window ID);
       // the position is read back from the window itself, so a fullscreen or
       // centered window is correctly skipped
-      myOSystem.frameBuffer().saveWindowPosition(static_cast<uInt32>(data3));
+      myOSystem.frameBuffer().saveWindowPosition(U32(data3));
       break;
 
     case SystemEvent::WINDOW_EXPOSED:
@@ -443,7 +443,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       // window untouched
       if(myState == EventHandlerState::DEBUGGER &&
          myOSystem.frameBuffer().secondaryWindowOpen() &&
-         static_cast<uInt32>(data1) == myOSystem.frameBuffer().secondaryWindowId())
+         U32(data1) == myOSystem.frameBuffer().secondaryWindowId())
       {
         myOSystem.debugger().invalidateTiaWindow();
         break;

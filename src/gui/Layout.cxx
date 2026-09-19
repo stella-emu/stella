@@ -65,8 +65,8 @@ void WidgetLayout::doLayout(int x, int y, int w, int h)
   // positions that within the cell.  A baseline item has already been dropped
   // onto its row's baseline by the enclosing box, so here it places like Top
   const Common::Size natural = myWidget->naturalSize();
-  const int aw = myHAlign == HAlign::Fill ? w : static_cast<int>(natural.w);
-  const int ah = myVAlign == VAlign::Fill ? h : static_cast<int>(natural.h);
+  const int aw = myHAlign == HAlign::Fill ? w : I32(natural.w);
+  const int ah = myVAlign == VAlign::Fill ? h : I32(natural.h);
   int ax = x, ay = y;
 
   switch(myHAlign)
@@ -106,7 +106,7 @@ BoxLayout& BoxLayout::add(unique_ptr<Layout> child, SizePolicy policy, int value
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoxLayout::doLayout(int x, int y, int w, int h)
 {
-  const int n = static_cast<int>(myItems.size());
+  const int n = I32(myItems.size());
   if(n == 0)
     return;
 
@@ -130,7 +130,7 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
       case SizePolicy::Auto:
       {
         const Common::Size natural = it.layout->naturalSize();
-        ext[i] = static_cast<int>(horiz ? natural.w : natural.h);
+        ext[i] = I32(horiz ? natural.w : natural.h);
         break;
       }
       case SizePolicy::Fixed:
@@ -213,25 +213,25 @@ Common::Size BoxLayout::naturalSize() const
     const Common::Size cs = it.layout->naturalSize();
     // A cell sized in pixels wants exactly those; one that stretches wants what
     // its content wants, but never less than the base size it was promised
-    int childMain = static_cast<int>(horiz ? cs.w : cs.h);
+    int childMain = I32(horiz ? cs.w : cs.h);
     if(it.policy == SizePolicy::Fixed)
       childMain = it.value;
     else if(it.policy == SizePolicy::Stretch)
       childMain = std::max(childMain, it.minMain);
     mainNat += childMain;
-    crossNat = std::max(crossNat, static_cast<int>(horiz ? cs.h : cs.w));
+    crossNat = std::max(crossNat, I32(horiz ? cs.h : cs.w));
   }
-  const int n = static_cast<int>(myItems.size());
+  const int n = I32(myItems.size());
   if(n > 0)
     mainNat += mySpacing * (n - 1);
 
   // Main axis gets that axis' margin; cross axis gets the other
   const int wMargin = 2 * myMarginH, hMargin = 2 * myMarginV;
   return horiz
-    ? Common::Size(static_cast<uInt32>(mainNat + wMargin),
-                   static_cast<uInt32>(crossNat + hMargin))
-    : Common::Size(static_cast<uInt32>(crossNat + wMargin),
-                   static_cast<uInt32>(mainNat + hMargin));
+    ? Common::Size(U32(mainNat + wMargin),
+                   U32(crossNat + hMargin))
+    : Common::Size(U32(crossNat + wMargin),
+                   U32(mainNat + hMargin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,8 +245,8 @@ Common::Size BoxLayout::minSize() const
   for(const auto& it: myItems)
   {
     const Common::Size cs = it.layout->minSize();
-    int childMain = static_cast<int>(horiz ? cs.w : cs.h);
-    const int childCross = static_cast<int>(horiz ? cs.h : cs.w);
+    int childMain = I32(horiz ? cs.w : cs.h);
+    const int childCross = I32(horiz ? cs.h : cs.w);
     // A fixed cell can never be smaller than its fixed size — unless the
     // dialog declared a compression floor (minMain), promising to recompute
     // the fixed value down to that floor as the available space shrinks.  A
@@ -264,7 +264,7 @@ Common::Size BoxLayout::minSize() const
       // an image — stretches instead, and keeps a small minSize of its own
       const Common::Size natural = it.layout->naturalSize();
       childMain = std::max(childMain,
-                           static_cast<int>(horiz ? natural.w : natural.h));
+                           I32(horiz ? natural.w : natural.h));
     }
     else if(it.policy == SizePolicy::Percent && it.value > 0)
     {
@@ -281,7 +281,7 @@ Common::Size BoxLayout::minSize() const
     mainMin += childMain;
     crossMin = std::max(crossMin, childCross);
   }
-  const int n = static_cast<int>(myItems.size());
+  const int n = I32(myItems.size());
   if(n > 0)
     mainMin += mySpacing * (n - 1);
 
@@ -304,10 +304,10 @@ Common::Size BoxLayout::minSize() const
   // Main axis gets that axis' margin; cross axis gets the other
   const int wMargin = 2 * myMarginH, hMargin = 2 * myMarginV;
   return horiz
-    ? Common::Size(static_cast<uInt32>(mainMin + wMargin),
-                   static_cast<uInt32>(crossMin + hMargin))
-    : Common::Size(static_cast<uInt32>(crossMin + wMargin),
-                   static_cast<uInt32>(mainMin + hMargin));
+    ? Common::Size(U32(mainMin + wMargin),
+                   U32(crossMin + hMargin))
+    : Common::Size(U32(crossMin + wMargin),
+                   U32(mainMin + hMargin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,7 +343,7 @@ namespace {
     int width = minWidth;
     for(const auto* b: buttons)
       if(b != nullptr)
-        width = std::max(width, static_cast<int>(b->naturalSize().w));
+        width = std::max(width, I32(b->naturalSize().w));
 
     for(auto* b: buttons)
       if(b != nullptr)
@@ -412,7 +412,7 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
                  std::initializer_list<const Widget*> labels,
                  int span, int spacing)
 {
-  const int count = static_cast<int>(sliders.size());
+  const int count = I32(sliders.size());
   if(count == 0)
     return;
 
@@ -517,8 +517,8 @@ GridLayout& GridLayout::place(int col, int row, unique_ptr<Layout> child,
                               int colspan, int rowspan)
 {
   assert(col >= 0 && row >= 0 && colspan >= 1 && rowspan >= 1);
-  assert(col + colspan <= static_cast<int>(myColumns.size()));
-  assert(row + rowspan <= static_cast<int>(myRows.size()));
+  assert(col + colspan <= I32(myColumns.size()));
+  assert(row + rowspan <= I32(myRows.size()));
   myCells.push_back(Cell{std::move(child), col, row, colspan, rowspan});
   return *this;
 }
@@ -536,7 +536,7 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
     const int idx  = horiz ? cell.col : cell.row;
     const int span = horiz ? cell.colspan : cell.rowspan;
     if(span == 1)
-      naturals[idx] = std::max(naturals[idx], static_cast<int>(horiz ? cs.w : cs.h));
+      naturals[idx] = std::max(naturals[idx], I32(horiz ? cs.w : cs.h));
   }
   // ...and a spanning cell grows its tracks when they cannot hold it between
   // them.  The growth goes to the FLEXIBLE tracks of the span if it has any,
@@ -559,7 +559,7 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
       have += naturals[idx + i];
 
     const Common::Size cs = cell.layout->naturalSize();
-    const int deficit = static_cast<int>(horiz ? cs.w : cs.h) - have;
+    const int deficit = I32(horiz ? cs.w : cs.h) - have;
     if(deficit <= 0)
       continue;
 
@@ -573,7 +573,7 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
         targets.push_back(idx + i);
 
     // Share the shortfall out, remainder to the last of them
-    const int n = static_cast<int>(targets.size());
+    const int n = I32(targets.size());
     const int per = deficit / n;
     for(const int t: targets)
       naturals[t] += per;
@@ -585,7 +585,7 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
 void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
                                const IntArray& naturals, IntArray& ext)
 {
-  const int n = static_cast<int>(tracks.size());
+  const int n = I32(tracks.size());
   ext.assign(n, 0);
 
   // First pass: the tracks that do not depend on what is left over (and tally
@@ -663,8 +663,8 @@ void GridLayout::doLayout(int x, int y, int w, int h)
   if(myCells.empty())
     return;
 
-  const int cols = static_cast<int>(myColumns.size());
-  const int rows = static_cast<int>(myRows.size());
+  const int cols = I32(myColumns.size());
+  const int rows = I32(myRows.size());
 
   // Inset by the margins; the space the tracks share on each axis excludes the
   // inter-track spacing
@@ -701,8 +701,8 @@ void GridLayout::doLayout(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size GridLayout::minSize() const
 {
-  const int cols = static_cast<int>(myColumns.size());
-  const int rows = static_cast<int>(myRows.size());
+  const int cols = I32(myColumns.size());
+  const int rows = I32(myRows.size());
   IntArray colMin(cols, 0), rowMin(rows, 0), colNat, rowNat;
 
   trackNaturals(true, colNat);
@@ -736,18 +736,18 @@ Common::Size GridLayout::minSize() const
   {
     const Common::Size cs = cell.layout->minSize();
     if(cell.colspan == 1)
-      colMin[cell.col] = std::max(colMin[cell.col], static_cast<int>(cs.w));
+      colMin[cell.col] = std::max(colMin[cell.col], I32(cs.w));
     if(cell.rowspan == 1)
-      rowMin[cell.row] = std::max(rowMin[cell.row], static_cast<int>(cs.h));
+      rowMin[cell.row] = std::max(rowMin[cell.row], I32(cs.h));
   }
   // Spanning cells grow their tracks only when the combined min is too small
   for(const auto& cell: myCells)
   {
     const Common::Size cs = cell.layout->minSize();
     if(cell.colspan > 1)
-      growSpan(colMin, cell.col, cell.colspan, static_cast<int>(cs.w), myHSpacing);
+      growSpan(colMin, cell.col, cell.colspan, I32(cs.w), myHSpacing);
     if(cell.rowspan > 1)
-      growSpan(rowMin, cell.row, cell.rowspan, static_cast<int>(cs.h), myVSpacing);
+      growSpan(rowMin, cell.row, cell.rowspan, I32(cs.h), myVSpacing);
   }
 
   int mw = 2 * myMarginH, mh = 2 * myMarginV;
@@ -756,14 +756,14 @@ Common::Size GridLayout::minSize() const
   if(cols > 0) mw += myHSpacing * (cols - 1);
   if(rows > 0) mh += myVSpacing * (rows - 1);
 
-  return Common::Size(static_cast<uInt32>(mw), static_cast<uInt32>(mh));
+  return Common::Size(U32(mw), U32(mh));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size GridLayout::naturalSize() const
 {
-  const int cols = static_cast<int>(myColumns.size());
-  const int rows = static_cast<int>(myRows.size());
+  const int cols = I32(myColumns.size());
+  const int rows = I32(myRows.size());
   IntArray colNat, rowNat;
 
   trackNaturals(true, colNat);
@@ -789,7 +789,7 @@ Common::Size GridLayout::naturalSize() const
   if(cols > 0) nw += myHSpacing * (cols - 1);
   if(rows > 0) nh += myVSpacing * (rows - 1);
 
-  return Common::Size(static_cast<uInt32>(nw), static_cast<uInt32>(nh));
+  return Common::Size(U32(nw), U32(nh));
 }
 
 }  // namespace GUI

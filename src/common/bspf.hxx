@@ -37,7 +37,7 @@ using Int64  = int64_t;
 using uInt64 = uint64_t;
 
 // Short-named stand-ins for static_cast<...> to the types above, for the common
-// case of narrowing/re-signing a value at the point it feeds a bitwise operator.
+// case of narrowing/re-signing a value.
 template<typename T> constexpr Int8   I8 (T x) { return static_cast<Int8>(x);   }
 template<typename T> constexpr uInt8  U8 (T x) { return static_cast<uInt8>(x);  }
 template<typename T> constexpr Int16  I16(T x) { return static_cast<Int16>(x);  }

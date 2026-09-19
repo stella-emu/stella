@@ -106,7 +106,7 @@ class BreakpointMap
     struct BreakpointHash {
       size_t operator()(const Breakpoint& bp) const {
         return std::hash<uInt64>()(
-          static_cast<uInt64>(bp.addr) * 13  // only check for address, bank check via == operator
+          U64(bp.addr) * 13  // only check for address, bank check via == operator
         );
       }
     };
