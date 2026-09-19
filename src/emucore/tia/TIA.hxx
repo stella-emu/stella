@@ -956,13 +956,12 @@ class TIA : public Device
     /**
      * Single 15-bit accumulator that collapses the 15 per-pair collision
      * flip-flops of the real chip into one OR-accumulated register. Each
-     * bit corresponds to a unique object pair via the encoding in the
-     * CollisionMask enum in TIA.cxx; see TIA::updateCollision for how a
-     * single AND across all six objects sets every relevant pair bit, and
-     * TIA::collCX* for how individual pair bits are extracted on read.
-     * Cleared by CXCLR.
+     * bit corresponds to a unique object pair via the CollisionMask encoding
+     * in TIAConstants.hxx; see TIA::updateCollision for how a single AND
+     * across all six objects sets every relevant pair bit, and TIA::collCX*
+     * for how individual pair bits are extracted on read. Cleared by CXCLR.
      */
-    uInt32 myCollisionMask{0};
+    CollisionMask myCollisionMask{CollisionMask::NONE};
 
     /**
      * The movement clock counts the extra ticks sent to the objects during

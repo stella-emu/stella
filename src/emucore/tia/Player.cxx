@@ -20,7 +20,7 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Player::Player(uInt32 collisionMask)
+Player::Player(CollisionMask collisionMask)
   : myCollisionMaskDisabled{collisionMask}
 {
 }
@@ -235,7 +235,7 @@ void Player::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? CollisionMask::ALL : (CollisionMask::VISIBLE | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -458,9 +458,9 @@ bool Player::save(Serializer& out) const
 {
   try
   {
-    out.putInt(collision);
-    out.putInt(myCollisionMaskDisabled);
-    out.putInt(myCollisionMaskEnabled);
+    out.putShort(Bitmask::to_underlying(collision));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskDisabled));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskEnabled));
 
     out.putByte(myColor);
     out.putByte(myObjectColor);  out.putByte(myDebugColor);
@@ -506,9 +506,9 @@ bool Player::load(Serializer& in)
 {
   try
   {
-    collision = in.getInt();
-    myCollisionMaskDisabled = in.getInt();
-    myCollisionMaskEnabled = in.getInt();
+    collision = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskDisabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskEnabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myColor = in.getByte();
     myObjectColor = in.getByte();  myDebugColor = in.getByte();

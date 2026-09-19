@@ -54,7 +54,7 @@ class TIA;
 class Player : public Serializable
 {
   public:
-    explicit Player(uInt32 collisionMask);
+    explicit Player(CollisionMask collisionMask);
     ~Player() override = default;
 
     /**
@@ -164,7 +164,7 @@ class Player : public Serializable
     /**
       Is the player currently visible? Determined from bit 15 of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000U); }
+    bool isOn() const { return Bitmask::Enum{collision}.any_of(CollisionMask::VISIBLE); }
 
     /**
       True when the player is actively rendering its main copy and the graphics
@@ -235,7 +235,7 @@ class Player : public Serializable
 
   public:
     // 16-bit collision mask; bit 15 encodes current visibility
-    uInt32 collision{0};
+    CollisionMask collision{CollisionMask::NONE};
 
     // True while HMOVE movement clocks are being propagated
     bool isMoving{false};
@@ -264,9 +264,9 @@ class Player : public Serializable
 
   private:
     // Collision mask value when the player is invisible
-    uInt32 myCollisionMaskDisabled{0};
+    CollisionMask myCollisionMaskDisabled{CollisionMask::NONE};
     // Collision mask value when the player is visible
-    uInt32 myCollisionMaskEnabled{0xFFFF};
+    CollisionMask myCollisionMaskEnabled{CollisionMask::ALL};
 
     // Current computed color (output of applyColors())
     uInt8 myColor{0};

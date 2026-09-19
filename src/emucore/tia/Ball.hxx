@@ -46,7 +46,7 @@ class Ball : public Serializable
     /**
       The collision mask is injected at construction
      */
-    explicit Ball(uInt32 collisionMask);
+    explicit Ball(CollisionMask collisionMask);
     ~Ball() override = default;
 
   public:
@@ -141,7 +141,7 @@ class Ball : public Serializable
       Is the ball visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000U); }
+    bool isOn() const { return Bitmask::Enum{collision}.any_of(CollisionMask::VISIBLE); }
 
     /**
       Get the current color.
@@ -209,7 +209,7 @@ class Ball : public Serializable
       abused to store visibility (as the actual collision bit will always be zero
       if collisions are disabled).
      */
-    uInt32 collision{0};
+    CollisionMask collision{CollisionMask::NONE};
 
     /**
       The movement flag. This corresponds to the state of the movement latch for
@@ -247,8 +247,8 @@ class Ball : public Serializable
       Collision mask values for active / inactive states. Disabling collisions
       will change those.
      */
-    uInt32 myCollisionMaskDisabled{0};
-    uInt32 myCollisionMaskEnabled{0xFFFF};
+    CollisionMask myCollisionMaskDisabled{CollisionMask::NONE};
+    CollisionMask myCollisionMaskEnabled{CollisionMask::ALL};
 
     /**
       Color value calculated by applyColors().

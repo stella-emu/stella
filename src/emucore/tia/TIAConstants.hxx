@@ -106,6 +106,34 @@ enum class CollisionBit: uInt16
   M0M1 = Bitmask::bit<CollisionBit>(14)  // Missile0 - Missile1
 };
 
+// Per-object collision bit patterns. Chosen so that, for any two distinct
+// objects A and B, A & B is a single unique bit appearing in no other
+// object's mask. Each object's mask is exactly the union of those unique
+// pair bits, i.e. the set of pair collisions it participates in.
+//
+// Examples:
+//   player0 & playfield = bit 10   (P0-PF)
+//   player0 & ball      = bit 11   (P0-BL)
+//   missile0 & missile1 = bit 14   (M0-M1)
+//
+// This lets updateCollision() compute all 15 pair collisions with a single
+// 15-bit AND across all six objects; see TIA::updateCollision for the
+// correctness argument and TIA::collCX* for how individual pair bits are
+// extracted on read. VISIBLE (bit 15) is reserved by each sprite as a
+// "visible this clock" latch (see TIA::renderPixel / sprite::isOn).
+enum class CollisionMask: uInt16 {
+  NONE      = 0,
+  player0   = 0b0111110000000000,
+  player1   = 0b0100001111000000,
+  missile0  = 0b0010001000111000,
+  missile1  = 0b0001000100100110,
+  ball      = 0b0000100010010101,
+  playfield = 0b0000010001001011,
+  VISIBLE   = Bitmask::bit<CollisionMask>(15),
+  ALL       = 0xFFFFU
+};
+template<> inline constexpr bool Bitmask::is_enum_v<CollisionMask> = true;
+
 // TIA Write/Read register names
 enum TIARegister: uInt8 {
   VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)

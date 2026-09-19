@@ -27,30 +27,6 @@
 #include "Base.hxx"
 
 namespace {
-  // Per-object collision bit patterns. Chosen so that, for any two distinct
-  // objects A and B, A & B is a single unique bit appearing in no other
-  // object's mask. Each object's mask is exactly the union of those unique
-  // pair bits — i.e. the set of pair collisions it participates in.
-  //
-  // Examples:
-  //   player0 & playfield = bit 10   (P0-PF)
-  //   player0 & ball      = bit 11   (P0-BL)
-  //   missile0 & missile1 = bit 14   (M0-M1)
-  //
-  // This lets updateCollision() compute all 15 pair collisions with a single
-  // 15-bit AND across all six objects; see TIA::updateCollision for the
-  // correctness argument and TIA::collCX* for how individual pair bits are
-  // extracted on read. Bit 15 is reserved by each sprite as a "visible this
-  // clock" latch (see TIA::renderPixel / sprite::isOn).
-  enum CollisionMask: uInt16 {
-    player0   = 0b0111110000000000,
-    player1   = 0b0100001111000000,
-    missile0  = 0b0010001000111000,
-    missile1  = 0b0001000100100110,
-    ball      = 0b0000100010010101,
-    playfield = 0b0000010001001011
-  };
-
   // Per-register color-clock delays applied when a TIA write is pushed onto
   // the DelayQueue. Some games rely on these on real hardware (e.g. GRP0/1
   // takes effect one clock after the write); see TIA::poke for which writes
@@ -96,16 +72,16 @@ TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
     myTimingProvider{timingProvider},
     mySettings{settings},
     // Each sprite's "disabled" collision mask is constructed as
-    //   ~CollisionMask::self & 0x7FFF
+    //   ~CollisionMask::self & ~CollisionMask::VISIBLE
     // so that when the sprite is silent it contributes ones everywhere
-    // except its own pair bits (and bit 15 — the visibility latch — is
-    // also cleared). See the CollisionMask enum above.
-    myPlayfield{~CollisionMask::playfield & 0x7FFF},
-    myMissile0{~CollisionMask::missile0 & 0x7FFF},
-    myMissile1{~CollisionMask::missile1 & 0x7FFF},
-    myPlayer0{~CollisionMask::player0 & 0x7FFF},
-    myPlayer1{~CollisionMask::player1 & 0x7FFF},
-    myBall{~CollisionMask::ball & 0x7FFF},
+    // except its own pair bits (VISIBLE, the visibility latch, is also
+    // cleared). See the CollisionMask enum in TIAConstants.hxx.
+    myPlayfield{~CollisionMask::playfield & ~CollisionMask::VISIBLE},
+    myMissile0{~CollisionMask::missile0 & ~CollisionMask::VISIBLE},
+    myMissile1{~CollisionMask::missile1 & ~CollisionMask::VISIBLE},
+    myPlayer0{~CollisionMask::player0 & ~CollisionMask::VISIBLE},
+    myPlayer1{~CollisionMask::player1 & ~CollisionMask::VISIBLE},
+    myBall{~CollisionMask::ball & ~CollisionMask::VISIBLE},
     myPhosphorCallback{callback}
 {
   myBackground.setTIA(this);
@@ -168,7 +144,7 @@ void TIA::initialize()
   myMovementClock = 0;
   myPriority = Priority::normal;
   myHstate = HState::blank;
-  myCollisionMask = 0;
+  myCollisionMask = CollisionMask::NONE;
   myLinesSinceChange = 0;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
@@ -331,7 +307,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myHctrDelta);
     out.putInt(myXAtRenderingStart);
 
-    out.putInt(myCollisionMask);
+    out.putShort(Bitmask::to_underlying(myCollisionMask));
 
     out.putInt(myMovementClock);
     out.putBool(myMovementInProgress);
@@ -413,7 +389,7 @@ bool TIA::load(Serializer& in)
     myHctrDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
 
-    myCollisionMask = in.getInt();
+    myCollisionMask = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myMovementClock = in.getInt();
     myMovementInProgress = in.getBool();
@@ -1006,7 +982,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // line will observe; flush so updateCollision rebuilds them from
       // the rewound counters rather than from a cloned line.
       flushLineCache();
-      myCollisionMask = 0;
+      myCollisionMask = CollisionMask::NONE;
       myShadowRegisters[address] = value;
       break;
 
@@ -2330,8 +2306,8 @@ uInt8 TIA::resxCounter()
 uInt8 TIA::collCXM0P() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80U : 0U)
   );
 }
 
@@ -2339,8 +2315,8 @@ uInt8 TIA::collCXM0P() const
 uInt8 TIA::collCXM1P() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80U : 0U)
   );
 }
 
@@ -2348,8 +2324,8 @@ uInt8 TIA::collCXM1P() const
 uInt8 TIA::collCXP0FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2357,8 +2333,8 @@ uInt8 TIA::collCXP0FB() const
 uInt8 TIA::collCXP1FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2366,8 +2342,8 @@ uInt8 TIA::collCXP1FB() const
 uInt8 TIA::collCXM0FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2375,8 +2351,8 @@ uInt8 TIA::collCXM0FB() const
 uInt8 TIA::collCXM1FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2384,15 +2360,15 @@ uInt8 TIA::collCXM1FB() const
 uInt8 TIA::collCXPPMM() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80U : 0U)
   );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::collCXBLPF() const
 {
-  return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
+  return bmBool(myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80U : 0U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

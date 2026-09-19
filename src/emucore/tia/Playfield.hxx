@@ -47,7 +47,7 @@ class Playfield : public Serializable
     /**
       The collision mask is injected at construction
      */
-    explicit Playfield(uInt32 collisionMask);
+    explicit Playfield(CollisionMask collisionMask);
     ~Playfield() override = default;
 
   public:
@@ -136,7 +136,7 @@ class Playfield : public Serializable
       Is the playfield visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000U); }
+    bool isOn() const { return Bitmask::Enum{collision}.any_of(CollisionMask::VISIBLE); }
 
     /**
       Get the current color.
@@ -162,7 +162,7 @@ class Playfield : public Serializable
       abused to store visibility (as the actual collision bit will always be zero
       if collisions are disabled).
      */
-    uInt32 collision{0};
+    CollisionMask collision{CollisionMask::NONE};
 
   private:
 
@@ -189,8 +189,8 @@ class Playfield : public Serializable
       Collision mask values for active / inactive states. Disabling collisions
       will change those.
      */
-    uInt32 myCollisionMaskDisabled{0};
-    uInt32 myCollisionMaskEnabled{0xFFFF};
+    CollisionMask myCollisionMaskDisabled{CollisionMask::NONE};
+    CollisionMask myCollisionMaskEnabled{CollisionMask::ALL};
 
     /**
       Enable / disable PF (debugging).

@@ -20,7 +20,7 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Missile::Missile(uInt32 collisionMask)
+Missile::Missile(CollisionMask collisionMask)
   : myCollisionMaskDisabled{collisionMask}
 {
 }
@@ -133,7 +133,7 @@ void Missile::resmp(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? CollisionMask::ALL : (CollisionMask::VISIBLE | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,9 +292,9 @@ bool Missile::save(Serializer& out) const
 {
   try
   {
-    out.putInt(collision);
-    out.putInt(myCollisionMaskDisabled);
-    out.putInt(myCollisionMaskEnabled);
+    out.putShort(Bitmask::to_underlying(collision));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskDisabled));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskEnabled));
 
     out.putBool(myIsEnabled);
     out.putBool(myIsSuppressed);
@@ -334,9 +334,9 @@ bool Missile::load(Serializer& in)
 {
   try
   {
-    collision = in.getInt();
-    myCollisionMaskDisabled = in.getInt();
-    myCollisionMaskEnabled = in.getInt();
+    collision = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskDisabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskEnabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myIsEnabled = in.getBool();
     myIsSuppressed = in.getBool();

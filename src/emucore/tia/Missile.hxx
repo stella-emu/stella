@@ -49,7 +49,7 @@ class TIA;
 class Missile : public Serializable
 {
   public:
-    explicit Missile(uInt32 collisionMask);
+    explicit Missile(CollisionMask collisionMask);
     ~Missile() override = default;
 
     /**
@@ -148,7 +148,7 @@ class Missile : public Serializable
     /**
       Is the missile currently visible? Determined from bit 15 of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000U); }
+    bool isOn() const { return Bitmask::Enum{collision}.any_of(CollisionMask::VISIBLE); }
 
     /**
       Get the current missile color.
@@ -203,7 +203,7 @@ class Missile : public Serializable
 
   public:
     // 16-bit collision mask; bit 15 encodes current visibility
-    uInt32 collision{0};
+    CollisionMask collision{CollisionMask::NONE};
     // True while HMOVE movement clocks are being propagated
     bool isMoving{false};
 
@@ -226,9 +226,9 @@ class Missile : public Serializable
 
   private:
     // Collision mask value when the missile is invisible
-    uInt32 myCollisionMaskDisabled{0};
+    CollisionMask myCollisionMaskDisabled{CollisionMask::NONE};
     // Collision mask value when the missile is visible
-    uInt32 myCollisionMaskEnabled{0xFFFF};
+    CollisionMask myCollisionMaskEnabled{CollisionMask::ALL};
 
     // Computed enabled state (from myEnam, myResmp, and myIsSuppressed)
     bool myIsEnabled{false};

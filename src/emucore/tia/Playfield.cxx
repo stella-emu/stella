@@ -19,7 +19,7 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Playfield::Playfield(uInt32 collisionMask)
+Playfield::Playfield(CollisionMask collisionMask)
   : myCollisionMaskDisabled{collisionMask}
 {
 }
@@ -45,7 +45,7 @@ void Playfield::reset()
   myScoreHaste = 0;
   myDebugEnabled = false;
 
-  collision = 0;
+  collision = CollisionMask::NONE;
 
   updatePattern();
 }
@@ -132,7 +132,7 @@ void Playfield::toggleEnabled(bool enabled)
 void Playfield::toggleCollisions(bool enabled)
 {
   // Only keep bit 15 active if collisions are disabled.
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000U | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? CollisionMask::ALL : (CollisionMask::VISIBLE | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,9 +294,9 @@ bool Playfield::save(Serializer& out) const
 {
   try
   {
-    out.putInt(collision);
-    out.putInt(myCollisionMaskDisabled);
-    out.putInt(myCollisionMaskEnabled);
+    out.putShort(Bitmask::to_underlying(collision));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskDisabled));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskEnabled));
 
     out.putBool(myIsSuppressed);
 
@@ -336,9 +336,9 @@ bool Playfield::load(Serializer& in)
 {
   try
   {
-    collision = in.getInt();
-    myCollisionMaskDisabled = in.getInt();
-    myCollisionMaskEnabled = in.getInt();
+    collision = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskDisabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskEnabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myIsSuppressed = in.getBool();
 
