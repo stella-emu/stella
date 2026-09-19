@@ -323,13 +323,13 @@ bool CartridgeAR::handleHotspot(uInt16 addr)
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags CartridgeAR::getAccessFlags(uInt16 address) const
+Device::AccessType CartridgeAR::getAccessFlags(uInt16 address) const
 {
   return myRomAccessBase[imageIndex(address)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessFlags flags)
+void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessType flags)
 {
   myRomAccessBase[imageIndex(address)] |= flags;
 }

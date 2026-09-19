@@ -324,18 +324,18 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
-    uInt16 dpeek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
-    void poke(uInt16 addr, uInt8 value, Device::AccessFlags flags = Device::NONE);
+    uInt8 peek(uInt16 addr, Device::AccessType flags = Device::NONE);
+    uInt16 dpeek(uInt16 addr, Device::AccessType flags = Device::NONE);
+    void poke(uInt16 addr, uInt8 value, Device::AccessType flags = Device::NONE);
 
     /** Convenience method to access the 6502 from System */
     M6502& m6502() const;
 
     /** These are now exposed so Expressions can use them. */
-    int peekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
-    int dpeekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
-    Device::AccessFlags getAccessFlags(uInt16 addr) const;
-    void setAccessFlags(uInt16 addr, Device::AccessFlags flags);
+    int peekAsInt(int addr, Device::AccessType flags = Device::NONE);
+    int dpeekAsInt(int addr, Device::AccessType flags = Device::NONE);
+    Device::AccessType getAccessFlags(uInt16 addr) const;
+    void setAccessFlags(uInt16 addr, Device::AccessType flags);
     Device::AccessCounter getAccessCounter(uInt16 addr) const;
 
     static uInt32 getBaseAddress(uInt32 addr, bool read);

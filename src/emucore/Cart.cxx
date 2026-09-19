@@ -134,7 +134,7 @@ void Cartridge::createRomAccessArrays(size_t size)
 
   // Always create ROM access base even if DEBUGGER_SUPPORT is disabled,
   // since other parts of the code depend on it existing
-  myRomAccessBase = std::make_unique<Device::AccessFlags[]>(size);
+  myRomAccessBase = std::make_unique<Device::AccessType[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
   myRomAccessCounter = std::make_unique<Device::AccessCounter[]>(size * 2);
   std::fill_n(myRomAccessCounter.get(), size * 2, 0);
@@ -203,12 +203,12 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
     count[PC >> 13U]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
-    const Device::AccessFlags flags = myRomAccessBase[offset + addr];
+    const Device::AccessType flags = myRomAccessBase[offset + addr];
     // only count really accessed addresses
-    if(flags & ~Device::ROW)
+    if(Bitmask::Enum{flags}.any_of(~Device::ROW))
     {
       //uInt16 addrBit = addr >> addrShift;
-      count[(flags & Device::HADDR) >> 13]++;
+      count[Device::haddrIndex(flags)]++;
     }
   }
   uInt16 max = 0, maxIdx = 0;

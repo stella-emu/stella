@@ -29,11 +29,14 @@
   #define DISASM_WRITE Device::WRITE
   #define DISASM_NONE  Device::NONE
 #else
-  // Flags for access types
-  #define DISASM_CODE  0
-  #define DISASM_DATA  0
-  #define DISASM_WRITE 0
-  #define DISASM_NONE  0
+  #include "Device.hxx"
+
+  // Flags for access types: nothing inspects these without the debugger,
+  // so they all collapse to the same neutral value
+  #define DISASM_CODE  Device::NONE
+  #define DISASM_DATA  Device::NONE
+  #define DISASM_WRITE Device::NONE
+  #define DISASM_NONE  Device::NONE
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"
@@ -92,7 +95,7 @@ void M6502::reset()
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
-  myFlags = DISASM_NONE;
+  myFlags = Bitmask::to_underlying(DISASM_NONE);
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
@@ -105,7 +108,7 @@ void M6502::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
+inline uInt8 M6502::peek(uInt16 address, Device::AccessType flags)
 {
   handleHalt();
 
@@ -117,7 +120,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 
   mySystem->incrementCycles(1);  // 1 system cycle per CPU cycle on the 6507
   ++icycles;
-  myFlags = flags;
+  myFlags = Bitmask::to_underlying(flags);
   const uInt8 result = mySystem->peek(address, flags);
 
 #ifdef DEBUGGER_SUPPORT
@@ -145,7 +148,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
+inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessType flags)
 {
   if(address != myLastAddress)
   {

@@ -341,7 +341,7 @@ class CartDebug : public DebuggerSystem
     using AddrToLabel = std::map<uInt16, string>;
     using LabelToAddr = std::map<string, uInt16, BSPF::CaseInsensitiveLess>;
 
-    using AddrTypeArray = std::array<uInt16, 0x1000>;
+    using AddrTypeArray = std::array<Device::AccessType, 0x1000>;
 
     struct DirectiveTag {
       Device::AccessType type{Device::NONE};
@@ -397,11 +397,11 @@ class CartDebug : public DebuggerSystem
     string getBankDirectives(const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
-    static Device::AccessType accessTypeAbsolute(Device::AccessFlags flags);
+    static Device::AccessType accessTypeAbsolute(Device::AccessType flags);
 
     // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    static string AccessTypeAsString(Device::AccessFlags flags);
+    static string AccessFlagsAsString(Device::AccessType flags);
 
   private:
     const OSystem& myOSystem;

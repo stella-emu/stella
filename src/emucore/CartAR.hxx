@@ -209,14 +209,14 @@ class CartridgeAR : public Cartridge
 
       @param address  The address to query
     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessType getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given access flags.
 
       @param address  The address to modify
       @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) override;
   #endif
 
   public:

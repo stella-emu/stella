@@ -642,14 +642,14 @@ class TIA : public Device
      *
      * @param address  The address to query
      */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessType getAccessFlags(uInt16 address) const override;
     /**
      * Change the given address to use the given access flags.
      *
      * @param address  The address to modify
      * @param flags    A bitfield of AccessType directives for the given address
      */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) override;
 
     /**
       Increase the given address's access counter
@@ -1099,7 +1099,7 @@ class TIA : public Device
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    std::array<Device::AccessFlags, TIA_SIZE> myAccessBase{};
+    std::array<Device::AccessType, TIA_SIZE> myAccessBase{};
     // The arrays containing information about every byte of TIA
     // indicating how often it is accessed (read and write).
     std::array<Device::AccessCounter, TIA_SIZE + TIA_READ_SIZE> myAccessCounter{};

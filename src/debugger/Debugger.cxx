@@ -659,20 +659,20 @@ void Debugger::log(string_view triggerMsg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
+uInt8 Debugger::peek(uInt16 addr, Device::AccessType flags)
 {
   return mySystem->peekOob(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
+uInt16 Debugger::dpeek(uInt16 addr, Device::AccessType flags)
 {
   return U16(U32(mySystem->peekOob(addr, flags)) |
             (U32(mySystem->peekOob(addr+1, flags)) << 8U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
+void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessType flags)
 {
   mySystem->pokeOob(addr, value, flags);
 }
@@ -684,26 +684,26 @@ M6502& Debugger::m6502() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
+int Debugger::peekAsInt(int addr, Device::AccessType flags)
 {
   return mySystem->peekOob(static_cast<uInt16>(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
+int Debugger::dpeekAsInt(int addr, Device::AccessType flags)
 {
   return U32(mySystem->peekOob(U16(addr), flags)) |
             (U32(mySystem->peekOob(U16(addr+1), flags)) << 8U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags Debugger::getAccessFlags(uInt16 addr) const
+Device::AccessType Debugger::getAccessFlags(uInt16 addr) const
 {
   return mySystem->getAccessFlags(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
+void Debugger::setAccessFlags(uInt16 addr, Device::AccessType flags)
 {
   mySystem->setAccessFlags(addr, flags);
 }

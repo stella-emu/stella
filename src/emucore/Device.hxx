@@ -21,6 +21,7 @@
 class System;
 
 #include "bspf.hxx"
+#include "BitmaskEnum.hxx"
 #include "ConsoleTiming.hxx"
 #include "Serializable.hxx"
 
@@ -33,11 +34,11 @@ class System;
 class Device : public Serializable
 {
   public:
-    enum AccessType: uInt16 {
+    enum class AccessType: uInt16 {
       NONE        = 0,
-      REFERENCED  = 1U << 0U, /* 0x01, code somewhere in the program references it,
+      REFERENCED  = Bitmask::bit<AccessType>(0), /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1U << 1U, /* 0x02, addresses that can have a label placed in front of it.
+      VALID_ENTRY = Bitmask::bit<AccessType>(1), /* 0x02, addresses that can have a label placed in front of it.
                                A good counterexample would be "FF00: LDA $FE00"; $FF01
                                would be in the middle of a multi-byte instruction, and
                                therefore cannot be labelled. */
@@ -46,22 +47,33 @@ class Device : public Serializable
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of increasing hierarchy
       //
-      ROW   = 1U << 2U,  // 0x004, all other addresses
-      DATA  = 1U << 3U,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
-      AUD   = 1U << 4U,  // 0x010, addresses loaded into audio registers
-      BCOL  = 1U << 5U,  // 0x020, addresses loaded into COLUBK register
-      PCOL  = 1U << 6U,  // 0x040, addresses loaded into COLUPF register
-      COL   = 1U << 7U,  // 0x080, addresses loaded into COLUPx registers
-      PGFX  = 1U << 8U,  // 0x100, addresses loaded into PFx registers
-      GFX   = 1U << 9U,  // 0x200, addresses loaded into GRPx registers
-      TCODE = 1U << 10U, // 0x400, (tentative) disassemble-able code segments
-      CODE  = 1U << 11U, // 0x800, disassemble-able code segments
+      ROW   = Bitmask::bit<AccessType>(2),  // 0x004, all other addresses
+      DATA  = Bitmask::bit<AccessType>(3),  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
+      AUD   = Bitmask::bit<AccessType>(4),  // 0x010, addresses loaded into audio registers
+      BCOL  = Bitmask::bit<AccessType>(5),  // 0x020, addresses loaded into COLUBK register
+      PCOL  = Bitmask::bit<AccessType>(6),  // 0x040, addresses loaded into COLUPF register
+      COL   = Bitmask::bit<AccessType>(7),  // 0x080, addresses loaded into COLUPx registers
+      PGFX  = Bitmask::bit<AccessType>(8),  // 0x100, addresses loaded into PFx registers
+      GFX   = Bitmask::bit<AccessType>(9),  // 0x200, addresses loaded into GRPx registers
+      TCODE = Bitmask::bit<AccessType>(10), // 0x400, (tentative) disassemble-able code segments
+      CODE  = Bitmask::bit<AccessType>(11), // 0x800, disassemble-able code segments
       // special bits for address
-      HADDR = 1U << 13U | 1U << 14U | 1U << 15U, // 0xe000, // highest 3 address bits
+      HADDR = 0xe000U, // highest 3 address bits
       // special type for poke()
       WRITE = TCODE    // 0x200, address written to
     };
-    using AccessFlags = uInt16;
+    // Exposes NONE, CODE, DATA, etc. as Device::NONE, Device::CODE, etc.
+    using enum AccessType;
+
+    // Reinterpret an address's top 3 bits (see HADDR above) as access flags;
+    // peek()/poke() OR this into the recorded flags so the debugger can later
+    // tell which mirror of a mirrored address was actually hit. Defined below,
+    // after is_enum_v<AccessType> is specialized.
+    [[nodiscard]] static constexpr AccessType addrBits(uInt16 addr) noexcept;
+
+    // Extract the HADDR field (top 3 address bits, see HADDR above) back out
+    // as a small 0-7 index, e.g. for bucketing accesses by address mirror.
+    [[nodiscard]] static constexpr uInt16 haddrIndex(AccessType flags) noexcept;
 
     using AccessCounter = uInt32;
 
@@ -138,7 +150,7 @@ class Device : public Serializable
 
       @param address The address to modify
     */
-    virtual AccessFlags getAccessFlags(uInt16 address) const { return AccessType::NONE; }
+    virtual AccessType getAccessFlags(uInt16 address) const { return AccessType::NONE; }
 
     /**
       Change the given address type to use the given access flags
@@ -146,7 +158,7 @@ class Device : public Serializable
       @param address The address to modify
       @param flags   A bitfield of AccessType directives for the given address
     */
-    virtual void setAccessFlags(uInt16 address, AccessFlags flags) { }
+    virtual void setAccessFlags(uInt16 address, AccessType flags) { }
 
     /**
       Increase the given address's access counter
@@ -174,5 +186,15 @@ class Device : public Serializable
     Device& operator=(const Device&) = delete;
     Device& operator=(Device&&) = delete;
 };
+
+template<> inline constexpr bool Bitmask::is_enum_v<Device::AccessType> = true;
+
+FORCE_INLINE constexpr Device::AccessType Device::addrBits(uInt16 addr) noexcept {
+  return Bitmask::from_underlying<AccessType>(addr & Bitmask::to_underlying(HADDR));
+}
+
+FORCE_INLINE constexpr uInt16 Device::haddrIndex(AccessType flags) noexcept {
+  return Bitmask::to_underlying(flags & HADDR) >> 13U;
+}
 
 #endif  // DEVICE_HXX

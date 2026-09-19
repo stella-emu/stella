@@ -204,7 +204,8 @@ string CartDebug::toString()
     {
       out += DebuggerParser::red(std::format(
         "{}xx: (rport = {}, wport = {})\n",
-        Base::hex2(state.rport[i] >> 8U), Base::hex4(state.rport[i]), Base::hex4(state.wport[i])
+        Base::hex2(state.rport[i] >> 8U), Base::hex4(state.rport[i]),
+                   Base::hex4(state.wport[i])
       ));
       bytesSoFar = 0;
     }
@@ -1064,7 +1065,6 @@ string CartDebug::saveDisassembly(string path)
   return CartDisassemblyWriter(*this).save(std::move(path));
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveRom(string path)
 {
@@ -1265,51 +1265,48 @@ string CartDebug::accessTypeAsString(uInt16 addr) const
   if(!(addr & 0x1000U))
     return DebuggerParser::red("type only defined for cart address space");
 
-  const uInt8 directive = myDisDirectives[addr & mySystem.addressMask()] & 0xFCU,
-              debugger  = myDebugger.getAccessFlags(addr) & 0xFCU,
-              label     = myDisLabels[addr & mySystem.addressMask()];
+  // The "value type" flags: what a directive/access can be, excluding the
+  // REFERENCED/VALID_ENTRY bookkeeping bits and the code/graphics bits.
+  constexpr Device::AccessType valueTypeMask =
+    Device::ROW | Device::DATA | Device::AUD | Device::BCOL | Device::PCOL | Device::COL;
+
+  const Device::AccessType directive = myDisDirectives[addr & mySystem.addressMask()] & valueTypeMask,
+                            debugger  = myDebugger.getAccessFlags(addr) & valueTypeMask,
+                            label     = myDisLabels[addr & mySystem.addressMask()];
 
   string out;
   out.reserve(128);
   out += "\ndirective: ";
-  out += Base::toString(directive, Base::Fmt::_2_8);
+  out += Base::toString(Bitmask::to_underlying(directive), Base::Fmt::_2_8);
   out += ' ';
-  out += AccessTypeAsString(directive);
+  out += AccessFlagsAsString(directive);
   out += "\nemulation: ";
-  out += Base::toString(debugger, Base::Fmt::_2_8);
+  out += Base::toString(Bitmask::to_underlying(debugger), Base::Fmt::_2_8);
   out += ' ';
-  out += AccessTypeAsString(debugger);
+  out += AccessFlagsAsString(debugger);
   out += "\ntentative: ";
-  out += Base::toString(label, Base::Fmt::_2_8);
+  out += Base::toString(Bitmask::to_underlying(label), Base::Fmt::_2_8);
   out += ' ';
-  out += AccessTypeAsString(label);
+  out += AccessFlagsAsString(label);
   out += '\n';
   return out;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags)
+Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessType flags)
 {
-  if(flags & Device::CODE || flags & Device::TCODE) // TODO: TCODE separate?
-    return Device::CODE;
-  else if(flags & Device::GFX)
-    return Device::GFX;
-  else if(flags & Device::PGFX)
-    return Device::PGFX;
-  else if(flags & Device::COL)
-    return Device::COL;
-  else if(flags & Device::PCOL)
-    return Device::PCOL;
-  else if(flags & Device::BCOL)
-    return Device::BCOL;
-  else if(flags & Device::AUD)
-    return Device::AUD;
-  else if(flags & Device::DATA)
-    return Device::DATA;
-  else if(flags & Device::ROW)
-    return Device::ROW;
-  else
-    return Device::NONE;
+  const Bitmask::Enum bits{flags};
+
+  if(bits.any_of(Device::CODE | Device::TCODE)) return Device::CODE; // TODO: TCODE separate?
+  else if(bits.any_of(Device::GFX))             return Device::GFX;
+  else if(bits.any_of(Device::PGFX))            return Device::PGFX;
+  else if(bits.any_of(Device::COL))             return Device::COL;
+  else if(bits.any_of(Device::PCOL))            return Device::PCOL;
+  else if(bits.any_of(Device::BCOL))            return Device::BCOL;
+  else if(bits.any_of(Device::AUD))             return Device::AUD;
+  else if(bits.any_of(Device::DATA))            return Device::DATA;
+  else if(bits.any_of(Device::ROW))             return Device::ROW;
+  else                                          return Device::NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1332,26 +1329,27 @@ string_view CartDebug::AccessTypeAsString(Device::AccessType type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::AccessTypeAsString(Device::AccessFlags flags)
+string CartDebug::AccessFlagsAsString(Device::AccessType flags)
 {
-  if(!flags)
+  const Bitmask::Enum bits{flags};
+  if(bits.empty())
     return "no flags set";
 
   string out;
   out.reserve(64);
 
-  if(flags & Device::CODE)        out += "CODE ";
-  if(flags & Device::TCODE)       out += "TCODE ";
-  if(flags & Device::GFX)         out += "GFX ";
-  if(flags & Device::PGFX)        out += "PGFX ";
-  if(flags & Device::COL)         out += "COL ";
-  if(flags & Device::PCOL)        out += "PCOL ";
-  if(flags & Device::BCOL)        out += "BCOL ";
-  if(flags & Device::AUD)         out += "AUD ";
-  if(flags & Device::DATA)        out += "DATA ";
-  if(flags & Device::ROW)         out += "ROW ";
-  if(flags & Device::REFERENCED)  out += "*REFERENCED ";
-  if(flags & Device::VALID_ENTRY) out += "*VALID_ENTRY ";
+  if(bits.any_of(Device::CODE))        out += "CODE ";
+  if(bits.any_of(Device::TCODE))       out += "TCODE ";
+  if(bits.any_of(Device::GFX))         out += "GFX ";
+  if(bits.any_of(Device::PGFX))        out += "PGFX ";
+  if(bits.any_of(Device::COL))         out += "COL ";
+  if(bits.any_of(Device::PCOL))        out += "PCOL ";
+  if(bits.any_of(Device::BCOL))        out += "BCOL ";
+  if(bits.any_of(Device::AUD))         out += "AUD ";
+  if(bits.any_of(Device::DATA))        out += "DATA ";
+  if(bits.any_of(Device::ROW))         out += "ROW ";
+  if(bits.any_of(Device::REFERENCED))  out += "*REFERENCED ";
+  if(bits.any_of(Device::VALID_ENTRY)) out += "*VALID_ENTRY ";
 
   return out;
 }

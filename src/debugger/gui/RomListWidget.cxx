@@ -703,7 +703,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (Device::CODE | Device::GFX | Device::PGFX |
+    if(Bitmask::Enum{dlist[pos].type}.any_of(Device::CODE | Device::GFX | Device::PGFX |
        Device::COL | Device::PCOL | Device::BCOL | Device::DATA))
     {
       if(dlist[pos].type == Device::CODE)

@@ -285,7 +285,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, Device::AccessFlags flags);
+    uInt8 peek(uInt16 address, Device::AccessType flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -294,7 +294,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE);
+    void poke(uInt16 address, uInt8 value, Device::AccessType flags = Device::NONE);
 
     // Returns non-zero if the two addresses are on different pages
     static constexpr uInt16 NOTSAMEPAGE(uInt16 a, uInt16 b) noexcept {

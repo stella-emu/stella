@@ -96,7 +96,7 @@ void System::clearDirtyPages()
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags System::getAccessFlags(uInt16 addr) const
+Device::AccessType System::getAccessFlags(uInt16 addr) const
 {
   const PageAccess& access = getPageAccess(addr);
 
@@ -107,12 +107,12 @@ Device::AccessFlags System::getAccessFlags(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags) const
+void System::setAccessFlags(uInt16 addr, Device::AccessType flags) const
 {
   const PageAccess& access = getPageAccess(addr);
 
   if(access.romAccessBase)
-    *(access.romAccessBase + (addr & PAGE_MASK)) |= (flags | (addr & Device::HADDR));
+    *(access.romAccessBase + (addr & PAGE_MASK)) |= (flags | Device::addrBits(addr));
   else
     access.device->setAccessFlags(addr, flags);
 }

@@ -529,7 +529,7 @@ void M6532::createAccessBases()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags M6532::getAccessFlags(uInt16 address) const
+Device::AccessType M6532::getAccessFlags(uInt16 address) const
 {
   if(address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
@@ -540,7 +540,7 @@ Device::AccessFlags M6532::getAccessFlags(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setAccessFlags(uInt16 address, Device::AccessFlags flags)
+void M6532::setAccessFlags(uInt16 address, Device::AccessType flags)
 {
   // ignore none flag
   if(flags != Device::NONE)

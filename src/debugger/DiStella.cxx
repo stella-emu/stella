@@ -57,8 +57,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   }
   myAppData.length = static_cast<uInt16>(info.size);
 
-  myLabels.fill(0);
-  myDirectives.fill(0);
+  myLabels.fill(Device::NONE);
+  myDirectives.fill(Device::NONE);
 
   // Process any directives first, as they override automatic code determination
   processDirectives(info.directiveList);
@@ -73,14 +73,15 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // runtime access flags so pass 2 can classify bytes correctly.
     // Bytes actually executed get CODE; unaccessed bytes get ROW to prevent
     // them from falling into the default CODE branch spuriously.
-    constexpr uInt16 dataFlags = Device::DATA | Device::GFX | Device::PGFX |
-                                 Device::COL | Device::PCOL | Device::BCOL | Device::AUD;
+    constexpr Device::AccessType dataFlags =
+      Device::DATA | Device::GFX | Device::PGFX |
+      Device::COL | Device::PCOL | Device::BCOL | Device::AUD;
     for (int k = myAppData.start; std::cmp_less_equal(k, myAppData.end); ++k) {
       const auto addr = static_cast<uInt16>(k);
-      const auto flags = Debugger::debugger().getAccessFlags(addr);
-      if (flags & Device::CODE)
+      const Bitmask::Enum flags{Debugger::debugger().getAccessFlags(addr)};
+      if (flags.any_of(Device::CODE))
         mark(addr, Device::CODE);
-      else if (!(flags & dataFlags))
+      else if (flags.none_of(dataFlags))
         mark(addr, Device::ROW);
     }
   }
@@ -512,7 +513,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if(pass == DisasmPass::Output) {
-            labelFound = mark(d1, 0);  // dummy call to get address type
+            labelFound = mark(d1, Device::NONE);  // dummy call to get address type
             nextLine << "     (";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << ",x)";
@@ -527,7 +528,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if(pass == DisasmPass::Output) {
-            labelFound = mark(d1, 0);  // dummy call to get address type
+            labelFound = mark(d1, Device::NONE);  // dummy call to get address type
             nextLine << "     (";
             labelA12Low(nextLine, opcode, d1, labelFound);
             nextLine << "),y";
@@ -650,7 +651,7 @@ void DiStella::disasm(uInt32 distart, DisasmPass pass)
         myLine.disasm = nextLine.str();
         const string_view branchSuffix =
           (addrMode == AddressingMode::RELATIVE)
-            ? ((ad & 0xf00U) != ((myPC + myOffset) & 0xf00U) ? "/3!" : "/3 ")
+            ? ((U32(ad) & 0xf00U) != (U32(myPC + myOffset) & 0xf00U) ? "/3!" : "/3 ")
             : "   ";
         myLine.ccount = std::format(";{}{}", static_cast<int>(ourLookup[opcode].cycles), branchSuffix);
         if((opcode == OP_RTI || opcode == OP_RTS || opcode == OP_JMP || opcode == OP_BRK // code block end
@@ -699,7 +700,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   std::vector<RuntimeHint> runtimeHints;
   for (int i = 0; std::cmp_less_equal(i, myAppData.end); ++i) {
     const auto addr = static_cast<uInt16>(i + myOffset);
-    if (Debugger::debugger().getAccessFlags(addr) & Device::CODE)
+    if (Bitmask::Enum{Debugger::debugger().getAccessFlags(addr)}.any_of(Device::CODE))
       runtimeHints.emplace_back(Debugger::debugger().getAccessCounter(addr), addr);
   }
   std::ranges::sort(runtimeHints, std::ranges::greater{}, &RuntimeHint::first);
@@ -768,7 +769,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     while (myAddressQueue.empty() && runtimeIt != runtimeHints.end()) {
       const uInt16 rAddr = runtimeIt->second;
       ++runtimeIt;
-      if (!(myLabels[rAddr & myAppData.end] & Device::CODE)) {
+      if (Bitmask::Enum{myLabels[rAddr & myAppData.end]}.none_of(Device::CODE)) {
         myAddressQueue.push(rAddr);
         break;
       }
@@ -778,7 +779,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   for (int k = 0; std::cmp_less_equal(k, myAppData.end); k++) {
     // Let the emulation core know about tentative code
     if (checkBit(k, Device::CODE) &&
-      !(Debugger::debugger().getAccessFlags(k + myOffset) & Device::CODE)
+      Bitmask::Enum{Debugger::debugger().getAccessFlags(k + myOffset)}.none_of(Device::CODE)
       && myOffset != 0) {
       Debugger::debugger().setAccessFlags(k + myOffset, Device::TCODE);
     }
@@ -929,7 +930,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive)
+DiStella::AddressType DiStella::mark(uInt32 address, Device::AccessType mask, bool directive)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -1009,13 +1010,14 @@ DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
+bool DiStella::checkBit(uInt16 address, Device::AccessType mask,
+                        bool useDebugger) const
 {
   // The REFERENCED and VALID_ENTRY flags are needed for any inspection of
   // an address
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
-  const uInt16 label = myLabels[address & myAppData.end],
+  const Device::AccessType label = myLabels[address & myAppData.end],
     lastbits = label & (Device::REFERENCED | Device::VALID_ENTRY),
     directive = myDirectives[address & myAppData.end] & ~(Device::REFERENCED | Device::VALID_ENTRY),
     // Exclude TCODE: it's output-only annotation from the previous run, not runtime evidence
@@ -1023,17 +1025,18 @@ bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
                & ~(Device::REFERENCED | Device::VALID_ENTRY | Device::TCODE);
 
   // Any address marked by a manual directive always takes priority
-  if (directive)
-    return (directive | lastbits) & mask;
+  if (Bitmask::Enum{directive}.any())
+    return Bitmask::Enum{directive | lastbits}.any_of(mask);
   // Next, the results from a dynamic/runtime analysis are used (except for pass 1)
-  if (useDebugger && ((debugger | lastbits) & mask))
+  if (useDebugger && Bitmask::Enum{debugger | lastbits}.any_of(mask))
     return true;
   // Otherwise, default to static analysis from Distella
-  return label & mask;
+  return Bitmask::Enum{label}.any_of(mask);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger) const
+bool DiStella::checkBits(uInt16 address, Device::AccessType mask,
+                         Device::AccessType notMask, bool useDebugger) const
 {
   return checkBit(address, mask, useDebugger) && !checkBit(address, notMask, useDebugger);
 }
@@ -1140,14 +1143,14 @@ void DiStella::addEntry(Device::AccessType type)
         tag.ctotal = myLine.ctotal;
         tag.bytes  = myLine.bytes;
         if (myOffset != 0) {
-          const auto flags = Debugger::debugger().getAccessFlags(tag.address);
+          const Bitmask::Enum flags{Debugger::debugger().getAccessFlags(tag.address)};
           // Mark addresses that DiStella treats as CODE but the runtime hasn't confirmed
-          if (!(flags & Device::CODE)) {
+          if (flags.none_of(Device::CODE)) {
             tag.ccount += " *";
             Debugger::debugger().setAccessFlags(tag.address, Device::TCODE);
           }
           // Flag self-modifying code: a location that has been both executed and written
-          if ((flags & Device::CODE) && (flags & Device::WRITE))
+          if (flags.all_of(Device::CODE | Device::WRITE))
             tag.ccount += " ~";
         }
         break;
@@ -1281,7 +1284,7 @@ string DiStella::getColor(uInt8 byte)
   else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
     return std::format("{}|${}", PAL_COLOR[byte >> 4U], Base::hex1(byte & 0xfU));
   else
-    return std::format("${}|{}", Base::hex1(byte >> 4U), SECAM_COLOR[(byte >> 1U) & 0x7U]);
+    return std::format("${}|{}", Base::hex1(byte >> 4U), SECAM_COLOR[(U32(byte) >> 1U) & 0x7U]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1338,7 +1341,7 @@ void DiStella::outputBytes(Device::AccessType type)
       ++myPC;
     }
     isType = checkBits(myPC, type,
-                       Device::CODE | (type != Device::DATA ? Device::DATA : 0) |
+                       Device::CODE | (type != Device::DATA ? Device::DATA : Device::NONE) |
                        Device::GFX | Device::PGFX |
                        Device::COL | Device::PCOL | Device::BCOL | Device::AUD);
     referenced = checkBit(myPC, Device::REFERENCED);

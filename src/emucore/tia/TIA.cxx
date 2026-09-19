@@ -2513,13 +2513,13 @@ void TIA::createAccessArrays()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags TIA::getAccessFlags(uInt16 address) const
+Device::AccessType TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
+void TIA::setAccessFlags(uInt16 address, Device::AccessType flags)
 {
   // ignore none flag
   if (flags != Device::NONE) {
