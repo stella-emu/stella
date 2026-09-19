@@ -215,8 +215,8 @@ class ZipHandler
         }
         constexpr uInt16 read_word(size_t offs) const
         {
-          return (static_cast<uInt16>(myBuf[offs + 1]) << 8U) |
-                 (static_cast<uInt16>(myBuf[offs + 0]) << 0U);
+          return (U32(myBuf[offs + 1]) << 8U) |
+                 (U32(myBuf[offs + 0]) << 0U);
         }
         constexpr uInt32 read_dword(size_t offs) const
         {
@@ -341,7 +341,7 @@ class ZipHandler
         bool   encrypted() const           { return static_cast<bool>(myValue & 0x0001U); }
         bool   implode8kDict() const       { return static_cast<bool>(myValue & 0x0002U); }
         bool   implode3Trees() const       { return static_cast<bool>(myValue & 0x0004U); }
-        uInt32 deflateOption() const       { return static_cast<uInt32>((myValue >> 1U) & 0x0003); }
+        uInt32 deflateOption() const       { return (U32(myValue) >> 1U) & 0x0003U;       }
         bool   lzmaEosMark() const         { return static_cast<bool>(myValue & 0x0002U); }
         bool   useDescriptor() const       { return static_cast<bool>(myValue & 0x0008U); }
         bool   patchData() const           { return static_cast<bool>(myValue & 0x0020U); }

@@ -156,7 +156,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
       case 0x02:  // Get Tune position (low byte)
         return myTunePosition & 0xFFU;
       case 0x03:  // Get Tune position (high byte)
-        return (myTunePosition >> 8U) & 0xFFU;
+        return (U32(myTunePosition) >> 8U) & 0xFFU;
       default:
         return myRAM[address];
     }
@@ -255,7 +255,7 @@ bool CartridgeCTY::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = (U32(bank) % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);

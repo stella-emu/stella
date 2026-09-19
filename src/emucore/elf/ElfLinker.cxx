@@ -478,7 +478,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
     case ElfFile::R_ARM_TARGET1:
       {
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
-        write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0));
+        write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01U : 0));
 
         break;
       }
@@ -486,7 +486,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
     case ElfFile::R_ARM_REL32:
       {
         uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
-        value |= (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0);
+        value |= (symbol.type == ElfFile::STT_FUNC ? 0x01U : 0);
 
         write32(target, value - targetAddress);
 
@@ -503,6 +503,9 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
           targetSectionRelocated.offset -
           relocation.offset - 4;
 
+        // offset must stay signed: this checks the top byte is a sign-extension
+        // of a 25-bit value (-1 or 0), which requires an arithmetic right shift
+        // NOLINTNEXTLINE(bugprone-signed-bitwise)
         if ((offset >> 24) != -1 && (offset >> 24) != 0)
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");
 
@@ -550,7 +553,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
 
       const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2U;
       const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
-      initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
+      initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1U : 0);
     }
   }
 }

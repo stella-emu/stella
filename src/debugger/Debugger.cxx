@@ -639,7 +639,7 @@ void Debugger::log(string_view triggerMsg)
 
   // First find the lines in the range, and determine the longest string
   const auto& disasm = myCartDebug->disassembly();
-  const uInt16 start = pc & mySystem->addressMask();
+  const uInt16 start = U32(pc) & mySystem->addressMask();
 
   for(const auto& tag: disasm.list)
   {
@@ -667,8 +667,8 @@ uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
-  return static_cast<uInt16>(mySystem->peekOob(addr, flags) |
-                            (mySystem->peekOob(addr+1, flags) << 8U));
+  return U16(U32(mySystem->peekOob(addr, flags)) |
+            (U32(mySystem->peekOob(addr+1, flags)) << 8U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -692,8 +692,8 @@ int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem->peekOob(static_cast<uInt16>(addr), flags) |
-      (mySystem->peekOob(static_cast<uInt16>(addr+1), flags) << 8U);
+  return U32(mySystem->peekOob(U16(addr), flags)) |
+            (U32(mySystem->peekOob(U16(addr+1), flags)) << 8U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

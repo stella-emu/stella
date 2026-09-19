@@ -106,7 +106,7 @@ void CartridgeE7::install(System& system)
 
   // The hotspots at $1FE0-$1FE7 live in the page starting here; that page is
   // handled separately below since it must dispatch through peek()/poke()
-  constexpr uInt16 HOTSPOT_PAGE = 0x1FE0U & ~System::PAGE_MASK;
+  constexpr uInt16 HOTSPOT_PAGE = 0x1FE0U & ~U32(System::PAGE_MASK);
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = HOTSPOT_PAGE; addr < 0x2000; addr += System::PAGE_SIZE)

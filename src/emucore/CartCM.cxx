@@ -68,7 +68,7 @@ uInt8 CartridgeCM::peek(uInt16 address)
 
   // Inject cassette audio into SWCHA D7 (A9=1 selects I/O; offset 0 = SWCHA)
   if((address & 0x0200U) && !(address & 0x07U) && myCompuMate)
-    value = (value & 0x7FU) | (myCompuMate->cassetteBit() << 7U);
+    value = (value & 0x7FU) | (U32(myCompuMate->cassetteBit()) << 7U);
 
   return value;
 }
@@ -94,7 +94,7 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
         if(value & 0x40U)
           column = (column + 1) % 10;
 
-        if((value ^ prevSWCHA) & 0x40)
+        if((U32(value) ^ U32(prevSWCHA)) & 0x40U)
           myCompuMate->cassetteD6Toggled(mySystem->cycles());
       }
     }
@@ -117,7 +117,7 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = (U32(bank) % romBankCount()) << 12U;
 
   // Although this scheme contains four 4K ROM banks and one 2K RAM bank,
   // it's easier to think of things in terms of 2K slices, as follows:

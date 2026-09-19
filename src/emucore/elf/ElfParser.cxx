@@ -149,18 +149,18 @@ uInt8 ElfParser::read8(uInt32 offset) const
 uInt16 ElfParser::read16(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 8U) | read8(offset + 1))
-    : ((read8(offset + 1) << 8U) | read8(offset));
+    ? ((U32(read8(offset)) << 8U) | read8(offset + 1))
+    : ((U32(read8(offset + 1)) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 24U) | (read8(offset + 1) << 16U) |
-      (read8(offset + 2) << 8U) | read8(offset + 3))
-    : ((read8(offset + 3) << 24U) | (read8(offset + 2) << 16U) |
-      (read8(offset + 1) << 8U) | read8(offset));
+    ? ((U32(read8(offset)) << 24U) | (U32(read8(offset + 1)) << 16U) |
+      (U32(read8(offset + 2)) << 8U) | read8(offset + 3))
+    : ((U32(read8(offset + 3)) << 24U) | (U32(read8(offset + 2)) << 16U) |
+      (U32(read8(offset + 1)) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -175,10 +175,10 @@ bool Bezel::load()
     if(settings.getBool("bezel.win.auto"))
     {
       // Determine transparent window inside bezel image
-      const uInt32 xCenter = w >> 1;
+      const uInt32 xCenter = w / 2;
       top = borderSize(xCenter, 0, h, w);
       bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);
-      const uInt32 yCenter = (bottom + top) >> 1U;
+      const uInt32 yCenter = (bottom + top) / 2;
       left = borderSize(0, yCenter, w, 1);
       right = w - 1 - borderSize(w - 1, yCenter, w, -1);
     }

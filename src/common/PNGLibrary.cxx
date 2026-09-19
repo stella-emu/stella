@@ -127,7 +127,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(bit_depth == 16)
     png_set_strip_16(png_ptr);
 
-  if(color_type == PNG_COLOR_TYPE_PALETTE)
+  if(color_type == PNG_COLOR_TYPE_PALETTE)  // NOLINT(bugprone-signed-bitwise)
     png_set_palette_to_rgb(png_ptr);
 
   if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
@@ -136,7 +136,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
     png_set_tRNS_to_alpha(png_ptr);
 
-  if(!(color_type & PNG_COLOR_MASK_ALPHA))
+  if(!(color_type & PNG_COLOR_MASK_ALPHA))  // NOLINT(bugprone-signed-bitwise)
     png_set_filler(png_ptr, 0xFF, PNG_FILLER_AFTER);
 
   if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)

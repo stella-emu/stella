@@ -115,9 +115,9 @@ class ElfLinker {
 
     static constexpr uInt32 read32(const uInt8* address) {
       uInt32 value = *(address++);
-      value |= *(address++) << 8U;
-      value |= *(address++) << 16U;
-      value |= *(address++) << 24U;
+      value |= U32(*(address++)) << 8U;
+      value |= U32(*(address++)) << 16U;
+      value |= U32(*(address++)) << 24U;
 
       return value;
     }

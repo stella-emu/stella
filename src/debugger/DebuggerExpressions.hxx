@@ -40,7 +40,7 @@ class BinAndExpression : public Expression
     BinAndExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
       : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
-      { return myLHS->evaluate() & myRHS->evaluate(); }
+      { return U32(myLHS->evaluate()) & U32(myRHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +50,7 @@ class BinNotExpression : public Expression
     explicit BinNotExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return ~myLHS->evaluate(); }
+      { return ~U32(myLHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,7 +60,7 @@ class BinOrExpression : public Expression
     BinOrExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
       : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
-      { return myLHS->evaluate() | myRHS->evaluate(); }
+      { return U32(myLHS->evaluate()) | U32(myRHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,7 +70,7 @@ class BinXorExpression : public Expression
     BinXorExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
       : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
-      { return myLHS->evaluate() ^ myRHS->evaluate(); }
+      { return U32(myLHS->evaluate()) ^ U32(myRHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,7 +189,7 @@ class HiByteExpression : public Expression
     explicit HiByteExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return 0xffU & (myLHS->evaluate() >> 8); }
+      { return 0xffU & (U32(myLHS->evaluate()) >> 8U); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -219,7 +219,7 @@ class LoByteExpression : public Expression
     explicit LoByteExpression(unique_ptr<Expression> left)
       : Expression(std::move(left)) { }
     Int32 evaluate() const override
-      { return 0xffU & myLHS->evaluate(); }
+      { return 0xffU & U32(myLHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -323,7 +323,7 @@ class ShiftLeftExpression : public Expression
     ShiftLeftExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
       : Expression(std::move(left), std::move(right)) { }
     Int32 evaluate() const override
-      { return myLHS->evaluate() << myRHS->evaluate(); }
+      { return U32(myLHS->evaluate()) << U32(myRHS->evaluate()); }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,7 +332,10 @@ class ShiftRightExpression : public Expression
   public:
     ShiftRightExpression(unique_ptr<Expression> left, unique_ptr<Expression> right)
       : Expression(std::move(left), std::move(right)) { }
+    // must stay a signed arithmetic shift: user expressions expect sign-preserving
+    // >> for negative values, unlike the fixed-shift byte extractors above
     Int32 evaluate() const override
+      // NOLINTNEXTLINE(bugprone-signed-bitwise)
       { return myLHS->evaluate() >> myRHS->evaluate(); }
 };
 

@@ -166,7 +166,7 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
       trackBallCycles = 1;
 
     // Define cycle offset of first change
-    cycleCount = (trackBallCycles * firstOffset) >> 12;
+    cycleCount = U32(trackBallCycles * firstOffset) >> 12U;
   }
   else
   {
@@ -174,7 +174,7 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
     cycleCount = INT_MAX;
 
     // Define offset factor for first change, move randomly forward by up to 1/8th
-    firstOffset = (((firstOffset << 3) + mySystem.randGenerator().next() %
+    firstOffset = (((U32(firstOffset) << 3U) + mySystem.randGenerator().next() %
                   (1U << 12U)) >> 3U) & ((1U << 12U) - 1U);
   }
 }

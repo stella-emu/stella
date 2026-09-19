@@ -179,10 +179,10 @@ void EventHandlerSDL::pollEvent()
           value  = JoyHatMask::CENTER;
         else
         {
-          if(v & SDL_HAT_UP)    value |= JoyHatMask::UP;
-          if(v & SDL_HAT_DOWN)  value |= JoyHatMask::DOWN;
-          if(v & SDL_HAT_LEFT)  value |= JoyHatMask::LEFT;
-          if(v & SDL_HAT_RIGHT) value |= JoyHatMask::RIGHT;
+          if(U32(v) & SDL_HAT_UP)    value |= JoyHatMask::UP;
+          if(U32(v) & SDL_HAT_DOWN)  value |= JoyHatMask::DOWN;
+          if(U32(v) & SDL_HAT_LEFT)  value |= JoyHatMask::LEFT;
+          if(U32(v) & SDL_HAT_RIGHT) value |= JoyHatMask::RIGHT;
         }
 
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);

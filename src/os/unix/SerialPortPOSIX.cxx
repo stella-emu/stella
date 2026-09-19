@@ -133,7 +133,7 @@ bool SerialPortPOSIX::isCTS()
     // status stays 0 if ioctl fails; isCTS() will correctly return false
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ioctl(myHandle, TIOCMGET, &status);
-    return status & TIOCM_CTS;
+    return status & TIOCM_CTS;  // NOLINT(bugprone-signed-bitwise)
   }
   return false;
 }

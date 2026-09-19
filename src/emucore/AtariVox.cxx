@@ -112,7 +112,7 @@ void AtariVox::clockDataIn(bool value)
   if((cycle < myLastDataWriteCycle) || (cycle >= myLastDataWriteCycle + 62))
   {
     myShiftRegister >>= 1U;
-    myShiftRegister |= (value << 15U);
+    myShiftRegister |= (U32(value) << 15U);
     if(++myShiftCount == 10)
     {
       myShiftCount = 0;
@@ -123,7 +123,7 @@ void AtariVox::clockDataIn(bool value)
         cerr << "AtariVox: bad stop bit\n";
       else
       {
-        const uInt8 data = ((myShiftRegister >> 1U) & 0xff);
+        const uInt8 data = ((U32(myShiftRegister) >> 1U) & 0xffU);
         mySerialPort->writeByte(data);
       }
       myShiftRegister = 0;

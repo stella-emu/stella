@@ -1429,11 +1429,11 @@ void FrameBuffer::setCursorState()
     myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
-  int cursor = myOSystem.settings().getInt("cursor");
+  uInt32 cursor = myOSystem.settings().getInt("cursor");
 
   // Always enable cursor in lightgun games
   if (usesLightgun && !myGrabMouse)
-    cursor |= 1;  // +Emulation
+    cursor |= 1U;  // +Emulation
 
   switch(cursor)
   {
@@ -1479,7 +1479,7 @@ bool FrameBuffer::grabMouseAllowed()
   const bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
   // Disable grab while cursor is shown in emulation
-  const bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
+  const bool cursorHidden = !(U32(myOSystem.settings().getInt("cursor")) & 1U);
 
   return emulation && (analog || usesLightgun || alwaysUseMouse) && cursorHidden;
 }

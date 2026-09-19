@@ -608,7 +608,9 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y+_rowHeight-1, w+2, kColor);
-    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+    // (_w-_x) can go negative (ported code, kept as-is); must stay a signed shift
+    // NOLINTNEXTLINE(bugprone-signed-bitwise)
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (U32(_rowHeight)>>1U)+y - _arrowSize/2,
                 _arrowSize, _arrowSize, ArrowDirection::Up, _scrollUpColor);
     y += _rowHeight;
     offset--;
@@ -628,7 +630,9 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y, w+2, kColor);
-    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (_rowHeight>>1)+y - _arrowSize/2,
+    // (_w-_x) can go negative (ported code, kept as-is); must stay a signed shift
+    // NOLINTNEXTLINE(bugprone-signed-bitwise)
+    s.drawArrow(((_w-_x)>>1) - _arrowSize/2, (U32(_rowHeight)>>1U)+y - _arrowSize/2,
                 _arrowSize, _arrowSize, ArrowDirection::Down, _scrollDnColor);
   }
 

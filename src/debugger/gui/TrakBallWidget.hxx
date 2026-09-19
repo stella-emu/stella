@@ -37,7 +37,7 @@ class TrakBallWidget : public PointingDeviceWidget
     };
 
     uInt8 getGrayCodeTable(int index, int direction) const override {
-      return myGrayCodeTable[(index & 0b1) + direction * 2];
+      return myGrayCodeTable[(U32(index) & 0b1U) + direction * 2];
     }
 
     // Following constructors and assignment operators not supported

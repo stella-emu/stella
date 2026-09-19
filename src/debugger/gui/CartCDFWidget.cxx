@@ -283,7 +283,7 @@ void CartridgeCDFWidget::saveOldState()
     // F = Fractional
 
     myOldState.datastreampointers.push_back(
-      myCart.getDatastreamPointer(i) >> (isCDFJplus() ? 8 : 12));
+      myCart.getDatastreamPointer(i) >> (isCDFJplus() ? 8U : 12U));
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
 
@@ -308,7 +308,7 @@ void CartridgeCDFWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::loadConfig()
 {
-  const Int32 ds_shift = isCDFJplus() ? 8 : 12;
+  const uInt32 ds_shift = isCDFJplus() ? 8 : 12;
   myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking

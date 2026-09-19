@@ -71,7 +71,7 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
   // implementing a stricter scheme here to get Decathlon to start in bank 0.
   if(myLastAccessWasFE)
   {
-    bank((value >> 5U) ^ 0b111);
+    bank((U32(value) >> 5U) ^ 0b111U);
     myLastAccessWasFE = false; // was: address == 0x01FE;
     return true;
   }
@@ -84,7 +84,7 @@ uInt8 CartridgeFE::peek(uInt16 address)
 {
   const uInt8 value = (address < 0x200)
     ? mySystem->m6532().peek(address)
-    : myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] +
+    : myImage[myCurrentSegOffset[(U32(address) & myBankMask) >> myBankShift] +
               (address & myBankMask)];
 
   // Check if we hit hotspot

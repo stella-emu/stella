@@ -28,8 +28,8 @@ using namespace elfEnvironment;
 namespace {
   CortexM0::err_t memset(uInt32 target, uInt8 value, uInt32 size, CortexM0& cortex)
   {
-    const uInt16 value16 = value | (value << 8U);
-    const uInt32 value32 = value16 | (value16 << 16U);
+    const uInt16 value16 = U32(value) | (U32(value) << 8U);
+    const uInt32 value32 = U32(value16) | (U32(value16) << 16U);
     CortexM0::err_t err = CortexM0::ERR_NONE;
     uInt32 ptr = target;
 

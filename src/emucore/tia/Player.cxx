@@ -74,7 +74,7 @@ void Player::grp(uInt8 pattern)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::hmp(uInt8 value)
 {
-  myHmmClocks = (value >> 4U) ^ 0x08;
+  myHmmClocks = (U32(value) >> 4U) ^ 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +128,7 @@ void Player::nusiz(uInt8 value, bool hblank)
   if (myIsRendering) {
     const Int8 delta = myRenderCounter - Count::renderCounterOffset;
 
-    switch ((myDivider << 4U) | myDividerPending) {
+    switch ((U32(myDivider) << 4U) | myDividerPending) {
       case 0x12:
       case 0x14:
         if (hblank) {

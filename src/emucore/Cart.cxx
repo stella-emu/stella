@@ -220,7 +220,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
       maxIdx = idx;
     }
   }
-  return maxIdx << 13U | 0x1000; //| (offset & 0xfff);
+  return U32(maxIdx) << 13U | 0x1000U; //| (offset & 0xfff);
 }
 #endif
 

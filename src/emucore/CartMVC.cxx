@@ -1141,11 +1141,11 @@ void MovieCart::updateTransport()
       else if(myInputs.left && !myLastInputs.left)
         step = -2;
       else
-        step = (myFrameNumber & 1) ? -1 : 1;
+        step = (U32(myFrameNumber) & 1U) ? -1 : 1;
     }
     else
     {
-      step = (myFrameNumber & 1) ? -1 : 1;
+      step = (U32(myFrameNumber) & 1U) ? -1 : 1;
     }
   }
   else

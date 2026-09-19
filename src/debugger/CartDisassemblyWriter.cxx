@@ -324,8 +324,8 @@ string CartDisassemblyWriter::save(string path)
       "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
     };
 
-    for(int i = 0; i < 16; ++i)
-      out << std::format("{:<16} = ${}\n", NTSC_COLOR[i], Base::hex2(i << 4));
+    for(uInt32 i = 0; i < 16; ++i)
+      out << std::format("{:<16} = ${}\n", NTSC_COLOR[i], Base::hex2(i << 4U));
   }
   else if(myCartDebug.myConsole.timing() == ConsoleTiming::pal)
   {
@@ -336,8 +336,8 @@ string CartDisassemblyWriter::save(string path)
       "PURPLE", "BLUE", "BLACKE", "BLACKF"
     };
 
-    for(int i = 0; i < 16; ++i)
-      out << std::format("{:<16} = ${}\n", PAL_COLOR[i], Base::hex2(i << 4));
+    for(uInt32 i = 0; i < 16; ++i)
+      out << std::format("{:<16} = ${}\n", PAL_COLOR[i], Base::hex2(i << 4U));
   }
   else
   {
@@ -346,8 +346,8 @@ string CartDisassemblyWriter::save(string path)
       "GREEN", "CYAN", "YELLOW", "WHITE"
     };
 
-    for(int i = 0; i < 8; ++i)
-      out << std::format("{:<16} = ${}\n", SECAM_COLOR[i], Base::hex1(i << 1));
+    for(uInt32 i = 0; i < 8; ++i)
+      out << std::format("{:<16} = ${}\n", SECAM_COLOR[i], Base::hex1(i << 1U));
   }
   out << "\n";
 

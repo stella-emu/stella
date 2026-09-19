@@ -223,21 +223,21 @@ string ToggleWidget::getToolTip(const Common::Point& pos) const
   if(idx < 0)
     return {};
 
-  Int32 val = 0;
+  uInt32 val = 0;
 
   if(_swapBits)
     for(int col = _cols - 1; col >= 0; --col)
     {
-      val <<= 1;
+      val <<= 1U;
       val += _stateList[idx + col];
     }
   else
     for(int col = 0; col < _cols; ++col)
     {
-      val <<= 1;
+      val <<= 1U;
       val += _stateList[idx + col];
     }
-  val <<= _shiftBits;
+  val <<= U32(_shiftBits);  // TODO: this doesn't need to be signed
 
   string result = std::format("{}${} = #{}",
     _toolTipText,

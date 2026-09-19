@@ -335,7 +335,7 @@ class CartridgeEnhanced : public Cartridge
       @return  The calculated offset
     */
     uInt32 romAddressSegmentOffset(uInt16 address) const {
-      return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
+      return myCurrentSegOffset[((U32(address) & ROM_MASK) >> myBankShift) % myBankSegs];
     }
 
     /**
@@ -353,8 +353,8 @@ class CartridgeEnhanced : public Cartridge
     // against myRAM.size() at the two call sites, as peek()'s ROM read was.
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
       return static_cast<uInt16>(
-        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
-        >> (myBankShift - myRamBankShift));
+        (myCurrentSegOffset[((U32(address) & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
+        >> U32(myBankShift - myRamBankShift));
     }
 
   private:

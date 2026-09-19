@@ -179,10 +179,10 @@ void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 {
   if(cmd == Cmd::ConfigChanged)
   {
-    const auto configuration = static_cast<uInt8>(
-      (mySlice->getSelected() << 2) |
-      (myWriteEnable->getState() ? 0b010 : 0) |
-      (myRomPower->getState() ? 0 : 0b001));
+    const auto configuration = U8(
+      (U32(mySlice->getSelected()) << 2U) |
+      (myWriteEnable->getState() ? 0b010U : 0U) |
+      (myRomPower->getState() ? 0U : 0b001U));
 
     myCart.unlockHotspots();
     myCart.bank(configuration);

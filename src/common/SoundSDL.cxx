@@ -349,7 +349,9 @@ void SoundSDL::audioCallback(void* object, SDL_AudioStream* stream,
     // The stream is 32-bit float (even though this callback is 8-bits), since
     // the resampler and TIA audio subsystem always generate float samples
     auto* s = reinterpret_cast<float*>(buf.data());
-    self->myResampler->fillFragment(s, additional_amt >> 2);
+    // SDL documents additional_amt as a byte count, never negative, so the
+    // unsigned shift below is fine
+    self->myResampler->fillFragment(s, U32(additional_amt) >> 2U);
 
     SDL_PutAudioStreamData(stream, buf.data(), additional_amt);
   }

@@ -249,7 +249,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       AddrToLineList addrToLineList;
       BankInfo& info = myBankInfo[bank];
 
-      info.offset = cart.bankOrigin(bank) | cart.bankSize() * seg;
+      info.offset = U32(cart.bankOrigin(bank)) | U32(cart.bankSize()) * seg;
       const uInt16 segAddress = bank == addrBank ? address : info.offset;
       // Disassemble segment
       changed |= disassemble(bank, segAddress, disassembly, addrToLineList, force);
@@ -445,8 +445,9 @@ bool CartDebug::addDirective(Device::AccessType type,
     return false;
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
-    bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
-      getBank(myDebugger.cpuDebug().pc()) : static_cast<int>(myBankInfo.size())-1;
+    bank = (U32(myDebugger.cpuDebug().pc()) & 0x1000U)
+      ? getBank(myDebugger.cpuDebug().pc())
+      : static_cast<int>(myBankInfo.size())-1;
 
   bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
@@ -818,7 +819,7 @@ string CartDebug::loadListFile()
     addr = BSPF::stoi<16>(addr_s[0] == 'U' ? addr_s.substr(1) : addr_s);
 
     // For now, completely ignore ROM addresses
-    if(!(addr & 0x1000))
+    if(!(U32(addr) & 0x1000U))
     {
       // Search for pattern 'xx yy  CONSTANT ='
       buf.seekg(20);  // skip potential '????'

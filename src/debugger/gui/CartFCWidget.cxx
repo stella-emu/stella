@@ -50,6 +50,6 @@ string CartridgeFCWidget::hotspotStr(int bank, int, bool prefix)
   const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
   return std::format("({}${} = {}, ${} = {})",
     prefix ? "hotspots " : "",
-    Base::hex4(hotspot), bank & 0b11,
-    Base::hex4(hotspot + 1), bank >> 2);
+    Base::hex4(hotspot), U32(bank) & 0b11U,
+    Base::hex4(hotspot + 1), U32(bank) >> 2U);
 }

@@ -207,7 +207,7 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
   {
     myCart.unlockHotspots();
     myCart.mySWCHA &= 0xFCU;
-    myCart.mySWCHA |= myBank->getSelected();
+    myCart.mySWCHA |= U32(myBank->getSelected());
     myCart.bank(myCart.mySWCHA & 0x03U);
     myCart.lockHotspots();
     invalidate();

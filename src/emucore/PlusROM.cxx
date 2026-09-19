@@ -203,7 +203,7 @@ bool PlusROM::initialize(ByteSpan image)
     return myIsPlusROM = false;
 
   // Host and path are stored at the NMI vector
-  size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
+  size_t i = ((U64(image[size - 5]) - 16) << 8U) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
     return myIsPlusROM = false;  // Invalid NMI
 

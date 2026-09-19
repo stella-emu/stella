@@ -93,7 +93,7 @@ void TogglePixelWidget::setIntState(int value, bool swap)
   //   confusing.
   for(uInt32 i = 0; i < size; ++i)
   {
-    const bool bitIsSet = value & (1U << i);
+    const bool bitIsSet = U32(value) & (1U << i);
     if(_swapBits)
       b[i] = bitIsSet;
     else
@@ -108,9 +108,9 @@ int TogglePixelWidget::getIntState()
 {
   // Construct int based on current state and swap
   uInt32 value = 0;
-  const int size = static_cast<int>(_stateList.size());
+  const uInt32 size = U32(_stateList.size());
 
-  for(int i = 0; i < size; ++i)
+  for(uInt32 i = 0; i < size; ++i)
   {
     if(_stateList[i])
     {

@@ -75,7 +75,7 @@ void Audio::createSample()
 
   addSample(sample0, sample1);
   if(myRewindMode)
-    mySamples.push_back(sample0 | (sample1 << 4U));
+    mySamples.push_back(U32(sample0) | (U32(sample1) << 4U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

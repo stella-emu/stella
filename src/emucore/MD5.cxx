@@ -257,7 +257,7 @@ string MD5::hexdigest() const
   result.reserve(32);
   for(const auto c: digest)
   {
-    result += hex[(c >> 4U) & 0x0f];
+    result += hex[(U32(c) >> 4U) & 0x0fU];
     result += hex[c & 0x0fU];
   }
 

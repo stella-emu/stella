@@ -319,7 +319,7 @@ bool FBMessageHandler::draw()
                                   - myFB.font().getStringWidth(myMsg.text)
                                   - myFB.font().getStringWidth(myMsg.valueText));
       const int bwidth  = swidth * myMsg.value / 100.F;
-      const int bheight = fontHeight >> 1;
+      const int bheight = fontHeight / 2;
       const int x = HBORDER + myFB.font().getStringWidth(myMsg.text) + fontWidth;
       // Align bar with bottom of text
       const int y = VBORDER + myFB.font().desc().ascent - bheight;

@@ -427,21 +427,21 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   const uInt32 rport = readPort(start);
-  int page = rport & 0xf0U;
+  uInt32 page = rport & 0xf0U;
   string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
 
   label[2] = label[3] = 'x';
   myRamStart->setLabel(label);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
-    myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::Fmt::_16_1));
+    myRamLabels[row]->setLabel(Common::Base::toString(page>>4U, Common::Base::Fmt::_16_1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::showInputBox(GuiCmd::Code cmd)
 {
   // Add inputbox in the middle of the RAM widget
-  const uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
-  const uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
+  const uInt32 x = getAbsX() + (getWidth() - myInputBox->getWidth()) / 2;
+  const uInt32 y = getAbsY() + (getHeight() - myInputBox->getHeight()) / 2;
 
   myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");

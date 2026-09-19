@@ -2609,15 +2609,15 @@ void EventHandler::changeMouseControllerMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseCursor(int direction)
 {
-  const int cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
+  const uInt32 cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
 
   myOSystem.settings().setValue("cursor", cursor);
   myOSystem.frameBuffer().setCursorState();
 
   myOSystem.frameBuffer().showTextMessage(
     std::format("Mouse cursor visibility: {}UI, {}Emulation",
-      (cursor & 2) ? "+" : "-",
-      (cursor & 1) ? "+" : "-"));
+      (cursor & 2U) ? "+" : "-",
+      (cursor & 1U) ? "+" : "-"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

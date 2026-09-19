@@ -42,7 +42,7 @@ string CartridgeUAWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
 {
-  const uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
+  const uInt16 hotspot = myCart.hotspot() + (U32(bank) ^ (mySwappedHotspots ? 1U : 0U)) * myHotspotDelta;
   return std::format("({}${}, ${}, ${})",
     prefix ? "hotspot " : "",
     Base::hex4(hotspot), Base::hex4(hotspot | 0x80U), Base::hex4(hotspot | 0xD90U));

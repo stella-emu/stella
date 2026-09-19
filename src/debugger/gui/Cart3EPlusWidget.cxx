@@ -42,8 +42,8 @@ string Cartridge3EPlusWidget::description()
   const uInt16 numRamBanks = myCart.ramBankCount();
 
   // Eventually, we should query this from the debugger/disassembler
-  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8U) |
-                                image[0x400 - 4]) / 0x1000) * 0x1000;
+  const uInt16 start = (((U32(image[0x400 - 3]) << 8U) |
+                          U32(image[0x400 - 4])) / 0x1000) * 0x1000;
 
   return std::format(
     "3E+ cartridge - (1{}64K ROM + RAM)\n"
@@ -72,8 +72,8 @@ void Cartridge3EPlusWidget::createBankWidgets()
   // they align in groups of their own — see layoutBankSelect()
   myBankWidgets.resize(bankSegs());
 
-  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8U) |
-                              image[0x400 - 4]) / 0x1000) * 0x1000;
+  const uInt16 start = (((U32(image[0x400 - 3]) << 8U) |
+                          U32(image[0x400 - 4])) / 0x1000) * 0x1000;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {

@@ -144,11 +144,11 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
   widgetToImage(x, y, col, row);
 
   if(b == MouseButton::LEFT)
-    myZoom->setPos(col << 1, row);
+    myZoom->setPos(col * 2, row);
   // Grab right mouse button for command context menu
   else if(b == MouseButton::RIGHT)
   {
-    myClickX = col << 1;
+    myClickX = col * 2;
     myClickY = row;
 
     // Add menu at current x,y mouse location

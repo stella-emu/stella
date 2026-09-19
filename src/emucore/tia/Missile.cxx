@@ -70,7 +70,7 @@ void Missile::enam(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::hmm(uInt8 value)
 {
-  myHmmClocks = (value >> 4U) ^ 0x08;
+  myHmmClocks = (U32(value) >> 4U) ^ 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

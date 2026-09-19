@@ -66,7 +66,7 @@ class ScrollBarWidget : public Widget, public CommandSender
       which is the width the old small arrow bitmap had.
     */
     static int arrowWidth(const GUI::Font& font) {
-      return ((font.getMaxCharWidth() * 3 / 4) | 1);
+      return U32(font.getMaxCharWidth() * 3 / 4) | 1U;
     }
 
     static int scrollBarWidth(const GUI::Font& font) {

@@ -50,14 +50,14 @@ char* Base::toChars(char* out, int value, Fmt fmt)
     case Fmt::_16_8:  return writeHex(out, value, 8);
 
     case Fmt::_16_2_2:
-      out = writeHex(out, (value >> 8) & 0xFF, 2);
+      out = writeHex(out, (U32(value) >> 8U) & 0xFFU, 2);
       *out++ = '.';
-      return writeHex(out, value & 0xFF, 2);
+      return writeHex(out, U32(value) & 0xFFU, 2);
 
     case Fmt::_16_3_2:
-      out = writeHex(out, value >> 8, 3);
+      out = writeHex(out, U32(value) >> 8U, 3);
       *out++ = '.';
-      return writeHex(out, value & 0xFF, 2);
+      return writeHex(out, U32(value) & 0xFFU, 2);
 
     case Fmt::_16:
     default:
@@ -76,7 +76,7 @@ char* Base::writeHex(char* out, uInt32 v, int width)
   const char* table = myHexUppercase ? HEX_UPPER : HEX_LOWER;
 
   for(int i = (width - 1) * 4; i >= 0; i -= 4)
-    *out++ = table[(v >> i) & 0xFU];
+    *out++ = table[(v >> U32(i)) & 0xFU];
 
   return out;
 }
@@ -118,7 +118,7 @@ char* Base::writeBinary(char* out, int value, Fmt fmt)
                    (uval < 0x100U ? 8 : 16);
 
   for(int i = bits - 1; i >= 0; --i)
-    *out++ = static_cast<char>('0' + ((uval >> i) & 1U));
+    *out++ = static_cast<char>('0' + ((uval >> U32(i)) & 1U));
 
   return out;
 }

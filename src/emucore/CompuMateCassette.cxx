@@ -113,11 +113,11 @@ uInt8 CompuMateCassette::cassetteBit() const
   // Decode the current bit value
   bool bit{};
   if(bitInByte == 0)
-    bit = false;                          // start bit
+    bit = false;                                // start bit
   else if(bitInByte < 9)
-    bit = (byte >> (bitInByte - 1)) & 1;  // 8 data bits, LSB first
+    bit = (U32(byte) >> (bitInByte - 1)) & 1U;  // 8 data bits, LSB first
   else
-    bit = true;                           // 4 stop bits
+    bit = true;                                 // 4 stop bits
 
   // Return waveform level at sub-bit phase position
   if(!bit)
@@ -261,10 +261,10 @@ void CompuMateCassette::finalizeSaveByte()
 
   // Decode 8 data bits, LSB first
   uInt8 byte = 0;
-  for(int i = 1; i <= 8; ++i)
+  for(uInt32 i = 1; i <= 8; ++i)
   {
     if(mySaveBitTrans[i] == 4)
-      byte |= static_cast<uInt8>(1U << (i - 1));
+      byte |= U8(1U << (i - 1));
     else if(mySaveBitTrans[i] != 2)
     {
       ++mySaveFailCount;

@@ -234,7 +234,7 @@ bool RomImageWidget::changeImage(int direction)
 void RomImageWidget::toggleImageZoom()
 {
 #ifdef IMAGE_SUPPORT
-  myMousePos = Common::Point(_w >> 1, myImageHeight >> 1);
+  myMousePos = Common::Point(_w / 2, myImageHeight / 2);
   myZoomMode = !myIsZoomed;
   myZoomTimer = myZoomMode ? DELAY_TIME * REQUEST_SPEED : 0;
   zoomSurfaces(!myIsZoomed);
@@ -446,8 +446,8 @@ void RomImageWidget::positionSurfaces()
     const uInt32 x = s_dst.x() + _x * scaleDpi;
     const uInt32 y = s_dst.y() + _y * scaleDpi + 1;
 
-    mySurface->setDstPos(x + ((_w * scaleDpi - w) >> 1),
-                         y + ((myImageHeight * scaleDpi - h) >> 1));
+    mySurface->setDstPos(x + (_w * scaleDpi - w) / 2,
+                         y + (myImageHeight * scaleDpi - h) / 2);
     myNavSurface->setDstPos(x, y);
   }
   else
@@ -525,7 +525,7 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 
   if(myZoomRect.contains(x, y))
     myMouseArea = Area::ZOOM;
-  else if(x < _w >> 1)
+  else if(x < _w / 2)
     myMouseArea = Area::LEFT;
   else
     myMouseArea = Area::RIGHT;
@@ -581,8 +581,8 @@ void RomImageWidget::drawWidget(bool hilite)
 #endif
     if(!mySurfaceErrorMsg.empty())
     {
-      const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-      const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
+      const uInt32 x = _x + (_w - _font.getStringWidth(mySurfaceErrorMsg)) / 2;
+      const uInt32 y = _y + (myImageHeight - _font.getLineHeight()) / 2;
       s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
     }
 
@@ -613,7 +613,7 @@ void RomImageWidget::drawWidget(bool hilite)
         const int w = _w / 64;
         const int w2 = 1; // w / 2;
         const int ax = !dir ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
-        const int ay = myImageHeight >> 1;
+        const int ay = myImageHeight / 2;
         const int dx = (_w / 32) * (!dir ? 1 : -1);
         const int dy = myImageHeight / 16;
 
