@@ -92,8 +92,7 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
     U32(myImage.size()),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
-    devSettings ? static_cast<double>(
-      settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
+    devSettings ? DBL(settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
@@ -167,7 +166,7 @@ FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
   // Calculate the number of CDF OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
   const auto wholeClocks = U32(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)

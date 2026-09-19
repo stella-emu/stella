@@ -23,13 +23,13 @@ namespace {
   template<typename T>
     requires std::is_arithmetic_v<T>
   constexpr float scaleFrom100(T x) {
-    return (static_cast<float>(x) / 50.F) - 1.F;
+    return (FLT(x) / 50.F) - 1.F;
   }
 
   template<typename T>
     requires std::is_arithmetic_v<T>
   constexpr uInt32 scaleTo100(T x) {
-    return U32(50.0001F * (static_cast<float>(x) + 1.F));
+    return U32(50.0001F * (FLT(x) + 1.F));
   }
 }  // namespace
 

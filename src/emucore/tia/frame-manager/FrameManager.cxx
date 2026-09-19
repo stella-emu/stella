@@ -309,7 +309,7 @@ void FrameManager::recalculateMetrics() {
       throw std::runtime_error("frame manager: invalid TV mode");
   }
 
-  myHeight = BSPF::clamp<uInt32>(roundf(static_cast<float>(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);
+  myHeight = BSPF::clamp<uInt32>(roundf(FLT(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);
   myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - I32(myHeight)) / 2 - myVcenter, 0, myFrameLines);
   // The - 1 keeps myYStart >= 1 when vcenter is at its maximum, preventing
   // waitForFrameStart from exiting on scanline 0 when a negative vsizeadjust

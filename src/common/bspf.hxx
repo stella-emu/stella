@@ -26,6 +26,7 @@
 */
 
 #include <cstdint>
+#include <cstddef>
 // Types for 8/16/32/64-bit signed and unsigned integers
 using Int8   = int8_t;
 using uInt8  = uint8_t;
@@ -46,6 +47,11 @@ template<typename T> constexpr Int32  I32(T x) { return static_cast<Int32>(x);  
 template<typename T> constexpr uInt32 U32(T x) { return static_cast<uInt32>(x); }
 template<typename T> constexpr Int64  I64(T x) { return static_cast<Int64>(x);  }
 template<typename T> constexpr uInt64 U64(T x) { return static_cast<uInt64>(x); }
+
+// Same idea, for bool/float/double/size_t.
+template<typename T> constexpr float  FLT(T x) { return static_cast<float>(x);  }
+template<typename T> constexpr double DBL(T x) { return static_cast<double>(x); }
+template<typename T> constexpr size_t SZT(T x) { return static_cast<size_t>(x); }
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
@@ -123,7 +129,7 @@ using FloatMSpan = MSpanOf<float>;
 // We use KB a lot; let's make a literal for it
 [[nodiscard]] constexpr size_t operator ""_KB(unsigned long long size)
 {
-  return static_cast<size_t>(size * 1024);
+  return SZT(size * 1024);
 }
 
 // Output contents of a vector

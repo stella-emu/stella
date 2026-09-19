@@ -98,7 +98,7 @@ class Properties
       @return     The value of the property
     */
     string_view get(PropType key) const {
-      const auto pos = static_cast<size_t>(key);
+      const auto pos = SZT(key);
       return pos < NUM_PROPS ? string_view{myProperties[pos]} : string_view{};
     }
 

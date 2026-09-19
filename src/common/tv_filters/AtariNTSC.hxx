@@ -175,8 +175,7 @@ class AtariNTSC
       std::array<float, burst_count * 6L> to_rgb{0.F};
       float artifacts{0.F};
       float fringing{0.F};
-      std::array<float, static_cast<size_t>
-                 (rescale_out * kernel_size * 2)> kernel{0.F};
+      std::array<float, SZT(rescale_out * kernel_size * 2)> kernel{0.F};
     };
     init_t myImpl;
 

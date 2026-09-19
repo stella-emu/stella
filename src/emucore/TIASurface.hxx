@@ -248,11 +248,9 @@ class TIASurface
     // Phosphor blend
     int myPBlend{0};
 
-    std::array<uInt32, static_cast<size_t>
-      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+    std::array<uInt32, SZT(AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
       TIAConstants::frameBufferHeight)> myRGBFramebuffer0{};
-    std::array<uInt32, static_cast<size_t>
-      (AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+    std::array<uInt32, SZT(AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
         TIAConstants::frameBufferHeight)> myRGBFramebuffer1{};
     uInt32* myRGBFramebuffer{myRGBFramebuffer0.data()};
     uInt32* myPrevRGBFramebuffer{myRGBFramebuffer1.data()};

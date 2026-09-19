@@ -903,16 +903,16 @@ class TIA : public Device
     //
     // Values are 8-bit TIA color indices (palette mapping happens later
     // in TIASurface).
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer{};
+    std::array<uInt8, SZT(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFramebuffer{};
 
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};
+    std::array<uInt8, SZT(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myBackBuffer{};
 
     // Pointer to the first pixel of the current scanline in myBackBuffer.
     // Precomputed once per line in nextLine() so renderPixel() avoids a
     // y*H_PIXEL multiply on every one of the 160 visible clocks per scanline.
     uInt8* myCurrentRowPtr{nullptr};
 
-    std::array<uInt8, static_cast<size_t>(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer{};
+    std::array<uInt8, SZT(TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight)> myFrontBuffer{};
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer

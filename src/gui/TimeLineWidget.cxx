@@ -86,7 +86,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    const double scale = (_w - 2 - HANDLE_W) / static_cast<double>(steps.back());
+    const double scale = (_w - 2 - HANDLE_W) / DBL(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)

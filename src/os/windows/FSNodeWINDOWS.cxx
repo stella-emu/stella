@@ -184,8 +184,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
       // directory paths carry a trailing separator (for internal path joins)
       // that must not leak into the name shown to the user.
       entry._displayName = AsciiFold::toAscii(wideToUtf8(desc.cFileName));
-      entry._size        = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
-                                                desc.nFileSizeLow;
+      entry._size        = (SZT(desc.nFileSizeHigh) << 32) | desc.nFileSizeLow;
 
       fslist.emplace_back(std::make_shared<FSNodeWINDOWS>(std::move(entry)));
 

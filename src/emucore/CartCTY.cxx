@@ -359,7 +359,7 @@ bool CartridgeCTY::load(Serializer& in)
     myFrequencyImage = ByteSpan{myTuneData}.subspan(tuneOffset);
 
     // Guard the tune position so note indexing stays within the current tune
-    if((static_cast<size_t>(myTunePosition) + 1) * 3 > myFrequencyImage.size())
+    if((SZT(myTunePosition) + 1) * 3 > myFrequencyImage.size())
       myTunePosition = 0;
   }
   catch(...)
@@ -608,7 +608,7 @@ FORCE_INLINE void CartridgeCTY::updateMusicModeDataFetchers()
   // Calculate the number of CTY OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
   const auto wholeClocks = U32(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)

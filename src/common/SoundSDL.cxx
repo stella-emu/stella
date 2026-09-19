@@ -205,7 +205,7 @@ void SoundSDL::setVolume(uInt32 volume, bool persist)
   if(myIsInitializedFlag && (volume <= 100))
   {
     myVolumeFactor = myAudioSettings.enabled()
-      ? static_cast<float>(volume) / 100.F
+      ? FLT(volume) / 100.F
       : 0.F;
 
     SDL_SetAudioStreamGain(myStream, myVolumeFactor);

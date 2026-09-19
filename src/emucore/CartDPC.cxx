@@ -99,7 +99,7 @@ FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
   // Calculate the number of DPC OSC clocks since the last update
   const double clocks = ((myDpcPitch * cycles) / myClockRate) + myFractionalClocks;
   const auto wholeClocks = U32(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   if(wholeClocks == 0)
     return;

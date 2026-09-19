@@ -106,8 +106,7 @@ void TiaZoomWidget::zoom(int level)
     return;
 
   // zoom towards mouse position
-  const auto clickx = static_cast<double>(myClickX),
-             clicky = static_cast<double>(myClickY);
+  const auto clickx = DBL(myClickX), clicky = DBL(myClickY);
   myOffX = round(myOffX + clickx / myZoomLevel - clickx / level);
   myOffY = round(myOffY + clicky / myZoomLevel - clicky / level);
 

@@ -233,7 +233,7 @@ class SoundLIBRETRO : public Sound
         if(!myRemaining || !mySampleRate) return;
 
         const uInt32 frameSize = myChannels * (myBitsPerSample / 8);
-        const double step = static_cast<double>(mySampleRate) / outputRate;
+        const double step = DBL(mySampleRate) / outputRate;
 
         for(auto i = 0UZ; i < numSamples && myPos < myEnd; ++i)
         {

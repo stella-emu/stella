@@ -299,8 +299,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     myBezel->load(); // make sure we have the correct bezel size
 
     // Determine possible TIA windowed zoom levels
-    const auto currentTIAZoom =
-      static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+    const auto currentTIAZoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
@@ -1246,7 +1245,7 @@ void FrameBuffer::switchVideoMode(int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    auto zoom = static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+    auto zoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
@@ -1272,9 +1271,9 @@ void FrameBuffer::switchVideoMode(int direction)
       showTextMessage(myWindow.vidMode.description);
     else
       showGaugeMessage("Zoom", myWindow.vidMode.description,
-                       static_cast<float>(myWindow.vidMode.zoom),
-                       static_cast<float>(supportedTIAMinZoom()),
-                       static_cast<float>(supportedTIAMaxZoom()));
+                       FLT(myWindow.vidMode.zoom),
+                       FLT(supportedTIAMinZoom()),
+                       FLT(supportedTIAMaxZoom()));
   }
 }
 
@@ -1302,8 +1301,7 @@ void FrameBuffer::toggleBezel(bool toggle)
       else
       {
         // Determine possible TIA windowed zoom levels
-        const auto currentTIAZoom =
-          static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+        const auto currentTIAZoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
         myOSystem.settings().setValue("tia.zoom",
           BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
 
@@ -1405,8 +1403,8 @@ double FrameBuffer::maxWindowZoom() const
   for(;;)
   {
     // Figure out the zoomed size of the window (incl. the bezel)
-    const uInt32 width  = static_cast<double>(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
-    const uInt32 height = static_cast<double>(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
+    const uInt32 width  = DBL(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
+    const uInt32 height = DBL(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
 
     if((width > myAbsDesktopSize.at(display).w) ||
        (height > myAbsDesktopSize.at(display).h))

@@ -94,7 +94,7 @@ size_t Serializer::size()
     const auto end = myFile->stream.tellg();
     myFile->stream.seekg(curG);
     myFile->stream.seekp(curP);
-    return static_cast<size_t>(end);
+    return SZT(end);
   }
   else
     return 0;

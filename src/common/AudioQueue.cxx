@@ -24,7 +24,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
     myFragmentQueue{capacity}
 {
   const uInt32 sampleSize = myIsStereo ? 2U : 1U;
-  const size_t fragmentStride = static_cast<size_t>(myFragmentSize) * sampleSize;
+  const size_t fragmentStride = SZT(myFragmentSize) * sampleSize;
 
   myFragmentBuffer = std::make_unique<Int16[]>(fragmentStride * (capacity + 2));
 

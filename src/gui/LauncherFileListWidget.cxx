@@ -228,7 +228,7 @@ void LauncherFileListWidget::userFavor(string_view path)
     [&path](const FSNode& f) { return f.getPath() == path; });
   if(it != _fileList.end())
   {
-    const size_t pos = static_cast<size_t>(it - _fileList.begin());
+    const size_t pos = SZT(it - _fileList.begin());
     if(pos < _iconTypeList.size())
       _iconTypeList[pos] = getIconType(*it);
   }

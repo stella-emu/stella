@@ -27,8 +27,8 @@ namespace {
   Int16 mixingTableEntry(uInt8 v, uInt8 vMax)
   {
     return I16(
-      floor(0x7fff * static_cast<double>(v) / static_cast<double>(vMax) *
-            (R_MAX + R * static_cast<double>(vMax)) / (R_MAX + R * static_cast<double>(v)))
+      floor(0x7fff * DBL(v) / DBL(vMax) *
+            (R_MAX + R * DBL(vMax)) / (R_MAX + R * DBL(v)))
     );
   }
 } // namespace
@@ -84,9 +84,9 @@ void Audio::addSample(uInt8 sample0, uInt8 sample1)
   if(!myAudioQueue) return;
 
   if(myAudioQueue->isStereo()) {
-    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex)] =
+    myCurrentFragment[SZT(2 * mySampleIndex)] =
       myMixingTableIndividual[sample0];
-    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex + 1)] =
+    myCurrentFragment[SZT(2 * mySampleIndex + 1)] =
       myMixingTableIndividual[sample1];
   }
   else {

@@ -55,14 +55,14 @@ class Bankswitch
     // Number of schemes (excluding sentinel enum values)
     static constexpr size_t NumSchemes =
     #ifdef CUSTOM_ARM
-      static_cast<size_t>(Type::CUSTOM) + 1;
+      SZT(Type::CUSTOM) + 1;
     #else
-      static_cast<size_t>(Type::X07) + 1;
+      SZT(Type::X07) + 1;
     #endif
 
     // Number of multi-cart schemes
     static constexpr size_t NumMulti =
-      static_cast<size_t>(Type::_128IN1) - static_cast<size_t>(Type::_2IN1) + 1;
+      SZT(Type::_128IN1) - SZT(Type::_2IN1) + 1;
 
     struct SizesType {
       size_t minSize{0};

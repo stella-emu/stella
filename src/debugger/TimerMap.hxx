@@ -137,8 +137,7 @@ class TimerMap : public Serializable
       }
 
       constexpr uInt64 averageCycles() const {
-        return execs ? U64(std::llround(
-            static_cast<double>(totalCycles) / execs)) : 0;
+        return execs ? U64(std::llround(DBL(totalCycles) / execs)) : 0;
       }
 
       bool save(Serializer& out) const override

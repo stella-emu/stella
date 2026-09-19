@@ -57,7 +57,7 @@ bool Properties::save(KeyValueRepository& repo) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::set(PropType key, string_view value)
 {
-  const auto pos = static_cast<size_t>(key);
+  const auto pos = SZT(key);
   if(pos >= NUM_PROPS)
     return;
 
@@ -113,7 +113,7 @@ void Properties::set(PropType key, string_view value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::reset(PropType key)
 {
-  const auto pos = static_cast<size_t>(key);
+  const auto pos = SZT(key);
   if(pos < NUM_PROPS)
     myProperties[pos] = defaultValue(pos);
 }
@@ -128,7 +128,7 @@ void Properties::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefault(PropType key, string_view value)
 {
-  const auto pos = static_cast<size_t>(key);
+  const auto pos = SZT(key);
   if(pos < NUM_PROPS)
     ourDefaultOverrides[pos] = value;
 }

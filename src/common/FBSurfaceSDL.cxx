@@ -174,8 +174,8 @@ void FBSurfaceSDL::setVisible(bool visible)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::translateCoords(Int32& x, Int32& y) const
 {
-  x = I32((x - myDstR.x) * mySrcR.w / static_cast<float>(myDstR.w));
-  y = I32((y - myDstR.y) * mySrcR.h / static_cast<float>(myDstR.h));
+  x = I32((x - myDstR.x) * mySrcR.w / FLT(myDstR.w));
+  y = I32((y - myDstR.y) * mySrcR.h / FLT(myDstR.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -261,8 +261,8 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
 
   myIsStatic = data != nullptr;
   if(myIsStatic)
-    SDL_memcpy(mySurface->pixels, data, static_cast<size_t>
-              (mySurface->w) * mySurface->h * pf.bytes_per_pixel);
+    SDL_memcpy(mySurface->pixels, data,
+               SZT(mySurface->w) * mySurface->h * pf.bytes_per_pixel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

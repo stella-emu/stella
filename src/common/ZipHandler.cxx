@@ -72,7 +72,7 @@ std::pair<size_t, bool> ZipHandler::find(string_view name)
   if(!header)
     return {0, false};
 
-  return {static_cast<size_t>(header->uncompressedLength), true};
+  return {SZT(header->uncompressedLength), true};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +265,7 @@ void ZipHandler::ZipFile::initialize()
       if(!myFirstRomName.has_value())
       {
         myFirstRomName = header.filename;
-        myFirstRomSize = static_cast<size_t>(header.uncompressedLength);
+        myFirstRomSize = SZT(header.uncompressedLength);
       }
     }
 

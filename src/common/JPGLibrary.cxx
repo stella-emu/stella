@@ -62,8 +62,8 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(rawPos < 0)
     throw std::runtime_error{"Failed to determine JPG file size"};
 
-  const auto size = static_cast<size_t>(rawPos);
-  if(size > static_cast<size_t>(std::numeric_limits<int>::max()))
+  const auto size = SZT(rawPos);
+  if(size > SZT(std::numeric_limits<int>::max()))
     throw std::runtime_error{"JPG file too large"};
 
   in.seekg(0);
@@ -84,8 +84,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   const auto bytesPerPixel = isColor ? 3UZ : 1UZ;
 
   // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
-  const ByteSpan pixels{ njGetImage(),
-      static_cast<size_t>(width) * static_cast<size_t>(height) * bytesPerPixel };
+  const ByteSpan pixels{ njGetImage(), SZT(width) * SZT(height) * bytesPerPixel };
 
   if(width > surface.width() || height > surface.height())
     surface.resize(width, height);
@@ -98,7 +97,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.basePtr(s_buf, s_pitch);
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const size_t i_pitch = static_cast<size_t>(width) * bytesPerPixel;
+  const size_t i_pitch = SZT(width) * bytesPerPixel;
   const uInt8* i_buf   = pixels.data();
 
   // Get the shift values for each colour component

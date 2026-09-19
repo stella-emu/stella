@@ -410,8 +410,8 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
   const float factor = std::min(
-      static_cast<float>(currentRefreshRate) / wantedRefreshRate,
-      static_cast<float>(currentRefreshRate) / (wantedRefreshRate - 1));
+      FLT(currentRefreshRate) / wantedRefreshRate,
+      FLT(currentRefreshRate) / (wantedRefreshRate - 1));
   // Calculate difference taking care of integer factors (e.g. 100/120)
   float bestDiff = std::abs(factor - std::round(factor)) / factor;
   int numModes = 0;

@@ -87,8 +87,7 @@ class OverlayMenu : public DialogContainer
 
   private:
     // One slot per Cached id, populated lazily by cached()
-    std::array<unique_ptr<Dialog>,
-               static_cast<size_t>(Cached::NumCached)> myCached;
+    std::array<unique_ptr<Dialog>, SZT(Cached::NumCached)> myCached;
     // The transient dialog set via setDialog(), if any
     unique_ptr<Dialog> myTransientDialog;
 

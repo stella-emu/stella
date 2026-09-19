@@ -296,7 +296,7 @@ void CartridgeARMWidget::handleArmCycles()
 {
   const bool devSettings = instance().settings().getBool("dev.settings");
   const bool enable = myIncCycles->getState();
-  const double factor = static_cast<double>(myCycleFactor->getValue()) / 100.0;
+  const double factor = DBL(myCycleFactor->getValue()) / 100.0;
 
   if(devSettings)
   {

@@ -329,8 +329,7 @@ void TiaOutputWidget::recalcRects()
   // Fit the image into the widget area (inside a 1px border), preserving the
   // aspect ratio already baked into the horizontally doubled source
   const int availW = _w - 2, availH = _h - 2;
-  const float scale = std::min(static_cast<float>(availW) / srcW,
-                               static_cast<float>(availH) / srcH);
+  const float scale = std::min(FLT(availW) / srcW, FLT(availH) / srcH);
   myImgW = I32(srcW * scale);
   myImgH = I32(srcH * scale);
   // Anchor at the widget's top-left (matching the original TIA image layout)
@@ -391,8 +390,8 @@ bool TiaOutputWidget::widgetToImage(int lx, int ly, int& col, int& row) const
     return false;
   }
 
-  const float fx = (lx - myImgX) / static_cast<float>(myImgW);
-  const float fy = (ly - myImgY) / static_cast<float>(myImgH);
+  const float fx = (lx - myImgX) / FLT(myImgW);
+  const float fy = (ly - myImgY) / FLT(myImgH);
   const bool inside = fx >= 0.F && fx < 1.F && fy >= 0.F && fy < 1.F;
 
   // Native TIA column / displayed row, clamped so callers can act on a point

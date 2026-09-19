@@ -126,8 +126,8 @@ namespace {
         constexpr size_t headerSize = sizeof(FrameFormat) - 1;
         constexpr size_t timecodeReserve = 128; // generous; see "timecode[60]" above
         const size_t requiredSize = headerSize + timecodeReserve +
-          static_cast<size_t>(ff->vsync) + ff->vblank + ff->overscan + ff->visible + // sound
-          static_cast<size_t>(11) * ff->visible;                    // graph+color+bkcolor
+          SZT(ff->vsync) + ff->vblank + ff->overscan + ff->visible + // sound
+          SZT(11) * ff->visible;                    // graph+color+bkcolor
 
         if((ff->format & 0x80U) && requiredSize <= CartridgeMVC::MVC_FIELD_SIZE)
         {

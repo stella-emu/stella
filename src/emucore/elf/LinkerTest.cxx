@@ -356,7 +356,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x12345678));
@@ -371,7 +371,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({{"foo", 0x12345678}});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x12345678));
@@ -388,7 +388,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
       .setUndefinedSymbolDefault(0x12345678)
       .link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_TRUE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x12345678));
@@ -403,7 +403,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_FALSE(linker.getRelocatedSymbols()[0].has_value());
   }
 
@@ -420,7 +420,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x00100052));
@@ -439,7 +439,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x00200052));
@@ -458,7 +458,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x00300052));
@@ -477,7 +477,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_TRUE(linker.getRelocatedSymbols()[0].has_value());
     EXPECT_FALSE(linker.getRelocatedSymbols()[0]->undefined);
     EXPECT_EQ(linker.getRelocatedSymbols()[0]->value, U32(0x00200052));
@@ -493,7 +493,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(linker.getRelocatedSymbols().size(), static_cast<size_t>(1));
+    EXPECT_EQ(linker.getRelocatedSymbols().size(), SZT(1));
     EXPECT_FALSE(linker.getRelocatedSymbols()[0].has_value());
   }
 
@@ -992,7 +992,7 @@ TEST(ElfLinker, RodataSectionsGoToRodata) {
 
     linker.link({});
 
-    EXPECT_EQ(initArray().size(), static_cast<size_t>(2));
+    EXPECT_EQ(initArray().size(), SZT(2));
     EXPECT_EQ(initArray()[0], U32(0x12345678));
     EXPECT_EQ(initArray()[1], U32(0xabcdef01));
   }

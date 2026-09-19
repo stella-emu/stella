@@ -437,8 +437,7 @@ bool TIA::load(Serializer& in)
     // (and thus renderPixel's writes) past the end of myBackBuffer
     const uInt32 y = std::min(myFrameManager->getY(),
                               TIAConstants::frameBufferHeight - 1);
-    myCurrentRowPtr = myBackBuffer.data() +
-      static_cast<size_t>(y) * TIAConstants::H_PIXEL;
+    myCurrentRowPtr = myBackBuffer.data() + SZT(y) * TIAConstants::H_PIXEL;
   }
   catch(...)
   {
@@ -1513,7 +1512,7 @@ void TIA::onFrameComplete()
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(TIAConstants::H_PIXEL * myFrameManager->getY()),
+      SZT(TIAConstants::H_PIXEL * myFrameManager->getY()),
       missingScanlines * TIAConstants::H_PIXEL, 0);
 
   myFrontBuffer = myBackBuffer;
@@ -1778,7 +1777,7 @@ void TIA::applyRsync()
   myHctrDelta = TIAConstants::H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
+      SZT(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
       TIAConstants::H_PIXEL - x, 0);
 
   myHctr = TIAConstants::H_CLOCKS - 3;
@@ -1804,7 +1803,7 @@ FORCE_INLINE void TIA::nextLine()
   // y only advances here, so this is the single correct update point for the
   // precomputed row pointer used in renderPixel()
   myCurrentRowPtr = myBackBuffer.data() +
-    static_cast<size_t>(myFrameManager->getY()) * TIAConstants::H_PIXEL;
+    SZT(myFrameManager->getY()) * TIAConstants::H_PIXEL;
 
   myMissile0.nextLine();
   myMissile1.nextLine();
@@ -2021,7 +2020,7 @@ void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL),
+      SZT(myFrameManager->getY() * TIAConstants::H_PIXEL),
       8, myColorHBlank);
 }
 

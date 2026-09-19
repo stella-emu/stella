@@ -86,9 +86,9 @@ uInt8 CompuMateCassette::cassetteBit() const
   // Convert current system cycle count to cassette sample position.
   // Header: SYNC_BYTES bytes of 0xFF precede the program data (~10 seconds of sync tone)
 
-  const auto samplePos = static_cast<double>(mySystem.cycles() - myCasStartCycle) * myCasFreqRatio;
+  const auto samplePos = DBL(mySystem.cycles() - myCasStartCycle) * myCasFreqRatio;
   const auto streamBitIdx = U64(samplePos / SAMPLES_PER_BIT);
-  const auto phase = samplePos - static_cast<double>(streamBitIdx) * SAMPLES_PER_BIT;
+  const auto phase = samplePos - DBL(streamBitIdx) * SAMPLES_PER_BIT;
 
   const uInt64 byteIdx = streamBitIdx / FRAME_BITS;
   const auto bitInByte = U32(streamBitIdx % FRAME_BITS);
@@ -99,7 +99,7 @@ uInt8 CompuMateCassette::cassetteBit() const
   {
     myCasLastPct = pct;
     myOSystem.frameBuffer().showGaugeMessage("Loading cassette",
-      std::format("{}%", pct), static_cast<float>(pct), 0.F, 100.F);
+      std::format("{}%", pct), FLT(pct), 0.F, 100.F);
   }
 
   uInt8 byte{};
@@ -202,7 +202,7 @@ void CompuMateCassette::cassetteD6Toggled(uInt64 cycles)
     }
     else
     {
-      myCyclesPerBit   = static_cast<double>(cycles - mySaveT0);
+      myCyclesPerBit   = DBL(cycles - mySaveT0);
       mySaveCalibrated = true;
       mySaveBitTrans[1] = 1;
       cerr << std::format("CompuMate FSK calibrated: {} cycles/bit\n", myCyclesPerBit);
@@ -219,7 +219,7 @@ void CompuMateCassette::cassetteD6Toggled(uInt64 cycles)
     // floors into the previous bin, corrupting the byte's transition pattern.
     // myCyclesPerBit/16 is wider than any expected jitter and still well
     // within the bin 12 upper bound.
-    const auto cyclesSinceT0 = static_cast<double>(cycles - mySaveT0);
+    const auto cyclesSinceT0 = DBL(cycles - mySaveT0);
     const auto bitWindow = I32(
         (cyclesSinceT0 + myCyclesPerBit / 16.0) / myCyclesPerBit);
     // A complete 1-bit stop bit holds exactly 4 transitions; once bit 12 is
@@ -292,7 +292,7 @@ void CompuMateCassette::finalizeSaveByte()
     {
       mySaveLastPct = pct;
       myOSystem.frameBuffer().showGaugeMessage("Saving cassette",
-        std::format("{}%", pct), static_cast<float>(pct), 0.F, 100.F);
+        std::format("{}%", pct), FLT(pct), 0.F, 100.F);
     }
     if(mySaveBytePos >= mySaveExpectedSize)
       finalizeSave();

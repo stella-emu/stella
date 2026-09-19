@@ -171,9 +171,9 @@ void TiaDisplayWidget::applyZoom(float zoom, int anchorX, int anchorY)
   visibleSize(vw, vh);
 
   const float fracX = (myImgW > 0)
-    ? std::clamp((anchorX - myImgX) / static_cast<float>(myImgW), 0.F, 1.F) : 0.5F;
+    ? std::clamp((anchorX - myImgX) / FLT(myImgW), 0.F, 1.F) : 0.5F;
   const float fracY = (myImgH > 0)
-    ? std::clamp((anchorY - myImgY) / static_cast<float>(myImgH), 0.F, 1.F) : 0.5F;
+    ? std::clamp((anchorY - myImgY) / FLT(myImgH), 0.F, 1.F) : 0.5F;
   const float srcPtX = mySrcX + fracX * vw;
   const float srcPtY = mySrcY + fracY * vh;
 
@@ -238,8 +238,8 @@ void TiaDisplayWidget::handleMouseMoved(int x, int y)
     // Convert the widget-space drag into source pixels; pan opposite the drag
     float vw = 0.F, vh = 0.F;
     visibleSize(vw, vh);
-    mySrcX -= dx * vw / static_cast<float>(myImgW);
-    mySrcY -= dy * vh / static_cast<float>(myImgH);
+    mySrcX -= dx * vw / FLT(myImgW);
+    mySrcY -= dy * vh / FLT(myImgH);
     clampSource();
     setDirty();
   }

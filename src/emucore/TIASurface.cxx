@@ -395,7 +395,7 @@ void TIASurface::createScanlineSurface()
   const uInt32 height = myTIA->height()* pHeight; // vRepeats are not used here
 
   // Copy repeated pattern into surface data
-  std::vector<uInt32> data(static_cast<size_t>(width) * height);
+  std::vector<uInt32> data(SZT(width) * height);
 
   for(uInt32 i = 0; i < width * height; ++i)
     data[i] = Patterns[mask].data[(i / width) % (pHeight * vRepeats)][i % pWidth];

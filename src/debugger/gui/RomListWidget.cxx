@@ -569,7 +569,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
     if(idx.x < 2 || bytes.length() < 8)
       // 1 or 2 hex bytes, get one hex byte
-      valStr = bytes.substr((static_cast<size_t>(idx.x) / 3) * 3, 2);
+      valStr = bytes.substr((SZT(idx.x) / 3) * 3, 2);
     else
       // 3 hex bytes, get two rightmost hex bytes
       valStr = bytes.substr(6, 2) + bytes.substr(3, 2);

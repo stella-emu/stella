@@ -207,7 +207,7 @@ class Variant
         myCache->f = std::visit([](const auto& v) -> float {
           using T = std::decay_t<decltype(v)>;
 
-          if constexpr(std::is_arithmetic_v<T>)  return static_cast<float>(v);
+          if constexpr(std::is_arithmetic_v<T>)  return FLT(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             float result{};
             auto sv = string_view(v);
@@ -222,7 +222,7 @@ class Variant
         myCache->d = std::visit([](const auto& v) -> double {
           using T = std::decay_t<decltype(v)>;
 
-          if constexpr(std::is_arithmetic_v<T>)  return static_cast<double>(v);
+          if constexpr(std::is_arithmetic_v<T>)  return DBL(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             double result{};
             auto sv = string_view(v);

@@ -95,7 +95,7 @@ namespace {
 
   constexpr float unmapSpeed(int speed)
   {
-    const float f_speed = static_cast<float>(speed) / 100;
+    const float f_speed = FLT(speed) / 100;
 
     return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
   }

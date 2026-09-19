@@ -516,7 +516,7 @@ bool DebuggerParser::validateArgs(int cmd)
 string DebuggerParser::eval()
 {
   string buf;
-  buf.reserve(static_cast<size_t>(argCount) * 64);  // rough estimate per arg line
+  buf.reserve(SZT(argCount) * 64);  // rough estimate per arg line
 
   for(uInt32 i = 0; i < argCount; ++i)
   {
@@ -661,7 +661,7 @@ string DebuggerParser::getTimerCmds()
 
   const bool banked = debugger.cartDebug().romBankCount() > 1;
   string out;
-  out.reserve(static_cast<size_t>(numTimers) * 32);
+  out.reserve(SZT(numTimers) * 32);
 
   // Helper to build an address label with optional mirror/bank suffix
   std::ostringstream buf;

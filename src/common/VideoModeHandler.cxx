@@ -48,7 +48,7 @@ const VideoModeHandler::Mode&
   {
     if(windowedRequested)
     {
-      const auto zoom = static_cast<double>(settings.getFloat("tia.zoom"));
+      const auto zoom = DBL(settings.getFloat("tia.zoom"));
 
       // Image and screen (aka window) dimensions are the same
       // Overscan is not applicable in this mode
@@ -61,8 +61,8 @@ const VideoModeHandler::Mode&
       const double overscan = 1 - settings.getInt("tia.fs_overscan") / 100.0;
 
       // First calculate maximum zoom that keeps aspect ratio
-      const double scaleX = static_cast<double>(myImage.w) / (myDisplay.w / bezelInfo.ratioW()),
-                   scaleY = static_cast<double>(myImage.h) / (myDisplay.h / bezelInfo.ratioH());
+      const double scaleX = DBL(myImage.w) / (myDisplay.w / bezelInfo.ratioW()),
+                   scaleY = DBL(myImage.h) / (myDisplay.h / bezelInfo.ratioH());
       double zoom = 1. / std::max(scaleX, scaleY);
 
       // When aspect ratio correction is off, we want pixel-exact images,

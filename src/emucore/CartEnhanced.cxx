@@ -370,7 +370,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
   }
   else
   {
-    if(static_cast<size_t>(address & myBankMask) < myRamSize * 2)
+    if(SZT(address & myBankMask) < myRamSize * 2)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such

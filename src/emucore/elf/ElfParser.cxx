@@ -272,8 +272,8 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   // The name must be NUL-terminated within both the section and the image.
   // If strnlen scans the whole bound without finding a terminator, the name
   // is unterminated (and reading one byte further would be out of bounds).
-  const size_t maxLen = std::min(static_cast<size_t>(section.size - offset),
-                                 static_cast<size_t>(mySize - imageOffset));
+  const size_t maxLen = std::min(SZT(section.size - offset),
+                                 SZT(mySize - imageOffset));
   if (strnlen(name, maxLen) == maxLen)
     ElfParseError::raise("unterminated section name");
 

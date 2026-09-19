@@ -497,7 +497,7 @@ float Paddles::analogSensitivityValue(int sensitivity)
 {
   // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
   return BASE_ANALOG_SENSE * std::pow(1.1F,
-    static_cast<float>(BSPF::clamp(sensitivity, MIN_ANALOG_SENSE, MAX_ANALOG_SENSE)));
+    FLT(BSPF::clamp(sensitivity, MIN_ANALOG_SENSE, MAX_ANALOG_SENSE)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

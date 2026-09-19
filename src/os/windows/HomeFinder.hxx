@@ -30,6 +30,8 @@
 #include <memory>
 #include <string>
 
+#include "bspf.hxx"
+
 struct HomeFinder
 {
   HomeFinder() = delete;

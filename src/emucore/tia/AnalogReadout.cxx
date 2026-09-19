@@ -94,19 +94,19 @@ void AnalogReadout::setConsoleTiming(ConsoleTiming consoleTiming)
 void AnalogReadout::updateCharge(uInt64 timestamp)
 {
   if (myIsDumped) {
-    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R_DUMP / C /
+    myU *= exp(-DBL(timestamp - myTimestamp) / R_DUMP / C /
            myClockFreq);
   } else {
     switch (myConnection.type) {
       case ConnectionType::vcc:
         myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
-          exp(-static_cast<double>(timestamp - myTimestamp) /
+          exp(-DBL(timestamp - myTimestamp) /
               (myConnection.resistance + R0) / C / myClockFreq));
 
         break;
 
       case ConnectionType::ground:
-        myU *= exp(-static_cast<double>(timestamp - myTimestamp) /
+        myU *= exp(-DBL(timestamp - myTimestamp) /
             (myConnection.resistance + R0) / C / myClockFreq);
 
         break;

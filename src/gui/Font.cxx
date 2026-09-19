@@ -40,8 +40,7 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     return;
 
   myGlyphs.resize(desc.size);
-  myMask.reserve(static_cast<size_t>(desc.size) * bytesPerRow(desc.fbbw) *
-                 desc.fbbh);
+  myMask.reserve(SZT(desc.size) * bytesPerRow(desc.fbbw) * desc.fbbh);
 
   for(uInt32 i = 0; i < desc.size; ++i)
   {
@@ -71,7 +70,7 @@ GlyphSet::GlyphSet(const FontDesc& desc)
     const uInt32 stride = bytesPerRow(bbw);
     const size_t base = myMask.size();
 
-    myMask.resize(base + (static_cast<size_t>(stride) * bbh));
+    myMask.resize(base + (SZT(stride) * bbh));
 
     for(uInt32 y = 0; y < bbh; ++y)
       for(uInt32 x = 0; x < bbw; ++x)
@@ -79,8 +78,7 @@ GlyphSet::GlyphSet(const FontDesc& desc)
         const uInt16 word = bits[(y * words) + (x >> 4U)];
 
         if(word & (0x8000U >> (x & 15U)))
-          myMask[base + (static_cast<size_t>(y) * stride) + (x >> 3U)] |=
-              0x80U >> (x & 7U);
+          myMask[base + (SZT(y) * stride) + (x >> 3U)] |= 0x80U >> (x & 7U);
       }
   }
 }

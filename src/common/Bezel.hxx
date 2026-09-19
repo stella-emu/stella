@@ -77,8 +77,8 @@ class Bezel
       Common::Rect window() const { return _window; }
 
       // Ratios between bezel sizes and TIA window sizes
-      double ratioW() const { return static_cast<double>(size().w) / window().w(); }
-      double ratioH() const { return static_cast<double>(size().h) / window().h(); }
+      double ratioW() const { return DBL(size().w) / window().w(); }
+      double ratioH() const { return DBL(size().h) / window().h(); }
     };
 
     // Structure access methods
