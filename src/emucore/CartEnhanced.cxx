@@ -254,7 +254,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     const uInt16 fromAddr = U32(ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) &
       ~U32(System::PAGE_MASK);
     // for ROMs < 4_KB, the whole address space will be mapped.
-    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) &
+    const uInt16 toAddr   = U32(ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) &
       ~U32(System::PAGE_MASK);
 
     System::PageAccess access(this, System::PageAccessType::READ);
