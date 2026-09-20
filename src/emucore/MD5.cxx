@@ -63,10 +63,10 @@ void MD5::init()
 void MD5::decode(BlockMSpan output, BlockSpan input)
 {
   for(uInt32 i = 0, j = 0; j < BLOCKSIZE; ++i, j += 4)
-    output[i] =  (U32(input[j]))
-              | ((U32(input[j+1])) << 8U)
-              | ((U32(input[j+2])) << 16U)
-              | ((U32(input[j+3])) << 24U);
+    output[i] =  U32(input[j])
+              | (U32(input[j+1]) << 8U)
+              | (U32(input[j+2]) << 16U)
+              | (U32(input[j+3]) << 24U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

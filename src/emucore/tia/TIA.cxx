@@ -1849,9 +1849,9 @@ FORCE_INLINE void TIA::nextLine()
         myPosBL[y][myFlickerFrame] = myBall.getPosition();
       // Note: code checks only right side of playfield
       myPatPF[y][myFlickerFrame] =
-          (U32(registerValue(PF0))) << 16U
-        | (U32(registerValue(PF1))) << 8U
-        | (U32(registerValue(PF2)));
+          U32(registerValue(PF0)) << 16U
+        | U32(registerValue(PF1)) << 8U
+        | U32(registerValue(PF2));
       // Define end of frame for faster auto-phosphor calculation
       if(!cloned)
         myFrameEnd = y;
