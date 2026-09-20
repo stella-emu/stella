@@ -246,6 +246,9 @@ Settings::Settings()
   setPermanent("fujinet", "false");
   setPermanent("fujinet.host", "127.0.0.1");
   setPermanent("fujinet.port", FUJINET_DEFAULT_PORT);
+  // Blank means the CONFIG client compiled into this build.  A path here
+  // overrides it, which is how you test a client you have just rebuilt
+  setPermanent("fujinet.clientrom", "");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
@@ -720,6 +723,8 @@ void Settings::usage()
     << "  -fujinet      <1|0>            Enable the FujiNet cartridge's network link\n"
     << "  -fujinet.host <name>           Host running fujinet-pc (default: 127.0.0.1)\n"
     << "  -fujinet.port <number>         TCP port of its Bus-over-IP listener\n"
+    << "  -fujinet.clientrom <file>      FujiNet client ROM to boot instead of the\n"
+    << "                                  built-in CONFIG\n"
     << "  -avoxport     <name>           The name of the serial port where an AtariVox is\n"
     << "                                  connected\n"
     << "  -holdreset                     Start the emulator with the Game Reset switch\n"

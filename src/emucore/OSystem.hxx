@@ -396,6 +396,20 @@ class OSystem
                          bool newrom = true);
 
     /**
+      Locate the FujiNet client ROM to boot.
+
+      A FujiNet cartridge has no network at power-up and nothing to load a
+      client from, so the client is the image it already holds: on hardware
+      the RP2040 memcpy's CONFIG out of flash before the bus comes up.  This
+      is Stella's flash -- the compiled-in image, spilled to a real file
+      under the base directory because console creation wants an FSNode all
+      the way down.  The 'fujinet.clientrom' setting overrides it.
+
+      @return  The FSNode of the client ROM to hand to createConsole()
+    */
+    FSNode fujiNetClientROM();
+
+    /**
       Reloads the current console (essentially deletes and re-creates it).
       This can be thought of as a real console off/on toggle.
 

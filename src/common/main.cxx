@@ -276,14 +276,41 @@ int main(int ac, char* av[])
   const FSNode romnode(romfile);
   if(romfile.empty() || romnode.isDirectory())
   {
-    Logger::debug("Attempting to use ROM launcher ...");
-    const bool launcherOpened = !romfile.empty() ?
-      theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
-    if(!launcherOpened)
+    // A FujiNet cartridge is the console's boot ROM, not something you pick
+    // from a list: on hardware there is no menu and no fallback, the client
+    // is simply what the cartridge serves at power-up.  So with FujiNet on
+    // and no ROM named, boot the client instead of opening the launcher.
+    // A directory still means "browse here", and a client that won't load
+    // falls through to the launcher rather than leaving nothing running
+    bool fujiBooted = false;
+    if(romfile.empty() && theOSystem->settings().getBool("fujinet"))
     {
-      Logger::debug("Launcher could not be started, showing usage");
-      Settings::usage();
-      return Cleanup(1);
+      Logger::debug("Attempting to boot the FujiNet client ...");
+      try
+      {
+        fujiBooted = theOSystem->createConsole(
+            theOSystem->fujiNetClientROM()).empty();
+      }
+      catch(const std::runtime_error& e)
+      {
+        Logger::error(e.what());
+      }
+      if(!fujiBooted)
+        Logger::error("ERROR: Couldn't boot the FujiNet client, "
+                      "falling back to the ROM launcher");
+    }
+
+    if(!fujiBooted)
+    {
+      Logger::debug("Attempting to use ROM launcher ...");
+      const bool launcherOpened = !romfile.empty() ?
+        theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
+      if(!launcherOpened)
+      {
+        Logger::debug("Launcher could not be started, showing usage");
+        Settings::usage();
+        return Cleanup(1);
+      }
     }
   }
   else

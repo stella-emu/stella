@@ -36,6 +36,7 @@
 #include "Widget.hxx"
 #include "Layout.hxx"
 #include "Font.hxx"
+#include "BrowserDialog.hxx"
 #include "MessageBox.hxx"
 #include "MediaFactory.hxx"
 #include "InputDialog.hxx"
@@ -490,6 +491,15 @@ void InputDialog::addFujiNetTab()
   myFujiPort->setToolTip("TCP port of its Bus-over-IP listener (default 9995).");
   wid.push_back(myFujiPort);
 
+  myFujiClientLbl = new LabelWidget(pane, _font, "Client ROM");
+  myFujiClient = new EditTextWidget(pane, _font, 1);
+  myFujiClient->setToolTip("FujiNet client ROM to boot when no ROM is given; "
+                           "blank for the built-in CONFIG.");
+  wid.push_back(myFujiClient);
+  myFujiClientButton = new ButtonWidget(pane, _font, ELLIPSIS,
+                                        Cmd::FujiNetClientROM);
+  wid.push_back(myFujiClientButton);
+
   myFujiStatusLbl = new LabelWidget(pane, _font, "Status");
   myFujiStatus = new EditTextWidget(pane, _font, 1);
   myFujiStatus->setEditable(false, true);
@@ -509,10 +519,22 @@ void InputDialog::addFujiNetTab()
     const int VGAP   = Dialog::vGap(),
               INDENT = Dialog::indent();
 
-    // The three fields share one column, indented under the checkbox that
+    // The fields share one label column, indented under the checkbox that
     // switches them on
     GUI::alignLabels({{myFujiHostLbl, INDENT}, {myFujiPortLbl, INDENT},
-                      {myFujiStatusLbl, INDENT}});
+                      {myFujiClientLbl, INDENT}, {myFujiStatusLbl, INDENT}});
+
+    // The only row with a third widget, so it needs its own HBox: the field
+    // takes what the button leaves, and the button fills the row's height so
+    // it stays level with the field (GameInfoDialog's browseField does the
+    // same for its bezel and link rows)
+    auto clientRow = std::make_unique<GUI::BoxLayout>(
+        GUI::BoxLayout::Dir::Horizontal);
+    clientRow->addStretch(labeledRow(myFujiClientLbl, myFujiClient, 0, INDENT,
+                                     true));
+    clientRow->addSpace(Dialog::fontWidth());
+    clientRow->addAuto(GUI::alignedItem(myFujiClientButton, GUI::HAlign::Left,
+                                        GUI::VAlign::Fill));
 
     col.addAuto(anchoredItem(myFujiEnable));
     col.addSpace(VGAP);
@@ -521,6 +543,8 @@ void InputDialog::addFujiNetTab()
     col.addAuto(labeledRow(myFujiHostLbl, myFujiHost, 0, INDENT, true));
     col.addSpace(VGAP);
     col.addAuto(labeledRow(myFujiPortLbl, myFujiPort, 0, INDENT));
+    col.addSpace(VGAP);
+    col.addAuto(std::move(clientRow));
     col.addSpace(VGAP);
     col.addAuto(labeledRow(myFujiStatusLbl, myFujiStatus, 0, INDENT, true));
     col.addSpace(VGAP * 3);
@@ -536,6 +560,8 @@ void InputDialog::updateFujiNetEnabled()
 
   myFujiHost->setEnabled(enable);
   myFujiPort->setEnabled(enable);
+  myFujiClient->setEnabled(enable);
+  myFujiClientButton->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -614,6 +640,7 @@ void InputDialog::loadConfig()
   myFujiEnable->setState(settings.getBool("fujinet"));
   myFujiHost->setText(settings.getString("fujinet.host"));
   myFujiPort->setText(std::to_string(settings.getInt("fujinet.port")));
+  myFujiClient->setText(settings.getString("fujinet.clientrom"));
   myFujiStatus->setText(instance().hasConsole()
     ? instance().console().cartridge().externalStateInfo()
     : "");
@@ -700,6 +727,7 @@ void InputDialog::saveConfig()
     BSPF::clamp(port, 1, 65535, 9995);
     settings.setValue("fujinet.port", port);
   }
+  settings.setValue("fujinet.clientrom", myFujiClient->getText());
   settings.setValue("fujinet", myFujiEnable->getState());
   if(instance().hasConsole())
     instance().console().cartridge().enableFujiNet(myFujiEnable->getState());
@@ -809,6 +837,7 @@ void InputDialog::setDefaults()
       myFujiEnable->setState(false);
       myFujiHost->setText("127.0.0.1");
       myFujiPort->setText("9995");
+      myFujiClient->setText("");
       updateFujiNetEnabled();
       break;
 
@@ -995,6 +1024,15 @@ void InputDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 
     case Cmd::FujiNetEnableChanged:
       updateFujiNetEnabled();
+      break;
+
+    case Cmd::FujiNetClientROM:
+      BrowserDialog::show(this, _font, "Select FujiNet Client ROM",
+                          myFujiClient->getText(),
+                          BrowserDialog::Mode::FileLoad,
+                          [this](bool OK, const FSNode& node) {
+                            if(OK) myFujiClient->setText(node.getShortPath());
+                          });
       break;
 
     case Cmd::MousePaddleSpeedChanged:

@@ -319,6 +319,33 @@
 #define FN_PF_SLOTS      4
 #define FN_PF_TAB(r, k)  (FN_T_PLANE(r) + FN_PF_ROW0 + (k) * FN_PF_KIND_LEN)
 
+/* ONE RAW BYTE into the text planes, for a client with no RAM to keep it in.
+ *
+ * Every other transform here composes something -- a glyph, a card, a board.
+ * This one composes nothing: plane byte `dst` becomes the low byte of `src`.
+ * It exists because the planes are the only cartridge memory a 2600 client can
+ * both write and READ BACK (`lda $1800,y`), which makes them the only place a
+ * console that has run out of RAM can keep a variable.
+ *
+ * fujinet-2600-dodgem is why. Dodge 'Em (Atari 1980) uses all 128 bytes of the
+ * RIOT -- its own census puts 121 in the game and the remaining 6 under the
+ * stack -- so a netcode that needs sixteen bytes of state that outlives a
+ * frame has nowhere at all to put them. Moving sixteen bytes of the GAME's
+ * state out here frees exactly that much, and the two blocks it moves (a
+ * per-row dot bitmap and one player's saved state) are read in vblank and at
+ * round end, never by the display kernel, so nothing time-critical changes.
+ *
+ * FN_BLIT_CELL is the same shape aimed at the Battleship board; this is aimed
+ * at the planes, and is bounded to them rather than to the whole window --
+ * a client that can poke $1B00 or $1F00 can corrupt its own mailbox.
+ *
+ * Reading it back costs nothing and needs no transform: the planes are plain
+ * cartridge bytes at $1800-$1AFF, 128-byte aligned, so `lda $1A00,x` is always
+ * four cycles and never five. Writing costs four stores and a FN_B_BLITGEN
+ * poll, which is why this is for state that changes a few times a second and
+ * not for state that changes every frame. */
+#define FN_BLIT_POKE     14       /* plane[dst] = the low byte of src        */
+
 /* What FN_BLIT_FIELD paints. A Battleship gamefield is 100 bytes at y*10+x
  * in the reply window, and turning it into ten rows of text is 100 reads,
  * 100 compares and a 16-bit reply cursor -- about 250 bytes of 6502 in a bank

@@ -482,6 +482,17 @@ bool vcs_blit(uint8_t *win, uint8_t *board, uint16_t src, uint16_t dst,
         return true;
     }
 
+    if (transform == FN_BLIT_POKE) {
+        /* No composition: one byte, straight in. Bounded to the PLANES and
+         * not to the window, because past FN_T_BASE + 768 lies the reply
+         * window and then the client's own status page -- a stray dst there
+         * would let a client quietly corrupt the mailbox it is talking
+         * through, and the symptom would be a transaction, not a picture. */
+        if (dst < (unsigned)(FN_T_PLANES * FN_T_PLANE_LEN))
+            win[(FN_T_BASE - FN_WINDOW_BASE) + dst] = (uint8_t)(src & 0xFFu);
+        return true;
+    }
+
     if (transform == FN_BLIT_PFCELL) {
         if (cnt < FN_BOARD_CELLS)
             pf_cell(win, dst & 3u, cnt, (uint8_t)(src & FN_PFM_ALL),

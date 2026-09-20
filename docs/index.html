@@ -3388,7 +3388,9 @@
 
     <tr>
       <td><pre>-fujinet &lt;1|0&gt;</pre></td>
-      <td>Enable the FujiNet cartridge's network link</td>
+      <td>Enable the FujiNet cartridge's network link.  With this on and no ROM
+      given, Stella boots the FujiNet CONFIG client instead of opening the ROM
+      launcher, and you browse to games through it</td>
     </tr>
 
     <tr>
@@ -3399,6 +3401,12 @@
     <tr>
       <td><pre>-fujinet.port &lt;number&gt;</pre></td>
       <td>TCP port of that instance's Bus-over-IP listener (default: 9995)</td>
+    </tr>
+
+    <tr>
+      <td><pre>-fujinet.clientrom &lt;file&gt;</pre></td>
+      <td>FujiNet client ROM to boot instead of the built-in CONFIG client
+      (default: blank, meaning the built-in one)</td>
     </tr>
 
     <tr>

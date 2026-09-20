@@ -108,7 +108,8 @@ class InputDialog : public Dialog
         MouseControlChanged       = GuiCmd::of("InputDialog.MouseControlChanged"),
         CursorStateChanged        = GuiCmd::of("InputDialog.CursorStateChanged"),
         MousePaddleSpeedChanged   = GuiCmd::of("InputDialog.MousePaddleSpeedChanged"),
-        FujiNetEnableChanged      = GuiCmd::of("InputDialog.FujiNetEnableChanged");
+        FujiNetEnableChanged      = GuiCmd::of("InputDialog.FujiNetEnableChanged"),
+        FujiNetClientROM          = GuiCmd::of("InputDialog.FujiNetClientROM");
     };
 
     TabWidget* myTab{nullptr};
@@ -167,6 +168,9 @@ class InputDialog : public Dialog
     EditTextWidget* myFujiHost{nullptr};
     LabelWidget*    myFujiPortLbl{nullptr};
     EditTextWidget* myFujiPort{nullptr};
+    LabelWidget*    myFujiClientLbl{nullptr};
+    EditTextWidget* myFujiClient{nullptr};
+    ButtonWidget*   myFujiClientButton{nullptr};
     LabelWidget*    myFujiStatusLbl{nullptr};
     EditTextWidget* myFujiStatus{nullptr};
     LabelWidget*    myFujiNote1{nullptr};

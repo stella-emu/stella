@@ -43,6 +43,7 @@
 #include "Cart.hxx"
 #include "CartCreator.hxx"
 #include "CartDetector.hxx"
+#include "FujiConfigROM.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIAConstants.hxx"
@@ -505,6 +506,57 @@ void OSystem::recreateDebugger()
   myDebugger->initialize();
   myConsole->attachDebugger(*myDebugger);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode OSystem::fujiNetClientROM()
+{
+  // An explicit path wins outright, so a client just rebuilt in the
+  // fujinet-config tree can be booted without regenerating the header
+  const string& custom = mySettings->getString("fujinet.clientrom");
+  if(!custom.empty())
+  {
+    const FSNode node(custom);
+    if(node.isFile() && node.isReadable())
+      return node;
+
+    Logger::error(std::format(
+      "ERROR: FujiNet client ROM '{}' is unreadable; using the built-in one",
+      custom));
+  }
+
+  // Spilled to a real file rather than served from memory: openConsole()
+  // takes its image from an FSNode and keeps using the node afterwards --
+  // getBaseName() for the cart name, the .pro sibling, CartCreator::create()
+  // -- so a file is what makes the built-in client an ordinary ROM load
+  FSNode dir{myBaseDir};  dir /= "fujinet";
+  if(!dir.isDirectory())
+    dir.makeDir();
+
+  FSNode rom{dir};  rom /= "config.bin";
+
+  // Rewritten whenever it doesn't match, so an upgraded Stella replaces a
+  // stale copy and a deleted one simply comes back
+  ByteArray current;
+  if(rom.isFile())
+    rom.read(current);
+  if(current.size() != FujiNet::CONFIG_ROM.size() ||
+     !std::equal(current.cbegin(), current.cend(), FujiNet::CONFIG_ROM.cbegin()))
+  {
+    if(rom.write(FujiNet::CONFIG_ROM) != FujiNet::CONFIG_ROM.size())
+      Logger::error(std::format("ERROR: Couldn't write FujiNet client ROM to {}",
+                                rom.getShortPath()));
+    else
+      Logger::info(std::format("FujiNet: wrote the built-in client to {}",
+                               rom.getShortPath()));
+
+    // An FSNode caches what it found when it was made, so one built for a
+    // path that did not exist a moment ago still reports no file -- and
+    // openROM() would reject it as an unrecognized ROM.  Re-make it
+    rom = FSNode{rom.getPath()};
+  }
+
+  return rom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
