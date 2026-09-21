@@ -26,6 +26,7 @@ class M6502;
 class M6532;
 class Cartridge;
 class CompuMate;
+class KeyPortari;
 class Debugger;
 class AudioQueue;
 class AudioSettings;
@@ -90,6 +91,8 @@ class Console : public Serializable, public ConsoleIO
     */
     Controller& leftController() const override { return *myLeftControl;  }
     Controller& rightController() const override { return *myRightControl; }
+  
+    KeyPortari& keyPortariHandler() const { return *myKeyPortariHandler; }
 
     /**
       Change to next or previous controller type
@@ -511,6 +514,9 @@ class Console : public Serializable, public ConsoleIO
     // Pointer to handler for switching developer settings sets
     unique_ptr<DevSettingsHandler> myDevSettingsHandler;
 
+    // Pointer to KeyPortari handler
+    shared_ptr<KeyPortari> myKeyPortariHandler;
+  
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
     shared_ptr<CompuMate> myCMHandler;
 

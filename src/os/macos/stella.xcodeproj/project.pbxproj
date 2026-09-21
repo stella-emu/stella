@@ -187,6 +187,12 @@
 		55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55FE2A3C1EE487CA00078ADE /* InfoPlist.strings */; };
 		AA111111AA111111AA111111 /* MacOSUtils.hxx in Headers */ = {isa = PBXBuildFile; fileRef = AA333333AA333333AA333333 /* MacOSUtils.hxx */; };
 		AA222222AA222222AA222222 /* MacOSUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA444444AA444444AA444444 /* MacOSUtils.mm */; };
+		C9C1D5A22F31D99E00DA20D5 /* KeyPortari.hxx in Headers */ = {isa = PBXBuildFile; fileRef = C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */; };
+		C9C1D5A32F31D99E00DA20D5 /* KeyPortari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */; };
+		C9C1D5A62F37F29000DA20D5 /* KeyPortariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = C9C1D5A52F37F29000DA20D5 /* KeyPortariDialog.hxx */; };
+		C9C1D5A72F37F29000DA20D5 /* KeyPortariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9C1D5A42F37F29000DA20D5 /* KeyPortariDialog.cxx */; };
+		C9C4B22630609EF400D5C2FE /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
+		C9C4B22730609EF400D5C2FE /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
 		CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */; };
 		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
@@ -840,8 +846,6 @@
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
 		E0EA1FFF227A42D0008BA944 /* Logger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0EA1FFD227A42D0008BA944 /* Logger.hxx */; };
 		E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0EA1FFE227A42D0008BA944 /* Logger.cxx */; };
-		E0EA57AA2DE8E9E30040BE24 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
-		E0EA57AB2DE8E9E30040BE24 /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */; };
 		E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */; };
 		E0FABEEE20E994A600EB8E28 /* ConsoleTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */; };
@@ -884,6 +888,17 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		C9C98E822F30826300FF5F82 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9C4B22730609EF400D5C2FE /* SDL3.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DCCC0C9609C354660088BFF1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -891,17 +906,6 @@
 			dstSubfolderSpec = 7;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0EA57AC2DE8E9E30040BE24 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				E0EA57AB2DE8E9E30040BE24 /* SDL3.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1088,6 +1092,10 @@
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
 		AA333333AA333333AA333333 /* MacOSUtils.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MacOSUtils.hxx; sourceTree = SOURCE_ROOT; };
 		AA444444AA444444AA444444 /* MacOSUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSUtils.mm; sourceTree = SOURCE_ROOT; };
+		C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KeyPortari.cxx; sourceTree = "<group>"; };
+		C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = KeyPortari.hxx; sourceTree = "<group>"; };
+		C9C1D5A42F37F29000DA20D5 /* KeyPortariDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KeyPortariDialog.cxx; sourceTree = "<group>"; };
+		C9C1D5A52F37F29000DA20D5 /* KeyPortariDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = KeyPortariDialog.hxx; sourceTree = "<group>"; };
 		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
 		CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSInfoWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSWidget.cxx; sourceTree = "<group>"; };
@@ -1758,7 +1766,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D91750F09BA90380026E9FF /* Cocoa.framework in Frameworks */,
-				E0EA57AA2DE8E9E30040BE24 /* SDL3.xcframework in Frameworks */,
+				C9C4B22630609EF400D5C2FE /* SDL3.xcframework in Frameworks */,
 				2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */,
 				2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */,
 			);
@@ -2286,6 +2294,8 @@
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
 				DCA935462FBDD9B800FA4510 /* CompuMateCassette.hxx */,
 				DCA935472FBDD9B800FA4510 /* CompuMateCassette.cxx */,
+				C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */,
+				C9C1D5A12F31D99E00DA20D5 /* KeyPortari.hxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				DCF7F125223D795F00701A47 /* ConsoleIO.hxx */,
@@ -2482,6 +2492,8 @@
 				2DDBEAC8084578BF00812C11 /* ProgressDialog.cxx */,
 				DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */,
 				DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */,
+				C9C1D5A42F37F29000DA20D5 /* KeyPortariDialog.cxx */,
+				C9C1D5A52F37F29000DA20D5 /* KeyPortariDialog.hxx */,
 				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
 				DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */,
 				DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */,
@@ -3007,6 +3019,7 @@
 				DC2ABA5C259BD544007E57D3 /* CompositeKeyValueRepository.hxx in Headers */,
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
+				C9C1D5A62F37F29000DA20D5 /* KeyPortariDialog.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
 				DC7C83D728EF2E080097B5AE /* TimerMap.hxx in Headers */,
 				CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */,
@@ -3292,6 +3305,7 @@
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
 				DC63A41E2FD05EE400797117 /* OverlayMenu.hxx in Headers */,
 				DCE9681427553F1000E99839 /* LauncherFileListWidget.hxx in Headers */,
+				C9C1D5A22F31D99E00DA20D5 /* KeyPortari.hxx in Headers */,
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
 				DC911C7626333B9200666AC0 /* CartMVC.hxx in Headers */,
 				DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */,
@@ -3358,7 +3372,7 @@
 				2D91747309BA90380026E9FF /* Sources */,
 				2D91750E09BA90380026E9FF /* Frameworks */,
 				DCCC0C9609C354660088BFF1 /* CopyFiles */,
-				E0EA57AC2DE8E9E30040BE24 /* Embed Frameworks */,
+				C9C98E822F30826300FF5F82 /* Embed Frameworks */,
 			);
 			buildRules = (
 				DC5EE7DF14F7C32D001C628C /* PBXBuildRule */,
@@ -3470,6 +3484,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */,
+				C9C1D5A32F31D99E00DA20D5 /* KeyPortari.cxx in Sources */,
 				E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */,
 				E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */,
 				DC3C9BC52469C8F700CF2D47 /* PaletteHandler.cxx in Sources */,
@@ -3728,6 +3743,7 @@
 				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
 				DC7894742FC8984000AF912D /* CartDisassemblyWriter.cxx in Sources */,
+				C9C1D5A72F37F29000DA20D5 /* KeyPortariDialog.cxx in Sources */,
 				DC84FC562677C64200E60ADE /* CartARMWidget.cxx in Sources */,
 				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
@@ -3878,7 +3894,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/**",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3947,7 +3963,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/**",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;

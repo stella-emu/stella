@@ -79,6 +79,7 @@ void Properties::set(PropType key, string_view value)
     case PropType::Controller_Right2:
     case PropType::Controller_SwapPaddles:
     case PropType::Controller_MouseAxis:
+    case PropType::Controller_KeyPortari:
     case PropType::Display_Format:
     case PropType::Display_Phosphor:
       BSPF::toUpperCase(myProperties[pos]);
