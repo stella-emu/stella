@@ -36,20 +36,20 @@ class KeyPortariDialog: public Dialog
   private:
     void loadConfig() override;
     void saveConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void setDefaults() override;
 
     void loadControllerProperties(const Properties& props);
 
   private:
   
-    StaticTextWidget* myProtocolLabel{nullptr};
+    LabelWidget* myProtocolLabel{nullptr};
     PopUpWidget*      myProtocol{nullptr};
   
-    StaticTextWidget* myLeftPortLabel{nullptr};
+    LabelWidget* myLeftPortLabel{nullptr};
     PopUpWidget*      myLeft1Port{nullptr};
 
-    StaticTextWidget* myRightPortLabel{nullptr};
+    LabelWidget* myRightPortLabel{nullptr};
     PopUpWidget*      myRight1Port{nullptr};
 
     // Game properties for currently loaded ROM

@@ -91,7 +91,7 @@ Controller::Type ControllerDetector::autodetectPort(ByteSpan image,
       type = Controller::Type::Paddles;
     else if(isProbablyKidVid(image, port))
       type = Controller::Type::KidVid;
-    else if(isProbablyKeyPortari(image, size))
+    else if(isProbablyKeyPortari(image))
       type = Controller::Type::KeyPortari;
     else if(isQuadTari) // currently most likely assumption
       type = Controller::Type::Paddles;

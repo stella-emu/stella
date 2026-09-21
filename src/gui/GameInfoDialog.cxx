@@ -395,13 +395,12 @@ void GameInfoDialog::addControllersTab()
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
   
-  myKeyPortariButton = new ButtonWidget(myTab, _font, mySwapPorts->getLeft(),
-                                        mySwapPorts->getBottom() + VGAP, " KeyPortari" + ELLIPSIS + " ",
-                                        Cmd::KPButtonPressed);
-  wid.push_back(myKeyPortariButton);
+  myKeyPortari = new CheckboxWidget(myTab, _font,
+                                  " KeyPortari" + ELLIPSIS + " ",
+                                  Cmd::KeyPortariPressed);
+  wid.push_back(myKeyPortari);
 
-  myQuadTariButton = new ButtonWidget(pane, _font, myRightPort->getRight() + fontWidth * 4,
-                                      myKeyPortariButton->getBottom() + VGAP,
+  myQuadTariButton = new ButtonWidget(pane, _font,
                                       " QuadTari" + ELLIPSIS + " ", Cmd::QuadTariPressed);
   wid.push_back(myQuadTariButton);
 
@@ -1582,8 +1581,8 @@ void GameInfoDialog::updateControllerStates()
                                BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
-  myKeyPortariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
-                                 BSPF::startsWithIgnoreCase(contrRight, "KEYPORTARI"));
+  myKeyPortari->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
+                           BSPF::startsWithIgnoreCase(contrRight, "KEYPORTARI"));
   mySwapPaddles->setEnabled(enablePaddles);
 
   myEraseEEPROMLbl->setEnabled(enableEEEraseButton);
@@ -1827,7 +1826,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       break;
     }
       
-    case Cmd::KPButtonPressed:
+    case Cmd::KeyPortariPressed:
     {
       if(!myKeyPortariDialog)
         myKeyPortariDialog = make_unique<KeyPortariDialog>

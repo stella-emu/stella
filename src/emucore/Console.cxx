@@ -903,7 +903,7 @@ void Console::setControllers(string_view romMd5)
 
     bool useKeyPortari = leftType == Controller::Type::KeyPortari || rightType == Controller::Type::KeyPortari;
     if (useKeyPortari) {
-      myKeyPortariHandler = make_shared<KeyPortari>(myProperties);
+      myKeyPortariHandler = std::make_shared<KeyPortari>(myProperties);
     }
     
     unique_ptr<Controller>

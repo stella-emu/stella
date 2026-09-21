@@ -191,6 +191,8 @@
 		C9C1D5A32F31D99E00DA20D5 /* KeyPortari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9C1D5A02F31D99E00DA20D5 /* KeyPortari.cxx */; };
 		C9C1D5A62F37F29000DA20D5 /* KeyPortariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = C9C1D5A52F37F29000DA20D5 /* KeyPortariDialog.hxx */; };
 		C9C1D5A72F37F29000DA20D5 /* KeyPortariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = C9C1D5A42F37F29000DA20D5 /* KeyPortariDialog.cxx */; };
+		C9C4B22630609EF400D5C2FE /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; };
+		C9C4B22730609EF400D5C2FE /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E0EA57A92DE8E9E30040BE24 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
 		CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */; };
 		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
@@ -892,7 +894,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C9C1D59F2F30835A00DA20D5 /* SDL3.xcframework in Embed Frameworks */,
+				C9C4B22730609EF400D5C2FE /* SDL3.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1764,7 +1766,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D91750F09BA90380026E9FF /* Cocoa.framework in Frameworks */,
-				C9C1D59E2F30835A00DA20D5 /* SDL3.xcframework in Frameworks */,
+				C9C4B22630609EF400D5C2FE /* SDL3.xcframework in Frameworks */,
 				2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */,
 				2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */,
 			);
@@ -3892,7 +3894,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/**",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3961,7 +3963,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/**",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;

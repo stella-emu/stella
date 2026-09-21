@@ -37,7 +37,7 @@ enum class PropType : uInt8 {
   Console_RightDiff,
   Console_TVType,
   Console_SwapPorts,
-  Controller_KeyPortariProtocol,
+  Controller_KeyPortari,
   Controller_Left,
   Controller_Left1,
   Controller_Left2,
@@ -231,7 +231,7 @@ class Properties
       "Console.RightDiff",
       "Console.TVType",
       "Console.SwapPorts",
-      "Controller.KeyPortariProtocol",
+      "Controller.KeyPortari",
       "Controller.Left",
       "Controller.Left1",
       "Controller.Left2",
@@ -270,7 +270,7 @@ class Properties
       { "Console.RightDiff"         , PropType::Console_RightDiff         },
       { "Console.SwapPorts"         , PropType::Console_SwapPorts         },
       { "Console.TVType"            , PropType::Console_TVType            },
-      { "Controller.KeyPortariProtocol", PropType::Controller_KeyPortariProtocol},
+      { "Controller.KeyPortari"     , PropType::Controller_KeyPortari     },
       { "Controller.Left"           , PropType::Controller_Left           },
       { "Controller.Left1"          , PropType::Controller_Left1          },
       { "Controller.Left2"          , PropType::Controller_Left2          },
@@ -289,5 +289,3 @@ class Properties
 };
 
 #endif  // PROPERTIES_HXX
-
-       << "Controller_KeyPortariProtocol|"

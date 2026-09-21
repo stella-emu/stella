@@ -30,11 +30,15 @@
 #include "KeyPortariDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
-                               Properties& properties)
-  : Dialog(boss->instance(), boss->parent(), font, "KeyPortari Settings", 0, 0, max_w, max_h),
+
+KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h, Properties& properties)
+  : Dialog(boss->instance(), boss->parent(), font),
     myGameProperties{properties}
 {
+  // take as much space as available
+  _w = max_w;
+  _h = max_h;
+  
   const int lineHeight = Dialog::lineHeight(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
@@ -42,21 +46,15 @@ KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int m
   WidgetArray wid;
   VariantList ctrls;
 
-  int xpos = HBORDER, ypos = VBORDER + _th;
-
   const int pwidth = font.getStringWidth("Alphanumeric  "); // a bit wider looks better overall
 
   ctrls.clear();
   VarList::push_back(ctrls, "Alphanumeric", "ALPHANUMERIC");
   VarList::push_back(ctrls, "Ascii", "ASCII");
 
-  myProtocolLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Protocol");
-
-  ypos += lineHeight + VGAP * 2;
-  myProtocol = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls);
+  myProtocolLabel = new LabelWidget(this, font, "Protocol");
+  myProtocol = new PopUpWidget(this, font, lineHeight, ctrls);
   wid.push_back(myProtocol);
-  ypos += lineHeight + VGAP;
 
   ctrls.clear();
   //VarList::push_back(ctrls, "Auto-detect", "AUTO");
@@ -79,24 +77,15 @@ KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int m
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "KeyPortari", "KeyPortari");
 
-  myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
-
-  ypos += lineHeight + VGAP * 2;
-  myLeft1Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P1 ");
+  myLeftPortLabel = new LabelWidget(this, font, "Left port");
+  myLeft1Port = new PopUpWidget(this, font, lineHeight, ctrls);
   myLeft1Port->setEnabled(true);
   wid.push_back(myLeft1Port);
-  ypos += lineHeight + VGAP;
 
-  xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
-  ypos = myLeftPortLabel->getTop() - 1;
-  myRightPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Right port");
+  myRightPortLabel = new LabelWidget(this, font, "Right port");
 
-  ypos += lineHeight + VGAP * 2;
-  myRight1Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P2 ");
+  myRight1Port = new PopUpWidget(this, font, lineHeight, ctrls);
   wid.push_back(myRight1Port);
-  ypos += lineHeight + VGAP;
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
@@ -107,7 +96,7 @@ KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int m
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyPortariDialog::loadControllerProperties(const Properties& props)
 {
-  myProtocol->setSelected(props.get(PropType::Controller_KeyPortariProtocol), "ASCII");
+  myProtocol->setSelected(props.get(PropType::Controller_KeyPortari), "ASCII");
   myLeft1Port->setSelected(props.get(PropType::Controller_Left1), "JOYSTICK");
   myRight1Port->setSelected(props.get(PropType::Controller_Right1), "JOYSTICK");
 }
@@ -123,7 +112,7 @@ void KeyPortariDialog::loadConfig()
 void KeyPortariDialog::saveConfig()
 {
   string protocol = myProtocol->getSelectedTag().toString();
-  myGameProperties.set(PropType::Controller_KeyPortariProtocol, protocol);
+  myGameProperties.set(PropType::Controller_KeyPortari, protocol);
   string controller = myLeft1Port->getSelectedTag().toString();
   myGameProperties.set(PropType::Controller_Left1, controller);
   controller = myRight1Port->getSelectedTag().toString();
@@ -134,7 +123,7 @@ void KeyPortariDialog::saveConfig()
 void KeyPortariDialog::setDefaults()
 {
   // Load the default properties
-  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
+  const string_view md5 = myGameProperties.get(PropType::Cart_MD5);
   Properties defaultProperties;
 
   instance().propSet().getMD5(md5, defaultProperties, true);
@@ -142,16 +131,16 @@ void KeyPortariDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyPortariDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void KeyPortariDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id)
 {
   switch(cmd)
   {
-    case GuiObject::kOKCmd:
+    case GuiObject::Cmd::OK:
       saveConfig();
       close();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::Cmd::Defaults:
       setDefaults();
       break;
 

@@ -832,7 +832,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     }
     const string& kp = mySettings->getString("kp");
     if (!kp.empty()) {
-      props.set(PropType::Controller_KeyPortariProtocol, kp);
+      props.set(PropType::Controller_KeyPortari, kp);
     }
     CMDLINE_PROPS_UPDATE("cp", PropType::Controller_SwapPaddles);
     CMDLINE_PROPS_UPDATE("ma", PropType::Controller_MouseAxis);

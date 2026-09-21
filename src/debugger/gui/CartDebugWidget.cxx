@@ -91,7 +91,7 @@ void CartDebugWidget::createBaseInformation(size_t bytes, string_view manufactur
   myManufacturer->setEditable(false);
 
   myDescLbl = new LabelWidget(_boss, _font, "Description");
-  myDesc = new WrappedTextWidget(_boss, _nfont, desc, maxlines);
+  myDesc = new WrappedTextWidget(_boss, _nfont, desc, maxlines, 0);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
 

@@ -34,7 +34,7 @@ KeyPortari::KeyPortari(const Properties &properties)
 
 unique_ptr<Controller> KeyPortari::getControllerPort(const Controller::Jack jack, const Event& event, const System& system)
 {
-  unique_ptr<KPControl> controller = make_unique<KPControl>(*this, jack, event, system);
+  unique_ptr<KPControl> controller = std::make_unique<KPControl>(*this, jack, event, system);
   if (myProtocol == KeyPortari::Protocol::Alphanumeric) {
     unique_ptr<Controller> passthroughController = getPassthroughControllerPort(jack == Controller::Jack::Left ? myLeftCType : myRightCType, jack, event, system);
     controller->addPassthroughController(passthroughController);
@@ -48,14 +48,14 @@ unique_ptr<Controller> KeyPortari::getPassthroughControllerPort(Controller::Type
   {
     case Controller::Type::Paddles:
     {
-      return make_unique<Paddles>(jack, event, system, false, false, false, false);
+      return std::make_unique<Paddles>(jack, event, system, false, false, false, false);
     }
     case Controller::Type::Driving:
-      return make_unique<Driving>(jack, event, system, false);
+      return std::make_unique<Driving>(jack, event, system, false);
 
     default:
       // fall back to joystick
-      return make_unique<Joystick>(jack, event, system, false);
+      return std::make_unique<Joystick>(jack, event, system, false);
   }
 }
 
