@@ -151,6 +151,12 @@
     <Filter Include="Source Files\emucore\elf">
       <UniqueIdentifier>{1123de9d-fb61-41e2-b820-44c541aa2687}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\emucore\fujinet">
+      <UniqueIdentifier>{7a1f6c02-4e55-4bd1-9a3c-1f0d8b2e4a11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\emucore\fujinet">
+      <UniqueIdentifier>{2c9d4b17-8e30-4a6f-b7d2-55c1e9a3f602}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\lib\dr_libs">
       <UniqueIdentifier>{3ae6ce19-97c3-4362-a3ae-176d35cad1f5}</UniqueIdentifier>
     </Filter>
@@ -1071,8 +1077,26 @@
     <ClCompile Include="..\..\debugger\TimerMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\CartFUJI.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\fujinet\FujiNetLink.cxx">
+      <Filter>Source Files\emucore\fujinet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\fujinet\fujibus.cxx">
+      <Filter>Source Files\emucore\fujinet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\fujinet\fujimail.cxx">
+      <Filter>Source Files\emucore\fujinet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\fujinet\vcs_render.cxx">
+      <Filter>Source Files\emucore\fujinet</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\CartGL.cxx">
       <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartFUJIWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
@@ -2363,8 +2387,35 @@
     <ClInclude Include="..\..\debugger\TimerMap.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\emucore\CartFUJI.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\FujiNetLink.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\fuji_mailbox.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\fujibus.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\fujimail.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\vcs_cart.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\vcs_font.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\fujinet\vcs_render.hxx">
+      <Filter>Header Files\emucore\fujinet</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\emucore\CartGL.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartFUJIWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\CartGLWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>

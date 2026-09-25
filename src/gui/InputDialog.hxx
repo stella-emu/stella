@@ -27,13 +27,15 @@ class JoystickDialog;
 class PopUpWidget;
 class SliderWidget;
 class LabelWidget;
+class EditTextWidget;
+
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
 /**
   Dialog for configuring input devices: event mapping, joystick/paddle/
-  trackball settings, and mouse control, across three tabs.
+  trackball settings, mouse control, and the FujiNet link, across four tabs.
 
   @author  Stephen Anthony and Thomas Jentzsch
 */
@@ -70,6 +72,10 @@ class InputDialog : public Dialog
     // Build one tab's controls and layout; called once from the ctor
     void addDevicePortTab();
     void addMouseTab();
+    void addFujiNetTab();
+
+    // Grey the host and port out while the link is switched off
+    void updateFujiNetEnabled();
 
     // Enable/disable controls that depend on the mouse-control / cursor-state pop-ups
     void handleMouseControlState();
@@ -101,7 +107,9 @@ class InputDialog : public Dialog
         EraseEeprom               = GuiCmd::of("InputDialog.EraseEeprom"),
         MouseControlChanged       = GuiCmd::of("InputDialog.MouseControlChanged"),
         CursorStateChanged        = GuiCmd::of("InputDialog.CursorStateChanged"),
-        MousePaddleSpeedChanged   = GuiCmd::of("InputDialog.MousePaddleSpeedChanged");
+        MousePaddleSpeedChanged   = GuiCmd::of("InputDialog.MousePaddleSpeedChanged"),
+        FujiNetEnableChanged      = GuiCmd::of("InputDialog.FujiNetEnableChanged"),
+        FujiNetClientROM          = GuiCmd::of("InputDialog.FujiNetClientROM");
     };
 
     TabWidget* myTab{nullptr};
@@ -153,6 +161,20 @@ class InputDialog : public Dialog
     LabelWidget*    myCursorStateLbl{nullptr};
     PopUpWidget*    myCursorState{nullptr};
     CheckboxWidget* myGrabMouse{nullptr};
+
+    // FujiNet
+    CheckboxWidget* myFujiEnable{nullptr};
+    LabelWidget*    myFujiHostLbl{nullptr};
+    EditTextWidget* myFujiHost{nullptr};
+    LabelWidget*    myFujiPortLbl{nullptr};
+    EditTextWidget* myFujiPort{nullptr};
+    LabelWidget*    myFujiClientLbl{nullptr};
+    EditTextWidget* myFujiClient{nullptr};
+    ButtonWidget*   myFujiClientButton{nullptr};
+    LabelWidget*    myFujiStatusLbl{nullptr};
+    EditTextWidget* myFujiStatus{nullptr};
+    LabelWidget*    myFujiNote1{nullptr};
+    LabelWidget*    myFujiNote2{nullptr};
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;

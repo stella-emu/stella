@@ -47,6 +47,26 @@ namespace CartCreator
   unique_ptr<Cartridge> create(const FSNode& file, ByteSpan image,
                                string& md5, string_view dtype,
                                Settings& settings, const FSNode& baseDir);
+
+  /**
+    Create a cartridge from an image already in memory, whose type is
+    already known.  Unlike create() above there is no file behind it, so
+    none of the path-based handling -- Supercharger sound loads, multicart
+    slicing, MovieCart streaming -- applies or is attempted.
+
+    This is what a cartridge that produces another cartridge uses: a
+    FujiNet client booting a game it pulled over the network, say.
+
+    @param image     A const span of the ROM image
+    @param type      The known bankswitch type; AUTO to autodetect
+    @param md5       The md5sum for the ROM image
+    @param settings  The settings container
+    @return  Pointer to the new cartridge, or nullptr if type is unsupported
+  */
+  unique_ptr<Cartridge> createFromKnownImage(ByteSpan image,
+                                             Bankswitch::Type type,
+                                             string_view md5,
+                                             Settings& settings);
 };  // namespace CartCreator
 
 #endif  // CART_CREATOR_HXX

@@ -99,6 +99,17 @@ class StateManager
     void update();
 
     /**
+      Whether the Time Machine can run at all right now.
+
+      It cannot while the cartridge holds state the emulator does not own --
+      a FujiNet cartridge with a live link to a fujinet-pc instance, say.
+      Winding the console back would not wind back that server's mounts,
+      open directories or file positions, so the two would disagree about
+      what had already happened.
+    */
+    bool rewindAllowed() const;
+
+    /**
       Load a state into the current system.
 
       @param slot  The state 'slot' to load state from

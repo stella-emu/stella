@@ -27,6 +27,15 @@ using BSPF::searchForBytes;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
 {
+  // Tested before anything else, and returning rather than falling through
+  // to the size cascade below.  Two reasons: a FujiNet client is (N+1) * 2K,
+  // and several of those sizes are spoken for -- 6K reads as GL or AR, 10K
+  // as DPC, 12K as E7/FA, and every size that is a multiple of 8448 as AR --
+  // while the tail of this function would in any case override a size-keyed
+  // guess with isProbably3EPlus/MDM/MVC.
+  if(isProbablyFUJI(image))
+    return Bankswitch::Type::FUJI;
+
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::AUTO;
 
@@ -196,6 +205,27 @@ Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
                             Bankswitch::typeToDesc(type)));
 
   return type;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyFUJI(ByteSpan image)
+{
+  // The fixed half is the last 2K whatever the image's size, so the claim
+  // sits at (size - 2048) + (FN_R_CLAIM - $1800).  Kept as literals rather
+  // than pulled from fuji_mailbox.hxx: this file is the ROM-shape oracle for
+  // every scheme and does not otherwise depend on any cart's internals.
+  constexpr size_t BANK_SIZE = 2_KB, CLAIM_OFFSET = 0x710;
+  // FN_APP_MAX_PAGES banks, plus the fixed half
+  constexpr size_t MAX_BANKS = 113;
+  static constexpr std::array<uInt8, 4> claim = {'F', 'U', 'J', 'I'};
+
+  const size_t size = image.size();
+  if(size < 2 * BANK_SIZE || size > MAX_BANKS * BANK_SIZE ||
+     (size % BANK_SIZE) != 0)
+    return false;
+
+  return std::equal(claim.begin(), claim.end(),
+                    image.begin() + size - BANK_SIZE + CLAIM_OFFSET);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

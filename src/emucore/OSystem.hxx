@@ -223,6 +223,16 @@ class OSystem
       @return The debugger object
     */
     Debugger& debugger() const { return *myDebugger; }
+
+    /**
+      Rebuild the debugger against the current console.
+
+      The debugger sizes tables from the cartridge it was created with -- the
+      bank table most visibly -- so a cartridge that replaces the machine
+      under the console (a FujiNet client booting a game) leaves it indexing
+      the wrong one.  Does nothing in a build without debugger support.
+    */
+    void recreateDebugger();
   #endif
 
   #ifdef GUI_SUPPORT
@@ -384,6 +394,20 @@ class OSystem
     */
     string createConsole(const FSNode& rom, string_view md5 = "",
                          bool newrom = true);
+
+    /**
+      Locate the FujiNet client ROM to boot.
+
+      A FujiNet cartridge has no network at power-up and nothing to load a
+      client from, so the client is the image it already holds: on hardware
+      the RP2040 memcpy's CONFIG out of flash before the bus comes up.  This
+      is Stella's flash -- the compiled-in image, spilled to a real file
+      under the base directory because console creation wants an FSNode all
+      the way down.  The 'fujinet.clientrom' setting overrides it.
+
+      @return  The FSNode of the client ROM to hand to createConsole()
+    */
+    FSNode fujiNetClientROM();
 
     /**
       Reloads the current console (essentially deletes and re-creates it).

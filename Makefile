@@ -199,6 +199,7 @@ MODULES += \
 	src/emucore/tia \
 	src/emucore/tia/frame-manager \
 	src/emucore/elf \
+	src/emucore/fujinet \
 	src/common/repository/sqlite
 
 ######################################################################

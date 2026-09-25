@@ -84,6 +84,17 @@ class Console : public Serializable, public ConsoleIO
     void setControllers(string_view romMd5);
 
     /**
+      Rebuild everything the console derived from the ROM image it was
+      constructed with, because the cartridge has just replaced that image.
+
+      Only a FujiNet client does this today, when it boots a game it pulled
+      over the network.  Called from the main loop at a frame boundary, never
+      from the bus: redetectFrameLayout() runs the TIA for sixty frames and
+      cannot be re-entered from inside TIA::update().
+    */
+    void cartridgeSwapped();
+
+    /**
       Get the controller plugged into the specified jack
 
       @return The specified controller

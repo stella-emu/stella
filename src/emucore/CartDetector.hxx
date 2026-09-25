@@ -53,6 +53,16 @@ class CartDetector
 
   private:
     /**
+      Returns true if the image is a FujiNet cartridge client.
+
+      A client stamps "FUJI" at $1F10, in the fixed 2K half that is always
+      the LAST 2K of the image -- the claim that tells the cartridge its
+      mailbox pages are not the image's own code.  An exact magic at an
+      exact offset, so this is a decision rather than a guess.
+    */
+    static bool isProbablyFUJI(ByteSpan image);
+
+    /**
       Returns true if the image is probably a SuperChip (128 bytes RAM)
       Note: should be called only on ROMs with size multiple of 4K
     */

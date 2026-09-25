@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
+#include "FrameBuffer.hxx"
 #include "Cart.hxx"
 #include "Switches.hxx"
 #include "RewindManager.hxx"
@@ -121,8 +122,22 @@ void StateManager::toggleRecordMode()
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::rewindAllowed() const
+{
+  return !myOSystem.hasConsole() ||
+         !myOSystem.console().cartridge().hasExternalState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::toggleTimeMachine()
 {
+  if(!rewindAllowed())
+  {
+    myOSystem.frameBuffer().showTextMessage(
+      "Time Machine unavailable with FujiNet enabled");
+    return;
+  }
+
   const bool devSettings = myOSystem.settings().getBool("dev.settings");
 
   myActiveMode = (myActiveMode == Mode::TimeMachine)
@@ -140,7 +155,7 @@ void StateManager::toggleTimeMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::addExtraState(string_view message)
 {
-  if(myActiveMode == Mode::TimeMachine)
+  if(myActiveMode == Mode::TimeMachine && rewindAllowed())
     return myRewindManager->addState(message);
 
   return false;
@@ -149,25 +164,27 @@ bool StateManager::addExtraState(string_view message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::rewindStates(uInt32 numStates)
 {
-  return myRewindManager->rewindStates(numStates);
+  return rewindAllowed() && myRewindManager->rewindStates(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::unwindStates(uInt32 numStates)
 {
-  return myRewindManager->unwindStates(numStates);
+  return rewindAllowed() && myRewindManager->unwindStates(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::windStates(uInt32 numStates, bool unwind)
 {
-  return myRewindManager->windStates(numStates, unwind);
+  return rewindAllowed() && myRewindManager->windStates(numStates, unwind);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::update()
 {
-  if(myActiveMode == Mode::TimeMachine)
+  // Collecting states while a FujiNet cartridge is live would be work spent
+  // on states that can never be wound back to; see rewindAllowed()
+  if(myActiveMode == Mode::TimeMachine && rewindAllowed())
     myRewindManager->addState("Time Machine", true);
 
 #if 0

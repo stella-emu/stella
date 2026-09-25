@@ -318,7 +318,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -337,7 +337,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -354,7 +354,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -373,7 +373,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -410,7 +410,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -446,7 +446,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
@@ -466,7 +466,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -485,7 +485,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -506,7 +506,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -525,7 +525,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -547,7 +547,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -566,7 +566,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -587,7 +587,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -606,7 +606,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -628,7 +628,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -647,7 +647,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -667,7 +667,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;VCS_CART_HOST_MAPPER;FUJINET_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -686,7 +686,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -725,7 +725,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -763,7 +763,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -1005,6 +1005,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\CartFUJIWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CartGLWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1129,6 +1133,7 @@
     <ClCompile Include="..\..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\..\emucore\CartFC.cxx" />
+    <ClCompile Include="..\..\emucore\CartFUJI.cxx" />
     <ClCompile Include="..\..\emucore\CartGL.cxx" />
     <ClCompile Include="..\..\emucore\CartJANE.cxx" />
     <ClCompile Include="..\..\emucore\CartMDM.cxx" />
@@ -1141,6 +1146,10 @@
     <ClCompile Include="..\..\emucore\ControllerDetector.cxx" />
     <ClCompile Include="..\..\emucore\CortexM0.cxx" />
     <ClCompile Include="..\..\emucore\DispatchResult.cxx" />
+    <ClCompile Include="..\..\emucore\fujinet\FujiNetLink.cxx" />
+    <ClCompile Include="..\..\emucore\fujinet\fujibus.cxx" />
+    <ClCompile Include="..\..\emucore\fujinet\fujimail.cxx" />
+    <ClCompile Include="..\..\emucore\fujinet\vcs_render.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfParser.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfLinker.cxx" />
     <ClCompile Include="..\..\emucore\elf\ElfUtil.cxx" />
@@ -2442,6 +2451,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\CartFUJIWidget.hxx" />
     <ClInclude Include="..\..\debugger\gui\CartGLWidget.hxx" />
     <ClInclude Include="..\..\debugger\gui\CartJANEWidget.hxx" />
     <ClInclude Include="..\..\debugger\gui\CartMDMWidget.hxx">
@@ -2574,6 +2584,7 @@
     <ClInclude Include="..\..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\..\emucore\CartFC.hxx" />
+    <ClInclude Include="..\..\emucore\CartFUJI.hxx" />
     <ClInclude Include="..\..\emucore\CartGL.hxx" />
     <ClInclude Include="..\..\emucore\CartJANE.hxx" />
     <ClInclude Include="..\..\emucore\CartMDM.hxx" />
@@ -2588,6 +2599,13 @@
     <ClInclude Include="..\..\emucore\ControllerDetector.hxx" />
     <ClInclude Include="..\..\emucore\ControlLowLevel.hxx" />
     <ClInclude Include="..\..\emucore\DispatchResult.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\FujiNetLink.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\fuji_mailbox.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\fujibus.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\fujimail.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\vcs_cart.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\vcs_font.hxx" />
+    <ClInclude Include="..\..\emucore\fujinet\vcs_render.hxx" />
     <ClInclude Include="..\..\emucore\elf\BusTransactionQueue.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfFile.hxx" />
     <ClInclude Include="..\..\emucore\elf\ElfParser.hxx" />

@@ -43,6 +43,7 @@
 #include "Cart.hxx"
 #include "CartCreator.hxx"
 #include "CartDetector.hxx"
+#include "FujiConfigROM.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIAConstants.hxx"
@@ -489,6 +490,76 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::recreateDebugger()
+{
+#ifdef DEBUGGER_SUPPORT
+  if(myConsole == nullptr)
+    return;
+
+  #ifdef GUI_SUPPORT
+  // Drop dialogs cached from the outgoing debugger before it's replaced below
+  // Otherwise we can get a segfault in certain situations
+  BrowserDialog::hide();
+  GUI::MessageBox::hide();
+  #endif
+  myDebugger = std::make_unique<Debugger>(*this, *myConsole);
+  myDebugger->initialize();
+  myConsole->attachDebugger(*myDebugger);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode OSystem::fujiNetClientROM()
+{
+  // An explicit path wins outright, so a client just rebuilt in the
+  // fujinet-config tree can be booted without regenerating the header
+  const string& custom = mySettings->getString("fujinet.clientrom");
+  if(!custom.empty())
+  {
+    const FSNode node(custom);
+    if(node.isFile() && node.isReadable())
+      return node;
+
+    Logger::error(std::format(
+      "ERROR: FujiNet client ROM '{}' is unreadable; using the built-in one",
+      custom));
+  }
+
+  // Spilled to a real file rather than served from memory: openConsole()
+  // takes its image from an FSNode and keeps using the node afterwards --
+  // getBaseName() for the cart name, the .pro sibling, CartCreator::create()
+  // -- so a file is what makes the built-in client an ordinary ROM load
+  FSNode dir{myBaseDir};  dir /= "fujinet";
+  if(!dir.isDirectory())
+    dir.makeDir();
+
+  FSNode rom{dir};  rom /= "config.bin";
+
+  // Rewritten whenever it doesn't match, so an upgraded Stella replaces a
+  // stale copy and a deleted one simply comes back
+  ByteArray current;
+  if(rom.isFile())
+    rom.read(current);
+  if(current.size() != FujiNet::CONFIG_ROM.size() ||
+     !std::equal(current.cbegin(), current.cend(), FujiNet::CONFIG_ROM.cbegin()))
+  {
+    if(rom.write(FujiNet::CONFIG_ROM) != FujiNet::CONFIG_ROM.size())
+      Logger::error(std::format("ERROR: Couldn't write FujiNet client ROM to {}",
+                                rom.getShortPath()));
+    else
+      Logger::info(std::format("FujiNet: wrote the built-in client to {}",
+                               rom.getShortPath()));
+
+    // An FSNode caches what it found when it was made, so one built for a
+    // path that did not exist a moment ago still reports no file -- and
+    // openROM() would reject it as an unrecognized ROM.  Re-make it
+    rom = FSNode{rom.getPath()};
+  }
+
+  return rom;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom)
 {
   bool showmessage = false;
@@ -541,17 +612,7 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
   if(myConsole)
   {
-  #ifdef DEBUGGER_SUPPORT
-  #ifdef GUI_SUPPORT
-    // Drop dialogs cached from the outgoing debugger before it's replaced below
-    // Otherwise we can get a segfault in certain situations
-    BrowserDialog::hide();
-    GUI::MessageBox::hide();
-  #endif
-    myDebugger = std::make_unique<Debugger>(*this, *myConsole);
-    myDebugger->initialize();
-    myConsole->attachDebugger(*myDebugger);
-  #endif
+    recreateDebugger();
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
@@ -1005,6 +1066,12 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
   // Stop the worker and wait until it has finished
   const uInt64 totalCycles = emulationWorker.stop();
+
+  // With the emulation thread joined, this is the one point in the frame
+  // where the console can safely be rebuilt.  A cartridge that has replaced
+  // the machine under it -- a FujiNet client booting a game -- says so here
+  if(myConsole && myConsole->cartridge().takePendingSwap())
+    myConsole->cartridgeSwapped();
 
   // Handle the dispatch result
   switch (dispatchResult.getStatus()) {
