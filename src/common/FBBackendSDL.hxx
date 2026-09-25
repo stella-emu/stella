@@ -320,6 +320,9 @@ class FBBackendSDL : public FBBackend
     // So we cache the request here, and honour it after the window has been created
     bool myTextEventsEnabled{false};
 
+    // Resizability, applied by setVideoMode() before the window is shown
+    bool myResizable{false};
+
     // Center setting of current window
     bool myCenter{false};
 

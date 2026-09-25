@@ -310,6 +310,10 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   // appropriate for the requested image size
   myVidModeHandler.setImageSize(size);
 
+  // Set before the window is shown, otherwise the compositor may draw the
+  // wrong decorations.  Each resizable window's owner sets its own minimum.
+  myBackend->setWindowResizable(isResizable(myWindow.bufferType));
+
   // Initialize video subsystem
   const string pre_about = myBackend->about();
   const FBInitStatus status = applyVideoMode();
@@ -349,14 +353,6 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 
   if(status != FBInitStatus::Success)
     return status;
-
-  // The launcher, debugger and companion TIA windows may be freely resized by
-  // the user; all other UI/TIA windows keep their fixed size.  Each resizeable
-  // window's owner applies its own minimum, right after this, via
-  // setWindowMinSize(); imposing one here would enlarge a window the user had
-  // dragged smaller.  (FBMinimum is the TIA emulation-mode floor, sized so the
-  // dialogs fit over the image — not a UI window minimum.)
-  myBackend->setWindowResizable(isResizable(myWindow.bufferType));
 
   // setVideoMode() cleared the window's minimum, so forget what we last
   // forwarded, or the owner's (unchanged) minimum would not be re-applied
