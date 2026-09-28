@@ -9,11 +9,11 @@
 
     To enable enum classes to be used as bitmasks, specialize is_bitmask_enum_v:
 
-    enum class MyBitmask {
-        None  = 0b0000,
-        One   = 0b0001,
-        Two   = 0b0010,
-        Three = 0b0100,
+    enum class MyBitmask : std::uint8_t {
+        None  = 0,
+        One   = Bitmask::bit<MyBitmask>(0),
+        Two   = Bitmask::bit<MyBitmask>(1),
+        Three = Bitmask::bit<MyBitmask>(2),
     };
     template<> inline constexpr bool Bitmask::is_enum_v<MyBitmask> = true;
 
@@ -55,6 +55,7 @@
 #define BITMASK_ENUM_HXX
 
 #include <bit>
+#include <cassert>
 #include <concepts>
 #include <limits>
 #include <type_traits>
@@ -68,6 +69,21 @@ namespace Bitmask {
 
 template<typename Enum>
 inline constexpr bool is_enum_v = false;
+
+// ---------------------------------------------------------------------------
+// Enumerator construction helper
+// ---------------------------------------------------------------------------
+// Not constrained by Bitmask::Type: it must be usable inside the enumerator
+// list, before the is_enum_v opt-in specialization exists.
+template<typename Enum>
+    requires std::is_enum_v<Enum> &&
+             std::is_unsigned_v<std::underlying_type_t<Enum>>
+[[nodiscard]] constexpr std::underlying_type_t<Enum> bit(unsigned n) noexcept {
+    using U = std::underlying_type_t<Enum>;
+    assert(n < static_cast<unsigned>(std::numeric_limits<U>::digits));
+    // Shifting in U would promote to signed int whenever U is narrower.
+    return static_cast<U>(1ULL << n);
+}
 
 // ---------------------------------------------------------------------------
 // Concept
@@ -216,9 +232,12 @@ template<Bitmask::Type Enum>
 template<Bitmask::Type Enum>
 [[nodiscard]] constexpr Enum operator~(Enum rhs) noexcept {
     using U = std::underlying_type_t<Enum>;
-    constexpr U all_bits = std::numeric_limits<U>::max();
+    // U narrower than int would promote to signed int under ~; widen to its
+    // own promoted-and-unsigned form instead (self-sizing, no magic width).
+    using Wide = std::make_unsigned_t<decltype(+U{})>;
+    constexpr Wide all_bits = std::numeric_limits<U>::max();
     return Bitmask::from_underlying<Enum>(
-        static_cast<U>(~Bitmask::to_underlying(rhs) & all_bits)
+        static_cast<U>(~static_cast<Wide>(Bitmask::to_underlying(rhs)) & all_bits)
     );
 }
 
@@ -249,4 +268,4 @@ constexpr Enum& operator^=(Enum& lhs, Enum rhs) noexcept {
     return lhs;
 }
 
-#endif // BITMASK_ENUM_HXX
+#endif  // BITMASK_ENUM_HXX

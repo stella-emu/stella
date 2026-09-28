@@ -146,14 +146,14 @@ class M6532 : public Device
 
       @param address  The address to query
     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessType getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given access flags.
 
       @param address  The address to modify
       @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) override;
 
     /**
       Increase the given address's access counter
@@ -279,19 +279,19 @@ class M6532 : public Device
 
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    std::array<Device::AccessFlags, RAM_SIZE>   myRAMAccessBase{};
-    std::array<Device::AccessFlags, STACK_SIZE> myStackAccessBase{};
-    std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase{};
+    std::array<Device::AccessType, RAM_SIZE>   myRAMAccessBase{};
+    std::array<Device::AccessType, STACK_SIZE> myStackAccessBase{};
+    std::array<Device::AccessType, IO_SIZE>    myIOAccessBase{};
     // The arrays containing information about every byte of RIOT
     // indicating how often it is accessed.
     std::array<Device::AccessCounter,
-      static_cast<size_t>(RAM_SIZE * 2)>   myRAMAccessCounter{};
+      SZT(RAM_SIZE * 2)>   myRAMAccessCounter{};
     std::array<Device::AccessCounter,
-      static_cast<size_t>(STACK_SIZE * 2)> myStackAccessCounter{};
+      SZT(STACK_SIZE * 2)> myStackAccessCounter{};
     std::array<Device::AccessCounter,
-      static_cast<size_t>(IO_SIZE * 2)>    myIOAccessCounter{};
+      SZT(IO_SIZE * 2)>    myIOAccessCounter{};
     // The array used to skip the first ZP access tracking
-    std::array<uInt8, RAM_SIZE>            myZPAccessDelay{};
+    std::array<uInt8, RAM_SIZE> myZPAccessDelay{};
 
     // Detect timer being accessed on wraparound
     bool myTimWrappedOnRead{false};

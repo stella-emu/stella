@@ -29,8 +29,8 @@
 #include "exception/FatalEmulationError.hxx"
 
 namespace {
-  constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
-  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
+  constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0FU) == 0; }
+  constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0U) == 0; }
 
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
   {
@@ -89,11 +89,10 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
   myThumbEmulator = std::make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.data()),
     reinterpret_cast<uInt16*>(myRAM.data()),
-    static_cast<uInt32>(myImage.size()),
+    U32(myImage.size()),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
-    devSettings ? static_cast<double>(
-      settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
+    devSettings ? DBL(settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
@@ -161,13 +160,13 @@ void CartridgeCDF::install(System& system)
 FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CDF OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  const auto wholeClocks = U32(clocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
@@ -185,7 +184,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        auto cycles = static_cast<uInt32>(mySystem->cycles() - myARMCycles);
+        auto cycles = U32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles, value == 254);
@@ -212,7 +211,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       return value;
   }
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
   uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
@@ -230,11 +229,11 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     uInt32 pointer = getDatastreamPointer(myFastJumpStream);
     uInt8 value = 0;
     if (isCDFJplus()) {
-      const uInt32 idx = pointer >> 16;
+      const uInt32 idx = pointer >> 16U;
       value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
       pointer += 0x00010000;  // always increment by 1
     } else {
-      value = myDisplayImage[ pointer >> 20 ];
+      value = myDisplayImage[ pointer >> 20U ];
       pointer += 0x00100000;  // always increment by 1
     }
 
@@ -282,7 +281,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
 
-        const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
+        const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13U : 21U));
 
         // get sample value from ROM or RAM
         if (sampleaddress < myImage.size())
@@ -293,9 +292,9 @@ uInt8 CartridgeCDF::peek(uInt16 address)
           peekvalue = 0;
 
         // make sure current volume value is in the lower nybble
-        if ((myMusicCounters[0] & (1<<(isCDFJplus() ? 12 : 20))) == 0)
-          peekvalue >>= 4;
-        peekvalue &= 0x0f;
+        if ((myMusicCounters[0] & (1U<<(isCDFJplus() ? 12U : 20U))) == 0)
+          peekvalue >>= 4U;
+        peekvalue &= 0x0fU;
       }
       else
       {
@@ -307,7 +306,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
         // value; the shift is also clamped since 32+ is UB.
         const auto waveformSample = [this](uInt8 index) -> uInt8 {
           const uInt8 shift = std::min<uInt8>(myMusicWaveformSize[index], 31);
-          const uInt64 idx = static_cast<uInt64>(getWaveform(index)) + (myMusicCounters[index] >> shift);
+          const uInt64 idx = U64(getWaveform(index)) + (myMusicCounters[index] >> shift);
           return myDisplayImage[idx % myDisplayImage.size()];
         };
         peekvalue = waveformSample(0) + waveformSample(1) + waveformSample(2);
@@ -360,13 +359,11 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       break;
   }
 
-  if (FAST_FETCH_ON(myMode))
-  {
-    if ((peekvalue == 0xA9) ||
-        (myLDXenabled && peekvalue == 0xA2 ) ||
-        (myLDYenabled && peekvalue == 0xA0))
-      myLDAXYimmediateOperandAddress = address + 1;
-  }
+  if (FAST_FETCH_ON(myMode) &&
+      ((peekvalue == 0xA9) ||
+       (myLDXenabled && peekvalue == 0xA2 ) ||
+       (myLDYenabled && peekvalue == 0xA0)))
+    myLDAXYimmediateOperandAddress = address + 1;
 
   return peekvalue;
 }
@@ -380,18 +377,18 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
   if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
     return true;
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
   switch(address)
   {
     case 0x0FF0:   // DSWRITE
       pointer = getDatastreamPointer(COMMSTREAM);
       if (isCDFJplus()) {
-        const uInt32 idx = pointer >> 16;
+        const uInt32 idx = pointer >> 16U;
         if (idx < myDisplayImage.size())
           myDisplayImage[idx] = value;
         pointer += 0x00010000;  // always increment by 1 when writing
       } else {
-        myDisplayImage[ pointer >> 20 ] = value;
+        myDisplayImage[ pointer >> 20U ] = value;
         pointer += 0x00100000;  // always increment by 1 when writing
       }
       setDatastreamPointer(COMMSTREAM, pointer);
@@ -399,13 +396,13 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 
     case 0x0FF1:   // DSPTR
       pointer = getDatastreamPointer(COMMSTREAM);
-      pointer <<= 8;
+      pointer <<= 8U;
       if (isCDFJplus()) {
         pointer &= 0xff000000;
-        pointer |= (value << 16);
+        pointer |= (U32(value) << 16U);
       } else {
         pointer &= 0xf0000000;
-        pointer |= (value << 20);
+        pointer |= (U32(value) << 20U);
       }
       setDatastreamPointer(COMMSTREAM, pointer);
       break;
@@ -465,7 +462,7 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myProgramImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = U32(bank % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
@@ -473,9 +470,9 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -484,7 +481,7 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCDF::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -496,12 +493,12 @@ uInt16 CartridgeCDF::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // For now, we ignore attempts to patch the CDF address space
   if(address >= 0x0040)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFFU)] = value;
     return myBankChanged = true;
   }
   return false;
@@ -639,7 +636,7 @@ bool CartridgeCDF::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myBankOffset >> 12);
+  bank(myBankOffset >> 12U);
 
   return true;
 }
@@ -667,11 +664,11 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result = getUInt32(myRAM.data(), myWaveformBase + index * 4);
 
-  result -= (0x40000000 + static_cast<uInt32>(2_KB));
+  result -= (0x40000000 + U32(2_KB));
 
   if (!isCDFJplus()) {
     if (result >= 4096)
-      result &= 4095;
+      result &= 4095U;
   } else {
     if (result >= myDisplayImage.size())
       result = 0;
@@ -710,14 +707,14 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   uInt8 value = 0;
   if (isCDFJplus())
   {
-    const uInt32 idx = pointer >> 16;
+    const uInt32 idx = pointer >> 16U;
     value = (idx < myDisplayImage.size()) ? myDisplayImage[idx] : 0;
-    pointer += (increment << 8);
+    pointer += (increment << 8U);
   }
   else
   {
-    value = myDisplayImage[ pointer >> 20 ];
-    pointer += (increment << 12);
+    value = myDisplayImage[ pointer >> 20U ];
+    pointer += (increment << 12U);
   }
 
   setDatastreamPointer(index, pointer);
@@ -781,13 +778,13 @@ void CartridgeCDF::setupVersion()
   for (uInt32 i = 0; i < 2048; i += 4)
   {
     // CDF signature occurs 3 times in a row, i+3 (+7 or +11) is version
-    if (    myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43) // C
-      if (  myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44) // D
-        if (myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46) // F
-        {
-          subversion = myImage[i+3];
-          break;
-        }
+    if (myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43 && // C
+        myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44 && // D
+        myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46)   // F
+    {
+      subversion = myImage[i+3];
+      break;
+    }
   }
 
   switch (subversion)
@@ -847,13 +844,13 @@ bool CartridgeCDF::isCDFJplus() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::ramSize() const
 {
-  return static_cast<uInt32>(isCDFJplus() ? 32_KB : 8_KB);
+  return U32(isCDFJplus() ? 32_KB : 8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::romSize() const
 {
-  return static_cast<uInt32>(isCDFJplus() ? myImage.size() : 32_KB);
+  return U32(isCDFJplus() ? myImage.size() : 32_KB);
 }
 
 #ifdef DEBUGGER_SUPPORT

@@ -53,17 +53,17 @@ bool CartridgeE0::checkSwitchBank(uInt16 address, uInt8)
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FE7))
   {
-    bank(address & 0x0007, 0);
+    bank(address & 0x0007U, 0);
     return true;
   }
   else if((address >= 0x0FE8) && (address <= 0x0FEF))
   {
-    bank(address & 0x0007, 1);
+    bank(address & 0x0007U, 1);
     return true;
   }
   else if((address >= 0x0FF0) && (address <= 0x0FF7))
   {
-    bank(address & 0x0007, 2);
+    bank(address & 0x0007U, 2);
     return true;
   }
 

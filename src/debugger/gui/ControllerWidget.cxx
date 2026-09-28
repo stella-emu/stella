@@ -80,7 +80,7 @@ void ControllerWidget::reflow()
   // up -- but taller if the content (a QuadTari's two embedded controllers,
   // AtariVox's page list) needs it
   const Common::Size natural = col.naturalSize();
-  _w = static_cast<int>(natural.w);
-  _h = std::max(8 * _font.getLineHeight(), static_cast<int>(natural.h));
+  _w = I32(natural.w);
+  _h = std::max(8 * _font.getLineHeight(), I32(natural.h));
   col.doLayout(_x, _y, _w, _h);
 }

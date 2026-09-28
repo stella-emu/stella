@@ -87,7 +87,7 @@ class NullDevice : public Device
     */
     bool poke(uInt16 address, uInt8 value) override {
       cerr << "NullDevice: poke(" << address << ","
-           << static_cast<uInt32>(value) << ")\n";
+           << U32(value) << ")\n";
       return false;
     }
 

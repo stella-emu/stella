@@ -64,8 +64,7 @@ const std::array<const FontDesc*, 7> INFO_FONTS = {
 
 // The settings key each role reads, in FontRole order.  Settings owns the
 // defaults, as it does for every other setting; this is only the mapping
-constexpr std::array<string_view,
-                     static_cast<size_t>(FontManager::FontRole::numRoles)>
+constexpr std::array<string_view, SZT(FontManager::FontRole::numRoles)>
 ROLE_KEYS = {
   "ui.font.dialog",
   "ui.font.info",
@@ -185,7 +184,7 @@ bool FontManager::isDebuggerFont(string_view name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string_view FontManager::settingKey(FontRole role)
 {
-  return ROLE_KEYS[static_cast<size_t>(role)];
+  return ROLE_KEYS[SZT(role)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

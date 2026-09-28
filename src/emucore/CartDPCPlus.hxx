@@ -143,7 +143,7 @@ class CartridgeDPCPlus : public CartridgeARM
 
       @return The internal RAM size
     */
-    uInt32 internalRamSize() const override { return static_cast<uInt32>(myDPCRAM.size()); }
+    uInt32 internalRamSize() const override { return U32(myDPCRAM.size()); }
 
     /**
       Read a byte from cart internal RAM.

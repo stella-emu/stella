@@ -25,6 +25,8 @@
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 class Cartridge;
 
 #include "bspf.hxx"
@@ -201,7 +203,7 @@ class Thumbulator
     };
   #endif
     const std::array<ChipPropsType,
-        static_cast<uInt32>(ChipType::numTypes)> ChipProps =
+        U32(ChipType::numTypes)> ChipProps =
     {{
       { "LPC2101..3",    70.0, 4, 1 }, // LPC2101_02_03
       { "LPC2104..6 OC", 70.0, 4, 2 }, // LPC2104_05_06 Overclocked
@@ -325,10 +327,10 @@ class Thumbulator
       ROMSIZE = ROMADDMASK + 1,  // 512KB
       RAMSIZE = RAMADDMASK + 1,  // 32KB
 
-      CPSR_N = 1U << 31,
-      CPSR_Z = 1U << 30,
-      CPSR_C = 1U << 29,
-      CPSR_V = 1U << 28;
+      CPSR_N = 1U << 31U,
+      CPSR_Z = 1U << 30U,
+      CPSR_C = 1U << 29U,
+      CPSR_V = 1U << 28U;
 
   private:
     // Following constructors and assignment operators not supported
@@ -338,5 +340,7 @@ class Thumbulator
     Thumbulator& operator=(const Thumbulator&) = delete;
     Thumbulator& operator=(Thumbulator&&) = delete;
 };
+
+// NOLINTEND(bugprone-signed-bitwise)
 
 #endif  // THUMBULATOR_HXX

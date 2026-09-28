@@ -57,13 +57,13 @@ class System : public Serializable
     static constexpr uInt16 PAGE_SHIFT = 6;
 
     // Size of a page
-    static constexpr uInt16 PAGE_SIZE = (1 << PAGE_SHIFT);
+    static constexpr uInt16 PAGE_SIZE = (1U << PAGE_SHIFT);
 
     // Mask to apply to an address to obtain its page offset
     static constexpr uInt16 PAGE_MASK = PAGE_SIZE - 1;
 
     // Maximum number of pages (sized for full 16-bit address space)
-    static constexpr uInt16 MAX_NUM_PAGES = 1 << (16 - PAGE_SHIFT);
+    static constexpr uInt16 MAX_NUM_PAGES = 1U << (16U - PAGE_SHIFT);
 
   public:
     // Determines the number of address lines to use for this System
@@ -74,9 +74,9 @@ class System : public Serializable
       from a cartridge's install() method before any pages are installed.
     */
     void setAddressBits(AddressSpace space) {
-      const auto bits = static_cast<uInt16>(space);
-      myAddressMask   = static_cast<uInt16>((1U << bits) - 1);
-      myNumPages      = static_cast<uInt16>(1U << (bits - PAGE_SHIFT));
+      const auto bits = U16(space);
+      myAddressMask   = U16((1U << bits) - 1);
+      myNumPages      = U16(1U << U32(bits - PAGE_SHIFT));
     }
 
     // The current address mask (0x1FFF for 13-bit, 0xFFFF for 16-bit)
@@ -200,7 +200,7 @@ class System : public Serializable
       @param flags    Access type hint for the debugger (CODE, DATA, GFX, etc.)
       @return The byte at the address
     */
-    uInt8 peek(uInt16 address, Device::AccessFlags flags = Device::NONE)
+    uInt8 peek(uInt16 address, Device::AccessType flags = Device::NONE)
     {
       return peekImpl<false>(address, flags);
     }
@@ -214,7 +214,7 @@ class System : public Serializable
       @param flags    Access type hint for the debugger (CODE, DATA, GFX, etc.)
       @return The byte at the address
     */
-    uInt8 peekOob(uInt16 address, Device::AccessFlags flags = Device::NONE)
+    uInt8 peekOob(uInt16 address, Device::AccessType flags = Device::NONE)
     {
       return peekImpl<true>(address, flags);
     }
@@ -228,7 +228,7 @@ class System : public Serializable
       @param value    The byte to write
       @param flags    Access type hint for the debugger
     */
-    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
+    void poke(uInt16 address, uInt8 value, Device::AccessType flags = Device::NONE)
     {
       pokeImpl<false>(address, value, flags);
     }
@@ -242,7 +242,7 @@ class System : public Serializable
       @param value    The byte to write
       @param flags    Access type hint for the debugger
     */
-    void pokeOob(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE)
+    void pokeOob(uInt16 address, uInt8 value, Device::AccessType flags = Device::NONE)
     {
       pokeImpl<true>(address, value, flags);
     }
@@ -265,8 +265,8 @@ class System : public Serializable
       address.  Note that while any flag can be used, the disassembly
       only really acts on CODE/GFX/PGFX/COL/PCOL/BCOL/AUD/DATA/ROW.
     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const;
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) const;
+    Device::AccessType getAccessFlags(uInt16 address) const;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) const;
 
     /**
       Increase the given address's access counter
@@ -289,8 +289,8 @@ class System : public Serializable
       Describes how a page can be accessed
     */
     enum class PageAccessType: uInt8 {
-      READ      = 1 << 0,
-      WRITE     = 1 << 1,
+      READ      = 1U,
+      WRITE     = 2U,
       READWRITE = READ | WRITE
     };
 
@@ -326,7 +326,7 @@ class System : public Serializable
         data is read. This is used by the debugger/disassembler to format
         address sections accordingly.
       */
-      Device::AccessFlags* romAccessBase{nullptr};
+      Device::AccessType* romAccessBase{nullptr};
 
       /**
         Per-address read-access counter indexed by page offset.  Tracks how
@@ -368,7 +368,7 @@ class System : public Serializable
       @param access The accessing methods to be used by the page
     */
     void setPageAccess(uInt16 addr, const PageAccess& access) {
-      myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT] = access;
+      myPageAccessTable[pageIndex(addr)] = access;
     }
 
     /**
@@ -378,7 +378,7 @@ class System : public Serializable
       @return The accessing methods used by the page
     */
     const PageAccess& getPageAccess(uInt16 addr) const {
-      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT];
+      return myPageAccessTable[pageIndex(addr)];
     }
 
     /**
@@ -388,7 +388,7 @@ class System : public Serializable
       @return  The type of page that contains the given address
     */
     System::PageAccessType getPageAccessType(uInt16 addr) const {
-      return myPageAccessTable[(addr & myAddressMask) >> PAGE_SHIFT].type;
+      return myPageAccessTable[pageIndex(addr)].type;
     }
 
     /**
@@ -397,7 +397,7 @@ class System : public Serializable
       @param addr  Determines the page that is dirty
     */
     void setDirtyPage(uInt16 addr) {
-      myPageIsDirtyTable[(addr & myAddressMask) >> PAGE_SHIFT] = true;
+      myPageIsDirtyTable[pageIndex(addr)] = true;
     }
 
     /**
@@ -432,6 +432,18 @@ class System : public Serializable
 
   private:
     /**
+      Convert the given address to its index into myPageAccessTable and
+      myPageIsDirtyTable.
+
+      @param addr  The address to convert
+
+      @return  The page index
+    */
+    uInt16 pageIndex(uInt16 addr) const {
+      return U16(U32(addr & myAddressMask) >> PAGE_SHIFT);
+    }
+
+    /**
       Get the byte at the specified address.  No masking of the
       address occurs before it's sent to the device mapped at
       the address.
@@ -445,7 +457,7 @@ class System : public Serializable
       @return The byte at the specified address
     */
     template<bool oob = false>
-    uInt8 peekImpl(uInt16 address, Device::AccessFlags flags);
+    uInt8 peekImpl(uInt16 address, Device::AccessType flags);
 
     /**
       Change the byte at the specified address to the given value.
@@ -463,7 +475,7 @@ class System : public Serializable
       @param value    The value to be stored at the address
     */
     template<bool oob = false>
-    void pokeImpl(uInt16 address, uInt8 value, Device::AccessFlags flags);
+    void pokeImpl(uInt16 address, uInt8 value, Device::AccessType flags);
 
   private:
     // The system RNG
@@ -525,16 +537,16 @@ class System : public Serializable
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<bool oob>
-inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
+inline uInt8 System::peekImpl(uInt16 addr, Device::AccessType flags)
 {
-  const uInt16 pageOffset = addr & PAGE_MASK;
-  const uInt16 page       = (addr & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 pageOffset  = addr & PAGE_MASK;
+  const uInt16 page        = pageIndex(addr);
   const PageAccess& access = myPageAccessTable[page];
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
   if(access.romAccessBase)
-    *(access.romAccessBase + pageOffset) |= (flags | (addr & Device::HADDR));
+    *(access.romAccessBase + pageOffset) |= (flags | Device::addrBits(addr));
   else
     access.device->setAccessFlags(addr, flags);
   // Increase access counter
@@ -547,7 +559,7 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
   }
 #endif
 
-  const uInt8 result = [&]() -> uInt8 {
+  const uInt8 result = [&] -> uInt8 {
     uInt8 val;  // NOLINT(cppcoreguidelines-init-variables)
     if(access.directPeekBase) [[likely]]
       val = *(access.directPeekBase + pageOffset);
@@ -571,19 +583,20 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessFlags flags)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<bool oob>
-inline void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessFlags flags)
+inline void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessType flags)
 {
-  if(!oob && myCartridgeDoesBusStuffing) [[unlikely]]
-    value = myCart.overdrivePoke(addr, value);
+  if constexpr(!oob)
+    if(myCartridgeDoesBusStuffing) [[unlikely]]
+      value = myCart.overdrivePoke(addr, value);
 
-  const uInt16 pageOffset = addr & PAGE_MASK;
-  const uInt16 page = (addr & myAddressMask) >> PAGE_SHIFT;
+  const uInt16 pageOffset  = addr & PAGE_MASK;
+  const uInt16 page        = pageIndex(addr);
   const PageAccess& access = myPageAccessTable[page];
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
   if(access.romAccessBase)
-    *(access.romAccessBase + pageOffset) |= (flags | (addr & Device::HADDR));
+    *(access.romAccessBase + pageOffset) |= (flags | Device::addrBits(addr));
   else
     access.device->setAccessFlags(addr, flags);
   // Increase access counter

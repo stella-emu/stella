@@ -41,8 +41,8 @@ void JitterEmulation::setSensitivity(Int32 sensitivity)
   mySensitivity = BSPF::clamp(sensitivity, MIN_SENSITIVITY, MAX_SENSITIVITY);
 
   const float factor = pow(
-      static_cast<float>(mySensitivity - MIN_SENSITIVITY) /
-      static_cast<float>(MAX_SENSITIVITY - MIN_SENSITIVITY), 1.5F);
+      FLT(mySensitivity - MIN_SENSITIVITY) /
+      FLT(MAX_SENSITIVITY - MIN_SENSITIVITY), 1.5F);
 
   myScanlineDelta  = round(MAX_SCANLINE_DELTA  - (MAX_SCANLINE_DELTA  - MIN_SCANLINE_DELTA)  * factor);
   myVsyncCycles    = round(MIN_VSYNC_CYCLES    + (MAX_VSYNC_CYCLES    - MIN_VSYNC_CYCLES)    * factor);
@@ -92,7 +92,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles, Int3
         const Int32 scanlineDifference = scanlineCount - myLastFrameScanlines;
 
         if(abs(scanlineDifference) >= myScanlineDelta
-          && abs(myJitter) < static_cast<Int32>(myRandom.next() % myJitterLines))
+          && abs(myJitter) < I32(myRandom.next() % myJitterLines))
         {
           // Repeated invalid frames cause randomly repeated jitter
           myJitter = std::max(std::min(scanlineDifference, myJitterLines), -myYStart);
@@ -102,7 +102,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles, Int3
       {
         // If VSYNC length is too low, the frame rolls permanently down, speed depending on missing cycles
         const Int32 jitter = std::max(
-          std::min<Int32>(round(scanlineCount * (1 - static_cast<float>(vsyncCycles) / myVsyncCycles)),
+          std::min<Int32>(round(scanlineCount * (1 - FLT(vsyncCycles) / myVsyncCycles)),
             myJitterLines),
           myJitterRecovery + 1); // Roll at least one scanline
 

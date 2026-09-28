@@ -92,8 +92,8 @@ void DeveloperDialog::layout()
   const Common::Size tabSize = myTab->naturalSize();
 
   myTab->setPos(xpos, VGAP + _th);
-  myTab->setWidth(static_cast<int>(tabSize.w));
-  myTab->setHeight(static_cast<int>(tabSize.h));
+  myTab->setWidth(I32(tabSize.w));
+  myTab->setHeight(I32(tabSize.h));
 
   _w = myTab->getWidth() + 2 * xpos;
   _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;
@@ -1447,7 +1447,7 @@ void DeveloperDialog::handleSize()
   {
     for(i = horizon; i < RewindManager::NUM_HORIZONS; ++i)
     {
-      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[interval]
+      if(U64(size) * RewindManager::INTERVAL_CYCLES[interval]
          <= RewindManager::HORIZON_CYCLES[i])
       {
         found = true;
@@ -1499,7 +1499,7 @@ void DeveloperDialog::handleInterval()
   {
     for(i = horizon; i < RewindManager::NUM_HORIZONS; ++i)
     {
-      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[interval]
+      if(U64(size) * RewindManager::INTERVAL_CYCLES[interval]
          <= RewindManager::HORIZON_CYCLES[i])
       {
         found = true;
@@ -1537,7 +1537,7 @@ void DeveloperDialog::handleHorizon()
   {
     for(i = interval; i >= 0; --i)
     {
-      if(static_cast<uInt64>(size) * RewindManager::INTERVAL_CYCLES[i]
+      if(U64(size) * RewindManager::INTERVAL_CYCLES[i]
          <= RewindManager::HORIZON_CYCLES[horizon])
       {
         found = true;

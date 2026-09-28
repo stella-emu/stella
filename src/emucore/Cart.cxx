@@ -87,14 +87,14 @@ bool Cartridge::bankChanged()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge::bankSize(uInt16 bank) const
 {
-  return static_cast<uInt16>(
+  return U16(
     std::min(getImage().size() / romBankCount(), 4_KB)); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 {
-  const uInt8 value = myRWPRandomValues[address & 0xFF];
+  const uInt8 value = myRWPRandomValues[address & 0xFFU];
 
   // Reading from the write port triggers an unwanted write
   // But this only happens when in normal emulation mode
@@ -130,11 +130,11 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::createRomAccessArrays(size_t size)
 {
-  myAccessSize = static_cast<uInt32>(size);
+  myAccessSize = U32(size);
 
   // Always create ROM access base even if DEBUGGER_SUPPORT is disabled,
   // since other parts of the code depend on it existing
-  myRomAccessBase = std::make_unique<Device::AccessFlags[]>(size);
+  myRomAccessBase = std::make_unique<Device::AccessType[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
   myRomAccessCounter = std::make_unique<Device::AccessCounter[]>(size * 2);
   std::fill_n(myRomAccessCounter.get(), size * 2, 0);
@@ -163,7 +163,7 @@ string Cartridge::getAccessCounters() const
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
         Common::Base::toString(myRomAccessCounter[offset + addr],
                               Common::Base::Fmt::_10_8));
-    out += "\n";
+    out += '\n';
 
     out += header + " writes:\n";
     for(uInt16 addr = 0; addr < bankSz; ++addr)
@@ -171,7 +171,7 @@ string Cartridge::getAccessCounters() const
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
         Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize],
                               Common::Base::Fmt::_10_8));
-    out += "\n";
+    out += '\n';
 
     offset += bankSz;
   }
@@ -185,7 +185,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
   // to distinguish mirrors, so derive the origin directly from the PC alignment.
   const uInt16 bankSz = bankSize(bank);
   if (bankSz < 4_KB && PC)
-    return static_cast<uInt16>(PC - (PC % bankSz));
+    return U16(PC - (PC % bankSz));
 
   // Isolate the high 3 address bits, count them, include the PC if provided
   // and select the most frequent to define the bank origin
@@ -200,15 +200,15 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
   //addrMask;
 
   if(PC)
-    count[PC >> 13]++;
+    count[PC >> 13U]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
-    const Device::AccessFlags flags = myRomAccessBase[offset + addr];
+    const Device::AccessType flags = myRomAccessBase[offset + addr];
     // only count really accessed addresses
-    if(flags & ~Device::ROW)
+    if(Bitmask::Enum{flags}.any_of(~Device::ROW))
     {
       //uInt16 addrBit = addr >> addrShift;
-      count[(flags & Device::HADDR) >> 13]++;
+      count[Device::haddrIndex(flags)]++;
     }
   }
   uInt16 max = 0, maxIdx = 0;
@@ -220,7 +220,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
       maxIdx = idx;
     }
   }
-  return maxIdx << 13 | 0x1000; //| (offset & 0xfff);
+  return U32(maxIdx) << 13U | 0x1000U; //| (offset & 0xfff);
 }
 #endif
 
@@ -244,7 +244,7 @@ uInt16 Cartridge::initializeStartBank(uInt16 defaultBank)
   else if(propsBank >= 0)
     return myStartBank = BSPF::clamp(propsBank, 0, romBankCount() - 1);
   else
-    return myStartBank = BSPF::clamp(static_cast<int>(defaultBank), 0, romBankCount() - 1);
+    return myStartBank = BSPF::clamp(I32(defaultBank), 0, romBankCount() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

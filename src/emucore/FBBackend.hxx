@@ -222,6 +222,7 @@ class FBBackend
       Make the window user-resizable (or not).  Only meaningful for desktop
       windowed UI modes (the launcher, the debugger and its companion TIA
       window).  Each such window's owner sets its own minimum size, separately.
+      Takes effect on the next setVideoMode(), so call it before that.
     */
     virtual void setWindowResizable(bool resizable) { }
 

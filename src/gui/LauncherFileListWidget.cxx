@@ -228,7 +228,7 @@ void LauncherFileListWidget::userFavor(string_view path)
     [&path](const FSNode& f) { return f.getPath() == path; });
   if(it != _fileList.end())
   {
-    const size_t pos = static_cast<size_t>(it - _fileList.begin());
+    const size_t pos = SZT(it - _fileList.begin());
     if(pos < _iconTypeList.size())
       _iconTypeList[pos] = getIconType(*it);
   }
@@ -522,7 +522,7 @@ const GUI::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11111111111'11111111110
   });
   static constexpr GUI::Icon popular_large(24, 22, popular_large_bits);
-  static constexpr auto NLT = static_cast<int>(IconType::numLauncherTypes);
+  static constexpr auto NLT = I32(IconType::numLauncherTypes);
   static constexpr const GUI::Icon* small_icons[NLT] = {
     &favrom_small, &favdir_small, &favzip_small,
     &user_small, &recent_small, &popular_small
@@ -532,12 +532,12 @@ const GUI::Icon* LauncherFileListWidget::getIcon(int i) const
     &user_large, &recent_large, &popular_large
   };
 
-  if(static_cast<int>(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
+  if(I32(_iconTypeList[i]) < I32(IconType::numTypes))
     return FileListWidget::getIcon(i);
 
   const bool smallIcon = iconWidth() < 24;
   const int iconType =
-    static_cast<int>(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
+    I32(_iconTypeList[i]) - I32(IconType::numTypes);
 
   assert(iconType < NLT);
 

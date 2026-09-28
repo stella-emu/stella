@@ -92,15 +92,15 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
   descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
   descRow->addStretch(widgetItem(myDesc, 0, myDesc->minHeight()));
   col->add(std::move(descRow), GUI::SizePolicy::Stretch, 1,
-           static_cast<int>(myDesc->naturalSize().h), myDesc->minHeight());
+           I32(myDesc->naturalSize().h), myDesc->minHeight());
 
   col->addSpace(_fontHeight / 2);
 
   // The view's own height is its cell's BASE (the 1 is addStretch's default
   // weight), or the description's cap would expand into the space it needs
   const Common::Size ramNatural = myRam->naturalSize();
-  col->addStretch(widgetItem(myRam, static_cast<int>(ramNatural.w)), 1,
-                  static_cast<int>(ramNatural.h));
+  col->addStretch(widgetItem(myRam, I32(ramNatural.w)), 1,
+                  I32(ramNatural.h));
 
   return col;
 }

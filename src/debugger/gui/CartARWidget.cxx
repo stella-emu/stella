@@ -60,6 +60,7 @@ CartridgeARWidget::CartridgeARWidget(
 
   createBaseInformation(size, "Starpath", info);
 
+  // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
   myModeInfo = new LabelWidget(boss, _font,
     myCart.myIsSoundLoad ? "Sound-load mode" : "Fast-load mode");
   myModeDetail = new LabelWidget(boss, _font, myCart.myIsSoundLoad
@@ -105,6 +106,7 @@ CartridgeARWidget::CartridgeARWidget(
 
   // The selector's box lines up with the info fields above it
   myLabelColumn.emplace_back(mySliceLbl);
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
 
   reflow();
 }
@@ -153,7 +155,7 @@ void CartridgeARWidget::loadConfig()
   const auto& oldstate = static_cast<const CartState&>(cart.getOldState());
   const bool changed = state.bank != oldstate.bank;
 
-  mySlice->setSelectedIndex(myCart.myCurrentBank >> 2, changed);
+  mySlice->setSelectedIndex(myCart.myCurrentBank >> 2U, changed);
   myWriteEnable->setState(myCart.myWriteEnabled, changed);
   myRomPower->setState(myCart.myPower, changed);
 
@@ -177,10 +179,10 @@ void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 {
   if(cmd == Cmd::ConfigChanged)
   {
-    const auto configuration = static_cast<uInt8>(
-      (mySlice->getSelected() << 2) |
-      (myWriteEnable->getState() ? 0b010 : 0) |
-      (myRomPower->getState() ? 0 : 0b001));
+    const auto configuration = U8(
+      (U32(mySlice->getSelected()) << 2U) |
+      (myWriteEnable->getState() ? 0b010U : 0U) |
+      (myRomPower->getState() ? 0U : 0b001U));
 
     myCart.unlockHotspots();
     myCart.bank(configuration);
@@ -193,20 +195,20 @@ void CartridgeARWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 string CartridgeARWidget::bankState()
 {
   return std::format("{}, RAM write {}",
-    SliceMap[myCart.myCurrentBank >> 2],
+    SliceMap[myCart.myCurrentBank >> 2U],
     myCart.myWriteEnabled ? "enabled" : "disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeARWidget::internalRamSize()
 {
-  return static_cast<uInt32>(CartridgeAR::RAM_SIZE);
+  return U32(CartridgeAR::RAM_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeARWidget::internalRamRPort(int start)
 {
-  return static_cast<uInt32>(start);
+  return U32(start);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

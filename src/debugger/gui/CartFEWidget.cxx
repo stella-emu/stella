@@ -42,5 +42,5 @@ string CartridgeFEWidget::description()
 string CartridgeFEWidget::hotspotStr(int bank, int, bool)
 {
   return std::format("(DATA = 11{}, D5 = {})",
-    static_cast<int>(!bank), static_cast<int>(!bank));
+    I32(!bank), I32(!bank));
 }

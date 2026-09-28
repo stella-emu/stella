@@ -27,30 +27,6 @@
 #include "Base.hxx"
 
 namespace {
-  // Per-object collision bit patterns. Chosen so that, for any two distinct
-  // objects A and B, A & B is a single unique bit appearing in no other
-  // object's mask. Each object's mask is exactly the union of those unique
-  // pair bits — i.e. the set of pair collisions it participates in.
-  //
-  // Examples:
-  //   player0 & playfield = bit 10   (P0-PF)
-  //   player0 & ball      = bit 11   (P0-BL)
-  //   missile0 & missile1 = bit 14   (M0-M1)
-  //
-  // This lets updateCollision() compute all 15 pair collisions with a single
-  // 15-bit AND across all six objects; see TIA::updateCollision for the
-  // correctness argument and TIA::collCX* for how individual pair bits are
-  // extracted on read. Bit 15 is reserved by each sprite as a "visible this
-  // clock" latch (see TIA::renderPixel / sprite::isOn).
-  enum CollisionMask: uInt16 {
-    player0   = 0b0111110000000000,
-    player1   = 0b0100001111000000,
-    missile0  = 0b0010001000111000,
-    missile1  = 0b0001000100100110,
-    ball      = 0b0000100010010101,
-    playfield = 0b0000010001001011
-  };
-
   // Per-register color-clock delays applied when a TIA write is pushed onto
   // the DelayQueue. Some games rely on these on real hardware (e.g. GRP0/1
   // takes effect one clock after the write); see TIA::poke for which writes
@@ -96,16 +72,16 @@ TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
     myTimingProvider{timingProvider},
     mySettings{settings},
     // Each sprite's "disabled" collision mask is constructed as
-    //   ~CollisionMask::self & 0x7FFF
+    //   ~CollisionMask::self & ~CollisionMask::VISIBLE
     // so that when the sprite is silent it contributes ones everywhere
-    // except its own pair bits (and bit 15 — the visibility latch — is
-    // also cleared). See the CollisionMask enum above.
-    myPlayfield{~CollisionMask::playfield & 0x7FFF},
-    myMissile0{~CollisionMask::missile0 & 0x7FFF},
-    myMissile1{~CollisionMask::missile1 & 0x7FFF},
-    myPlayer0{~CollisionMask::player0 & 0x7FFF},
-    myPlayer1{~CollisionMask::player1 & 0x7FFF},
-    myBall{~CollisionMask::ball & 0x7FFF},
+    // except its own pair bits (VISIBLE, the visibility latch, is also
+    // cleared). See the CollisionMask enum in TIAConstants.hxx.
+    myPlayfield{~CollisionMask::playfield & ~CollisionMask::VISIBLE},
+    myMissile0{~CollisionMask::missile0 & ~CollisionMask::VISIBLE},
+    myMissile1{~CollisionMask::missile1 & ~CollisionMask::VISIBLE},
+    myPlayer0{~CollisionMask::player0 & ~CollisionMask::VISIBLE},
+    myPlayer1{~CollisionMask::player1 & ~CollisionMask::VISIBLE},
+    myBall{~CollisionMask::ball & ~CollisionMask::VISIBLE},
     myPhosphorCallback{callback}
 {
   myBackground.setTIA(this);
@@ -128,12 +104,8 @@ void TIA::setFrameManager(AbstractFrameManager* frameManager, bool layoutDetecto
   myIsLayoutDetector = layoutDetector;
 
   myFrameManager->setHandlers(
-    [this] () {
-      onFrameStart();
-    },
-    [this] () {
-      onFrameComplete();
-    }
+    [this] { onFrameStart();    },
+    [this] { onFrameComplete(); }
   );
 
   myFrameManager->enableJitter(myEnableJitter);
@@ -172,7 +144,7 @@ void TIA::initialize()
   myMovementClock = 0;
   myPriority = Priority::normal;
   myHstate = HState::blank;
-  myCollisionMask = 0;
+  myCollisionMask = CollisionMask::NONE;
   myLinesSinceChange = 0;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
@@ -182,7 +154,8 @@ void TIA::initialize()
   myXAtRenderingStart = 0;
 
   myShadowRegisters.fill(0);
-  for (auto reg: {HMP0, HMP1, HMM0, HMM1, HMBL}) myShadowRegisters[reg] = 0x80;
+  for (const auto reg: {HMP0, HMP1, HMM0, HMM1, HMBL})
+    myShadowRegisters[reg] = 0x80;
 
   myBackground.reset();
   myPlayfield.reset();
@@ -265,12 +238,12 @@ void TIA::reset()
   {
     for(uInt32 i = 0; i < 0x4000; ++i)
     {
-      const uInt16 address = mySystem->randGenerator().next() & 0x3F;
+      const uInt16 address = mySystem->randGenerator().next() & 0x3FU;
 
       if(address <= 0x2F)
       {
         poke(address, mySystem->randGenerator().next());
-        cycle(1 + (mySystem->randGenerator().next() & 7)); // process delay queue
+        cycle(1 + (mySystem->randGenerator().next() & 7U)); // process delay queue
       }
     }
     cycle(76 * 3); // just to be sure :)
@@ -300,11 +273,7 @@ void TIA::installDelegate(System& system, Device& device)
     if((addr & TIA_BIT) == 0x0000)
       mySystem->setPageAccess(addr, access);
 
-  mySystem->m6502().setOnHaltCallback(
-    [this] () {
-      onHalt();
-    }
-  );
+  mySystem->m6502().setOnHaltCallback([this] { onHalt(); });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,7 +281,7 @@ bool TIA::save(Serializer& out) const
 {
   try
   {
-    if(!myDelayQueue.save(out))   return false;
+    if(!myDelayQueue.save(out))    return false;
     if(!myFrameManager->save(out)) return false;
 
     if(!myBackground.save(out)) return false;
@@ -324,7 +293,7 @@ bool TIA::save(Serializer& out) const
     if(!myBall.save(out))       return false;
     if(!myAudio.save(out))      return false;
 
-    for (const AnalogReadout& analogReadout : myAnalogReadouts)
+    for (const AnalogReadout& analogReadout: myAnalogReadouts)
       if(!analogReadout.save(out)) return false;
 
     // Cache of the last analog connection pushed to each readout; preserved so
@@ -341,7 +310,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myHctrDelta);
     out.putInt(myXAtRenderingStart);
 
-    out.putInt(myCollisionMask);
+    out.putShort(Bitmask::to_underlying(myCollisionMask));
 
     out.putInt(myMovementClock);
     out.putBool(myMovementInProgress);
@@ -426,7 +395,7 @@ bool TIA::load(Serializer& in)
     myHctrDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
 
-    myCollisionMask = in.getInt();
+    myCollisionMask = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myMovementClock = in.getInt();
     myMovementInProgress = in.getBool();
@@ -477,8 +446,7 @@ bool TIA::load(Serializer& in)
     // (and thus renderPixel's writes) past the end of myBackBuffer
     const uInt32 y = std::min(myFrameManager->getY(),
                               TIAConstants::frameBufferHeight - 1);
-    myCurrentRowPtr = myBackBuffer.data() +
-      static_cast<size_t>(y) * TIAConstants::H_PIXEL;
+    myCurrentRowPtr = myBackBuffer.data() + SZT(y) * TIAConstants::H_PIXEL;
   }
   catch(...)
   {
@@ -548,67 +516,67 @@ uInt8 TIA::peek(uInt16 address)
   // one register); CXBLPF and INPT* only use D7.
   uInt8 result = 0b0000000;
 
-  switch (address & 0x0F) {
+  switch (address & 0x0FU) {
     case CXM0P:
-      result = collCXM0P() & 0b11000000;
+      result = collCXM0P() & 0b11000000U;
       break;
 
     case CXM1P:
-      result = collCXM1P() & 0b11000000;
+      result = collCXM1P() & 0b11000000U;
       break;
 
     case CXP0FB:
-      result = collCXP0FB() & 0b11000000;
+      result = collCXP0FB() & 0b11000000U;
       break;
 
     case CXP1FB:
-      result = collCXP1FB() & 0b11000000;
+      result = collCXP1FB() & 0b11000000U;
       break;
 
     case CXM0FB:
-      result = collCXM0FB() & 0b11000000;
+      result = collCXM0FB() & 0b11000000U;
       break;
 
     case CXM1FB:
-      result = collCXM1FB() & 0b11000000;
+      result = collCXM1FB() & 0b11000000U;
       break;
 
     case CXPPMM:
-      result = collCXPPMM() & 0b11000000;
+      result = collCXPPMM() & 0b11000000U;
       break;
 
     case CXBLPF:
-      result = collCXBLPF() & 0b10000000;
+      result = collCXBLPF() & 0b10000000U;
       break;
 
     case INPT0:
       updateAnalogReadout(0);
-      result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT1:
       updateAnalogReadout(1);
-      result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT2:
       updateAnalogReadout(2);
-      result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT3:
       updateAnalogReadout(3);
-      result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000U;
       break;
 
     case INPT4:
       result = myInput0.inpt(!myConsole.leftController().read(Controller::DigitalPin::Six))
-          & 0b10000000;
+          & 0b10000000U;
       break;
 
     case INPT5:
       result = myInput1.inpt(!myConsole.rightController().read(Controller::DigitalPin::Six))
-          & 0b10000000;
+          & 0b10000000U;
       break;
 
     default:
@@ -620,7 +588,7 @@ uInt8 TIA::peek(uInt16 address)
   // on real chips with weaker pull-downs) shows up. The 'tiapinsdriven'
   // setting picks random noise to surface games that read these bits.
   return result | ((!myTIAPinsDriven ? mySystem->getDataBusState() :
-    mySystem->randGenerator().next()) & 0b00111111);
+    mySystem->randGenerator().next()) & 0b00111111U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -639,7 +607,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
   //   - Pipelined writes (PFx/GRPx/ENAxx/HMxx/HMOVE/REFPx/VBLANK/...) that
   //     go through myDelayQueue with a per-register color-clock delay
   //     defined in the Delay enum above; delayedWrite() dispatches them.
-  address &= 0x3F;
+  address &= 0x3FU;
 
   switch (address)
   {
@@ -656,7 +624,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VSYNC:
-      myFrameManager->setVsync(value & 0x02, myTimestamp / 3);
+      myFrameManager->setVsync(value & 0x02U, myTimestamp / 3);
       myShadowRegisters[address] = value;
       break;
 
@@ -749,7 +717,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUBK:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       if(myBKColorDelay)
         myDelayQueue.push(COLUBK, value, 1);
       else
@@ -767,7 +735,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUP0:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
       myPlayer0.setColor(value);
@@ -782,7 +750,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUP1:
     {
-      value &= 0xFE;
+      value &= 0xFEU;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
       myPlayer1.setColor(value);
@@ -800,8 +768,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // width can all change here — any of these may alter pixels already
       // rendered on the current line.
       flushLineCache();
-      myPriority = (value & 0x04) ? Priority::pfp :
-                   (value & 0x02) ? Priority::score : Priority::normal;
+      myPriority = (value & 0x04U) ? Priority::pfp :
+                   (value & 0x02U) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
       myShadowRegisters[address] = value;
@@ -813,7 +781,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // to "only when value differs and PF/BL is emitting" like the
       // per-sprite setColor guards, but isn't.)
       flushLineCache();
-      value &= 0xFE;
+      value &= 0xFEU;
       if(myPFColorDelay)
         myDelayQueue.push(COLUPF, value, 1);
       else
@@ -1022,7 +990,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // line will observe; flush so updateCollision rebuilds them from
       // the rewound counters rather than from a cloned line.
       flushLineCache();
-      myCollisionMask = 0;
+      myCollisionMask = CollisionMask::NONE;
       myShadowRegisters[address] = value;
       break;
 
@@ -1201,7 +1169,7 @@ bool TIA::enableColorLoss(bool enabled)
   if(allowColorLoss && enabled)
   {
     myColorLossEnabled = true;
-    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1U;
   }
   else
   {
@@ -1504,7 +1472,7 @@ void TIA::updateEmulation()
     throw std::runtime_error("subclock exceeds range");
 
   const uInt32 cyclesToRun = TIAConstants::CYCLE_CLOCKS *
-      static_cast<uInt32>(systemCycles - myLastCycle) + mySubClock;
+      U32(systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
   myLastCycle = systemCycles;
@@ -1528,22 +1496,19 @@ void TIA::onFrameStart()
 #endif
 
   // Check for colour-loss emulation
-  if (myColorLossEnabled)
+  // Only activate it when necessary, since changing colours in
+  // the graphical object forces the TIA cached line to be flushed
+  if (myColorLossEnabled && myFrameManager->scanlineParityChanged())
   {
-    // Only activate it when necessary, since changing colours in
-    // the graphical object forces the TIA cached line to be flushed
-    if (myFrameManager->scanlineParityChanged())
-    {
-      myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1U;
 
-      myMissile0.applyColorLoss();
-      myMissile1.applyColorLoss();
-      myPlayer0.applyColorLoss();
-      myPlayer1.applyColorLoss();
-      myBall.applyColorLoss();
-      myPlayfield.applyColorLoss();
-      myBackground.applyColorLoss();
-    }
+    myMissile0.applyColorLoss();
+    myMissile1.applyColorLoss();
+    myPlayer0.applyColorLoss();
+    myPlayer1.applyColorLoss();
+    myBall.applyColorLoss();
+    myPlayfield.applyColorLoss();
+    myBackground.applyColorLoss();
   }
 }
 
@@ -1563,7 +1528,7 @@ void TIA::onFrameComplete()
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(TIAConstants::H_PIXEL * myFrameManager->getY()),
+      SZT(TIAConstants::H_PIXEL * myFrameManager->getY()),
       missingScanlines * TIAConstants::H_PIXEL, 0);
 
   myFrontBuffer = myBackBuffer;
@@ -1631,13 +1596,11 @@ void TIA::onFrameComplete()
         }
       }
     }
-    else if(myFlickerCount)
+    // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+    else if(myFlickerCount && --myFlickerCount == 0 && myAutoPhosphorActive)
     {
-      if(--myFlickerCount == 0 && myAutoPhosphorActive)
-      {
-        myAutoPhosphorActive = false;
-        myPhosphorCallback(false);
-      }
+      myAutoPhosphorActive = false;
+      myPhosphorCallback(false);
     }
     //cerr << "|" << myFlickerCount;
     //if(myAutoPhosphorActive)
@@ -1695,9 +1658,9 @@ void TIA::cycle(uInt32 colorClocks)
       // (only poke() pushes entries), so nothing can change until the next
       // line boundary
       const uInt32 chunk =
-        std::min(colorClocks, static_cast<uInt32>(TIAConstants::H_CLOCKS - myHctr));
+        std::min(colorClocks, U32(TIAConstants::H_CLOCKS - myHctr));
 
-      myHctr = static_cast<uInt8>(myHctr + chunk);
+      myHctr = U8(myHctr + chunk);
       myTimestamp += chunk;
       colorClocks -= chunk;
 
@@ -1741,7 +1704,7 @@ FORCE_INLINE void TIA::tickMovement()
 {
   if (!myMovementInProgress) [[likely]] return;
 
-  if ((myHctr & 0x03) == 0) {
+  if ((myHctr & 0x03U) == 0) {
     const bool hblank = myHstate == HState::blank;
     const uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
 
@@ -1830,7 +1793,7 @@ void TIA::applyRsync()
   myHctrDelta = TIAConstants::H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
+      SZT(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
       TIAConstants::H_PIXEL - x, 0);
 
   myHctr = TIAConstants::H_CLOCKS - 3;
@@ -1856,7 +1819,7 @@ FORCE_INLINE void TIA::nextLine()
   // y only advances here, so this is the single correct update point for the
   // precomputed row pointer used in renderPixel()
   myCurrentRowPtr = myBackBuffer.data() +
-    static_cast<size_t>(myFrameManager->getY()) * TIAConstants::H_PIXEL;
+    SZT(myFrameManager->getY()) * TIAConstants::H_PIXEL;
 
   myMissile0.nextLine();
   myMissile1.nextLine();
@@ -1902,9 +1865,9 @@ FORCE_INLINE void TIA::nextLine()
         myPosBL[y][myFlickerFrame] = myBall.getPosition();
       // Note: code checks only right side of playfield
       myPatPF[y][myFlickerFrame] =
-          (static_cast<uInt32>(registerValue(PF0))) << 16
-        | (static_cast<uInt32>(registerValue(PF1))) << 8
-        | (static_cast<uInt32>(registerValue(PF2)));
+          U32(registerValue(PF0)) << 16U
+        | U32(registerValue(PF1)) << 8U
+        | U32(registerValue(PF2));
       // Define end of frame for faster auto-phosphor calculation
       if(!cloned)
         myFrameEnd = y;
@@ -2073,7 +2036,7 @@ void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
     std::fill_n(myBackBuffer.begin() +
-      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL),
+      SZT(myFrameManager->getY() * TIAConstants::H_PIXEL),
       8, myColorHBlank);
 }
 
@@ -2191,7 +2154,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       // VBLANK gates updateCollision and (via the frame manager) the visible
       // window; a mid-line transition changes what subsequent pixels do.
       flushLineCache();
-      myFrameManager->setVblank(value & 0x02, myTimestamp / 3);
+      myFrameManager->setVblank(value & 0x02U, myTimestamp / 3);
       break;
 
     case HMOVE:
@@ -2358,8 +2321,8 @@ uInt8 TIA::resxCounter()
 uInt8 TIA::collCXM0P() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80U : 0U)
   );
 }
 
@@ -2367,8 +2330,8 @@ uInt8 TIA::collCXM0P() const
 uInt8 TIA::collCXM1P() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80U : 0U)
   );
 }
 
@@ -2376,8 +2339,8 @@ uInt8 TIA::collCXM1P() const
 uInt8 TIA::collCXP0FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2385,8 +2348,8 @@ uInt8 TIA::collCXP0FB() const
 uInt8 TIA::collCXP1FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2394,8 +2357,8 @@ uInt8 TIA::collCXP1FB() const
 uInt8 TIA::collCXM0FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2403,8 +2366,8 @@ uInt8 TIA::collCXM0FB() const
 uInt8 TIA::collCXM1FB() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80U : 0U)
   );
 }
 
@@ -2412,15 +2375,15 @@ uInt8 TIA::collCXM1FB() const
 uInt8 TIA::collCXPPMM() const
 {
   return (
-    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40 : 0) |
-    ((myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80 : 0)
+    (bmBool(myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40U : 0U) |
+    (bmBool(myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80U : 0U)
   );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::collCXBLPF() const
 {
-  return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
+  return bmBool(myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80U : 0U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2516,7 +2479,7 @@ void TIA::toggleCollBLPF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateDumpPorts(uInt8 value)
 {
-  const bool newIsDumped = value & 0x80;
+  const bool newIsDumped = value & 0x80U;
 
   if(myArePortsDumped != newIsDumped)
   {
@@ -2541,13 +2504,13 @@ void TIA::createAccessArrays()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessFlags TIA::getAccessFlags(uInt16 address) const
+Device::AccessType TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
+void TIA::setAccessFlags(uInt16 address, Device::AccessType flags)
 {
   // ignore none flag
   if (flags != Device::NONE) {
@@ -2588,7 +2551,7 @@ string TIA::getAccessCounters() const
       Common::Base::toString(addr, Common::Base::Fmt::_16_4),
       Common::Base::toString(myAccessCounter[TIA_SIZE + addr],
                              Common::Base::Fmt::_10_8));
-  out += "\n";
+  out += '\n';
 
   out += "TIA writes:\n";
   for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
@@ -2596,7 +2559,7 @@ string TIA::getAccessCounters() const
       Common::Base::toString(addr, Common::Base::Fmt::_16_4),
       Common::Base::toString(myAccessCounter[addr],
                              Common::Base::Fmt::_10_8));
-  out += "\n";
+  out += '\n';
 
   return out;
 }

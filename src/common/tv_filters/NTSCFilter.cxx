@@ -23,13 +23,13 @@ namespace {
   template<typename T>
     requires std::is_arithmetic_v<T>
   constexpr float scaleFrom100(T x) {
-    return (static_cast<float>(x) / 50.F) - 1.F;
+    return (FLT(x) / 50.F) - 1.F;
   }
 
   template<typename T>
     requires std::is_arithmetic_v<T>
   constexpr uInt32 scaleTo100(T x) {
-    return static_cast<uInt32>(50.0001F * (static_cast<float>(x) + 1.F));
+    return U32(50.0001F * (FLT(x) + 1.F));
   }
 }  // namespace
 
@@ -68,7 +68,7 @@ string NTSCFilter::setPreset(Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string NTSCFilter::getPreset() const
+string_view NTSCFilter::getPreset() const
 {
   switch(myPreset)
   {
@@ -85,7 +85,7 @@ string NTSCFilter::getPreset() const
 void NTSCFilter::selectAdjustable(int direction,
                                   string& text, string& valueText, Int32& value)
 {
-  constexpr auto numAdjustables = static_cast<uInt32>(ourCustomAdjustables.size());
+  constexpr auto numAdjustables = U32(ourCustomAdjustables.size());
 
   if(direction == +1)
   {

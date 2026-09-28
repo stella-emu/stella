@@ -20,7 +20,7 @@
 #include "jsonDefinitions.hxx"
 #include "Logger.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 namespace {
   string jsonName(EventMode eventMode) {

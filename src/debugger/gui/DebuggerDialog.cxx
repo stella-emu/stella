@@ -97,8 +97,8 @@ void DebuggerDialog::layout()
   // The debugger owns the (resizable) window, and so its size; take ours from
   // it every time, which is what makes a live resize re-flow this dialog
   const Common::Size& size = instance().debugger().size();
-  _w = static_cast<int>(size.w);
-  _h = static_cast<int>(size.h);
+  _w = I32(size.w);
+  _h = I32(size.h);
 
   auto root = buildLayout();
 
@@ -128,8 +128,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildLayout()
   left->addPercent(buildTopBand(), TIA_BAND_PERCENT,
                    FrameManager::Metrics::baseHeightPAL);
   left->addSpace(1 + VBORDER);
-  left->addStretch(GUI::widgetItem(myTab, static_cast<int>(tabNatural.w),
-                                          static_cast<int>(tabNatural.h)));
+  left->addStretch(GUI::widgetItem(myTab, I32(tabNatural.w),
+                                          I32(tabNatural.h)));
 
   // The two halves meet at the centre with the divider between them: the prompt
   // gets exactly half the window and the disassembly the other half, whatever
@@ -852,8 +852,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
   column->addSpace(SECTION_GAP);
   column->addAuto(band(alignedItem(myRam, HAlign::Fill, VAlign::Top), HBORDER, 0));
   column->addSpace(HGAP);
-  column->addStretch(band(widgetItem(myRomTab, static_cast<int>(romNatural.w),
-                                               static_cast<int>(romNatural.h)),
+  column->addStretch(band(widgetItem(myRomTab, I32(romNatural.w),
+                                               I32(romNatural.h)),
                           VBORDER, 1));
   column->addSpace(1);
 

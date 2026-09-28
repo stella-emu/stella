@@ -128,7 +128,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   const TIA::onPhosphorCallback callback = [] (bool enable) {};
 
-  TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings, callback);
+  TIA tia(consoleIO, [] { return ConsoleTiming::ntsc; }, mySettings, callback);
   System system(rng, cpu, riot, tia, *cartridge);
 
   consoleIO.myLeftControl = std::make_unique<Joystick>(Controller::Jack::Left, event, system);
@@ -136,7 +136,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   consoleIO.mySwitches = std::make_unique<Switches>(event, myProps, mySettings);
 
   tia.bindToControllers();
-  cartridge->setStartBankFromPropsFunc([]() { return -1; });
+  cartridge->setStartBankFromPropsFunc([] { return -1; });
   system.initialize();
 
   FrameLayoutDetector frameLayoutDetector;
@@ -174,7 +174,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   const EmulationTiming emulationTiming(frameLayout, consoleTiming);
   uInt64 cycles = 0;
-  const uInt64 cyclesTarget = static_cast<uInt64>(run.runtime) * emulationTiming.cyclesPerSecond();
+  const uInt64 cyclesTarget = U64(run.runtime) * emulationTiming.cyclesPerSecond();
 
   DispatchResult dispatchResult;
   dispatchResult.setOk(0);
@@ -190,8 +190,8 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
     if (tia.newFramePending()) tia.renderToFrameBuffer();
 
-    const uInt32 percentNow = static_cast<uInt32>(std::min((100 * cycles) /
-      cyclesTarget, static_cast<uInt64>(100)));
+    const uInt32 percentNow = U32(std::min((100 * cycles) /
+      cyclesTarget, U64(100)));
     updateProgress(percent, percentNow);
 
     percent = percentNow;

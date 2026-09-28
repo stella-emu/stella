@@ -286,16 +286,16 @@ class Debugger : public DialogContainer
     static constexpr uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return static_cast<uInt8>(input | (1 << bit));
+        return U8(input | (1U << bit));
       else
-        return static_cast<uInt8>(input & ~(1 << bit));
+        return U8(input & ~(1U << bit));
     }
     static constexpr void set_bits(uInt8 reg, BoolArray& bits)
     {
       bits.clear();
-      for(int i = 0; i < 8; ++i)
+      for(uInt32 i = 0; i < 8; ++i)
       {
-        if(reg & (1<<(7-i)))
+        if(reg & (1U<<(7-i)))
           bits.push_back(true);
         else
           bits.push_back(false);
@@ -304,9 +304,9 @@ class Debugger : public DialogContainer
     static constexpr uInt8 get_bits(const BoolArray& bits)
     {
       uInt8 result = 0x0;
-      for(int i = 0; i < 8; ++i)
+      for(uInt32 i = 0; i < 8; ++i)
         if(bits[i])
-          result |= (1<<(7-i));
+          result |= (1U<<(7-i));
       return result;
     }
 
@@ -324,18 +324,18 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
-    uInt16 dpeek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
-    void poke(uInt16 addr, uInt8 value, Device::AccessFlags flags = Device::NONE);
+    uInt8 peek(uInt16 addr, Device::AccessType flags = Device::NONE);
+    uInt16 dpeek(uInt16 addr, Device::AccessType flags = Device::NONE);
+    void poke(uInt16 addr, uInt8 value, Device::AccessType flags = Device::NONE);
 
     /** Convenience method to access the 6502 from System */
     M6502& m6502() const;
 
     /** These are now exposed so Expressions can use them. */
-    int peekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
-    int dpeekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
-    Device::AccessFlags getAccessFlags(uInt16 addr) const;
-    void setAccessFlags(uInt16 addr, Device::AccessFlags flags);
+    int peekAsInt(int addr, Device::AccessType flags = Device::NONE);
+    int dpeekAsInt(int addr, Device::AccessType flags = Device::NONE);
+    Device::AccessType getAccessFlags(uInt16 addr) const;
+    void setAccessFlags(uInt16 addr, Device::AccessType flags);
     Device::AccessCounter getAccessCounter(uInt16 addr) const;
 
     static uInt32 getBaseAddress(uInt32 addr, bool read);

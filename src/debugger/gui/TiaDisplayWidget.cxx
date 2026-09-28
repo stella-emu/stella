@@ -92,10 +92,10 @@ void TiaDisplayWidget::visibleRegion(uInt32& sx, uInt32& sy,
 {
   float vwf = 0.F, vhf = 0.F;
   visibleSize(vwf, vhf);
-  vw = static_cast<uInt32>(std::lround(vwf));
-  vh = static_cast<uInt32>(std::lround(vhf));
-  sx = static_cast<uInt32>(std::lround(mySrcX));
-  sy = static_cast<uInt32>(std::lround(mySrcY));
+  vw = U32(std::lround(vwf));
+  vh = U32(std::lround(vhf));
+  sx = U32(std::lround(mySrcX));
+  sy = U32(std::lround(mySrcY));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,8 +149,8 @@ void TiaDisplayWidget::recalcRects()
   const float contentW = vwf * 2.F, contentH = vhf;
   const float scale = std::min(availW / contentW, availH / contentH);
 
-  myImgW = static_cast<int>(contentW * scale);
-  myImgH = static_cast<int>(contentH * scale);
+  myImgW = I32(contentW * scale);
+  myImgH = I32(contentH * scale);
   myImgX = 1 + (availW - myImgW) / 2;
   myImgY = 1 + (availH - myImgH) / 2;
 
@@ -171,9 +171,9 @@ void TiaDisplayWidget::applyZoom(float zoom, int anchorX, int anchorY)
   visibleSize(vw, vh);
 
   const float fracX = (myImgW > 0)
-    ? std::clamp((anchorX - myImgX) / static_cast<float>(myImgW), 0.F, 1.F) : 0.5F;
+    ? std::clamp((anchorX - myImgX) / FLT(myImgW), 0.F, 1.F) : 0.5F;
   const float fracY = (myImgH > 0)
-    ? std::clamp((anchorY - myImgY) / static_cast<float>(myImgH), 0.F, 1.F) : 0.5F;
+    ? std::clamp((anchorY - myImgY) / FLT(myImgH), 0.F, 1.F) : 0.5F;
   const float srcPtX = mySrcX + fracX * vw;
   const float srcPtY = mySrcY + fracY * vh;
 
@@ -238,8 +238,8 @@ void TiaDisplayWidget::handleMouseMoved(int x, int y)
     // Convert the widget-space drag into source pixels; pan opposite the drag
     float vw = 0.F, vh = 0.F;
     visibleSize(vw, vh);
-    mySrcX -= dx * vw / static_cast<float>(myImgW);
-    mySrcY -= dy * vh / static_cast<float>(myImgH);
+    mySrcX -= dx * vw / FLT(myImgW);
+    mySrcY -= dy * vh / FLT(myImgH);
     clampSource();
     setDirty();
   }
@@ -300,7 +300,7 @@ void TiaDisplayWidget::drawWidget(bool hilite)
     // Composite order on every render: the TIA image first, then the overlay
     // layers on top of it.  The screen-space HUD layer (myHudSurface) is
     // created lazily by its first user and may still be null here.
-    dialog().addRenderCallback([this]() {
+    dialog().addRenderCallback([this] {
       if(myTiaSurface)  myTiaSurface->render();
       if(myMarkSurface) myMarkSurface->render();
       if(myHudSurface)  myHudSurface->render();

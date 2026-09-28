@@ -51,13 +51,12 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
   myThumbEmulator = std::make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage.data()),
        reinterpret_cast<uInt16*>(myDPCRAM.data()),
-       static_cast<uInt32>(32_KB),
-      0x00000C00,
-      0x00000C08,
-      0x40001FFC,
+       U32(32_KB),
+       0x00000C00,
+       0x00000C08,
+       0x40001FFC,
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
-       devSettings ? static_cast<double>(
-          settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
+       devSettings ? DBL(settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
        Thumbulator::ConfigureFor::DPCplus,
        this);
 
@@ -147,30 +146,30 @@ void CartridgeDPCPlus::install(System& system)
 FORCE_INLINE void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR)
-  myRandomNumber = ((myRandomNumber & (1U<<10)) ? 0x10adab1e: 0x00) ^
-                   ((myRandomNumber >> 11) | (myRandomNumber << 21));
+  myRandomNumber = ((myRandomNumber & (1U<<10U)) ? 0x10adab1eU: 0x00U) ^
+                   ((myRandomNumber >> 11U) | (myRandomNumber << 21U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR, reversed)
-  myRandomNumber = ((myRandomNumber & (1U<<31)) ?
-    ((0x10adab1e^myRandomNumber) << 11) | ((0x10adab1e^myRandomNumber) >> 21) :
-    (myRandomNumber << 11) | (myRandomNumber >> 21));
+  myRandomNumber = ((myRandomNumber & (1U<<31U)) ?
+    ((0x10adab1eU^myRandomNumber) << 11U) | ((0x10adab1eU^myRandomNumber) >> 21U) :
+    (myRandomNumber << 11U) | (myRandomNumber >> 21U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC+ OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  const auto wholeClocks = U32(clocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
@@ -182,7 +181,7 @@ FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 inline void CartridgeDPCPlus::callFunction(uInt8 value)
 {
   // myParameter
-  const uInt16 ROMdata = (myParameter[1] << 8) + myParameter[0];
+  const uInt16 ROMdata = (myParameter[1] << 8U) + myParameter[0];
   switch (value)
   {
     case 0: // Parameter Pointer reset
@@ -190,13 +189,13 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       break;
     case 1: // Copy ROM to fetcher
     {
-      const uInt16 destBase = myCounters[myParameter[2] & 0x7];
+      const uInt16 destBase = myCounters[myParameter[2] & 0x7U];
       if(ROMdata < myProgramImage.size() && destBase < myDisplayImage.size())
       {
         const uInt32 count = std::min({
-          static_cast<uInt32>(myParameter[3]),
-          static_cast<uInt32>(myProgramImage.size() - ROMdata),
-          static_cast<uInt32>(myDisplayImage.size() - destBase)
+          U32(myParameter[3]),
+          U32(myProgramImage.size() - ROMdata),
+          U32(myDisplayImage.size() - destBase)
         });
         for(uInt32 i = 0; i < count; ++i)
           myDisplayImage[destBase + i] = myProgramImage[ROMdata + i];
@@ -206,12 +205,12 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
     }
     case 2: // Copy value to fetcher
     {
-      const uInt16 destBase = myCounters[myParameter[2] & 0x7];
+      const uInt16 destBase = myCounters[myParameter[2] & 0x7U];
       if(destBase < myDisplayImage.size())
       {
         const uInt32 count = std::min(
-          static_cast<uInt32>(myParameter[3]),
-          static_cast<uInt32>(myDisplayImage.size() - destBase)
+          U32(myParameter[3]),
+          U32(myDisplayImage.size() - destBase)
         );
         for(uInt32 i = 0; i < count; ++i)
           myDisplayImage[destBase + i] = myParameter[0];
@@ -224,7 +223,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        auto cycles = static_cast<uInt32>(mySystem->cycles() - myARMCycles);
+        auto cycles = U32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles, value == 254);
@@ -253,7 +252,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       return value;
   }
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   const uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
@@ -263,12 +262,9 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     return peekvalue;
 
   // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
-  if(myFastFetch && myLDAimmediate)
-  {
-    if(peekvalue < 0x0028)
-      // if #value is a read-register then we want to use that as the address
-      address = peekvalue;
-  }
+  if(myFastFetch && myLDAimmediate && peekvalue < 0x0028)
+    // if #value is a read-register then we want to use that as the address
+    address = peekvalue;
   myLDAimmediate = false;
 
   if(address < 0x0028)
@@ -276,11 +272,14 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     uInt8 result = 0;
 
     // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = (address >> 3) & 0x07;
+    const uInt32 index = address & 0x07U;
+    const uInt32 function = (U32(address) >> 3U) & 0x07U;
 
     // Update flag for selected data fetcher
-    const uInt8 flag = (((myTops[index]-(myCounters[index] & 0x00ff)) & 0xFF) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
+    const uInt8 flag =
+      ((myTops[index]-(myCounters[index] & 0x00ffU)) & 0xFFU) >
+      (U32(myTops[index]-myBottoms[index]) & 0xFFU)
+      ? 0xFF : 0;
 
     switch(function)
     {
@@ -290,24 +289,24 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
         {
           case 0x00:  // RANDOM0NEXT - advance and return byte 0 of random
             clockRandomNumberGenerator();
-            result = myRandomNumber & 0xFF;
+            result = myRandomNumber & 0xFFU;
             break;
 
           case 0x01:  // RANDOM0PRIOR - return to prior and return byte 0 of random
             priorClockRandomNumberGenerator();
-            result = myRandomNumber & 0xFF;
+            result = myRandomNumber & 0xFFU;
             break;
 
           case 0x02:  // RANDOM1
-            result = (myRandomNumber>>8) & 0xFF;
+            result = (myRandomNumber>>8U) & 0xFFU;
             break;
 
           case 0x03:  // RANDOM2
-            result = (myRandomNumber>>16) & 0xFF;
+            result = (myRandomNumber>>16U) & 0xFFU;
             break;
 
           case 0x04:  // RANDOM3
-            result = (myRandomNumber>>24) & 0xFF;
+            result = (myRandomNumber>>24U) & 0xFFU;
             break;
 
           case 0x05: // AMPLITUDE
@@ -318,11 +317,11 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
             // using myDisplayImage[] instead of myProgramImage[] because waveforms
             // can be modified during runtime.
             const uInt32 i =
-                myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
-                myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
-                myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
+                myDisplayImage[(myMusicWaveforms[0] << 5U) + (myMusicCounters[0] >> 27U)] +
+                myDisplayImage[(myMusicWaveforms[1] << 5U) + (myMusicCounters[1] >> 27U)] +
+                myDisplayImage[(myMusicWaveforms[2] << 5U) + (myMusicCounters[2] >> 27U)];
 
-            result = static_cast<uInt8>(i);
+            result = U8(i);
             break;
           }
 
@@ -340,7 +339,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       case 0x01:
       {
         result = myDisplayImage[myCounters[index]];
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
@@ -348,15 +347,15 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       case 0x02:
       {
         result = myDisplayImage[myCounters[index]] & flag;
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
       // DFxFRACDATA - display data read w/fractional increment
       case 0x03:
       {
-        result = myDisplayImage[myFractionalCounters[index] >> 8];
-        myFractionalCounters[index] = (myFractionalCounters[index] + myFractionalIncrements[index]) & 0x0fffff;
+        result = myDisplayImage[myFractionalCounters[index] >> 8U];
+        myFractionalCounters[index] = (myFractionalCounters[index] + myFractionalIncrements[index]) & 0x0fffffU;
         break;
       }
 
@@ -444,32 +443,32 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
   if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
     return true;
 
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   if((address >= 0x0028) && (address < 0x0080))
   {
     // Get the index of the data fetcher that's being accessed
-    const uInt32 index = address & 0x07;
-    const uInt32 function = ((address - 0x28) >> 3) & 0x0f;
+    const uInt32 index = address & 0x07U;
+    const uInt32 function = (U32(address - 0x28) >> 3U) & 0x0fU;
 
     switch(function)
     {
       // DFxFRACLOW - fractional data pointer low byte
       case 0x00:
         myFractionalCounters[index] =
-          (myFractionalCounters[index] & myFractionalLowMask) | (static_cast<uInt16>(value) << 8);
+          (myFractionalCounters[index] & myFractionalLowMask) | (U32(value) << 8U);
         break;
 
       // DFxFRACHI - fractional data pointer high byte
       case 0x01:
-        myFractionalCounters[index] = ((static_cast<uInt16>(value) & 0x0F) << 16) |
-                                       (myFractionalCounters[index] & 0x00ffff);
+        myFractionalCounters[index] = ((U16(value) & 0x0FU) << 16U) |
+                                       (myFractionalCounters[index] & 0x00ffffU);
         break;
 
       //DFxFRACINC - Fractional Increment amount
       case 0x02:
         myFractionalIncrements[index] = value;
-        myFractionalCounters[index] = myFractionalCounters[index] & 0x0FFF00;
+        myFractionalCounters[index] = myFractionalCounters[index] & 0x0FFF00U;
         break;
 
       // DFxTOP - set top of window (for reads of DFxDATAW)
@@ -484,7 +483,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
       // DFxLOW - data pointer low byte
       case 0x05:
-        myCounters[index] = (myCounters[index] & 0x0F00) | value;
+        myCounters[index] = (myCounters[index] & 0x0F00U) | value;
         break;
 
       // Control registers
@@ -511,7 +510,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           case 0x05:  // WAVEFORM0
           case 0x06:  // WAVEFORM1
           case 0x07:  // WAVEFORM2
-            myMusicWaveforms[index - 5] = value & 0x7f;
+            myMusicWaveforms[index - 5] = value & 0x7fU;
             break;
           default:
             break;
@@ -521,7 +520,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxPUSH - Push value into data bank
       case 0x07:
       {
-        myCounters[index] = (myCounters[index] - 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) - 0x1) & 0x0fffU;
         myDisplayImage[myCounters[index]] = value;
         break;
       }
@@ -529,7 +528,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxHI - data pointer high byte
       case 0x08:
       {
-        myCounters[index] = ((static_cast<uInt16>(value) & 0x0F) << 8) | (myCounters[index] & 0x00ff);
+        myCounters[index] = ((U16(value) & 0x0FU) << 8U) | (myCounters[index] & 0x00ffU);
         break;
       }
 
@@ -549,23 +548,23 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           }
           case 0x02:  // RWRITE1 - update byte 1 of random number
           {
-            myRandomNumber = (myRandomNumber & 0xFFFF00FF) | (value<<8);
+            myRandomNumber = (myRandomNumber & 0xFFFF00FF) | (U32(value)<<8U);
             break;
           }
           case 0x03:  // RWRITE2 - update byte 2 of random number
           {
-            myRandomNumber = (myRandomNumber & 0xFF00FFFF) | (value<<16);
+            myRandomNumber = (myRandomNumber & 0xFF00FFFF) | (U32(value)<<16U);
             break;
           }
           case 0x04:  // RWRITE3 - update byte 3 of random number
           {
-            myRandomNumber = (myRandomNumber & 0x00FFFFFF) | (value<<24);
+            myRandomNumber = (myRandomNumber & 0x00FFFFFFU) | (U32(value)<<24U);
             break;
           }
           case 0x05:  // NOTE0
           case 0x06:  // NOTE1
           case 0x07:  // NOTE2
-            myMusicFrequencies[index-5] = getUInt32(myFrequencyImage.data(), value << 2);
+            myMusicFrequencies[index-5] = getUInt32(myFrequencyImage.data(), value << 2U);
             break;
           default:
             break;
@@ -577,7 +576,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       case 0x0a:
       {
         myDisplayImage[myCounters[index]] = value;
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (U32(myCounters[index]) + 0x1) & 0x0fffU;
         break;
       }
 
@@ -635,7 +634,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myProgramImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = U32(bank % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
@@ -643,9 +642,9 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 24_KB];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + 24_KB];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -654,7 +653,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDPCPlus::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -666,12 +665,12 @@ uInt16 CartridgeDPCPlus::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   // For now, we ignore attempts to patch the DPC address space
   if(address >= 0x0080)
   {
-    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFFU)] = value;
     return myBankChanged = true;
   }
   else
@@ -779,13 +778,13 @@ bool CartridgeDPCPlus::load(Serializer& in)
     // a corrupt save file can't index out of bounds (in peek() or the poke()
     // write path, which uses the counter before re-masking it)
     for(auto& counter: myCounters)
-      counter &= 0x0fff;
+      counter &= 0x0fffU;
 
     // The counter registers for the fractional data fetchers
     in.getIntArray(myFractionalCounters);
     // Fractional counters are 20-bit; (counter >> 8) indexes the display image
     for(auto& counter: myFractionalCounters)
-      counter &= 0x0fffff;
+      counter &= 0x0fffffU;
 
     // The fractional registers for the data fetchers
     in.getByteArray(myFractionalIncrements);
@@ -807,7 +806,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
     in.getShortArray(myMusicWaveforms);
     // Waveforms are 7-bit; (waveform << 5) indexes the display image
     for(auto& waveform: myMusicWaveforms)
-      waveform &= 0x7f;
+      waveform &= 0x7fU;
 
     // The random number generator register
     myRandomNumber = in.getInt();
@@ -828,7 +827,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myBankOffset >> 12);
+  bank(myBankOffset >> 12U);
 
   return true;
 }

@@ -32,11 +32,11 @@ void AtariNTSC::initialize(const Setup& setup)
 void AtariNTSC::setPalette(const PaletteArray& palette)
 {
   uInt8* ptr = myRGBPalette.data();  // NOLINT(misc-const-correctness)
-  for(auto p: palette)
+  for(const auto p: palette)
   {
-    *ptr++ = (p >> 16) & 0xff;
-    *ptr++ = (p >> 8) & 0xff;
-    *ptr++ = p & 0xff;
+    *ptr++ = (p >> 16U) & 0xffU;
+    *ptr++ = (p >> 8U) & 0xffU;
+    *ptr++ = p & 0xffU;
   }
   generateKernels();
 }
@@ -120,7 +120,7 @@ void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
 
   // Copy phosphor values into out buffer
   if(rgb_in != nullptr)
-    std::memcpy(rgb_out, rgb_in, static_cast<size_t>(in_height) * out_pitch);
+    std::memcpy(rgb_out, rgb_in, SZT(in_height) * out_pitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,8 +131,8 @@ void AtariNTSC::renderThread(const uInt8* atari_in, uInt32 in_width,
   // Adapt parameters to thread number
   const uInt32 yStart = in_height * threadNum / numThreads;
   const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
-  atari_in += static_cast<size_t>(in_width) * yStart;
-  rgb_out  = static_cast<char*>(rgb_out) + static_cast<size_t>(out_pitch) * yStart;
+  atari_in += SZT(in_width) * yStart;
+  rgb_out  = static_cast<char*>(rgb_out) + SZT(out_pitch) * yStart;
 
   uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
 
@@ -207,8 +207,8 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, uInt32 in_width,
   const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
   uInt32 bufofs = AtariNTSC::outWidth(in_width) * yStart;
   const uInt32* out = static_cast<uInt32*>(rgb_out);
-  atari_in += static_cast<size_t>(in_width) * yStart;
-  rgb_out = static_cast<char*>(rgb_out) + static_cast<size_t>(out_pitch) * yStart;
+  atari_in += SZT(in_width) * yStart;
+  rgb_out = static_cast<char*>(rgb_out) + SZT(out_pitch) * yStart;
 
   uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
 
@@ -356,7 +356,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 {
-  std::array<float, static_cast<size_t>(kernel_size) * 2> kernels{0};
+  std::array<float, SZT(kernel_size) * 2> kernels{0};
 
   /* generate luma (y) filter using sinc kernel */
   {
@@ -499,8 +499,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
         const float fq = k[1]*qc1 + k[3]*qc3;
         const float fy = k[kernel_size+0]*yc0 + k[kernel_size+1]*yc1 +
                   k[kernel_size+2]*yc2 + k[kernel_size+3]*yc3 + rgb_offset;
-        if ( k < &impl.kernel [static_cast<size_t>(kernel_size) * 2 *
-                               (rescale_out - 1)] )
+        if ( k < &impl.kernel [SZT(kernel_size) * 2 * (rescale_out - 1)] )
           k += kernel_size * 2 - 1;
         else
           k -= kernel_size * 2 * (rescale_out - 1) + 2;

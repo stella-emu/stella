@@ -191,7 +191,7 @@ void DevSettingsHandler::applySettings(SettingsSet set)
 
   if(hasConsole)
   {
-    auto& console = myOSystem.console();
+    const auto& console = myOSystem.console();
     auto& tia = console.tia();
 
     console.cartridge().enableRandomHotspots(myRandomHotspots[set]);

@@ -63,7 +63,7 @@ void PaletteHandler::cyclePalette(int direction)
 
   do {
     type = BSPF::clampw(type + direction,
-        static_cast<int>(PaletteType::MinType), static_cast<int>(PaletteType::MaxType));
+        I32(PaletteType::MinType), I32(PaletteType::MaxType));
   } while(type == PaletteType::User && !myUserPaletteDefined);
 
   myOSystem.frameBuffer().showTextMessage(
@@ -105,8 +105,9 @@ void PaletteHandler::showAdjustableMessage()
   {
     const ConsoleTiming timing = myOSystem.console().timing();
     const bool isNTSC = timing == ConsoleTiming::ntsc;
-    const float value =
-        timing == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
+    const float value = timing == ConsoleTiming::pal
+      ? myPhasePAL
+      : myPhaseNTSC;
     myOSystem.frameBuffer().showGaugeMessage(
         "Palette phase shift",
         std::format("{:.1f}{}", value, DEGREE),
@@ -142,7 +143,7 @@ void PaletteHandler::cycleAdjustable(int direction)
   bool isCustomAdj = false;
 
   do {
-    myCurrentAdjustable = BSPF::clampw(static_cast<int>(myCurrentAdjustable + direction), 0,
+    myCurrentAdjustable = BSPF::clampw(I32(myCurrentAdjustable + direction), 0,
         NUM_ADJUSTABLES - 1);
     isCustomAdj = isCustomAdjustable();
     // skip phase shift when 'Custom' palette is not selected
@@ -322,7 +323,7 @@ void PaletteHandler::setPalette()
     // Look at all the palettes, since we don't know which one is
     // currently active
     static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes,
-    static_cast<int>(ConsoleTiming::numTimings)> palettes = {{
+    I32(ConsoleTiming::numTimings)> palettes = {{
       { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
       { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
       { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
@@ -351,7 +352,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
   constexpr float PB = .1140F;
   // Generate adjust table
   constexpr int ADJUST_SIZE = 256;
-  constexpr int RGB_UNIT = 1 << 8;
+  constexpr int RGB_UNIT = 1U << 8U;
   constexpr float RGB_OFFSET = 0.5F;
   const float hue = myHue;
   const float brightness = myBrightness * (0.5F * RGB_UNIT) + RGB_OFFSET;
@@ -373,9 +374,9 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
   for(auto i = 0UZ; i < destPalette.size(); i += 2)
   {
     const uInt32 pixel = palette[i];
-    int r = (pixel >> 16) & 0xff;
-    int g = (pixel >> 8)  & 0xff;
-    int b = (pixel >> 0)  & 0xff;
+    int r = (pixel >> 16U) & 0xffU;
+    int g = (pixel >> 8U)  & 0xffU;
+    int b = (pixel >> 0U)  & 0xffU;
 
     // Adjust hue (different for NTSC and PAL?) and saturation
     adjustHueSaturation(r, g, b, su, sw);
@@ -389,14 +390,14 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
     g = BSPF::clamp(g, 0, 255);
     b = BSPF::clamp(b, 0, 255);
 
-    destPalette[i] = (r << 16) + (g << 8) + b;
+    destPalette[i] = (U32(r) << 16U) + (U32(g) << 8U)  + U32(b);
 
     // Fill the odd numbered palette entries with gray values (calculated
     // using the standard RGB -> grayscale conversion formula)
     // Used for PAL color-loss data and 'greying out' the frame in the debugger.
-    const auto lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
+    const auto lum = U8((r * PR) + (g * PG) + (b * PB));
 
-    destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
+    destPalette[i + 1] = (lum << 16U) + (lum << 8U) + lum;
   }
   return destPalette;
 }
@@ -412,29 +413,29 @@ void PaletteHandler::loadUserPalette()
   catch(...) { return; }
 
   const uInt8* pixbuf = in.data();
-  for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
+  for(uInt32 i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    ourUserNTSCPalette[(i<<1)] = pixel;
+    const auto pixel = (U32(pixbuf[0]) << 16U) +
+                       (U32(pixbuf[1]) << 8U)  +
+                        U32(pixbuf[2]);
+    ourUserNTSCPalette[(i<<1U)] = pixel;
   }
-  for(int i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
+  for(uInt32 i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    ourUserPALPalette[(i<<1)] = pixel;
+    const auto pixel = (U32(pixbuf[0]) << 16U) +
+                       (U32(pixbuf[1]) << 8U)  +
+                        U32(pixbuf[2]);
+    ourUserPALPalette[(i<<1U)] = pixel;
   }
 
   std::array<uInt32, 16> secam{0};  // All 8 24-bit pixels, plus 8 colorloss pixels
-  for(int i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
+  for(uInt32 i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
   {
-    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
-                         (static_cast<int>(pixbuf[1]) << 8)  +
-                          static_cast<int>(pixbuf[2]);
-    secam[(i<<1)  ] = pixel;
-    secam[(i<<1)+1] = 0;
+    const auto pixel = (U32(pixbuf[0]) << 16U) +
+                       (U32(pixbuf[1]) << 8U)  +
+                        U32(pixbuf[2]);
+    secam[(i<<1U)  ] = pixel;
+    secam[(i<<1U)+1] = 0;
   }
   uInt32* ptr = ourUserSECAMPalette.data();  // NOLINT(misc-const-correctness)
   for(int i = 0; i < 16; ++i)
@@ -491,11 +492,12 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 0.9F);
         B = powf(B, 0.9F);
 
-        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
-                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
-                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const auto r = U32(BSPF::clamp(R * 255.F, 0.F, 255.F)),
+                   g = U32(BSPF::clamp(G * 255.F, 0.F, 255.F)),
+                   b = U32(BSPF::clamp(B * 255.F, 0.F, 255.F));
 
-        ourCustomNTSCPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+        ourCustomNTSCPalette[U32(chroma * NUM_LUMA + luma) << 1U] =
+            (r << 16U) + (g << 8U) + b;
       }
     }
   }
@@ -513,7 +515,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
       const int idx = NUM_CHROMA - 1 - chroma;
 
       UV[idx].x = SATURATION * sinf(offset - fixedShift * chroma);
-      if ((idx & 1) == 0)
+      if((U32(idx) & 1U) == 0)
         UV[idx].y = SATURATION * sinf(offset - shift * (chroma - 3.5F) / 2.F);
       else
         UV[idx].y = SATURATION * -sinf(offset - shift * chroma / 2.F);
@@ -545,11 +547,12 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 1.2F);
         B = powf(B, 1.2F);
 
-        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
-                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
-                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const auto r = U32(BSPF::clamp(R * 255.F, 0.F, 255.F)),
+                   g = U32(BSPF::clamp(G * 255.F, 0.F, 255.F)),
+                   b = U32(BSPF::clamp(B * 255.F, 0.F, 255.F));
 
-        ourCustomPALPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+        ourCustomPALPalette[U32(chroma * NUM_LUMA + luma) << 1U] =
+            (r << 16U) + (g << 8U) + b;
       }
     }
   }

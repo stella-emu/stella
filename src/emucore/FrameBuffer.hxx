@@ -597,8 +597,8 @@ class FrameBuffer
       named explicitly by its buffer type. Every caller supplies the type
       directly; there is no default.
     */
-    string getPositionKey(BufferType bufferType) const;
-    string getDisplayKey(BufferType bufferType) const;
+    string_view getPositionKey(BufferType bufferType) const;
+    string_view getDisplayKey(BufferType bufferType) const;
 
     /**
       Save the given window's position and display under that window's own

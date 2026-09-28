@@ -81,8 +81,8 @@ void Driving::update()
 
   // Determine which bits are set
   const uInt8 gray = graytable[myGrayIndex];
-  setPin(DigitalPin::One, (gray & 0x1) != 0);
-  setPin(DigitalPin::Two, (gray & 0x2) != 0);
+  setPin(DigitalPin::One, (gray & 0x1U) != 0);
+  setPin(DigitalPin::Two, (gray & 0x2U) != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,7 +145,7 @@ void Driving::updateControllerAxes()
 
   if(oldCounterHires != myCounterHires)
     // Only consider the lower-most bits (corresponding to pins 1 & 2)
-    myGrayIndex = static_cast<Int32>((myCounterHires / COUNTER_SCALE) * SENSITIVITY) & 0b11;
+    myGrayIndex = U32(I32((myCounterHires / COUNTER_SCALE) * SENSITIVITY)) & 0b11U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,7 +185,7 @@ void Driving::updateMouseAxes()
     }
   }
   if(myCounter != oldCounter)
-    myGrayIndex = (myCounter >> 2) & 0b11;
+    myGrayIndex = (U32(myCounter) >> 2U) & 0b11U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -66,11 +66,11 @@ void CartridgeARMWidget::createCycleWidgets()
   addCounter(myPrevThumbInstructions, "Instructions of last but one ARM run.\n");
   addCounter(myThumbInstructions,     "Instructions of last ARM run.\n");
 
-  VarList::push_back(items, "AUTO",                        static_cast<Int32>(Thumbulator::ChipType::AUTO));
-  VarList::push_back(items, "LPC2101" + ELLIPSIS + "3",    static_cast<Int32>(Thumbulator::ChipType::LPC2101));
-  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<Int32>(Thumbulator::ChipType::LPC2104_OC));
-  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<Int32>(Thumbulator::ChipType::LPC2104));
-  VarList::push_back(items, "LPC213x",                     static_cast<Int32>(Thumbulator::ChipType::LPC213x));
+  VarList::push_back(items, "AUTO",                        I32(Thumbulator::ChipType::AUTO));
+  VarList::push_back(items, "LPC2101" + ELLIPSIS + "3",    I32(Thumbulator::ChipType::LPC2101));
+  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", I32(Thumbulator::ChipType::LPC2104_OC));
+  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    I32(Thumbulator::ChipType::LPC2104));
+  VarList::push_back(items, "LPC213x",                     I32(Thumbulator::ChipType::LPC213x));
   myChipTypeLbl = new LabelWidget(_boss, _font, "Chip");
   myChipType = new PopUpWidget(_boss, _font, items, Cmd::ChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
@@ -81,10 +81,10 @@ void CartridgeARMWidget::createCycleWidgets()
   myLockMamMode->setTarget(this);
 
   items.clear();
-  VarList::push_back(items, "Off (0)", static_cast<uInt32>(Thumbulator::MamModeType::mode0));
-  VarList::push_back(items, "Partial (1)", static_cast<uInt32>(Thumbulator::MamModeType::mode1));
-  VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
-  VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
+  VarList::push_back(items, "Off (0)", U32(Thumbulator::MamModeType::mode0));
+  VarList::push_back(items, "Partial (1)", U32(Thumbulator::MamModeType::mode1));
+  VarList::push_back(items, "Full (2)", U32(Thumbulator::MamModeType::mode2));
+  VarList::push_back(items, "1 Cycle (X)", U32(Thumbulator::MamModeType::modeX));
   myMamMode = new PopUpWidget(_boss, _font, items, Cmd::MamModeChanged);
   myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
   myMamMode->setTarget(this);
@@ -165,7 +165,7 @@ void CartridgeARMWidget::saveOldState()
   myOldState.armPrevRun.clear();
   myOldState.armRun.clear();
 
-  myOldState.mamMode = static_cast<uInt32>(myCart.mamMode());
+  myOldState.mamMode = U32(myCart.mamMode());
 
   myOldState.armPrevRun.push_back(myCart.prevCycles());
   myOldState.armPrevRun.push_back(myCart.prevStats().instructions);
@@ -182,12 +182,12 @@ void CartridgeARMWidget::loadConfig()
   IntArray vlist;
   BoolArray changed;
 
-  myChipType->setSelectedIndex(static_cast<Int32>(instance().settings().getInt("dev.thumb.chiptype")
-    - static_cast<int>(Thumbulator::ChipType::AUTO)));
+  myChipType->setSelectedIndex(I32(instance().settings().getInt("dev.thumb.chiptype")
+    - I32(Thumbulator::ChipType::AUTO)));
   handleChipType();
 
-  const bool isChanged = static_cast<uInt32>(myCart.mamMode()) != myOldState.mamMode;
-  myMamMode->setSelectedIndex(static_cast<uInt32>(myCart.mamMode()), isChanged);
+  const bool isChanged = U32(myCart.mamMode()) != myOldState.mamMode;
+  myMamMode->setSelectedIndex(U32(myCart.mamMode()), isChanged);
   myMamMode->setEnabled(devSettings && myLockMamMode->getState());
   myLockMamMode->setEnabled(devSettings);
 
@@ -199,7 +199,7 @@ void CartridgeARMWidget::loadConfig()
   const auto setSingle = [&](auto* widget, uInt32 cur, uInt32 old) {
     alist.clear(); vlist.clear(); changed.clear();
     alist.push_back(0);
-    vlist.push_back(static_cast<int>(cur));
+    vlist.push_back(I32(cur));
     changed.push_back(cur != old);
     widget->setList(alist, vlist, changed);
   };
@@ -296,7 +296,7 @@ void CartridgeARMWidget::handleArmCycles()
 {
   const bool devSettings = instance().settings().getBool("dev.settings");
   const bool enable = myIncCycles->getState();
-  const double factor = static_cast<double>(myCycleFactor->getValue()) / 100.0;
+  const double factor = DBL(myCycleFactor->getValue()) / 100.0;
 
   if(devSettings)
   {

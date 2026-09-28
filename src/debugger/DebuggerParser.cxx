@@ -73,7 +73,7 @@ string DebuggerParser::run(string_view command)
   std::ostringstream outerResult;
   outerResult.swap(commandResult);
 
-  const auto restoreCtx = [&]() {
+  const auto restoreCtx = [&] {
     args       = std::move(outerArgs);
     argStrings = std::move(outerArgStrings);
     argCount   = outerArgCount;
@@ -94,7 +94,7 @@ string DebuggerParser::run(string_view command)
     return red("No such command (try \"help\")");
   }
 
-  const int i = static_cast<int>(it - commands.begin());
+  const int i = I32(it - commands.begin());
   myCommand = i;
   evalArgs(*it);
   if(validateArgs(i))
@@ -279,8 +279,8 @@ int DebuggerParser::decipherArg(string_view str)
   }
 
   // Byte-select
-  if     (lobyte) result = result & 0xFF;
-  else if(hibyte) result = (result >> 8) & 0xFF;
+  if     (lobyte) result = U32(result) & 0xFFU;
+  else if(hibyte) result = (U32(result) >> 8U) & 0xFFU;
 
   // Dereference
   if(derefByte) result = debugger.peek(result);
@@ -350,7 +350,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
 
   // Walk the remainder parsing space-separated tokens,
   // with {brace} quoting for tokens containing spaces
-  auto rest = command.substr(verbEnd + 1);
+  const auto rest = command.substr(verbEnd + 1);
   string curArg;
   curArg.reserve(32);
   ParseState state = ParseState::IN_SPACE;
@@ -399,7 +399,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
   if(!curArg.empty())
     argStrings.push_back(std::move(curArg));
 
-  argCount = static_cast<uInt32>(argStrings.size());
+  argCount = U32(argStrings.size());
   args.assign(argCount, -1);
 }
 
@@ -516,7 +516,7 @@ bool DebuggerParser::validateArgs(int cmd)
 string DebuggerParser::eval()
 {
   string buf;
-  buf.reserve(static_cast<size_t>(argCount) * 64);  // rough estimate per arg line
+  buf.reserve(SZT(argCount) * 64);  // rough estimate per arg line
 
   for(uInt32 i = 0; i < argCount; ++i)
   {
@@ -547,7 +547,7 @@ string DebuggerParser::eval()
     if(arg < 0x10000)
       std::format_to(std::back_inserter(buf), " %{}", Base::toString(arg, Base::Fmt::_2));
 
-    std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(arg));
+    std::format_to(std::back_inserter(buf), " #{}", I32(arg));
 
     if(i != argCount - 1)
       buf += '\n';
@@ -618,7 +618,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
       commandResult << "/ *";
     else
       std::format_to(std::ostreambuf_iterator(commandResult),
-                     "/{:2}", static_cast<uInt16>(timer.from.bank));
+                     "/{:2}", U16(timer.from.bank));
   }
 
   commandResult << '|';
@@ -637,7 +637,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
         commandResult << "/ *";
       else
         std::format_to(std::ostreambuf_iterator(commandResult),
-                       "/{:2}", static_cast<uInt16>(timer.to.bank));
+                       "/{:2}", U16(timer.to.bank));
     }
 
     std::format_to(std::ostreambuf_iterator(commandResult),
@@ -661,7 +661,7 @@ string DebuggerParser::getTimerCmds()
 
   const bool banked = debugger.cartDebug().romBankCount() > 1;
   string out;
-  out.reserve(static_cast<size_t>(numTimers) * 32);
+  out.reserve(SZT(numTimers) * 32);
 
   // Helper to build an address label with optional mirror/bank suffix
   std::ostringstream buf;
@@ -678,7 +678,7 @@ string DebuggerParser::getTimerCmds()
         buf << '*';
       else
         std::format_to(std::ostreambuf_iterator(buf),
-                       "{}", static_cast<uInt16>(bank));
+                       "{}", U16(bank));
     }
     return string{buf.view()};
   };
@@ -936,7 +936,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
 // "a"
 void DebuggerParser::executeA()
 {
-  debugger.cpuDebug().setA(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setA(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1044,7 +1044,7 @@ void DebuggerParser::executeBreakIf()
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
-    args[0] = static_cast<int>(it - condNames.begin());
+    args[0] = I32(it - condNames.begin());
     executeDelBreakIf();
     return;
   }
@@ -1219,7 +1219,7 @@ void DebuggerParser::executeCol()
 void DebuggerParser::executeColorTest()
 {
   commandResult << "test color: "
-                << static_cast<char>((args[0]>>1) | 0x80)
+                << static_cast<char>((U32(args[0]) >> 1U) | 0x80U)
                 << inverse("        ");
 }
 
@@ -1315,7 +1315,7 @@ void DebuggerParser::executeDelTrap()
   const bool  r = traps[index].read,  w = traps[index].write;
   const uInt32 b = traps[index].begin, e = traps[index].end;
 
-  debugger.m6502().delCondTrap(static_cast<uInt32>(index));
+  debugger.m6502().delCondTrap(U32(index));
 
   executeTrapRW(b, e, r, w, false);
 
@@ -1393,7 +1393,7 @@ void DebuggerParser::executeDump()
     return;
   }
 
-  if((args[2] & 0x07) == 0)
+  if((U32(args[2]) & 0x07U) == 0)
   {
     commandResult << red("dump flags must be 1..7");
     return;
@@ -1409,46 +1409,46 @@ void DebuggerParser::executeDump()
     path += execPrefix;
   else
     std::format_to(std::back_inserter(path), "{:08x}",
-                   static_cast<uInt32>(TimerManager::getTicks() / 1000));
+                   U32(TimerManager::getTicks() / 1000));
   path += ".dump";
 
   commandResult << "dumped ";
 
   std::ostringstream out;
-  if((args[2] & 0x01) != 0)
+  if((U32(args[2]) & 0x01U) != 0)
   {
     dump(out, args[0], args[1]);
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "bytes from ${:x} to ${:x}", args[0], args[1]);
-    if((args[2] & 0x06) != 0)
+    if((U32(args[2]) & 0x06U) != 0)
       commandResult << ", ";
   }
-  if((args[2] & 0x02) != 0)
+  if((U32(args[2]) & 0x02U) != 0)
   {
     const CpuDebug& cpu = debugger.cpuDebug();
     out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n"
            "XC: "
-        << Base::toString(cpu.pc() & 0xff) << ' ' // PC lsb
-        << Base::toString(cpu.pc() >> 8)   << ' ' // PC msb
-        << Base::toString(cpu.sp()) << ' '        // SP
-        << Base::toString(cpu.a())  << ' '        // A
-        << Base::toString(cpu.x())  << ' '        // X
-        << Base::toString(cpu.y())  << ' '        // Y
-        << Base::toString(0) << ' '               // unused
-        << Base::toString(0) << " - "             // unused
-        << Base::toString(cpu.n()) << ' '         // N (flag)
-        << Base::toString(cpu.v()) << ' '         // V (flag)
-        << Base::toString(cpu.b()) << ' '         // B (flag)
-        << Base::toString(cpu.d()) << ' '         // D (flag)
-        << Base::toString(cpu.i()) << ' '         // I (flag)
-        << Base::toString(cpu.z()) << ' '         // Z (flag)
-        << Base::toString(cpu.c()) << ' '         // C (flag)
-        << Base::toString(0) << '\n';             // unused
+        << Base::toString(U32(cpu.pc()) & 0xffU) << ' ' // PC lsb
+        << Base::toString(U32(cpu.pc()) >> 8U)   << ' ' // PC msb
+        << Base::toString(cpu.sp()) << ' '              // SP
+        << Base::toString(cpu.a())  << ' '              // A
+        << Base::toString(cpu.x())  << ' '              // X
+        << Base::toString(cpu.y())  << ' '              // Y
+        << Base::toString(0) << ' '                     // unused
+        << Base::toString(0) << " - "                   // unused
+        << Base::toString(cpu.n()) << ' '               // N (flag)
+        << Base::toString(cpu.v()) << ' '               // V (flag)
+        << Base::toString(cpu.b()) << ' '               // B (flag)
+        << Base::toString(cpu.d()) << ' '               // D (flag)
+        << Base::toString(cpu.i()) << ' '               // I (flag)
+        << Base::toString(cpu.z()) << ' '               // Z (flag)
+        << Base::toString(cpu.c()) << ' '               // C (flag)
+        << Base::toString(0) << '\n';                   // unused
     commandResult << "CPU state";
-    if((args[2] & 0x04) != 0)
+    if((U32(args[2]) & 0x04U) != 0)
       commandResult << ", ";
   }
-  if((args[2] & 0x04) != 0)
+  if((U32(args[2]) & 0x04U) != 0)
   {
     out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n"
            "XS: "
@@ -1515,7 +1515,7 @@ void DebuggerParser::executeExec()
     execPrefix = argStrings[1];
   else
     execPrefix = std::format("{:08x}",
-                             static_cast<uInt32>(TimerManager::getTicks() / 1000));
+                             U32(TimerManager::getTicks() / 1000));
 
   StringList history;
   const string execResult = exec(node, &history);
@@ -1584,7 +1584,7 @@ void DebuggerParser::executeHelp()
 {
   if(argCount == 0)  // normal help, show all commands
   {
-    static const size_t clen = []() {
+    static const size_t clen = [] {
       auto len = 0UZ;
       for(const auto& c: commands)
         len = std::max(len, c.cmdString.length());
@@ -1780,7 +1780,7 @@ void DebuggerParser::executeListBreaks()
           buf += ", ";
         buf += debugger.cartDebug().getLabel(bp.addr, true, 4);
         if(bp.bank != BreakpointMap::ANY_BANK)
-          std::format_to(std::back_inserter(buf), " #{}", static_cast<int>(bp.bank));
+          std::format_to(std::back_inserter(buf), " #{}", I32(bp.bank));
         else
           buf += " *";
         if(!(++count % 6)) buf += '\n';
@@ -2078,7 +2078,7 @@ void DebuggerParser::executeRunTo()
   progress.setMessage(std::format(
     "runTo searching through {} disassembled instructions{}",
     max_iterations, progress.ELLIPSIS));
-  progress.setRange(0, static_cast<int>(max_iterations), 5);
+  progress.setRange(0, I32(max_iterations), 5);
   progress.open();
 
   auto count = 0UZ;
@@ -2152,7 +2152,7 @@ void DebuggerParser::executeRunToPc()
 // "s"
 void DebuggerParser::executeS()
 {
-  debugger.cpuDebug().setSP(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setSP(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2326,7 +2326,7 @@ void DebuggerParser::executeSaveStateIf()
   const auto it = std::ranges::find(condNames, condition);
   if(it != condNames.end())
   {
-    args[0] = static_cast<int>(it - condNames.begin());
+    args[0] = I32(it - condNames.begin());
     executeDelSaveStateIf();
     return;
   }
@@ -2397,7 +2397,7 @@ void DebuggerParser::executeSwchb()
 {
   debugger.riotDebug().switches(args[0]);
   std::format_to(std::ostreambuf_iterator(commandResult),
-                 "SWCHB set to {:02x}", static_cast<uInt8>(args[0]));
+                 "SWCHB set to {:02x}", U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2705,7 +2705,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
   if(it != traps.end())
   {
-    const auto i = static_cast<uInt32>(it - traps.begin());
+    const auto i = U32(it - traps.begin());
     if(!debugger.m6502().delCondTrap(i))
     {
       commandResult << "Internal error! Duplicate trap removal failed!";
@@ -2745,21 +2745,21 @@ void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
 
   for(uInt32 addr = begin; addr <= end; ++addr)
   {
-    switch(CartDebug::addressType(static_cast<uInt16>(addr)))
+    switch(CartDebug::addressType(U16(addr)))
     {
       case CartDebug::AddrType::TIA:
-        tiaReadKeys  |= static_cast<uInt16>(1U << (addr & 0x000F));
-        tiaWriteKeys |= 1ULL << (addr & 0x003F);
+        tiaReadKeys  |= U16(1U << (addr & 0x000FU));
+        tiaWriteKeys |= 1ULL << (addr & 0x003FU);
         break;
       case CartDebug::AddrType::IO:
-        ioKeys.set(addr & 0x029F);
+        ioKeys.set(addr & 0x029FU);
         break;
       case CartDebug::AddrType::ZPRAM:
-        zpramKeys.set(addr & 0x00FF);
+        zpramKeys.set(addr & 0x00FFU);
         break;
       case CartDebug::AddrType::ROM:
         if(addr >= 0x1000)
-          romKeys.set(addr & 0x0FFF);
+          romKeys.set(addr & 0x0FFFU);
         break;
       default:
         break;
@@ -2769,18 +2769,18 @@ void DebuggerParser::executeTrapRW(uInt32 begin, uInt32 end,
   // Single pass through the mirror space to apply traps
   for(uInt32 i = 0; i <= 0xFFFF; ++i)
   {
-    if((i & 0x1080) == 0x0000)  // TIA mirror
+    if((i & 0x1080U) == 0x0000)  // TIA mirror
     {
-      if(read  && (tiaReadKeys  & (1U   << (i & 0x000F))))
+      if(read  && (tiaReadKeys  & (1U   << (i & 0x000FU))))
         add ? debugger.addReadTrap(i)  : debugger.removeReadTrap(i);
-      if(write && (tiaWriteKeys & (1ULL << (i & 0x003F))))
+      if(write && (tiaWriteKeys & (1ULL << (i & 0x003FU))))
         add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
     }
-    else if((i & 0x1280) == 0x0280 && ioKeys.test(i & 0x029F))
+    else if((i & 0x1280U) == 0x0280 && ioKeys.test(i & 0x029FU))
       setTraps(i);
-    else if((i & 0x1280) == 0x0080 && zpramKeys.test(i & 0x00FF))
+    else if((i & 0x1280U) == 0x0080 && zpramKeys.test(i & 0x00FFU))
       setTraps(i);
-    else if((i % 0x2000 >= 0x1000) && romKeys.test(i & 0x0FFF))
+    else if((i % 0x2000 >= 0x1000) && romKeys.test(i & 0x0FFFU))
       setTraps(i);
   }
 }
@@ -2876,14 +2876,14 @@ void DebuggerParser::executeWinds(bool unwind)
 // "x"
 void DebuggerParser::executeX()
 {
-  debugger.cpuDebug().setX(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setX(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "y"
 void DebuggerParser::executeY()
 {
-  debugger.cpuDebug().setY(static_cast<uInt8>(args[0]));
+  debugger.cpuDebug().setY(U8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

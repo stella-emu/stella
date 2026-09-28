@@ -20,6 +20,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 #include <algorithm>
 #include <bit>
 
@@ -86,8 +88,8 @@ namespace {
 #define do_cflag_bit(x) cFlag = (x)
 #define do_vflag_bit(x) vFlag = (x)
 
-#define branch_target_9(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 24) >> 23))
-#define branch_target_12(inst) (read_register(15) + 2 + ((static_cast<Int32>(inst) << 21) >> 20))
+#define branch_target_9(inst) (read_register(15) + 2 + ((I32(inst) << 24) >> 23))
+#define branch_target_12(inst) (read_register(15) + 2 + ((I32(inst) << 21) >> 20))
 // NOLINTEND(cppcoreguidelines-macro-usage)
 
 namespace {
@@ -474,7 +476,7 @@ namespace {
     }
 
     return std::format("unknown intrinsic error {}",
-      static_cast<uInt32>(CortexM0::getErrIntrinsic(err)));
+      U32(CortexM0::getErrIntrinsic(err)));
   }
 }  // namespace
 
@@ -754,7 +756,7 @@ CortexM0& CortexM0::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CortexM0& CortexM0::setPc(uInt32 pc)
 {
-  return setRegister(15, (pc & ~1) + 2);
+  return setRegister(15, (pc & ~1U) + 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -799,7 +801,7 @@ bool CortexM0::getV() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CortexM0::decodeInstructionWord(uInt16 instructionWord)
 {
-  return static_cast<uInt8>(::decodeInstructionWord(instructionWord));
+  return U8(::decodeInstructionWord(instructionWord));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1462,8 +1464,8 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::bl: {
       // branch to label
       DO_DISS("bkpt\n");
-      rb = inst & ((1 << 11) - 1);
-      if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
+      rb = inst & ((1U << 11U) - 1U);
+      if(rb & 1U << 10U) rb |= (~((1U << 11U) - 1U)); //sign extend
       rb <<= 12;
       rb += read_register(15);
       write_register(14, rb);
@@ -1473,7 +1475,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
     case Op::blx_thumb: {
       // branch to label, switch to thumb
       rb = read_register(14);
-      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += (inst & ((1U << 11U) - 1U)) << 1U;
       rb += 2;
       DO_DISS("bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (read_register(15)-2) | 1);
@@ -1799,7 +1801,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       const err_t err = read8(rb, val8);
       if (err) return err;
 
-      rc = (static_cast<Int32>(val8) << 24) >> 24;
+      rc = (I32(val8) << 24) >> 24;
 
       write_register(rd, rc);
       return ERR_NONE;
@@ -1817,7 +1819,7 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       const err_t err = read16(rb, val16);
       if (err) return err;
 
-      rc = (static_cast<Int16>(val16) << 8) >> 8;
+      rc = (I16(val16) << 8) >> 8;
 
       write_register(rd, rc);
       return ERR_NONE;
@@ -2515,3 +2517,5 @@ CortexM0::err_t CortexM0::execute(uInt16 inst, uInt8 op)
       return errIntrinsic(ERR_UNDEFINED_INST, read_register(15) - 4);
   }
 }
+
+// NOLINTEND(bugprone-signed-bitwise)

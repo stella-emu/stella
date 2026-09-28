@@ -26,9 +26,9 @@ namespace {
 
   Int16 mixingTableEntry(uInt8 v, uInt8 vMax)
   {
-    return static_cast<Int16>(
-      floor(0x7fff * static_cast<double>(v) / static_cast<double>(vMax) *
-            (R_MAX + R * static_cast<double>(vMax)) / (R_MAX + R * static_cast<double>(v)))
+    return I16(
+      floor(0x7fff * DBL(v) / DBL(vMax) *
+            (R_MAX + R * DBL(vMax)) / (R_MAX + R * DBL(v)))
     );
   }
 } // namespace
@@ -69,13 +69,13 @@ void Audio::createSample()
 {
   // Calculate average of all recent volume samples. the average for each
   // channel is mixed to create a single audible value
-  const auto sample0 = static_cast<uInt8>(mySumChannel0 / mySumCt);
-  const auto sample1 = static_cast<uInt8>(mySumChannel1 / mySumCt);
+  const auto sample0 = U8(mySumChannel0 / mySumCt);
+  const auto sample1 = U8(mySumChannel1 / mySumCt);
   mySumChannel0 = mySumChannel1 = mySumCt = 0;
 
   addSample(sample0, sample1);
   if(myRewindMode)
-    mySamples.push_back(sample0 | (sample1 << 4));
+    mySamples.push_back(U32(sample0) | (U32(sample1) << 4U));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,9 +84,9 @@ void Audio::addSample(uInt8 sample0, uInt8 sample1)
   if(!myAudioQueue) return;
 
   if(myAudioQueue->isStereo()) {
-    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex)] =
+    myCurrentFragment[SZT(2 * mySampleIndex)] =
       myMixingTableIndividual[sample0];
-    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex + 1)] =
+    myCurrentFragment[SZT(2 * mySampleIndex + 1)] =
       myMixingTableIndividual[sample1];
   }
   else {
@@ -171,7 +171,7 @@ bool Audio::saveSamples(Serializer& out) const
 {
   try
   {
-    out.putLong(static_cast<uInt64>(mySamples.size()));
+    out.putLong(U64(mySamples.size()));
     out.putByteArray(mySamples);
 
     // TODO: check if this improves sound of playback for larger state gaps
@@ -206,8 +206,8 @@ bool Audio::loadSamples(Serializer& in)
     for(auto i = 0UZ; i < sampleSize; ++i)
     {
       const uInt8 sample = samples[i];
-      const uInt8 sample0 = sample & 0x0f;
-      const uInt8 sample1 = sample >> 4;
+      const uInt8 sample0 = sample & 0x0fU;
+      const uInt8 sample1 = sample >> 4U;
 
       addSample(sample0, sample1);
     }

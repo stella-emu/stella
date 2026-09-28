@@ -139,7 +139,7 @@ class WidgetLayout : public Layout
     void doLayout(int x, int y, int w, int h) override;
 
     Common::Size minSize() const override {
-      return Common::Size(static_cast<uInt32>(myMinW), static_cast<uInt32>(myMinH));
+      return Common::Size(U32(myMinW), U32(myMinH));
     }
 
     Common::Size naturalSize() const override;

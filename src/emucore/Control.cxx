@@ -33,10 +33,10 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
-  return (static_cast<uInt8>(read(DigitalPin::One))   << 0) |
-         (static_cast<uInt8>(read(DigitalPin::Two))   << 1) |
-         (static_cast<uInt8>(read(DigitalPin::Three)) << 2) |
-         (static_cast<uInt8>(read(DigitalPin::Four))  << 3);
+  return (U32(read(DigitalPin::One))   << 0U) |
+         (U32(read(DigitalPin::Two))   << 1U) |
+         (U32(read(DigitalPin::Three)) << 2U) |
+         (U32(read(DigitalPin::Four))  << 3U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,7 +146,7 @@ Controller::Type Controller::getType(string_view propName)
   const auto it = std::ranges::find_if(CONTROLLER_INFO,
       [&](const auto& info) { return BSPF::equalsIgnoreCase(propName, info.propName); });
   if(it != CONTROLLER_INFO.end())
-    return Type{static_cast<uInt8>(std::distance(CONTROLLER_INFO.begin(), it))};
+    return Type{U8(std::distance(CONTROLLER_INFO.begin(), it))};
 
   // special case
   if(BSPF::equalsIgnoreCase(propName, "KEYPAD"))

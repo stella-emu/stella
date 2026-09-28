@@ -347,8 +347,8 @@ size_t FSNode::read(ByteArray& buffer, size_t size) const
 
   // If a requested size to read is provided (size > 0), honour it
   const auto sizeRead = (size > 0)
-    ? std::min(static_cast<size_t>(fileSize), size)
-    : static_cast<size_t>(fileSize);
+    ? std::min(SZT(fileSize), size)
+    : SZT(fileSize);
 
   buffer.resize(sizeRead);
   in.read(reinterpret_cast<char*>(buffer.data()),
@@ -357,7 +357,7 @@ size_t FSNode::read(ByteArray& buffer, size_t size) const
   if(!in)
     throw std::runtime_error("File read error");
 
-  return static_cast<size_t>(in.gcount());
+  return SZT(in.gcount());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -395,7 +395,7 @@ size_t FSNode::read(std::stringstream& buffer) const
   if(!in)
     throw std::runtime_error("File read error");
 
-  return static_cast<size_t>(fileSize);
+  return SZT(fileSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

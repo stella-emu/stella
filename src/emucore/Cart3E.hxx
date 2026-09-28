@@ -119,7 +119,7 @@ class Cartridge3E : public CartridgeEnhanced
     static constexpr uInt16 RAM_BANKS = 32;
 
     // RAM size
-    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x8000;
+    static constexpr size_t RAM_SIZE = U32(RAM_BANKS) << U32(BANK_SHIFT - 1); // = 32K = 0x8000;
 
     // Write port for extra RAM is at high address
     static constexpr bool RAM_HIGH_WP = true;

@@ -196,7 +196,7 @@ class SoundLIBRETRO : public Sound
             {
               myBuffer.resize(chunkSize);
               f.read(reinterpret_cast<char*>(myBuffer.data()), chunkSize);
-              dataSize = static_cast<uInt32>(f.gcount());
+              dataSize = U32(f.gcount());
               haveData = true;
             }
 
@@ -233,17 +233,17 @@ class SoundLIBRETRO : public Sound
         if(!myRemaining || !mySampleRate) return;
 
         const uInt32 frameSize = myChannels * (myBitsPerSample / 8);
-        const double step = static_cast<double>(mySampleRate) / outputRate;
+        const double step = DBL(mySampleRate) / outputRate;
 
         for(auto i = 0UZ; i < numSamples && myPos < myEnd; ++i)
         {
           const Int16 wavL = sample(myPos);
           const Int16 wavR = (myChannels > 1) ? sample(myPos + myBitsPerSample / 8) : wavL;
 
-          stream[i * 2]     = static_cast<Int16>(std::clamp(
-              static_cast<int>(stream[i * 2])     + wavL, -32768, 32767));
-          stream[i * 2 + 1] = static_cast<Int16>(std::clamp(
-              static_cast<int>(stream[i * 2 + 1]) + wavR, -32768, 32767));
+          stream[i * 2]     = I16(std::clamp(
+              I32(stream[i * 2])     + wavL, -32768, 32767));
+          stream[i * 2 + 1] = I16(std::clamp(
+              I32(stream[i * 2 + 1]) + wavR, -32768, 32767));
 
           myAccumulator += step;
           while(myAccumulator >= 1.0 && myPos < myEnd)
@@ -260,8 +260,8 @@ class SoundLIBRETRO : public Sound
       Int16 sample(uInt32 pos) const
       {
         if(myBitsPerSample == 8)
-          return static_cast<Int16>((static_cast<int>(myBuffer[pos]) - 128) << 8);
-        return static_cast<Int16>(myBuffer[pos] | (static_cast<uInt16>(myBuffer[pos + 1]) << 8));
+          return I16((I32(myBuffer[pos]) - 128) << 8);
+        return I16(myBuffer[pos] | (U16(myBuffer[pos + 1]) << 8));
       }
 
       string    myFilename;

@@ -53,11 +53,11 @@ namespace {
   // to a tiny value while copySections()/copyInitArrays() still copy the full,
   // un-wrapped byte count into the undersized allocation that value produces
   uInt32 checkedAdd(uInt32 size, uInt32 delta) {
-    const uInt64 sum = static_cast<uInt64>(size) + delta;
+    const uInt64 sum = U64(size) + delta;
     if (sum > std::numeric_limits<uInt32>::max())
       ElfLinker::ElfLinkError::raise("elf segment too large");
 
-    return static_cast<uInt32>(sum);
+    return U32(sum);
   }
 }  // namespace
 
@@ -357,8 +357,8 @@ void ElfLinker::relocateInitArrays()
     }
   }
 
-  myInitArray.resize(initArraySize >> 2);
-  myPreinitArray.resize(preinitArraySize >> 2);
+  myInitArray.resize(initArraySize >> 2U);
+  myPreinitArray.resize(preinitArraySize >> 2U);
 
   copyInitArrays(myInitArray, relocatedInitArrays);
   copyInitArrays(myPreinitArray, relocatedPreinitArrays);
@@ -435,7 +435,7 @@ void ElfLinker::copyInitArrays(vector<uInt32>& initArray, const std::unordered_m
     const auto& section = sections[iSection];
 
     for (auto i = 0UZ; i < section.size; i += 4)
-      initArray[(offset + i) >> 2] = read32(elfData + section.offset + i);
+      initArray[(offset + i) >> 2U] = read32(elfData + section.offset + i);
   }
 }
 
@@ -458,7 +458,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
   // this), and offset + 4 in 32-bit arithmetic wraps to a tiny value for
   // offset in [0xFFFFFFFC, 0xFFFFFFFF], defeating this check and sending
   // read32()/write32() below roughly 4GB past the segment buffer
-  if (static_cast<uInt64>(relocation.offset) + 4 > targetSection.size)
+  if (U64(relocation.offset) + 4 > targetSection.size)
     ElfLinkError::raise(
       "unable to relocate " + symbol.name + " in " + targetSection.name + ": target out of range"
     );
@@ -478,7 +478,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
     case ElfFile::R_ARM_TARGET1:
       {
         const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
-        write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0));
+        write32(target, value | (symbol.type == ElfFile::STT_FUNC ? 0x01U : 0));
 
         break;
       }
@@ -486,7 +486,7 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
     case ElfFile::R_ARM_REL32:
       {
         uInt32 value = relocatedSymbol->value + relocation.addend.value_or(read32(target));
-        value |= (symbol.type == ElfFile::STT_FUNC ? 0x01 : 0);
+        value |= (symbol.type == ElfFile::STT_FUNC ? 0x01U : 0);
 
         write32(target, value - targetAddress);
 
@@ -503,6 +503,9 @@ void ElfLinker::applyRelocationToSection(const ElfFile::Relocation& relocation, 
           targetSectionRelocated.offset -
           relocation.offset - 4;
 
+        // offset must stay signed: this checks the top byte is a sign-extension
+        // of a 25-bit value (-1 or 0), which requires an arithmetic right shift
+        // NOLINTNEXTLINE(bugprone-signed-bitwise)
         if ((offset >> 24) != -1 && (offset >> 24) != 0)
           ElfLinkError::raise("unable to relocate jump: offset out of bounds");
 
@@ -545,12 +548,12 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
 
       // See the identical comment in applyRelocationToSection() -- this is
       // the same unvalidated relocation.offset, same 32-bit wraparound risk
-      if (static_cast<uInt64>(relocation.offset) + 4 > section.size)
+      if (U64(relocation.offset) + 4 > section.size)
         ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 
-      const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2;
+      const uInt32 index = (relocatedInitArrays.at(iSection) + relocation.offset) >> 2U;
       const uInt32 value = relocatedSymbol->value + relocation.addend.value_or(initArray[index]);
-      initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1 : 0);
+      initArray[index] = value | (symbols[relocation.symbol].type == ElfFile::STT_FUNC ? 1U : 0);
     }
   }
 }

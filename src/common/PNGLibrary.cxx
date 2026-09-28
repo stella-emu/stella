@@ -90,7 +90,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(!in.is_open())
     throw std::runtime_error("No image found");
 
-  const ScopeExit pngGuard{[&]() {
+  const ScopeExit pngGuard{[&] {
     if(png_ptr)
       png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
   }};
@@ -127,7 +127,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(bit_depth == 16)
     png_set_strip_16(png_ptr);
 
-  if(color_type == PNG_COLOR_TYPE_PALETTE)
+  if(color_type == PNG_COLOR_TYPE_PALETTE)  // NOLINT(bugprone-signed-bitwise)
     png_set_palette_to_rgb(png_ptr);
 
   if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
@@ -136,7 +136,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
     png_set_tRNS_to_alpha(png_ptr);
 
-  if(!(color_type & PNG_COLOR_MASK_ALPHA))
+  if(!(color_type & PNG_COLOR_MASK_ALPHA))  // NOLINT(bugprone-signed-bitwise)
     png_set_filler(png_ptr, 0xFF, PNG_FILLER_AFTER);
 
   if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
@@ -186,7 +186,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
 
-  const ScopeExit pngGuard{[&]() {
+  const ScopeExit pngGuard{[&] {
     if(png_ptr)
       png_destroy_write_struct(&png_ptr, &info_ptr);
   }};
@@ -269,7 +269,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 void PNGLibrary::updateTime(uInt64 time)
 {
   if(mySnapInterval > 0 && (++mySnapCounter) % mySnapInterval == 0)
-    takeSnapshot(static_cast<uInt32>(time >> 10));  // not quite milliseconds, but close enough
+    takeSnapshot(U32(time >> 10U));  // not quite milliseconds, but close enough
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -287,15 +287,15 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
     {
       interval = myOSystem.settings().getInt("ssinterval");
       msg = std::format("Enabling snapshots in {} second intervals", interval);
-      interval *= static_cast<uInt32>(myOSystem.frameRate());
+      interval *= U32(myOSystem.frameRate());
     }
     myOSystem.frameBuffer().showTextMessage(msg);
     setContinuousSnapInterval(interval);
   }
   else
   {
-    auto msg = std::format("Disabling snapshots, generated {} files",
-                           mySnapCounter / mySnapInterval);
+    const auto msg = std::format("Disabling snapshots, generated {} files",
+                                 mySnapCounter / mySnapInterval);
     myOSystem.frameBuffer().showTextMessage(msg);
     setContinuousSnapInterval(0);
   }
@@ -325,10 +325,10 @@ Common::Rect PNGLibrary::croppedRect(const FBSurface& surface,
   // A pixel is 'black' once its color channels are all zero (the high
   // byte is alpha/filler and is ignored)
   const auto isBlack = [](uInt32 pixel) {
-    return (pixel & 0x00FFFFFF) == 0;
+    return (pixel & 0x00FFFFFFU) == 0;
   };
   const auto rowIsBlack = [&](uInt32 y, uInt32 x0, uInt32 x1) {
-    const uInt32* row = base + static_cast<size_t>(y) * pitch;
+    const uInt32* row = base + SZT(y) * pitch;
     for(uInt32 x = x0; x < x1; ++x)
       if(!isBlack(row[x]))
         return false;
@@ -336,7 +336,7 @@ Common::Rect PNGLibrary::croppedRect(const FBSurface& surface,
   };
   const auto colIsBlack = [&](uInt32 x, uInt32 y0, uInt32 y1) {
     for(uInt32 y = y0; y < y1; ++y)
-      if(!isBlack(base[static_cast<size_t>(y) * pitch + x]))
+      if(!isBlack(base[SZT(y) * pitch + x]))
         return false;
     return true;
   };
@@ -471,7 +471,7 @@ void PNGLibrary::writeMetaData(png_structp png_ptr, png_infop info_ptr,
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }
-  png_set_text(png_ptr, info_ptr, text_ptr.data(), static_cast<int>(numMetaData));
+  png_set_text(png_ptr, info_ptr, text_ptr.data(), I32(numMetaData));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

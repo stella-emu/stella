@@ -26,7 +26,7 @@ TimeMachine::TimeMachine(OSystem& osystem)
     myWidth{FBMinimum::Width}
 {
   myBaseDialog = std::make_unique<TimeMachineDialog>(myOSystem, *this,
-                                                     static_cast<int>(myWidth));
+                                                     I32(myWidth));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,7 +45,7 @@ void TimeMachine::requestResize()
     const Dialog* oldPtr = myBaseDialog.get();
     const Int32 enterWinds = myBaseDialog->getEnterWinds();
     myBaseDialog = std::make_unique<TimeMachineDialog>(myOSystem, *this,
-                                                       static_cast<int>(myWidth));
+                                                       I32(myWidth));
     setEnterWinds(enterWinds);
     Dialog* newPtr = myBaseDialog.get();
 

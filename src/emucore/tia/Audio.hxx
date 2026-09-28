@@ -167,10 +167,10 @@ inline void Audio::tick(uInt32 colorClocks)
 
     const uInt32 chunk = std::min(colorClocks, toEvent);
 
-    mySumChannel0 += static_cast<uInt32>(myChannel0.actualVolume()) * chunk;
-    mySumChannel1 += static_cast<uInt32>(myChannel1.actualVolume()) * chunk;
+    mySumChannel0 += U32(myChannel0.actualVolume()) * chunk;
+    mySumChannel1 += U32(myChannel1.actualVolume()) * chunk;
     mySumCt += chunk;
-    myCounter = static_cast<uInt8>(myCounter + chunk);
+    myCounter = U8(myCounter + chunk);
     colorClocks -= chunk;
 
     // The event only fires if the batch actually reached it

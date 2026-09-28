@@ -52,7 +52,7 @@ void TimeLineWidget::refreshFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::setValue(int value)
 {
-  const uInt32 v = BSPF::clamp(static_cast<uInt32>(value), _valueMin, _valueMax);
+  const uInt32 v = BSPF::clamp(U32(value), _valueMin, _valueMax);
 
   if(v != _value)
   {
@@ -86,11 +86,11 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    const double scale = (_w - 2 - HANDLE_W) / static_cast<double>(steps.back());
+    const double scale = (_w - 2 - HANDLE_W) / DBL(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
-      _stepValue.push_back(static_cast<int>(steps[i] * scale));
+      _stepValue.push_back(I32(steps[i] * scale));
 
     // Due to integer <-> double conversion, the last value is sometimes
     // slightly less than the maximum value; we assign it manually to fix this
@@ -166,10 +166,10 @@ void TimeLineWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   // Add 4 tickmarks for 5 intervals
-  const int numTicks = std::min(5, static_cast<int>(_stepValue.size()));
+  const int numTicks = std::min(5, I32(_stepValue.size()));
   for(int i = 1; i < numTicks; ++i)
   {
-    const int idx = static_cast<int>((_stepValue.size() * i + numTicks / 2) / numTicks);
+    const int idx = I32((_stepValue.size() * i + numTicks / 2) / numTicks);
     if(idx > 1)
     {
       const int xt = x + valueToPos(idx - 1);

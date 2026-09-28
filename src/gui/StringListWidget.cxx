@@ -67,7 +67,7 @@ string StringListWidget::getToolTip(const Common::Point& pos) const
 
   const string& value = _list[idx];
 
-  if(static_cast<uInt32>(_font.getStringWidth(value)) > rect.w())
+  if(U32(_font.getStringWidth(value)) > rect.w())
     return _toolTipText + value;
   else
     return _toolTipText;
@@ -93,7 +93,7 @@ void StringListWidget::drawWidget(bool hilite)
     s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, kDlgColor);
 
   // Draw the list items
-  const int len = static_cast<int>(_list.size());
+  const int len = I32(_list.size());
   for(int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _lineHeight * i;
@@ -138,7 +138,7 @@ Common::Rect StringListWidget::getEditRect() const
 {
   const int offset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
   return {
-    static_cast<uInt32>(_textOfs), static_cast<uInt32>(1 + offset),
-    static_cast<uInt32>(_textOfs + textWidth()), static_cast<uInt32>(_lineHeight + offset)
+    U32(_textOfs), U32(1 + offset),
+    U32(_textOfs + textWidth()), U32(_lineHeight + offset)
   };
 }

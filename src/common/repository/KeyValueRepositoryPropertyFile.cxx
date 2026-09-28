@@ -47,7 +47,7 @@ namespace {
   void writeQuotedString(std::ostream& out, string_view s)
   {
     out.put('"');
-    for(auto c: s)
+    for(const auto c: s)
     {
       if(c == '\\')
       {

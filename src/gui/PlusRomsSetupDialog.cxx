@@ -28,7 +28,7 @@ PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& pare
                                          const GUI::Font& font)
   : InputTextDialog(osystem, parent, font, StringList { "Nickname", "Device-ID" },
                     "PlusROM backends setup",
-                    static_cast<int>(string("Device-ID").length()) + ID_LEN + 2)
+                    I32(string("Device-ID").length()) + ID_LEN + 2)
 {
   const EditableWidget::TextFilter filter = [](char c) {
     return isalnum(c) || (c == ' ') || (c == '_') || (c == '.');

@@ -78,7 +78,7 @@ bool SoundSDL::openDevice()
 {
   ASSERT_MAIN_THREAD;
 
-  auto SOUND_ERROR = [this]() -> bool
+  const auto SOUND_ERROR = [this] -> bool
   {
     Logger::error(std::format("WARNING: Couldn't open SDL audio device! \n"
       "         {}\n", SDL_GetError()));
@@ -91,7 +91,7 @@ bool SoundSDL::openDevice()
     myStream = nullptr;
   }
 
-  mySpec = { SDL_AUDIO_F32, 2, static_cast<int>(myAudioSettings.sampleRate()) };
+  mySpec = { SDL_AUDIO_F32, 2, I32(myAudioSettings.sampleRate()) };
 
   myDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &mySpec);
   if(myDevice == 0)
@@ -130,8 +130,8 @@ void SoundSDL::open(shared_ptr<AudioQueue> audioQueue,
 
   const string pre_about = myAboutString;
 
-  myAudioQueue = audioQueue;
-  myEmulationTiming = emulationTiming;
+  myAudioQueue = std::move(audioQueue);
+  myEmulationTiming = std::move(emulationTiming);
   myUnderrun = true;
   myCurrentFragment = nullptr;
 
@@ -140,7 +140,7 @@ void SoundSDL::open(shared_ptr<AudioQueue> audioQueue,
 
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
-  if(myAudioSettings.sampleRate() != static_cast<uInt32>(mySpec.freq))
+  if(myAudioSettings.sampleRate() != U32(mySpec.freq))
     openDevice();
 
   Logger::debug("SoundSDL::open started ...");
@@ -205,7 +205,7 @@ void SoundSDL::setVolume(uInt32 volume, bool persist)
   if(myIsInitializedFlag && (volume <= 100))
   {
     myVolumeFactor = myAudioSettings.enabled()
-      ? static_cast<float>(volume) / 100.F
+      ? FLT(volume) / 100.F
       : 0.F;
 
     SDL_SetAudioStreamGain(myStream, myVolumeFactor);
@@ -241,7 +241,7 @@ void SoundSDL::adjustVolume(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string SoundSDL::about() const
 {
-  const string_view presetStr = [this]() -> string_view {
+  const string_view presetStr = [this] -> string_view {
     switch(myAudioSettings.preset())
     {
       using enum AudioSettings::Preset;
@@ -254,7 +254,7 @@ string SoundSDL::about() const
     }
   }();
 
-  const string_view resampleStr = [this]() -> string_view {
+  const string_view resampleStr = [this] -> string_view {
     switch(myAudioSettings.resamplingQuality())
     {
       using enum AudioSettings::ResamplingQuality;
@@ -275,10 +275,10 @@ string SoundSDL::about() const
     "    Headroom:      {:.1f} frames\n"
     "    Buffer size:   {:.1f} frames\n",
     myAudioSettings.volume(),
-    static_cast<uInt32>(mySpec.channels),
+    U32(mySpec.channels),
     myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)",
     presetStr,
-    static_cast<uInt32>(mySpec.freq),
+    U32(mySpec.freq),
     resampleStr,
     0.5 * myAudioSettings.headroom(),
     0.5 * myAudioSettings.bufferSize()
@@ -288,7 +288,7 @@ string SoundSDL::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::initResampler()
 {
-  const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
+  const Resampler::NextFragmentCallback nextFragmentCallback = [this] -> Int16* {
     Int16* nextFragment = nullptr;
 
     if(myUnderrun)
@@ -349,7 +349,9 @@ void SoundSDL::audioCallback(void* object, SDL_AudioStream* stream,
     // The stream is 32-bit float (even though this callback is 8-bits), since
     // the resampler and TIA audio subsystem always generate float samples
     auto* s = reinterpret_cast<float*>(buf.data());
-    self->myResampler->fillFragment(s, additional_amt >> 2);
+    // SDL documents additional_amt as a byte count, never negative, so the
+    // unsigned shift below is fine
+    self->myResampler->fillFragment(s, U32(additional_amt) >> 2U);
 
     SDL_PutAudioStreamData(stream, buf.data(), additional_amt);
   }
@@ -453,13 +455,13 @@ void SoundSDL::WavHandler::wavCallback(void* object, SDL_AudioStream* stream,
                                        int additional_amt, int)
 {
   auto* self = static_cast<WavHandler*>(object);
-  auto len = static_cast<uInt32>(additional_amt);
+  auto len = U32(additional_amt);
   auto& remaining = self->myRemaining;
 
   if(remaining)
   {
     if(self->mySpeed != 1.0)
-      len = static_cast<uInt32>(std::round(len / self->mySpeed));
+      len = U32(std::round(len / self->mySpeed));
 
     if(len > remaining)  // NOLINT(readability-use-std-min-max)
       len = remaining;

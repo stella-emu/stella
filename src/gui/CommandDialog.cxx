@@ -124,8 +124,8 @@ void CommandDialog::layout()
   // The dialog is exactly as large as the button grid asks to be
   const Common::Size natural = grid->naturalSize();
 
-  _w = static_cast<int>(natural.w);
-  _h = _th + static_cast<int>(natural.h);
+  _w = I32(natural.w);
+  _h = _th + I32(natural.h);
 
   // Position the grid in the dialog area below the title bar
   grid->doLayout(0, _th, _w, _h - _th);

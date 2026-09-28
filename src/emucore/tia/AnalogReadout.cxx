@@ -44,7 +44,7 @@ void AnalogReadout::vblank(uInt8 value, uInt64 timestamp)
 
   const bool oldIsDumped = myIsDumped;
 
-  if (value & 0x80) {
+  if (value & 0x80U) {
     myIsDumped = true;
   } else if (oldIsDumped) {
     myIsDumped = false;
@@ -94,19 +94,19 @@ void AnalogReadout::setConsoleTiming(ConsoleTiming consoleTiming)
 void AnalogReadout::updateCharge(uInt64 timestamp)
 {
   if (myIsDumped) {
-    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R_DUMP / C /
+    myU *= exp(-DBL(timestamp - myTimestamp) / R_DUMP / C /
            myClockFreq);
   } else {
     switch (myConnection.type) {
       case ConnectionType::vcc:
         myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
-          exp(-static_cast<double>(timestamp - myTimestamp) /
+          exp(-DBL(timestamp - myTimestamp) /
               (myConnection.resistance + R0) / C / myClockFreq));
 
         break;
 
       case ConnectionType::ground:
-        myU *= exp(-static_cast<double>(timestamp - myTimestamp) /
+        myU *= exp(-DBL(timestamp - myTimestamp) /
             (myConnection.resistance + R0) / C / myClockFreq);
 
         break;
@@ -198,7 +198,7 @@ bool AnalogReadout::Connection::load(Serializer& in)
     // Reject a corrupt save state before an out-of-range type can reach
     // updateCharge()'s switch, whose default case throws with nothing to
     // catch it once emulation is under way
-    if(t > static_cast<uInt32>(ConnectionType::disconnected))
+    if(t > U32(ConnectionType::disconnected))
       return false;
     type = static_cast<ConnectionType>(t);
     resistance = in.getInt();

@@ -77,7 +77,7 @@ void FBMessageHandler::create(string_view message, MessagePosition position,
   const int VBORDER = fontHeight / 4;
 
   // Show message for 2 seconds
-  myMsg.counter = std::min(static_cast<Int32>(myOSystem.frameRate()) * 2, MESSAGE_TIME);
+  myMsg.counter = std::min(I32(myOSystem.frameRate()) * 2, MESSAGE_TIME);
   if(myMsg.counter == 0)
     myMsg.counter = MESSAGE_TIME;
 
@@ -93,8 +93,8 @@ void FBMessageHandler::create(string_view message, MessagePosition position,
   // message can now be bigger than the surface.  Grow it to fit before defining
   // the rendered (src) region, otherwise the extra rows/columns sample
   // uninitialized memory (pixelated garbage along the message edge).
-  const auto needW = static_cast<uInt32>(myMsg.w),
-             needH = static_cast<uInt32>(myMsg.h);
+  const auto needW = U32(myMsg.w),
+             needH = U32(myMsg.h);
   if(needW > myMsg.surface->width() || needH > myMsg.surface->height())
     myMsg.surface->resize(std::max(needW, myMsg.surface->width()),
                           std::max(needH, myMsg.surface->height()));
@@ -197,7 +197,7 @@ void FBMessageHandler::enable(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBMessageHandler::setPauseDelay()
 {
-  myPausedCount = static_cast<Int32>(2 * myOSystem.frameRate());
+  myPausedCount = I32(2 * myOSystem.frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,7 +207,7 @@ bool FBMessageHandler::tickPause()
     return false;  // a non-pause message was just shown; don't override it
   if(myPausedCount-- > 0)
     return false;
-  myPausedCount = static_cast<Int32>(7 * myOSystem.frameRate());
+  myPausedCount = I32(7 * myOSystem.frameRate());
   return true;
 }
 
@@ -261,7 +261,7 @@ bool FBMessageHandler::draw()
         break;
 
       case MessagePosition::TopCenter:
-        myMsg.x = (img.w() - dst.w()) >> 1;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
         myMsg.y = 5;
         break;
 
@@ -272,17 +272,17 @@ bool FBMessageHandler::draw()
 
       case MessagePosition::MiddleLeft:
         myMsg.x = 5;
-        myMsg.y = (img.h() - dst.h()) >> 1;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleCenter:
-        myMsg.x = (img.w() - dst.w()) >> 1;
-        myMsg.y = (img.h() - dst.h()) >> 1;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleRight:
         myMsg.x = img.w() - dst.w() - 5;
-        myMsg.y = (img.h() - dst.h()) >> 1;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::BottomLeft:
@@ -291,7 +291,7 @@ bool FBMessageHandler::draw()
         break;
 
       case MessagePosition::BottomCenter:
-        myMsg.x = (img.w() - dst.w()) >> 1;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
         myMsg.y = img.h() - dst.h() - 5;
         break;
 
@@ -321,7 +321,7 @@ bool FBMessageHandler::draw()
                                   - myFB.font().getStringWidth(myMsg.text)
                                   - myFB.font().getStringWidth(myMsg.valueText));
       const int bwidth  = swidth * myMsg.value / 100.F;
-      const int bheight = fontHeight >> 1;
+      const int bheight = fontHeight / 2;
       const int x = HBORDER + myFB.font().getStringWidth(myMsg.text) + fontWidth;
       // Align bar with bottom of text
       const int y = VBORDER + myFB.font().desc().ascent - bheight;
@@ -370,8 +370,8 @@ void FBMessageHandler::drawStats(float framesPerSecond)
   // clipped and the extra area samples uninitialized memory (see create()).
   myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
   myStatsMsg.h = dy * 3;
-  const auto needW = static_cast<uInt32>(myStatsMsg.w),
-             needH = static_cast<uInt32>(myStatsMsg.h);
+  const auto needW = U32(myStatsMsg.w),
+             needH = U32(myStatsMsg.h);
   if(needW > myStatsMsg.surface->width() || needH > myStatsMsg.surface->height())
     myStatsMsg.surface->resize(std::max(needW, myStatsMsg.surface->width()),
                                std::max(needH, myStatsMsg.surface->height()));

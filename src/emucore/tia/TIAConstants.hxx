@@ -64,15 +64,15 @@ enum class BitState: uInt8 {
 
 enum class TIABit: uInt8 {
   None     = 0,
-  P0       = 1 << 0,  // Bit for Player 0
-  M0       = 1 << 1,  // Bit for Missle 0
-  P1       = 1 << 2,  // Bit for Player 1
-  M1       = 1 << 3,  // Bit for Missle 1
-  BL       = 1 << 4,  // Bit for Ball
-  PF       = 1 << 5,  // Bit for Playfield
-  Score    = 1 << 6,  // Bit for Playfield score mode
-  Priority = 1 << 7,  // Bit for Playfield priority
-  All      = 0xff
+  P0       = Bitmask::bit<TIABit>(0),  // Bit for Player 0
+  M0       = Bitmask::bit<TIABit>(1),  // Bit for Missile 0
+  P1       = Bitmask::bit<TIABit>(2),  // Bit for Player 1
+  M1       = Bitmask::bit<TIABit>(3),  // Bit for Missile 1
+  BL       = Bitmask::bit<TIABit>(4),  // Bit for Ball
+  PF       = Bitmask::bit<TIABit>(5),  // Bit for Playfield
+  Score    = Bitmask::bit<TIABit>(6),  // Bit for Playfield score mode
+  Priority = Bitmask::bit<TIABit>(7),  // Bit for Playfield priority
+  All      = 0xFF
 };
 template<> inline constexpr bool Bitmask::is_enum_v<TIABit> = true;
 
@@ -81,30 +81,58 @@ enum TIAColor: uInt8 {
   PFColor     = 1,  // Color index for Playfield
   P0Color     = 2,  // Color index for Player 0
   P1Color     = 3,  // Color index for Player 1
-  M0Color     = 4,  // Color index for Missle 0
-  M1Color     = 5,  // Color index for Missle 1
+  M0Color     = 4,  // Color index for Missile 0
+  M1Color     = 5,  // Color index for Missile 1
   BLColor     = 6,  // Color index for Ball
   HBLANKColor = 7   // Color index for HMove blank area
 };
 
 enum class CollisionBit: uInt16
 {
-  M0P1 = 1 << 0,   // Missle0 - Player1   collision
-  M0P0 = 1 << 1,   // Missle0 - Player0   collision
-  M1P0 = 1 << 2,   // Missle1 - Player0   collision
-  M1P1 = 1 << 3,   // Missle1 - Player1   collision
-  P0PF = 1 << 4,   // Player0 - Playfield collision
-  P0BL = 1 << 5,   // Player0 - Ball      collision
-  P1PF = 1 << 6,   // Player1 - Playfield collision
-  P1BL = 1 << 7,   // Player1 - Ball      collision
-  M0PF = 1 << 8,   // Missle0 - Playfield collision
-  M0BL = 1 << 9,   // Missle0 - Ball      collision
-  M1PF = 1 << 10,  // Missle1 - Playfield collision
-  M1BL = 1 << 11,  // Missle1 - Ball      collision
-  BLPF = 1 << 12,  // Ball - Playfield    collision
-  P0P1 = 1 << 13,  // Player0 - Player1   collision
-  M0M1 = 1 << 14   // Missle0 - Missle1   collision
+  M0P1 = Bitmask::bit<CollisionBit>(0),  // Missile0 - Player1
+  M0P0 = Bitmask::bit<CollisionBit>(1),  // Missile0 - Player0
+  M1P0 = Bitmask::bit<CollisionBit>(2),  // Missile1 - Player0
+  M1P1 = Bitmask::bit<CollisionBit>(3),  // Missile1 - Player1
+  P0PF = Bitmask::bit<CollisionBit>(4),  // Player0  - Playfield
+  P0BL = Bitmask::bit<CollisionBit>(5),  // Player0  - Ball
+  P1PF = Bitmask::bit<CollisionBit>(6),  // Player1  - Playfield
+  P1BL = Bitmask::bit<CollisionBit>(7),  // Player1  - Ball
+  M0PF = Bitmask::bit<CollisionBit>(8),  // Missile0 - Playfield
+  M0BL = Bitmask::bit<CollisionBit>(9),  // Missile0 - Ball
+  M1PF = Bitmask::bit<CollisionBit>(10), // Missile1 - Playfield
+  M1BL = Bitmask::bit<CollisionBit>(11), // Missile1 - Ball
+  BLPF = Bitmask::bit<CollisionBit>(12), // Ball     - Playfield
+  P0P1 = Bitmask::bit<CollisionBit>(13), // Player0  - Player1
+  M0M1 = Bitmask::bit<CollisionBit>(14)  // Missile0 - Missile1
 };
+
+// Per-object collision bit patterns. Chosen so that, for any two distinct
+// objects A and B, A & B is a single unique bit appearing in no other
+// object's mask. Each object's mask is exactly the union of those unique
+// pair bits, i.e. the set of pair collisions it participates in.
+//
+// Examples:
+//   player0 & playfield = bit 10   (P0-PF)
+//   player0 & ball      = bit 11   (P0-BL)
+//   missile0 & missile1 = bit 14   (M0-M1)
+//
+// This lets updateCollision() compute all 15 pair collisions with a single
+// 15-bit AND across all six objects; see TIA::updateCollision for the
+// correctness argument and TIA::collCX* for how individual pair bits are
+// extracted on read. VISIBLE (bit 15) is reserved by each sprite as a
+// "visible this clock" latch (see TIA::renderPixel / sprite::isOn).
+enum class CollisionMask: uInt16 {
+  NONE      = 0,
+  player0   = 0b0111110000000000,
+  player1   = 0b0100001111000000,
+  missile0  = 0b0010001000111000,
+  missile1  = 0b0001000100100110,
+  ball      = 0b0000100010010101,
+  playfield = 0b0000010001001011,
+  VISIBLE   = Bitmask::bit<CollisionMask>(15),
+  ALL       = 0xFFFFU
+};
+template<> inline constexpr bool Bitmask::is_enum_v<CollisionMask> = true;
 
 // TIA Write/Read register names
 enum TIARegister: uInt8 {

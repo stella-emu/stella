@@ -27,29 +27,29 @@ Switches::Switches(const Event& event, const Properties& props,
 {
   if(props.get(PropType::Console_RightDiff) == "B")
   {
-    mySwitches &= ~0x80;
+    mySwitches &= ~0x80U;
   }
   else
   {
-    mySwitches |= 0x80;
+    mySwitches |= 0x80U;
   }
 
   if(props.get(PropType::Console_LeftDiff) == "B")
   {
-    mySwitches &= ~0x40;
+    mySwitches &= ~0x40U;
   }
   else
   {
-    mySwitches |= 0x40;
+    mySwitches |= 0x40U;
   }
 
   if(props.get(PropType::Console_TVType) == "COLOR")
   {
-    mySwitches |= 0x08;
+    mySwitches |= 0x08U;
   }
   else
   {
-    mySwitches &= ~0x08;
+    mySwitches &= ~0x08U;
   }
 
   check7800Mode(settings);
@@ -62,57 +62,57 @@ void Switches::update()
   {
     if(myEvent.get(Event::Console7800Pause) != 0)
     {
-      mySwitches &= ~0x08;
+      mySwitches &= ~0x08U;
     }
     else
     {
-      mySwitches |= 0x08;
+      mySwitches |= 0x08U;
     }
   }
 
   if(myEvent.get(Event::ConsoleColor) != 0)
   {
-    mySwitches |= 0x08;
+    mySwitches |= 0x08U;
   }
   else if(myEvent.get(Event::ConsoleBlackWhite) != 0)
   {
-    mySwitches &= ~0x08;
+    mySwitches &= ~0x08U;
   }
 
   if(myEvent.get(Event::ConsoleRightDiffA) != 0)
   {
-    mySwitches |= 0x80;
+    mySwitches |= 0x80U;
   }
   else if(myEvent.get(Event::ConsoleRightDiffB) != 0)
   {
-    mySwitches &= ~0x80;
+    mySwitches &= ~0x80U;
   }
 
   if(myEvent.get(Event::ConsoleLeftDiffA) != 0)
   {
-    mySwitches |= 0x40;
+    mySwitches |= 0x40U;
   }
   else if(myEvent.get(Event::ConsoleLeftDiffB) != 0)
   {
-    mySwitches &= ~0x40;
+    mySwitches &= ~0x40U;
   }
 
   if(myEvent.get(Event::ConsoleSelect) != 0)
   {
-    mySwitches &= ~0x02;
+    mySwitches &= ~0x02U;
   }
   else
   {
-    mySwitches |= 0x02;
+    mySwitches |= 0x02U;
   }
 
   if(myEvent.get(Event::ConsoleReset) != 0)
   {
-    mySwitches &= ~0x01;
+    mySwitches &= ~0x01U;
   }
   else
   {
-    mySwitches |= 0x01;
+    mySwitches |= 0x01U;
   }
 }
 
@@ -130,14 +130,14 @@ uInt8 Switches::read(uInt64 nowCycles) const
     const uInt64 pos = myEvent.windowPosition(nowCycles);
 
     if(myEvent.get(Event::ConsoleSelect, pos) != 0)
-      sw &= ~0x02;
+      sw &= ~0x02U;
     else
-      sw |= 0x02;
+      sw |= 0x02U;
 
     if(myEvent.get(Event::ConsoleReset, pos) != 0)
-      sw &= ~0x01;
+      sw &= ~0x01U;
     else
-      sw |= 0x01;
+      sw |= 0x01U;
   }
 
   return sw;
@@ -148,11 +148,11 @@ void Switches::setTvColor(bool setColor)
 {
   if(setColor)
   {
-    mySwitches |= 0x08;
+    mySwitches |= 0x08U;
   }
   else
   {
-    mySwitches &= ~0x08;
+    mySwitches &= ~0x08U;
   }
 }
 
@@ -161,11 +161,11 @@ void Switches::setLeftDifficultyA(bool setToA)
 {
   if(setToA)
   {
-    mySwitches |= 0x40;
+    mySwitches |= 0x40U;
   }
   else
   {
-    mySwitches &= ~0x40;
+    mySwitches &= ~0x40U;
   }
 }
 
@@ -174,11 +174,11 @@ void Switches::setRightDifficultyA(bool setToA)
 {
   if(setToA)
   {
-    mySwitches |= 0x80;
+    mySwitches |= 0x80U;
   }
   else
   {
-    mySwitches &= ~0x80;
+    mySwitches &= ~0x80U;
   }
 }
 

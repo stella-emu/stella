@@ -50,8 +50,8 @@ void Launcher::loadSize()
   // Do not include overscan when launcher saving size
   myOSystem.settings().setValue("launcherres", mySize);
   // Now make overscan effective
-  mySize.w = std::min(mySize.w, static_cast<uInt32>(d.w * overscan));
-  mySize.h = std::min(mySize.h, static_cast<uInt32>(d.h * overscan));
+  mySize.w = std::min(mySize.w, U32(d.w * overscan));
+  mySize.h = std::min(mySize.h, U32(d.h * overscan));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,13 +142,11 @@ void Launcher::updateTime(uInt64 time)
     relayout();
     mySettleCountdown = 15;
   }
-  else if(mySettleCountdown > 0)
+  // Once the countdown reaches zero, run the settle pass
+  // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+  else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
   {
-    // Once the countdown reaches zero, run the settle pass
-    if(--mySettleCountdown == 0)
-    {
-      relayout();
-      myOSystem.frameBuffer().resizeSettled();
-    }
+    relayout();
+    myOSystem.frameBuffer().resizeSettled();
   }
 }

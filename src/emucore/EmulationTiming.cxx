@@ -93,7 +93,7 @@ EmulationTiming& EmulationTiming::updateAudioQueueHeadroom(uInt32 audioQueueHead
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationTiming& EmulationTiming::updateSpeedFactor(float speedFactor)
 {
-  mySpeedFactor = static_cast<double>(speedFactor);
+  mySpeedFactor = DBL(speedFactor);
   recalculate();
 
   return *this;
@@ -171,12 +171,12 @@ void EmulationTiming::recalculate()
 
   switch (myConsoleTiming) {
     case ConsoleTiming::ntsc:
-      myAudioSampleRate = static_cast<uInt32>(round(mySpeedFactor * 262 * 76 * 60) / 38);
+      myAudioSampleRate = U32(round(mySpeedFactor * 262 * 76 * 60) / 38);
       break;
 
     case ConsoleTiming::pal:
     case ConsoleTiming::secam:
-      myAudioSampleRate = static_cast<uInt32>(round(mySpeedFactor * 312 * 76 * 50) / 38);
+      myAudioSampleRate = U32(round(mySpeedFactor * 312 * 76 * 50) / 38);
       break;
 
     default:
@@ -186,9 +186,9 @@ void EmulationTiming::recalculate()
   myCyclesPerSecond = myAudioSampleRate * 38;
 
   myCyclesPerFrame = 76 * myLinesPerFrame;
-  myMaxCyclesPerTimeslice = static_cast<uInt32>(round(mySpeedFactor * myCyclesPerFrame * 2));
-  myMinCyclesPerTimeslice = static_cast<uInt32>(round(mySpeedFactor * myCyclesPerFrame / 2));
-  myAudioFragmentSize = static_cast<uInt32>(round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame));
+  myMaxCyclesPerTimeslice = U32(round(mySpeedFactor * myCyclesPerFrame * 2));
+  myMinCyclesPerTimeslice = U32(round(mySpeedFactor * myCyclesPerFrame / 2));
+  myAudioFragmentSize = U32(round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame));
 
   myPrebufferFragmentCount = discreteDivCeil(
     myPlaybackPeriod * myAudioSampleRate,

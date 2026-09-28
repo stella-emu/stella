@@ -90,7 +90,7 @@ class PhysicalJoystick
     // Convert from string to Port type and vice versa
     static string getName(const Port _port) {
       static constexpr std::array<string_view,
-      static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+      U8(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
         "Auto", "Left", "Right"
       };
 
@@ -99,11 +99,11 @@ class PhysicalJoystick
 
     static Port getPort(string_view portName) {
       static constexpr std::array<string_view,
-      static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
+      U8(PhysicalJoystick::Port::NUM_PORTS)> NAMES = {
         "Auto", "Left", "Right"
       };
 
-      for(uInt8 i = 0; i < static_cast<uInt8>(PhysicalJoystick::Port::NUM_PORTS); ++i)
+      for(uInt8 i = 0; i < U8(PhysicalJoystick::Port::NUM_PORTS); ++i)
         if(BSPF::equalsIgnoreCase(portName, NAMES[i]))
           return PhysicalJoystick::Port{i};
 

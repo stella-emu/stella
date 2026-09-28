@@ -20,7 +20,7 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Missile::Missile(uInt32 collisionMask)
+Missile::Missile(CollisionMask collisionMask)
   : myCollisionMaskDisabled{collisionMask}
 {
 }
@@ -55,7 +55,7 @@ void Missile::enam(uInt8 value)
 {
   const auto oldEnam = myEnam;
 
-  myEnam = (value & 0x02) > 0;
+  myEnam = (value & 0x02U) > 0;
 
   if (oldEnam != myEnam) {
     // ENAM toggling changes whether the missile contributes pixels — flush
@@ -70,7 +70,7 @@ void Missile::enam(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::hmm(uInt8 value)
 {
-  myHmmClocks = (value >> 4) ^ 0x08;
+  myHmmClocks = (U32(value) >> 4U) ^ 0x08U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,7 +116,7 @@ void Missile::resm(uInt8 counter, bool hblank, bool lateRespxCondition)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::resmp(uInt8 value)
 {
-  const uInt8 resmp = value & 0x02;
+  const uInt8 resmp = value & 0x02U;
 
   if (resmp == myResmp) return;
 
@@ -133,7 +133,7 @@ void Missile::resmp(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? CollisionMask::ALL : (CollisionMask::VISIBLE | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,8 +148,8 @@ void Missile::nusiz(uInt8 value)
 {
   static constexpr std::array<uInt8, 4> ourWidths = { 1, 2, 4, 8 };
 
-  myDecodesOffset = value & 0x07;
-  myWidth = ourWidths[(value & 0x30) >> 4];
+  myDecodesOffset = value & 0x07U;
+  myWidth = ourWidths[(value & 0x30U) >> 4U];
   myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
   if (myIsRendering && std::cmp_greater_equal(myRenderCounter, myWidth))
@@ -237,8 +237,8 @@ void Missile::applyColors()
 {
   if (!myDebugEnabled)
   {
-    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
-    else                          myObjectColor &= 0xfe;
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01U;
+    else                          myObjectColor &= 0xfeU;
     myColor = myObjectColor;
   }
   else
@@ -292,9 +292,9 @@ bool Missile::save(Serializer& out) const
 {
   try
   {
-    out.putInt(collision);
-    out.putInt(myCollisionMaskDisabled);
-    out.putInt(myCollisionMaskEnabled);
+    out.putShort(Bitmask::to_underlying(collision));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskDisabled));
+    out.putShort(Bitmask::to_underlying(myCollisionMaskEnabled));
 
     out.putBool(myIsEnabled);
     out.putBool(myIsSuppressed);
@@ -334,9 +334,9 @@ bool Missile::load(Serializer& in)
 {
   try
   {
-    collision = in.getInt();
-    myCollisionMaskDisabled = in.getInt();
-    myCollisionMaskEnabled = in.getInt();
+    collision = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskDisabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
+    myCollisionMaskEnabled = Bitmask::from_underlying<CollisionMask>(in.getShort());
 
     myIsEnabled = in.getBool();
     myIsSuppressed = in.getBool();
@@ -356,7 +356,7 @@ bool Missile::load(Serializer& in)
 
     // Mask as in setNusiz(); the decode table has only 8 entries, so an
     // out-of-range offset from a corrupt save file must not index past it
-    myDecodesOffset = in.getByte() & 0x07;
+    myDecodesOffset = in.getByte() & 0x07U;
     myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
     myColor = in.getByte();

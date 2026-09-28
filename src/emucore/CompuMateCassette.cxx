@@ -86,12 +86,12 @@ uInt8 CompuMateCassette::cassetteBit() const
   // Convert current system cycle count to cassette sample position.
   // Header: SYNC_BYTES bytes of 0xFF precede the program data (~10 seconds of sync tone)
 
-  const auto samplePos = static_cast<double>(mySystem.cycles() - myCasStartCycle) * myCasFreqRatio;
-  const auto streamBitIdx = static_cast<uInt64>(samplePos / SAMPLES_PER_BIT);
-  const auto phase = samplePos - static_cast<double>(streamBitIdx) * SAMPLES_PER_BIT;
+  const auto samplePos = DBL(mySystem.cycles() - myCasStartCycle) * myCasFreqRatio;
+  const auto streamBitIdx = U64(samplePos / SAMPLES_PER_BIT);
+  const auto phase = samplePos - DBL(streamBitIdx) * SAMPLES_PER_BIT;
 
   const uInt64 byteIdx = streamBitIdx / FRAME_BITS;
-  const auto bitInByte = static_cast<uInt32>(streamBitIdx % FRAME_BITS);
+  const auto bitInByte = U32(streamBitIdx % FRAME_BITS);
 
   const uInt64 totalBytes = SYNC_BYTES + myCasData.size();
   const uInt64 pct = byteIdx < totalBytes ? byteIdx * 100 / totalBytes : 100;
@@ -99,7 +99,7 @@ uInt8 CompuMateCassette::cassetteBit() const
   {
     myCasLastPct = pct;
     myOSystem.frameBuffer().showGaugeMessage("Loading cassette",
-      std::format("{}%", pct), static_cast<float>(pct), 0.F, 100.F);
+      std::format("{}%", pct), FLT(pct), 0.F, 100.F);
   }
 
   uInt8 byte{};
@@ -113,11 +113,11 @@ uInt8 CompuMateCassette::cassetteBit() const
   // Decode the current bit value
   bool bit{};
   if(bitInByte == 0)
-    bit = false;                          // start bit
+    bit = false;                                // start bit
   else if(bitInByte < 9)
-    bit = (byte >> (bitInByte - 1)) & 1;  // 8 data bits, LSB first
+    bit = (U32(byte) >> (bitInByte - 1)) & 1U;  // 8 data bits, LSB first
   else
-    bit = true;                           // 4 stop bits
+    bit = true;                                 // 4 stop bits
 
   // Return waveform level at sub-bit phase position
   if(!bit)
@@ -202,7 +202,7 @@ void CompuMateCassette::cassetteD6Toggled(uInt64 cycles)
     }
     else
     {
-      myCyclesPerBit   = static_cast<double>(cycles - mySaveT0);
+      myCyclesPerBit   = DBL(cycles - mySaveT0);
       mySaveCalibrated = true;
       mySaveBitTrans[1] = 1;
       cerr << std::format("CompuMate FSK calibrated: {} cycles/bit\n", myCyclesPerBit);
@@ -219,8 +219,8 @@ void CompuMateCassette::cassetteD6Toggled(uInt64 cycles)
     // floors into the previous bin, corrupting the byte's transition pattern.
     // myCyclesPerBit/16 is wider than any expected jitter and still well
     // within the bin 12 upper bound.
-    const auto cyclesSinceT0 = static_cast<double>(cycles - mySaveT0);
-    const auto bitWindow = static_cast<int>(
+    const auto cyclesSinceT0 = DBL(cycles - mySaveT0);
+    const auto bitWindow = I32(
         (cyclesSinceT0 + myCyclesPerBit / 16.0) / myCyclesPerBit);
     // A complete 1-bit stop bit holds exactly 4 transitions; once bit 12 is
     // "full", any further transition belongs to the next byte's start bit.
@@ -261,10 +261,10 @@ void CompuMateCassette::finalizeSaveByte()
 
   // Decode 8 data bits, LSB first
   uInt8 byte = 0;
-  for(int i = 1; i <= 8; ++i)
+  for(uInt32 i = 1; i <= 8; ++i)
   {
     if(mySaveBitTrans[i] == 4)
-      byte |= static_cast<uInt8>(1U << (i - 1));
+      byte |= U8(1U << (i - 1));
     else if(mySaveBitTrans[i] != 2)
     {
       ++mySaveFailCount;
@@ -292,7 +292,7 @@ void CompuMateCassette::finalizeSaveByte()
     {
       mySaveLastPct = pct;
       myOSystem.frameBuffer().showGaugeMessage("Saving cassette",
-        std::format("{}%", pct), static_cast<float>(pct), 0.F, 100.F);
+        std::format("{}%", pct), FLT(pct), 0.F, 100.F);
     }
     if(mySaveBytePos >= mySaveExpectedSize)
       finalizeSave();

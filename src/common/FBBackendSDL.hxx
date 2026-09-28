@@ -299,7 +299,7 @@ class FBBackendSDL : public FBBackend
     /**
       Which renderer an 'auto' preference asks SDL for; empty lets SDL choose.
     */
-    static string autoRenderer();
+    static string_view autoRenderer();
 
   private:
     OSystem& myOSystem;
@@ -320,6 +320,9 @@ class FBBackendSDL : public FBBackend
     // Text events are sometimes enabled before a window exists
     // So we cache the request here, and honour it after the window has been created
     bool myTextEventsEnabled{false};
+
+    // Resizability, applied by setVideoMode() before the window is shown
+    bool myResizable{false};
 
     // Center setting of current window
     bool myCenter{false};

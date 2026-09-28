@@ -100,7 +100,7 @@ void CartridgeCTY::install(System& system)
 uInt8 CartridgeCTY::peek(uInt16 address)
 {
   const uInt16 peekAddress = address;
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
   const uInt8 peekValue = myImage[myBankOffset + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
@@ -126,10 +126,10 @@ uInt8 CartridgeCTY::peek(uInt16 address)
      lsl     r2, r2, #2
     */
 
-    i = myMusicCounters[0] >> 31;
-    i = i + (myMusicCounters[1] >> 31);
-    i = i + (myMusicCounters[2] >> 31);
-    i <<= 2;
+    i = myMusicCounters[0] >> 31U;
+    i = i + (myMusicCounters[1] >> 31U);
+    i = i + (myMusicCounters[2] >> 31U);
+    i <<= 2U;
 
     return i;
 
@@ -150,13 +150,13 @@ uInt8 CartridgeCTY::peek(uInt16 address)
       case 0x00:  // Error code after operation
         return myRAM[0];
       case 0x01:  // Get next Random Number (8-bit LFSR)
-        myRandomNumber = ((myRandomNumber & (1<<10)) ? 0x10adab1e: 0x00) ^
-                         ((myRandomNumber >> 11) | (myRandomNumber << 21));
-        return myRandomNumber & 0xFF;
+        myRandomNumber = ((myRandomNumber & (1U<<10U)) ? 0x10adab1eU: 0x00U) ^
+                         ((myRandomNumber >> 11U) | (myRandomNumber << 21U));
+        return myRandomNumber & 0xFFU;
       case 0x02:  // Get Tune position (low byte)
-        return myTunePosition & 0xFF;
+        return myTunePosition & 0xFFU;
       case 0x03:  // Get Tune position (high byte)
-        return (myTunePosition >> 8) & 0xFF;
+        return (U32(myTunePosition) >> 8U) & 0xFFU;
       default:
         return myRAM[address];
     }
@@ -193,7 +193,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 {
   const uInt16 pokeAddress = address;
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
   {
@@ -255,15 +255,15 @@ bool CartridgeCTY::bank(uInt16 bank, uInt16)
   // Remember what bank we're in
   // Constrain to a valid bank so a corrupt bank value (e.g. from a
   // tampered save state) can never offset myImage[] out of bounds
-  myBankOffset = (bank % romBankCount()) << 12;
+  myBankOffset = (U32(bank) % romBankCount()) << 12U;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -272,7 +272,7 @@ bool CartridgeCTY::bank(uInt16 bank, uInt16)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCTY::getBank(uInt16) const
 {
-  return myBankOffset >> 12;
+  return myBankOffset >> 12U;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,14 +284,14 @@ uInt16 CartridgeCTY::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
+  address &= 0x0FFFU;
 
   if(address < 0x0080)
   {
     // Normally, a write to the read port won't do anything
     // However, the patch command is special in that ignores such
     // cart restrictions
-    myRAM[address & 0x003F] = value;
+    myRAM[address & 0x003FU] = value;
   }
   else
     myImage[myBankOffset + address] = value;
@@ -359,7 +359,7 @@ bool CartridgeCTY::load(Serializer& in)
     myFrequencyImage = ByteSpan{myTuneData}.subspan(tuneOffset);
 
     // Guard the tune position so note indexing stays within the current tune
-    if((static_cast<size_t>(myTunePosition) + 1) * 3 > myFrequencyImage.size())
+    if((SZT(myTunePosition) + 1) * 3 > myFrequencyImage.size())
       myTunePosition = 0;
   }
   catch(...)
@@ -403,8 +403,8 @@ uInt8 CartridgeCTY::ramReadWrite()
   {
     // Opcode and value in form of XXXXYYYY (from myOperationType), where:
     //    XXXX = index and YYYY = operation
-    const uInt8 index = myOperationType >> 4;
-    switch(myOperationType & 0xf)
+    const uInt8 index = myOperationType >> 4U;
+    switch(myOperationType & 0xfU)
     {
       case 1:  // Load tune (index = tune)
         if(index < 7)
@@ -440,7 +440,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         break;
     }
     // Bit 6 is 1, busy
-    return myImage[myBankOffset + 0xFF4] | 0x40;
+    return myImage[myBankOffset + 0xFF4] | 0x40U;
   }
   else
   {
@@ -451,11 +451,11 @@ uInt8 CartridgeCTY::ramReadWrite()
       myRAM[0] = 0;            // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[myBankOffset + 0xFF4] & ~0x40;
+      return myImage[myBankOffset + 0xFF4] & ~0x40U;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[myBankOffset + 0xFF4] | 0x40;
+      return myImage[myBankOffset + 0xFF4] | 0x40U;
   }
 }
 
@@ -465,7 +465,7 @@ void CartridgeCTY::loadTune(uInt8 index)
   // Each tune is offset by 4096 bytes
   // Instead of copying non-modifiable data around (as would happen on the
   // Harmony), we simply point to the appropriate tune
-  myFrequencyImage = ByteSpan{myTuneData}.subspan(index << 12);
+  myFrequencyImage = ByteSpan{myTuneData}.subspan(index << 12U);
 
   // Reset to beginning of tune
   myTunePosition = 0;
@@ -540,7 +540,7 @@ void CartridgeCTY::loadScore(uInt8 index)
     }
 
     // Grab 60B slice @ given index (first 4 bytes are ignored)
-    std::copy_n(scoreRAM.begin() + (index << 6) + 4, 60, myRAM.begin() + 4);
+    std::copy_n(scoreRAM.begin() + (index << 6U) + 4, 60, myRAM.begin() + 4);
   }
 }
 
@@ -562,7 +562,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     }
 
     // Add 60B RAM to score table @ given index (first 4 bytes are ignored)
-    std::copy_n(myRAM.begin() + 4, 60, scoreRAM.begin() + (index << 6) + 4);
+    std::copy_n(myRAM.begin() + 4, 60, scoreRAM.begin() + (index << 6U) + 4);
 
     // Save score RAM
     serializer.rewind();
@@ -573,7 +573,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR saving score table " << static_cast<int>(index) << '\n';
+      cerr << name() << ": ERROR saving score table " << I32(index) << '\n';
     }
   }
 }
@@ -602,13 +602,13 @@ void CartridgeCTY::wipeAllScores()
 FORCE_INLINE void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = U32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CTY OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const auto wholeClocks = static_cast<uInt32>(clocks);
-  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
+  const auto wholeClocks = U32(clocks);
+  myFractionalClocks = clocks - DBL(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)

@@ -128,7 +128,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int fontWidth = Dialog::fontWidth();
   const bool largeFont = _font.isLarge();
-  const int numRanks = static_cast<int>(NUM_RANKS);
+  const int numRanks = I32(NUM_RANKS);
   const VariantList items;
   WidgetArray wid;
 
@@ -172,7 +172,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                                TextAlign::Center);
     myNameWidgets[r] = new LabelWidget(this, _font, "");
     myEditNameWidgets[r] = new EditTextWidget(this, _font,
-        static_cast<int>(NAME_FIELD.size()));
+        I32(NAME_FIELD.size()));
     myEditNameWidgets[r]->setFlags(EditTextWidget::Flag::Invisible);
     myEditNameWidgets[r]->setEnabled(false);
     myDateWidgets[r] = new LabelWidget(this, _font, "");
@@ -220,7 +220,7 @@ void HighScoresDialog::layout()
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  const int numRanks = static_cast<int>(NUM_RANKS);
+  const int numRanks = I32(NUM_RANKS);
   // Two characters between the table's columns
   const int COL_GAP = fontWidth * 2;
 
@@ -317,8 +317,8 @@ void HighScoresDialog::layout()
 
   const Common::Size natural = root->naturalSize();
 
-  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+  _w = std::max(I32(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + I32(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -581,7 +581,7 @@ void HighScoresDialog::deleteRank(int rank)
     --myHighScoreRank;
     --myEditRank;
     // Guard: myEditRank + 1 is now the old position, still valid after decrement
-    if (std::cmp_less(myEditRank + 1, static_cast<int>(NUM_RANKS)))
+    if (std::cmp_less(myEditRank + 1, I32(NUM_RANKS)))
       myEditNameWidgets[myEditRank]->setText(
           myEditNameWidgets[myEditRank + 1]->getText());
   }

@@ -368,7 +368,7 @@ Int32 HighScoresManager::score() const
   const uInt32 numBytes = numAddrBytes(properties(jprops));
   const ScoreAddresses scoreAddr = getPropScoreAddr(jprops);
 
-  if(static_cast<uInt32>(scoreAddr.size()) < numBytes)
+  if(U32(scoreAddr.size()) < numBytes)
     return NO_VALUE;
   return score(numBytes, trailingZeroes(jprops), scoreBCD(jprops), scoreAddr);
 }
@@ -467,12 +467,12 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
 {
   //maxVal += zeroBased ? 0 : 1;
   maxVal -= zeroBased ? 1 : 0;
-  const Int32 bits = isBCD
+  const uInt32 bits = isBCD
     ? ceil(log(maxVal) / BSPF::ln10 * 4)
     : ceil(log(maxVal) / BSPF::ln2);
 
   // limit to maxVal's bits
-  val %= 1 << bits;
+  val %= 1U << bits;
 
   if (isBCD)
     val = fromBCD(val);
@@ -554,17 +554,17 @@ uInt16 HighScoresManager::fromHexStr(string_view addr)
   if(const auto pos = addr.find("0x"); pos != std::string::npos)
     addr = addr.substr(pos + 2);  // also +2, not +1, to skip "0x"
 
-  return static_cast<uInt16>(BSPF::stoi<16>(addr));
+  return U16(BSPF::stoi<16>(addr));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::fromBCD(uInt8 bcd)
 {
   // verify if score is legit
-  if ((bcd & 0xF0) >= 0xA0 || (bcd & 0xF) >= 0xA)
+  if ((bcd & 0xF0U) >= 0xA0 || (bcd & 0xFU) >= 0xA)
     return NO_VALUE;
 
-  return (bcd >> 4) * 10 + bcd % 16;
+  return (bcd >> 4U) * 10 + bcd % 16;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

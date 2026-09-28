@@ -75,7 +75,7 @@ string Bezel::getName(const Properties& props, int& index)
     " (Europe)", " (Germany)", " (France) (Unl)", " (Australia)"
   };
   static constexpr int SUFFIX_START = 2;
-  static constexpr int SUFFIX_END = SUFFIX_START + static_cast<int>(suffixes.size());
+  static constexpr int SUFFIX_END = SUFFIX_START + I32(suffixes.size());
 
   if(index < SUFFIX_END && pos != string_view::npos && pos > 0)
   {
@@ -175,10 +175,10 @@ bool Bezel::load()
     if(settings.getBool("bezel.win.auto"))
     {
       // Determine transparent window inside bezel image
-      const uInt32 xCenter = w >> 1;
+      const uInt32 xCenter = w / 2;
       top = borderSize(xCenter, 0, h, w);
       bottom = h - 1 - borderSize(xCenter, h - 1, h, -w);
-      const uInt32 yCenter = (bottom + top) >> 1;
+      const uInt32 yCenter = (bottom + top) / 2;
       left = borderSize(0, yCenter, w, 1);
       right = w - 1 - borderSize(w - 1, yCenter, w, -1);
     }
@@ -189,8 +189,8 @@ bool Bezel::load()
       // P1: 25, 25, 11, 22%
       // P2: 23, 23,  7, 20%
       const auto bezelBorder = [&](Int32 dim, string_view key) {
-        return std::min(dim - 1, static_cast<Int32>(
-            std::lround(dim * settings.getInt(key) / 100.0)));
+        return std::min(dim - 1,
+                        I32(std::lround(dim * settings.getInt(key) / 100.0)));
       };
       left   = bezelBorder(w, "bezel.win.left");
       right  = w - 1 - bezelBorder(w, "bezel.win.right");
@@ -231,10 +231,10 @@ void Bezel::apply()
     const FrameBuffer::WindowState& win = myFB.primaryWindow();
     const uInt32 bezelW =
       std::min(myFB.screenSize(win).w,
-      static_cast<uInt32>(std::round(myFB.imageRect(win).w() * myInfo.ratioW())));
+               U32(std::round(myFB.imageRect(win).w() * myInfo.ratioW())));
     const uInt32 bezelH =
       std::min(myFB.screenSize(win).h,
-      static_cast<uInt32>(std::round(myFB.imageRect(win).h() * myInfo.ratioH())));
+               U32(std::round(myFB.imageRect(win).h() * myInfo.ratioH())));
 
     // Position and scale bezel
     mySurface->setDstSize(bezelW, bezelH);

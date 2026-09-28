@@ -27,7 +27,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
 {
   // Create the controls at a placeholder position; reflow() lays them out
   // NOLINTBEGIN(cppcoreguidelines-prefer-member-initializer)
-  const auto grayValue = [&]() {
+  const auto grayValue = [&] {
     auto* g = new DataGridWidget(boss, font, 1, 1, 2, 2,
                                  Common::Base::Fmt::_2_2);
     g->setTarget(this);
@@ -149,7 +149,7 @@ void PointingDeviceWidget::setGrayCodeH()
 {
   auto& pDev = static_cast<PointingDevice&>(controller());
 
-  pDev.myCountH &= 0b11;
+  pDev.myCountH &= 0b11U;
   setValue(myGrayValueH, pDev.myCountH, pDev.myTrackBallLeft);
 }
 
@@ -158,7 +158,7 @@ void PointingDeviceWidget::setGrayCodeV()
 {
   auto& pDev = static_cast<PointingDevice&>(controller());
 
-  pDev.myCountV &= 0b11;
+  pDev.myCountV &= 0b11U;
   setValue(myGrayValueV, pDev.myCountV, !pDev.myTrackBallDown);
 }
 

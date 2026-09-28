@@ -42,8 +42,8 @@ string Cartridge3EPlusWidget::description()
   const uInt16 numRamBanks = myCart.ramBankCount();
 
   // Eventually, we should query this from the debugger/disassembler
-  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
-                                image[0x400 - 4]) / 0x1000) * 0x1000;
+  const uInt16 start = (((U32(image[0x400 - 3]) << 8U) |
+                          U32(image[0x400 - 4])) / 0x1000) * 0x1000;
 
   return std::format(
     "3E+ cartridge - (1{}64K ROM + RAM)\n"
@@ -72,13 +72,13 @@ void Cartridge3EPlusWidget::createBankWidgets()
   // they align in groups of their own — see layoutBankSelect()
   myBankWidgets.resize(bankSegs());
 
-  const uInt16 start = (((static_cast<uInt16>(image[0x400 - 3]) << 8) |
-                              image[0x400 - 4]) / 0x1000) * 0x1000;
+  const uInt16 start = (((U32(image[0x400 - 3]) << 8U) |
+                          U32(image[0x400 - 4])) / 0x1000) * 0x1000;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
     VariantList items;
-    const size_t bank_off = static_cast<size_t>(seg) * 2;
+    const size_t bank_off = SZT(seg) * 2;
 
     mySegLbl[seg] = new LabelWidget(_boss, _font,
         std::format("Set segment {} as", seg));
@@ -143,7 +143,7 @@ void Cartridge3EPlusWidget::layoutBankSelect(GUI::BoxLayout& col) const
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
-    const size_t off = static_cast<size_t>(seg) * 2;
+    const size_t off = SZT(seg) * 2;
 
     // The bank / type / commit controls along one row
     auto controls = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth);
@@ -227,7 +227,7 @@ void Cartridge3EPlusWidget::updateUIState()
   for(int seg = 0; std::cmp_less(seg, myCart3EP.myBankSegs); ++seg)
   {
     const uInt16 bank = myCart.getSegmentBank(seg);
-    const size_t bank_off = static_cast<size_t>(seg) * 2;
+    const size_t bank_off = SZT(seg) * 2;
 
     if(bank >= myCart.romBankCount()) // was RAM mapped here?
     {

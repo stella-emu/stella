@@ -184,8 +184,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& fslist, ListMode mode) const
       // directory paths carry a trailing separator (for internal path joins)
       // that must not leak into the name shown to the user.
       entry._displayName = AsciiFold::toAscii(wideToUtf8(desc.cFileName));
-      entry._size        = (static_cast<size_t>(desc.nFileSizeHigh) << 32) |
-                                                desc.nFileSizeLow;
+      entry._size        = (SZT(desc.nFileSizeHigh) << 32) | desc.nFileSizeLow;
 
       fslist.emplace_back(std::make_shared<FSNodeWINDOWS>(std::move(entry)));
 
@@ -268,14 +267,14 @@ std::wstring FSNodeWINDOWS::utf8ToWide(std::string_view s)
 
   const int size = MultiByteToWideChar(
     CP_UTF8, 0,
-    s.data(), static_cast<int>(s.size()),
+    s.data(), I32(s.size()),
     nullptr, 0);
 
   std::wstring w(size, L'\0');
 
   MultiByteToWideChar(
     CP_UTF8, 0,
-    s.data(), static_cast<int>(s.size()),
+    s.data(), I32(s.size()),
     w.data(), size);
 
   return w;
@@ -289,14 +288,14 @@ std::string FSNodeWINDOWS::wideToUtf8(const std::wstring_view w)
 
   const int needed = WideCharToMultiByte(
     CP_UTF8, 0,
-    w.data(), static_cast<int>(w.size()),
+    w.data(), I32(w.size()),
     nullptr, 0, nullptr, nullptr);
 
   std::string out(needed, '\0');
 
   WideCharToMultiByte(
     CP_UTF8, 0,
-    w.data(), static_cast<int>(w.size()),
+    w.data(), I32(w.size()),
     out.data(), needed,
     nullptr, nullptr);
 

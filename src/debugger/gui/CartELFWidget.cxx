@@ -72,7 +72,7 @@ void CartridgeELFWidget::layoutContent(GUI::BoxLayout& col) const
   // always shows and the height of its own text, which keeps the button below it
   // on the tab however short the window gets
   col.add(GUI::widgetItem(myLog, 0, myLog->minHeight()), GUI::SizePolicy::Stretch,
-          1, static_cast<int>(myLog->naturalSize().h), myLog->minHeight());
+          1, I32(myLog->naturalSize().h), myLog->minHeight());
   col.addSpace(_lineHeight / 2);
   col.addAuto(anchoredItem(mySaveImageButton));
 }

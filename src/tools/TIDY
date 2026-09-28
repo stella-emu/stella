@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-time run-clang-tidy-22 -quiet -header-filter=\(.*\.hxx\) -quiet \
+time run-clang-tidy-23 -quiet -header-filter=\(.*\.hxx\) -quiet \
 -checks=*,\
 -abseil*,\
 -altera*,\
 -android*,\
 -fuchsia*,\
+-zircon*,\
 -llvm*,\
 -boost-use-ranges,\
 -bugprone-branch-clone,\
@@ -70,7 +71,8 @@ time run-clang-tidy-22 -quiet -header-filter=\(.*\.hxx\) -quiet \
 -readability-named-parameter,\
 -readability-redundant-access-specifiers,\
 -readability-simplify-boolean-expr,\
--readability-suspicious-call-argument\
+-readability-suspicious-call-argument,\
+-readability-trailing-comma\
  | awk '
 BEGIN { header = 1 }
 /^\[/ {

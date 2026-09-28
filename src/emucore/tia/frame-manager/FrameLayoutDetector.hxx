@@ -125,7 +125,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     static constexpr int NUM_LUMS = 8;
     // Per-bin pixel counts; evaluated against statistical distributions to
     // override scanline-based layout detection when the result is decisive
-    std::array<uInt64, static_cast<size_t>(NUM_HUES * NUM_LUMS)> myColorCount{0};
+    std::array<uInt64, SZT(NUM_HUES * NUM_LUMS)> myColorCount{};
 
   private:
     // Following constructors and assignment operators not supported

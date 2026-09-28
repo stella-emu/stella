@@ -55,9 +55,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Level of logging (how much info to print)
   VariantList items;
-  VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
-  VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
-  VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
+  VarList::push_back(items, "None", I32(Logger::Level::ERR));
+  VarList::push_back(items, "Basic", I32(Logger::Level::INFO));
+  VarList::push_back(items, "Verbose", I32(Logger::Level::DEBUG));
   myLogLevelLbl = new LabelWidget(this, font, "Log level");
   myLogLevel = new PopUpWidget(this, font, items);
   wid.push_back(myLogLevel);
@@ -128,7 +128,7 @@ void LoggerDialog::loadConfig()
   myLogInfo->scrollToEnd();
 
   myLogLevel->setSelected(instance().settings().getString("loglevel"),
-    static_cast<int>(Logger::Level::INFO));
+    I32(Logger::Level::INFO));
   myLogToConsole->setState(instance().settings().getBool("logtoconsole"));
 }
 

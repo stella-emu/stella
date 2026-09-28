@@ -128,7 +128,7 @@ int Lexer::const_to_int(string_view s)
         ret = ret * 2 + (c - '0');
         if (ret > kMax) return -1;
       }
-      return static_cast<int>(ret);
+      return I32(ret);
 
     case Common::Base::Fmt::_10:
       for (const char c : s) {
@@ -136,7 +136,7 @@ int Lexer::const_to_int(string_view s)
         ret = ret * 10 + (c - '0');
         if (ret > kMax) return -1;
       }
-      return static_cast<int>(ret);
+      return I32(ret);
 
     case Common::Base::Fmt::_16:
       for (const char c : s) {
@@ -145,7 +145,7 @@ int Lexer::const_to_int(string_view s)
         ret = ret * 16 + (dig > 9 ? tolower(c) - 'a' + 10 : dig);
         if (ret > kMax) return -1;
       }
-      return static_cast<int>(ret);
+      return I32(ret);
 
     default:
       return 0;

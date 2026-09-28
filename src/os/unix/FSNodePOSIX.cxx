@@ -39,7 +39,7 @@ FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   }
   else if(_path[0] == '.')
   {
-    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+    if(const auto resolved = std::unique_ptr<char, decltype(&free)>
         (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
   }
@@ -183,7 +183,7 @@ bool FSNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
   {
-    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+    if(const auto resolved = std::unique_ptr<char, decltype(&free)>
         (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 
@@ -201,7 +201,7 @@ bool FSNodePOSIX::rename(string_view newfile)
   {
     _path = std::move(newPath);
 
-    if(auto resolved = std::unique_ptr<char, decltype(&free)>
+    if(const auto resolved = std::unique_ptr<char, decltype(&free)>
         (realpath(_path.c_str(), nullptr), free))
       _path = resolved.get();
 

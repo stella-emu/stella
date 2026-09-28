@@ -74,7 +74,7 @@ class PlusROMRequest {
       : myState{State::created},
         myDestination{destination},
         myId{id},
-        myRequestSize{static_cast<uInt8>(request.size())}
+        myRequestSize{U8(request.size())}
     {
       std::ranges::copy(request, myRequest.begin());
     }
@@ -203,13 +203,13 @@ bool PlusROM::initialize(ByteSpan image)
     return myIsPlusROM = false;
 
   // Host and path are stored at the NMI vector
-  size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
+  size_t i = ((U64(image[size - 5]) - 16) << 8U) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
     return myIsPlusROM = false;  // Invalid NMI
 
   // Path stored first, 0-terminated
   const auto pathNull = std::ranges::find(image.subspan(i), uInt8{0});
-  const size_t pathLen = static_cast<size_t>(pathNull - (image.begin() + i));
+  const size_t pathLen = SZT(pathNull - (image.begin() + i));
   const string path(reinterpret_cast<const char*>(image.data() + i), pathLen);
   i += pathLen;
 
@@ -221,7 +221,7 @@ bool PlusROM::initialize(ByteSpan image)
 
   // Host stored next, 0-terminated
   const auto hostNull = std::ranges::find(image.subspan(i), uInt8{0});
-  const size_t hostLen = static_cast<size_t>(hostNull - (image.begin() + i));
+  const size_t hostLen = SZT(hostNull - (image.begin() + i));
   const string host(reinterpret_cast<const char*>(image.data() + i), hostLen);
   i += hostLen;
 
@@ -248,16 +248,16 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 #ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
-  switch(address & 0x1FFF)
+  switch(address & 0x1FFFU)
   {
     // invalid reads from write addresses
     case WRITE_TO_BUFFER:     // Write byte to Tx buffer
-      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      myTxBuffer[myTxPos++] = address & 0xffU; // TODO: value is undetermined
       break;
 
     case WRITE_SEND_BUFFER:   // Write byte to Tx buffer and send to backend
                               // (and receive into Rx buffer)
-      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      myTxBuffer[myTxPos++] = address & 0xffU; // TODO: value is undetermined
       send();
       break;
 
@@ -286,7 +286,7 @@ bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 #ifdef HTTP_LIB_SUPPORT
   if(myCart.hotspotsLocked()) return false;
 
-  switch(address & 0x1FFF)
+  switch(address & 0x1FFFU)
   {
     // valid writes
     case WRITE_TO_BUFFER:     // Write byte to Tx buffer
@@ -511,7 +511,7 @@ ByteArray PlusROM::getReceive() const
 {
   const uInt8 rxReadPos = myRxReadPos != myRxWritePos ? myRxReadPos : myLastRxReadPos;
   ByteArray arr;
-  arr.reserve(static_cast<uInt8>(myRxWritePos - rxReadPos));  // wrapping subtraction gives correct count
+  arr.reserve(U8(myRxWritePos - rxReadPos));  // wrapping subtraction gives correct count
 
   // uInt8 index wraps past 255 back to 0 intentionally
   for(uInt8 i = rxReadPos; i != myRxWritePos; ++i)

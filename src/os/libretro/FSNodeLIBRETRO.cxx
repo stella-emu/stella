@@ -58,8 +58,8 @@ size_t vfsReadFile(const string& path, ByteArray& buffer, size_t size)
 
   // If a requested size to read is provided (size > 0), honour it
   const size_t sizeToRead = (size > 0)
-    ? std::min(static_cast<size_t>(fileSize), size)
-    : static_cast<size_t>(fileSize);
+    ? std::min(SZT(fileSize), size)
+    : SZT(fileSize);
 
   buffer.resize(sizeToRead);
   const int64_t bytesRead = libretro_vfs->read(file, buffer.data(), sizeToRead);
@@ -68,8 +68,8 @@ size_t vfsReadFile(const string& path, ByteArray& buffer, size_t size)
   if(bytesRead <= 0)
     return 0;
 
-  buffer.resize(static_cast<size_t>(bytesRead));
-  return static_cast<size_t>(bytesRead);
+  buffer.resize(SZT(bytesRead));
+  return SZT(bytesRead);
 }
 
 /**
@@ -92,7 +92,7 @@ size_t vfsWriteFile(const string& path, const void* data, size_t size)
     libretro_vfs->flush(file);
   libretro_vfs->close(file);
 
-  return bytesWritten > 0 ? static_cast<size_t>(bytesWritten) : 0;
+  return bytesWritten > 0 ? SZT(bytesWritten) : 0;
 }
 
 }  // namespace
@@ -130,7 +130,7 @@ bool FSNodeLIBRETRO::setFlags()
     {
       _isDirectory = (flags & RETRO_VFS_STAT_IS_DIRECTORY) != 0;
       _isFile = !_isDirectory && !(flags & RETRO_VFS_STAT_IS_CHARACTER_SPECIAL);
-      _size = static_cast<size_t>(file_size);
+      _size = SZT(file_size);
 
       if(_isDirectory && !_path.empty() && _path.back() != FSNode::PATH_SEPARATOR)
         _path += FSNode::PATH_SEPARATOR;
@@ -197,7 +197,7 @@ size_t FSNodeLIBRETRO::getSize() const
   {
     int32_t file_size = 0;
     libretro_vfs->stat(_path.c_str(), &file_size);
-    _size = static_cast<size_t>(file_size);
+    _size = SZT(file_size);
   }
   return _size.value_or(0);
 }

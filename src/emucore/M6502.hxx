@@ -285,7 +285,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, Device::AccessFlags flags);
+    uInt8 peek(uInt16 address, Device::AccessType flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -294,11 +294,11 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE);
+    void poke(uInt16 address, uInt8 value, Device::AccessType flags = Device::NONE);
 
     // Returns non-zero if the two addresses are on different pages
     static constexpr uInt16 NOTSAMEPAGE(uInt16 a, uInt16 b) noexcept {
-      return (a ^ b) & 0xff00;
+      return U32(a ^ b) & 0xff00U;
     }
 
     /**
@@ -307,15 +307,15 @@ class M6502 : public Serializable
       @return The processor status register
     */
     uInt8 PS() const {
-      return static_cast<uInt8>(
+      return U8(
         0x20U
-        | (static_cast<uInt8>(N)     << 7)
-        | (static_cast<uInt8>(V)     << 6)
-        | (static_cast<uInt8>(B)     << 4)
-        | (static_cast<uInt8>(D)     << 3)
-        | (static_cast<uInt8>(I)     << 2)
-        | (static_cast<uInt8>(!notZ) << 1)
-        | static_cast<uInt8>(C)
+        | (U32(N)     << 7U)
+        | (U32(V)     << 6U)
+        | (U32(B)     << 4U)
+        | (U32(D)     << 3U)
+        | (U32(I)     << 2U)
+        | (U32(!notZ) << 1U)
+        | U32(C)
       );
     }
 
@@ -325,13 +325,13 @@ class M6502 : public Serializable
       @param ps The value to set the processor status register to
     */
     void PS(uInt8 ps) {
-      N = ps & 0x80;
-      V = ps & 0x40;
+      N = ps & 0x80U;
+      V = ps & 0x40U;
       B = true;        // B = ps & 0x10;  The 6507's B flag always true
-      D = ps & 0x08;
-      I = ps & 0x04;
-      notZ = !(ps & 0x02);
-      C = ps & 0x01;
+      D = ps & 0x08U;
+      I = ps & 0x04U;
+      notZ = !(ps & 0x02U);
+      C = ps & 0x01U;
     }
 
     /**
@@ -426,7 +426,7 @@ class M6502 : public Serializable
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks()
     {
-      for(Int32 i = static_cast<Int32>(myCondBreaks.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondBreaks.size()) - 1; i >= 0; --i)
         if(myCondBreaks[i]->evaluate())
           return i;
 
@@ -435,7 +435,7 @@ class M6502 : public Serializable
 
     Int32 evalCondSaveStates()
     {
-      for(Int32 i = static_cast<Int32>(myCondSaveStates.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondSaveStates.size()) - 1; i >= 0; --i)
         if(myCondSaveStates[i]->evaluate())
           return i;
 
@@ -444,7 +444,7 @@ class M6502 : public Serializable
 
     Int32 evalCondTraps()
     {
-      for(Int32 i = static_cast<Int32>(myCondTraps.size()) - 1; i >= 0; --i)
+      for(Int32 i = I32(myCondTraps.size()) - 1; i >= 0; --i)
         if(myCondTraps[i].expr->evaluate())
           return i;
 

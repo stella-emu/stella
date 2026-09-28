@@ -213,7 +213,7 @@ string RewindManager::saveAllStates()
     for(auto& state : myStateList)
     {
       Serializer& s = state.data;
-      const auto stateSize = static_cast<uInt32>(s.size());
+      const auto stateSize = U32(s.size());
 
       s.rewind();
       buffer.resize(stateSize);
@@ -359,7 +359,7 @@ string RewindManager::getUnitString(Int64 cycles)
     "cycle", "scanline", "frame", "second", "minute"
   };
   const std::array<uInt64, UNIT_NAMES.size() + 1> UNIT_CYCLES = {
-    1, 76, 76 * scanlines, freq, freq * 60, uInt64{1} << 62
+    1, 76, 76 * scanlines, freq, freq * 60, uInt64{1} << 62U
   };
 
   const uInt64 u_cycles = std::abs(cycles);
@@ -405,7 +405,7 @@ IntArray RewindManager::cyclesList() const
 
   const uInt64 firstCycle = getFirstCycles();
   for(const auto& it: myStateList)
-    arr.push_back(static_cast<uInt32>(it.cycles - firstCycle));
+    arr.push_back(U32(it.cycles - firstCycle));
 
   return arr;
 }

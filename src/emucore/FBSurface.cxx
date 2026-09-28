@@ -31,7 +31,7 @@
 void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
 {
   // Note: checkbounds() must be done in calling method
-  uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
 
   *buffer = myPalette[color];
 }
@@ -105,7 +105,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
     return;
 
   // NOLINTNEXTLINE(misc-const-correctness)
-  uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
   const uInt32 ink = myPalette[color];
 
   while(x++ <= x2)
@@ -118,7 +118,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
   if(!checkBounds(x, y) || !checkBounds(x, y2))
     return;
 
-  uInt32* buffer = myPixels + (y * static_cast<size_t>(myPitch)) + x;
+  uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
   const uInt32 ink = myPalette[color];
 
   while(y++ <= y2)
@@ -160,13 +160,13 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     return;
 
   const uInt8* mask = glyph.mask;
-  uInt32* buffer = myPixels + (cy * static_cast<size_t>(myPitch)) + cx;
+  uInt32* buffer = myPixels + (cy * SZT(myPitch)) + cx;
   const uInt32 ink = myPalette[color];
 
-  for(int y = 0; y < glyph.h; ++y)
+  for(uInt32 y = 0; y < glyph.h; ++y)
   {
-    for(int x = 0; x < glyph.w; ++x)
-      if(mask[x >> 3] & (0x80 >> (x & 7)))
+    for(uInt32 x = 0; x < glyph.w; ++x)
+      if(mask[x >> 3U] & (0x80U >> (x & 7U)))
         buffer[x] = ink;
 
     mask += glyph.stride;
@@ -186,14 +186,14 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
     return;
 
   const uInt32* rows = icon.bitmap();
-  uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  uInt32* buffer = myPixels + (ty * SZT(myPitch)) + tx;
   const uInt32 ink = myPalette[color];
 
   for(uInt32 y = 0; y < h; ++y)
   {
-    uInt32 mask = 1 << (w - 1);
+    uInt32 mask = 1U << (w - 1);
 
-    for(uInt32 x = 0; x < w; ++x, mask >>= 1)
+    for(uInt32 x = 0; x < w; ++x, mask >>= 1U)
       if(rows[y] & mask)
         buffer[x] = ink;
 
@@ -211,9 +211,9 @@ void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
     return;
 
-  const int aw = static_cast<int>(w), ah = static_cast<int>(h),
-            thick = static_cast<int>(thickness);
-  uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  const int aw = I32(w), ah = I32(h),
+            thick = I32(thickness);
+  uInt32* buffer = myPixels + (ty * SZT(myPitch)) + tx;
   const uInt32 ink = myPalette[color];
 
   for(int y = 0; y < ah; ++y)
@@ -246,7 +246,7 @@ void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 nump
     return;
 
   // NOLINTNEXTLINE(misc-const-correctness)
-  uInt32* buffer = myPixels + (ty * static_cast<size_t>(myPitch)) + tx;
+  uInt32* buffer = myPixels + (ty * SZT(myPitch)) + tx;
 
   for(uInt32 i = 0; i < numpixels; ++i)
     *buffer++ = data[i];
@@ -358,7 +358,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
     drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor,
                linkStart, linkLen, underline);
     if(linkStart != string::npos)
-      linkStart = std::max(0, static_cast<int>(linkStart - leftStr.length()));
+      linkStart = std::max(0, I32(linkStart - leftStr.length()));
 
     h -= font.getFontHeight();
     y += font.getFontHeight();
@@ -398,7 +398,7 @@ int FBSurface::drawString(const GUI::Font& font, string_view s,
     int w2 = font.getStringWidth(ELLIPSIS);
 
     // SLOW algorithm to find the acceptable length. But it is good enough for now.
-    for(auto c: s)
+    for(const auto c: s)
     {
       const int charWidth = font.getCharWidth(c);
       if(w2 + charWidth > w)

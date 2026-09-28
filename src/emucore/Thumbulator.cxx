@@ -22,6 +22,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)  TODO: Too many macros for now
 #include "bspf.hxx"
 #include "Base.hxx"
@@ -173,6 +175,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// NOLINTNEXTLINE(modernize-use-string-view): THUMB_DISS/THUMB_DBUG below return a real built string
 string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 {
   _irqDrivenAudio = irqDrivenAudio;
@@ -230,13 +233,13 @@ void Thumbulator::updateTimer(uInt32 cycles)
 #ifdef TIMER_0
   if(T0TCR & 1) // bit 0 controls timer on/off
   {
-    T0TC += static_cast<uInt32>(cycles * timing_factor);
+    T0TC += U32(cycles * timing_factor);
     tim0Total = tim0Start = 0;
   }
 #endif
   if(T1TCR & 1) // bit 0 controls timer on/off
   {
-    T1TC += static_cast<uInt32>(cycles * timing_factor);
+    T1TC += U32(cycles * timing_factor);
     tim1Total = tim1Start = 0;
   }
 }
@@ -646,7 +649,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
       if(addr == 0xE01FC000) //MAMCR
       {
         DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-        data = static_cast<uInt32>(mamcr);
+        data = U32(mamcr);
         return data;
       }
       break;
@@ -657,7 +660,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
     case 0xe0000000: //peripherals
     default:
       DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-      data = static_cast<uInt32>(mamcr);
+      data = U32(mamcr);
       return data;
   #endif
   }
@@ -699,7 +702,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
           DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
-          data = static_cast<uInt32>(mamcr);
+          data = U32(mamcr);
           return data;
       #endif
 
@@ -774,13 +777,10 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
   reg &= 0xF;
   uInt32 data = reg_norm[reg];
   DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << '\n');
-  if(reg == 15)
+  if(reg == 15 && (data & 1))
   {
-    if(data & 1)
-    {
-      DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << '\n');
-      data &= ~1;
-    }
+    DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << '\n');
+    data &= ~1;
   }
   return data;
 }
@@ -928,7 +928,7 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
   {
     uInt32 rb = (inst >> 0) & 0x7FF;
 
-    if(rb & (1 << 10))
+    if(rb & (1U << 10U))
       rb |= (~0U) << 11;
     rb <<= 1;
     rb += pc;
@@ -1161,7 +1161,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     // instructionPtr is by construction outside the ROM range here, so
     // decode the halfword fetch16() already fetched (and bounds-checked)
     // instead of re-reading rom[] with an unmasked, out-of-range index
-    decodedOp = decodeInstructionWord(static_cast<uInt16>(inst), instructionPtr);
+    decodedOp = decodeInstructionWord(U16(inst), instructionPtr);
 
 #ifdef COUNT_OPS
   ++opCount[std::to_underlying(decodedOp)];
@@ -1474,11 +1474,10 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
 
     case Op::bgt: {
       THUMB_STAT(_stats.branches)
-      if(znFlags)
-      {
-        if(((znFlags & 0x80000000) && vFlag) ||
-           ((!(znFlags & 0x80000000)) && !vFlag))
-          write_register(15, decodedParam[decodedParamIdx]);      }
+      if(znFlags &&
+         (((znFlags & 0x80000000) && vFlag) ||
+          ((!(znFlags & 0x80000000)) && !vFlag)))
+        write_register(15, decodedParam[decodedParamIdx]);
       return 0;
     }
 
@@ -1523,8 +1522,8 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     case Op::bl: {
       // branch to label
       DO_DISS(statusMsg << '\n');
-      rb = inst & ((1 << 11) - 1);
-      if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
+      rb = inst & ((1U << 11U) - 1U);
+      if(rb & 1U << 10U) rb |= (~((1U << 11U) - 1U)); //sign extend
       rb <<= 12;
       rb += pc;
       write_register(14, rb);
@@ -1534,7 +1533,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
     case Op::blx_thumb: {
       // branch to label, switch to thumb
       rb = read_register(14);
-      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += (inst & ((1U << 11U) - 1U)) << 1U;
       rb += 2;
       DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
       write_register(14, (pc-2) | 1);
@@ -1548,7 +1547,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT(readability-function-size,
       // fxq: this should exit the code without having to detect it
       // TJ: seems to be not used
       rb = read_register(14);
-      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += (inst & ((1U << 11U) - 1U)) << 1U;
       rb &= 0xFFFFFFFC;
       rb += 2;
       DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << '\n');
@@ -2938,7 +2937,7 @@ Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
       type = ChipType::LPC2104;
   }
 
-  ChipPropsType props = ChipProps[static_cast<uInt32>(type)];
+  ChipPropsType props = ChipProps[U32(type)];
 
   _chipType = type;
   _chipMHz = props.MHz;
@@ -3268,10 +3267,10 @@ bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
   // The pattern is always aligned to 4
   for(uInt32 i = 0; i < romSize/2 - 2; i += 2)
   {
-    if(rom[i] == patternLo && rom[i + 1] == patternHi)
-      if(++count == repeats)
-        return true;
+    if(rom[i] == patternLo && rom[i + 1] == patternHi && ++count == repeats)
+      return true;
   }
   return false;
 }
 // NOLINTEND(cppcoreguidelines-macro-usage)
+// NOLINTEND(bugprone-signed-bitwise)

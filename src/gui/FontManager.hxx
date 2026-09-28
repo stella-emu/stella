@@ -158,7 +158,7 @@ class FontManager
       @param role  The part of the UI asking
     */
     const GUI::Font& font(FontRole role) const
-      { return myFonts[static_cast<size_t>(role)]; }
+      { return myFonts[SZT(role)]; }
 
     // The general font used in all UI elements, and the smaller info font
     // that is auto-sized to pair with it
@@ -211,7 +211,7 @@ class FontManager
     // The mutable side of font(); the change* methods above are the only
     // callers, since a role's Font is swapped in place and never replaced
     GUI::Font& fontFor(FontRole role)
-      { return myFonts[static_cast<size_t>(role)]; }
+      { return myFonts[SZT(role)]; }
 
   private:
     // The glyphs every font draws with, unpacked once per distinct font and
@@ -222,7 +222,7 @@ class FontManager
     // One Font per role, indexed by FontRole.  The debugger's roles are here
     // even in a build without it, which costs a descriptor each and keeps the
     // role table the same shape everywhere
-    std::array<GUI::Font, static_cast<size_t>(FontRole::numRoles)> myFonts;
+    std::array<GUI::Font, SZT(FontRole::numRoles)> myFonts;
 
   private:
     // Following constructors and assignment operators not supported

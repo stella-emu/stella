@@ -63,10 +63,10 @@ void MD5::init()
 void MD5::decode(BlockMSpan output, BlockSpan input)
 {
   for(uInt32 i = 0, j = 0; j < BLOCKSIZE; ++i, j += 4)
-    output[i] =  (static_cast<uInt32>(input[j]))
-              | ((static_cast<uInt32>(input[j+1])) << 8)
-              | ((static_cast<uInt32>(input[j+2])) << 16)
-              | ((static_cast<uInt32>(input[j+3])) << 24);
+    output[i] =  U32(input[j])
+              | (U32(input[j+1]) << 8U)
+              | (U32(input[j+2]) << 16U)
+              | (U32(input[j+3]) << 24U);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,10 +76,10 @@ void MD5::encode(ByteMSpan output, IntSpan input)
 {
   for(uInt32 i = 0, j = 0; j < output.size(); ++i, j += 4)
   {
-    output[j]   = static_cast<uInt8>(input[i] & 0xff);
-    output[j+1] = static_cast<uInt8>((input[i] >> 8) & 0xff);
-    output[j+2] = static_cast<uInt8>((input[i] >> 16) & 0xff);
-    output[j+3] = static_cast<uInt8>((input[i] >> 24) & 0xff);
+    output[j]   = U8(input[i] & 0xffU);
+    output[j+1] = U8((input[i] >> 8U) & 0xffU);
+    output[j+2] = U8((input[i] >> 16U) & 0xffU);
+    output[j+3] = U8((input[i] >> 24U) & 0xffU);
   }
 }
 
@@ -182,11 +182,11 @@ void MD5::update(ByteSpan input)
   auto index = count[0] / 8 % BLOCKSIZE;
 
   // Update number of bits
-  const auto length = static_cast<uInt32>(input.size());
-  count[0] += (length << 3);
-  if(count[0] < (length << 3))
+  const auto length = U32(input.size());
+  count[0] += (length << 3U);
+  if(count[0] < (length << 3U))
     count[1]++;
-  count[1] += (length >> 29);
+  count[1] += (length >> 29U);
 
   // Number of bytes we need to fill in buffer
   const uInt32 firstpart = 64 - index;
@@ -249,16 +249,16 @@ void MD5::finalize()
 // Return hex representation of digest as string
 string MD5::hexdigest() const
 {
-  if (!finalized)
+  if(!finalized)
     return "";
 
   static constexpr char hex[] = "0123456789abcdef";
   string result;
   result.reserve(32);
-  for (auto c: digest)
+  for(const auto c: digest)
   {
-    result += hex[(c >> 4) & 0x0f];
-    result += hex[c & 0x0f];
+    result += hex[(U32(c) >> 4U) & 0x0fU];
+    result += hex[c & 0x0fU];
   }
 
   return result;

@@ -88,14 +88,14 @@ namespace {
     speed = std::abs(speed);
 
     return BSPF::clamp(
-      static_cast<int>(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      I32(std::round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
       MIN_SPEED, MAX_SPEED
     );
   }
 
   constexpr float unmapSpeed(int speed)
   {
-    const float f_speed = static_cast<float>(speed) / 100;
+    const float f_speed = FLT(speed) / 100;
 
     return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
   }
@@ -130,7 +130,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
       std::format("Phosphor effect automatically {}", enable ? "enabled" : "disabled"));
   #endif
   };
-  myTIA  = std::make_unique<TIA>(*this, [this]() { return timing(); }, myOSystem.settings(), callback);
+  myTIA  = std::make_unique<TIA>(*this, [this] { return timing(); }, myOSystem.settings(), callback);
   myFrameManager = std::make_unique<FrameManager>();
   mySwitches = std::make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
@@ -138,7 +138,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myOSystem.sound().stopWav();
 
   // Reinitialize the RNG
-  myOSystem.random().initSeed(static_cast<uInt32>(TimerManager::getTicks()));
+  myOSystem.random().initSeed(U32(TimerManager::getTicks()));
 
   // Construct the system and components
   mySystem = std::make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
@@ -151,7 +151,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myRightControl = std::make_unique<Joystick>(Controller::Jack::Right, myEvent, *mySystem);
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
-  myCart->setStartBankFromPropsFunc([this]() {
+  myCart->setStartBankFromPropsFunc([this] {
     const string_view startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank.empty() || BSPF::equalsIgnoreCase(startbank, "AUTO"))
         ? -1 : BSPF::stoi(startbank);
@@ -349,7 +349,7 @@ string Console::formatFromFilename() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Console::formatFromSignature() const
+string_view Console::formatFromSignature() const
 {
   static constexpr std::array<uInt8, 5> PAL60_v1 = { 'P', 'A', 'L', '6', '0' };
   static constexpr std::array<uInt8, 6> PAL60_v2 = { 'P', 'A', 'L', ' ', '6', '0' };
@@ -635,7 +635,7 @@ void Console::cyclePhosphorMode(int direction)
   if(direction)
   {
     mode = static_cast<PhosphorHandler::PhosphorMode>
-      (BSPF::clampw(mode + direction, 0, static_cast<int>(PhosphorHandler::NumTypes - 1)));
+      (BSPF::clampw(mode + direction, 0, PhosphorHandler::NumTypes - 1));
     switch(mode)
     {
       case PhosphorHandler::Always:
@@ -822,7 +822,7 @@ void Console::toggleCorrectAspectRatio(bool toggle)
 void Console::setTIAProperties()
 {
   const Int32 vcenter = BSPF::clamp(
-    static_cast<Int32>(BSPF::stoi(myProperties.get(PropType::Display_VCenter))),
+    I32(BSPF::stoi(myProperties.get(PropType::Display_VCenter))),
                                   TIAConstants::minVcenter, TIAConstants::maxVcenter);
 
   if(gameRefreshRate() == 60)
@@ -1345,7 +1345,7 @@ void Console::changeJitterSense(int direction) const
   if(!myTIA->toggleJitter(3))
     direction = 0;
 
-  sensitivity = BSPF::clamp(static_cast<Int32>(sensitivity + direction),
+  sensitivity = BSPF::clamp(I32(sensitivity + direction),
     JitterEmulation::MIN_SENSITIVITY, JitterEmulation::MAX_SENSITIVITY);
   myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
 
@@ -1380,7 +1380,7 @@ void Console::changeJitterRecovery(int direction) const
   if(!myTIA->toggleJitter(3))
     direction = 0;
 
-  recovery = BSPF::clamp(static_cast<Int32>(recovery + direction),
+  recovery = BSPF::clamp(I32(recovery + direction),
     JitterEmulation::MIN_RECOVERY, JitterEmulation::MAX_RECOVERY);
   myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
 

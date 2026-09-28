@@ -49,7 +49,7 @@ uInt8 PointingDevice::read()
   // Elapsed CPU cycles since the start of the current input window; this is
   // the controller's only notion of time, just as a real quadrature encoder
   // emits transitions purely as a function of elapsed time
-  const int elapsed = static_cast<int>(mySystem.cycles() - myWindowStartCycle);
+  const int elapsed = I32(mySystem.cycles() - myWindowStartCycle);
 
   // Loop over all missed changes
   while(myCycleCountH < elapsed)
@@ -71,15 +71,15 @@ uInt8 PointingDevice::read()
     myCycleCountV += myTrackBallCyclesV;
   }
 
-  myCountH &= 0b11;
-  myCountV &= 0b11;
+  myCountH &= 0b11U;
+  myCountV &= 0b11U;
 
   const uInt8 portA = ioPortA(myCountH, myCountV, myTrackBallLeft, myTrackBallDown);
 
-  setPin(DigitalPin::One,   portA & 0b0001);
-  setPin(DigitalPin::Two,   portA & 0b0010);
-  setPin(DigitalPin::Three, portA & 0b0100);
-  setPin(DigitalPin::Four,  portA & 0b1000);
+  setPin(DigitalPin::One,   portA & 0b0001U);
+  setPin(DigitalPin::Two,   portA & 0b0010U);
+  setPin(DigitalPin::Three, portA & 0b0100U);
+  setPin(DigitalPin::Four,  portA & 0b1000U);
 
   return portA;
 }
@@ -149,7 +149,7 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
 {
   // Apply sensitivity and calculate remainder
   const float fTrackBallCount = counter * mySensitivity * TB_SENSITIVITY + counterRemainder;
-  int trackBallCount = static_cast<int>(std::lround(fTrackBallCount));
+  int trackBallCount = I32(std::lround(fTrackBallCount));
   counterRemainder = fTrackBallCount - trackBallCount;
 
   if(trackBallCount)
@@ -159,14 +159,14 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
 
     // Spread this window's movement evenly across the (estimated) length of an
     // input window, measured in CPU cycles instead of scanlines
-    trackBallCycles = static_cast<int>(cyclesLastWindow) / trackBallCount;
+    trackBallCycles = I32(cyclesLastWindow) / trackBallCount;
 
     // Set lower limit in case of (unrealistic) ultra fast mouse movements
     if(trackBallCycles == 0)
       trackBallCycles = 1;
 
     // Define cycle offset of first change
-    cycleCount = (trackBallCycles * firstOffset) >> 12;
+    cycleCount = U32(trackBallCycles * firstOffset) >> 12U;
   }
   else
   {
@@ -174,7 +174,7 @@ void PointingDevice::updateDirection(int counter, uInt64 cyclesLastWindow,
     cycleCount = INT_MAX;
 
     // Define offset factor for first change, move randomly forward by up to 1/8th
-    firstOffset = (((firstOffset << 3) + mySystem.randGenerator().next() %
-                  (1 << 12)) >> 3) & ((1 << 12) - 1);
+    firstOffset = (((U32(firstOffset) << 3U) + mySystem.randGenerator().next() %
+                  (1U << 12U)) >> 3U) & ((1U << 12U) - 1U);
   }
 }

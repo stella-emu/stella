@@ -99,7 +99,7 @@ class PopUpWidget : public EditableWidget
       9x18 font this is 9, the width the old small arrow bitmap had.
     */
     static int arrowWidth(const GUI::Font& font) {
-      return font.getMaxCharWidth() | 1;
+      return U32(font.getMaxCharWidth()) | 1U;
     }
 
     static int dropDownWidth(const GUI::Font& font) {

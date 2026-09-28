@@ -440,8 +440,8 @@ void UIDialog::layout()
   const Common::Size tabSize = myTab->naturalSize();
 
   myTab->setPos(xpos, VGAP + _th);
-  myTab->setWidth(static_cast<int>(tabSize.w));
-  myTab->setHeight(static_cast<int>(tabSize.h));
+  myTab->setWidth(I32(tabSize.w));
+  myTab->setHeight(I32(tabSize.h));
 
   _w = myTab->getWidth() + 2 * xpos;
   _h = _th + VGAP + myTab->getHeight() + VBORDER + buttonHeight + VBORDER;

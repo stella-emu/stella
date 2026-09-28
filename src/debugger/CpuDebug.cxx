@@ -150,13 +150,13 @@ int CpuDebug::icycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
-  my6502.PC = static_cast<uInt16>(pc);
+  my6502.PC = U16(pc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setSP(int sp)
 {
-  my6502.SP = static_cast<uInt8>(sp);
+  my6502.SP = U8(sp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,19 +168,19 @@ void CpuDebug::setPS(int ps)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setA(int a)
 {
-  my6502.A = static_cast<uInt8>(a);
+  my6502.A = U8(a);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setX(int x)
 {
-  my6502.X = static_cast<uInt8>(x);
+  my6502.X = U8(x);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setY(int y)
 {
-  my6502.Y = static_cast<uInt8>(y);
+  my6502.Y = U8(y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -81,7 +81,7 @@ void WhatsNewDialog::layout()
   // the one that has the final say
   uInt32 availW = 0, availH = 0;
   getDynamicBounds(availW, availH);
-  _w = std::min(static_cast<int>(availW), MAX_CHARS * fontWidth + HBORDER * 2);
+  _w = std::min(I32(availW), MAX_CHARS * fontWidth + HBORDER * 2);
 
   // Wrapping is the widget's own concern; it just has to be told the width,
   // and only then can it say how tall the wrapped text came to
@@ -95,12 +95,12 @@ void WhatsNewDialog::layout()
 
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addAuto(widgetItem(myText, 0,
-                           static_cast<int>(myText->naturalSize().h)));
+                           I32(myText->naturalSize().h)));
   root->addSpace(VGAP * 2);
   root->addAuto(std::move(okRow));
 
-  _h = std::min(static_cast<int>(availH),
-                _th + static_cast<int>(root->naturalSize().h));
+  _h = std::min(I32(availH),
+                _th + I32(root->naturalSize().h));
 
   root->doLayout(0, _th, _w, _h - _th);
 }

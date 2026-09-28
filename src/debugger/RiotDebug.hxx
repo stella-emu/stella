@@ -88,8 +88,8 @@ class RiotDebug : public DebuggerSystem
     int timReadCycles() const;
     uInt64 busyRateTimReadCycles() const;
     void resetBusyRate();
-    int timintAsInt() const { return static_cast<int>(timint()); } // so we can use _timInt pseudo-register
-    int intimAsInt() const { return static_cast<int>(intim()); }   // so we can use _inTim pseudo-register
+    int timintAsInt() const { return I32(timint()); } // so we can use _timInt pseudo-register
+    int intimAsInt() const { return I32(intim()); }   // so we can use _inTim pseudo-register
 
     /* Console switches */
     bool switches(int newVal = -1);
@@ -104,9 +104,9 @@ class RiotDebug : public DebuggerSystem
     string dirP1String();
 
     /* Port B description */
-    string diffP0String();
-    string diffP1String();
-    string tvTypeString();
+    string_view diffP0String();
+    string_view diffP1String();
+    string_view tvTypeString();
     string switchesString();
 
   private:

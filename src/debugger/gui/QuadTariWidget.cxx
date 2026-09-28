@@ -102,7 +102,7 @@ ControllerWidget* QuadTariWidget::addController(GuiObject* boss,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariWidget::loadConfig()
 {
-  const bool first = !(instance().console().tia().registerValue(VBLANK) & 0x80);
+  const bool first = !(instance().console().tia().registerValue(VBLANK) & 0x80U);
 
   myPointer->setLabel(first ? "<-" : "->");
 }

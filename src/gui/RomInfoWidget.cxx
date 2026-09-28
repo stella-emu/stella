@@ -158,7 +158,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
         const size_t size = image.size();
         sizeSuffix = size < 1_KB
           ? std::format(" - {}B", size)
-          : std::format(" - {}K", std::lround(size / static_cast<float>(1_KB)));
+          : std::format(" - {}K", std::lround(size / FLT(1_KB)));
       }
       myRomInfo.push_back(std::format("Type: {}{}{}",
           Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)),
@@ -207,8 +207,7 @@ void RomInfoWidget::drawWidget(bool hilite)
   int ypos = _y + 5;
   for(const auto& info : myRomInfo)
   {
-    if(info.length() * _font.getMaxCharWidth() <=
-       static_cast<size_t>(std::max(_w - 16, 0)))
+    if(info.length() * _font.getMaxCharWidth() <= SZT(std::max(_w - 16, 0)))
     {
       // 1 line for next entry
       if(ypos + _font.getFontHeight() > _h + _y)

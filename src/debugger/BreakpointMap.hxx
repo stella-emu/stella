@@ -31,8 +31,8 @@ class BreakpointMap
 {
   public:
     // breakpoint flags
-    static constexpr uInt32 ONE_SHOT = 1 << 0;    // used for 'trace' command
-    static constexpr uInt16 ANY_BANK = 0xffff;    // breakpoint valid in any bank
+    static constexpr uInt32 ONE_SHOT = 1U;     // used for 'trace' command
+    static constexpr uInt16 ANY_BANK = 0xffff; // breakpoint valid in any bank
 
     struct Breakpoint
     {
@@ -106,7 +106,7 @@ class BreakpointMap
     struct BreakpointHash {
       size_t operator()(const Breakpoint& bp) const {
         return std::hash<uInt64>()(
-          static_cast<uInt64>(bp.addr) * 13  // only check for address, bank check via == operator
+          U64(bp.addr) * 13  // only check for address, bank check via == operator
         );
       }
     };

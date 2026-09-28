@@ -65,7 +65,7 @@
 #endif
 
 using namespace std::placeholders;
-using json = nlohmann::json;
+using nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
@@ -141,7 +141,7 @@ void EventHandler::reset(EventHandlerState state)
   // We wait a little while (0.5s), since 'hold' events may be present,
   // and we want time for the ROM to process them
   if(state == EventHandlerState::EMULATION)
-    myOSystem.timer().setTimeout([&ev = myEvent]() { ev.clear(); }, 500);
+    myOSystem.timer().setTimeout([&ev = myEvent] { ev.clear(); }, 500);
   // Toggle 7800 mode
   set7800Mode();
 }
@@ -352,10 +352,10 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
     switch(b)
     {
       case MouseButton::LEFT:
-        myEvent.set(Event::MouseButtonLeftValue, static_cast<int>(pressed));
+        myEvent.set(Event::MouseButtonLeftValue, I32(pressed));
         break;
       case MouseButton::RIGHT:
-        myEvent.set(Event::MouseButtonRightValue, static_cast<int>(pressed));
+        myEvent.set(Event::MouseButtonRightValue, I32(pressed));
         break;
       default:
         return;
@@ -390,7 +390,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
     case SystemEvent::WINDOW_RESIZED:
     {
       auto& fb = myOSystem.frameBuffer();
-      const auto windowID = static_cast<uInt32>(data3);
+      const auto windowID = U32(data3);
 
     #ifdef DEBUGGER_SUPPORT
       // The companion TIA window resizes independently of the debugger window
@@ -433,7 +433,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       // Remember where the user put this window (data3 carries the window ID);
       // the position is read back from the window itself, so a fullscreen or
       // centered window is correctly skipped
-      myOSystem.frameBuffer().saveWindowPosition(static_cast<uInt32>(data3));
+      myOSystem.frameBuffer().saveWindowPosition(U32(data3));
       break;
 
     case SystemEvent::WINDOW_EXPOSED:
@@ -443,7 +443,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       // window untouched
       if(myState == EventHandlerState::DEBUGGER &&
          myOSystem.frameBuffer().secondaryWindowOpen() &&
-         static_cast<uInt32>(data1) == myOSystem.frameBuffer().secondaryWindowId())
+         U32(data1) == myOSystem.frameBuffer().secondaryWindowId())
       {
         myOSystem.debugger().invalidateTiaWindow();
         break;
@@ -2075,7 +2075,7 @@ void EventHandler::setComboMap()
   }
 
   // Erase the 'combo' array
-  const auto ERASE_ALL = [&]() {
+  const auto ERASE_ALL = [&] {
     for(int i = 0; i < COMBO_SIZE; ++i)
       for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         myComboTable[i][j] = Event::NoType;
@@ -2378,11 +2378,10 @@ StringList EventHandler::getActionList(const Event::EventSet& events,
         l.push_back(item.action);
   };
 
-  switch(mode)
-  {
-    case EventMode::kMenuMode: collectMatchingActions(ourMenuActionList); break;
-    default:                   collectMatchingActions(ourEmulActionList); break;
-  }
+  if(mode == EventMode::kMenuMode)
+    collectMatchingActions(ourMenuActionList);
+  else
+    collectMatchingActions(ourEmulActionList);
   return l;
 }
 
@@ -2610,15 +2609,15 @@ void EventHandler::changeMouseControllerMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseCursor(int direction)
 {
-  const int cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
+  const uInt32 cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
 
   myOSystem.settings().setValue("cursor", cursor);
   myOSystem.frameBuffer().setCursorState();
 
   myOSystem.frameBuffer().showTextMessage(
     std::format("Mouse cursor visibility: {}UI, {}Emulation",
-      (cursor & 2) ? "+" : "-",
-      (cursor & 1) ? "+" : "-"));
+      (cursor & 2U) ? "+" : "-",
+      (cursor & 1U) ? "+" : "-"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -89,7 +89,7 @@ class Base
     static string hex8(int v) { return toString(v, Fmt::_16_8); }
     static string hexN(int v, int width) {
       std::array<char, 32> buf{};
-      auto* end = writeHex(buf.data(), static_cast<uInt32>(v), width);
+      auto* end = writeHex(buf.data(), U32(v), width);
       return {buf.data(), end};
     }
 

@@ -105,7 +105,7 @@ void InputTextDialog::layout()
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  const int numRows = static_cast<int>(myInput.size());
+  const int numRows = I32(myInput.size());
 
   // A label + editbox per row.  The label column is as wide as the longest of
   // the labels (nobody measures one), and the fields line up beside it
@@ -143,7 +143,7 @@ void InputTextDialog::layout()
 
   _w = std::max(HBORDER * 2 + fontWidth * myWidthChars,
                 Dialog::buttonGroupWidth());
-  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+  _h = _th + I32(natural.h) + buttonHeight + VBORDER;
 
   root->doLayout(0, _th, _w, _h - _th);
 
@@ -201,7 +201,7 @@ void InputTextDialog::setMessage(string_view title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& InputTextDialog::getResult(int idx)
 {
-  if(static_cast<uInt32>(idx) < myInput.size())
+  if(U32(idx) < myInput.size())
     return myInput[idx]->getText();
   else
     return EmptyString();
@@ -210,21 +210,21 @@ const string& InputTextDialog::getResult(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setText(string_view str, int idx)
 {
-  if(static_cast<uInt32>(idx) < myInput.size())
+  if(U32(idx) < myInput.size())
     myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx)
 {
-  if(static_cast<uInt32>(idx) < myInput.size())
+  if(U32(idx) < myInput.size())
     myInput[idx]->setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setMaxLen(int len, int idx)
 {
-  if(static_cast<uInt32>(idx) < myInput.size())
+  if(U32(idx) < myInput.size())
   {
     // Remember the limit so layout() keeps this input at its fixed width
     // instead of stretching it to fill the row
@@ -237,14 +237,14 @@ void InputTextDialog::setMaxLen(int len, int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setToolTip(string_view str, int idx)
 {
-  if(static_cast<uInt32>(idx) < myLbl.size())
+  if(U32(idx) < myLbl.size())
     myLbl[idx]->setToolTip(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setFocus(int idx)
 {
-  if(static_cast<uInt32>(idx) < myInput.size())
+  if(U32(idx) < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
 }
 

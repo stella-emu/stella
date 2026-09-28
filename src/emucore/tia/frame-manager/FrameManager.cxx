@@ -64,12 +64,10 @@ void FrameManager::onNextLine()
   switch (myState)
   {
     case State::waitForVsyncStart:
-      if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
-      {
-        // if vertical blank is not enabled, bail out after too many frame  lines:
-        if (myVblank || myCurrentFrameTotalLines > Metrics::frameSizePAL * 2)
-          ++myVsyncLineCount;
-      }
+      // if vertical blank is not enabled, bail out after too many frame  lines:
+      if (((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0) &&
+          (myVblank || myCurrentFrameTotalLines > Metrics::frameSizePAL * 2))
+        ++myVsyncLineCount;
 
       if (myVsyncLineCount > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
 
@@ -89,7 +87,7 @@ void FrameManager::onNextLine()
       const Int32 jitter =
         (myJitterEnabled && myTotalFrames > Metrics::initialGarbageFrames) ? myJitterEmulation.jitter() : 0;
 
-      if (static_cast<Int32>(myLineInState) >= static_cast<Int32>(myYStart) + jitter) setState(State::frame);
+      if (I32(myLineInState) >= I32(myYStart) + jitter) setState(State::frame);
       break;
     }
 
@@ -192,7 +190,7 @@ void FrameManager::setState(FrameManager::State state)
 
       if (myTotalFrames > Metrics::initialGarbageFrames)
         myJitterEmulation.frameComplete(myCurrentFrameFinalLines,
-            static_cast<Int32>(myVsyncEnd - myVsyncStart), static_cast<Int32>(myVblankCycles));
+            I32(myVsyncEnd - myVsyncStart), I32(myVblankCycles));
 
       notifyFrameStart();
 
@@ -311,12 +309,12 @@ void FrameManager::recalculateMetrics() {
       throw std::runtime_error("frame manager: invalid TV mode");
   }
 
-  myHeight = BSPF::clamp<uInt32>(roundf(static_cast<float>(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);
-  myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - myVcenter, 0, myFrameLines);
+  myHeight = BSPF::clamp<uInt32>(roundf(FLT(baseHeight) * (1.F - myVSizeAdjust / 100.F)), 0, myFrameLines);
+  myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - I32(myHeight)) / 2 - myVcenter, 0, myFrameLines);
   // The - 1 keeps myYStart >= 1 when vcenter is at its maximum, preventing
   // waitForFrameStart from exiting on scanline 0 when a negative vsizeadjust
   // makes myHeight exceed baseHeight and reduces centerOffset below maxVcenter.
-  myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
+  myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - I32(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
 
   //cout << "myVSizeAdjust " << myVSizeAdjust << " " << myHeight << '\n' << std::flush;
 

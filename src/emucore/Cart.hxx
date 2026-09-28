@@ -457,7 +457,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code, data, graphics etc.
-    std::unique_ptr<Device::AccessFlags[]> myRomAccessBase;
+    std::unique_ptr<Device::AccessType[]> myRomAccessBase;
 
     // The array containing information about every byte of ROM indicating
     // how often it is accessed.

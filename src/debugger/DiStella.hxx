@@ -126,9 +126,9 @@ class DiStella
     void disasmFromAddress(uInt32 distart);
 
     [[nodiscard]] bool checkRange(uInt16 start, uInt16 end) const;
-    AddressType mark(uInt32 address, uInt16 mask, bool directive = false);
-    [[nodiscard]] bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
-    [[nodiscard]] bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
+    AddressType mark(uInt32 address, Device::AccessType mask, bool directive = false);
+    [[nodiscard]] bool checkBit(uInt16 address, Device::AccessType mask, bool useDebugger = true) const;
+    [[nodiscard]] bool checkBits(uInt16 address, Device::AccessType mask, Device::AccessType notMask, bool useDebugger = true) const;
     void outputGraphics();
     void outputColors();
     string getColor(uInt8 byte);
@@ -139,9 +139,9 @@ class DiStella
     {
       if(!myDbg.getLabel(buf, addr, true)) {
         const uInt32 la = mySettings.useOrgLabels
-            ? static_cast<uInt32>(addr - myOffset) + mySettings.orgBase
+            ? U32(addr - myOffset) + mySettings.orgBase
             : addr;
-        buf << 'L' << Common::Base::hexN(static_cast<int>(la), mySettings.labelDigits);
+        buf << 'L' << Common::Base::hexN(I32(la), mySettings.labelDigits);
       }
     }
     void labelA12Low(std::ostringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
@@ -150,15 +150,15 @@ class DiStella
       if (labfound == AddressType::TIA)
       {
         if(ourLookup[op].rw_mode == RWMode::READ)
-          myReserved.TIARead[addr & 0x0F] = true;
+          myReserved.TIARead[addr & 0x0FU] = true;
         else
-          myReserved.TIAWrite[addr & 0x3F] = true;
+          myReserved.TIAWrite[addr & 0x3FU] = true;
       }
       else if(labfound == AddressType::RIOT) {
-        myReserved.IOReadWrite[addr & 0x1F] = true;
+        myReserved.IOReadWrite[addr & 0x1FU] = true;
       }
       else if (labfound == AddressType::ZP_RAM)
-        myReserved.ZPRAM[addr & 0x7F] = true;
+        myReserved.ZPRAM[addr & 0x7FU] = true;
     }
 
     // Colour helpers: called from disasm() during the Output pass to assign

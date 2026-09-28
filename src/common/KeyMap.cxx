@@ -19,7 +19,7 @@
 #include "Logger.hxx"
 #include "jsonDefinitions.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 namespace {
   json serializeModkeyMask(StellaMod mask)

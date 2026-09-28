@@ -149,18 +149,18 @@ uInt8 ElfParser::read8(uInt32 offset) const
 uInt16 ElfParser::read16(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 8) | read8(offset + 1))
-    : ((read8(offset + 1) << 8) | read8(offset));
+    ? ((U32(read8(offset)) << 8U) | read8(offset + 1))
+    : ((U32(read8(offset + 1)) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ElfParser::read32(uInt32 offset) const
 {
   return myBigEndian
-    ? ((read8(offset) << 24) | (read8(offset + 1) << 16) |
-      (read8(offset + 2) << 8) | read8(offset + 3))
-    : ((read8(offset + 3) << 24) | (read8(offset + 2) << 16) |
-      (read8(offset + 1) << 8) | read8(offset));
+    ? ((U32(read8(offset)) << 24U) | (U32(read8(offset + 1)) << 16U) |
+      (U32(read8(offset + 2)) << 8U) | read8(offset + 3))
+    : ((U32(read8(offset + 3)) << 24U) | (U32(read8(offset + 2)) << 16U) |
+      (U32(read8(offset + 1)) << 8U) | read8(offset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,7 +181,7 @@ ElfParser::Section ElfParser::readSection(uInt32 offset) const {
     // 32-bit sum and slip past this bounds check (which would later let
     // getName() dereference out of bounds).
     if (section.type != SHT_NOBITS &&
-        static_cast<uInt64>(section.offset) + section.size >= mySize)
+        U64(section.offset) + section.size >= mySize)
       ElfParseError::raise("section exceeds bounds");
 
   } catch (const ElfParseError &e) {
@@ -217,8 +217,8 @@ ElfParser::Symbol ElfParser::readSymbol(uInt32 index, const Section& symSec, con
   )
     ElfParseError::raise("symbol: section index out of range");
 
-  sym.bind = sym.info >> 4;
-  sym.type = sym.info & 0x0f;
+  sym.bind = sym.info >> 4U;
+  sym.type = sym.info & 0x0fU;
 
   sym.name = sym.type == STT_SECTION ? mySections[sym.section].name : getName(strSec, sym.nameOffset);
 
@@ -247,8 +247,8 @@ ElfParser::Relocation ElfParser::readRelocation(uInt32 index, const Section& sec
     ElfParseError::raise("failed to read relocation: " + string(e.what()));
   }
 
-  rel.symbol = rel.info >> 8;
-  rel.type = rel.info & 0xff;
+  rel.symbol = rel.info >> 8U;
+  rel.type = rel.info & 0xffU;
 
   if (rel.symbol >=mySymbols.size())
     ElfParseError::raise("bad relocation: symbol out of bounds");
@@ -264,7 +264,7 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   // Compute the absolute offset in 64-bit (avoids 32-bit wraparound) and
   // verify it lies within the image; the bytes below are read directly here,
   // not through the bounds-checked read8().
-  const uInt64 imageOffset = static_cast<uInt64>(section.offset) + offset;
+  const uInt64 imageOffset = U64(section.offset) + offset;
   if (imageOffset >= mySize) ElfParseError::raise("name out of bounds");
 
   const char* name = reinterpret_cast<const char*>(myData + imageOffset);
@@ -272,8 +272,8 @@ const char* ElfParser::getName(const Section& section, uInt32 offset) const
   // The name must be NUL-terminated within both the section and the image.
   // If strnlen scans the whole bound without finding a terminator, the name
   // is unterminated (and reading one byte further would be out of bounds).
-  const size_t maxLen = std::min(static_cast<size_t>(section.size - offset),
-                                 static_cast<size_t>(mySize - imageOffset));
+  const size_t maxLen = std::min(SZT(section.size - offset),
+                                 SZT(mySize - imageOffset));
   if (strnlen(name, maxLen) == maxLen)
     ElfParseError::raise("unterminated section name");
 
@@ -344,8 +344,8 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Symbol& symbol)
     << " value=0x" << std::setw(8) << symbol.value
     << " size=0x" << std::setw(8) << symbol.size
     << std::setw(1)
-    << " bind=0x" << std::setw(2) << static_cast<int>(symbol.bind)
-    << " type=0x" << std::setw(2) << static_cast<int>(symbol.type);
+    << " bind=0x" << std::setw(2) << I32(symbol.bind)
+    << " type=0x" << std::setw(2) << I32(symbol.type);
 
   os.copyfmt(reset);
 
@@ -365,14 +365,14 @@ std::ostream& operator<<(std::ostream& os, const ElfParser::Relocation& rel)
     << std::hex << std::setfill('0')
     << " offset=0x" << std::setw(8) << rel.offset
     << " info=0x" << std::setw(8) << rel.info
-    << " type=0x" << std::setw(2) << static_cast<int>(rel.type);
+    << " type=0x" << std::setw(2) << I32(rel.type);
 
   if (rel.addend.has_value())
     os << " addend=0x" << std::setw(8) << *rel.addend;
 
   os.copyfmt(reset);
 
-  os << " symbol=" << static_cast<int>(rel.symbol);
+  os << " symbol=" << I32(rel.symbol);
 
   return os;
 }

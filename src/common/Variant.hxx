@@ -51,7 +51,9 @@ class Variant
 
 
     // We don't want c'tors to be explicit here, so disable the warning
-    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions,
+    //             cppcoreguidelines-explicit-constructor,
+    //             misc-explicit-constructor)
     // String constructors
     Variant(const string& s) : myValue{s} { }
     Variant(string&& s)      : myValue{std::move(s)} { }
@@ -66,7 +68,9 @@ class Variant
     Variant(bool v)                 : myValue{v} { }
     Variant(const Common::Size& v)  : myValue{v} { }
     Variant(const Common::Point& v) : myValue{v} { }
-    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions,
+    //           cppcoreguidelines-explicit-constructor,
+    //           misc-explicit-constructor)
 
     Variant& operator=(const Value& v) {
       myValue = v;
@@ -163,7 +167,7 @@ class Variant
     void ensureCache() const {
       if(!myCache) myCache = CachedValues{};
 
-      constexpr uInt8 bit = 1U << static_cast<uInt8>(F);
+      constexpr uInt8 bit = 1U << U8(F);
       if(myCache->populated & bit) return;  // already computed
       myCache->populated |= bit;            // mark before computing
 
@@ -188,7 +192,7 @@ class Variant
           using T = std::decay_t<decltype(v)>;
 
           if constexpr(std::is_same_v<T, bool>)       return v ? 1 : 0;
-          else if constexpr(std::is_arithmetic_v<T>)  return static_cast<Int32>(v);
+          else if constexpr(std::is_arithmetic_v<T>)  return I32(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             Int32 result{};
             auto sv = string_view(v);
@@ -203,7 +207,7 @@ class Variant
         myCache->f = std::visit([](const auto& v) -> float {
           using T = std::decay_t<decltype(v)>;
 
-          if constexpr(std::is_arithmetic_v<T>)  return static_cast<float>(v);
+          if constexpr(std::is_arithmetic_v<T>)  return FLT(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             float result{};
             auto sv = string_view(v);
@@ -218,7 +222,7 @@ class Variant
         myCache->d = std::visit([](const auto& v) -> double {
           using T = std::decay_t<decltype(v)>;
 
-          if constexpr(std::is_arithmetic_v<T>)  return static_cast<double>(v);
+          if constexpr(std::is_arithmetic_v<T>)  return DBL(v);
           else if constexpr(std::is_convertible_v<T, string_view>) {
             double result{};
             auto sv = string_view(v);

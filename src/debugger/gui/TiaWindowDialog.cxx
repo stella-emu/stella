@@ -44,8 +44,8 @@ void TiaWindowDialog::layout()
   // widget then scales its image to fit, preserving the TIA's pixel aspect
   const Common::Size& size = static_cast<const TiaWindow&>(parent()).size();
 
-  _w = static_cast<int>(size.w);
-  _h = static_cast<int>(size.h);
+  _w = I32(size.w);
+  _h = I32(size.h);
 
   myTiaDisplay->setArea(BORDER, BORDER, _w - 2 * BORDER, _h - 2 * BORDER);
 }

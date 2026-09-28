@@ -23,6 +23,8 @@
 #ifndef CORTEX_M0_HXX
 #define CORTEX_M0_HXX
 
+// NOLINTBEGIN(bugprone-signed-bitwise)
+
 #include <variant>
 
 #include "Serializable.hxx"
@@ -93,11 +95,11 @@ class CortexM0: public Serializable
     }
 
     static constexpr err_t errCustom(uInt32 code, uInt32 extra = 0) {
-      return ((static_cast<uInt64>(code) << 8) & 0xffffffff) | (static_cast<uInt64>(extra) << 32);
+      return ((U64(code) << 8) & 0xffffffff) | (U64(extra) << 32);
     }
 
     static constexpr err_t errIntrinsic(uInt8 code, uInt32 extra = 0) {
-      return static_cast<uInt64>(code) | (static_cast<uInt64>(extra) << 32);
+      return U64(code) | (U64(extra) << 32);
     }
 
     static string describeError(err_t error);
@@ -179,7 +181,7 @@ class CortexM0: public Serializable
       bool readOnly{false};
 
       bool dirty{false};
-      uInt32 accessWatermarkLow{static_cast<uInt32>(~0)};
+      uInt32 accessWatermarkLow{U32(~0)};
       uInt32 accessWatermarkHigh{0};
 
       std::variant<
@@ -226,10 +228,10 @@ class CortexM0: public Serializable
     uInt64 myCycleCounter{0};
 
     static constexpr uInt32
-      CPSR_N = 1U << 31,
-      CPSR_Z = 1U << 30,
-      CPSR_C = 1U << 29,
-      CPSR_V = 1U << 28;
+      CPSR_N = 1U << 31U,
+      CPSR_Z = 1U << 30U,
+      CPSR_C = 1U << 29U,
+      CPSR_V = 1U << 28U;
 
   private:
     // Following constructors and assignment operators not supported
@@ -238,5 +240,7 @@ class CortexM0: public Serializable
     CortexM0& operator=(const CortexM0&) = delete;
     CortexM0& operator=(CortexM0&&) = delete;
 };
+
+// NOLINTEND(bugprone-signed-bitwise)
 
 #endif  // CORTEX_M0_HXX

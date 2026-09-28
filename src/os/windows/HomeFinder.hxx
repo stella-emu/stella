@@ -30,6 +30,8 @@
 #include <memory>
 #include <string>
 
+#include "bspf.hxx"
+
 struct HomeFinder
 {
   HomeFinder() = delete;
@@ -93,14 +95,14 @@ private:
 
     const int needed = WideCharToMultiByte(
       CP_UTF8, 0,
-      w.data(), static_cast<int>(w.size()),
+      w.data(), I32(w.size()),
       nullptr, 0, nullptr, nullptr);
 
     std::string out(needed, '\0');
 
     WideCharToMultiByte(
       CP_UTF8, 0,
-      w.data(), static_cast<int>(w.size()),
+      w.data(), I32(w.size()),
       out.data(), needed,
       nullptr, nullptr);
 

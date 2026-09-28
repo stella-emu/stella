@@ -32,9 +32,13 @@ class SqliteStatement {
 
     ~SqliteStatement();
 
-    // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions,
+    //             cppcoreguidelines-explicit-constructor,
+    //             misc-explicit-constructor)
     operator sqlite3_stmt*() const { return myStmt; }
-    // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions,
+    //           cppcoreguidelines-explicit-constructor,
+    //           misc-explicit-constructor)
 
     SqliteStatement& bind(int index, string_view value);
     SqliteStatement& bind(int index, Int32 value);

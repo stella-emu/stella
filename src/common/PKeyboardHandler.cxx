@@ -22,7 +22,7 @@
 #include "PKeyboardHandler.hxx"
 #include "json/json_lib.hxx"
 
-using json = nlohmann::json;
+using nlohmann::json;
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -609,7 +609,7 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultCommonMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultCommonMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     { Event::ConsoleSelect,            StellaKey::F1 },
     { Event::ConsoleReset,             StellaKey::F2 },
@@ -808,7 +808,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultMenuMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultMenuMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::UIUp,                     StellaKey::UP},
     {Event::UIDown,                   StellaKey::DOWN},
@@ -862,7 +862,7 @@ PhysicalKeyboardHandler::DefaultMenuMapping = []() noexcept {
 #ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::FixedEditMapping = []() noexcept {
+PhysicalKeyboardHandler::FixedEditMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::MoveLeftChar,             StellaKey::LEFT},
     {Event::MoveRightChar,            StellaKey::RIGHT},
@@ -947,7 +947,7 @@ PhysicalKeyboardHandler::FixedEditMapping = []() noexcept {
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::FixedPromptMapping = []() noexcept {
+PhysicalKeyboardHandler::FixedPromptMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::UINavNext,                StellaKey::TAB},
     {Event::UINavPrev,                StellaKey::TAB, StellaMod::SHIFT},
@@ -968,7 +968,7 @@ PhysicalKeyboardHandler::FixedPromptMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultJoystickMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultJoystickMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::LeftJoystickUp,           StellaKey::UP},
     {Event::LeftJoystickDown,         StellaKey::DOWN},
@@ -1018,7 +1018,7 @@ PhysicalKeyboardHandler::DefaultJoystickMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultPaddleMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultPaddleMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::LeftPaddleADecrease,      StellaKey::RIGHT},
     {Event::LeftPaddleAIncrease,      StellaKey::LEFT},
@@ -1054,7 +1054,7 @@ PhysicalKeyboardHandler::DefaultPaddleMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultKeyboardMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultKeyboardMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::LeftKeyboard1,            StellaKey::_1},
     {Event::LeftKeyboard2,            StellaKey::_2},
@@ -1087,7 +1087,7 @@ PhysicalKeyboardHandler::DefaultKeyboardMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::DefaultDrivingMapping = []() noexcept {
+PhysicalKeyboardHandler::DefaultDrivingMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::LeftDrivingCCW,          StellaKey::LEFT},
     {Event::LeftDrivingCW,           StellaKey::RIGHT},
@@ -1112,7 +1112,7 @@ PhysicalKeyboardHandler::DefaultDrivingMapping = []() noexcept {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const PhysicalKeyboardHandler::EventMappingSpan
-PhysicalKeyboardHandler::CompuMateMapping = []() noexcept {
+PhysicalKeyboardHandler::CompuMateMapping = [] noexcept {
   static constexpr EventMapping data[] = {
     {Event::CompuMateShift,         StellaKey::LSHIFT},
     {Event::CompuMateShift,         StellaKey::RSHIFT},

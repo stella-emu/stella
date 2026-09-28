@@ -43,11 +43,11 @@ string CartridgeE0Widget::romDescription()
   info.reserve(256);
   for(int seg = 0; seg < 4; ++seg)
   {
-    const uInt16 segmentOffset = seg << 10;
+    const uInt16 segmentOffset = U32(seg) << 10U;
     info += std::format("Segment #{} accessible @ ${} - ${},\n",
       seg,
       Base::hex4(ADDR_BASE | segmentOffset),
-      Base::hex4(ADDR_BASE | (segmentOffset + 0x3FF)));
+      Base::hex4(ADDR_BASE | (U32(segmentOffset) + 0x3FF)));
     if(seg < 3)
       info += std::format("  Hotspots {} - {}\n",
         hotspotStr(0, seg, true), hotspotStr(7, seg, true));

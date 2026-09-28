@@ -109,9 +109,9 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
-  setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
+  setPermanent(AudioSettings::SETTING_PRESET, I32(AudioSettings::DEFAULT_PRESET));
   setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
-  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, I32(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
   setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
@@ -219,7 +219,7 @@ Settings::Settings()
   setPermanent("ui.font.debuggerdisasm", "auto");
 
   // Misc options
-  setPermanent("loglevel", static_cast<int>(Logger::Level::INFO));
+  setPermanent("loglevel", I32(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("fastscbios", "true");
@@ -407,14 +407,14 @@ void Settings::migrate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
-  auto clampSetting = [&](string_view key, int lo, int hi, int def) {
+  const auto clampSetting = [&](string_view key, int lo, int hi, int def) {
     int v = getInt(key);
     BSPF::clamp(v, lo, hi, def);
     setValue(key, v);
   };
-  auto requireOneOf = [&](string_view key,
-                          std::initializer_list<string_view> valid,
-                          string_view def) {
+  const auto requireOneOf = [&](string_view key,
+                                std::initializer_list<string_view> valid,
+                                string_view def) {
     string_view s = getString(key);
     if(std::ranges::none_of(valid, [&](string_view v){ return s == v; }))
       setValue(key, def);
@@ -474,9 +474,9 @@ void Settings::validate()
   clampSetting("tsense",     1, 20, 10);
   clampSetting("dcsense",    1, 20, 10);
   clampSetting("ssinterval", 1, 10, 2);
-  clampSetting("loglevel",   static_cast<int>(Logger::Level::MIN),
-                             static_cast<int>(Logger::Level::MAX),
-                             static_cast<int>(Logger::Level::INFO));
+  clampSetting("loglevel",   I32(Logger::Level::MIN),
+                             I32(Logger::Level::MAX),
+                             I32(Logger::Level::INFO));
   if(getInt("romviewer") < 0) setValue("romviewer", 0);
 
 #ifdef GUI_SUPPORT
@@ -484,7 +484,7 @@ void Settings::validate()
   // checked against it rather than against a copy of the list here.  The
   // debugger's roles take a subset of the names the rest of the UI does
   using FontRole = FontManager::FontRole;
-  auto requireFont = [&](FontRole role, string_view def) {
+  const auto requireFont = [&](FontRole role, string_view def) {
     const string_view key = FontManager::settingKey(role);
     if(!FontManager::isRoleFont(role, getString(key)))
       setValue(key, def);
@@ -859,10 +859,10 @@ void Settings::usage()
 const Variant& Settings::value(string_view key) const
 {
   // Try to find the named setting and answer its value
-  if(auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
+  if(const auto it = myPermanentSettings.find(key); it != myPermanentSettings.end())
     return it->second;
 
-  if(auto it = myTemporarySettings.find(key); it != myTemporarySettings.end())
+  if(const auto it = myTemporarySettings.find(key); it != myTemporarySettings.end())
     return it->second;
 
   return EmptyVariant();

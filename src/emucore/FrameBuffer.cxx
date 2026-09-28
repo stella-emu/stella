@@ -306,8 +306,7 @@ FBInitStatus FrameBuffer::createDisplay(WindowState& win, string_view title, Buf
     myBezel->load(); // make sure we have the correct bezel size
 
     // Determine possible TIA windowed zoom levels
-    const auto currentTIAZoom =
-      static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+    const auto currentTIAZoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
     myOSystem.settings().setValue("tia.zoom",
       BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
@@ -317,6 +316,10 @@ FBInitStatus FrameBuffer::createDisplay(WindowState& win, string_view title, Buf
   // Initialize video mode handler, so it can know what video modes are
   // appropriate for the requested image size
   myVidModeHandler.setImageSize(size);
+
+  // Set before the window is shown, otherwise the compositor may draw the
+  // wrong decorations.  Each resizable window's owner sets its own minimum.
+  win.backend->setWindowResizable(isResizable(win.bufferType));
 
   // Initialize video subsystem
   const string pre_about = win.backend->about();
@@ -357,14 +360,6 @@ FBInitStatus FrameBuffer::createDisplay(WindowState& win, string_view title, Buf
 
   if(status != FBInitStatus::Success)
     return status;
-
-  // The launcher, debugger and companion TIA windows may be freely resized by
-  // the user; all other UI/TIA windows keep their fixed size.  Each resizeable
-  // window's owner applies its own minimum, right after this, via
-  // setWindowMinSize(); imposing one here would enlarge a window the user had
-  // dragged smaller.  (FBMinimum is the TIA emulation-mode floor, sized so the
-  // dialogs fit over the image — not a UI window minimum.)
-  win.backend->setWindowResizable(isResizable(win.bufferType));
 
   // setVideoMode() cleared the window's minimum, so forget what we last
   // forwarded, or the owner's (unchanged) minimum would not be re-applied
@@ -632,7 +627,7 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
         success = r.unwindStates(1);
 
         // Determine playback speed, the faster the more the states are apart
-        const Int64 frameCycles = static_cast<Int64>(76) * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+        const Int64 frameCycles = I64(76) * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
         const Int64 intervalFrames = r.getInterval() / frameCycles;
         const Int64 stateFrames = (r.getCurrentCycles() - prevCycles) / frameCycles;
 
@@ -955,7 +950,7 @@ void FrameBuffer::deallocateSurface(WindowState& win, const shared_ptr<FBSurface
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces(WindowState& win)
 {
-  for(auto& surface: win.surfaceList)
+  for(const auto& surface: win.surfaceList)
     surface->reload();
 
   update(win, UpdateMode::REDRAW); // force full update
@@ -987,9 +982,9 @@ void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
   {
     const uInt32 rgb = rgb_palette[i];
     tia_palette[i] = aMask_
-                   | (((rgb >> 16) & 0xFF) << rShift)
-                   | (((rgb >>  8) & 0xFF) << gShift)
-                   | (( rgb        & 0xFF) << bShift);
+                   | (((rgb >> 16U) & 0xFFU) << rShift)
+                   | (((rgb >>  8U) & 0xFFU) << gShift)
+                   | (( rgb        & 0xFFU) << bShift);
   }
   // Remember the TIA palette; place it at the beginning of the full palette
   std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
@@ -1023,9 +1018,9 @@ void FrameBuffer::setUIPalette()
   {
     const uInt32 rgb = ui_palette[i];
     myFullPalette[kColor + i] = aMask_
-                              | (((rgb >> 16) & 0xFF) << rShift)
-                              | (((rgb >>  8) & 0xFF) << gShift)
-                              | (( rgb        & 0xFF) << bShift);
+                              | (((rgb >> 16U) & 0xFFU) << rShift)
+                              | (((rgb >>  8U) & 0xFFU) << gShift)
+                              | (( rgb        & 0xFFU) << bShift);
   }
   setDisasmPalette();  // fills disasm slots and calls FBSurface::setPalette
 }
@@ -1048,9 +1043,9 @@ void FrameBuffer::setDisasmPalette()
   {
     const uInt32 rgb = dp[i];
     myFullPalette[kUINColors + i] = aMask_
-                                  | (((rgb >> 16) & 0xFF) << rShift)
-                                  | (((rgb >>  8) & 0xFF) << gShift)
-                                  | (( rgb        & 0xFF) << bShift);
+                                  | (((rgb >> 16U) & 0xFFU) << rShift)
+                                  | (((rgb >>  8U) & 0xFFU) << gShift)
+                                  | (( rgb        & 0xFFU) << bShift);
   }
   FBSurface::setPalette(myFullPalette);
 }
@@ -1065,7 +1060,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getDisplayKey(BufferType bufferType) const
+string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
 {
   // save current window's display and position
   switch(bufferType)
@@ -1093,7 +1088,7 @@ string FrameBuffer::getDisplayKey(BufferType bufferType) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getPositionKey(BufferType bufferType) const
+string_view FrameBuffer::getPositionKey(BufferType bufferType) const
 {
   // save current window's display and position
   switch(bufferType)
@@ -1219,10 +1214,10 @@ void FrameBuffer::toggleFullscreen(WindowState& win, bool toggle)
           const string msg = isFullscreen
             ? std::format("Fullscreen {} ({} Hz, Zoom {}%)",
                 state_str, win.backend->refreshRate(),
-                static_cast<int>(round(win.vidMode.zoom * 100)))
+                I32(round(win.vidMode.zoom * 100)))
             : std::format("Fullscreen {} (Zoom {}%)",
                 state_str,
-                static_cast<int>(round(win.vidMode.zoom * 100)));
+                I32(round(win.vidMode.zoom * 100)));
           showTextMessage(msg);
         }
         else
@@ -1305,7 +1300,7 @@ void FrameBuffer::switchVideoMode(WindowState& win, int direction)
   if(!fullScreen())
   {
     // Windowed TIA modes support variable zoom levels
-    auto zoom = static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+    auto zoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
     if(direction == +1)       zoom += ZOOM_STEPS;
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
@@ -1331,9 +1326,9 @@ void FrameBuffer::switchVideoMode(WindowState& win, int direction)
       showTextMessage(win.vidMode.description);
     else
       showGaugeMessage("Zoom", win.vidMode.description,
-                       static_cast<float>(win.vidMode.zoom),
-                       static_cast<float>(supportedTIAMinZoom()),
-                       static_cast<float>(supportedTIAMaxZoom()));
+                       FLT(win.vidMode.zoom),
+                       FLT(supportedTIAMinZoom()),
+                       FLT(supportedTIAMaxZoom()));
   }
 }
 
@@ -1367,8 +1362,7 @@ void FrameBuffer::toggleBezel(WindowState& win, bool toggle)
       else
       {
         // Determine possible TIA windowed zoom levels
-        const auto currentTIAZoom =
-          static_cast<double>(myOSystem.settings().getFloat("tia.zoom"));
+        const auto currentTIAZoom = DBL(myOSystem.settings().getFloat("tia.zoom"));
         myOSystem.settings().setValue("tia.zoom",
           BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
 
@@ -1470,8 +1464,8 @@ double FrameBuffer::maxWindowZoom() const
   for(;;)
   {
     // Figure out the zoomed size of the window (incl. the bezel)
-    const uInt32 width  = static_cast<double>(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
-    const uInt32 height = static_cast<double>(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
+    const uInt32 width  = DBL(TIAConstants::viewableWidth)  * myBezel->ratioW() * multiplier;
+    const uInt32 height = DBL(TIAConstants::viewableHeight) * myBezel->ratioH() * multiplier;
 
     if((width > myAbsDesktopSize.at(display).w) ||
        (height > myAbsDesktopSize.at(display).h))
@@ -1500,11 +1494,11 @@ void FrameBuffer::setCursorState(WindowState& win)
     myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
-  int cursor = myOSystem.settings().getInt("cursor");
+  uInt32 cursor = myOSystem.settings().getInt("cursor");
 
   // Always enable cursor in lightgun games
   if (usesLightgun && !myGrabMouse)
-    cursor |= 1;  // +Emulation
+    cursor |= 1U;  // +Emulation
 
   switch(cursor)
   {
@@ -1556,7 +1550,7 @@ bool FrameBuffer::grabMouseAllowed()
   const bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
   // Disable grab while cursor is shown in emulation
-  const bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
+  const bool cursorHidden = !(U32(myOSystem.settings().getInt("cursor")) & 1U);
 
   return emulation && (analog || usesLightgun || alwaysUseMouse) && cursorHidden;
 }

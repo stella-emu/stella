@@ -314,9 +314,9 @@ void PopUpWidget::drawWidget(bool hilite)
 Common::Rect PopUpWidget::getEditRect() const
 {
   return {
-    static_cast<uInt32>(_textOfs), 1,
-    static_cast<uInt32>(_w - _textOfs - dropDownWidth(_font)),
-    static_cast<uInt32>(_h)
+    U32(_textOfs), 1,
+    U32(_w - _textOfs - dropDownWidth(_font)),
+    U32(_h)
   };
 }
 

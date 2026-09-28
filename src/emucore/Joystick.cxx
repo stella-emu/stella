@@ -113,13 +113,13 @@ void Joystick::updateMouseAxes()
 
     if(mousex || mousey)
     {
-      if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))
+      if((!(abs(mousey) > abs(mousex) * 2)) && (abs(mousex) >= MJ_Threshold))
       {
         if(mousex < 0)      setPin(DigitalPin::Three, false);
         else if(mousex > 0) setPin(DigitalPin::Four, false);
       }
 
-      if((!(abs(mousex) > abs(mousey) << 1)) && (abs(mousey) >= MJ_Threshold))
+      if((!(abs(mousex) > abs(mousey) * 2)) && (abs(mousey) >= MJ_Threshold))
       {
         if(mousey < 0)      setPin(DigitalPin::One, false);
         else if(mousey > 0) setPin(DigitalPin::Two, false);

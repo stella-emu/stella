@@ -19,9 +19,17 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/windows-x64-mingw.yml'
 
+  # Windows 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-i686-mingw.yml'
+
   # Linux 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
+
+  # Linux 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-i686.yml'
 
   # Linux ARM 64-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -80,6 +88,15 @@ libretro-build-windows-x64:
     - .core-defs
   image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe-win-cross-cores:gcc14
 
+# Windows 32-bit
+# Same image as the 64-bit job: the default for this template is gcc11, which
+# does not know -std=c++23.
+libretro-build-windows-i686:
+  extends:
+    - .libretro-windows-i686-mingw-make-default
+    - .core-defs
+  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe-win-cross-cores:gcc14
+
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
@@ -91,12 +108,28 @@ libretro-build-linux-x64:
     CXX: /usr/bin/g++-14
     CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
 
+# Linux 32-bit
+# i386-ubuntu:backports carries gcc-14 the way amd64-ubuntu:backports does; the
+# template's default image is xenial-gcc9, which cannot build this codebase.
+libretro-build-linux-i686:
+  extends:
+    - .libretro-linux-i686-make-default
+    - .core-defs
+  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-i386-ubuntu:backports
+  variables:
+    CC: /usr/bin/gcc-14
+    CXX: /usr/bin/g++-14
+    CXXFLAGS: -Wno-deprecated-declarations # Deprecation warnings aren't helpful on the libretro Gitlab
+
 # Linux ARM 64-bit
+# gcc-14 is needed here as well - the image's default gcc is 12, which has no
+# -std=c++23 - but it is already in libretro-build-aarch64-ubuntu, so only the
+# compiler is named. Naming the amd64 image too builds an x86-64 binary and
+# uploads it to the aarch64 slot.
 libretro-build-linux-aarch64:
   extends:
     - .libretro-linux-aarch64-make-default
     - .core-defs
-  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-amd64-ubuntu:backports
   variables:
     CC: /usr/bin/gcc-14
     CXX: /usr/bin/g++-14
@@ -143,6 +176,14 @@ android-arm64-v8a:
   variables:
     NDK_ROOT: /android-sdk-linux/ndk/29.0.14206865
 
+# Android 32-bit x86
+android-x86:
+  extends:
+    - .libretro-android-jni-x86
+    - .core-defs
+  variables:
+    NDK_ROOT: /android-sdk-linux/ndk/29.0.14206865
+
 # Android 64-bit x86
 android-x86_64:
   extends:
@@ -163,6 +204,42 @@ libretro-build-ios-arm64:
     - git fetch origin
     - git checkout "$OSX_BUILD_COMMIT"
 
+# iOS (armv7, iOS 9)
+#
+# Off again after one run, and off for a reason that is worth writing down.
+#
+# It compiles the pinned commit and then does not link:
+#
+#     Undefined symbols for architecture armv7:
+#       "std::bad_optional_access::~bad_optional_access()"
+#       "vtable for std::bad_variant_access"
+#       "vtable for std::bad_optional_access"
+#
+# Those members came to Apple's libc++ with iOS 12 and 32-bit iOS stopped at
+# 10, so no armv7 slice of any SDK has them. That part can be carried in the
+# core, but it is not the wall. Building the tip for armv7 stops earlier, in
+# libc++ itself:
+#
+#     __format/formatter_floating_point.h:74: error: 'to_chars' is unavailable:
+#     introduced in iOS 16.3
+#
+# std::format with a floating-point argument reaches the floating-point half of
+# <charconv>, which Apple shipped in iOS 16.3 / macOS 13.3 / tvOS 16.3 - above
+# every deployment minimum used here, and the reason OSX_BUILD_COMMIT exists at
+# all. So this stays a comment until floating-point formatting stops needing a
+# library version armv7 can never have; the include above stays with it.
+#
+# libretro-build-ios9:
+#   tags:
+#     - mac-apple-silicon
+#   extends:
+#     - .libretro-ios9-make-default
+#     - .core-defs
+#   before_script:
+#     - export NUMPROC=$((1 + $(sysctl -n hw.ncpu)/5))
+#     - git fetch origin
+#     - git checkout "$OSX_BUILD_COMMIT"
+
 # tvOS
 libretro-build-tvos-arm64:
   extends:
@@ -175,10 +252,10 @@ libretro-build-tvos-arm64:
 
 ################################### CONSOLES #################################
 # Nintendo Switch
-# libretro-build-libnx-aarch64:
-#   extends:
-#     - .libretro-libnx-static-retroarch-master
-#     - .core-defs
+libretro-build-libnx-aarch64:
+  extends:
+    - .libretro-libnx-static-retroarch-master
+    - .core-defs
 
 #################################### MISC ##################################
 # webOS 32-bit

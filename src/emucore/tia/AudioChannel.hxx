@@ -56,28 +56,28 @@ class AudioChannel : public Serializable
       of the pulse counter.
      */
     uInt8 actualVolume() const {
-      return (myPulseCounter & 0x01) * myAudv;
+      return (myPulseCounter & 0x01U) * myAudv;
     }
 
     /**
       AUDC0/1 write: set the audio control register (waveform type, bits 3-0).
      */
     void audc(uInt8 value) {
-      myAudc = value & 0x0f;
+      myAudc = value & 0x0fU;
     }
 
     /**
       AUDF0/1 write: set the frequency divider reload value (bits 4-0).
      */
     void audf(uInt8 value) {
-      myAudf = value & 0x1f;
+      myAudf = value & 0x1fU;
     }
 
     /**
       AUDV0/1 write: set the output volume (bits 3-0).
      */
     void audv(uInt8 value) {
-      myAudv = value & 0x0f;
+      myAudv = value & 0x0fU;
     }
 
     /**

@@ -185,7 +185,7 @@ bool OSystem::initialize(const Settings::Options& options)
 
   // Create random number generator
   const int seed = mySettings->getInt("seed");
-  myRandom = std::make_unique<Random>(seed ? seed : static_cast<uInt32>(TimerManager::getTicks()));
+  myRandom = std::make_unique<Random>(seed ? seed : U32(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = std::make_unique<CheatManager>(*this);
@@ -1042,8 +1042,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     myConsole->fry();
 
   // Return the 6507 time used in seconds
-  return static_cast<double>(totalCycles) /
-      static_cast<double>(timing.cyclesPerSecond());
+  return DBL(totalCycles) / DBL(timing.cyclesPerSecond());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1089,8 +1088,8 @@ void OSystem::mainLoop()
     else if(myEventHandler->state() == EventHandlerState::PLAYBACK)
     {
       // Playback at emulation speed
-      timesliceSeconds = static_cast<double>(myConsole->tia().scanlinesLastFrame() * 76) /
-        static_cast<double>(myConsole->emulationTiming().cyclesPerSecond());
+      timesliceSeconds = DBL(myConsole->tia().scanlinesLastFrame() * 76) /
+        DBL(myConsole->emulationTiming().cyclesPerSecond());
       myFrameBuffer->update();
     }
     else
@@ -1113,8 +1112,8 @@ void OSystem::mainLoop()
     // We allow 6507 time to lag behind by one frame max
     const double maxLag = myConsole
       ? (
-        static_cast<double>(myConsole->emulationTiming().cyclesPerFrame()) /
-        static_cast<double>(myConsole->emulationTiming().cyclesPerSecond())
+        DBL(myConsole->emulationTiming().cyclesPerFrame()) /
+        DBL(myConsole->emulationTiming().cyclesPerSecond())
       )
       : 0;
 

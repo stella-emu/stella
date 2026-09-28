@@ -136,14 +136,14 @@ class Cartridge4A50 : public Cartridge
 
       @param address  The address to query
     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessType getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given access flags.
 
       @param address  The address to modify
       @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) override;
   #endif
 
   public:
@@ -174,37 +174,37 @@ class Cartridge4A50 : public Cartridge
     */
     void bankROMLower(uInt16 value) {
       myIsRomLow = true;
-      mySliceLow = value << 11;
+      mySliceLow = value << 11U;
       myBankChanged = true;
     }
 
     void bankRAMLower(uInt16 value) {
       myIsRomLow = false;
-      mySliceLow = value << 11;
+      mySliceLow = value << 11U;
       myBankChanged = true;
     }
 
     void bankROMMiddle(uInt16 value) {
       myIsRomMiddle = true;
-      mySliceMiddle = value << 11;
+      mySliceMiddle = value << 11U;
       myBankChanged = true;
     }
 
     void bankRAMMiddle(uInt16 value) {
       myIsRomMiddle = false;
-      mySliceMiddle = value << 11;
+      mySliceMiddle = value << 11U;
       myBankChanged = true;
     }
 
     void bankROMHigh(uInt16 value) {
       myIsRomHigh = true;
-      mySliceHigh = value << 8;
+      mySliceHigh = value << 8U;
       myBankChanged = true;
     }
 
     void bankRAMHigh(uInt16 value) {
       myIsRomHigh = false;
-      mySliceHigh = value << 8;
+      mySliceHigh = value << 8U;
       myBankChanged = true;
     }
 

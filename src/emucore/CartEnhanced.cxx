@@ -58,15 +58,15 @@ void CartridgeEnhanced::install(System& system)
     myRamBankShift = myBankShift - 1;
 
   // limit banked RAM size to the size of one RAM bank
-  const uInt16 ramSize = myRamBankCount > 0 ? 1 << myRamBankShift :
-    static_cast<uInt16>(myRamSize);
+  const uInt16 ramSize = myRamBankCount > 0 ? 1U << myRamBankShift :
+    U16(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
-  myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
+  myBankSize = 1U << myBankShift;                   // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
   myBankSegs = calcNumSegments();
   // ROM has an offset if RAM inside a bank (e.g. for F8SC)
-  myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
+  myRomOffset = myRamBankCount > 0U ? 0U : U16(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
@@ -99,7 +99,7 @@ void CartridgeEnhanced::install(System& system)
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
-      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
+      mySystem->setPageAccess(U16(addr), access);
     }
 
     // Set the page accessing method for the RAM reading pages
@@ -112,7 +112,7 @@ void CartridgeEnhanced::install(System& system)
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
-      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
+      mySystem->setPageAccess(U16(addr), access);
     }
   }
 
@@ -154,9 +154,8 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   }
 
   // hotspots in TIA range are reacting to pokes only
-  if(hotspot() >= 0x80)
-    if(checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
-      return myRWPRandomValues[address & 0xFF];
+  if(hotspot() >= 0x80 && checkSwitchBank(address & ADDR_MASK, 0) && myRandomHotspots)
+    return myRWPRandomValues[address & 0xFFU];
 
   if(isRamBank(address))
   {
@@ -202,7 +201,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 
     if(isRamBank(address))
     {
-      if(static_cast<bool>(address & (myBankSize >> 1)) == myRamWpHigh
+      if(static_cast<bool>(address & (U32(myBankSize) >> 1U)) == myRamWpHigh
         || myBankShift == myRamBankShift)
       {
         address &= myRamMask;
@@ -244,13 +243,19 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Remember what bank is in this segment
     const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     const uInt16 hotspot = this->hotspot();
-    const uInt16 hotSpotAddr = (hotspot & 0x1000) ? (hotspot & ~System::PAGE_MASK) : 0xFFFF;
-    const uInt16 plusROMAddr = (myPlusROM->isValid()) ? (0x1FF0 & ~System::PAGE_MASK) : 0xFFFF;
+    const uInt16 hotSpotAddr = (hotspot & 0x1000U)
+      ? (U32(hotspot) & ~U32(System::PAGE_MASK))
+      : 0xFFFF;
+    const uInt16 plusROMAddr = myPlusROM->isValid()
+      ? (0x1FF0U & ~U32(System::PAGE_MASK))
+      : 0xFFFF;
 
     // Skip extra RAM; if existing it is only mapped into first segment
-    const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
+    const uInt16 fromAddr = U32(ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) &
+      ~U32(System::PAGE_MASK);
     // for ROMs < 4_KB, the whole address space will be mapped.
-    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
+    const uInt16 toAddr   = U32(ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) &
+      ~U32(System::PAGE_MASK);
 
     System::PageAccess access(this, System::PageAccessType::READ);
     // Setup the page access methods for the current bank
@@ -273,18 +278,18 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Setup RAM bank
     const uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    const uInt32 bankOffset = static_cast<uInt32>(myImage.size()) +
+    const uInt32 bankOffset = U32(myImage.size()) +
       (ramBank << myRamBankShift);
 
     // Remember what bank is in this segment
-    myCurrentSegOffset[segment] = static_cast<uInt32>(myImage.size()) +
+    myCurrentSegOffset[segment] = U32(myImage.size()) +
       (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
     // Note: Writes are mapped to poke() (NOT using directPokeBase) to check for read from write port (RWP)
-    uInt16 fromAddr = (ROM_OFFSET + segmentOffset + myWriteOffset) & ~System::PAGE_MASK;
-    uInt16 toAddr   = (ROM_OFFSET + segmentOffset + myWriteOffset
-      + (myBankSize >> (myBankShift - myRamBankShift))) & ~System::PAGE_MASK;
+    uInt16 fromAddr = U32(ROM_OFFSET + segmentOffset + myWriteOffset) & ~U32(System::PAGE_MASK);
+    uInt16 toAddr   = U32(ROM_OFFSET + segmentOffset + myWriteOffset
+      + (myBankSize >> U32(myBankShift - myRamBankShift))) & ~U32(System::PAGE_MASK);
     System::PageAccess access(this, System::PageAccessType::WRITE);
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
@@ -298,9 +303,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     }
 
     // Set the page accessing method for the RAM reading pages
-    fromAddr = (ROM_OFFSET + segmentOffset + myReadOffset) & ~System::PAGE_MASK;
-    toAddr   = (ROM_OFFSET + segmentOffset + myReadOffset
-      + (myBankSize >> (myBankShift - myRamBankShift))) & ~System::PAGE_MASK;
+    fromAddr = U32(ROM_OFFSET + segmentOffset + myReadOffset) & ~U32(System::PAGE_MASK);
+    toAddr   = U32(ROM_OFFSET + segmentOffset + myReadOffset
+      + (myBankSize >> U32(myBankShift - myRamBankShift))) & ~U32(System::PAGE_MASK);
     access.type = System::PageAccessType::READ;
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
@@ -332,7 +337,7 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::romBankCount() const
 {
-  return static_cast<uInt16>(myImage.size() >> myBankShift);
+  return U16(myImage.size() >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -346,8 +351,8 @@ uInt16 CartridgeEnhanced::calcNumSegments() const
 {
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
-  return std::min(1 << (MAX_BANK_SHIFT - myBankShift),
-                  static_cast<int>(myImage.size()) / myBankSize);  // e.g. = 1
+  return std::min(1U << U32(MAX_BANK_SHIFT - myBankShift),
+                  U32(myImage.size()) / myBankSize);  // e.g. = 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,7 +370,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
   }
   else
   {
-    if(static_cast<size_t>(address & myBankMask) < myRamSize * 2)
+    if(SZT(address & myBankMask) < myRamSize * 2)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such

@@ -97,7 +97,7 @@ class Switches : public Serializable
 
       @return  True if 'Color', false if 'BlackWhite'
     */
-    bool tvColor() const { return mySwitches & 0x08; }
+    bool tvColor() const { return mySwitches & 0x08U; }
 
     /**
       Sets 'Console_TelevisionType' switches bit.
@@ -109,7 +109,7 @@ class Switches : public Serializable
 
       @return  True if 'A', false if 'B'
     */
-    bool leftDifficultyA() const { return mySwitches & 0x40; }
+    bool leftDifficultyA() const { return mySwitches & 0x40U; }
 
     /**
       Sets 'Console_LeftDifficulty' switches bit.
@@ -121,7 +121,7 @@ class Switches : public Serializable
 
       @return  True if 'A', false if 'B'
     */
-    bool rightDifficultyA() const { return mySwitches & 0x80; }
+    bool rightDifficultyA() const { return mySwitches & 0x80U; }
 
     /**
       Sets 'Console_LeftDifficulty' switches bit.

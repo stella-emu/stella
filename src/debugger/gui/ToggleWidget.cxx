@@ -43,7 +43,7 @@ void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 
   // First check whether the selection changed
   int newSelectedItem = findItem(x, y);
-  if(newSelectedItem > static_cast<int>(_stateList.size()) - 1)
+  if(newSelectedItem > I32(_stateList.size()) - 1)
     newSelectedItem = -1;
 
   if(_selectedItem != newSelectedItem)
@@ -196,13 +196,10 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 void ToggleWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
                                  int data, int id)
 {
-  if(cmd == GuiObject::Cmd::SetPosition)
+  if(cmd == GuiObject::Cmd::SetPosition && _selectedItem != data)
   {
-    if(_selectedItem != data)
-    {
-      _selectedItem = data;
-      setDirty();
-    }
+    _selectedItem = data;
+    setDirty();
   }
 }
 
@@ -226,21 +223,21 @@ string ToggleWidget::getToolTip(const Common::Point& pos) const
   if(idx < 0)
     return {};
 
-  Int32 val = 0;
+  uInt32 val = 0;
 
   if(_swapBits)
     for(int col = _cols - 1; col >= 0; --col)
     {
-      val <<= 1;
+      val <<= 1U;
       val += _stateList[idx + col];
     }
   else
     for(int col = 0; col < _cols; ++col)
     {
-      val <<= 1;
+      val <<= 1U;
       val += _stateList[idx + col];
     }
-  val <<= _shiftBits;
+  val <<= U32(_shiftBits);  // TODO: this doesn't need to be signed
 
   string result = std::format("{}${} = #{}",
     _toolTipText,

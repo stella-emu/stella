@@ -152,7 +152,7 @@ class CartridgeAR : public Cartridge
       @param bank  The bank to get the size for
       @return  The bank's size
     */
-    uInt16 bankSize(uInt16 bank) const override { return static_cast<uInt16>(4_KB); }
+    uInt16 bankSize(uInt16 bank) const override { return U16(4_KB); }
 
     /**
       Patch the cartridge ROM.
@@ -209,14 +209,14 @@ class CartridgeAR : public Cartridge
 
       @param address  The address to query
     */
-    Device::AccessFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessType getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given access flags.
 
       @param address  The address to modify
       @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessType flags) override;
   #endif
 
   public:
@@ -272,7 +272,7 @@ class CartridgeAR : public Cartridge
     // address, selecting the lower ($F000-$F7FF) or upper ($F800-$FFFF) 2K
     // window's currently-mapped bank offset
     size_t imageIndex(uInt16 address) const {
-      return (address & 0x07FF) + myImageOffset[(address & 0x0800) ? 1 : 0];
+      return (address & 0x07FFU) + myImageOffset[(address & 0x0800U) ? 1 : 0];
     }
 
   private:

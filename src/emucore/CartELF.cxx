@@ -51,11 +51,11 @@ namespace {
       i++;
     }
 
-    auto symbols = elf.getSymbols();
+    const auto& symbols = elf.getSymbols();
     stream << "\nELF symbols:\n\n";
     if (!symbols.empty()) {
       i = 0;
-      for (auto& symbol: symbols)
+      for (const auto& symbol: symbols)
         stream << (i++) << " " << symbol << '\n';
     }
 
@@ -68,7 +68,7 @@ namespace {
         << "\nELF relocations for section "
         << section.name << ":\n\n";
 
-      for (auto& rel: *rels) stream << rel << '\n';
+      for (const auto& rel: *rels) stream << rel << '\n';
     }
   }
 
@@ -160,11 +160,12 @@ namespace {
     constexpr size_t IMAGE_SIZE = 4L * 0x00100000;
     static constexpr string_view IMAGE_FILE_NAME = "elf_executable_image.bin";
 
-    auto binary = std::make_unique<uInt8[]>(IMAGE_SIZE);
+    const auto binary = std::make_unique<uInt8[]>(IMAGE_SIZE);
     std::fill_n(binary.get(), IMAGE_SIZE, uInt8{0});
 
-    for (auto segment: {ElfLinker::SegmentType::text, ElfLinker::SegmentType::data,
-                        ElfLinker::SegmentType::rodata})
+    for (const auto segment: {ElfLinker::SegmentType::text,
+                              ElfLinker::SegmentType::data,
+                              ElfLinker::SegmentType::rodata})
       std::copy_n(linker.getSegmentData(segment),
                   linker.getSegmentSize(segment),
                   binary.get() + linker.getSegmentBase(segment));
@@ -336,7 +337,7 @@ uInt8 CartridgeELF::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeELF::peekOob(uInt16 address)
 {
-  return myLastPeekResult[address & 0xfff];
+  return myLastPeekResult[address & 0xfffU];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,9 +363,9 @@ uInt8 CartridgeELF::overdrivePeek(uInt16 address, uInt8 value)
 {
   value = driveBus(address, value);
 
-  if (address & 0x1000) {
+  if (address & 0x1000U) {
     if (!myIsBusDriven) value = mySystem->getDataBusState();
-    myLastPeekResult[address & 0xfff] = value;
+    myLastPeekResult[address & 0xfffU] = value;
   }
 
   return value;
@@ -609,7 +610,7 @@ void CartridgeELF::runArm()
   )
     return;
 
-  const auto cyclesGoal = static_cast<uInt32>(
+  const auto cyclesGoal = U32(
     (mySystem->cycles() + ARM_RUNAHED_MAX) * myArmCyclesPer6502Cycle - getArmCycles());
   uInt32 cycles = 0;
 
@@ -639,7 +640,7 @@ void CartridgeELF::runArm()
 CortexM0::err_t CartridgeELF::BusFallbackDelegate::fetch16(
   uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex
 ) {
-  if (address == (RETURN_ADDR & ~1)) return CortexM0::errCustom(ERR_RETURN);
+  if (address == (RETURN_ADDR & ~1U)) return CortexM0::errCustom(ERR_RETURN);
 
   return handleError("fetch16", address, CortexM0::ERR_UNMAPPED_FETCH16, cortex);
 }

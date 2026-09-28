@@ -54,7 +54,7 @@ namespace GuiCmd {
     uInt32 hash = 2166136261U;         // FNV-1a 32-bit offset basis
     for(const char c: name)
     {
-      hash ^= static_cast<uInt8>(c);
+      hash ^= U8(c);
       hash *= 16777619U;               // FNV-1a 32-bit prime
     }
     // A name hashing to None would silently never dispatch

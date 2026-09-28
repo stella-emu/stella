@@ -60,7 +60,7 @@ void Logger::logMessage(string_view message, Level level)
   // ALWAYS and ERR bypass the level filter; others must be within myLogLevel
   const bool shouldLog = level == Level::ERR
                       || level == Level::ALWAYS
-                      || static_cast<int>(level) <= myLogLevel;
+                      || I32(level) <= myLogLevel;
   if (!shouldLog) return;
 
   // ERR always goes to console regardless of myLogToConsole
@@ -72,7 +72,7 @@ void Logger::logMessage(string_view message, Level level)
 
 #ifdef __LIB_RETRO__
   // libretro needs a null-terminated string; construct only when needed
-  libretro_logger(static_cast<int>(level), string{message}.c_str());
+  libretro_logger(I32(level), string{message}.c_str());
 #endif
 }
 
@@ -90,5 +90,5 @@ void Logger::setLogParameters(int logLevel, bool logToConsole)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::setLogParameters(Level logLevel, bool logToConsole)
 {
-  setLogParameters(static_cast<int>(logLevel), logToConsole);
+  setLogParameters(I32(logLevel), logToConsole);
 }

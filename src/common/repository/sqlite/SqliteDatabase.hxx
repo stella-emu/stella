@@ -34,9 +34,13 @@ class SqliteDatabase
 
     const string& fileName() const { return myDatabaseFile; }
 
-    // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions,
+    //             cppcoreguidelines-explicit-constructor,
+    //             misc-explicit-constructor)
     operator sqlite3*() const { return myHandle; }
-    // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions,
+    //           cppcoreguidelines-explicit-constructor,
+    //           misc-explicit-constructor)
 
     void exec(string_view sql);
 

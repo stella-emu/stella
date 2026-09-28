@@ -56,8 +56,8 @@ uInt32 CartridgeDevCardWidget::internalRamSize()
 uInt32 CartridgeDevCardWidget::internalRamRPort(int start)
 {
   // Map sequential RAM index back to the CPU address in the appropriate window
-  const uInt32 windowIdx = static_cast<uInt32>(start) / CartridgeDevCard::WINDOW_SIZE;
-  const uInt32 offset    = static_cast<uInt32>(start) % CartridgeDevCard::WINDOW_SIZE;
+  const uInt32 windowIdx = U32(start) / CartridgeDevCard::WINDOW_SIZE;
+  const uInt32 offset    = U32(start) % CartridgeDevCard::WINDOW_SIZE;
   return CartridgeDevCard::WINDOWS[windowIdx] + offset;
 }
 
@@ -103,5 +103,5 @@ uInt8 CartridgeDevCardWidget::internalRamGetValue(int addr)
 string CartridgeDevCardWidget::internalRamLabel(int addr)
 {
   const CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(static_cast<uInt16>(internalRamRPort(addr)), false);
+  return dbg.getLabel(U16(internalRamRPort(addr)), false);
 }

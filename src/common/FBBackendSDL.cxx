@@ -94,7 +94,7 @@ void FBBackendSDL::queryHardware(std::unordered_map<uInt32, Common::Size>& fulls
   SDL_DisplayID* displays = SDL_GetDisplays(&count);
   if(!displays || count == 0)
     return;
-  myNumDisplays = static_cast<uInt32>(count);
+  myNumDisplays = U32(count);
 
   // Get the maximum fullscreen and windowed desktop resolutions
   for(uInt32 i = 0; i < myNumDisplays; ++i)
@@ -252,7 +252,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
           y1 = std::max(y1, rect.y + rect.h);
         }
       }
-      posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
+      posX = BSPF::clamp(posX, x0 - I32(mode.screenS.w) + 50, x1 - 50);
       posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
     }
   }
@@ -292,6 +292,9 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     }
   }
 
+  // A fullscreen window is never user-resizable
+  const bool resizable = myResizable && !mode.fullscreen;
+
   if(myWindow)
   {
     // Reuse the existing window.  In windowed mode resize it to the new mode's
@@ -301,6 +304,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     // spans the display and the fullscreen block below keeps it there, so we
     // leave its size/position alone and let the src/dst rects resize the image.
     SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
+    SDL_SetWindowResizable(myWindow, resizable);
     if(!mode.fullscreen)
     {
       SDL_SetWindowMinimumSize(myWindow, 0, 0);
@@ -330,6 +334,8 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
                            true);
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_FULLSCREEN_BOOLEAN,
                            mode.fullscreen);
+    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN,
+                           resizable);
     myWindow = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if(myWindow == nullptr)
@@ -410,8 +416,8 @@ bool FBBackendSDL::adaptRefreshRate(SDL_DisplayID displayId,
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
   const float factor = std::min(
-      static_cast<float>(currentRefreshRate) / wantedRefreshRate,
-      static_cast<float>(currentRefreshRate) / (wantedRefreshRate - 1));
+      FLT(currentRefreshRate) / wantedRefreshRate,
+      FLT(currentRefreshRate) / (wantedRefreshRate - 1));
   // Calculate difference taking care of integer factors (e.g. 100/120)
   float bestDiff = std::abs(factor - std::round(factor)) / factor;
   int numModes = 0;
@@ -471,8 +477,8 @@ bool FBBackendSDL::createRenderer()
   const string& video = myOSystem.settings().getString("video");
   // An empty or "auto" preference defers to the platform, which may still have
   // nothing to say -- an empty request lets SDL choose
-  const string request =
-      (video.empty() || video == "auto") ? autoRenderer() : video;
+  const string request{
+      (video.empty() || video == "auto") ? autoRenderer() : video};
 
   bool recreate = myRenderer == nullptr;
   if(myRenderer)
@@ -535,10 +541,7 @@ void FBBackendSDL::setWindowResizable(bool resizable)
 {
   ASSERT_MAIN_THREAD;
 
-  if(myWindow == nullptr)
-    return;
-
-  SDL_SetWindowResizable(myWindow, resizable);
+  myResizable = resizable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -548,7 +551,7 @@ void FBBackendSDL::setWindowMinSize(const Common::Size& minSize)
 
   if(myWindow)
     SDL_SetWindowMinimumSize(myWindow,
-        static_cast<int>(minSize.w), static_cast<int>(minSize.h));
+        I32(minSize.w), I32(minSize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,7 +561,7 @@ void FBBackendSDL::resizeWindow(const Common::Size& size)
 
   if(myWindow)
   {
-    SDL_SetWindowSize(myWindow, static_cast<int>(size.w), static_cast<int>(size.h));
+    SDL_SetWindowSize(myWindow, I32(size.w), I32(size.h));
     // Block until the window manager has actually applied the new size, the
     // same way the video-mode reuse-path above does -- so the resize event
     // we rely on to re-flow (see EventHandler::handleSystemEvent) reports the
@@ -574,7 +577,7 @@ void FBBackendSDL::refreshDimensions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FBBackendSDL::autoRenderer()
+string_view FBBackendSDL::autoRenderer()
 {
 #ifdef BSPF_WINDOWS
   // SDL3 would pick Direct3D 11, whose flip-model swapchain leaves the edge
@@ -832,8 +835,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
     static const std::array<uInt8, 256> gammaLUT = [] {
       std::array<uInt8, 256> lut{};
       for(int i = 0; i < 256; ++i)
-        lut[i] = static_cast<uInt8>(
-          std::lround(std::pow(i / 255.0, 1.0 / 1.35) * 255.0));
+        lut[i] = U8(std::lround(std::pow(i / 255.0, 1.0 / 1.35) * 255.0));
       return lut;
     }();
 
@@ -842,15 +844,15 @@ const FBSurface& FBBackendSDL::compositedSurface()
     const uInt32 bShift = std::countr_zero(bMask());
     const uInt32 aMask_ = aMask();
 
-    const auto w = static_cast<uInt32>(surfaceRect.w);
-    const auto h = static_cast<uInt32>(surfaceRect.h);
+    const auto w = U32(surfaceRect.w);
+    const auto h = U32(surfaceRect.h);
     const uInt32 pitch = sdlSurface->pitch / sizeof(uInt32);
     auto* pixels = static_cast<uInt32*>(sdlSurface->pixels);
 
     const auto applyGamma = [rShift, gShift, bShift, aMask_](uInt32 px) -> uInt32 {
-      const uInt8 r = gammaLUT[(px >> rShift) & 0xFF];
-      const uInt8 g = gammaLUT[(px >> gShift) & 0xFF];
-      const uInt8 b = gammaLUT[(px >> bShift) & 0xFF];
+      const uInt32 r = gammaLUT[(px >> rShift) & 0xFFU];
+      const uInt32 g = gammaLUT[(px >> gShift) & 0xFFU];
+      const uInt32 b = gammaLUT[(px >> bShift) & 0xFFU];
       return aMask_ | (r << rShift) | (g << gShift) | (b << bShift);
     };
 

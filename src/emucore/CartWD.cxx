@@ -75,15 +75,15 @@ uInt8 CartridgeWD::peek(uInt16 address)
     myPendingBank = 0xF0;
   }
 
-  if(!(address & 0x1000))   // Hotspots below 0x1000 are also TIA addresses
+  if(!(address & 0x1000U))   // Hotspots below 0x1000 are also TIA addresses
   {
     // Hotspots at $30 - $3F
     // Note that a hotspot read triggers a bankswitch after at least 3 cycles
     // have passed, so we only initiate the switch here
-    if(!hotspotsLocked() && (address & 0x00FF) >= 0x30 && (address & 0x00FF) <= 0x3F)
+    if(!hotspotsLocked() && (address & 0x00FFU) >= 0x30 && (address & 0x00FFU) <= 0x3F)
     {
       myCyclesAtBankswitchInit = mySystem->cycles();
-      myPendingBank = address & 0x000F;
+      myPendingBank = address & 0x000FU;
     }
     return mySystem->tia().peek(address);
   }

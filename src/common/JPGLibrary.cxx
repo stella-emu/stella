@@ -62,8 +62,8 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   if(rawPos < 0)
     throw std::runtime_error{"Failed to determine JPG file size"};
 
-  const auto size = static_cast<size_t>(rawPos);
-  if(size > static_cast<size_t>(std::numeric_limits<int>::max()))
+  const auto size = SZT(rawPos);
+  if(size > SZT(std::numeric_limits<int>::max()))
     throw std::runtime_error{"JPG file too large"};
 
   in.seekg(0);
@@ -74,18 +74,17 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
 
   const ScopeExit njGuard{njDone};
 
-  if(njDecode(fileBuffer.data(), static_cast<int>(size)))
+  if(njDecode(fileBuffer.data(), I32(size)))
     throw std::runtime_error{"Error decoding the JPG image"};
 
   // Read the entire image in one go
-  const auto width  = static_cast<uInt32>(njGetWidth());
-  const auto height = static_cast<uInt32>(njGetHeight());
+  const auto width  = U32(njGetWidth());
+  const auto height = U32(njGetHeight());
   const bool isColor       = njIsColor() != 0;
   const auto bytesPerPixel = isColor ? 3UZ : 1UZ;
 
   // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
-  const ByteSpan pixels{ njGetImage(),
-      static_cast<size_t>(width) * static_cast<size_t>(height) * bytesPerPixel };
+  const ByteSpan pixels{ njGetImage(), SZT(width) * SZT(height) * bytesPerPixel };
 
   if(width > surface.width() || height > surface.height())
     surface.resize(width, height);
@@ -98,7 +97,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.basePtr(s_buf, s_pitch);
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const size_t i_pitch = static_cast<size_t>(width) * bytesPerPixel;
+  const size_t i_pitch = SZT(width) * bytesPerPixel;
   const uInt8* i_buf   = pixels.data();
 
   // Get the shift values for each colour component
@@ -113,9 +112,9 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
     uInt32*      s_ptr = s_buf;  // NOLINT(misc-const-correctness)
     for(uInt32 icol = 0; icol < width; ++icol, i_ptr += bytesPerPixel)
     {
-      const auto r = static_cast<uInt32>(i_ptr[0]);
-      const auto g = isColor ? static_cast<uInt32>(i_ptr[1]) : r;
-      const auto b = isColor ? static_cast<uInt32>(i_ptr[2]) : r;
+      const auto r = U32(i_ptr[0]);
+      const auto g = isColor ? U32(i_ptr[1]) : r;
+      const auto b = isColor ? U32(i_ptr[2]) : r;
       *s_ptr++ = aMask | (r << rShift) | (g << gShift) | (b << bShift);
     }
   }

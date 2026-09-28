@@ -43,12 +43,9 @@ bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFA2::peek(uInt16 address)
 {
-  if((address & ROM_MASK) == 0x0FF4)
-  {
-    // Load/save RAM to/from Harmony cart flash
-    if(myImage.size() == 28_KB && !hotspotsLocked())
-      return ramReadWrite();
-  }
+  // Load/save RAM to/from Harmony cart flash
+  if((address & ROM_MASK) == 0x0FF4 && myImage.size() == 28_KB && !hotspotsLocked())
+    return ramReadWrite();
 
   return CartridgeEnhanced::peek(address);
 }
@@ -132,7 +129,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       }
     }
     // Bit 6 is 1, busy
-    return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40;
+    return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40U;
   }
   else
   {
@@ -143,11 +140,11 @@ uInt8 CartridgeFA2::ramReadWrite()
       myRAM[255] = 0;          // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[myCurrentSegOffset[0] + 0xFF4] & ~0x40;
+      return myImage[myCurrentSegOffset[0] + 0xFF4] & ~0x40U;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40;
+      return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40U;
   }
 }
 

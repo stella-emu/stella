@@ -88,13 +88,13 @@ string CartridgeEnhancedWidget::ramDescription()
     info = std::format("{} bytes RAM @ ${} - ${}\n",
       myCart.myRamSize,
       Base::hex4(ADDR_BASE),
-      Base::hex4(static_cast<int>(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
+      Base::hex4(I32(ADDR_BASE | (myCart.myRamSize * 2 - 1))));
 
   info += std::format("  ${} - ${} (R), ${} - ${} (W)\n",
     Base::hex4(ADDR_BASE | myCart.myReadOffset),
-    Base::hex4(ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask)),
+    Base::hex4(ADDR_BASE | U32(myCart.myReadOffset + myCart.myRamMask)),
     Base::hex4(ADDR_BASE | myCart.myWriteOffset),
-    Base::hex4(ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask)));
+    Base::hex4(ADDR_BASE | U32(myCart.myWriteOffset + myCart.myRamMask)));
   return info;
 }
 
@@ -108,7 +108,7 @@ string CartridgeEnhancedWidget::romDescription()
     for(int bank = 0, offset = 0xFFC; std::cmp_less(bank, myCart.romBankCount());
         ++bank, offset += 0x1000)
     {
-      const uInt16 start = (((static_cast<uInt16>(image[offset + 1]) << 8) | image[offset]) / 0x1000) * 0x1000;
+      const uInt16 start = (((U32(image[offset + 1]) << 8U) | image[offset]) / 0x1000) * 0x1000;
       const string_view hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
       info += std::format("Bank {}{} @ ${} - ${}",
         hash, bank, Base::hex4(start + myCart.myRomOffset), Base::hex4(start + 0xFFF));
@@ -119,15 +119,15 @@ string CartridgeEnhancedWidget::romDescription()
           info += "\n ";
         info += " " + hs;
       }
-      info += "\n";
+      info += '\n';
     }
     info += std::format("Startup bank = #{} or undetermined\n", myCart.startBank());
   }
   else
   {
     const auto* end = image.data() + image.size();
-    uInt16 start = (((static_cast<uInt16>(end[-3]) << 8) | end[-4]) / 0x1000) * 0x1000;
-    const uInt16 last = start + static_cast<uInt16>(image.size()) - 1;
+    uInt16 start = (((U32(end[-3]) << 8U) | end[-4]) / 0x1000) * 0x1000;
+    const uInt16 last = start + U16(image.size()) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < image.size())
       start += myCart.myRomOffset;
@@ -291,7 +291,7 @@ string CartridgeEnhancedWidget::bankState()
 string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
   uInt16 hotspot = myCart.hotspot();
-  if(hotspot & 0x1000)
+  if(hotspot & 0x1000U)
     hotspot |= ADDR_BASE;
   return std::format("({}${})",
     prefix ? "hotspot " : "",
@@ -331,8 +331,8 @@ void CartridgeEnhancedWidget::loadConfig()
     const auto formatBytes = [](const ByteArray& arr) {
       string result;
       result.reserve(arr.size() * 3);
-      for(auto i : arr)
-        result += std::format("{} ", Base::hex2(static_cast<int>(i)));
+      for(const auto i: arr)
+        result += std::format("{} ", Base::hex2(I32(i)));
       return result;
     };
 
@@ -372,7 +372,7 @@ void CartridgeEnhancedWidget::handleCommand(CommandSender* sender, GuiCmd::Code 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeEnhancedWidget::internalRamSize()
 {
-  return static_cast<uInt32>(myCart.myRamSize);
+  return U32(myCart.myRamSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -392,7 +392,7 @@ string CartridgeEnhancedWidget::internalRamDescription()
 
   if(myCart.ramBankCount())
   {
-    const int halfBank = myCart.bankSize() >> 1;
+    const int halfBank = myCart.bankSize() >> 1U;
     desc = halfBank >= 1024
       ? std::format("Accessible {}K at a time via:\n", halfBank / 1024)
       : std::format("Accessible {} bytes at a time via:\n", halfBank);
@@ -404,18 +404,18 @@ string CartridgeEnhancedWidget::internalRamDescription()
     desc += std::format("{}${} - ${} used for read access\n",
       indent,
       Base::hex4(ADDR_BASE | myCart.myReadOffset),
-      Base::hex4(ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask)));
+      Base::hex4(ADDR_BASE | U32(myCart.myReadOffset + myCart.myRamMask)));
 
   desc += std::format("{}${} - ${} used for write access",
     indent,
     Base::hex4(ADDR_BASE | myCart.myWriteOffset),
-    Base::hex4(ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask)));
+    Base::hex4(ADDR_BASE | U32(myCart.myWriteOffset + myCart.myRamMask)));
 
   if(myCart.myReadOffset > myCart.myWriteOffset)
     desc += std::format("\n{}${} - ${} used for read access",
       indent,
       Base::hex4(ADDR_BASE | myCart.myReadOffset),
-      Base::hex4(ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask)));
+      Base::hex4(ADDR_BASE | U32(myCart.myReadOffset + myCart.myRamMask)));
 
   return desc;
 }

@@ -136,7 +136,7 @@ void CompuMate::update()
   }
 
   // Returns true if any non-Enter character key is currently pressed
-  const auto anyCharPressed = [&]() -> bool {
+  const auto anyCharPressed = [&] -> bool {
     return std::ranges::any_of(columns, [&](const auto& cc) {
       return (cc.lp6     != E::NoType && myEvent.get(cc.lp6))
           || (cc.rp3     != E::NoType && myEvent.get(cc.rp3))
@@ -147,14 +147,11 @@ void CompuMate::update()
   };
 
   // Detect Func+J (LOAD command) followed by Enter to start cassette playback
-  if(!myLoadArm.seen)
+  if(!myLoadArm.seen && myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateJ))
   {
-    if(myEvent.get(E::CompuMateFunc) && myEvent.get(E::CompuMateJ))
-    {
-      myLoadArm.seen = true;
-      myLoadArm.bufLen = 1;  // LOAD is a single token
-      myLoadArm.waitingForRelease = true;
-    }
+    myLoadArm.seen = true;
+    myLoadArm.bufLen = 1;  // LOAD is a single token
+    myLoadArm.waitingForRelease = true;
   }
 
   if(myLoadArm.seen)
@@ -192,9 +189,8 @@ void CompuMate::update()
 
     // Backspace removes the last token; if the buffer empties, load is cancelled
     const bool backspaceNow = myEvent.get(E::CompuMateBackspace) != 0;
-    if(myLoadArm.seen && backspaceNow && !myLoadArm.prevBackspace)
-      if(--myLoadArm.bufLen == 0)
-        myLoadArm.seen = false;
+    if(myLoadArm.seen && backspaceNow && !myLoadArm.prevBackspace && --myLoadArm.bufLen == 0)
+      myLoadArm.seen = false;
     myLoadArm.prevBackspace = backspaceNow;
 
     // Track character keypresses to keep buffer length in sync with the ROM
@@ -260,9 +256,8 @@ void CompuMate::update()
     }
 
     const bool backspaceNow = myEvent.get(E::CompuMateBackspace) != 0;
-    if(mySaveArm.seen && backspaceNow && !mySaveArm.prevBackspace)
-      if(--mySaveArm.bufLen == 0)
-        mySaveArm.seen = false;
+    if(mySaveArm.seen && backspaceNow && !mySaveArm.prevBackspace && --mySaveArm.bufLen == 0)
+      mySaveArm.seen = false;
     mySaveArm.prevBackspace = backspaceNow;
 
     if(mySaveArm.seen && !mySaveArm.waitingForRelease)

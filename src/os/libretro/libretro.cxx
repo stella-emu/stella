@@ -646,7 +646,7 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_ntsc_aspect")
   {
-    uInt32 value = strcmp(var.value, "par") ? static_cast<uInt32>(atoi(var.value)) : 0;
+    uInt32 value = strcmp(var.value, "par") ? U32(atoi(var.value)) : 0;
 
     if(stella_settings.video_aspect_ntsc != value)
     {
@@ -657,7 +657,7 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_pal_aspect")
   {
-    uInt32 value = strcmp(var.value, "par") ? static_cast<uInt32>(atoi(var.value)) : 0;
+    uInt32 value = strcmp(var.value, "par") ? U32(atoi(var.value)) : 0;
 
     if(stella_settings.video_aspect_pal != value)
     {

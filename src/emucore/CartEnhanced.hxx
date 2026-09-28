@@ -111,7 +111,7 @@ class CartridgeEnhanced : public Cartridge
       @return  true, if code execution is allowed
     */
     bool canExecute(uInt16 PC) const override {
-      return !(PC & 0x1000) || (PC & ROM_MASK) >= myRomOffset || executableCartRam();
+      return !(PC & 0x1000U) || (PC & ROM_MASK) >= myRomOffset || executableCartRam();
     }
 
     /**
@@ -191,7 +191,7 @@ class CartridgeEnhanced : public Cartridge
     uInt16 hotspot() const override { return 0; }
     // TODO: handle cases where there the hotspots cover multiple pages
 
-    uInt32 internalRamSize() const override { return static_cast<uInt32>(myRamSize); }
+    uInt32 internalRamSize() const override { return U32(myRamSize); }
 
     /**
       Answer whether this is a PlusROM cart.  Note that until the
@@ -223,7 +223,7 @@ class CartridgeEnhanced : public Cartridge
     uInt16 myBankShift{BANK_SHIFT};             // default 12 (-> one 4K segment)
 
     // The size of a bank's segment
-    uInt16 myBankSize{static_cast<uInt16>(4_KB)};
+    uInt16 myBankSize{U16(4_KB)};
 
     // The mask for a bank segment
     uInt16 myBankMask{ROM_MASK};
@@ -335,7 +335,7 @@ class CartridgeEnhanced : public Cartridge
       @return  The calculated offset
     */
     uInt32 romAddressSegmentOffset(uInt16 address) const {
-      return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
+      return myCurrentSegOffset[((U32(address) & ROM_MASK) >> myBankShift) % myBankSegs];
     }
 
     /**
@@ -352,9 +352,9 @@ class CartridgeEnhanced : public Cartridge
     // size isn't bank-aligned). If it ever is, bounds-check the result
     // against myRAM.size() at the two call sites, as peek()'s ROM read was.
     uInt16 ramAddressSegmentOffset(uInt16 address) const {
-      return static_cast<uInt16>(
-        (myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
-        >> (myBankShift - myRamBankShift));
+      return U16(
+        (myCurrentSegOffset[((U32(address) & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
+        >> U32(myBankShift - myRamBankShift));
     }
 
   private:

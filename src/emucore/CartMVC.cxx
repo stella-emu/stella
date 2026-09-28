@@ -32,10 +32,10 @@
 
 namespace {
   constexpr uInt8 LO_JUMP_BYTE(uInt16 b) {
-    return b & 0xff;
+    return b & 0xffU;
   }
   constexpr uInt8 HI_JUMP_BYTE(uInt16 b) {
-    return ((b & 0xff00) >> 8) | 0x10;
+    return ((b & 0xff00U) >> 8U) | 0x10U;
   }
 
   constexpr uInt8 COLOR_BLUE = 0x9A;
@@ -87,6 +87,7 @@ namespace {
           myColor[colorSize - 1] = 0;
         }
 
+        // NOLINTNEXTLINE(clang-analyzer-security.ArrayBound): buffer is bounds-checked in swapField()
         myColorBK[0] = 0;
       }
 
@@ -116,7 +117,19 @@ namespace {
 
         const FrameFormat* ff = reinterpret_cast<FrameFormat*>(offset);
 
-        if(ff->format & 0x80)
+        // vsync/vblank/overscan/visible come straight from the ROM file and, via
+        // the pointer arithmetic below, size the sound/graph/color/bkcolor regions
+        // read out of this fixed MVC_FIELD_SIZE buffer. A corrupt or hand-crafted
+        // file could otherwise walk those pointers past the end of the buffer, so
+        // reject a frame whose declared layout would not fit before trusting it
+        // (dataStart is the struct's last byte, so its offset is the header size)
+        constexpr size_t headerSize = sizeof(FrameFormat) - 1;
+        constexpr size_t timecodeReserve = 128; // generous; see "timecode[60]" above
+        const size_t requiredSize = headerSize + timecodeReserve +
+          SZT(ff->vsync) + ff->vblank + ff->overscan + ff->visible + // sound
+          SZT(11) * ff->visible;                    // graph+color+bkcolor
+
+        if((ff->format & 0x80U) && requiredSize <= CartridgeMVC::MVC_FIELD_SIZE)
         {
           myVSyncLines = ff->vsync;
           myBlankLines = ff->vblank;
@@ -133,7 +146,7 @@ namespace {
           myColorBK  = myColor + static_cast<ptrdiff_t>(5 * myVisibleLines);
           myTimecode = myColorBK + static_cast<ptrdiff_t>(1 * myVisibleLines);
         }
-        else // previous format, ntsc assumed
+        else // previous format (also the fallback for an oversized/malformed header): ntsc assumed
         {
           myVSyncLines = 3;
           myBlankLines = 37;
@@ -784,11 +797,11 @@ class MovieCart : public Serializable
     bool load(Serializer& in) override;
 
     [[nodiscard]] uInt8 readROM(uInt16 address) const {
-      return myROM[address & 1023];
+      return myROM[address & 1023U];
     }
 
     void writeROM(uInt16 address, uInt8 data) {
-      myROM[address & 1023] = data;
+      myROM[address & 1023U] = data;
     }
 
   void setConsoleTiming(ConsoleTiming timing);
@@ -952,12 +965,12 @@ void MovieCart::setConsoleTiming(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::writeColor(uInt16 address, uInt8 v)
 {
-  v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
+  v = (v & 0xf0U) | shiftBright[(v & 0x0fU) + myBright];
 
   if(myForceColor)
     v = myForceColor;
   if(myInputs.bw)
-    v &= 0x0f;
+    v &= 0x0fU;
 
   writeROM(address, v);
 }
@@ -971,7 +984,7 @@ void MovieCart::updateTransport()
   {
     if(myBufferIndex)
     {
-      const uInt8 temp = ~(myA10_Count & 0x1e) & 0x1e;
+      const uInt8 temp = ~(myA10_Count & 0x1eU) & 0x1eU;
 
       if(temp == myDirectionValue)
         myInputs.updateDirection(temp);
@@ -980,7 +993,7 @@ void MovieCart::updateTransport()
     }
     else
     {
-      const uInt8 temp = ~(myA10_Count & 0x17) & 0x17;
+      const uInt8 temp = ~(myA10_Count & 0x17U) & 0x17U;
 
       if(temp == myButtonsValue)
         myInputs.updateTransport(temp);
@@ -1029,7 +1042,7 @@ void MovieCart::updateTransport()
     mySpeed = 1;
   }
 
-  if(myJoyRepeat & 16)
+  if(myJoyRepeat & 16U)
   {
     myJoyRepeat = 0;
 
@@ -1128,11 +1141,11 @@ void MovieCart::updateTransport()
       else if(myInputs.left && !myLastInputs.left)
         step = -2;
       else
-        step = (myFrameNumber & 1) ? -1 : 1;
+        step = (U32(myFrameNumber) & 1U) ? -1 : 1;
     }
     else
     {
-      step = (myFrameNumber & 1) ? -1 : 1;
+      step = (U32(myFrameNumber) & 1U) ? -1 : 1;
     }
   }
   else
@@ -1298,7 +1311,7 @@ void MovieCart::fill_addr_end_lines()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_blank_lines()
 {
-  myOdd = (myStream.getEmbeddedFrame() & 1);
+  myOdd = (myStream.getEmbeddedFrame() & 1U);
 
   const uInt8 blankTotal = (myStream.getOverscanLines() +
       myStream.getVSyncLines() + myStream.getBlankLines()-1); // 70-1
@@ -1324,77 +1337,68 @@ void MovieCart::runStateMachine()
     case 1:
       if(myA7)
       {
-        if(myLines == (TIMECODE_HEIGHT-1))
+        if(myLines == (TIMECODE_HEIGHT-1) && myDrawTimeCode)
         {
-          if(myDrawTimeCode)
-          {
-            myDrawTimeCode--;
-            myForceColor = COLOR_BLUE;
-            myStream.startTimeCode();
-          }
+          myDrawTimeCode--;
+          myForceColor = COLOR_BLUE;
+          myStream.startTimeCode();
         }
 
         // label = 12, bars = 7
-        if(myLines == 21)
+        if(myLines == 21 && myDrawLevelBars)
         {
-          if(myDrawLevelBars)
+          myDrawLevelBars--;
+          myForceColor = COLOR_BLUE;
+
+          switch(myMode)
           {
-            myDrawLevelBars--;
-            myForceColor = COLOR_BLUE;
+            case Mode::Time:
+              myStream.overrideGraph(nullptr);
+              break;
 
-            switch(myMode)
-            {
-              case Mode::Time:
-                myStream.overrideGraph(nullptr);
-                break;
+            case Mode::Bright:
+              if(myOdd)
+                myStream.overrideGraph(brightLabelOdd);
+              else
+                myStream.overrideGraph(brightLabelEven);
+              break;
 
-              case Mode::Bright:
-                if(myOdd)
-                  myStream.overrideGraph(brightLabelOdd);
-                else
-                  myStream.overrideGraph(brightLabelEven);
-                break;
-
-              case Mode::Volume:
-              default:
-                if(myOdd)
-                  myStream.overrideGraph(volumeLabelOdd);
-                else
-                  myStream.overrideGraph(volumeLabelEven);
-                break;
-            }
+            case Mode::Volume:
+            default:
+              if(myOdd)
+                myStream.overrideGraph(volumeLabelOdd);
+              else
+                myStream.overrideGraph(volumeLabelEven);
+              break;
           }
         }
 
-        if(myLines == 7)
+        if(myLines == 7 && myDrawLevelBars)
         {
-          if(myDrawLevelBars)
+          uInt8 levelValue = 0;
+
+          switch(myMode)
           {
-            uInt8 levelValue = 0;
+            case Mode::Time:
+              levelValue = 0;
+              break;
 
-            switch(myMode)
-            {
-              case Mode::Time:
-                levelValue = 0;
-                break;
+            case Mode::Bright:
+              levelValue = myBright;
+              break;
 
-              case Mode::Bright:
-                levelValue = myBright;
-                break;
-
-              case Mode::Volume:
-              default:
-                levelValue = myVolume;
-                break;
-            }
-
-            if(myOdd)
-              myStream.overrideGraph(
-                &levelBarsOddData[static_cast<ptrdiff_t>(levelValue) * 40]);
-            else
-              myStream.overrideGraph(
-                &levelBarsEvenData[static_cast<ptrdiff_t>(levelValue) * 40]);
+            case Mode::Volume:
+            default:
+              levelValue = myVolume;
+              break;
           }
+
+          if(myOdd)
+            myStream.overrideGraph(
+              &levelBarsOddData[static_cast<ptrdiff_t>(levelValue) * 40]);
+          else
+            myStream.overrideGraph(
+              &levelBarsEvenData[static_cast<ptrdiff_t>(levelValue) * 40]);
         }
 
         fill_addr_right_line();
@@ -1409,16 +1413,10 @@ void MovieCart::runStateMachine()
       {
          if(myOdd)
          {
-            if(myDrawTimeCode)
-            {
-               if(myLines == (TIMECODE_HEIGHT - 0))
-                  myStream.blankPartialLines(true);
-            }
-            if(myDrawLevelBars)
-            {
-               if(myLines == 22)
-                  myStream.blankPartialLines(true);
-            }
+            if(myDrawTimeCode && myLines == (TIMECODE_HEIGHT - 0))
+               myStream.blankPartialLines(true);
+            if(myDrawLevelBars && myLines == 22)
+               myStream.blankPartialLines(true);
         }
 
         if(myLines >= 1)
@@ -1472,18 +1470,18 @@ void MovieCart::runStateMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::process(uInt16 address)
 {
-  const bool a12 = (address & (1 << 12));
-  const bool a11 = (address & (1 << 11));
+  const bool a12 = (address & (1U << 12U));
+  const bool a11 = (address & (1U << 11U));
 
   // count a10 pulses
-  const bool a10i = (address & (1 << 10));
+  const bool a10i = (address & (1U << 10U));
   if(a10i && !myA10)
     myA10_Count++;
   myA10 = a10i;
 
   // latch a7 state
   if(a11)  // a12
-    myA7 = (address & (1 << 7));    // each 128
+    myA7 = (address & (1U << 7U));   // each 128
 
   switch(myTitleState)
   {

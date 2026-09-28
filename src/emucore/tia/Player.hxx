@@ -54,7 +54,7 @@ class TIA;
 class Player : public Serializable
 {
   public:
-    explicit Player(uInt32 collisionMask);
+    explicit Player(CollisionMask collisionMask);
     ~Player() override = default;
 
     /**
@@ -164,7 +164,7 @@ class Player : public Serializable
     /**
       Is the player currently visible? Determined from bit 15 of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    bool isOn() const { return Bitmask::Enum{collision}.any_of(CollisionMask::VISIBLE); }
 
     /**
       True when the player is actively rendering its main copy and the graphics
@@ -235,7 +235,7 @@ class Player : public Serializable
 
   public:
     // 16-bit collision mask; bit 15 encodes current visibility
-    uInt32 collision{0};
+    CollisionMask collision{CollisionMask::NONE};
 
     // True while HMOVE movement clocks are being propagated
     bool isMoving{false};
@@ -264,9 +264,9 @@ class Player : public Serializable
 
   private:
     // Collision mask value when the player is invisible
-    uInt32 myCollisionMaskDisabled{0};
+    CollisionMask myCollisionMaskDisabled{CollisionMask::NONE};
     // Collision mask value when the player is visible
-    uInt32 myCollisionMaskEnabled{0xFFFF};
+    CollisionMask myCollisionMaskEnabled{CollisionMask::ALL};
 
     // Current computed color (output of applyColors())
     uInt8 myColor{0};
@@ -377,7 +377,7 @@ void Player::tickClkpInHblank()
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -394,7 +394,7 @@ void Player::tick()
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    collision = (myPattern & (1U << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   if (myDecodes[myCounter]) [[unlikely]] {
     myIsRendering = true;
@@ -404,28 +404,23 @@ void Player::tick()
   } else if (myIsRendering) {
     ++myRenderCounter;
 
-    switch (myDivider) {
-      case 1:
-        if (myRenderCounter > 0)
-          ++mySampleCounter;
+    if (myDivider == 1) {
+      if (myRenderCounter > 0)
+        ++mySampleCounter;
 
-        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
-          setDivider(myDividerPending);
+      // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+      if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
+        setDivider(myDividerPending);
+    } else {
+      // myDivider is always 2 or 4 in this branch (NUSIZ only produces 1, 2, or 4),
+      // so replace % with a bitmask to avoid an integer divide on the per-pixel path
+      if (myRenderCounter > 1 && ((U32(myRenderCounter - 1) &
+                                   U32(myDivider - 1)) == 0))
+        ++mySampleCounter;
 
-        break;
-
-      default:
-        // myDivider is always 2 or 4 in this branch (NUSIZ only produces 1, 2, or 4),
-        // so replace % with a bitmask to avoid an integer divide on the per-pixel path
-        if (myRenderCounter > 1 && (((myRenderCounter - 1) & (myDivider - 1)) == 0))
-          ++mySampleCounter;
-
-        // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
-          setDivider(myDividerPending);
-
-        break;
+      // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+      if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0) [[unlikely]]
+        setDivider(myDividerPending);
     }
 
     if (mySampleCounter > 7) myIsRendering = false;

@@ -70,7 +70,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // is inset a little within its row; buildLayout() re-applies both, so they
   // follow the font.  A swatch draws no text, so it carries the tab's own font --
   // the one its size is derived from -- rather than the grids' narrow one
-  const auto swatch = [&]() {
+  const auto swatch = [&] {
     auto* c = new ColorWidget(boss, lfont,
                               ColorWidget::calcWidth(lfont), lineHeight - 4);
     c->setTarget(this);
@@ -537,7 +537,7 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
             // clear the frame, but far less than what separates the groups
             LBLGAP  = HGAP / 2,
             VGAP    = _fontHeight / 2,
-            HBORDER = static_cast<int>(_fontWidth * 1.25),
+            HBORDER = I32(_fontWidth * 1.25),
             VBORDER = _fontHeight / 2;
 
   // Every button in the tab takes the widest label's width
@@ -925,11 +925,11 @@ void TiaWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       break;
 
     case Cmd::VSync:
-      tia.vsync((tia.vsyncAsInt() & ~0x02) | (myVSync->getState() ? 0x02 : 0x00));
+      tia.vsync((U32(tia.vsyncAsInt()) & ~0x02U) | (myVSync->getState() ? 0x02U : 0x00U));
       break;
 
     case Cmd::VBlank:
-      tia.vblank((tia.vblankAsInt() & ~0x02) | (myVBlank->getState() ? 0x02 : 0x00));
+      tia.vblank((U32(tia.vblankAsInt()) & ~0x02U) | (myVBlank->getState() ? 0x02U : 0x00U));
       break;
 
     case DataGridWidget::Cmd::ItemDataChanged:

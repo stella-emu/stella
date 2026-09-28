@@ -81,7 +81,7 @@ bool CartridgeGL::checkSwitchBank(uInt16 address, uInt8)
   bool control = false;
 
   // Switch banks if necessary
-  switch(address & 0x1f80)
+  switch(address & 0x1f80U)
   {
     case 0x480:
       slice = 0;
@@ -104,12 +104,12 @@ bool CartridgeGL::checkSwitchBank(uInt16 address, uInt8)
   if(slice >= 0)
   {
     //const bool isWrite = address & 0x20; // could be checked, but not necessary for known GL ROMs
-    bank(address & 0xf, slice);
+    bank(address & 0xfU, slice);
     return true;
   }
   if(control)
   {
-    myEnablePROM = (address & 0x30) == 0x30;
+    myEnablePROM = (address & 0x30U) == 0x30;
     if(myEnablePROM)
       mySystem->setPageAccess(0x1fc0, System::PageAccess(this, System::PageAccessType::READ));
     else
@@ -129,5 +129,5 @@ uInt8 CartridgeGL::peek(uInt16 address)
 
   checkSwitchBank(address, 0);
 
-  return myRWPRandomValues[address & 0xFF];
+  return myRWPRandomValues[address & 0xFFU];
 }

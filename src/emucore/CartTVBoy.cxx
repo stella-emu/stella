@@ -30,7 +30,7 @@ bool CartridgeTVBoy::checkSwitchBank(uInt16 address, uInt8)
   // Switch banks if necessary
   if((address & ADDR_MASK) >= 0x1800 && (address & ADDR_MASK) <= 0x187F)
   {
-    bank(address & (romBankCount() - 1));
+    bank(U32(address) & (U32(romBankCount()) - 1));
     return true;
   }
   return false;

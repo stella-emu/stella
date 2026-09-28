@@ -64,7 +64,7 @@ bool CheatManager::add(string_view name, string_view code,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::remove(int idx)
 {
-  if(static_cast<size_t>(idx) < myCheatList.size())
+  if(SZT(idx) < myCheatList.size())
   {
     // This will also remove it from the per-frame list (if applicable)
     myCheatList[idx]->disable();

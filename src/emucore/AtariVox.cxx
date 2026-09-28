@@ -51,52 +51,45 @@ bool AtariVox::read(DigitalPin pin)
   // We need to override the Controller::read() method, since the timing
   // of the actual read is important for the EEPROM (we can't just read
   // 60 times per second in the ::update() method)
-  switch(pin)
+  // Pin 2: SpeakJet READY
+  //        READY signal is sent directly to pin 2
+  if(pin == DigitalPin::Two)
   {
-    // Pin 2: SpeakJet READY
-    //        READY signal is sent directly to pin 2
-    case DigitalPin::Two:
-    {
-      // Some USB-serial adaptors support only CTS, others support only
-      // software flow control
-      // So we check the state of both then AND the results, on the
-      // assumption that if a mode isn't supported, then it reads as TRUE
-      // and doesn't change the boolean result
-      // Thus the logic is:
-      //   READY_SIGNAL = READY_STATE_CTS && READY_STATE_FLOW
-      // Note that we also have to take inverted CTS into account
+    // Some USB-serial adaptors support only CTS, others support only
+    // software flow control
+    // So we check the state of both then AND the results, on the
+    // assumption that if a mode isn't supported, then it reads as TRUE
+    // and doesn't change the boolean result
+    // Thus the logic is:
+    //   READY_SIGNAL = READY_STATE_CTS && READY_STATE_FLOW
+    // Note that we also have to take inverted CTS into account
 
-      // When using software flow control, only update on a state change
-      uInt8 flowCtrl = 0;
-      if(mySerialPort->readByte(flowCtrl))
-        myReadyStateSoftFlow = flowCtrl == 0x11;  // XON
+    // When using software flow control, only update on a state change
+    uInt8 flowCtrl = 0;
+    if(mySerialPort->readByte(flowCtrl))
+      myReadyStateSoftFlow = flowCtrl == 0x11;  // XON
 
-      // Now combine the results of CTS and'ed with flow control
-      return setPin(pin,
-          (mySerialPort->isCTS() ^ myCTSFlip) && myReadyStateSoftFlow);
-    }
-
-    default:
-      return SaveKey::read(pin);
+    // Now combine the results of CTS and'ed with flow control
+    return setPin(pin,
+        (mySerialPort->isCTS() ^ myCTSFlip) && myReadyStateSoftFlow);
   }
+
+  return SaveKey::read(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::write(DigitalPin pin, bool value)
 {
   // Change the pin state based on value
-  switch(pin)
+  // Pin 1: SpeakJet DATA
+  //        output serial data to the speakjet
+  if(pin == DigitalPin::One)
   {
-    // Pin 1: SpeakJet DATA
-    //        output serial data to the speakjet
-    case DigitalPin::One:
-      setPin(pin, value);
-      clockDataIn(value);
-      break;
-
-    default:
-      SaveKey::write(pin, value);
+    setPin(pin, value);
+    clockDataIn(value);
   }
+  else
+    SaveKey::write(pin, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,19 +111,19 @@ void AtariVox::clockDataIn(bool value)
   // since the last write, shift this bit into the current byte.
   if((cycle < myLastDataWriteCycle) || (cycle >= myLastDataWriteCycle + 62))
   {
-    myShiftRegister >>= 1;
-    myShiftRegister |= (value << 15);
+    myShiftRegister >>= 1U;
+    myShiftRegister |= (U32(value) << 15U);
     if(++myShiftCount == 10)
     {
       myShiftCount = 0;
-      myShiftRegister >>= 6;
-      if(!(myShiftRegister & (1<<9)))
+      myShiftRegister >>= 6U;
+      if(!(myShiftRegister & (1U<<9U)))
         cerr << "AtariVox: bad start bit\n";
-      else if((myShiftRegister & 1))
+      else if((myShiftRegister & 1U))
         cerr << "AtariVox: bad stop bit\n";
       else
       {
-        const uInt8 data = ((myShiftRegister >> 1) & 0xff);
+        const uInt8 data = ((U32(myShiftRegister) >> 1U) & 0xffU);
         mySerialPort->writeByte(data);
       }
       myShiftRegister = 0;

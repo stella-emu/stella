@@ -94,8 +94,8 @@ class MouseControl
 
       friend std::ostream& operator<<(std::ostream& os, const MouseMode& mm)
       {
-        os << "xtype=" << static_cast<int>(mm.xtype) << ", xid=" << mm.xid
-           << ", ytype=" << static_cast<int>(mm.ytype) << ", yid=" << mm.yid
+        os << "xtype=" << I32(mm.xtype) << ", xid=" << mm.xid
+           << ", ytype=" << I32(mm.ytype) << ", yid=" << mm.yid
            << ", msg=" << mm.message;
         return os;
       }

@@ -213,7 +213,10 @@ CPPFLAGS:= $(DEFINES) $(INCLUDES)
 -include $(addprefix $(srcdir)/, $(addsuffix /module.mk,$(MODULES)))
 
 # Depdir information
-DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
+# Each object's .d file lives beside its source, which may be a subdirectory
+# of its module
+DEPDIRS = $(addsuffix $(DEPDIR),$(sort $(addsuffix /,$(MODULE_DIRS)) \
+                                       $(dir $(OBJS) $(OBJS_TEST))))
 DEPFILES =
 
 OBJ=$(addprefix $(OBJECT_ROOT)/,$(OBJS))
