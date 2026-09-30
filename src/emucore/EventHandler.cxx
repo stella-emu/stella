@@ -1665,6 +1665,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
   #endif
 
+    case Event::ToggleKeyPortariMode:
+      // KeyPortari has so many key mapping conflicts it needs its own mode
+      if(pressed && !repeated) myPKeyHandler.get()->toggleKeyPortariMode();
+      return;
+      
     case Event::ExitMode:
       // Special handling for Escape key
       // Basically, exit whichever mode we're currently in

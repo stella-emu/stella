@@ -133,7 +133,8 @@ bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& 
     || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kKeyboardMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kDrivingMode, map.key, map.mod)
-    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeyPortariMode, map.key, map.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,6 +206,14 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
                            EventMode::kDrivingMode, updateDefaults);
       applyDefaultMappings(CompuMateMapping, event,
                            EventMode::kCompuMateMode, updateDefaults);
+      applyDefaultMappings(KeyPortariCommonMapping, event,
+                           EventMode::kCommonMode, updateDefaults);
+      // Keyportari mode is a special mode that takes over the whole keyboard
+      for (const auto& item : KeyPortariCommonMapping) {
+        myKeyPortariModeMap.add(item.event, EventMode::kKeyPortariMode, item.key, item.mod);
+      }
+      for (const auto& item : KeyPortariMapping)
+        myKeyPortariModeMap.add(item.event, EventMode::kKeyPortariMode, item.key, item.mod);
       break;
 
     case EventMode::kMenuMode:
@@ -291,6 +300,9 @@ EventMode PhysicalKeyboardHandler::getMode(Controller::Type type)
 
     case CompuMate:
       return EventMode::kCompuMateMode;
+      
+    case KeyPortari:
+      return EventMode::kKeyPortariMode;
 
     case Driving:
       return EventMode::kDrivingMode;
@@ -352,6 +364,10 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       // see below
       break;
 
+    case EventMode::kKeyPortariMode:
+      // see below
+      break;
+
     case EventMode::kDrivingMode:
       enableMappings(RightDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -375,7 +391,7 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       for(const auto& item : CompuMateMapping)
         enableMapping(item.event, EventMode::kCompuMateMode);
       break;
-
+      
     case EventMode::kDrivingMode:
       enableMappings(LeftDrivingEvents, EventMode::kDrivingMode);
       break;
@@ -526,6 +542,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kPaddlesMode, key, mod);
       myKeyMap.erase(EventMode::kKeyboardMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
+      myKeyMap.erase(EventMode::kKeyPortariMode, key, mod);
     }
     else if(evMode != EventMode::kMenuMode
             && evMode != EventMode::kEditMode
@@ -565,7 +582,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
       return;
     }
   }
-
+  
   // Arrange the logic to take advantage of short-circuit evaluation
   // Handle keys which switch eventhandler state
   if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod)))
@@ -577,7 +594,11 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
     case EventHandlerState::PLAYBACK:
-      myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
+      if (myKeyPortariModeEnabled) {
+        myHandler.handleEvent(myKeyPortariModeMap.get(EventMode::kKeyPortariMode, key, mod), pressed, repeated);
+      } else {
+        myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
+      }
       break;
 
     default:
@@ -605,6 +626,16 @@ void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
   myOSystem.frameBuffer().showTextMessage(
     std::format("Modifier key combos {}", modCombo ? "enabled" : "disabled")
   );
+}
+
+void PhysicalKeyboardHandler::toggleKeyPortariMode()
+{
+  myKeyPortariModeEnabled = !myKeyPortariModeEnabled;
+
+  std::ostringstream ss;
+  ss << "KeyPortari mode ";
+  ss << (myKeyPortariModeEnabled ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.view());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1169,6 +1200,136 @@ PhysicalKeyboardHandler::CompuMateMapping = [] noexcept {
     {Event::CompuMateEquals,        StellaKey::EQUALS},
     {Event::CompuMatePlus,          StellaKey::EQUALS, StellaMod::SHIFT},
     {Event::CompuMateSlash,         StellaKey::SLASH}
-  };
-  return EventMappingSpan{data};
+    };
+    return EventMappingSpan{data};
+}();
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const PhysicalKeyboardHandler::EventMappingSpan
+PhysicalKeyboardHandler::KeyPortariCommonMapping = [] noexcept {
+  static constexpr EventMapping data[] = {
+    #ifdef BSPF_MACOS
+    { Event::ToggleKeyPortariMode,     StellaKey::F12, MOD3 },
+    #else
+    { Event::ToggleKeyPortariMode,     StellaKey::SCROLLLOCK },
+    #endif
+    };
+    return EventMappingSpan{data};
+}();
+
+const PhysicalKeyboardHandler::EventMappingSpan
+PhysicalKeyboardHandler::KeyPortariMapping = [] noexcept {
+  static constexpr EventMapping data[] = {
+    {Event::KeyPortariUpArrow,       StellaKey::UP},
+    {Event::KeyPortariDownArrow,     StellaKey::DOWN},
+    {Event::KeyPortariLeftArrow,     StellaKey::LEFT},
+    {Event::KeyPortariRightArrow,    StellaKey::RIGHT},
+    {Event::KeyPortariShift,         StellaKey::LSHIFT},
+    {Event::KeyPortariShift,         StellaKey::RSHIFT},
+    {Event::KeyPortariFunc,          StellaKey::LCTRL},
+    {Event::KeyPortariFunc,          StellaKey::RCTRL},
+    {Event::KeyPortariTab,           StellaKey::TAB},
+    {Event::KeyPortariEscape,        StellaKey::ESCAPE},
+    {Event::KeyPortariSpace,         StellaKey::SPACE},
+    {Event::KeyPortariExclam,        StellaKey::_1, StellaMod::SHIFT},
+    {Event::KeyPortariDoubleQuote,   StellaKey::APOSTROPHE, StellaMod::SHIFT},
+    {Event::KeyPortariApostrophe,    StellaKey::APOSTROPHE},
+    {Event::KeyPortariHash,          StellaKey::_3, StellaMod::SHIFT},
+    {Event::KeyPortariDollar,        StellaKey::_4, StellaMod::SHIFT},
+    {Event::KeyPortariPercent,       StellaKey::_5, StellaMod::SHIFT},
+    {Event::KeyPortariAmpersand,     StellaKey::_6, StellaMod::SHIFT},
+    {Event::KeyPortariGrave,         StellaKey::GRAVE},
+    {Event::KeyPortariLeftParen,     StellaKey::_9, StellaMod::SHIFT},
+    {Event::KeyPortariRightParen,    StellaKey::_0, StellaMod::SHIFT},
+    {Event::KeyPortariMultiply,      StellaKey::_8, StellaMod::SHIFT},
+    {Event::KeyPortariPlus,          StellaKey::EQUALS, StellaMod::SHIFT},
+    {Event::KeyPortariComma,         StellaKey::COMMA},
+    {Event::KeyPortariMinus,         StellaKey::MINUS},
+    {Event::KeyPortariPeriod,        StellaKey::PERIOD},
+    {Event::KeyPortariSlash,         StellaKey::SLASH},
+    {Event::KeyPortari0,             StellaKey::_0},
+    {Event::KeyPortari1,             StellaKey::_1},
+    {Event::KeyPortari2,             StellaKey::_2},
+    {Event::KeyPortari3,             StellaKey::_3},
+    {Event::KeyPortari4,             StellaKey::_4},
+    {Event::KeyPortari5,             StellaKey::_5},
+    {Event::KeyPortari6,             StellaKey::_6},
+    {Event::KeyPortari7,             StellaKey::_7},
+    {Event::KeyPortari8,             StellaKey::_8},
+    {Event::KeyPortari9,             StellaKey::_9},
+    {Event::KeyPortariColon,         StellaKey::SEMICOLON, StellaMod::SHIFT},
+    {Event::KeyPortariSemiColon,     StellaKey::SEMICOLON},
+    {Event::KeyPortariLessThan,      StellaKey::COMMA, StellaMod::SHIFT},
+    {Event::KeyPortariEquals,        StellaKey::EQUALS},
+    {Event::KeyPortariGreaterThan,   StellaKey::PERIOD, StellaMod::SHIFT},
+    {Event::KeyPortariQuestion,      StellaKey::SLASH, StellaMod::SHIFT},
+    {Event::KeyPortariAt,            StellaKey::_2, StellaMod::SHIFT},
+    {Event::KeyPortariA,             StellaKey::A, StellaMod::SHIFT},
+    {Event::KeyPortariB,             StellaKey::B, StellaMod::SHIFT},
+    {Event::KeyPortariC,             StellaKey::C, StellaMod::SHIFT},
+    {Event::KeyPortariD,             StellaKey::D, StellaMod::SHIFT},
+    {Event::KeyPortariE,             StellaKey::E, StellaMod::SHIFT},
+    {Event::KeyPortariF,             StellaKey::F, StellaMod::SHIFT},
+    {Event::KeyPortariG,             StellaKey::G, StellaMod::SHIFT},
+    {Event::KeyPortariH,             StellaKey::H, StellaMod::SHIFT},
+    {Event::KeyPortariI,             StellaKey::I, StellaMod::SHIFT},
+    {Event::KeyPortariJ,             StellaKey::J, StellaMod::SHIFT},
+    {Event::KeyPortariK,             StellaKey::K, StellaMod::SHIFT},
+    {Event::KeyPortariL,             StellaKey::L, StellaMod::SHIFT},
+    {Event::KeyPortariM,             StellaKey::M, StellaMod::SHIFT},
+    {Event::KeyPortariN,             StellaKey::N, StellaMod::SHIFT},
+    {Event::KeyPortariO,             StellaKey::O, StellaMod::SHIFT},
+    {Event::KeyPortariP,             StellaKey::P, StellaMod::SHIFT},
+    {Event::KeyPortariQ,             StellaKey::Q, StellaMod::SHIFT},
+    {Event::KeyPortariR,             StellaKey::R, StellaMod::SHIFT},
+    {Event::KeyPortariS,             StellaKey::S, StellaMod::SHIFT},
+    {Event::KeyPortariT,             StellaKey::T, StellaMod::SHIFT},
+    {Event::KeyPortariU,             StellaKey::U, StellaMod::SHIFT},
+    {Event::KeyPortariV,             StellaKey::V, StellaMod::SHIFT},
+    {Event::KeyPortariW,             StellaKey::W, StellaMod::SHIFT},
+    {Event::KeyPortariX,             StellaKey::X, StellaMod::SHIFT},
+    {Event::KeyPortariY,             StellaKey::Y, StellaMod::SHIFT},
+    {Event::KeyPortariZ,             StellaKey::Z, StellaMod::SHIFT},
+    {Event::KeyPortariLeftBracket,   StellaKey::LEFTBRACKET},
+    {Event::KeyPortariBackslash,     StellaKey::BACKSLASH},
+    {Event::KeyPortariRightBracket,  StellaKey::RIGHTBRACKET},
+    {Event::KeyPortariCaret,         StellaKey::_6, StellaMod::SHIFT},
+    {Event::KeyPortariUnderscore,    StellaKey::MINUS, StellaMod::SHIFT},
+    {Event::KeyPortariLowercaseA,    StellaKey::A},
+    {Event::KeyPortariLowercaseB,    StellaKey::B},
+    {Event::KeyPortariLowercaseC,    StellaKey::C},
+    {Event::KeyPortariLowercaseD,    StellaKey::D},
+    {Event::KeyPortariLowercaseE,    StellaKey::E},
+    {Event::KeyPortariLowercaseF,    StellaKey::F},
+    {Event::KeyPortariLowercaseG,    StellaKey::G},
+    {Event::KeyPortariLowercaseH,    StellaKey::H},
+    {Event::KeyPortariLowercaseI,    StellaKey::I},
+    {Event::KeyPortariLowercaseJ,    StellaKey::J},
+    {Event::KeyPortariLowercaseK,    StellaKey::K},
+    {Event::KeyPortariLowercaseL,    StellaKey::L},
+    {Event::KeyPortariLowercaseM,    StellaKey::M},
+    {Event::KeyPortariLowercaseN,    StellaKey::N},
+    {Event::KeyPortariLowercaseO,    StellaKey::O},
+    {Event::KeyPortariLowercaseP,    StellaKey::P},
+    {Event::KeyPortariLowercaseQ,    StellaKey::Q},
+    {Event::KeyPortariLowercaseR,    StellaKey::R},
+    {Event::KeyPortariLowercaseS,    StellaKey::S},
+    {Event::KeyPortariLowercaseT,    StellaKey::T},
+    {Event::KeyPortariLowercaseU,    StellaKey::U},
+    {Event::KeyPortariLowercaseV,    StellaKey::V},
+    {Event::KeyPortariLowercaseW,    StellaKey::W},
+    {Event::KeyPortariLowercaseX,    StellaKey::X},
+    {Event::KeyPortariLowercaseY,    StellaKey::Y},
+    {Event::KeyPortariLowercaseZ,    StellaKey::Z},
+    {Event::KeyPortariLeftBrace,     StellaKey::LEFTBRACKET, StellaMod::SHIFT},
+    {Event::KeyPortariVerticalBar,   StellaKey::BACKSLASH, StellaMod::SHIFT},
+    {Event::KeyPortariRightBrace,    StellaKey::RIGHTBRACKET, StellaMod::SHIFT},
+    {Event::KeyPortariTilde,         StellaKey::GRAVE, StellaMod::SHIFT},
+    {Event::KeyPortariReturn,        StellaKey::RETURN},
+    {Event::KeyPortariEnter,         StellaKey::KP_ENTER},
+    {Event::KeyPortariDelete,        StellaKey::BACKSPACE},
+    {Event::KeyPortariDelete,        StellaKey::DELETE}
+    };
+    return EventMappingSpan{data};
 }();

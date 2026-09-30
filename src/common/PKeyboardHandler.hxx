@@ -84,7 +84,9 @@ class PhysicalKeyboardHandler
     /** See comments on KeyMap.myModEnabled for more information. */
     bool& useModKeys() { return myKeyMap.enableMod(); }
 
-    void toggleModKeys(bool toggle = true);
+  void toggleModKeys(bool toggle = true);
+
+  void toggleKeyPortariMode();
 
   private:
 
@@ -135,6 +137,10 @@ class PhysicalKeyboardHandler
 
     // Hashmap of key events
     KeyMap myKeyMap;
+  
+    // Overlayed key events
+    bool myKeyPortariModeEnabled{false};
+    KeyMap myKeyPortariModeMap;
 
     EventMode myLeftMode{EventMode::kEmulationMode};
     EventMode myRightMode{EventMode::kEmulationMode};
@@ -157,6 +163,8 @@ class PhysicalKeyboardHandler
     static const EventMappingSpan DefaultKeyboardMapping;
     static const EventMappingSpan DefaultDrivingMapping;
     static const EventMappingSpan CompuMateMapping;
+    static const EventMappingSpan KeyPortariCommonMapping;
+    static const EventMappingSpan KeyPortariMapping;
 };
 
 #endif  // PHYSICAL_KEYBOARD_HANDLER_HXX

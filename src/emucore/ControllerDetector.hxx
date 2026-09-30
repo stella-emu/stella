@@ -111,6 +111,9 @@ class ControllerDetector
 
     // Returns true if a Kid Vid code pattern is found.
     static bool isProbablyKidVid(ByteSpan image, Controller::Jack port);
+  
+    // Returns true if a KeyPortari code pattern is found.
+    static bool isProbablyKeyPortari(ByteSpan image);
 
   private:
     // Following constructors and assignment operators not supported
