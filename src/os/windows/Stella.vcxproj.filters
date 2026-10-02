@@ -154,6 +154,12 @@
     <Filter Include="Header Files\lib\dr_libs">
       <UniqueIdentifier>{3ae6ce19-97c3-4362-a3ae-176d35cad1f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\debugger\gui\memview">
+      <UniqueIdentifier>{de11f57e-67dd-483c-b8a1-8fec548adb50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debugger\gui\memview">
+      <UniqueIdentifier>{55cc5b16-9afe-4ed2-b052-80ae04396afc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\emucore\AtariVox.cxx">
@@ -1286,6 +1292,33 @@
     </ClCompile>
     <ClCompile Include="..\..\gui\FontManager.cxx">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\ScrollBarHWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewAccessLayer.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewDataLayer.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewLayer.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewMarkerLayer.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewParams.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWidget.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWindow.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWindowDialog.cxx">
+      <Filter>Source Files\debugger\gui\memview</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2644,6 +2677,30 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\FontManager.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\ScrollBarHWidget.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewAccessLayer.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewDataLayer.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewLayer.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewMarkerLayer.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWidget.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWindow.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWindowDialog.hxx">
+      <Filter>Header Files\debugger\gui\memview</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

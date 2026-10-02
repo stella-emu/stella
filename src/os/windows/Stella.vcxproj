@@ -317,7 +317,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -353,7 +353,7 @@
     <Midl />
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -390,7 +390,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -426,7 +426,7 @@
     <Midl />
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -465,7 +465,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -505,7 +505,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -546,7 +546,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -586,7 +586,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -627,7 +627,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -666,7 +666,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -706,7 +706,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib;..\..\common\repository\sqlite;..\..\lib\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -744,7 +744,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\debugger\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\emucore\elf;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui\memview;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -1078,6 +1078,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewAccessLayer.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewDataLayer.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewLayer.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewMarkerLayer.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewParams.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWidget.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWindow.cxx" />
+    <ClCompile Include="..\..\debugger\gui\memview\MemViewWindowDialog.cxx" />
     <ClCompile Include="..\..\debugger\gui\NullControlWidget.cxx" />
     <ClCompile Include="..\..\debugger\gui\PaddleWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
@@ -1194,6 +1202,7 @@
     <ClCompile Include="..\..\gui\QuadTariDialog.cxx" />
     <ClCompile Include="..\..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\..\gui\RomImageWidget.cxx" />
+    <ClCompile Include="..\..\gui\ScrollBarHWidget.cxx" />
     <ClCompile Include="..\..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="..\..\gui\StellaSettingsDialog.cxx" />
     <ClCompile Include="..\..\gui\TabPaneWidget.cxx" />
@@ -2508,6 +2517,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewAccessLayer.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewDataLayer.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewLayer.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewMarkerLayer.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWidget.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWindow.hxx" />
+    <ClInclude Include="..\..\debugger\gui\memview\MemViewWindowDialog.hxx" />
     <ClInclude Include="..\..\debugger\gui\NullControlWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -2662,6 +2678,7 @@
     <ClInclude Include="..\..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\..\gui\Icons.hxx" />
     <ClInclude Include="..\..\gui\RomImageWidget.hxx" />
+    <ClInclude Include="..\..\gui\ScrollBarHWidget.hxx" />
     <ClInclude Include="..\..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\..\gui\Stella12x24tFont.hxx" />
     <ClInclude Include="..\..\gui\Stella14x28tFont.hxx" />
