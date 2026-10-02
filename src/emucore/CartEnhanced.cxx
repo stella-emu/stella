@@ -80,7 +80,7 @@ void CartridgeEnhanced::install(System& system)
   myRomAccessSizes[ImageScope::PROGRAM] = U32(myImage.size()) - myRomOffset;
   myRomAccessOffsets[ImageScope::PROGRAM] = myRomOffset;
 
-  myRamAccessSize = myRamSize;
+  myRamAccessSize = U32(myRamSize);
   if(myRamBankCount > 0)
   {
     // Banked RAM counters follow the ROM's, shared by reads and writes (see bank())

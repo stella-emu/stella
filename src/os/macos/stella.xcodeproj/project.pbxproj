@@ -274,6 +274,25 @@
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
 		DC3131ED2C540CE2008A1E43 /* CortexM0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */; };
 		DC3131EE2C540CE2008A1E43 /* CortexM0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */; };
+		DC35E6F830701E37002F7CFA /* ScrollBarHWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E6F630701E37002F7CFA /* ScrollBarHWidget.hxx */; };
+		DC35E6F930701E37002F7CFA /* ScrollBarHWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E6F730701E37002F7CFA /* ScrollBarHWidget.cxx */; };
+		DC35E70C30701E66002F7CFA /* MemViewAccessLayer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E6FA30701E66002F7CFA /* MemViewAccessLayer.hxx */; };
+		DC35E70D30701E66002F7CFA /* MemViewLayer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E6FE30701E66002F7CFA /* MemViewLayer.hxx */; };
+		DC35E70E30701E66002F7CFA /* MemViewWindow.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E70630701E66002F7CFA /* MemViewWindow.hxx */; };
+		DC35E70F30701E66002F7CFA /* MemViewWindowDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E70830701E66002F7CFA /* MemViewWindowDialog.hxx */; };
+		DC35E71030701E66002F7CFA /* MemViewParams.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E70230701E66002F7CFA /* MemViewParams.hxx */; };
+		DC35E71130701E66002F7CFA /* MemViewMarkerLayer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E70030701E66002F7CFA /* MemViewMarkerLayer.hxx */; };
+		DC35E71230701E66002F7CFA /* MemViewWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E70430701E66002F7CFA /* MemViewWidget.hxx */; };
+		DC35E71330701E66002F7CFA /* MemViewDataLayer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC35E6FC30701E66002F7CFA /* MemViewDataLayer.hxx */; };
+		DC35E71430701E66002F7CFA /* MemViewWindowDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E70930701E66002F7CFA /* MemViewWindowDialog.cxx */; };
+		DC35E71530701E66002F7CFA /* MemViewWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E70530701E66002F7CFA /* MemViewWidget.cxx */; };
+		DC35E71630701E66002F7CFA /* MemViewAccessLayer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E6FB30701E66002F7CFA /* MemViewAccessLayer.cxx */; };
+		DC35E71730701E66002F7CFA /* MemViewParams.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E70330701E66002F7CFA /* MemViewParams.cxx */; };
+		DC35E71830701E66002F7CFA /* MemViewWindow.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E70730701E66002F7CFA /* MemViewWindow.cxx */; };
+		DC35E71930701E66002F7CFA /* MemViewLayer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E6FF30701E66002F7CFA /* MemViewLayer.cxx */; };
+		DC35E71A30701E66002F7CFA /* MemViewDataLayer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E6FD30701E66002F7CFA /* MemViewDataLayer.cxx */; };
+		DC35E71B30701E66002F7CFA /* MemViewMarkerLayer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC35E70130701E66002F7CFA /* MemViewMarkerLayer.cxx */; };
+		DC35E71C30701E66002F7CFA /* module.mk in Resources */ = {isa = PBXBuildFile; fileRef = DC35E70A30701E66002F7CFA /* module.mk */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
 		DC39F2A02DC107F3006D74A8 /* FBSurfaceSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC39F29D2DC107F3006D74A8 /* FBSurfaceSDL.cxx */; };
@@ -1175,6 +1194,25 @@
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
 		DC3131EB2C540CE2008A1E43 /* CortexM0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CortexM0.cxx; sourceTree = "<group>"; };
 		DC3131EC2C540CE2008A1E43 /* CortexM0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CortexM0.hxx; sourceTree = "<group>"; };
+		DC35E6F630701E37002F7CFA /* ScrollBarHWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ScrollBarHWidget.hxx; sourceTree = "<group>"; };
+		DC35E6F730701E37002F7CFA /* ScrollBarHWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ScrollBarHWidget.cxx; sourceTree = "<group>"; };
+		DC35E6FA30701E66002F7CFA /* MemViewAccessLayer.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewAccessLayer.hxx; sourceTree = "<group>"; };
+		DC35E6FB30701E66002F7CFA /* MemViewAccessLayer.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewAccessLayer.cxx; sourceTree = "<group>"; };
+		DC35E6FC30701E66002F7CFA /* MemViewDataLayer.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewDataLayer.hxx; sourceTree = "<group>"; };
+		DC35E6FD30701E66002F7CFA /* MemViewDataLayer.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewDataLayer.cxx; sourceTree = "<group>"; };
+		DC35E6FE30701E66002F7CFA /* MemViewLayer.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewLayer.hxx; sourceTree = "<group>"; };
+		DC35E6FF30701E66002F7CFA /* MemViewLayer.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewLayer.cxx; sourceTree = "<group>"; };
+		DC35E70030701E66002F7CFA /* MemViewMarkerLayer.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewMarkerLayer.hxx; sourceTree = "<group>"; };
+		DC35E70130701E66002F7CFA /* MemViewMarkerLayer.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewMarkerLayer.cxx; sourceTree = "<group>"; };
+		DC35E70230701E66002F7CFA /* MemViewParams.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewParams.hxx; sourceTree = "<group>"; };
+		DC35E70330701E66002F7CFA /* MemViewParams.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewParams.cxx; sourceTree = "<group>"; };
+		DC35E70430701E66002F7CFA /* MemViewWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewWidget.hxx; sourceTree = "<group>"; };
+		DC35E70530701E66002F7CFA /* MemViewWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewWidget.cxx; sourceTree = "<group>"; };
+		DC35E70630701E66002F7CFA /* MemViewWindow.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewWindow.hxx; sourceTree = "<group>"; };
+		DC35E70730701E66002F7CFA /* MemViewWindow.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewWindow.cxx; sourceTree = "<group>"; };
+		DC35E70830701E66002F7CFA /* MemViewWindowDialog.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemViewWindowDialog.hxx; sourceTree = "<group>"; };
+		DC35E70930701E66002F7CFA /* MemViewWindowDialog.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemViewWindowDialog.cxx; sourceTree = "<group>"; };
+		DC35E70A30701E66002F7CFA /* module.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = module.mk; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA2.hxx; sourceTree = "<group>"; };
 		DC39F2982DC107F3006D74A8 /* EventHandlerSDL.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL.hxx; sourceTree = "<group>"; };
@@ -1998,6 +2036,7 @@
 				DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */,
 				DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */,
 				DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */,
+				DC35E70B30701E66002F7CFA /* memview */,
 				DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */,
 				DCB5EA6D3010F1080080ED3E /* NullControlWidget.cxx */,
 				DCCF49B614B7544A00814FAB /* PaddleWidget.hxx */,
@@ -2490,6 +2529,8 @@
 				DC8685BF28AAAF7D00DF21AA /* RomImageWidget.cxx */,
 				DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */,
 				DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */,
+				DC35E6F630701E37002F7CFA /* ScrollBarHWidget.hxx */,
+				DC35E6F730701E37002F7CFA /* ScrollBarHWidget.cxx */,
 				2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */,
 				2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */,
 				DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */,
@@ -2598,6 +2639,30 @@
 				DC0EF9492C59578C0007F3B5 /* VcsLib.hxx */,
 			);
 			path = elf;
+			sourceTree = "<group>";
+		};
+		DC35E70B30701E66002F7CFA /* memview */ = {
+			isa = PBXGroup;
+			children = (
+				DC35E6FA30701E66002F7CFA /* MemViewAccessLayer.hxx */,
+				DC35E6FB30701E66002F7CFA /* MemViewAccessLayer.cxx */,
+				DC35E6FC30701E66002F7CFA /* MemViewDataLayer.hxx */,
+				DC35E6FD30701E66002F7CFA /* MemViewDataLayer.cxx */,
+				DC35E6FE30701E66002F7CFA /* MemViewLayer.hxx */,
+				DC35E6FF30701E66002F7CFA /* MemViewLayer.cxx */,
+				DC35E70030701E66002F7CFA /* MemViewMarkerLayer.hxx */,
+				DC35E70130701E66002F7CFA /* MemViewMarkerLayer.cxx */,
+				DC35E70230701E66002F7CFA /* MemViewParams.hxx */,
+				DC35E70330701E66002F7CFA /* MemViewParams.cxx */,
+				DC35E70430701E66002F7CFA /* MemViewWidget.hxx */,
+				DC35E70530701E66002F7CFA /* MemViewWidget.cxx */,
+				DC35E70630701E66002F7CFA /* MemViewWindow.hxx */,
+				DC35E70730701E66002F7CFA /* MemViewWindow.cxx */,
+				DC35E70830701E66002F7CFA /* MemViewWindowDialog.hxx */,
+				DC35E70930701E66002F7CFA /* MemViewWindowDialog.cxx */,
+				DC35E70A30701E66002F7CFA /* module.mk */,
+			);
+			path = memview;
 			sourceTree = "<group>";
 		};
 		DC3EE83B1E2C0E4400905161 /* zlib */ = {
@@ -3098,6 +3163,14 @@
 				DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
+				DC35E70C30701E66002F7CFA /* MemViewAccessLayer.hxx in Headers */,
+				DC35E70D30701E66002F7CFA /* MemViewLayer.hxx in Headers */,
+				DC35E70E30701E66002F7CFA /* MemViewWindow.hxx in Headers */,
+				DC35E70F30701E66002F7CFA /* MemViewWindowDialog.hxx in Headers */,
+				DC35E71030701E66002F7CFA /* MemViewParams.hxx in Headers */,
+				DC35E71130701E66002F7CFA /* MemViewMarkerLayer.hxx in Headers */,
+				DC35E71230701E66002F7CFA /* MemViewWidget.hxx in Headers */,
+				DC35E71330701E66002F7CFA /* MemViewDataLayer.hxx in Headers */,
 				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
 				DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */,
 				DC47455909C34BFA00EDDA3A /* CheatCodeDialog.hxx in Headers */,
@@ -3301,6 +3374,7 @@
 				DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */,
 				DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */,
 				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
+				DC35E6F830701E37002F7CFA /* ScrollBarHWidget.hxx in Headers */,
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
 				DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */,
@@ -3380,7 +3454,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2660;
+				LastUpgradeCheck = 2700;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -3409,6 +3483,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */,
+				DC35E71C30701E66002F7CFA /* module.mk in Resources */,
 				2D91746F09BA90380026E9FF /* Stella.icns in Resources */,
 				2D91747109BA90380026E9FF /* docs in Resources */,
 				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
@@ -3646,6 +3721,7 @@
 				DC816CFD25757D9A00FBCCDA /* HighScoresManager.cxx in Sources */,
 				DC47455809C34BFA00EDDA3A /* CheatCodeDialog.cxx in Sources */,
 				DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */,
+				DC35E6F930701E37002F7CFA /* ScrollBarHWidget.cxx in Sources */,
 				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DC3131ED2C540CE2008A1E43 /* CortexM0.cxx in Sources */,
@@ -3808,6 +3884,14 @@
 				DC479403258C56B800F52462 /* PlusROM.cxx in Sources */,
 				DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */,
 				DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */,
+				DC35E71430701E66002F7CFA /* MemViewWindowDialog.cxx in Sources */,
+				DC35E71530701E66002F7CFA /* MemViewWidget.cxx in Sources */,
+				DC35E71630701E66002F7CFA /* MemViewAccessLayer.cxx in Sources */,
+				DC35E71730701E66002F7CFA /* MemViewParams.cxx in Sources */,
+				DC35E71830701E66002F7CFA /* MemViewWindow.cxx in Sources */,
+				DC35E71930701E66002F7CFA /* MemViewLayer.cxx in Sources */,
+				DC35E71A30701E66002F7CFA /* MemViewDataLayer.cxx in Sources */,
+				DC35E71B30701E66002F7CFA /* MemViewMarkerLayer.cxx in Sources */,
 				DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */,
 				DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */,
 				DC676A451729A0B000E4E73D /* CartARWidget.cxx in Sources */,
