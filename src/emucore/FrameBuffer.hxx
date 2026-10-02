@@ -28,6 +28,7 @@ class FBSurface;
 class TIASurface;
 class Bezel;
 class DialogContainer;
+class FBMessageHandler;
 
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
@@ -37,7 +38,6 @@ class DialogContainer;
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
 #include "FBBackend.hxx"
-#include "FBMessageHandler.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
 #include "VideoModeHandler.hxx"
@@ -76,8 +76,16 @@ class FrameBuffer
       unique_ptr<FBBackend> backend;
       std::list<shared_ptr<FBSurface>> surfaceList;
 
+      // This window's onscreen messages (after the backend, since it holds
+      // surfaces)
+      unique_ptr<FBMessageHandler> msgHandler;
+
       VideoModeHandler::Mode vidMode;
       BufferType bufferType{BufferType::None};
+
+      // The image size this window's video mode is built from; the (shared)
+      // VideoModeHandler only holds whichever window's size was set last
+      Common::Size imageSize;
 
       // The latest size recorded by liveResize(), waiting for applyLiveResize()
       Common::Size pendingResize;
@@ -95,6 +103,10 @@ class FrameBuffer
 
       // Whether this window is currently shown (always true for the primary)
       bool active{false};
+
+      // The container rendered into a secondary window (see
+      // openSecondaryWindow()); the primary window leaves it unset
+      DialogContainer* container{nullptr};
     };
 
   public:
@@ -196,6 +208,15 @@ class FrameBuffer
     void growWindowTo(const Common::Size& minSize);
 
     /**
+      As above, for the given window, so a companion window's container can
+      re-assert its content's minimum whenever the dialog's layout changes.
+
+      @param win      The window to apply the minimum to
+      @param minSize  The new minimum, in logical (unscaled) UI pixels
+    */
+    void growWindowTo(WindowState& win, const Common::Size& minSize);
+
+    /**
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
@@ -203,15 +224,13 @@ class FrameBuffer
 
   #ifdef GUI_SUPPORT
     /**
-      Secondary-window support.  In addition to the primary window (launcher /
-      emulation / main debugger), the FrameBuffer can drive any number of
-      additional windows, each backed by its own FBBackend and each owned by
-      its own DialogContainer (e.g. the debugger's companion TIA window).  All
-      other state (palette, fonts, TIASurface) is shared, so a secondary
-      window is *not* a separate FrameBuffer; only the window/renderer/surfaces
-      differ.  A container gets its own WindowState (see DialogContainer::window())
-      the first time this is called for it, and keeps it (hidden, not
-      destroyed) across close/re-open.
+      Open a secondary window.  Besides the primary window (launcher /
+      emulation / debugger), the FrameBuffer drives any number of these, each
+      with its own FBBackend and owned by its own DialogContainer (e.g. the
+      debugger's TIA window).  Palette, fonts and TIASurface are shared; only
+      the window, renderer and surfaces differ.  A container gets its own
+      WindowState (see DialogContainer::window()) the first time this is
+      called for it, and keeps it (hidden) across close/re-open.
 
       @param container  The DialogContainer rendered into the secondary window
       @param title      The secondary window title
@@ -255,6 +274,13 @@ class FrameBuffer
       Hide the secondary window (its backend/surfaces are kept for re-open).
     */
     void closeSecondaryWindow(DialogContainer& container);
+
+    /**
+      Destroy the secondary window made for this container, with its backend
+      and surfaces.  Called as the container itself is destroyed, once its
+      dialogs (and so their surfaces) are gone.
+    */
+    void destroySecondaryWindow(DialogContainer& container);
   #endif  // GUI_SUPPORT
 
     /**
@@ -269,10 +295,16 @@ class FrameBuffer
     uInt32 primaryWindowId() const;
 
     /**
-      The platform window ID of the (currently shown) secondary window, or 0 if
-      none is.  Used to route window-specific events to it.
+      The platform window ID of the given window.
     */
-    uInt32 secondaryWindowId() const;
+    uInt32 windowId(const WindowState& win) const { return win.backend->windowId(); }
+
+    /**
+      The container of the open secondary window with the given platform
+      window ID, or nullptr if there is none (including for the primary
+      window).  Every window-specific event is routed through this.
+    */
+    DialogContainer* containerForWindowId(uInt32 id) const;
 
     /**
       The user has moved a window: remember its position and display, under that
@@ -293,7 +325,8 @@ class FrameBuffer
     void setPendingRender(WindowState& win) { win.pendingRender = true; }
 
     /**
-      Shows a text message onscreen.
+      Shows a text message onscreen, in the main window.  GUI code shows its
+      messages in its own window, through Dialog::showTextMessage().
 
       @param message  The message to be shown
       @param position Onscreen position for the message
@@ -343,7 +376,7 @@ class FrameBuffer
       classes must not delete it directly).
 
       @param win    The window this surface belongs to (see Dialog::window(),
-                     or primaryWindow() for a permanently primary-only caller)
+                    or primaryWindow() for the main window)
       @param w      The requested width of the new surface
       @param h      The requested height of the new surface
       @param inter  Interpolation mode
@@ -389,7 +422,6 @@ class FrameBuffer
     /**
       Returns the given window's image dimensions. Note that this takes into
       account the current scaling (if any) as well as image 'centering'.
-      Pass primaryWindow() for a permanently primary-only caller.
     */
     const Common::Rect& imageRect(const WindowState& win) const { return win.vidMode.imageR; }
 
@@ -523,8 +555,7 @@ class FrameBuffer
       are scaled to 2x normal size.
     */
     bool hidpiEnabled() const { return myHiDPIEnabled.at(displayId(myPrimaryWindow)); }
-    // Scale factor for the given window; pass primaryWindow() for a
-    // permanently primary-only caller
+    // HiDPI scale factor for the given window
     uInt32 hidpiScaleFactor(const WindowState& win) const { return myHiDPIEnabled.at(displayId(win)) ? 2 : 1; }
 
     /**
@@ -593,9 +624,8 @@ class FrameBuffer
 
   private:
     /**
-      These methods are used to load/save position and display of a window,
-      named explicitly by its buffer type. Every caller supplies the type
-      directly; there is no default.
+      The settings keys for the position and display of the window of the
+      given buffer type.
     */
     string_view getPositionKey(BufferType bufferType) const;
     string_view getDisplayKey(BufferType bufferType) const;
@@ -651,6 +681,13 @@ class FrameBuffer
     FBInitStatus applyVideoMode(WindowState& win);
 
     /**
+      Whether the given window shows the TIA image.  Only the primary window
+      ever does; a secondary window (e.g. the debugger's TIA or memory-view
+      window) is always a UI window, whatever the emulation state.
+    */
+    bool inTIAMode(const WindowState& win) const;
+
+    /**
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the desktop screen.
     */
@@ -677,10 +714,9 @@ class FrameBuffer
   #endif  // GUI_SUPPORT
 
     /**
-      Window-scoped versions of the public API above.  Each public method
-      forwards to one of these, naming the primary window explicitly.  The two
-      that a dialog also needs for a non-primary window (allocateSurface,
-      deallocateSurface) have their own public overloads above instead.
+      Window-scoped versions of the public API above, which forwards to them
+      for the primary window.  (allocateSurface/deallocateSurface are public,
+      since dialogs need them for any window.)
     */
     FBInitStatus createDisplay(WindowState& win, string_view title, BufferType type,
                                Common::Size size, bool honourHiDPI = true);
@@ -688,7 +724,6 @@ class FrameBuffer
     bool liveResize(WindowState& win, int width, int height);
     void resizeSettled(WindowState& win);
     void setWindowMinSize(WindowState& win, const Common::Size& size);
-    void growWindowTo(WindowState& win, const Common::Size& minSize);
     void update(WindowState& win, UpdateMode mode);
     void updateInEmulationMode(WindowState& win, float framesPerSecond);
     void toggleFullscreen(WindowState& win, bool toggle);
@@ -754,10 +789,6 @@ class FrameBuffer
 
     // The BezelSurface which blends over the TIA surface
     unique_ptr<Bezel> myBezel;
-
-    // The FBMessageHandler class takes responsibility for all onscreen
-    // message and frame-statistics overlay functionality
-    FBMessageHandler myMsgHandler;
 
     bool myGrabMouse{false};
 

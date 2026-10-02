@@ -43,10 +43,15 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont,
   myBank = new EditTextWidget(boss, nfont, 1);
   myBank->setEditable(false);
 
+  // Add an extra button to the Disassembly tab to open Memory View
+  static constexpr string TEXT_MEMORY_VIEW = "Memory View";
+  myMvButton = new ButtonWidget(boss, lfont, TEXT_MEMORY_VIEW, Cmd::MemViewButton);
+
   myRomList = new RomListWidget(boss, lfont, dfont);
   // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
+  addFocusWidget(myMvButton);
 
   reflow();
 }
@@ -80,11 +85,15 @@ void RomWidget::reflow()
   // not children of this widget, so they are positioned explicitly here
   BoxLayout root(Dir::Vertical, VGAP, HBORDER, VBORDER);
 
-  // The bank info row: a label, then the bank display filling the rest
+  // The bank info row: a label, the bank display filling the middle, then the
+  // memory view button
   auto infoRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   infoRow->addAuto(anchoredItem(myInfoLbl));
   infoRow->addStretch(alignedItem(myBank, HAlign::Fill, VAlign::Center));
-  root.addFixed(std::move(infoRow), std::max(_lineHeight, myBank->getHeight()));
+  infoRow->addSpace(_fontWidth);
+  infoRow->addAuto(alignedItem(myMvButton, HAlign::Left, VAlign::Center));
+  root.addFixed(std::move(infoRow),
+    std::max({_lineHeight, myBank->getHeight(), myMvButton->getHeight()}));
 
   // The disassembly fills whatever is left
   root.addStretch(widgetItem(myRomList));
@@ -299,4 +308,10 @@ uInt16 RomWidget::getAddress(int disasm_line)
 void RomWidget::scrollTo(int line)
 {
   myRomList->setSelected(line);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::updateMemViewButton()
+{
+  myMvButton->setEnabled(!instance().debugger().memViewWindowOpen());
 }

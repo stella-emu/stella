@@ -76,6 +76,10 @@ CartridgeDPCPlus::CartridgeDPCPlus(ByteSpan image, string_view md5,
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
 
+  // Store image scopes to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = ByteSpan{myImage}.first(mySize);
+  myImageScopes[ImageScope::PROGRAM] = myProgramImage;
+
   this->setInitialState();  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
@@ -643,8 +647,9 @@ bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + 24_KB];
+    access.romCodePeekCounter = &myRomCodePeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romDataPeekCounter = &myRomDataPeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomPokeCounter[myBankOffset + (addr & 0x0FFFU)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -675,12 +680,6 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
   }
   else
     return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeDPCPlus::getImage() const
-{
-  return ByteSpan{myImage}.first(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

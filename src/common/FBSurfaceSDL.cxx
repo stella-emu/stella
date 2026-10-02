@@ -215,6 +215,17 @@ void FBSurfaceSDL::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL::updateStaticData()
+{
+  if (!myIsStatic)
+    return;
+
+  assert(myBlitter);
+
+  myBlitter->updateStaticData();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::resize(uInt32 width, uInt32 height)
 {
   ASSERT_MAIN_THREAD;

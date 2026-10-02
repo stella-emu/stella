@@ -103,11 +103,11 @@ void EventHandlerSDL::pollEvent()
         handleKeyEvent(static_cast<StellaKey>(myEvent.key.scancode),
                        static_cast<StellaMod>(myEvent.key.mod),
                        myEvent.type == SDL_EVENT_KEY_DOWN,
-                       myEvent.key.repeat);
+                       myEvent.key.repeat, myEvent.key.windowID);
         break;
 
       case SDL_EVENT_TEXT_INPUT:
-        handleTextEvent(*myEvent.text.text);
+        handleTextEvent(*myEvent.text.text, myEvent.text.windowID);
         break;
 
       case SDL_EVENT_MOUSE_MOTION:
@@ -244,10 +244,10 @@ void EventHandlerSDL::pollEvent()
         handleSystemEvent(SystemEvent::WINDOW_RESTORED);
         break;
       case SDL_EVENT_WINDOW_MOUSE_ENTER:
-        handleSystemEvent(SystemEvent::WINDOW_ENTER);
+        handleSystemEvent(SystemEvent::WINDOW_ENTER, I32(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_MOUSE_LEAVE:
-        handleSystemEvent(SystemEvent::WINDOW_LEAVE);
+        handleSystemEvent(SystemEvent::WINDOW_LEAVE, I32(myEvent.window.windowID));
         break;
       case SDL_EVENT_WINDOW_FOCUS_GAINED:
         handleSystemEvent(SystemEvent::WINDOW_FOCUS_GAINED);

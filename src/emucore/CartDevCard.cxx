@@ -27,6 +27,9 @@ CartridgeDevCard::CartridgeDevCard(ByteSpan image, string_view md5,
   // copy towards end of buffer (supports smaller ROMs):
   std::ranges::copy(image.first(len), myImage.end() - len);
   createRomAccessArrays(RAM_SIZE);
+
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,8 +58,9 @@ void CartridgeDevCard::install(System& system)
       access.directPeekBase = myRAM.data() + offset;
       access.directPokeBase = myRAM.data() + offset;
       access.romAccessBase  = myRomAccessBase.get() + offset;
-      access.romPeekCounter = myRomAccessCounter.get() + offset;
-      access.romPokeCounter = myRomAccessCounter.get() + offset + RAM_SIZE;
+      access.romCodePeekCounter = myRomCodePeekCounter.get() + offset;
+      access.romDataPeekCounter = myRomDataPeekCounter.get() + offset;
+      access.romPokeCounter = myRomPokeCounter.get() + offset;
       mySystem->setPageAccess(U16(addr), access);
     }
   }
@@ -74,12 +78,6 @@ bool CartridgeDevCard::patch(uInt16 address, uInt8 value)
 {
   myRAM[ramOffset(address)] = value;
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeDevCard::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

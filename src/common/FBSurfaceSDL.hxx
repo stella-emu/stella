@@ -63,6 +63,7 @@ class FBSurfaceSDL : public FBSurface
     void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) override;
 
     void reload() override;
+    void updateStaticData() override;
     void resize(uInt32 width, uInt32 height) override;
 
     void enableBlend(bool enable) override;

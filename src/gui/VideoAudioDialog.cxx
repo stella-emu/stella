@@ -863,6 +863,10 @@ void VideoAudioDialog::loadConfig()
 
   // Fullscreen
   myFullscreen->setState(settings.getBool("fullscreen"));
+#ifdef WINDOWED_SUPPORT
+  // Fullscreen and multiple windows don't mix (see FrameBuffer::toggleFullscreen())
+  myFullscreen->setEnabled(!instance().frameBuffer().secondaryWindowOpen());
+#endif
   // Fullscreen stretch setting
   myUseStretch->setState(settings.getBool("tia.fs_stretch"));
 #ifdef ADAPTABLE_REFRESH_SUPPORT

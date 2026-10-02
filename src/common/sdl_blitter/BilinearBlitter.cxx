@@ -115,6 +115,18 @@ void BilinearBlitter::blit(SDL_Surface& surface)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BilinearBlitter::updateStaticData()
+{
+  ASSERT_MAIN_THREAD;
+
+  recreateTexturesIfNecessary();
+
+  // The texture can be larger than the data (see recreateTexturesIfNecessary())
+  const SDL_Rect staticRect{0, 0, myStaticData->w, myStaticData->h};
+  SDL_UpdateTexture(myTexture, &staticRect, myStaticData->pixels, myStaticData->pitch);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BilinearBlitter::recreateTexturesIfNecessary()
 {
   if (myTexturesAreAllocated && !myRecreateTextures) {
@@ -152,7 +164,9 @@ void BilinearBlitter::recreateTexturesIfNecessary()
         : SDL_SCALEMODE_NEAREST);
   } else {
     mySecondaryTexture = nullptr;
-    SDL_UpdateTexture(myTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
+    // Only the data's own area: the texture may have been rounded up above
+    const SDL_Rect staticRect{0, 0, myStaticData->w, myStaticData->h};
+    SDL_UpdateTexture(myTexture, &staticRect, myStaticData->pixels, myStaticData->pitch);
   }
 
   const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };

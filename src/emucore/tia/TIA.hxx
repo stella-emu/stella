@@ -687,8 +687,9 @@ class TIA : public Device
       Increase the given address's access counter
 
       @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
     */
-    void increaseAccessCounter(uInt16 address, bool isWrite) override;
+    void increaseAccessCounter(uInt16 address, Device::AccessType flag) override;
 
     /**
       Query the access counters

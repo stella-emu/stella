@@ -25,8 +25,9 @@ class GuiObject;
 #include "Command.hxx"
 
 /**
-  Displays a color from the TIA palette.  This class will eventually
-  be expanded with a TIA palette table, to set the color visually.
+  Displays a color from the TIA palette, or (via setColorRgb()) an
+  arbitrary RGB color outside it.  This class will eventually be expanded
+  with a TIA palette table, to set the color visually.
 
   @author  Stephen Anthony
 */
@@ -66,6 +67,10 @@ class ColorWidget : public Widget, public CommandSender
     void setColor(ColorId color);
     ColorId getColor() const { return _color;  }
 
+    // Show an arbitrary RGB color instead of a palette ColorId
+    void setColorRgb(uInt32 color);
+    uInt32 getColorRgb() const;
+
     // Draws an X across the swatch (e.g. to mark "no color" in a grid)
     void setCrossed(bool enable);
 
@@ -80,11 +85,15 @@ class ColorWidget : public Widget, public CommandSender
   protected:
     // The color currently shown
     ColorId _color{kNone};
+    // The RGB color currently shown, when _rgbMode is set
+    uInt32 _colorRgb{0x000000};
     // Whether a frame is drawn around the swatch
     bool _framed{true};
 
     // Whether setCrossed() has marked this swatch
     bool _crossGrid{false};
+    // Whether _colorRgb (not _color) is the color currently shown
+    bool _rgbMode{false};
 
   private:
     // Following constructors and assignment operators not supported

@@ -18,27 +18,27 @@
 #ifndef FB_MESSAGE_HANDLER_HXX
 #define FB_MESSAGE_HANDLER_HXX
 
-class FrameBuffer;
 class FBSurface;
 class OSystem;
 
 #include <mutex>
 #include <thread>
 
+#include "FrameBuffer.hxx"
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
 /**
   Encapsulates all onscreen message and frame-statistics overlay logic for
-  the FrameBuffer.  FrameBuffer owns one instance and delegates all message
-  state to it.
+  one FrameBuffer window.  Each window owns one instance (see
+  FrameBuffer::WindowState), drawn into that window.
 
   @author  Stephen Anthony
 */
 class FBMessageHandler
 {
   public:
-    FBMessageHandler(FrameBuffer& fb, OSystem& osystem);
+    FBMessageHandler(FrameBuffer& fb, OSystem& osystem, FrameBuffer::WindowState& win);
     ~FBMessageHandler() = default;
 
     /**
@@ -149,6 +149,9 @@ class FBMessageHandler
 
     FrameBuffer& myFB;
     OSystem&     myOSystem;
+
+    // The window the messages are drawn in
+    FrameBuffer::WindowState& myWin;
 
     Message myMsg;
     Message myStatsMsg;

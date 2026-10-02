@@ -37,6 +37,16 @@ DialogContainer::DialogContainer(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer::~DialogContainer()
+{
+  // A companion container owns the window openSecondaryWindow() made for it.
+  // The derived class's dialogs, and with them their surfaces, are already
+  // gone by now
+  if(myOSystem.hasFrameBuffer() && myWindow->container == this)
+    myOSystem.frameBuffer().destroySecondaryWindow(*this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::updateTime(uInt64 time)
 {
   if(myDialogStack.empty())
@@ -485,4 +495,26 @@ void DialogContainer::reset()
   myCurrentHatDown    = { -1, -1, JoyHatDir::CENTER };
 
   myLastClick = { 0, 0, 0, 0 };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowResized(int width, int height)
+{
+  FrameBuffer& fb = myOSystem.frameBuffer();
+  if(fb.resizeSecondaryWindow(*this, width, height))
+    fb.renderSecondaryWindow(*this, FrameBuffer::UpdateMode::RERENDER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowExposed()
+{
+  // Only marks dirty; the window redraws on its next render
+  if(baseDialog())
+    baseDialog()->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowClose()
+{
+  myOSystem.frameBuffer().closeSecondaryWindow(*this);
 }

@@ -99,6 +99,17 @@ class FBSurface
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color);
 
     /**
+      This method should be called to draw a horizontal line in an arbitrary
+      RGB color, bypassing the palette.
+
+      @param x      The first x coordinate
+      @param y      The y coordinate
+      @param x2     The second x coordinate
+      @param color  The RGB color of the line
+    */
+    virtual void hLineRgb(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
+
+    /**
       This method should be called to draw a vertical line.
 
       @param x      The x coordinate
@@ -119,6 +130,19 @@ class FBSurface
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           ColorId color);
+
+    /**
+      This method should be called to draw a filled rectangle in an
+      arbitrary RGB color, bypassing the palette.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The RGB fill color of the rectangle
+    */
+    virtual void fillRectRgb(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                             uInt32 color);
 
     /**
       This method should be called to draw the specified character.
@@ -354,6 +378,11 @@ class FBSurface
     virtual void reload() = 0;
 
     /**
+      This is used to update rarely changing contents to the Blitter (Surface->Texture)
+    */
+    virtual void updateStaticData() { }
+
+    /**
       This method should be called to resize the surface to the
       given dimensions and reload data/state.  The surface is not
       modified if it is larger than the given dimensions.
@@ -385,6 +414,11 @@ class FBSurface
     //////////////////////////////////////////////////////////////////////////
 
     static void setPalette(const FullPaletteArray& palette) { myPalette = palette; }
+
+    // The RGB value a palette ColorId currently resolves to
+    static uInt32 getColorRgb(ColorId color) {
+      return (color < kNumColors) ? myPalette[color] : 0;
+    }
 
   protected:
     /**

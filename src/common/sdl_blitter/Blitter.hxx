@@ -34,6 +34,7 @@ class Blitter {
     ) = 0;
 
     virtual void blit(SDL_Surface& surface) = 0;
+    virtual void updateStaticData() = 0;
 
   protected:
 

@@ -159,7 +159,9 @@ enum class FrameStyle: uInt8 {
 // Which way an arrow drawn by FBSurface::drawArrow() points
 enum class ArrowDirection: uInt8 {
   Up,
-  Down
+  Down,
+  Left,
+  Right
 };
 
 #endif  // FRAME_BUFFER_CONSTANTS_HXX

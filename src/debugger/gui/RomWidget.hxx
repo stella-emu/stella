@@ -32,7 +32,8 @@ class RomWidget : public Widget, public CommandSender
     // These commands need to be seen outside the class
     struct Cmd {
       static constexpr GuiCmd::Code
-        InvalidateListing = GuiCmd::of("RomWidget.InvalidateListing");
+        InvalidateListing = GuiCmd::of("RomWidget.InvalidateListing"),
+        MemViewButton     = GuiCmd::of("RomWidget.MemViewButton");
     };
 
   public:
@@ -46,6 +47,9 @@ class RomWidget : public Widget, public CommandSender
     { myListIsDirty = true; if(forcereload) loadConfig(); }
 
     void scrollTo(int line);
+
+    // The memory view button is disabled while its window is open
+    void updateMemViewButton();
 
     void setArea(int x, int y, int w, int h) override;
 
@@ -73,6 +77,7 @@ class RomWidget : public Widget, public CommandSender
     RomListWidget*   myRomList{nullptr};
     EditTextWidget*  myBank{nullptr};
     LabelWidget* myInfoLbl{nullptr};
+    ButtonWidget* myMvButton{nullptr};
 
     bool myListIsDirty{true};
 

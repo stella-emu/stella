@@ -72,6 +72,11 @@ void CartridgeGL::install(System& system)
   mySystem->setPageAccess(0xd80, access);
 
   myReadOffset = myWriteOffset = 0;
+
+#ifdef DEBUGGER_SUPPORT
+  myRamPeekAccessOffset = U32(4_KB);
+  myRamPokeAccessOffset = U32(4_KB);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

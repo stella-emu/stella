@@ -110,6 +110,15 @@ void ToolTip::update(const Widget* widget, const Common::Point& pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::refresh(const Widget* widget)
+{
+  // From now on, render optimization is active
+  mySelectiveRender = true;
+  if (myTipShown && (widget == myTipWidget) && (widget == myFocusWidget))
+    update(myTipWidget, myMousePos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::hide()
 {
   if(myTipShown)
@@ -117,7 +126,7 @@ void ToolTip::hide()
     myTimer = 0;
     myTipWidget = myFocusWidget = nullptr;
     myTipShown = false;
-    myDialog.instance().frameBuffer().setPendingRender(myDialog.window());
+    setPendingRender();
   }
 }
 
@@ -127,7 +136,7 @@ void ToolTip::release(bool emptyTip)
   if(myTipShown)
   {
     myTipShown = false;
-    myDialog.instance().frameBuffer().setPendingRender(myDialog.window());
+    setPendingRender();
   }
 
   // After displaying a tip, slowly reset the timer to 0
@@ -189,8 +198,23 @@ void ToolTip::show(string_view tip)
   surface()->setDstPos(x * scale, y * scale);
   surface()->frameRect(0, 0, width, height, kColor);
 
+  const bool render =
+    !mySelectiveRender
+    ||
+    !myTipShown
+    ||
+    (myCurrentRect != surface()->dstRect());
+
   myTipShown = true;
+  if (render)
+    setPendingRender();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::setPendingRender()
+{
   myDialog.instance().frameBuffer().setPendingRender(myDialog.window());
+  myCurrentRect = surface()->dstRect();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

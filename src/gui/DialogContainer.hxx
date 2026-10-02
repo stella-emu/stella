@@ -53,7 +53,7 @@ class DialogContainer
       called for it.
     */
     explicit DialogContainer(OSystem& osystem);
-    virtual ~DialogContainer() = default;
+    virtual ~DialogContainer();
 
   public:
     /**
@@ -190,6 +190,16 @@ class DialogContainer
       nothing.
     */
     virtual bool applyResize() { return false; }
+
+    /**
+      Events for the platform window of a secondary container (one opened
+      with FrameBuffer::openSecondaryWindow()), routed here in every state.
+      The defaults do the generic work; an owner overrides them to keep its
+      own state in step.
+    */
+    virtual void handleWindowResized(int width, int height);
+    virtual void handleWindowExposed();
+    virtual void handleWindowClose();
 
     /**
       Re-flow every dialog in the stack for the current window size.

@@ -34,7 +34,7 @@ void CartridgeE7::initialize(ByteSpan image)
 
   // E7 assumes the 8K/12K/16K layouts (4/6/8 2K banks) it was designed for;
   // below 3 banks the hardcoded hotspot-page offset in install() lands past
-  // the end of myRomAccessBase/myRomAccessCounter, and romBankCount() == 0
+  // the end of myRomAccessBase and the ROM access counters, and romBankCount() == 0
   // divides by zero in bank(). A forced E7 type (extension/properties/-bs)
   // bypasses CartDetector's size gate, so this must be checked here.
   if(romBankCount() < 3)  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
@@ -42,6 +42,9 @@ void CartridgeE7::initialize(ByteSpan image)
 
   std::copy_n(image.data(), std::min<size_t>(romSize(), image.size()), myImage.data());
   createRomAccessArrays(romSize() + myRAM.size());
+
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
 
   myRAM.fill(0xFF);
   myCurrentBank.fill(0);
@@ -91,8 +94,9 @@ void CartridgeE7::setAccess(uInt16 addrFrom, uInt16 size,
     else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
       access.directPokeBase = nullptr;
     access.romAccessBase = &myRomAccessBase[codeOffset + (addr & addrMask)];
-    access.romPeekCounter = &myRomAccessCounter[codeOffset + (addr & addrMask)];
-    access.romPokeCounter = &myRomAccessCounter[codeOffset + (addr & addrMask) + myAccessSize];
+    access.romCodePeekCounter = &myRomCodePeekCounter[codeOffset + (addr & addrMask)];
+    access.romDataPeekCounter = &myRomDataPeekCounter[codeOffset + (addr & addrMask)];
+    access.romPokeCounter = &myRomPokeCounter[codeOffset + (addr & addrMask)];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -112,8 +116,9 @@ void CartridgeE7::install(System& system)
   for(uInt16 addr = HOTSPOT_PAGE; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[0x1fc0];
-    access.romPeekCounter = &myRomAccessCounter[0x1fc0];
-    access.romPokeCounter = &myRomAccessCounter[0x1fc0 + myAccessSize];
+    access.romCodePeekCounter = &myRomCodePeekCounter[0x1fc0];
+    access.romDataPeekCounter = &myRomDataPeekCounter[0x1fc0];
+    access.romPokeCounter = &myRomPokeCounter[0x1fc0];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -336,12 +341,6 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
     myImage[(myCurrentBank[address >> 11U] << 11U) + (address & (BANK_SIZE-1))] = value;
 
   return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeE7::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -173,13 +173,10 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
-                           const Common::Rect& rect, const VariantList& metaData)
+void PNGLibrary::saveImage(string_view filename, const Common::Rect& srcRect,
+                           uInt32* base, const uInt32& pitch,
+                           const VariantList& metaData)
 {
-  const Common::Rect srcRect = rect.empty()
-    ? Common::Rect{0, 0, surface.width(), surface.height()}
-    : rect;
-
   const size_t width  = srcRect.w();
   const size_t height = srcRect.h();
 
@@ -248,11 +245,6 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 //   png_set_compression_level(png_ptr, 0);
 //   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
 
-  // Direct access to surface memory
-  uInt32* base{nullptr};
-  uInt32  pitch{0};
-  surface.basePtr(base, pitch);
-
   const size_t rowStride = pitch * sizeof(uInt32);
   auto* row = reinterpret_cast<png_bytep>(base)
             + srcRect.y() * rowStride
@@ -263,6 +255,22 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
 
   // We're finished writing
   png_write_end(png_ptr, info_ptr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
+                           const Common::Rect& rect, const VariantList& metaData)
+{
+  const Common::Rect srcRect = rect.empty()
+    ? Common::Rect{0, 0, surface.width(), surface.height()}
+    : rect;
+
+  // Direct access to surface memory
+  uInt32* base{nullptr};
+  uInt32  pitch{0};
+  surface.basePtr(base, pitch);
+
+  saveImage(filename, srcRect, base, pitch, metaData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

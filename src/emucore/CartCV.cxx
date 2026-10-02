@@ -46,7 +46,24 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
     // Copy the RAM image into a buffer for use in reset()
     myInitialRAM.assign(image.begin(), image.begin() + 1_KB);
   }
+
+  // Limit program ROM to be returned to the original small ROM
+  myImageScopes[ImageScope::PROGRAM] = ByteSpan(myImage.data() + 2_KB, 2_KB);
+#ifdef DEBUGGER_SUPPORT
+  myRomOffsets[ImageScope::PROGRAM] = U32(2_KB);
+#endif
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCV::install(System& system)
+{
+  CartridgeEnhanced::install(system);
+  // Overwrite offsets done by CartridgeEnhanced to only see the original
+  // image data in the memory viewer:
+  myRomAccessOffsets[ImageScope::PROGRAM] = 0;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()

@@ -2526,9 +2526,9 @@ void TIA::setAccessFlags(uInt16 address, Device::AccessType flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
+void TIA::increaseAccessCounter(uInt16 address, Device::AccessType flag)
 {
-  if(isWrite)
+  if(flag == Device::WRITE)
   {
     // the first two write accesses are assumed as initialization
     if(myAccessDelay[address & TIA_MASK])

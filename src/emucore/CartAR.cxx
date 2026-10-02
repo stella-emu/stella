@@ -504,7 +504,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeAR::getImage() const
+ByteSpan CartridgeAR::getImage(ImageScope scope) const
 {
   // One 8448-byte load per tape (BIN file or sound-load).  For sound-load the
   // 2K BIOS area within each load is left blank, so the copyrighted BIOS is
@@ -518,7 +518,14 @@ ByteSpan CartridgeAR::getImage() const
   if(myIsSoundLoad && mySystem)
     const_cast<CartridgeAR*>(this)->finalizeLoad(myCurrentLoadBlock);
 
-  return myLoadImages;
+  switch (scope)
+  {
+    case ImageScope::FULL:
+    case ImageScope::PROGRAM:
+      return myLoadImages;
+    default:
+      return {};
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

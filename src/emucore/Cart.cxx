@@ -92,6 +92,24 @@ uInt16 Cartridge::bankSize(uInt16 bank) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteSpan Cartridge::getImage(ImageScope scope) const
+{
+  // Look for desired scope
+  auto it = myImageScopes.find(scope);
+  if (it != myImageScopes.end())
+    return it->second;
+  if (scope == ImageScope::PROGRAM)
+  {
+    // Try to return FULL scope instead
+    it = myImageScopes.find(ImageScope::FULL);
+    if (it != myImageScopes.end())
+      return it->second;
+  }
+  // Nothing found
+  return {};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 {
   const uInt8 value = myRWPRandomValues[address & 0xFFU];
@@ -132,12 +150,30 @@ void Cartridge::createRomAccessArrays(size_t size)
 {
   myAccessSize = U32(size);
 
+#ifdef DEBUGGER_SUPPORT
+  // These parameters must be overwritten by derived carts with RAM or
+  // special offsets to get correct result in the memory viewer
+  // (everything not set defaults to zero):
+  myRomAccessSizes[ImageScope::FULL] = myAccessSize;
+  myRomAccessSizes[ImageScope::PROGRAM] = myAccessSize;
+  myRomAccessOffsets[ImageScope::FULL] = 0;
+  myRomAccessOffsets[ImageScope::PROGRAM] = 0;
+
+  myRamAccessSize = 0;
+  myRamPeekAccessOffset = 0;
+  myRamPokeAccessOffset = 0;
+#endif
+
   // Always create ROM access base even if DEBUGGER_SUPPORT is disabled,
   // since other parts of the code depend on it existing
   myRomAccessBase = std::make_unique<Device::AccessType[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
-  myRomAccessCounter = std::make_unique<Device::AccessCounter[]>(size * 2);
-  std::fill_n(myRomAccessCounter.get(), size * 2, 0);
+  myRomCodePeekCounter = std::make_unique<Device::AccessCounter[]>(size);
+  std::fill_n(myRomCodePeekCounter.get(), size, 0);
+  myRomDataPeekCounter = std::make_unique<Device::AccessCounter[]>(size);
+  std::fill_n(myRomDataPeekCounter.get(), size, 0);
+  myRomPokeCounter = std::make_unique<Device::AccessCounter[]>(size);
+  std::fill_n(myRomPokeCounter.get(), size, 0);
 }
 
 #ifdef DEBUGGER_SUPPORT
@@ -161,7 +197,8 @@ string Cartridge::getAccessCounters() const
     for(uInt16 addr = 0; addr < bankSz; ++addr)
       out += std::format("{},{}, ",
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
-        Common::Base::toString(myRomAccessCounter[offset + addr],
+        Common::Base::toString(myRomCodePeekCounter[offset + addr] +
+                              myRomDataPeekCounter[offset + addr],
                               Common::Base::Fmt::_10_8));
     out += '\n';
 
@@ -169,7 +206,7 @@ string Cartridge::getAccessCounters() const
     for(uInt16 addr = 0; addr < bankSz; ++addr)
       out += std::format("{},{}, ",
         Common::Base::toString(addr | origin, Common::Base::Fmt::_16_4),
-        Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize],
+        Common::Base::toString(myRomPokeCounter[offset + addr],
                               Common::Base::Fmt::_10_8));
     out += '\n';
 
@@ -221,6 +258,74 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
     }
   }
   return U32(maxIdx) << 13U | 0x1000U; //| (offset & 0xfff);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRomCodePeekCounter(ImageScope scope) const
+{
+  return myRomCodePeekCounter.get() + getRomCounterOffset(scope) + getRomScopeOffset(scope);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRomDataPeekCounter(ImageScope scope) const
+{
+  return myRomDataPeekCounter.get() + getRomCounterOffset(scope) + getRomScopeOffset(scope);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRomPokeCounter(ImageScope scope) const
+{
+  return myRomPokeCounter.get() + getRomCounterOffset(scope) + getRomScopeOffset(scope);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Cartridge::getRomCounterSize(ImageScope scope) const
+{
+  const auto it = myRomAccessSizes.find(scope);
+  return (it != myRomAccessSizes.end()) ? it->second : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Cartridge::getRomCounterOffset(ImageScope scope) const
+{
+  const auto it = myRomAccessOffsets.find(scope);
+  return (it != myRomAccessOffsets.end()) ? it->second : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRamCodePeekCounter() const
+{
+  return myRomCodePeekCounter.get() + myRamPeekAccessOffset;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRamDataPeekCounter() const
+{
+  return myRomDataPeekCounter.get() + myRamPeekAccessOffset;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter* Cartridge::getRamPokeCounter() const
+{
+  return myRomPokeCounter.get() + myRamPokeAccessOffset;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Cartridge::getRamCounterSize() const
+{
+  return myRamAccessSize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge::getRamMirrorAddrDiff() const
+{
+  return myRamPeekAccessOffset - myRamPokeAccessOffset;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Cartridge::getRomScopeOffset(ImageScope scope) const {
+  const auto it = myRomOffsets.find(scope);
+  return (it != myRomOffsets.end()) ? it->second : 0;
 }
 #endif
 

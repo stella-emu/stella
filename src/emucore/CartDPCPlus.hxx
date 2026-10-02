@@ -109,13 +109,6 @@ class CartridgeDPCPlus : public CartridgeARM
     bool patch(uInt16 address, uInt8 value) override;
 
     /**
-      Access the internal ROM image for this cartridge.
-
-      @return  A const span to the internal ROM image data
-    */
-    ByteSpan getImage() const override;
-
-    /**
       Save the current state of this cart to the given Serializer.
 
       @param out  The Serializer object to use
@@ -177,6 +170,13 @@ class CartridgeDPCPlus : public CartridgeARM
     {
       return new CartridgeDPCPlusWidget(boss, lfont, nfont, *this);
     }
+
+    /**
+      Get RAM contents for direct external access
+
+      @return  Mutable span over RAM array.
+    */
+    ByteSpan getRAM() override { return myDPCRAM; }
   #endif
 
     /**

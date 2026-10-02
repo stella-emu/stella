@@ -20,6 +20,7 @@
 
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
+#include "FBMessageHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -77,6 +78,13 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
 FrameBuffer::WindowState& Dialog::window() const
 {
   return parent().window();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::showTextMessage(string_view message, MessagePosition position,
+                             bool force) const
+{
+  window().msgHandler->showText(message, position, force);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

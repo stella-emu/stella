@@ -45,6 +45,7 @@ MODULE_OBJS := \
         src/gui/RomAuditDialog.o \
         src/gui/RomImageWidget.o \
         src/gui/RomInfoWidget.o \
+        src/gui/ScrollBarHWidget.o \
         src/gui/ScrollBarWidget.o \
         src/gui/SnapshotDialog.o \
         src/gui/StellaSettingsDialog.o \

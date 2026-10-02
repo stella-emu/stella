@@ -164,7 +164,7 @@ void BoxLayout::doLayout(int x, int y, int w, int h)
     if(myItems[i].policy != SizePolicy::Stretch)
       continue;
     int e = myItems[i].minMain
-          + (totalWeight > 0 ? remaining * myItems[i].value / totalWeight : 0);
+          + (totalWeight > 0 ? I32(I64(remaining) * myItems[i].value / totalWeight) : 0);
     if(myItems[i].maxMain > 0)
       e = std::min(e, myItems[i].maxMain);
     ext[i] = e;
@@ -626,7 +626,7 @@ void GridLayout::resolveTracks(const vector<Track>& tracks, int avail,
     if(tracks[i].policy != SizePolicy::Stretch)
       continue;
     int e = tracks[i].minSize
-          + (totalWeight > 0 ? remaining * tracks[i].value / totalWeight : 0);
+          + (totalWeight > 0 ? I32(I64(remaining) * tracks[i].value / totalWeight) : 0);
     if(tracks[i].maxSize > 0)
       e = std::min(e, tracks[i].maxSize);
     ext[i] = e;

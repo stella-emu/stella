@@ -1089,9 +1089,9 @@ void DebuggerParser::executeBusyRate()
     const uInt64 wsyncCycles = debugger.tiaDebug().busyRateWsyncCycles();
     const uInt64 timerReadCycles = debugger.riotDebug().busyRateTimReadCycles();
     const double busyValue =
-      100.0L - (
-	static_cast<double>(wsyncCycles + timerReadCycles) / static_cast<double>(totalCycles)
-      ) * 100.0L;
+      100.0 - (
+        DBL(wsyncCycles + timerReadCycles) / DBL(totalCycles)
+      ) * 100.0;
     commandResult << totalCycles << " total cycles\n";
     commandResult << wsyncCycles << " cycles skipped by WSYNC\n";
     commandResult << timerReadCycles << " cycles used for timer reads\n";

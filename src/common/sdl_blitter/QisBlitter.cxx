@@ -121,6 +121,18 @@ void QisBlitter::blit(SDL_Surface& surface)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void QisBlitter::updateStaticData()
+{
+  ASSERT_MAIN_THREAD;
+
+  recreateTexturesIfNecessary();
+
+  SDL_UpdateTexture(mySrcTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
+
+  blitToIntermediate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::blitToIntermediate()
 {
   ASSERT_MAIN_THREAD;

@@ -168,7 +168,7 @@ class CartridgeAR : public Cartridge
 
       @return  A const span to the internal ROM image data
     */
-    ByteSpan getImage() const override;
+    ByteSpan getImage(ImageScope scope = ImageScope::FULL) const override;
 
     /**
       Save the current state of this cart to the given Serializer.

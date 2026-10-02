@@ -104,6 +104,9 @@ class OSystem
     */
     FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
     bool hasFrameBuffer() const { return myFrameBuffer != nullptr; }
+  #ifdef DEBUGGER_SUPPORT
+    bool hasDebugger() const { return myDebugger != nullptr; }
+  #endif
 
     /**
       Get the sound object of the system.

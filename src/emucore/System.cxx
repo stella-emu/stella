@@ -118,23 +118,39 @@ void System::setAccessFlags(uInt16 addr, Device::AccessType flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::increaseAccessCounter(uInt16 addr, bool isWrite) const
+void System::increaseAccessCounter(uInt16 addr, Device::AccessType flag) const
 {
   const PageAccess& access = getPageAccess(addr);
 
-  auto* counter = isWrite ? access.romPokeCounter : access.romPeekCounter;
+  Device::AccessCounter* counter = nullptr;
+  switch (flag)
+  {
+    case Device::CODE:
+      counter = access.romCodePeekCounter;
+      break;
+    case Device::DATA:
+      counter = access.romDataPeekCounter;
+      break;
+    case Device::WRITE:
+      counter = access.romPokeCounter;
+      break;
+    default:
+      break;
+  }
+
   if(counter)
     *(counter + (addr & PAGE_MASK)) += 1;
   else
-    access.device->increaseAccessCounter(addr, isWrite);
+    access.device->increaseAccessCounter(addr, flag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessCounter System::getAccessCounter(uInt16 addr) const
 {
   const PageAccess& access = getPageAccess(addr);
-  if(access.romPeekCounter)
-    return *(access.romPeekCounter + (addr & PAGE_MASK));
+  if(access.romCodePeekCounter && access.romDataPeekCounter)
+    return *(access.romCodePeekCounter + (addr & PAGE_MASK))
+      + *(access.romDataPeekCounter + (addr & PAGE_MASK));
   return 0;
 }
 #endif

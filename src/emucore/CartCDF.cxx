@@ -96,6 +96,10 @@ CartridgeCDF::CartridgeCDF(ByteSpan image, string_view md5,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
+  // Store image scopes to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
+  myImageScopes[ImageScope::PROGRAM] = myProgramImage;
+
   this->setInitialState();  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
@@ -471,8 +475,9 @@ bool CartridgeCDF::bank(uInt16 bank, uInt16)
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
+    access.romCodePeekCounter = &myRomCodePeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romDataPeekCounter = &myRomDataPeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomPokeCounter[myBankOffset + (addr & 0x0FFFU)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -502,12 +507,6 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
     return myBankChanged = true;
   }
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeCDF::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -113,7 +113,7 @@ bool ContextMenu::isEnabled(int index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int item)
 {
-  FrameBuffer& fb = instance().frameBuffer();
+  const FrameBuffer& fb = instance().frameBuffer();
   const uInt32 scale = fb.hidpiScaleFactor(window());
   _xorig = bossRect.x() + x * scale;
   _yorig = bossRect.y() + y * scale;

@@ -268,10 +268,8 @@ void TiaDisplayWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaDisplayWidget::drawWidget(bool hilite)
 {
-  // Lazily create the display surface the first time we draw, bound to our
-  // own dialog's window (the companion window, here) rather than whatever
-  // window happens to be primary.  A render callback then composites it on
-  // top of the dialog's base surface.
+  // Create the display surface on first draw, bound to this dialog's window;
+  // a render callback composites it over the dialog's base surface
   if(myTiaSurface == nullptr)
   {
     auto& fb = instance().frameBuffer();

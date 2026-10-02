@@ -91,8 +91,6 @@ class CartridgeELF: public Cartridge {
 
     bool patch(uInt16 address, uInt8 value) override { return false; }
 
-    ByteSpan getImage() const override;
-
     string name() const override { return "CartridgeELF"; }
 
     uInt8 overdrivePeek(uInt16 address, uInt8 value) override;

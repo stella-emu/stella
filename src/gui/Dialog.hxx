@@ -153,6 +153,18 @@ class Dialog : public GuiObject
     FrameBuffer::WindowState& window() const;
 
     /**
+      Shows a text message onscreen, in this dialog's own window (for the
+      main window's messages from core code, see FrameBuffer::showTextMessage()).
+
+      @param message  The message to be shown
+      @param position Onscreen position for the message
+      @param force    Force showing this message, even if messages are disabled
+    */
+    void showTextMessage(string_view message,
+                         MessagePosition position = MessagePosition::BottomCenter,
+                         bool force = false) const;
+
+    /**
       This method is called each time the main Dialog::render is called.
       It is called *after* the dialog has been rendered, so it can be
       used to render another surface on top of it, among other things.

@@ -1638,6 +1638,9 @@ CartridgeMVC::CartridgeMVC(string_view path, size_t size,
     myPath{path}
 {
     createRomAccessArrays(size);
+
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1666,13 +1669,6 @@ void CartridgeMVC::reset()
 void CartridgeMVC::consoleChanged(ConsoleTiming timing)
 {
   myMovie->setConsoleTiming(timing);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeMVC::getImage() const
-{
-  // not used
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

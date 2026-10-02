@@ -229,7 +229,7 @@ void BrowserDialog::show(OSystem& osystem,
                          const Command& command,
                          const FSNode::NameFilter& namefilter)
 {
-  FrameBuffer& fb = osystem.frameBuffer();
+  const FrameBuffer& fb = osystem.frameBuffer();
   const GUI::Font& font = fb.font();
   const Common::Rect& r = fb.imageRect(fb.primaryWindow());
   const uInt32 scale = fb.hidpiScaleFactor(fb.primaryWindow());

@@ -60,6 +60,16 @@ class CartridgeCV : public CartridgeEnhanced
     ~CartridgeCV() override = default;
 
   public:
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Install cartridge in the specified system.  Invoked by the system
+      when the cartridge is attached to it.
+
+      @param system The system the device should install itself in
+    */
+    void install(System& system) override;
+  #endif
+
     /**
       Reset cartridge to its power-on state
     */

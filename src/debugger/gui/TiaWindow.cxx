@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "TIAConstants.hxx"
@@ -87,13 +88,26 @@ bool TiaWindow::applyResize()
   // the size the user released at
   const uInt32 scale = fb.hidpiScaleFactor(window());
   const Common::Rect& r = fb.imageRect(window());
-  const Common::Size& d = fb.desktopSize(BufferType::TiaWindow);
   const Common::Size& m = minSize();
 
-  mySize = Common::Size(r.w() / scale, r.h() / scale);
-  mySize.clamp(m.w, d.w, m.h, d.h);
+  // Follow the window, even past the desktop it opened on (when dragged across
+  // monitors); only the minimum applies
+  mySize = Common::Size(std::max(r.w() / scale, m.w),
+                        std::max(r.h() / scale, m.h));
 
   myOSystem.settings().setValue("tiawindow.res", mySize);
   relayout();
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWindow::handleWindowResized(int width, int height)
+{
+  myOSystem.debugger().resizeTiaWindow(width, height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaWindow::handleWindowClose()
+{
+  myOSystem.debugger().closeTiaWindow();
 }

@@ -116,13 +116,6 @@ class CartridgeBUS : public CartridgeARM
     bool patch(uInt16 address, uInt8 value) override;
 
     /**
-      Access the internal ROM image for this cartridge.
-
-      @return  A const span to the internal ROM image data
-    */
-    ByteSpan getImage() const override;
-
-    /**
       Save the current state of this cart to the given Serializer.
 
       @param out  The Serializer object to use
@@ -176,6 +169,13 @@ class CartridgeBUS : public CartridgeARM
 
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
                                 const GUI::Font& nfont) override;
+
+    /**
+      Get RAM contents for direct external access
+
+      @return  Mutable span over RAM array.
+    */
+    ByteSpan getRAM() override { return myRAM; }
   #endif
 
   public:

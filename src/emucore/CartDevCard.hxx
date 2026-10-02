@@ -65,7 +65,6 @@ class CartridgeDevCard : public Cartridge
     //uInt16 bankSize(uInt16 bank) const override;
     bool patch(uInt16 address, uInt8 value) override;
     //bool bankChanged() { return true; };
-    ByteSpan getImage() const override;
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
     string name() const override { return "CartridgeDevCard"; }

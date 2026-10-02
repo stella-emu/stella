@@ -41,6 +41,7 @@ class TIADebug;
 class DebuggerParser;
 class RewindManager;
 class TiaWindow;
+class MemViewWindow;
 
 #include <unordered_map>
 
@@ -159,11 +160,28 @@ class Debugger : public DialogContainer
     void invalidateTiaWindow();
 
     /**
-      The companion TIA window's DialogContainer, or nullptr when it isn't
-      open.  Used by EventHandler to route events that target the secondary
-      window to it instead of the main debugger overlay.
+      The memory-view window; these mirror the TIA window's methods above.
+      The debugger, TIA and memory-view windows may all be open at once.
     */
-    DialogContainer* tiaWindowContainer() const;
+    void toggleMemViewWindow();
+    void openMemViewWindow();
+    void closeMemViewWindow();
+    bool memViewWindowOpen() const { return myMemViewWindowOpen; }
+    void renderMemViewWindow();
+    void resizeMemViewWindow(int width, int height);
+    void rescaleMemViewWindow();
+    void applyMemViewWindowMode();
+
+    /**
+      Render every open companion window.  Called once per frame by the main
+      loop; each is a no-op unless open or pending.
+    */
+    void renderSecondaryWindow();
+
+    /**
+      Re-apply the current HiDPI scale factor to every open companion window.
+    */
+    void rescaleSecondaryWindows();
 
     /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
@@ -232,6 +250,16 @@ class Debugger : public DialogContainer
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
+    /**
+      The debugger's own keys, for use from its companion windows (see
+      DebuggerDialog::handleGlobalKeyDown()).  Return true if handled.
+    */
+    bool handleGlobalKeyDown(StellaKey key, StellaMod mod, bool repeated) const {
+      return myDialog->handleGlobalKeyDown(key, mod, repeated);
+    }
+    bool handleGlobalKeyUp(StellaKey key, StellaMod mod) const {
+      return myDialog->handleGlobalKeyUp(key, mod);
+    }
 
     BreakpointMap& breakPoints() const;
 
@@ -351,6 +379,7 @@ class Debugger : public DialogContainer
     */
     void lockSystem();
     void unlockSystem();
+    bool systemIsLocked() const { return mySystemIsLocked; }
 
     /**
       Answers whether the debugger can be exited.  Currently this only
@@ -434,6 +463,8 @@ class Debugger : public DialogContainer
     System*  mySystem{nullptr};
 
     unique_ptr<DebuggerDialog> myDialog;
+
+    bool mySystemIsLocked{false};
     unique_ptr<DebuggerParser> myParser;
     unique_ptr<CartDebug>      myCartDebug;
     unique_ptr<CpuDebug>       myCpuDebug;
@@ -464,6 +495,13 @@ class Debugger : public DialogContainer
     // state has become DEBUGGER, so its createDisplay() doesn't run the
     // emulation-mode (phosphor) path against the live console
     bool myTiaWindowPending{false};
+
+    // The memory-view window's DialogContainer.  Mirrors myTiaWindow/
+    // myTiaWindowOpen/myTiaSettleCountdown/myTiaWindowPending above.
+    unique_ptr<MemViewWindow> myMemViewWindow;
+    bool myMemViewWindowOpen{false};
+    int myMemViewSettleCountdown{0};
+    bool myMemViewWindowPending{false};
 
     // Deferred ROM exit: 'exitRom' tears the console down, but it can be
     // reached from call stacks that keep using that console after it returns

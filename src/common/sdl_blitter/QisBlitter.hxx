@@ -39,6 +39,7 @@ class QisBlitter : public Blitter {
     ) override;
 
     void blit(SDL_Surface& surface) override;
+    void updateStaticData() override;
 
   private:
 
