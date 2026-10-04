@@ -187,7 +187,7 @@ void Debugger::updateSize()
   const auto& fb = myOSystem.frameBuffer();
 
   const uInt32 scale = fb.hidpiScaleFactor(window());
-  const Common::Rect& r = fb.imageRect(window());
+  const Common::Rect& r = FrameBuffer::imageRect(window());
   const Common::Size minSize = dialogMinSize();
 
   // Follow the window, even past the desktop it opened on (when dragged across

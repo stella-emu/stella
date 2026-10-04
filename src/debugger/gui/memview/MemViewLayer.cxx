@@ -40,7 +40,7 @@ void MemViewLayer::allocateSurface()
 {
   if (!mySurface)
   {
-    mySurface = myDialog.instance().frameBuffer().allocateSurface(
+    mySurface = FrameBuffer::allocateSurface(
       myDialog.window(),
       myParams.mySurfaceWidth,
       myParams.mySurfaceHeight,
@@ -58,7 +58,7 @@ void MemViewLayer::allocateSurface()
 void MemViewLayer::deallocateSurface()
 {
   if (mySurface)
-    myDialog.instance().frameBuffer().deallocateSurface(myDialog.window(), mySurface);
+    FrameBuffer::deallocateSurface(myDialog.window(), mySurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -81,7 +81,7 @@ bool Lightgun::read(DigitalPin pin)
   // (we can't just read 60 times per second in the ::update() method)
   if(pin == DigitalPin::Six) // INPT4/5
   {
-    const Common::Rect& rect = myFrameBuffer.imageRect(myFrameBuffer.primaryWindow());
+    const Common::Rect& rect = FrameBuffer::imageRect(myFrameBuffer.primaryWindow());
 
     // abort when no valid framebuffer exists
     if(rect.w() == 0 || rect.h() == 0)

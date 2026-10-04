@@ -135,7 +135,7 @@ bool Bezel::load()
   if(show)
   {
     if(!mySurface)
-      mySurface = myFB.allocateSurface(myFB.primaryWindow(), 1, 1); // dummy size
+      mySurface = FrameBuffer::allocateSurface(myFB.primaryWindow(), 1, 1); // dummy size
     try
     {
       const string& path = myOSystem.bezelDir().getPath();
@@ -207,7 +207,7 @@ bool Bezel::load()
     else
     {
       if(mySurface)
-        myFB.deallocateSurface(myFB.primaryWindow(), mySurface);
+        FrameBuffer::deallocateSurface(myFB.primaryWindow(), mySurface);
       mySurface = nullptr;
       myInfo = Info();
       myFB.showTextMessage("Invalid bezel image ('" + imageName + "')!");
@@ -230,16 +230,16 @@ void Bezel::apply()
   {
     const FrameBuffer::WindowState& win = myFB.primaryWindow();
     const uInt32 bezelW =
-      std::min(myFB.screenSize(win).w,
-               U32(std::round(myFB.imageRect(win).w() * myInfo.ratioW())));
+      std::min(FrameBuffer::screenSize(win).w,
+               U32(std::round(FrameBuffer::imageRect(win).w() * myInfo.ratioW())));
     const uInt32 bezelH =
-      std::min(myFB.screenSize(win).h,
-               U32(std::round(myFB.imageRect(win).h() * myInfo.ratioH())));
+      std::min(FrameBuffer::screenSize(win).h,
+               U32(std::round(FrameBuffer::imageRect(win).h() * myInfo.ratioH())));
 
     // Position and scale bezel
     mySurface->setDstSize(bezelW, bezelH);
-    mySurface->setDstPos((myFB.screenSize(win).w - bezelW) / 2, // center
-                         (myFB.screenSize(win).h - bezelH) / 2);
+    mySurface->setDstPos((FrameBuffer::screenSize(win).w - bezelW) / 2, // center
+                         (FrameBuffer::screenSize(win).h - bezelH) / 2);
     mySurface->setScalingInterpolation(ScalingInterpolation::sharp);
     // Note: Variable bezel window positions are handled in VideoModeHandler::Mode
 

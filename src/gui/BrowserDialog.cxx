@@ -231,7 +231,7 @@ void BrowserDialog::show(OSystem& osystem,
 {
   const FrameBuffer& fb = osystem.frameBuffer();
   const GUI::Font& font = fb.font();
-  const Common::Rect& r = fb.imageRect(fb.primaryWindow());
+  const Common::Rect& r = FrameBuffer::imageRect(fb.primaryWindow());
   const uInt32 scale = fb.hidpiScaleFactor(fb.primaryWindow());
   const auto w = std::min(U32(0.95 * r.w() / scale),
                           U32(font.getMaxCharWidth() * 80));

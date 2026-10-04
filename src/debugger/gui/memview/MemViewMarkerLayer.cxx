@@ -42,7 +42,7 @@ void MemViewMarkerLayer::allocateSurface()
 {
   if (!mySurface)
   {
-    mySurface = myDialog.instance().frameBuffer().allocateSurface(
+    mySurface = FrameBuffer::allocateSurface(
       myDialog.window(),
       MemViewParams::myMaxZoom * 8 + 2 * MARKER_THICKNESS,
       MemViewParams::myMaxZoom + 2 * MARKER_THICKNESS,
@@ -63,7 +63,7 @@ void MemViewMarkerLayer::allocateSurface()
 void MemViewMarkerLayer::deallocateSurface()
 {
   if (mySurface)
-    myDialog.instance().frameBuffer().deallocateSurface(myDialog.window(), mySurface);
+    FrameBuffer::deallocateSurface(myDialog.window(), mySurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

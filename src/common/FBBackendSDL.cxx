@@ -808,7 +808,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   ASSERT_MAIN_THREAD;
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const Common::Rect& rectUnscaled = fb.imageRect(fb.primaryWindow());
+  const Common::Rect& rectUnscaled = FrameBuffer::imageRect(fb.primaryWindow());
   const Common::Rect rect(
     Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())

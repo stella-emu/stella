@@ -316,7 +316,7 @@ class Cartridge : public Device
 
       @return Offset in bytes
     */
-    constexpr uInt32 getRamCounterOffset() const { return 0; }
+    static constexpr uInt32 getRamCounterOffset() { return 0; }
 
     /**
       Returns the offset difference between read and write access addresses

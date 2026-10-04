@@ -247,26 +247,24 @@ void MemViewWidget::reallocateLayerSurfaces()
 {
   // This window is live-resizable, so force a fresh allocation at the new
   // size whenever the widget's own area changes
-  auto& fb = instance().frameBuffer();
-
   if(myDataLayer.mySurface)
   {
-    fb.deallocateSurface(dialog().window(), myDataLayer.mySurface);
+    FrameBuffer::deallocateSurface(dialog().window(), myDataLayer.mySurface);
     myDataLayer.mySurface = nullptr;
   }
   if(myReadLayer.mySurface)
   {
-    fb.deallocateSurface(dialog().window(), myReadLayer.mySurface);
+    FrameBuffer::deallocateSurface(dialog().window(), myReadLayer.mySurface);
     myReadLayer.mySurface = nullptr;
   }
   if(myWriteLayer.mySurface)
   {
-    fb.deallocateSurface(dialog().window(), myWriteLayer.mySurface);
+    FrameBuffer::deallocateSurface(dialog().window(), myWriteLayer.mySurface);
     myWriteLayer.mySurface = nullptr;
   }
   if(myPcLayer.mySurface)
   {
-    fb.deallocateSurface(dialog().window(), myPcLayer.mySurface);
+    FrameBuffer::deallocateSurface(dialog().window(), myPcLayer.mySurface);
     myPcLayer.mySurface = nullptr;
   }
 
@@ -733,9 +731,9 @@ void MemViewWidget::heatmapsToFields(bool force)
   const MemViewAccessLayer::HeatmapValue* srcPcData = myPcLayer.myHeatmap.data();
 
   // The layers are our destinations
-  uInt32* destReadLayer = myReadLayer.myFields.data();
-  uInt32* destWriteLayer = myWriteLayer.myFields.data();
-  uInt32* destPcLayer = myPcLayer.myFields.data();
+  uInt32* destReadLayer = myReadLayer.myFields.data(); // NOLINT(misc-const-correctness)
+  uInt32* destWriteLayer = myWriteLayer.myFields.data(); // NOLINT(misc-const-correctness)
+  uInt32* destPcLayer = myPcLayer.myFields.data(); // NOLINT(misc-const-correctness)
 
   // Stop pointer values for comparison
   // (we only work on the srcReadData here because all three buffers

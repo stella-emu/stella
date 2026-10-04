@@ -136,7 +136,7 @@ void RomListSettings::setPosition()
 
   // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().screenRect(window()).adjustToFit(
+  if(!FrameBuffer::screenRect(window()).adjustToFit(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

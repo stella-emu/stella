@@ -35,7 +35,7 @@ ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::~ToolTip()
 {
-  myDialog.instance().frameBuffer().deallocateSurface(myDialog.window(), mySurface);
+  FrameBuffer::deallocateSurface(myDialog.window(), mySurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +52,7 @@ void ToolTip::setFont(const GUI::Font& font)
   myHeight = fontHeight * MAX_ROWS + myTextYOfs * 2;
 
   // unallocate
-  myDialog.instance().frameBuffer().deallocateSurface(myDialog.window(), mySurface);
+  FrameBuffer::deallocateSurface(myDialog.window(), mySurface);
   mySurface = nullptr;
 }
 
@@ -60,7 +60,7 @@ void ToolTip::setFont(const GUI::Font& font)
 const shared_ptr<FBSurface>& ToolTip::surface()
 {
   if(mySurface == nullptr)
-    mySurface = myDialog.instance().frameBuffer().allocateSurface(myDialog.window(), myWidth, myHeight);
+    mySurface = FrameBuffer::allocateSurface(myDialog.window(), myWidth, myHeight);
 
   return mySurface;
 }
@@ -177,7 +177,7 @@ void ToolTip::show(string_view tip)
   constexpr uInt32 H_CURSOR = 18;
   // Note: The rects include HiDPI scaling, which can change while we live
   const uInt32 scale = myDialog.instance().frameBuffer().hidpiScaleFactor(myDialog.window());
-  const Common::Rect& imageRect = myDialog.instance().frameBuffer().imageRect(myDialog.window());
+  const Common::Rect& imageRect = FrameBuffer::imageRect(myDialog.window());
   const Common::Rect& dialogRect = myDialog.surface().dstRect();
   // Limit position to app size and adjust accordingly
   const Int32 xAbs = myTipPos.x + dialogRect.x() / scale;
@@ -213,7 +213,7 @@ void ToolTip::show(string_view tip)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::setPendingRender()
 {
-  myDialog.instance().frameBuffer().setPendingRender(myDialog.window());
+  FrameBuffer::setPendingRender(myDialog.window());
   myCurrentRect = surface()->dstRect();
 }
 

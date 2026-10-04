@@ -187,8 +187,7 @@ MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& pare
   myRamLbl = new LabelWidget(this, font, TEXT_RAM);
 
   // Configure RAM view
-  const M6532& riot = instance().console().riot();
-  myRamView->setAccessDataParams(riot.getRamCounterSize(), riot.getRamCounterOffset());
+  myRamView->setAccessDataParams(M6532::getRamCounterSize(), M6532::getRamCounterOffset());
 
   // Setup cartridge's RAM part (if any)
   const uInt32 cartRamSize = cart.internalRamSize();
@@ -212,7 +211,7 @@ MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& pare
       );
       myViews.insert({Cartridge::ImageScope::NONE, myCartRamView});
 
-      myCartRamView->setAccessDataParams(cart.getRamCounterSize(), cart.getRamCounterOffset());
+      myCartRamView->setAccessDataParams(cart.getRamCounterSize(), Cartridge::getRamCounterOffset());
     }
     else
     {
@@ -232,7 +231,7 @@ MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& pare
       setupOk = setupOk && myCartRamView->isSetup();
       singleRow = singleRow && myCartRamView->lockedSingleRow();
 
-      myCartRamView->setAccessDataParams(cart.getRamCounterSize(), cart.getRamCounterOffset());
+      myCartRamView->setAccessDataParams(cart.getRamCounterSize(), Cartridge::getRamCounterOffset());
     }
   }
 

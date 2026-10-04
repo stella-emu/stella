@@ -540,7 +540,7 @@ void EventHandler::handleDropfileEvent(string_view file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID)
+void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID) const
 {
 #ifdef GUI_SUPPORT
   // A close request on a secondary window closes only that window; the main

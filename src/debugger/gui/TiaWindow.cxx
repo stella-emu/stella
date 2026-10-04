@@ -87,7 +87,7 @@ bool TiaWindow::applyResize()
   // re-flow is cheap, and applying every event means the drag always ends on
   // the size the user released at
   const uInt32 scale = fb.hidpiScaleFactor(window());
-  const Common::Rect& r = fb.imageRect(window());
+  const Common::Rect& r = FrameBuffer::imageRect(window());
   const Common::Size& m = minSize();
 
   // Follow the window, even past the desktop it opened on (when dragged across

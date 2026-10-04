@@ -385,7 +385,7 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setWindowMinSize(WindowState& win, const Common::Size& size)
+void FrameBuffer::setWindowMinSize(WindowState& win, const Common::Size& size) const
 {
   const uInt32 scale = hidpiScaleFactor(win);
   const Common::Size scaled(size.w * scale, size.h * scale);
@@ -877,7 +877,7 @@ void FrameBuffer::updateInEmulationMode(WindowState& win, float framesPerSecond)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showTextMessage(string_view message,
-                                  MessagePosition position, bool force)
+                                  MessagePosition position, bool force) const
 {
 #ifdef GUI_SUPPORT
   myPrimaryWindow.msgHandler->showText(message, position, force);
@@ -889,7 +889,7 @@ void FrameBuffer::showTextMessage(string_view message,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
-                                   float value, float minValue, float maxValue)
+                                   float value, float minValue, float maxValue) const
 {
 #ifdef GUI_SUPPORT
   myPrimaryWindow.msgHandler->showGauge(message, valueText, value, minValue, maxValue);
@@ -919,7 +919,7 @@ void FrameBuffer::toggleFrameStats(bool toggle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showFrameStats(bool enable)
+void FrameBuffer::showFrameStats(bool enable) const
 {
   myPrimaryWindow.msgHandler->showStats(enable);
 }
@@ -939,7 +939,7 @@ void FrameBuffer::enableMessages(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setPauseDelay()
+void FrameBuffer::setPauseDelay() const
 {
   myPrimaryWindow.msgHandler->setPauseDelay();
 }
@@ -1072,7 +1072,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
+string_view FrameBuffer::getDisplayKey(BufferType bufferType)
 {
   // save current window's display and position
   switch(bufferType)
@@ -1100,7 +1100,7 @@ string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view FrameBuffer::getPositionKey(BufferType bufferType) const
+string_view FrameBuffer::getPositionKey(BufferType bufferType)
 {
   // save current window's display and position
   switch(bufferType)

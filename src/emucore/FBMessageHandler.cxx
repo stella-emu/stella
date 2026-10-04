@@ -50,7 +50,7 @@ void FBMessageHandler::init()
 
   if(!myStatsMsg.surface)
   {
-    myStatsMsg.surface = myFB.allocateSurface(myWin, myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface = FrameBuffer::allocateSurface(myWin, myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->enableBlend(true);
     myStatsMsg.surface->setBlendLevel(92); // aligned with TimeMachineDialog
   }
@@ -59,9 +59,9 @@ void FBMessageHandler::init()
   {
     const int fontWidth = myFB.font().getMaxCharWidth(),
               HBORDER = fontWidth * 1.25 / 2.0;
-    myMsg.surface = myFB.allocateSurface(myWin,
-                                         fontWidth * MESSAGE_WIDTH + HBORDER * 2,
-                                         myFB.font().getFontHeight() * 1.5);
+    myMsg.surface = FrameBuffer::allocateSurface(
+        myWin, fontWidth * MESSAGE_WIDTH + HBORDER * 2,
+        myFB.font().getFontHeight() * 1.5);
   }
 #endif  // GUI_SUPPORT
 }
@@ -224,7 +224,7 @@ void FBMessageHandler::onEmulationFrame()
 void FBMessageHandler::hide()
 {
   if(myMsg.enabled)
-    myFB.setPendingRender(myWin);
+    FrameBuffer::setPendingRender(myWin);
   myMsg.enabled = false;
 }
 
@@ -248,7 +248,7 @@ bool FBMessageHandler::draw()
 
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
-    const Common::Rect& img = myFB.imageRect(myWin);
+    const Common::Rect& img = FrameBuffer::imageRect(myWin);
     const int fontWidth  = myFB.font().getMaxCharWidth(),
               fontHeight = myFB.font().getFontHeight();
     const int VBORDER = fontHeight / 4;
@@ -422,7 +422,7 @@ void FBMessageHandler::drawStats(float framesPerSecond)
       xPosEnd, yPos, myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
-  const Common::Rect& img = myFB.imageRect(myWin);
+  const Common::Rect& img = FrameBuffer::imageRect(myWin);
   const uInt32 scale = myFB.hidpiScaleFactor(myWin);
   myStatsMsg.surface->setDstPos(img.x() + img.w() / 64,
                                 img.y() + img.h() / 64);

@@ -297,7 +297,7 @@ class FrameBuffer
     /**
       The platform window ID of the given window.
     */
-    uInt32 windowId(const WindowState& win) const { return win.backend->windowId(); }
+    static uInt32 windowId(const WindowState& win) { return win.backend->windowId(); }
 
     /**
       The container of the open secondary window with the given platform
@@ -322,7 +322,7 @@ class FrameBuffer
     /**
       Set the given window's pending-rendering flag.
     */
-    void setPendingRender(WindowState& win) { win.pendingRender = true; }
+    static void setPendingRender(WindowState& win) { win.pendingRender = true; }
 
     /**
       Shows a text message onscreen, in the main window.  GUI code shows its
@@ -334,7 +334,7 @@ class FrameBuffer
     */
     void showTextMessage(string_view message,
                          MessagePosition position = MessagePosition::BottomCenter,
-                         bool force = false);
+                         bool force = false) const;
     /**
       Shows a message with a gauge bar onscreen.
 
@@ -345,7 +345,7 @@ class FrameBuffer
       @param maxValue   The maximal value of the gauge bar
     */
     void showGaugeMessage(string_view message, string_view valueText,
-                          float value, float minValue = 0.F, float maxValue = 100.F);
+                          float value, float minValue = 0.F, float maxValue = 100.F) const;
 
     bool messageShown() const;
 
@@ -357,7 +357,7 @@ class FrameBuffer
     /**
       Shows a message containing frame statistics for the current frame.
     */
-    void showFrameStats(bool enable);
+    void showFrameStats(bool enable) const;
 
     /**
       Enable/disable any pending messages.  Disabled messages aren't removed
@@ -368,7 +368,7 @@ class FrameBuffer
     /**
       Reset 'Paused' display delay counter
     */
-    void setPauseDelay();
+    void setPauseDelay() const;
 
     /**
       Allocate a new surface, bound to the given window.  The FrameBuffer
@@ -384,7 +384,7 @@ class FrameBuffer
 
       @return  A pointer to a valid surface object, or nullptr
     */
-    shared_ptr<FBSurface> allocateSurface(WindowState& win, int w, int h,
+    static shared_ptr<FBSurface> allocateSurface(WindowState& win, int w, int h,
       ScalingInterpolation inter = ScalingInterpolation::none,
       const uInt32* data = nullptr);
 
@@ -395,7 +395,7 @@ class FrameBuffer
       @param win      The window this surface belongs to
       @param surface  The surface to remove/deallocate
     */
-    void deallocateSurface(WindowState& win, const shared_ptr<FBSurface>& surface);
+    static void deallocateSurface(WindowState& win, const shared_ptr<FBSurface>& surface);
 
     /**
       Set up the TIA/emulation palette.  Due to the way the palette is stored,
@@ -423,14 +423,14 @@ class FrameBuffer
       Returns the given window's image dimensions. Note that this takes into
       account the current scaling (if any) as well as image 'centering'.
     */
-    const Common::Rect& imageRect(const WindowState& win) const { return win.vidMode.imageR; }
+    static const Common::Rect& imageRect(const WindowState& win) { return win.vidMode.imageR; }
 
     /**
       Returns the given window's dimensions: the entire area containing the
       image as well as any 'unusable' area.
     */
-    const Common::Size& screenSize(const WindowState& win) const { return win.vidMode.screenS; }
-    const Common::Rect& screenRect(const WindowState& win) const { return win.vidMode.screenR; }
+    static const Common::Size& screenSize(const WindowState& win) { return win.vidMode.screenS; }
+    static const Common::Rect& screenRect(const WindowState& win) { return win.vidMode.screenR; }
 
     /**
       Returns the dimensions of the mode specific users' desktop, or if
@@ -470,7 +470,7 @@ class FrameBuffer
       Currently this is used only for taking PNG snapshots.  As such, it is slow
       and should not be used for anything else.
     */
-    const FBSurface& compositedSurface() {
+    const FBSurface& compositedSurface() const {
       return myPrimaryWindow.backend->compositedSurface();
     }
 
@@ -588,7 +588,7 @@ class FrameBuffer
     /**
       Shows or hides the cursor based on the given boolean value.
     */
-    void showCursor(bool show) { myPrimaryWindow.backend->showCursor(show); }
+    void showCursor(bool show) const { myPrimaryWindow.backend->showCursor(show); }
 
     /**
       Answers if the display is currently in fullscreen mode.
@@ -613,8 +613,8 @@ class FrameBuffer
     /**
       Clear the framebuffer.
     */
-    void clear() { myPrimaryWindow.backend->clear(); }
-    void flush() { myPrimaryWindow.backend->flush(); }
+    void clear() const { myPrimaryWindow.backend->clear(); }
+    void flush() const { myPrimaryWindow.backend->flush(); }
 
     /**
       Transform from window to renderer coordinates, x/y direction.
@@ -627,8 +627,8 @@ class FrameBuffer
       The settings keys for the position and display of the window of the
       given buffer type.
     */
-    string_view getPositionKey(BufferType bufferType) const;
-    string_view getDisplayKey(BufferType bufferType) const;
+    static string_view getPositionKey(BufferType bufferType);
+    static string_view getDisplayKey(BufferType bufferType);
 
     /**
       Save the given window's position and display under that window's own
@@ -710,7 +710,7 @@ class FrameBuffer
     /**
       Draw a DialogContainer into the given window and present it.
     */
-    void updateContainer(WindowState& win, DialogContainer& container, UpdateMode mode);
+    static void updateContainer(WindowState& win, DialogContainer& container, UpdateMode mode);
   #endif  // GUI_SUPPORT
 
     /**
@@ -721,9 +721,9 @@ class FrameBuffer
     FBInitStatus createDisplay(WindowState& win, string_view title, BufferType type,
                                Common::Size size, bool honourHiDPI = true);
     void handleResize(WindowState& win, int width, int height);
-    bool liveResize(WindowState& win, int width, int height);
+    static bool liveResize(WindowState& win, int width, int height);
     void resizeSettled(WindowState& win);
-    void setWindowMinSize(WindowState& win, const Common::Size& size);
+    void setWindowMinSize(WindowState& win, const Common::Size& size) const;
     void update(WindowState& win, UpdateMode mode);
     void updateInEmulationMode(WindowState& win, float framesPerSecond);
     void toggleFullscreen(WindowState& win, bool toggle);
@@ -733,7 +733,7 @@ class FrameBuffer
     void switchVideoMode(WindowState& win, int direction);
     void toggleBezel(WindowState& win, bool toggle);
     void setCursorState(WindowState& win);
-    void enableTextEvents(WindowState& win, bool enable);
+    static void enableTextEvents(WindowState& win, bool enable);
     bool updateTheme(WindowState& win);
 
   private:

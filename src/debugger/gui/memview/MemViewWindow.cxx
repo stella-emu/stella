@@ -83,7 +83,7 @@ bool MemViewWindow::applyResize()
     return false;
 
   const uInt32 scale = fb.hidpiScaleFactor(window());
-  const Common::Rect& r = fb.imageRect(window());
+  const Common::Rect& r = FrameBuffer::imageRect(window());
   const Common::Size& m = minSize();
 
   // Follow the window, even past the desktop it opened on (when dragged across

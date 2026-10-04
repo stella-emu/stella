@@ -166,7 +166,7 @@ bool DialogContainer::baseDialogIsActive() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DialogContainer::addDialog(Dialog* d)
 {
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect(*myWindow);
+  const Common::Rect& r = FrameBuffer::imageRect(*myWindow);
   const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor(*myWindow);
 
   if(U32(d->getWidth()  * scale) > r.w() ||
@@ -195,7 +195,7 @@ void DialogContainer::removeDialog()
   #endif
     myDialogStack.pop();
 
-    myOSystem.frameBuffer().setPendingRender(*myWindow);
+    FrameBuffer::setPendingRender(*myWindow);
   }
 }
 

@@ -122,7 +122,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int ite
   if(!bossRect.contains(_xorig, _yorig))
     return;
 
-  recalc(fb.imageRect(window()));
+  recalc(FrameBuffer::imageRect(window()));
   open();
   setSelectedIndex(item);
   moveToSelected();
@@ -136,7 +136,7 @@ void ContextMenu::setPosition()
 
   // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().screenRect(window()).adjustToFit(
+  if(!FrameBuffer::screenRect(window()).adjustToFit(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

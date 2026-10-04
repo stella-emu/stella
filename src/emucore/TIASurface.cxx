@@ -42,7 +42,7 @@ TIASurface::TIASurface(OSystem& system)
   NTSCFilter::loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  myTiaSurface = myFB.allocateSurface(myFB.primaryWindow(),
+  myTiaSurface = FrameBuffer::allocateSurface(myFB.primaryWindow(),
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
     !correctAspect()
@@ -51,12 +51,14 @@ TIASurface::TIASurface(OSystem& system)
   );
 
   // Base TIA surface for use in taking snapshots in 1x mode
-  myBaseTiaSurface = myFB.allocateSurface(myFB.primaryWindow(), TIAConstants::frameBufferWidth*2,
-                                          TIAConstants::frameBufferHeight);
+  myBaseTiaSurface = FrameBuffer::allocateSurface(
+      myFB.primaryWindow(), TIAConstants::frameBufferWidth*2,
+      TIAConstants::frameBufferHeight);
 
   // Create shading surface
   static constexpr uInt32 data = 0xff000000;
-  myShadeSurface = myFB.allocateSurface(myFB.primaryWindow(), 1, 1, ScalingInterpolation::sharp, &data);
+  myShadeSurface = FrameBuffer::allocateSurface(myFB.primaryWindow(), 1, 1,
+                                                ScalingInterpolation::sharp, &data);
   myShadeSurface->enableBlend(true);
   myShadeSurface->setBlendLevel(35); // darken stopped emulation by 35%
 
@@ -400,8 +402,8 @@ void TIASurface::createScanlineSurface()
   for(uInt32 i = 0; i < width * height; ++i)
     data[i] = Patterns[mask].data[(i / width) % (pHeight * vRepeats)][i % pWidth];
 
-  myFB.deallocateSurface(myFB.primaryWindow(), mySLineSurface);
-  mySLineSurface = myFB.allocateSurface(myFB.primaryWindow(), width, height,
+  FrameBuffer::deallocateSurface(myFB.primaryWindow(), mySLineSurface);
+  mySLineSurface = FrameBuffer::allocateSurface(myFB.primaryWindow(), width, height,
     interpolationModeFromSettings(myOSystem.settings()), data.data());
   mySLineSurface->enableBlend(true);
 

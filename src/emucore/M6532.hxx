@@ -203,7 +203,7 @@ class M6532 : public Device
 
       @return Size in Device::AccessCounter values
     */
-    constexpr uInt32 getRamCounterSize() const {
+    static constexpr uInt32 getRamCounterSize() {
       return RAM_SIZE;
     }
 
@@ -212,7 +212,7 @@ class M6532 : public Device
 
       @return Offset in bytes
     */
-    constexpr uInt32 getRamCounterOffset() const {
+    static constexpr uInt32 getRamCounterOffset() {
       return 0;
     }
 

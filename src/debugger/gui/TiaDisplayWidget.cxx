@@ -272,14 +272,12 @@ void TiaDisplayWidget::drawWidget(bool hilite)
   // a render callback composites it over the dialog's base surface
   if(myTiaSurface == nullptr)
   {
-    auto& fb = instance().frameBuffer();
-
     // Nearest-neighbour ('none') scaling: crisp pixels (this view is for
     // examining TIA output close up) at ANY scale factor, up or down.  Note
     // 'sharp' is quasi-integer scaling, which truncates the scale to an integer
     // and so collapses to a zero-size texture (black) for any sub-1x fit, and
     // 'blur' is bilinear, which softens the pixels.
-    myTiaSurface = fb.allocateSurface(dialog().window(),
+    myTiaSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::frameBufferWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
@@ -288,7 +286,7 @@ void TiaDisplayWidget::drawWidget(bool hilite)
     // marks).  Same size/scaling as the image so it can share the image's
     // src/dst rectangles; blended so its transparent background lets the image
     // show through and only the drawn marks appear on top.
-    myMarkSurface = fb.allocateSurface(dialog().window(),
+    myMarkSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::frameBufferWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myMarkSurface->setVisible(true);

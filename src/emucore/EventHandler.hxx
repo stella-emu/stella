@@ -529,7 +529,7 @@ class EventHandler
 
       @param windowID  The platform window ID that received the close request
     */
-    void handleWindowCloseEvent(uInt32 windowID);
+    void handleWindowCloseEvent(uInt32 windowID) const;
 
     /**
       Add the given joystick to the list of physical joysticks available to

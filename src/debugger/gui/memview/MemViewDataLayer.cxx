@@ -97,7 +97,7 @@ void MemViewDataLayer::updateData(const ByteArray& data)
     const uInt8* lineStop = src + myParams.myBankRowSize;
     const uInt8* bankRowStop = src + myParams.myBankRowSize + myParams.myBankHeight - 1;
     const uInt8* fullStop = src + myParams.myDataSize + myParams.myBankHeight - 1;
-    uInt8* dest = myData.data();
+    uInt8* dest = myData.data(); // NOLINT(misc-const-correctness)
 
     // One total line at the time
     while (true)
@@ -137,7 +137,7 @@ void MemViewDataLayer::updateData(const ByteArray& data)
 void MemViewDataLayer::calcBitDataTab()
 {
   // Precalc bit data table
-  uInt32 *bitTabPos = myBitDataTab.data();
+  uInt32 *bitTabPos = myBitDataTab.data(); // NOLINT(misc-const-correctness)
   for (uInt32 value = 0x00; value <= 0xFF; value++)
   {
     const uInt32 v = myInverted ? value ^ 0xFFU : value;

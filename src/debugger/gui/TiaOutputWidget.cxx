@@ -58,9 +58,8 @@ TiaOutputWidget::~TiaOutputWidget()
 {
   // The framebuffer keeps a reference to every allocated surface, so release
   // ours explicitly (the dialog can be recreated, which would otherwise leak)
-  FrameBuffer& fb = instance().frameBuffer();
-  if(myTiaSurface)  fb.deallocateSurface(dialog().window(), myTiaSurface);
-  if(myMarkSurface) fb.deallocateSurface(dialog().window(), myMarkSurface);
+  if(myTiaSurface)  FrameBuffer::deallocateSurface(dialog().window(), myTiaSurface);
+  if(myMarkSurface) FrameBuffer::deallocateSurface(dialog().window(), myMarkSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,10 +244,8 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // render callback that composites them on top of the dialog's base surface.
   if(myTiaSurface == nullptr)
   {
-    FrameBuffer& fb = instance().frameBuffer();
-
     // 'none' (nearest-neighbour) scaling keeps the TIA pixels crisp at any size
-    myTiaSurface = fb.allocateSurface(dialog().window(),
+    myTiaSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
@@ -256,7 +253,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     // Pixel-locked overlay for the electron-beam cursor: same size/scaling as
     // the image so it can share the image's src/dst rectangles; blended so its
     // transparent background lets the image show through
-    myMarkSurface = fb.allocateSurface(dialog().window(),
+    myMarkSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myMarkSurface->setVisible(true);
