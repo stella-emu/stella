@@ -238,7 +238,7 @@ void RomWidget::runtoPC(int disasm_line)
   const uInt16 address = getAddress(disasm_line);
 
   if(address != 0)
-    instance().frameBuffer().showTextMessage(
+    dialog().showTextMessage(
       instance().debugger().run(std::format("runtopc #{}", address))
     );
 }
@@ -253,7 +253,7 @@ void RomWidget::setTimer(int disasm_line)
     Debugger& dbg = instance().debugger();
     const string& msg = dbg.run(std::format("timer #{} {}",
       address, dbg.cartDebug().getBank(address)));
-    instance().frameBuffer().showTextMessage(msg);
+    dialog().showTextMessage(msg);
   }
 }
 

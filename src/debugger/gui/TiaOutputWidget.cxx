@@ -127,9 +127,9 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
     }
   }
   if(execDepth == 0)
-    instance().frameBuffer().showTextMessage(message);
+    dialog().showTextMessage(message);
 #else
-  instance().frameBuffer().showTextMessage("PNG image saving not supported");
+  dialog().showTextMessage("PNG image saving not supported");
 #endif
 }
 
@@ -175,7 +175,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       {
         const string message = instance().debugger().parser().run(
           std::format("scanLine #{}", lines));
-        instance().frameBuffer().showTextMessage(message);
+        dialog().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -183,7 +183,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       const int scanline = myClickY + startLine;
       const string message = instance().debugger().parser().run(
         std::format("breakIf _scan==#{}", scanline));
-      instance().frameBuffer().showTextMessage(message);
+      dialog().showTextMessage(message);
     }
     else if(rmb == "zoom")
     {

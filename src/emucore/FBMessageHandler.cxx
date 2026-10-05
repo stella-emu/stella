@@ -48,7 +48,8 @@ void FBMessageHandler::init()
   myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
   myStatsMsg.h = (f.getFontHeight() + 2) * 3;
 
-  if(!myStatsMsg.surface)
+  // Frame stats are only drawn in the main window
+  if(!myStatsMsg.surface && &myWin == &myFB.primaryWindow())
   {
     myStatsMsg.surface = FrameBuffer::allocateSurface(myWin, myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->enableBlend(true);

@@ -164,8 +164,8 @@ void Dialog::open()
   // can be bigger than the current window; inform the user instead of silently
   // clipping it (drawing out-of-bounds is safely skipped by FBSurface)
   if(exceedsScreen())
-    instance().frameBuffer().showTextMessage("Dialog too large for screen",
-                                             MessagePosition::BottomCenter, true);
+    showTextMessage("Dialog too large for screen",
+                    MessagePosition::BottomCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

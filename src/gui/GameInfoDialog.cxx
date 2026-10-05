@@ -1750,9 +1750,9 @@ void GameInfoDialog::exportCurrentPropertiesToDisk(const FSNode& node)
   KeyValueRepositoryPropertyFile repo(node);
 
   if(myGameProperties.save(repo))
-    instance().frameBuffer().showTextMessage("ROM properties exported");
+    showTextMessage("ROM properties exported");
   else
-    instance().frameBuffer().showTextMessage("Error exporting ROM properties");
+    showTextMessage("Error exporting ROM properties");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

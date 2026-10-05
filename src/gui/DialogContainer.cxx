@@ -20,6 +20,7 @@
 #include "ToolTip.hxx"
 #include "Stack.hxx"
 #include "EventHandler.hxx"
+#include "FBMessageHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "bspf.hxx"
@@ -171,7 +172,7 @@ int DialogContainer::addDialog(Dialog* d)
 
   if(U32(d->getWidth()  * scale) > r.w() ||
      U32(d->getHeight() * scale) > r.h())
-    myOSystem.frameBuffer().showTextMessage(
+    myWindow->msgHandler->showText(
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
