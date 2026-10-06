@@ -46,7 +46,7 @@ bool QisBlitter::isSupported(const FBBackendSDL& fb)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QisBlitter::reinitialize(
   SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
-  uInt8 blendLevel, SDL_Surface* staticData
+  uInt8 blendLevel, bool isStatic
 )
 {
   myRecreateTextures = myRecreateTextures || !(
@@ -56,12 +56,16 @@ void QisBlitter::reinitialize(
     myDstRect.h == myFB.scaleY(destRect.h) &&
     blendLevel  == myBlendLevel &&
     enableBlend == myEnableBlend &&
-    myStaticData == staticData
+    isStatic == myIsStatic
    );
+
+  // Only the source rect was ever uploaded, so a different one isn't in the
+  // textures yet
+  myUploadPending = myUploadPending || !SDL_RectsEqual(&srcRect, &mySrcRect);
 
   myEnableBlend = enableBlend;
   myBlendLevel = blendLevel;
-  myStaticData = staticData;
+  myIsStatic = isStatic;
 
   mySrcRect = srcRect;
   SDL_RectToFRect(&mySrcRect, &mySrcFRect);
@@ -86,6 +90,10 @@ void QisBlitter::free()
     SDL_DestroyTexture(mySrcTexture);
     mySrcTexture = nullptr;
   }
+  if (mySecondarySrcTexture) {
+    SDL_DestroyTexture(mySecondarySrcTexture);
+    mySecondarySrcTexture = nullptr;
+  }
   if (myIntermediateTexture) {
     SDL_DestroyTexture(myIntermediateTexture);
     myIntermediateTexture = nullptr;
@@ -99,37 +107,39 @@ void QisBlitter::free()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void QisBlitter::blit(SDL_Surface& surface)
+void QisBlitter::blit(SDL_Surface& surface, bool upload)
 {
   ASSERT_MAIN_THREAD;
 
   recreateTexturesIfNecessary();
 
-  SDL_Texture* intermediateTexture = myIntermediateTexture;
-
-  if (myStaticData == nullptr) {
-    SDL_UpdateTexture(mySrcTexture, &mySrcRect, surface.pixels, surface.pitch);
-
-    blitToIntermediate();
-
+  if (myIsStatic) {
+    if (upload || myUploadPending) {
+      SDL_UpdateTexture(mySrcTexture, nullptr, surface.pixels, surface.pitch);
+      blitToIntermediate();
+      myUploadPending = false;
+    }
+  } else {
+    // Render into the intermediate texture that wasn't drawn last, since that
+    // one may still be in use; myIntermediateTexture is then always the one
+    // to draw
     std::swap(myIntermediateTexture, mySecondaryIntermediateTexture);
-    std::swap(mySrcTexture, mySecondarySrcTexture);
+
+    if (upload || myUploadPending) {
+      // Likewise for the source texture
+      std::swap(mySrcTexture, mySecondarySrcTexture);
+      SDL_UpdateTexture(mySrcTexture, &mySrcRect, surface.pixels, surface.pitch);
+      myUploadPending = false;
+    }
+
+    // Redrawn every time, even from unchanged pixels: a render target can
+    // lose its contents (e.g. Direct3D 9 recreates them empty whenever the
+    // window size or vsync changes)
+    blitToIntermediate();
   }
 
-  SDL_RenderTexture(myFB.renderer(), intermediateTexture,
+  SDL_RenderTexture(myFB.renderer(), myIntermediateTexture,
                     &myIntermediateFRect, &myDstFRect);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void QisBlitter::updateStaticData()
-{
-  ASSERT_MAIN_THREAD;
-
-  recreateTexturesIfNecessary();
-
-  SDL_UpdateTexture(mySrcTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
-
-  blitToIntermediate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,9 +171,9 @@ void QisBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  const SDL_TextureAccess texAccess = myStaticData == nullptr
-                                        ? SDL_TEXTUREACCESS_STREAMING
-                                        : SDL_TEXTUREACCESS_STATIC;
+  const SDL_TextureAccess texAccess = myIsStatic
+                                        ? SDL_TEXTUREACCESS_STATIC
+                                        : SDL_TEXTUREACCESS_STREAMING;
 
   myIntermediateRect.w = (myDstRect.w / mySrcRect.w) * mySrcRect.w;
   myIntermediateRect.h = (myDstRect.h / mySrcRect.h) * mySrcRect.h;
@@ -176,7 +186,7 @@ void QisBlitter::recreateTexturesIfNecessary()
   SDL_SetTextureScaleMode(mySrcTexture, SDL_SCALEMODE_NEAREST);
   SDL_SetTextureBlendMode(mySrcTexture, SDL_BLENDMODE_NONE);
 
-  if (myStaticData == nullptr) {
+  if (!myIsStatic) {
     mySecondarySrcTexture = SDL_CreateTexture(myFB.renderer(),
         myFB.pixelFormat().format, texAccess, mySrcRect.w, mySrcRect.h);
     SDL_SetTextureScaleMode(mySecondarySrcTexture, SDL_SCALEMODE_NEAREST);
@@ -189,7 +199,7 @@ void QisBlitter::recreateTexturesIfNecessary()
       SDL_TEXTUREACCESS_TARGET, myIntermediateRect.w, myIntermediateRect.h);
   SDL_SetTextureScaleMode(myIntermediateTexture, SDL_SCALEMODE_LINEAR);
 
-  if (myStaticData == nullptr) {
+  if (!myIsStatic) {
     mySecondaryIntermediateTexture = SDL_CreateTexture(myFB.renderer(),
         myFB.pixelFormat().format, SDL_TEXTUREACCESS_TARGET,
         myIntermediateRect.w, myIntermediateRect.h);
@@ -197,9 +207,6 @@ void QisBlitter::recreateTexturesIfNecessary()
                             SDL_SCALEMODE_LINEAR);
   } else {
     mySecondaryIntermediateTexture = nullptr;
-    SDL_UpdateTexture(mySrcTexture, nullptr, myStaticData->pixels, myStaticData->pitch);
-
-    blitToIntermediate();
   }
 
   const std::array<SDL_Texture*, 2> textures = {
@@ -219,4 +226,6 @@ void QisBlitter::recreateTexturesIfNecessary()
 
   myRecreateTextures = false;
   myTexturesAreAllocated = true;
+  // New textures are empty
+  myUploadPending = true;
 }

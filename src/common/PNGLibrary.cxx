@@ -154,9 +154,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.setSrcPos(0, 0);
   surface.setSrcSize(width, height);
 
-  uInt32* base{nullptr};
-  uInt32  pitch{0};
-  surface.basePtr(base, pitch);
+  const auto [base, pitch] = surface.basePtr();
 
   const size_t rowStride = pitch * sizeof(uInt32);
 
@@ -174,7 +172,7 @@ void PNGLibrary::loadImage(string_view filename, FBSurface& surface,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(string_view filename, const Common::Rect& srcRect,
-                           uInt32* base, const uInt32& pitch,
+                           const uInt32* base, uInt32 pitch,
                            const VariantList& metaData)
 {
   const size_t width  = srcRect.w();
@@ -246,12 +244,12 @@ void PNGLibrary::saveImage(string_view filename, const Common::Rect& srcRect,
 //   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
 
   const size_t rowStride = pitch * sizeof(uInt32);
-  auto* row = reinterpret_cast<png_bytep>(base)
+  auto* row = reinterpret_cast<png_const_bytep>(base)
             + srcRect.y() * rowStride
             + srcRect.x() * sizeof(uInt32);
 
   for(auto y = 0UZ; y < height; ++y, row += rowStride)
-    png_write_row(png_ptr, reinterpret_cast<png_bytep>(row));
+    png_write_row(png_ptr, row);
 
   // We're finished writing
   png_write_end(png_ptr, info_ptr);
@@ -266,9 +264,7 @@ void PNGLibrary::saveImage(string_view filename, const FBSurface& surface,
     : rect;
 
   // Direct access to surface memory
-  uInt32* base{nullptr};
-  uInt32  pitch{0};
-  surface.basePtr(base, pitch);
+  const auto [base, pitch] = surface.readBasePtr();
 
   saveImage(filename, srcRect, base, pitch, metaData);
 }
@@ -326,9 +322,7 @@ Common::Rect PNGLibrary::croppedRect(const FBSurface& surface,
   if(number > 0 && myCropValid)
     return myCropRect;
 
-  uInt32* base{nullptr};
-  uInt32  pitch{0};
-  surface.basePtr(base, pitch);
+  const auto [base, pitch] = surface.readBasePtr();
 
   // A pixel is 'black' once its color channels are all zero (the high
   // byte is alpha/filler and is ignored)

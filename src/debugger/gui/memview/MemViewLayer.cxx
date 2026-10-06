@@ -48,7 +48,6 @@ void MemViewLayer::allocateSurface()
     );
     // myParams is in logical pixels; scale up to the window's HiDPI factor
     const uInt32 dpi = myDialog.instance().frameBuffer().hidpiScaleFactor(myDialog.window());
-    mySurface->setDstPos(myParams.mySurfacePosX, myParams.mySurfacePosY);
     mySurface->setDstSize(myParams.mySurfaceWidth * dpi, myParams.mySurfaceHeight * dpi);
     mySurface->enableBlend(!myIsDataLayer);
   }
@@ -66,7 +65,9 @@ bool MemViewLayer::beginDraw(uInt32*& destAddr, uInt32& pitchWords)
 {
   allocateSurface();
 
-  mySurface->basePtr(destAddr, pitchWords);
+  const auto [pixels, pitch] = mySurface->basePtr();
+  destAddr = pixels;
+  pitchWords = pitch;
 
   return true;
 }
@@ -273,5 +274,11 @@ void MemViewLayer::drawImpl(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MemViewLayer::renderImpl()
 {
+  // Nothing drawn yet
+  if(!mySurface)
+    return;
+
+  // The view moves on a resize, so its origin is read at render time
+  mySurface->setDstPos(myParams.mySurfacePosX, myParams.mySurfacePosY);
   mySurface->render();
 }

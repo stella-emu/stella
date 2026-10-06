@@ -118,8 +118,7 @@ const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
   rect.setBounds(0, 0, width, height);
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
-  uInt32 *buf_ptr{nullptr}, pitch{0};
-  myBaseTiaSurface->basePtr(buf_ptr, pitch);
+  auto* buf_ptr = myBaseTiaSurface->basePtr().pixels;
 
   for(auto y = 0UZ; y < height; ++y)
     for(auto x = 0UZ; x < width; ++x)
@@ -478,8 +477,7 @@ string TIASurface::effectsInfo() const
 void TIASurface::render(bool shade)
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
-  uInt32 *out{nullptr}, outPitch{0};
-  myTiaSurface->basePtr(out, outPitch);
+  const auto [out, outPitch] = myTiaSurface->basePtr();
 
   switch(myFilter)
   {
@@ -574,8 +572,7 @@ void TIASurface::renderForSnapshot()
 {
   const uInt32 width = myTIA->width(), height = myTIA->height();
   uInt32 pos{0};
-  uInt32 *outPtr{nullptr}, outPitch{0};
-  myTiaSurface->basePtr(outPtr, outPitch);
+  const auto [outPtr, outPitch] = myTiaSurface->basePtr();
 
   mySaveSnapFlag = false;
 

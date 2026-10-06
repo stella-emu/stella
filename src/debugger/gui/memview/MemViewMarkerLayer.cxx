@@ -54,8 +54,6 @@ void MemViewMarkerLayer::allocateSurface()
     mySurface->fillRectRgb(0, 0, BUFFER_WIDTH, BUFFER_HEIGHT, 0x00000000);
     mySurface->fillRectRgb(0, 0, BUFFER_WIDTH, MARKER_THICKNESS, myColor);
     mySurface->fillRectRgb(0, 0, MARKER_THICKNESS, BUFFER_HEIGHT, myColor);
-    // Take over new data (and create a big texture now from the start)
-    mySurface->updateStaticData();
   }
 }
 
@@ -90,8 +88,6 @@ bool MemViewMarkerLayer::set(bool enable, int byteOffset)
       myParams.myZoomLevel * 8 + MARKER_THICKNESS, MARKER_THICKNESS, myColor);
 
     myDrawnZoomLevel = myParams.myZoomLevel;
-
-    mySurface->updateStaticData();
 
     changed = true;
   }

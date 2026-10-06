@@ -48,7 +48,7 @@ BilinearBlitter::~BilinearBlitter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BilinearBlitter::reinitialize(
   SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
-  uInt8 blendLevel, SDL_Surface* staticData
+  uInt8 blendLevel, bool isStatic
 )
 {
   // The textures are sized from the SOURCE only; the destination rect is
@@ -61,11 +61,15 @@ void BilinearBlitter::reinitialize(
     srcRect.w > myTexW || srcRect.h > myTexH ||
     blendLevel  != myBlendLevel ||
     enableBlend != myEnableBlend ||
-    myStaticData != staticData;
+    isStatic != myIsStatic;
+
+  // Only the source rect was ever uploaded, so a different one isn't in the
+  // textures yet
+  myUploadPending = myUploadPending || !SDL_RectsEqual(&srcRect, &mySrcRect);
 
   myEnableBlend = enableBlend;
   myBlendLevel = blendLevel;
-  myStaticData = staticData;
+  myIsStatic = isStatic;
 
   mySrcRect = srcRect;
   SDL_RectToFRect(&mySrcRect, &mySrcFRect);
@@ -97,33 +101,32 @@ void BilinearBlitter::free()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BilinearBlitter::blit(SDL_Surface& surface)
+void BilinearBlitter::blit(SDL_Surface& surface, bool upload)
 {
   ASSERT_MAIN_THREAD;
 
   recreateTexturesIfNecessary();
 
-  SDL_Texture* texture = myTexture;
-
-  if(myStaticData == nullptr) {
-    SDL_UpdateTexture(myTexture, &mySrcRect, surface.pixels, surface.pitch);
-    myTexture = mySecondaryTexture;
-    mySecondaryTexture = texture;
+  if(upload || myUploadPending)
+  {
+    if(myIsStatic)
+    {
+      // Only the data's own area: the texture may be larger (see
+      // recreateTexturesIfNecessary())
+      const SDL_Rect staticRect{0, 0, surface.w, surface.h};
+      SDL_UpdateTexture(myTexture, &staticRect, surface.pixels, surface.pitch);
+    }
+    else
+    {
+      // Upload into the texture that wasn't drawn last, since that one may
+      // still be in use; myTexture is then always the one to draw
+      std::swap(myTexture, mySecondaryTexture);
+      SDL_UpdateTexture(myTexture, &mySrcRect, surface.pixels, surface.pitch);
+    }
+    myUploadPending = false;
   }
 
-  SDL_RenderTexture(myFB.renderer(), texture, &mySrcFRect, &myDstFRect);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BilinearBlitter::updateStaticData()
-{
-  ASSERT_MAIN_THREAD;
-
-  recreateTexturesIfNecessary();
-
-  // The texture can be larger than the data (see recreateTexturesIfNecessary())
-  const SDL_Rect staticRect{0, 0, myStaticData->w, myStaticData->h};
-  SDL_UpdateTexture(myTexture, &staticRect, myStaticData->pixels, myStaticData->pitch);
+  SDL_RenderTexture(myFB.renderer(), myTexture, &mySrcFRect, &myDstFRect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,9 +142,9 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  const SDL_TextureAccess texAccess = myStaticData == nullptr
-    ? SDL_TEXTUREACCESS_STREAMING
-    : SDL_TEXTUREACCESS_STATIC;
+  const SDL_TextureAccess texAccess = myIsStatic
+    ? SDL_TEXTUREACCESS_STATIC
+    : SDL_TEXTUREACCESS_STREAMING;
 
   // Size the textures to the larger of the current source (rounded up for
   // headroom) and the previous allocation, so they never shrink; only the
@@ -155,7 +158,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
   SDL_SetTextureScaleMode(myTexture, myInterpolate
       ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
 
-  if (myStaticData == nullptr) {
+  if (!myIsStatic) {
     mySecondaryTexture = SDL_CreateTexture(myFB.renderer(),
         myFB.pixelFormat().format,
         texAccess, myTexW, myTexH);
@@ -164,9 +167,6 @@ void BilinearBlitter::recreateTexturesIfNecessary()
         : SDL_SCALEMODE_NEAREST);
   } else {
     mySecondaryTexture = nullptr;
-    // Only the data's own area: the texture may have been rounded up above
-    const SDL_Rect staticRect{0, 0, myStaticData->w, myStaticData->h};
-    SDL_UpdateTexture(myTexture, &staticRect, myStaticData->pixels, myStaticData->pitch);
   }
 
   const std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
@@ -184,4 +184,6 @@ void BilinearBlitter::recreateTexturesIfNecessary()
 
   myRecreateTextures = false;
   myTexturesAreAllocated = true;
+  // New textures are empty
+  myUploadPending = true;
 }

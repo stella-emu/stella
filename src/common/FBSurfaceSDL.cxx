@@ -91,6 +91,7 @@ void FBSurfaceSDL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId colo
 
   const SDL_Rect tmp = ToSDLRect(x, y, w, h);
   SDL_FillSurfaceRect(mySurface, &tmp, myPalette[color]);
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,7 +185,10 @@ bool FBSurfaceSDL::render()
   assert(myBlitter);
 
   if(myIsVisible)
-    myBlitter->blit(*mySurface);
+  {
+    myBlitter->blit(*mySurface, myPixelsDirty);
+    myPixelsDirty = false;
+  }
 
   return myIsVisible;
 }
@@ -195,6 +199,7 @@ void FBSurfaceSDL::invalidate()
   ASSERT_MAIN_THREAD;
 
   SDL_FillSurfaceRect(mySurface, nullptr, 0);
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,23 +211,13 @@ void FBSurfaceSDL::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   //       without affecting the background display.
   const SDL_Rect tmp = ToSDLRect(x, y, w, h);
   SDL_FillSurfaceRect(mySurface, &tmp, 0);
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL::reload()
 {
   reinitializeBlitter(true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL::updateStaticData()
-{
-  if (!myIsStatic)
-    return;
-
-  assert(myBlitter);
-
-  myBlitter->updateStaticData();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,6 +269,7 @@ void FBSurfaceSDL::createSurface(uInt32 width, uInt32 height, const uInt32* data
   if(myIsStatic)
     SDL_memcpy(mySurface->pixels, data,
                SZT(mySurface->w) * mySurface->h * pf.bytes_per_pixel);
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,7 +284,7 @@ void FBSurfaceSDL::reinitializeBlitter(bool force)
 
   if(myBlitter)
     myBlitter->reinitialize(mySrcR, myDstR, myEnableBlend, myBlendLevel,
-                            myIsStatic ? mySurface : nullptr);
+                            myIsStatic);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

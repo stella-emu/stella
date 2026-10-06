@@ -543,8 +543,10 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
 
   // Forced render without draw required if messages or dialogs were closed
   // Note: For dialogs only relevant when two or more dialogs were stacked
-  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
-                         || win.pendingRender);
+  // A dialog's tick() can request a render too (e.g. a tooltip appearing),
+  // so the GUI states below check again after ticking
+  bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
+                   || win.pendingRender);
   win.pendingRender = false;
 
   // Show any messages enqueued from other threads (e.g. PlusROM/cart callbacks)
@@ -583,6 +585,7 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
       // the active DialogContainer is tracked by EventHandler::overlay()
       DialogContainer& overlay = myOSystem.eventHandler().overlay();
       overlay.tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= overlay.needsRedraw();
       if(redraw)
       {
@@ -600,6 +603,7 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
     case EventHandlerState::TIMEMACHINE:
     {
       myOSystem.timeMachine().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.timeMachine().needsRedraw();
       if(redraw)
       {
@@ -656,6 +660,7 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
     case EventHandlerState::LAUNCHER:
     {
       myOSystem.launcher().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.launcher().needsRedraw();
       if(redraw)
         myOSystem.launcher().draw(forceRedraw);
@@ -669,6 +674,7 @@ void FrameBuffer::update(WindowState& win, UpdateMode mode)
     case EventHandlerState::DEBUGGER:
     {
       myOSystem.debugger().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.debugger().needsRedraw();
       if(redraw)
         myOSystem.debugger().draw(forceRedraw);
@@ -821,11 +827,15 @@ void FrameBuffer::updateContainer(WindowState& win, DialogContainer& container, 
 {
   const bool forceRedraw = (mode == UpdateMode::REDRAW);
   bool redraw = forceRedraw;
+
+  // Tick first: it can request a render (e.g. a tooltip appearing, or a
+  // widget that updated its own surfaces), which belongs in this frame
+  container.tick();
+
   const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
                          || win.pendingRender);
   win.pendingRender = false;
 
-  container.tick();
   redraw |= container.needsRedraw();
   if(redraw)
     container.draw(forceRedraw);

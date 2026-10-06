@@ -86,12 +86,6 @@ class MemViewWindowDialog : public Dialog
     void loadConfig() override;
     void tick() override;
 
-    /**
-      Overriding the default needsRedraw method to be able to distinguish between
-      draws needes by the base GUI and draws needed by our extra MemViewWidget layers.
-    */
-    bool needsRedraw() override;
-
     // The layout tree's own answer, settled by the last layout() (see
     // DebuggerDialog::minSize() for the same pattern)
     Common::Size minSize() const { return myMinSize; }

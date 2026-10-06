@@ -88,7 +88,7 @@ class TIASurface
     /**
       Get a underlying FBSurface that the TIA is being rendered into.
     */
-    const FBSurface& tiaSurface() const { return *myTiaSurface; }
+    FBSurface& surface() { return *myTiaSurface; }
 
     /**
       Use the palette to map a single indexed pixel color. This is used by the
