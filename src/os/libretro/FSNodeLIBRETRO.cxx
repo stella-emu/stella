@@ -137,19 +137,18 @@ bool FSNodeLIBRETRO::setFlags()
 
       return true;
     }
-    else
-    {
-      // Not present on disk, but it may still be the in-memory ROM: either the
-      // path isn't directly readable (e.g. Android), or the frontend extracted
-      // the ROM from an archive and handed us an archive-relative path
-      // (e.g. 'game.zip#game.a26')
-      _isDirectory = false;
-      _isFile = isMemoryROM();
-      _size = _isFile ? libretro_get_rom_size() : 0;
-      return _isFile;
-    }
   }
-  return false;
+
+  // Not present on disk, or no VFS/stat callback for us to ask in the first
+  // place: it may still be the in-memory ROM.  Either the path isn't
+  // directly readable (e.g. Android), the frontend extracted the ROM from
+  // an archive and handed us an archive-relative path (e.g.
+  // 'game.zip#game.a26'), or the frontend implements no VFS at all, which
+  // the libretro API allows.
+  _isDirectory = false;
+  _isFile = isMemoryROM();
+  _size = _isFile ? libretro_get_rom_size() : 0;
+  return _isFile;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
