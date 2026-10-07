@@ -70,6 +70,29 @@ bool vcs_blit(uint8_t *win, uint8_t *board, uint16_t src, uint16_t dst,
 void vcs_render_path_row(uint8_t *win, const uint8_t *path, uint16_t path_len,
                          uint16_t src, uint8_t row, uint8_t cnt);
 
+/* FN_BLIT_PATHPOKE: copy `cnt` raw bytes from the selected path buffer at
+ * offset `src` into plane byte `dst` onwards.
+ *
+ * The block escalation, for a client whose netcode state does not fit in the
+ * console's RAM at all. Routed by the caller for FN_BLIT_PATH's reason: the
+ * source is the path buffer, not the reply window.
+ *
+ * Composes nothing -- these are bytes a client is KEEPING, not bytes it is
+ * showing, and it reads them back as bytes. Short of `cnt` bytes in the
+ * buffer copies what is there and stops; past the end of the planes copies
+ * nothing. */
+void vcs_render_path_poke(uint8_t *win, const uint8_t *path, uint16_t path_len,
+                          uint16_t src, uint16_t dst, uint8_t cnt);
+
+/* FN_BLIT_PATHTILE: compose a packed tile bitset out of the selected path
+ * buffer at offset `src` into the playfield tables of the kinds `mask` names.
+ *
+ * Routed by the caller for FN_BLIT_PATH's reason. `cnt` is the row count, 0
+ * meaning FN_TILE_H. See fuji_mailbox.h for why a client keeps its grid in a
+ * path buffer rather than re-reading a reply it no longer has. */
+void vcs_render_path_tile(uint8_t *win, const uint8_t *path, uint16_t path_len,
+                          uint16_t src, uint8_t mask, uint8_t cnt);
+
 /* FN_BLIT_TCELL: replace the single character at (row, col).
  *
  * A column shares its plane byte with its neighbour -- left in bits 7-5,

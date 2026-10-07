@@ -346,6 +346,128 @@
  * not for state that changes every frame. */
 #define FN_BLIT_POKE     14       /* plane[dst] = the low byte of src        */
 
+/* A BLOCK of raw bytes into the text planes, out of a path buffer.
+ *
+ * FN_BLIT_POKE moves one byte per blit, and a blit costs the client four
+ * stores and a FN_B_BLITGEN poll -- the cartridge has ONE blit slot and no
+ * queue, so the poll is not optional and it is the expensive half.
+ * fujinet-2600-dodgem measured nine blits in one frame as ninety-seven extra
+ * scanlines, which is about 760 cycles each.
+ *
+ * fujinet-2600-warlords is why one byte per blit is not enough. Warlords
+ * (Atari 1981) is a FOUR-player game, and its census comes back with TWO
+ * usable persistent RAM cells against a netcode that needs about seventeen
+ * that outlive a frame. Seventeen FN_BLIT_POKEs is around 13000 cycles a tick
+ * against roughly 10000 available, so the escalation that rescued Dodge 'Em
+ * does not reach: it is not slow, it does not fit.
+ *
+ * The cheap path in already exists and is not the blit port. FN_HOT_PATH_CH
+ * appends one byte to the selected path buffer in ONE store with no poll at
+ * all, because the path buffers are a stream and not a slot. So a client
+ * streams its block in with `cnt` stores and then spends ONE blit turning it
+ * into plane bytes it can read back with `lda $1A80,x`. Seventeen bytes go
+ * from seventeen polls to one.
+ *
+ * Bounded twice, and neither bound is the other's job: to path_len, because
+ * past it the buffer holds whatever the last string left; and to the PLANES,
+ * because past FN_T_BASE + 768 lies the reply window and then the status
+ * page, and a client that can write those corrupts the mailbox it is talking
+ * through -- a failed transaction, not a wrong picture.
+ *
+ * Like FN_BLIT_PATH and for the same reason, this is routed by the caller
+ * rather than living inside vcs_blit(): its source is the cartridge's own
+ * path buffer and not the reply window. */
+#define FN_BLIT_PATHPOKE 15       /* plane[dst..dst+cnt) = path[src..src+cnt) */
+
+/* A PACKED TILE BITSET into the playfield tables, for a maze.
+ *
+ * fujinet-maze-war is a 20 x 19 grid of cells, and the tables FN_BLIT_PFIELD
+ * already writes ARE a 20-column by 20-row playfield: registers 0-2 are the
+ * left half's PF0/PF1/PF2 and 3-5 the right half's, the entry index is the
+ * cell row, and Battleship merely happens to spend the space as two stacked
+ * 10x10 boards. A maze row is therefore the whole 40-bit asymmetric playfield
+ * in one pass and the grid drops in with one row to spare -- no new table
+ * geometry, no new bit map, and pf_byte() addresses it unchanged, because for
+ * slots 0 and 1 (slot >> 1) is zero and the entry is simply the row.
+ *
+ * What is new is the SOURCE. Battleship's wire format is one byte per cell:
+ * 100 bytes for a board, but 380 for this grid, which is most of the reply
+ * slice. Maze War's BRICK_FULL is already a packed bitset -- 380 bits in 48
+ * bytes, row-major at idx = y * FN_TILE_W + x, byte idx / 8, bit idx % 8,
+ * least significant first -- so the console hands that payload straight from
+ * the reply window to the cartridge and never holds a byte of it. It cannot:
+ * 128 bytes of RAM does not keep a 48-byte bitset AND the six 19-byte tables
+ * the kernel streams, let alone a game on top.
+ *
+ * dst is a KIND MASK and not a slot, because a tile row spans both halves and
+ * both are written. cnt is the row count, so a shorter grid does not pay for
+ * rows it does not have; 0 means FN_TILE_H.
+ *
+ * FN_BLIT_PFTCELL is the delta. A brick shot out mid-game is one cell, and
+ * re-sending 48 bytes to change one bit would cost a transaction a console
+ * running a 10 Hz game does not have spare -- so the cell is addressed
+ * directly, and FN_PFM_CLEAR chooses clear over set exactly as it does for
+ * FN_BLIT_PFCELL. The column is seven bits because bit 7 is that flag. */
+#define FN_BLIT_PFTILE   16       /* src = reply offset of a packed bitset,
+                                     dst = kind mask, cnt = rows (0 = all)   */
+#define FN_BLIT_PFTCELL  17       /* dst = kind mask, cnt = row, src low byte
+                                     = column; FN_PFM_CLEAR in it clears     */
+/* The same grid, out of a path buffer instead of the reply window.
+ *
+ * Routed by the caller for FN_BLIT_PATH's reason -- a different source, not a
+ * different composition -- and it exists for two that matter here.
+ *
+ * A reply is TRANSIENT: the window is repainted by the next SEQ commit, so a
+ * client that wants to recompose its grid later (after a bank switch, after a
+ * console RESET, after anything) no longer has the bytes and has no RAM to
+ * have kept them in. A path buffer is 256 bytes, survives RESET, and takes a
+ * byte per store with no poll -- so a client streams its bitset in once and
+ * owns it for the rest of the session.
+ *
+ * And it is how a grid gets on screen with no server at all: the layout ROM
+ * that proves the kernel before any network exists has its map in ROM. */
+#define FN_BLIT_PATHTILE 18       /* dst = kind mask, cnt = rows, src = byte
+                                     offset into the selected path buffer    */
+#define FN_TILE_W        20       /* cells across: the whole playfield       */
+#define FN_TILE_H        19       /* rows, of the 20 the tables hold         */
+#define FN_TILE_BYTES    48       /* (FN_TILE_W * FN_TILE_H + 7) / 8         */
+
+/* The M.U.L.E. MAP, for fujinet-multiplayer-mule's clients/atari-2600.
+ *
+ * The Atari's map is 9 x 5 plots of 16 colour clocks by 32 scanlines at
+ * clocks 8-151: four playfield pixels by sixteen ENTRIES of two scanlines.
+ * The server's MuleMap is five 45-byte arrays -- terrain, owner, mule,
+ * crystite, prod -- and turning that into playfield bytes is 45 plots x 16
+ * entries x 4 pixels of bit placement, which a 2600 bank has neither the
+ * bytes nor the frame time for. So the cartridge composes it, the same way it
+ * composes Battleship's boards.
+ *
+ * TABLES. Six, one per playfield register -- PF0/PF1/PF2 of the left half,
+ * then of the right -- in the six planes at byte FN_MULE_MAP0 + y, where
+ * y = plot row * 16 + entry (0-79). Bytes 12-91: the text rows 0-1 and 16-20
+ * stay free for the screen around the map. Written whole, from a composed
+ * copy, so the kernel never streams a half-built byte.
+ *
+ * THE PICTURE. The playfield has one colour per scanline, so what an entry
+ * shows is decided by the colour the console's kernel draws that entry in
+ * (a fixed table, one per entry of a plot row):
+ *
+ *   0-3    the owner's bracket, top: seat 0 outermost ... seat 3 innermost
+ *   4-8    the picture: the installed M.U.L.E.'s good as a 4x5 glyph
+ *          (F E S C), the store; or, with FN_MULEMAP_PROD, the units a
+ *          M.U.L.E.'s plot made as bars (4 + 4)
+ *   9-11   the ground: 1-3 mountains (terrain bits 2-3), the river's dots,
+ *          the store's base
+ *   12-15  the owner's bracket, bottom: seat 3 innermost ... seat 0 outermost
+ *
+ * clients/atari-2600/tools/mulemap.py is the model; host_test compares. */
+#define FN_BLIT_MULEMAP  19       /* src = reply offset of MuleMap (225 bytes),
+                                     dst = FN_MULEMAP_* flags                 */
+#define FN_MULEMAP_PROD  0x01     /* the picture is production, not glyphs   */
+#define FN_MULE_MAP0     12       /* plane byte of entry 0                   */
+#define FN_MULE_ENTRIES  80       /* 5 plot rows x 16                        */
+#define FN_MULE_MAPLEN   225      /* sizeof(MuleMap)                         */
+
 /* What FN_BLIT_FIELD paints. A Battleship gamefield is 100 bytes at y*10+x
  * in the reply window, and turning it into ten rows of text is 100 reads,
  * 100 compares and a 16-bit reply cursor -- about 250 bytes of 6502 in a bank

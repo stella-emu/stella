@@ -304,6 +304,17 @@ bool CartridgeFUJI::poke(uInt16 address, uInt8 value)
                             myMem.blit_src,
                             static_cast<uInt8>(myMem.blit_dst),
                             myMem.blit_cnt);
+      else if(evB == FN_BLIT_PATHPOKE)
+        vcs_render_path_poke(myMem.win, myMem.path[myMem.path_sel],
+                             myMem.path_len[myMem.path_sel],
+                             myMem.blit_src, myMem.blit_dst,
+                             myMem.blit_cnt);
+      else if(evB == FN_BLIT_PATHTILE)
+        vcs_render_path_tile(myMem.win, myMem.path[myMem.path_sel],
+                             myMem.path_len[myMem.path_sel],
+                             myMem.blit_src,
+                             static_cast<uInt8>(myMem.blit_dst),
+                             myMem.blit_cnt);
       else
         vcs_blit(myMem.win, myMem.board, myMem.blit_src, myMem.blit_dst,
                  myMem.blit_cnt, evB);

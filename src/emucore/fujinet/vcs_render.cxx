@@ -109,6 +109,184 @@ static void pf_clear(uint8_t *win, unsigned slot, uint8_t mask)
     }
 }
 
+/* Zero both halves' tables, whole, for the kinds the mask names.
+ *
+ * pf_clear() is the board version: one slot, and it stops at FN_BOARD_DIM
+ * because a board is ten rows. A tile grid is taller than that and spans both
+ * halves, so neither bound carries over.
+ *
+ * This clears all FN_PF_KIND_LEN entries and not just the `rows` the caller
+ * is about to compose, so that naming a kind in a PFTILE mask means OWNING
+ * it. A 19-row grid otherwise leaves the twentieth entry holding whatever was
+ * there -- a Battleship board's bottom pair, or power-on noise -- and the row
+ * that inherits it draws it. Six bytes of clearing against a class of bug
+ * that only shows up in the client that comes after this one. */
+static void pf_tile_clear(uint8_t *win, uint8_t mask)
+{
+    unsigned k, half, r, y;
+
+    for (k = 0; k < FN_PF_KINDS; k++) {
+        if (!(mask & (1u << k)))
+            continue;
+        for (half = 0; half < 2u; half++)
+            for (r = 0; r < 3u; r++)
+                for (y = 0; y < FN_PF_KIND_LEN; y++)
+                    *pf_byte(win, half, k, r, y) = 0;
+    }
+}
+
+/* Compose a packed tile bitset into the playfield tables.
+ *
+ * Shared by FN_BLIT_PFTILE and FN_BLIT_PATHTILE, which differ only in where
+ * the bits come from. `bits_len` is how many bytes are actually readable at
+ * `bits`; running off the end stops rather than composing a row out of
+ * whatever follows the source.
+ *
+ * Column x lives in half x / FN_BOARD_DIM, and pf_cell()'s cell number
+ * carries the rest -- it divides by FN_BOARD_DIM to recover (column within
+ * half, row), which is what y * FN_BOARD_DIM + x % FN_BOARD_DIM encodes.
+ * Rows above nine are fine there and only there: pf_byte() reads (slot >> 1),
+ * which is zero for both halves, so the entry index is the row itself. */
+static void pf_tile(uint8_t *win, const uint8_t *bits, unsigned bits_len,
+                    unsigned rows, uint8_t mask)
+{
+    unsigned x, y;
+
+    if (rows > FN_PF_KIND_LEN)
+        rows = FN_PF_KIND_LEN;
+    pf_tile_clear(win, mask);
+    for (y = 0; y < rows; y++) {
+        for (x = 0; x < (unsigned)FN_TILE_W; x++) {
+            unsigned idx = y * (unsigned)FN_TILE_W + x;
+
+            if ((idx >> 3) >= bits_len)
+                return;
+            if (bits[idx >> 3] & (uint8_t)(1u << (idx & 7u)))
+                pf_cell(win, x / FN_BOARD_DIM,
+                        y * FN_BOARD_DIM + (x % FN_BOARD_DIM), mask, 1);
+        }
+    }
+}
+
+/* ---------------- the M.U.L.E. map ----------------
+ *
+ * fuji_mailbox.h has the picture; clients/atari-2600/tools/mulemap.py in
+ * fujinet-multiplayer-mule is the model this must agree with, byte for byte.
+ * Patterns are four playfield pixels, bit 3 the plot's leftmost. */
+#define MM_ROWS     5u
+#define MM_COLS     9u
+#define MM_PLOTS    45u
+#define MM_ENT      16u
+#define MM_PIC0     4u              /* entries 4-8 */
+#define MM_GND0     9u              /* entries 9-11 */
+
+static const uint8_t mm_glyph[4][5] = {
+    { 0xF, 0x8, 0xE, 0x8, 0x8 },   /* F: food */
+    { 0xF, 0x8, 0xE, 0x8, 0xF },   /* E: energy */
+    { 0x7, 0x8, 0x6, 0x1, 0xE },   /* S: smithore */
+    { 0x7, 0x8, 0x8, 0x8, 0x7 },   /* C: crystite */
+};
+static const uint8_t mm_mount[3][3] = {
+    { 0x0, 0x4, 0xE },             /* one peak */
+    { 0x4, 0xE, 0xF },             /* two */
+    { 0xA, 0xF, 0xF },             /* three */
+};
+static const uint8_t mm_store_pic[5] = { 0xF, 0x9, 0xF, 0x9, 0xF };
+static const uint8_t mm_store_gnd[3] = { 0xF, 0xF, 0xF };
+static const uint8_t mm_river_gnd[3] = { 0x4, 0x2, 0x4 };
+
+/* One plot's sixteen entries. */
+static void mm_plot(uint8_t ent[MM_ENT], uint8_t terrain, int8_t owner,
+                    int8_t mule, uint8_t prod, uint8_t flags)
+{
+    const uint8_t *gnd = NULL, *pic = NULL;
+    uint8_t bars[5];
+    unsigned t = terrain & 3u, i;
+
+    memset(ent, 0, MM_ENT);
+    if (owner >= 0 && owner < 4) {
+        ent[owner] = 0xF;                           /* top, outermost first */
+        ent[MM_ENT - 1u - (unsigned)owner] = 0xF;   /* bottom */
+    }
+    if (t == 1u)
+        gnd = mm_river_gnd;
+    else if (t == 3u)
+        gnd = mm_store_gnd;
+    else if (t == 2u) {
+        unsigned n = (terrain >> 2) & 3u;
+        gnd = mm_mount[(n ? n : 1u) - 1u];
+    }
+    if (gnd)
+        for (i = 0; i < 3u; i++)
+            ent[MM_GND0 + i] = gnd[i];
+
+    if ((flags & FN_MULEMAP_PROD) && mule >= 0 && mule < 4) {
+        unsigned n = prod & 15u, a, b;
+
+        if (n > 8u)
+            n = 8u;
+        a = n < 4u ? n : 4u;
+        b = n > 4u ? n - 4u : 0u;
+        bars[0] = bars[2] = bars[4] = 0;
+        bars[1] = (uint8_t)(0xFu & ~(0xFu >> a));
+        bars[3] = (uint8_t)(0xFu & ~(0xFu >> b));
+        pic = bars;
+    } else if (mule >= 0 && mule < 4) {
+        pic = mm_glyph[mule];
+    } else if (t == 3u) {
+        pic = mm_store_pic;
+    }
+    if (pic)
+        for (i = 0; i < 5u; i++)
+            ent[MM_PIC0 + i] = pic[i];
+}
+
+/* Compose the whole map from `map` (MuleMap, `avail` readable bytes) into
+ * the six tables. Too short a source composes nothing. */
+static void mule_map(uint8_t *win, const uint8_t *map, unsigned avail,
+                     uint8_t flags)
+{
+    uint8_t out[6][FN_MULE_ENTRIES];
+    uint8_t ent[MM_ENT];
+    unsigned p, e, b, r;
+
+    if (avail < (unsigned)FN_MULE_MAPLEN)
+        return;
+    memset(out, 0, sizeof out);
+    for (p = 0; p < MM_PLOTS; p++) {
+        unsigned row = p / MM_COLS, col = p % MM_COLS;
+
+        mm_plot(ent, map[p], (int8_t)map[45u + p], (int8_t)map[90u + p],
+                map[180u + p], flags);
+        for (e = 0; e < MM_ENT; e++) {
+            for (b = 0; b < 4u; b++) {
+                unsigned px, half, q, reg;
+                uint8_t bit;
+
+                if (!(ent[e] & (8u >> b)))
+                    continue;
+                px = 2u + 4u * col + b;         /* playfield pixel 0-39 */
+                half = px / 20u;
+                q = px % 20u;
+                if (q < 4u) {
+                    reg = 0;
+                    bit = (uint8_t)(1u << (4u + q));
+                } else if (q < 12u) {
+                    reg = 1;
+                    bit = (uint8_t)(1u << (7u - (q - 4u)));
+                } else {
+                    reg = 2;
+                    bit = (uint8_t)(1u << (q - 12u));
+                }
+                out[3u * half + reg][row * MM_ENT + e] |= bit;
+            }
+        }
+    }
+    for (r = 0; r < 6u; r++)
+        memcpy(win + (FN_T_PLANE(r) - FN_WINDOW_BASE) + FN_MULE_MAP0,
+               out[r], FN_MULE_ENTRIES);
+}
+
 /* Paint the composed board into ten text rows starting at `row`: the row
  * digit, then the ten cells. */
 static void board_rows(uint8_t *win, const uint8_t *board, uint8_t row)
@@ -165,6 +343,39 @@ void vcs_render_path_row(uint8_t *win, const uint8_t *path, uint16_t path_len,
         line[n] = (s < path_len) ? path[s] : (uint8_t)' ';
     }
     vcs_render_row(win, row, line, (uint8_t)n);
+}
+
+/* The block escalation. See FN_BLIT_PATHPOKE in fuji_mailbox.h for why one
+ * byte per blit was not enough for a four-player game.
+ *
+ * Two bounds, and they answer different questions. `path_len` is how much the
+ * client has actually written: past it the buffer still holds whatever the
+ * last string left, and copying that would hand the client stale bytes that
+ * look exactly like its own. The plane bound is the safety one: past
+ * FN_T_BASE + 768 is the reply window and then the status page. */
+void vcs_render_path_poke(uint8_t *win, const uint8_t *path, uint16_t path_len,
+                          uint16_t src, uint16_t dst, uint8_t cnt)
+{
+    const unsigned lim = (unsigned)FN_T_PLANES * FN_T_PLANE_LEN;
+    unsigned n;
+
+    for (n = 0; n < cnt; n++) {
+        unsigned s = src + n, d = dst + n;
+        if (s >= path_len || d >= lim)
+            break;
+        win[(FN_T_BASE - FN_WINDOW_BASE) + d] = path[s];
+    }
+}
+
+/* The same grid out of a path buffer. See FN_BLIT_PATHTILE in
+ * fuji_mailbox.h: a reply is transient and a path buffer is not. */
+void vcs_render_path_tile(uint8_t *win, const uint8_t *path, uint16_t path_len,
+                          uint16_t src, uint8_t mask, uint8_t cnt)
+{
+    if (src >= path_len)
+        return;
+    pf_tile(win, path + src, (unsigned)(path_len - src),
+            cnt ? cnt : (unsigned)FN_TILE_H, (uint8_t)(mask & FN_PFM_ALL));
 }
 
 /* ------------------------------------------------------------------ cards --
@@ -497,6 +708,41 @@ bool vcs_blit(uint8_t *win, uint8_t *board, uint16_t src, uint16_t dst,
         if (cnt < FN_BOARD_CELLS)
             pf_cell(win, dst & 3u, cnt, (uint8_t)(src & FN_PFM_ALL),
                     !(src & FN_PFM_CLEAR));
+        return true;
+    }
+
+    /* The maze grid. dst is a KIND MASK and not a slot: a tile row is the
+     * whole 40-bit playfield, so both halves are written.
+     *
+     * A source offset past the window leaves the tables alone rather than
+     * clearing them. Nothing composed and nothing destroyed is the kinder of
+     * the two failures: the client keeps the picture it had while whoever
+     * wrote the six setup stores finds the one that is wrong. */
+    if (transform == FN_BLIT_PFTILE) {
+        unsigned off = (FN_R_DATA - FN_WINDOW_BASE) + src;
+
+        if (off < FN_WINDOW_SIZE)
+            pf_tile(win, win + off, FN_WINDOW_SIZE - off,
+                    cnt ? cnt : (unsigned)FN_TILE_H,
+                    (uint8_t)(dst & FN_PFM_ALL));
+        return true;
+    }
+
+    if (transform == FN_BLIT_MULEMAP) {
+        unsigned off = (FN_R_DATA - FN_WINDOW_BASE) + src;
+
+        if (off < FN_WINDOW_SIZE)
+            mule_map(win, win + off, FN_WINDOW_SIZE - off, (uint8_t)dst);
+        return true;
+    }
+
+    if (transform == FN_BLIT_PFTCELL) {
+        unsigned x = src & 0x7Fu;
+
+        if (x < (unsigned)FN_TILE_W && cnt < FN_PF_KIND_LEN)
+            pf_cell(win, x / FN_BOARD_DIM,
+                    cnt * FN_BOARD_DIM + (x % FN_BOARD_DIM),
+                    (uint8_t)(dst & FN_PFM_ALL), !(src & FN_PFM_CLEAR));
         return true;
     }
 
