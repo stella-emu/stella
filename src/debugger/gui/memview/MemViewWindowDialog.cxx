@@ -402,7 +402,7 @@ void MemViewWindowDialog::createViews()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MemViewWindowDialog::calcViewSizes(int totalWidth, int totalHeight)
 {
-  const size_t areaCount = myMainAreaScopes.size();
+  const int areaCount = static_cast<int>(myMainAreaScopes.size());
   // Calculate the available size without all the scroll bars, borders and gaps
   const int netWidth = totalWidth - areaCount * MemViewWidget::getHFrameSize(_font, true);
   const int netHeight = totalHeight - MemViewWidget::getVFrameSize(_font, true);

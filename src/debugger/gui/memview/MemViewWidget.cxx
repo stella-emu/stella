@@ -343,13 +343,9 @@ void MemViewWidget::zoom(int level)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MemViewWidget::lockedSingleRow() const
 {
-  // Single row if bank count is not dividable by anything but 1
-  for (uInt16 divider = 2; divider < myParams.myBankCount; divider++)
-  {
-    if ((myParams.myBankCount % divider) == 0)
-      return false;
-  }
-  return true;
+  // This is currently the same as having a single bank because all
+  // other configurations could change myVBanks when resizing the window
+  return lockedSingleBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -728,7 +724,7 @@ void MemViewWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
             assert(false);
 
           // Run
-          const string message = debugger.parser().run(command);
+          message = debugger.parser().run(command);
           if (!wasLocked)
             debugger.unlockSystem();
         }
