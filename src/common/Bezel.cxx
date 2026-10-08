@@ -104,9 +104,7 @@ string Bezel::getName(int& index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Bezel::borderSize(uInt32 x, uInt32 y, uInt32 size, Int32 step) const
 {
-  uInt32* pixels{nullptr};
-  uInt32  pitch{0};
-  mySurface->basePtr(pixels, pitch);
+  auto [pixels, pitch] = mySurface->readBasePtr();
 
   pixels += x + y * pitch;
 

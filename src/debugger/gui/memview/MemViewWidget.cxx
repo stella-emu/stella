@@ -193,7 +193,7 @@ void MemViewWidget::setArea(int x, int y, int w, int h)
 
   myParams.setLayoutParameters(layoutParams, myParams.mySingleRow, myParams.mySeparators);
 
-  // mySurfacePosX/Y need dialog().surface(), not valid yet here; set in drawWidget()
+  // mySurfacePosX/Y need dialog().surface(), not valid yet here; set in render()
   myParams.layoutRecalc();
 
   reallocateLayerSurfaces();
@@ -822,8 +822,8 @@ void MemViewWidget::handleMouseLeft()
   if (!isSetup())
     return;
   myMouseDragging = false;
-  myMouseMarker.set(false);
-  setDirty(false);
+  if(myMouseMarker.set(false))
+    requestRender();
   Widget::handleMouseLeft();
 }
 
@@ -889,14 +889,11 @@ void MemViewWidget::handleMouseMoved(int x, int y)
     int yFracPixels = 0;
     myParams.getPosition(x - myParams.myLeftBorderWidth, y - myParams.myTopBorderHeight,
       &byteOffset, &xFracPixels, &yFracPixels);
-    myMouseMarker.set(true, byteOffset);
-    setDirty(false);
+    if(myMouseMarker.set(true, byteOffset))
+      requestRender();
   }
-  else
-  {
-    myMouseMarker.set(false);
-    setDirty(false);
-  }
+  else if(myMouseMarker.set(false))
+    requestRender();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -985,7 +982,7 @@ void MemViewWidget::heatmapsToFields(bool force)
     }
   }
 
-  setDirty(false);
+  myAccessIsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1047,37 +1044,40 @@ void MemViewWidget::drawWidget(bool hilite)
     return;
   }
 
-  const Common::Rect& s_dst = s.dstRect();
-  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
-  myParams.mySurfacePosX = s_dst.x() + (_x + BORDER) * dpi;
-  myParams.mySurfacePosY = s_dst.y() + (_y + BORDER) * dpi;
+  // Normally done by the dialog's tick(), which doesn't run while another
+  // dialog is on top of it
+  drawLayers();
+}
 
-  // Let the layers draw again if necessary
-  if (myDataIsDirty) {
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MemViewWidget::drawLayers()
+{
+  if(!isSetup() || (!myDataIsDirty && !myAccessIsDirty))
+    return false;
+
+  if(myDataIsDirty)
     myDataLayer.draw();
-  }
-  if (isDirty())
+  if(myAccessIsDirty)
   {
     myReadLayer.draw();
     myWriteLayer.draw();
     myPcLayer.draw();
   }
+  myDataIsDirty = myAccessIsDirty = false;
 
-  clearEverythingDirty();
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MemViewWidget::setDirtyData()
 {
-  myDataIsDirty = true;
-  setDirty(false);
+  myDataIsDirty = myAccessIsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MemViewWidget::clearEverythingDirty()
+void MemViewWidget::requestRender() const
 {
-  clearDirty();
-  myDataIsDirty = false;
+  FrameBuffer::setPendingRender(dialog().window());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1086,6 +1086,12 @@ void MemViewWidget::render()
   if (!isSetup())
     return;
 
+  // The view moves on a resize, so its origin is read at render time
+  const Common::Rect& s_dst = dialog().surface().dstRect();
+  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
+  myParams.mySurfacePosX = s_dst.x() + (getAbsX() + BORDER) * dpi;
+  myParams.mySurfacePosY = s_dst.y() + (getAbsY() + BORDER) * dpi;
+
   // Render layers bottom to top
   myDataLayer.render();
   myReadLayer.render();
@@ -1093,17 +1099,6 @@ void MemViewWidget::render()
   myPcLayer.render();
   myPcMarker.render();
   myMouseMarker.render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MemViewWidget::setDirty(bool renderGui)
-{
-  if (renderGui)
-    setDirty();
-  else
-    // Don't tell parents about my dirtyness
-    // to prevent the GUI redraw everything
-    _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1153,7 +1148,7 @@ void MemViewWidget::updateRest()
         const int byteOffset = myParams.getRearrangedOffset(offset);
 
         if (myPcMarker.set(true, byteOffset))
-          setDirty(true);
+          requestRender();
 
         return;
       }
@@ -1162,7 +1157,7 @@ void MemViewWidget::updateRest()
 
   // PC marker not active
   if (myPcMarker.set(false))
-    setDirty(stopped);
+    requestRender();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

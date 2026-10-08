@@ -919,17 +919,14 @@ void MemViewWindowDialog::tick()
   // Update misc stuff
   for (const auto &[scope, view] : myViews)
     view->updateRest();
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool MemViewWindowDialog::needsRedraw()
-{
-  const bool dirtyGui = isDirty() || isChainDirty();
-  bool dirtyViews = false;
+  // The views draw into their own surfaces, so a change there needs only a
+  // render of this window, leaving the dialog surface untouched
+  bool drawn = false;
   for (const auto &[scope, view] : myViews)
-    dirtyViews = dirtyViews || view->isDirty();
-
-  return dirtyGui || dirtyViews;
+    drawn = view->drawLayers() || drawn;
+  if(drawn)
+    FrameBuffer::setPendingRender(window());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -86,7 +86,7 @@ class PNGLibrary
              more detailed error message.
     */
     static void saveImage(string_view filename, const Common::Rect& srcRect,
-                          uInt32* base, const uInt32& pitch,
+                          const uInt32* base, uInt32 pitch,
                           const VariantList& metaData = VariantList{});
 
     /**

@@ -124,8 +124,12 @@ class ToolTip
     bool myTipShown{false};
     shared_ptr<FBSurface> mySurface;
     Common::Rect myCurrentRect;
-    // When activated, pendingRender will only be set when really needed:
-    bool mySelectiveRender{false};
+    // What the surface was last drawn with; show() draws it again only when
+    // the text or the frame size changes
+    string myTipText;
+    uInt32 myTipLines{0};
+    uInt32 myTipTextWidth{0};
+    Common::Size myTipSize;
 
   private:
     // Following constructors and assignment operators not supported

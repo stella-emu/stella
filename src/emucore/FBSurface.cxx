@@ -34,6 +34,7 @@ void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
   uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
 
   *buffer = myPalette[color];
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,6 +111,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 
   while(x++ <= x2)
     *buffer++ = ink;
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,6 +125,7 @@ void FBSurface::hLineRgb(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 
   while(x++ <= x2)
     *buffer++ = color;
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,6 +142,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
     *buffer = ink;
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,6 +196,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     mask += glyph.stride;
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 #endif
 }
 
@@ -219,6 +224,7 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
 
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 #endif
 }
 
@@ -265,6 +271,7 @@ void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
     }
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,6 +285,7 @@ void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 nump
 
   for(uInt32 i = 0; i < numpixels; ++i)
     *buffer++ = data[i];
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

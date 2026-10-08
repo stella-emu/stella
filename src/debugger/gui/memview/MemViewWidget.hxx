@@ -86,9 +86,6 @@ class MemViewWidget : public Widget, public CommandSender
                   string_view typeText, uInt32 baseAddress);
     ~MemViewWidget() override = default;
 
-    using Widget::setDirty;
-    void setDirty(bool renderGui);
-
     /**
       Derived handle methods
     */
@@ -201,6 +198,15 @@ class MemViewWidget : public Widget, public CommandSender
     void render();
 
     /**
+      Redraws the layers whose content changed since they were last drawn.
+      They are separate surfaces, so the caller only has to ask for a render
+      of the window, not a redraw of the dialog.
+
+      @return  True if any layer was redrawn
+    */
+    bool drawLayers();
+
+    /**
       Calculates the needed size for the data to be shown.
 
       @param w                  Available width in pixels (net dimension without scroll bar and border)
@@ -246,7 +252,7 @@ class MemViewWidget : public Widget, public CommandSender
     bool hasToolTip() const override { return isSetup() && !myMouseDragging; }
 
     /**
-      Draws the content of the widget if internal states indicate a redraw is necessary.
+      Draws the frame of the widget, and any layers still to be redrawn.
       Does not render to the backend.
     */
     void drawWidget(bool hilite) override;
@@ -280,7 +286,9 @@ class MemViewWidget : public Widget, public CommandSender
 
     string myTypeText;
 
-    int myDataIsDirty{false};
+    // The data layer and the access (heatmap) layers need redrawing
+    bool myDataIsDirty{false};
+    bool myAccessIsDirty{false};
 
     bool myMouseDragging{false};
     int myClickX{0};
@@ -324,13 +332,14 @@ class MemViewWidget : public Widget, public CommandSender
 
     /**
       Mark only our data bytes to be dirty and needs to be redrawn.
+      Mark all layers to be redrawn.
     */
     void setDirtyData();
 
     /**
-      Clear the normal dirty flag as well as our dirty data flag
+      Ask for this widget's window to be rendered, e.g. after a marker moved.
     */
-    void clearEverythingDirty();
+    void requestRender() const;
 
     /**
       Update our byte marker frame

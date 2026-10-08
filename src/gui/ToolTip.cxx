@@ -54,6 +54,8 @@ void ToolTip::setFont(const GUI::Font& font)
   // unallocate
   FrameBuffer::deallocateSurface(myDialog.window(), mySurface);
   mySurface = nullptr;
+  // The new surface has to be drawn, even for the same text
+  myTipText.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,8 +114,6 @@ void ToolTip::update(const Widget* widget, const Common::Point& pos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::refresh(const Widget* widget)
 {
-  // From now on, render optimization is active
-  mySelectiveRender = true;
   if (myTipShown && (widget == myTipWidget) && (widget == myFocusWidget))
     update(myTipWidget, myMousePos);
 }
@@ -152,27 +152,39 @@ void ToolTip::show(string_view tip)
 
   const uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2,
                                    U32(myFont->getStringWidth(tip)));
+  // Draws the text and answers the number of lines drawn
+  const auto drawText = [&]() {
+    surface()->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
+    return std::min(MAX_ROWS,
+        U32(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
+                                  maxWidth, myHeight - myTextYOfs * 2,
+                                  kTextColor)));
+  };
 
-  surface()->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
-  const int lines = std::min(MAX_ROWS,
-      U32(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
-                                                maxWidth, myHeight - myTextYOfs * 2,
-                                                kTextColor)));
-  // Calculate maximum width of drawn string lines
-  uInt32 width = 0;
-  string inStr{tip};
-  for(int i = 0; i < lines; ++i)
+  // A tip that is already shown is drawn (and uploaded) again only when its
+  // text or its frame size changes
+  const bool newText = !myTipShown || tip != myTipText;
+  if(newText)
   {
-    string leftStr, rightStr;
+    myTipText = tip;
+    myTipLines = drawText();
 
-    FBSurface::splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
-    width = std::max(width, U32(myFont->getStringWidth(leftStr)));
-    inStr = rightStr;
+    // Calculate maximum width of drawn string lines
+    myTipTextWidth = 0;
+    string inStr{tip};
+    for(uInt32 i = 0; i < myTipLines; ++i)
+    {
+      string leftStr, rightStr;
+
+      FBSurface::splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
+      myTipTextWidth = std::max(myTipTextWidth, U32(myFont->getStringWidth(leftStr)));
+      inStr = rightStr;
+    }
   }
-  width += myTextXOfs * 2;
+  uInt32 width = myTipTextWidth + myTextXOfs * 2;
 
   // Calculate and set surface size and position
-  const uInt32 height = std::min(myHeight, myFont->getFontHeight() * lines + myTextYOfs * 2);
+  const uInt32 height = std::min(myHeight, myFont->getFontHeight() * myTipLines + myTextYOfs * 2);
   constexpr uInt32 V_GAP = 1;
   constexpr uInt32 H_CURSOR = 18;
   // Note: The rects include HiDPI scaling, which can change while we live
@@ -196,17 +208,20 @@ void ToolTip::show(string_view tip)
   surface()->setSrcSize(width, height);
   surface()->setDstSize(width * scale, height * scale);
   surface()->setDstPos(x * scale, y * scale);
-  surface()->frameRect(0, 0, width, height, kColor);
 
-  const bool render =
-    !mySelectiveRender
-    ||
-    !myTipShown
-    ||
-    (myCurrentRect != surface()->dstRect());
+  const Common::Size size(width, height);
+  const bool redraw = newText || size != myTipSize;
+  if(redraw)
+  {
+    // The old frame would show inside a larger one
+    if(!newText)
+      drawText();
+    surface()->frameRect(0, 0, width, height, kColor);
+    myTipSize = size;
+  }
 
   myTipShown = true;
-  if (render)
+  if(redraw || myCurrentRect != surface()->dstRect())
     setPendingRender();
 }
 
