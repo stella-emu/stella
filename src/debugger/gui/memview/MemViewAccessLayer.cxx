@@ -70,6 +70,7 @@ void MemViewAccessLayer::updateAccessData(Device::AccessCounter* accessData,
 {
   if (accessData == nullptr)
     return;
+
   // Compare new data with last one and update our heatmap accordingly
   if (myFirstRun || mySkipNextUpdate)
   {
@@ -191,7 +192,6 @@ void MemViewAccessLayer::compareAccessData(const Device::AccessCounter* newData,
         else
           heatMap[dst] -= currentDecrement;
       }
-
     }
     else
     {

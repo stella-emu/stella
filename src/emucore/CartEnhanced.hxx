@@ -106,6 +106,13 @@ class CartridgeEnhanced : public Cartridge
     uInt16 ramBankCount() const override;
 
     /**
+      Query the internal offset of the RAM 'banks' in relation to the total
+      RAM and ROM banks. Sometimes the RAM banks will be internally enumerated
+      after the ROM ones.
+    */
+    uInt16 ramBankOffset() const override { return romBankCount(); }
+
+    /**
       Query whether the current PC allows code execution.
 
       @return  true, if code execution is allowed
@@ -212,6 +219,15 @@ class CartridgeEnhanced : public Cartridge
     }
 
   #ifdef DEBUGGER_SUPPORT
+    /**
+      Determine a RAM's bank origin
+
+      @param bank  The RAM bank to query
+      @param PC    The current PC
+      @return  The origin of the bank
+    */
+    virtual Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const;
+
     /**
       Get RAM contents for direct external access
 

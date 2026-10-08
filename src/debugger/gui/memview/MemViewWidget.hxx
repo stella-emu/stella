@@ -24,6 +24,8 @@ class ScrollBarWidget;
 class ScrollBarHWidget;
 class ContextMenu;
 
+#include <tuple>
+#include "Variant.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "MemViewParams.hxx"
@@ -45,6 +47,8 @@ class MemViewWidget : public Widget, public CommandSender
     static constexpr std::string_view TEXT_UNSUPPORTED = "Unsupported ROM type";
     static constexpr int DEFAULT_BANK_SIZE = 4096;
     using ColorTab = std::array<uInt32, 256>;
+    static constexpr uInt32 QUERY_ROM_BANK_ORIGIN = 1U << 30;
+    static constexpr uInt32 QUERY_RAM_BANK_ORIGIN = 1U << 31;
 
     // Fixed floor for a non-zoomable region's window-minimum size
     static constexpr int RAM_MIN_ZOOM = 3;
@@ -62,8 +66,7 @@ class MemViewWidget : public Widget, public CommandSender
       @param font               Font to use
       @param bankSize           Size of one bank to represent (bytes)
       @param bankCount          Number of banks to represent (bytes)
-      @param bankHeight         Initial bank height to use (in bytes) - may change later
-      @param baseAddress        Base address of the data within the address range of the system
+      @param initialBankHeight  Initial bank height to use (in bytes) or zero if variable
       @param isZoomable         True when this view should be zoomable (also will have scrollbars)
       @param readColorTab       The 256 entry table with all the heatmap colors for read access data
       @param writeColorTab      The 256 entry table with all the heatmap colors for write access data
@@ -71,17 +74,16 @@ class MemViewWidget : public Widget, public CommandSender
       @param dataDefaultColor   Default color for data bytes (not faded)
       @param dataFadedColor     Color to use when byte fade is active
       @param typeText           Short description of memory type to be shown in tool tip
-      @param mirrorAddrOffset   Offset for a mirrored address (if any, else 0)
+      @param baseAddress        Base address of the data within the address range of the system
     */
     MemViewWidget(GuiObject* boss, const GUI::Font& font,
-                  uInt16 bankSize, uInt16 bankCount, uInt16 bankHeight,
-                  uInt16 baseAddress,
+                  uInt16 bankSize, uInt16 bankCount, uInt16 initialBankHeight,
                   bool isZoomable,
                   const MemViewWidget::ColorTab& readColorTab,
                   const MemViewWidget::ColorTab& writeColorTab,
                   const MemViewWidget::ColorTab& pcColorTab,
                   uInt32 dataDefaultColor, uInt32 dataFadedColor,
-                  string_view typeText, int mirrorAddrOffset = 0);
+                  string_view typeText, uInt32 baseAddress);
     ~MemViewWidget() override = default;
 
     using Widget::setDirty;
@@ -141,9 +143,8 @@ class MemViewWidget : public Widget, public CommandSender
 
       @param singleRow    Only one row of banks
       @param separators   Show separators between the banks or not
-      @param bankHeight   Height of a bank in bytes
     */
-    void setLayoutParameters(bool singleRow, bool separators, int bankHeight);
+    void setLayoutParameters(bool singleRow, bool separators);
 
     /**
       Set new visual parameters
@@ -171,19 +172,60 @@ class MemViewWidget : public Widget, public CommandSender
     void clearHeatmaps();
 
     /**
-      Read if only single row is possible with this bank size
+      Read if only single row is possible with this bank configuration
     */
     bool lockedSingleRow() const;
 
     /**
+      Read if it's only a single bank
+    */
+    bool lockedSingleBank() const;
+
+    /**
+      Returns if the widget is displayable regarding bank sizes and count
+    */
+    bool isDisplayable() const {
+      return myIsDisplayable;
+    }
+
+    /**
       Returns if the widget is fully setup and functional after construction
     */
-    bool isSetup() const { return myIsSetup; }
+    bool isSetup() const {
+      return myIsDisplayable && ((myParams.mySurfaceWidth * myParams.mySurfaceHeight) != 0);
+    }
 
     /**
       Renders all layers to the backend.
     */
     void render();
+
+    /**
+      Calculates the needed size for the data to be shown.
+
+      @param w                  Available width in pixels (net dimension without scroll bar and border)
+      @param h                  Available height in pixels (net dimension without scroll bar and border)
+      @param isZoomable         View should be zoomable or has fixed size
+      @param bankSize           Size of one bank in bytes
+      @param bankCount          Number of banks
+      @param initialBankHeight  Bank height to use initially or 0 to automatically find best height
+      @param success            Flag returning true on success
+      @param singleRow          Flag for calculating as a single row view (should be false per default!)
+      @param separators         Flag for calculating with the use of separators (should be true per default!)
+
+      @return Dimensions of determined display size and bank layout parameters
+    */
+    static std::tuple<Common::Size, MemViewParams::LayoutParams> calcNeededSize(
+      int w, int h, bool isZoomable, uInt16 bankSize, uInt16 bankCount, uInt16 initialBankHeight,
+      bool& success, bool singleRow = false, bool separators = true
+    );
+
+    static constexpr int getHBorderSize() { return 2 * BORDER; };
+    static constexpr int getVBorderSize() { return 2 * BORDER; };
+
+    // Sum of border and scroll bars dimensions around the net view area
+    static int getHFrameSize(const GUI::Font& font, bool isZoomable);
+    static int getVFrameSize(const GUI::Font& font, bool isZoomable);
 
     void loadConfig() override;
     void setArea(int x, int y, int w, int h) override;
@@ -215,11 +257,13 @@ class MemViewWidget : public Widget, public CommandSender
 
     static constexpr int BORDER = 1;
 
+    uInt16 myInitialBankHeight;
     bool myIsZoomable;
     // Decided before myParams is built, so the layers never size their
     // buffers for an unsupported geometry
-    bool myIsSetup;
-    static bool isDisplayable(uInt16 bankSize, uInt16 bankCount, uInt16 bankHeight);
+    bool myIsDisplayable;
+    static bool isDisplayable(uInt16 bankSize, uInt16 bankCount,
+      uInt16 bankHeight, bool fixedBankHeight);
 
     // Ceiling naturalSize() searches within for a non-zoomable region, in
     // logical UI pixels; set by the dialog via setMaxCandidateSize()
@@ -235,7 +279,6 @@ class MemViewWidget : public Widget, public CommandSender
     MemViewMarkerLayer myMouseMarker;
 
     string myTypeText;
-    int myMirrorAddrOffset;
 
     int myDataIsDirty{false};
 
@@ -268,6 +311,16 @@ class MemViewWidget : public Widget, public CommandSender
       Checks if an internal position is within our shown data area.
     */
     bool intPosInData(int x, int y) const;
+
+    /**
+      Store the selected bank height for the current bank size to the settings
+    */
+    void writeBankHeightConfig() const;
+
+    /**
+      Get the items for the context menu with the current bankHeight selected
+    */
+    VariantList getContextMenuItems() const;
 
     /**
       Mark only our data bytes to be dirty and needs to be redrawn.
@@ -317,23 +370,24 @@ class MemViewWidget : public Widget, public CommandSender
       The best solution is determined by the highest zoom level or the best matching
       aspect ratio of the data block to the available screen space.
 
-      @param availableWidth Width of the area to fit into, in pixels
-      @param availableHeight Height of the area to fit into, in pixels
-      @param bankWidth      Width of one bank in bytes
-      @param bankHeight     Height of one bank in bytes
-      @param separators     Show separator lines inbetween the banks
+      @param bankSize       Size of one bank in bytes
+      @param bankCount      Number of banks
+      @param innerSurfaceW  Available width in pixels
+      @param innerSurfaceH  Available height in pixels
+      @param isZoomable     View should be zoomable or has fixed size
+      @param bankHeight     Wanted bank height in bytes or 0 for auto-determine
       @param singleRow      Parameter to put in preference for single bank row
                             (But could be overwritten and returned differently)
-      @param hBanks         Reference to get back the number of horizontal banks
-      @param vBanks         Reference to get back the number of vertical banks
-      @param minZoomLevel   Reference to get back the minimum zoom level
+      @param separators     Show separator lines inbetween the banks
 
-      @return Dimensions of determined display size
+      @return Dimensions of determined display size and bank layout parameters
     */
-    Common::Size findBestLayout(int availableWidth, int availableHeight,
-                                int bankWidth, int bankHeight, bool separators,
-                                bool& singleRow, int& hBanks, int& vBanks,
-                                int& minZoomLevel) const;
+    static std::tuple<Common::Size, MemViewParams::LayoutParams> findBestLayout(
+      const uInt16& bankSize, const uInt16& bankCount,
+      const int& innerSurfaceW, const int& innerSurfaceH,
+      const bool& isZoomable, uInt16 bankHeight,
+      bool singleRow, bool separators
+    );
 
     /**
       Copies the heatmap data of all layers to the display fields in one go.

@@ -60,13 +60,13 @@ class MemViewWindowDialog : public Dialog
     static constexpr int RAM_SIZE = 128;
     static constexpr uInt16 RAM_BASE = 0x80;
     static constexpr uInt16 ROM_BASE = 0x1000;
+    static constexpr int MIN_ROM_WIDTH = 250;
     static constexpr int MAX_BANK_HEIGHT = 512;
     static constexpr double ROM_ALPHA_MAX = 196.0;
     static constexpr double RAM_ALPHA_MAX = 128.0;
 
     static constexpr std::string_view TEXT_RAM = "RAM";
     static constexpr std::string_view TEXT_ROM = "ROM";
-    static constexpr std::string_view TEXT_BANK_HEIGHT = "Bank height:";
     static constexpr std::string_view TEXT_SINGLE_ROW = "Single row";
     static constexpr std::string_view TEXT_SEPARATORS = "Separators";
     static constexpr std::string_view TEXT_INVERTED = "Inverted";
@@ -104,7 +104,6 @@ class MemViewWindowDialog : public Dialog
     // Command ids dispatched in handleCommand()
     struct Cmd {
       static constexpr GuiCmd::Code
-        BankHeightChanged = GuiCmd::of("MemViewWindowDialog.BankHeightChanged"),
         SingleRowChanged  = GuiCmd::of("MemViewWindowDialog.SingleRowChanged"),
         SeparatorsChanged = GuiCmd::of("MemViewWindowDialog.SeparatorsChanged"),
         InvertedChanged   = GuiCmd::of("MemViewWindowDialog.InvertedChanged"),
@@ -117,6 +116,29 @@ class MemViewWindowDialog : public Dialog
         ClearPressed      = GuiCmd::of("MemViewWindowDialog.ClearPressed");
     };
 
+    struct MainAreaScope {
+      MainAreaScope() = default;
+      MainAreaScope(uInt16 bankSize, uInt16 bankCount, uInt16 bankHeight, int width = 0)
+        : myBytes{U32(bankSize * bankCount)},
+        myBankSize{bankSize}, myBankCount{bankCount}, myBankHeight{bankHeight},
+        myWidth{width} { }
+      uInt32 myBytes;
+      uInt16 myBankSize;
+      uInt16 myBankCount;
+      uInt16 myBankHeight;
+      int myWidth;
+      Common::Size mySize{};
+    };
+
+    // Evaluate the contents of the present cartridge and start setup of needed resources
+    void cartEvaluation();
+    // Create the views of the main area
+    void createViews();
+    // Calculate the sizes of the main area views (big RAM and ROM)
+    void calcViewSizes(int totalWidth, int totalHeight);
+    // Setup initial data for the main area views
+    void updateViews();
+
     // Apply the visual checkboxes to all views, and the layout settings to
     // the zoomable ones; shared by handleCommand() and loadConfig()
     void updateVisualParameters();
@@ -128,9 +150,13 @@ class MemViewWindowDialog : public Dialog
 
     void updateAccessData(uInt32 cyclesDiff = 0, int elapsedFrames = 0);
 
+    // Read the pre-configured bank height for a specific bank size
+    uInt16 readBankHeightConfig(uInt16 bankSize) const;
+
   private:
     // loadConfig() also runs on every expose; the persisted-settings read runs once
     bool mySettingsLoaded{false};
+    bool myFirstLayout{true};
 
     uInt64 myLastCycles{0};
     uInt32 myLastFrames{0};
@@ -138,6 +164,10 @@ class MemViewWindowDialog : public Dialog
 
     // Settled by the last layout(); see minSize() above
     Common::Size myMinSize;
+
+    // Map for all data scopes to be shown on the main area
+    // (note that big (>256 Bytes) cart RAM is Cartridge::ImageScope::NONE)
+    std::map<Cartridge::ImageScope, MainAreaScope> myMainAreaScopes;
 
     MemViewWidget* myRamView{nullptr};
     MemViewWidget* myCartRamView{nullptr};
@@ -148,12 +178,6 @@ class MemViewWindowDialog : public Dialog
     LabelWidget*   myCartRamLbl{nullptr};
     LabelWidget*   myRomLbl{nullptr};
 
-    // Byte count of each view sharing the area right of the left column; the
-    // layout splits that area in the same proportion
-    std::map<const MemViewWidget*, uInt32> myMainAreaBytes;
-
-    LabelWidget*    myBankHeightLbl{nullptr};
-    PopUpWidget*    myBankHeight{nullptr};
     CheckboxWidget* mySingleRow{nullptr};
     CheckboxWidget* mySeparators{nullptr};
     CheckboxWidget* myInverted{nullptr};
@@ -173,11 +197,11 @@ class MemViewWindowDialog : public Dialog
 
     MemViewWidget::ColorTab myRamReadColorTab{};  // ARGB
     MemViewWidget::ColorTab myRamWriteColorTab{}; // ARGB
-    MemViewWidget::ColorTab myRamPcColorTab{};  // ARGB
+    MemViewWidget::ColorTab myRamPcColorTab{};    // ARGB
 
     MemViewWidget::ColorTab myRomReadColorTab{};  // ARGB
-    MemViewWidget::ColorTab& myRomWriteColorTab{myRomReadColorTab}; // currently not needed
-    MemViewWidget::ColorTab myRomPcColorTab{};  // ARGB
+    MemViewWidget::ColorTab myRomWriteColorTab{}; // ARGB
+    MemViewWidget::ColorTab myRomPcColorTab{};    // ARGB
 
   private:
     // Following constructors and assignment operators not supported
