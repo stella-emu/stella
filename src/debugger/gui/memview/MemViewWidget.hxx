@@ -331,7 +331,6 @@ class MemViewWidget : public Widget, public CommandSender
     VariantList getContextMenuItems() const;
 
     /**
-      Mark only our data bytes to be dirty and needs to be redrawn.
       Mark all layers to be redrawn.
     */
     void setDirtyData();
