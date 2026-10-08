@@ -36,6 +36,18 @@ class Settings;
   }  // namespace GUI
 #endif
 
+namespace Common
+{
+  struct RwAddress {
+    RwAddress() : valid{false}, read{0}, write{0} { };
+    RwAddress(bool v, uInt32 a) : valid{v}, read{a}, write{a} { }
+    RwAddress(bool v, uInt32 r, uInt32 w) : valid{v}, read{r}, write{w} { }
+    bool valid;
+    uInt32 read;
+    uInt32 write;
+  };
+} // namespace Common
+
 /**
   A cartridge is a device which contains the machine code for a
   game and handles any bankswitching performed by the cartridge.
@@ -281,6 +293,15 @@ class Cartridge : public Device
     virtual uInt32 getRomCounterOffset(ImageScope scope = ImageScope::FULL) const;
 
     /**
+      Returns the internal offset position where a specific ImageScope part start at
+      within the full myImage range.
+
+      @param  ImageScope identifier which part is meant (defaults to ImageScope::FULL)
+      @return  The offset in bytes
+    */
+    uInt32 getRomScopeOffset(ImageScope scope = ImageScope::FULL) const;
+
+    /**
       Get back the full access counters for cartridge RAM code reads
       (reads of the program counter)
 
@@ -319,12 +340,15 @@ class Cartridge : public Device
     static constexpr uInt32 getRamCounterOffset() { return 0; }
 
     /**
-      Returns the offset difference between read and write access addresses
-      of the internal cartridge RAM.
+      Determine a RAM bank's origin
 
-      @return Offset in bytes
+      @param bank  The RAM bank to query
+      @param PC    The current PC
+      @return  The origin of the bank distinguished in read/write addresses and a flag
+               if valid (when currently mapped)
     */
-    int getRamMirrorAddrDiff() const;
+    virtual Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const
+    { return Common::RwAddress(); }
 
     /**
       Get cartridge RAM contents for direct external access
@@ -332,15 +356,6 @@ class Cartridge : public Device
       @return  Mutable span over RAM array.
     */
     virtual ByteSpan getRAM() { return {}; }
-
-    /**
-      Returns the internal offset positions where specific ImageScope parts start at 
-      within the full myImage range.
-
-      @param  ImageScope identifier which part is meant (defaults to ImageScope::FULL)
-      @return  The offset in bytes
-    */
-    uInt32 getRomScopeOffset(ImageScope scope = ImageScope::FULL) const;
   #endif
 
   public:
@@ -400,6 +415,13 @@ class Cartridge : public Device
       cart will report having only one 'virtual' bank.
     */
     virtual uInt16 romBankCount() const { return 1; }
+
+    /**
+      Query the internal offset of the RAM 'banks' in relation to the total
+      RAM and ROM banks. Sometimes the RAM banks will be internally enumerated
+      after the ROM ones.
+    */
+    virtual uInt16 ramBankOffset() const { return 0; }
 
     /**
       Query the number of RAM 'banks' supported by the cartridge.  Note that

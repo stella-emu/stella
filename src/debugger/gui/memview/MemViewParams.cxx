@@ -17,12 +17,13 @@
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "MemViewWidget.hxx"
 #include "MemViewParams.hxx"
 #include <cmath>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MemViewParams::MemViewParams(uInt16 bankSize, uInt16 bankCount, uInt16 baseAddress, Cartridge& cartridge,
-  int posX, int posY
+MemViewParams::MemViewParams(uInt16 bankSize, uInt16 bankCount, uInt32 baseAddress,
+  Cartridge& cartridge, int posX, int posY
 )
   : myBankSize{bankSize},
     myBankCount{bankCount},
@@ -62,15 +63,16 @@ bool MemViewParams::setAccessDataParams(uInt32 size, uInt32 offset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MemViewParams::setLayoutParameters(int bankWidth, int bankHeight,
-  int hBanks, int vBanks, int minZoom, bool separators)
+void MemViewParams::setLayoutParameters(LayoutParams& params,
+  bool singleRow, bool separators)
 {
   // Take over
-  myBankWidth = bankWidth;
-  myBankHeight = bankHeight;
-  myHBanks = hBanks;
-  myVBanks = vBanks;
-  myMinZoom = myZoomLevel = minZoom;
+  myBankWidth = params.bankWidth;
+  myBankHeight = params.bankHeight;
+  myHBanks = params.hBanks;
+  myVBanks = params.vBanks;
+  myMinZoom = myZoomLevel = params.minZoomLevel;
+  mySingleRow = singleRow;
   mySeparators = separators;
 
   // Precalculate often used values
@@ -375,6 +377,7 @@ unsigned int MemViewParams::getLinearOffset(unsigned int byteOffset) const
     ((byteOffset % myBankRowSize) / myTotalBytesX);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unsigned int MemViewParams::getRearrangedOffset(unsigned int offset) const
 {
   const int rowOffset = offset % myBankRowSize;
@@ -390,7 +393,7 @@ unsigned int MemViewParams::getRearrangedOffset(unsigned int offset) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 MemViewParams::getAddress(int x, int y, int* bank, unsigned int* offset) const
+Common::RwAddress MemViewParams::getAddress(int x, int y, int* bank, unsigned int* offset) const
 {
   // Limit to positions within the shown data (if mouse is over border)
   x = limitPosX(x);
@@ -407,8 +410,33 @@ uInt16 MemViewParams::getAddress(int x, int y, int* bank, unsigned int* offset) 
   if (bank != nullptr)
     *bank = b;
 
-  if (U32(myBaseAddress) & 0x1000U)
-    return (U32(myBaseAddress) & 0xFFFU) + myCartridge.bankOrigin(b) + (linOffset % myBankSize);
+  const uInt32 bankOffs = linOffset % myBankSize;
+
+  Common::RwAddress address = getBankOrigin(b);
+  address.read += bankOffs;
+  address.write += bankOffs;
+
+  return address;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::RwAddress MemViewParams::getBankOrigin(int bank, uInt16 PC) const
+{
+  if (myBaseAddress & MemViewWidget::QUERY_ROM_BANK_ORIGIN)
+  {
+    return Common::RwAddress(true, (myBaseAddress & 0xFFF) + myCartridge.bankOrigin(bank, PC));
+  }
+  else if (myBaseAddress & MemViewWidget::QUERY_RAM_BANK_ORIGIN)
+  {
+    Common::RwAddress ramBankOrigin = myCartridge.ramBankOrigin(bank, PC);
+    return Common::RwAddress(
+      ramBankOrigin.valid,
+      (myBaseAddress & 0xFFF) + ramBankOrigin.read,
+      (myBaseAddress & 0xFFF) + ramBankOrigin.write
+    );
+  }
   else
-    return myBaseAddress + linOffset;
+  {
+    return Common::RwAddress(true, myBaseAddress);
+  }
 }

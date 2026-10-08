@@ -252,7 +252,9 @@ Settings::Settings()
   setPermanent("memview.res", MemViewWindow::defaultSize());
   setPermanent("memview.pos", Common::Point(50, 50));
   setPermanent("memview.display", 0);
-  setPermanent("memview.bankheight", "256");
+  setPermanent("memview.bh1k", "0");
+  setPermanent("memview.bh2k", "0");
+  setPermanent("memview.bh4k", "0");
   setPermanent("memview.singlerow", "false");
   setPermanent("memview.inverted", "false");
   setPermanent("memview.bytefade", "true");
@@ -794,8 +796,10 @@ void Settings::usage()
     << "  -memview.res        <WxH>      The resolution to use in memory view window\n"
     << "  -memview.pos        <XxY>      The default position of the memory view window\n"
     << "  -memview.display    <number>   The default display ID to show the memory window\n"
-    << "  -memview.bankheight <number>   Preferred bank height in bytes\n"
-    << "                                  (64, 128, 256 or 512)\n"
+    << "  -memview.bh1k       <value>    Preferred bank height in bytes for 1K banks\n"
+    << "  -memview.bh2k       <value>    Preferred bank height in bytes for 2K banks\n"
+    << "  -memview.bh4k       <value>    Preferred bank height in bytes for 4K banks\n"
+    << "                                  (0 = auto-determined, 64, 128, 256 or 512)\n"
     << "  -memview.singlerow  <0|1>      Show all banks of a ROM in one single row\n"
     << "  -memview.separators <0|1>      Have separator lines between the banks\n"
     << "  -memview.inverted   <0|1>      Invert the byte data for display\n"

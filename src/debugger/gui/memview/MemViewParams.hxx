@@ -18,8 +18,7 @@
 #ifndef MEMVIEW_PARAMS_HXX
 #define MEMVIEW_PARAMS_HXX
 
-class Cartridge;
-
+#include "Cart.hxx"
 #include "bspf.hxx"
 #include <vector>
 
@@ -38,6 +37,15 @@ class MemViewParams
     static constexpr int SEPARATOR_WIDTH = 2;
     static constexpr int SEPARATOR_HEIGHT = 2;
 
+    struct LayoutParams {
+      LayoutParams() : bankWidth{0}, bankHeight{0}, hBanks{0}, vBanks{0}, minZoomLevel{0} { };
+      uInt16 bankWidth;     // Width of one bank in bytes
+      uInt16 bankHeight;    // Height of one bank in bytes
+      int hBanks;           // Number of horizontal banks next to each other
+      int vBanks;           // Number of vertical banks on top of each other
+      int minZoomLevel;     // Minimum zoom level (1..max)
+    };
+
   public:
 
     /**
@@ -50,7 +58,7 @@ class MemViewParams
       @param posX         X position of surface within the window
       @param posY         Y position of surface within the window
     */
-    MemViewParams(uInt16 bankSize, uInt16 bankCount, uInt16 baseAddress, Cartridge &cartridge,
+    MemViewParams(uInt16 bankSize, uInt16 bankCount, uInt32 baseAddress, Cartridge &cartridge,
       int posX, int posY);
     MemViewParams(const MemViewParams&) = default;
 
@@ -69,15 +77,11 @@ class MemViewParams
     /**
       Sets layout parameters to be used and calculates all depending values.
 
-      @param bankWidth  Width of one bank in bytes
-      @param bankHeight Height of one bank in bytes
-      @param hBanks     Number of horizontal banks next to each other
-      @param vBanks     Number of vertical banks on top of each other
-      @param minZoom    Minimum zoom level (1..max)
+      @param params     LayoutParams struct holding the layout values
+      @param singleRow  Flag to have all banks in a single row
       @param separators Flag to draw separators between the banks or not
     */
-    void setLayoutParameters(int bankWidth, int bankHeight,
-      int hBanks, int vBanks, int minZoom, bool separators);
+    void setLayoutParameters(LayoutParams& params, bool singleRow, bool separators);
 
     /**
       Some calculations
@@ -169,16 +173,26 @@ class MemViewParams
       @param y      Y position (0..mySurfaceHeight-1)
       @param bank   Pointer to get back the bank number (if interested - else nullptr)
       @param offset Pointer to get back the linear (original) offset (if interested - else nullptr)
-      @return The address
+      @return The read and write addresses plus a flag if valid
     */
-    uInt16 getAddress(int x, int y, int* bank = nullptr, unsigned int* offset = nullptr) const;
+    Common::RwAddress getAddress(int x, int y, int* bank = nullptr, unsigned int* offset = nullptr) const;
+
+    /**
+      Get a bank origin address for one of our shown banks.
+
+      @param bank   Bank number (0..myBankCount-1)
+      @param PC     If this query is regarding the current PC, pass it here to help searching
+      @return The read and write addresses plus a flag if valid
+    */
+    Common::RwAddress getBankOrigin(int bank, uInt16 PC = 0) const;
 
   public:
 
     uInt16 myBankSize;        // Bytes
     uInt16 myBankCount;       // Number of banks
     uInt32 myDataSize;        // Data size in bytes
-    uInt16 myBaseAddress;     // Byte-Address
+    uInt32 myBaseAddress;     // Byte-Address
+
     Cartridge &myCartridge;   // Reference to cartidge to retrieve addresses
     int mySurfaceWidth{0};    // Pixel
     int mySurfaceHeight{0};   // Pixel
@@ -194,6 +208,7 @@ class MemViewParams
     int myMinZoom{1};         // Minimum zoom level
     static constexpr int myMaxZoom{16};
     int myZoomLevel{1};       // Current zoom level
+    bool mySingleRow{false};  // Single row is selected
     bool mySeparators{false}; // Show separators or not
 
     // Precalulated positions of the separators (of any) for faster access

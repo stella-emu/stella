@@ -36,7 +36,7 @@
   - bits 0..3: mapped 1K bank (0..3 = ROM bank, 4..f = RAM bank)
   - bit 5: 0 = read, 1 = write (RAM only)
   Initially bank 0 is mapped to all four segments.
-  The scheme supports 4K ROM and 2K RAM.
+  The scheme supports 4K ROM and 12K RAM.
 
   $0c80.. and $0d80.. control the modem (not implemented, except for PROM access).
 
@@ -90,6 +90,15 @@ class CartridgeGL : public CartridgeEnhanced
     {
       return new CartridgeGLWidget(boss, lfont, nfont, *this);
     }
+
+    /**
+      Determine a RAM's bank origin
+
+      @param bank  The RAM bank to query
+      @param PC    The current PC
+      @return  The origin of the bank
+    */
+    virtual Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const;
   #endif
 
   public:
