@@ -20,6 +20,7 @@
 #include "ToolTip.hxx"
 #include "Stack.hxx"
 #include "EventHandler.hxx"
+#include "FBMessageHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "bspf.hxx"
@@ -27,12 +28,23 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
-  : myOSystem{osystem}
+  : myOSystem{osystem},
+    myWindow{&osystem.frameBuffer().primaryWindow()}
 {
   S_DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
   S_REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
   setControllerRate(osystem.settings().getInt("ctrlrate"));
   reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer::~DialogContainer()
+{
+  // A companion container owns the window openSecondaryWindow() made for it.
+  // The derived class's dialogs, and with them their surfaces, are already
+  // gone by now
+  if(myOSystem.hasFrameBuffer() && myWindow->container == this)
+    myOSystem.frameBuffer().destroySecondaryWindow(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,12 +167,12 @@ bool DialogContainer::baseDialogIsActive() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DialogContainer::addDialog(Dialog* d)
 {
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+  const Common::Rect& r = FrameBuffer::imageRect(*myWindow);
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor(*myWindow);
 
   if(U32(d->getWidth()  * scale) > r.w() ||
      U32(d->getHeight() * scale) > r.h())
-    myOSystem.frameBuffer().showTextMessage(
+    myWindow->msgHandler->showText(
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
@@ -184,8 +196,7 @@ void DialogContainer::removeDialog()
   #endif
     myDialogStack.pop();
 
-    // Inform the frame buffer that it has to render all surfaces
-    myOSystem.frameBuffer().setPendingRender();
+    FrameBuffer::setPendingRender(*myWindow);
   }
 }
 
@@ -485,4 +496,26 @@ void DialogContainer::reset()
   myCurrentHatDown    = { -1, -1, JoyHatDir::CENTER };
 
   myLastClick = { 0, 0, 0, 0 };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowResized(int width, int height)
+{
+  FrameBuffer& fb = myOSystem.frameBuffer();
+  if(fb.resizeSecondaryWindow(*this, width, height))
+    fb.renderSecondaryWindow(*this, FrameBuffer::UpdateMode::RERENDER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowExposed()
+{
+  // Only marks dirty; the window redraws on its next render
+  if(baseDialog())
+    baseDialog()->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleWindowClose()
+{
+  myOSystem.frameBuffer().closeSecondaryWindow(*this);
 }

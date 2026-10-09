@@ -66,6 +66,10 @@ class TiaWindow : public DialogContainer
     */
     bool applyResize() override;
 
+    // The debugger tracks this window's open state and resize settling
+    void handleWindowResized(int width, int height) override;
+    void handleWindowClose() override;
+
     Dialog* baseDialog() override { return myBaseDialog.get(); }
 
   private:

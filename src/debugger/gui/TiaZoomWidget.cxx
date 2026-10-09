@@ -278,7 +278,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       {
         const string message = instance().debugger().parser().run(
           std::format("scanline #{}", lines));
-        instance().frameBuffer().showTextMessage(message);
+        dialog().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -286,7 +286,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       const int scanline = myClickY / myZoomLevel + myOffY + startLine;
       const string message = instance().debugger().parser().run(
         std::format("breakif _scan==#{}", scanline));
-      instance().frameBuffer().showTextMessage(message);
+      dialog().showTextMessage(message);
     }
     else
     {

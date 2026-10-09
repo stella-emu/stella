@@ -44,6 +44,8 @@ CartridgeEnhanced::CartridgeEnhanced(ByteSpan image, string_view md5,
   // Only copy up to the amount of data the ROM provides; extra unused
   // space will be filled with 0's from above
   std::copy_n(image.data(), std::min(bsSize, size), myImage.begin());
+  // Store full image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
 
   myPlusROM = std::make_unique<PlusROM>(mySettings, *this);
 
@@ -73,6 +75,24 @@ void CartridgeEnhanced::install(System& system)
   // Allocate more space only if RAM has its own bank(s)
   createRomAccessArrays(myImage.size() + (myRomOffset > 0 ? 0 : myRamSize));
 
+#ifdef DEBUGGER_SUPPORT
+  // Setup access counter parameters
+  myRomAccessSizes[ImageScope::PROGRAM] = U32(myImage.size()) - myRomOffset;
+  myRomAccessOffsets[ImageScope::PROGRAM] = myRomOffset;
+
+  myRamAccessSize = U32(myRamSize);
+  if(myRamBankCount > 0)
+  {
+    // Banked RAM counters follow the ROM's, shared by reads and writes (see bank())
+    myRamPeekAccessOffset = myRamPokeAccessOffset = U32(myImage.size());
+  }
+  else
+  {
+    myRamPeekAccessOffset = myReadOffset;
+    myRamPokeAccessOffset = myWriteOffset;
+  }
+#endif
+
   // Allocate array for the segment's current bank offset
   myCurrentSegOffset.resize(myBankSegs);
 
@@ -97,8 +117,9 @@ void CartridgeEnhanced::install(System& system)
       const uInt16 offset = addr & myRamMask;
 
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
-      access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
-      access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[myWriteOffset + offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[myWriteOffset + offset];
+      access.romPokeCounter = &myRomPokeCounter[myWriteOffset + offset];
       mySystem->setPageAccess(U16(addr), access);
     }
 
@@ -110,8 +131,9 @@ void CartridgeEnhanced::install(System& system)
 
       access.directPeekBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
-      access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
-      access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[myReadOffset + offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[myReadOffset + offset];
+      access.romPokeCounter = &myRomPokeCounter[myReadOffset + offset];
       mySystem->setPageAccess(U16(addr), access);
     }
   }
@@ -254,7 +276,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     const uInt16 fromAddr = U32(ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) &
       ~U32(System::PAGE_MASK);
     // for ROMs < 4_KB, the whole address space will be mapped.
-    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) &
+    const uInt16 toAddr   = U32(ROM_OFFSET + segmentOffset + (myImage.size() < 4_KB ? 4_KB : myBankSize)) &
       ~U32(System::PAGE_MASK);
 
     System::PageAccess access(this, System::PageAccessType::READ);
@@ -268,8 +290,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
       else
         access.directPeekBase = nullptr;
       access.romAccessBase = &myRomAccessBase[offset];
-      access.romPeekCounter = &myRomAccessCounter[offset];
-      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+      access.romPokeCounter = &myRomPokeCounter[offset];
       mySystem->setPageAccess(addr, access);
     }
   }
@@ -297,8 +320,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
       const uInt32 offset = bankOffset + (addr & myRamMask);
 
       access.romAccessBase = &myRomAccessBase[offset];
-      access.romPeekCounter = &myRomAccessCounter[offset];
-      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+      access.romPokeCounter = &myRomPokeCounter[offset];
       mySystem->setPageAccess(addr, access);
     }
 
@@ -314,8 +338,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 
       access.directPeekBase = &myRAM[offset - myImage.size()];
       access.romAccessBase = &myRomAccessBase[offset];
-      access.romPeekCounter = &myRomAccessCounter[offset];
-      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+      access.romPokeCounter = &myRomPokeCounter[offset];
       mySystem->setPageAccess(addr, access);
     }
   }
@@ -386,13 +411,6 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeEnhanced::getImage() const
-{
-  return myImage;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::save(Serializer& out) const
 {
   try
@@ -436,3 +454,21 @@ bool CartridgeEnhanced::load(Serializer& in)
 
   return true;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::RwAddress CartridgeEnhanced::ramBankOrigin(uInt16 bank, uInt16 PC) const
+{
+  if (myRamSize == 0)
+  {
+    return Common::RwAddress();
+  }
+  else
+  {
+    // Per default we assume that the RAM is located within the ROM banks
+    uInt16 origin = bankOrigin(bank, PC);
+    return Common::RwAddress(true, U32(origin + myReadOffset),
+      U32(origin + myWriteOffset));
+  }
+}
+#endif

@@ -25,6 +25,7 @@
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "TiaWindow.hxx"
+#include "MemViewWindow.hxx"
 #include "PromptWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
@@ -153,18 +154,29 @@ void Debugger::detach()
 
   myConsole = nullptr;
   mySystem  = nullptr;
+
+  // A pending companion-window open would otherwise fire later with no console
+  myTiaWindowPending = false;
+  myMemViewWindowPending = false;
+
+  // An open companion window shows this console's state and its widgets point
+  // into it, so it must not outlive the ROM
+  closeTiaWindow();
+  closeMemViewWindow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  const FBInitStatus status = myOSystem.frameBuffer().createDisplay(
+  auto& fb = myOSystem.frameBuffer();
+
+  const FBInitStatus status = fb.createDisplay(
     string{STELLA_FULL_TITLE} + ": Debugger mode",
     BufferType::Debugger, mySize);
 
   // The debugger window may be resized, but not below its usable minimum
   // (which depends on the configured debugger font size)
-  myOSystem.frameBuffer().setWindowMinSize(dialogMinSize());
+  fb.setWindowMinSize(dialogMinSize());
 
   return status;
 }
@@ -172,13 +184,16 @@ FBInitStatus Debugger::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::updateSize()
 {
-  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
-  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
+  const auto& fb = myOSystem.frameBuffer();
+
+  const uInt32 scale = fb.hidpiScaleFactor(window());
+  const Common::Rect& r = FrameBuffer::imageRect(window());
   const Common::Size minSize = dialogMinSize();
 
-  mySize = Common::Size(r.w() / scale, r.h() / scale);
-  mySize.clamp(minSize.w, d.w, minSize.h, d.h);
+  // Follow the window, even past the desktop it opened on (when dragged across
+  // monitors); only the minimum applies
+  mySize = Common::Size(std::max(r.w() / scale, minSize.w),
+                        std::max(r.h() / scale, minSize.h));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,7 +207,7 @@ bool Debugger::applyResize()
     return false;
 
   // Nothing to do unless a new size is pending
-  if(!myOSystem.frameBuffer().applyLiveResize())
+  if(!myOSystem.frameBuffer().applyLiveResize(window()))
     return false;
 
   myLastResizeTime = now;
@@ -220,7 +235,8 @@ void Debugger::updateTime(uInt64 time)
   // (applyResize(), which also covers the Windows/macOS modal resize loop).
   // Here we catch any size the handler's throttle skipped — notably the final
   // one when the drag stops — and, once idle, persist the settled size
-  if(myOSystem.frameBuffer().applyLiveResize())
+  auto& fb = myOSystem.frameBuffer();
+  if(fb.applyLiveResize(window()))
   {
     updateSize();
     relayout();
@@ -229,7 +245,7 @@ void Debugger::updateTime(uInt64 time)
   // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
   else if(mySettleCountdown > 0 && --mySettleCountdown == 0)
   {
-    myOSystem.frameBuffer().resizeSettled();
+    fb.resizeSettled();
     myOSystem.settings().setValue("dbg.res", mySize);
   }
 }
@@ -894,11 +910,12 @@ void Debugger::addState(string_view rewindMsg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setStartState()
 {
-  // Request the companion TIA window if the user has enabled it.  Actual
-  // creation is deferred to renderTiaWindow() so it happens once the state is
-  // DEBUGGER (see myTiaWindowPending).
+  // Open the TIA and/or memory-view windows if enabled; creation is deferred
+  // to renderSecondaryWindow(), once the state is DEBUGGER
   if(myOSystem.settings().getBool("dbg.tiawindow"))
     myTiaWindowPending = true;
+  if(myOSystem.settings().getBool("dbg.memview"))
+    myMemViewWindowPending = true;
 
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockSystem();
@@ -919,7 +936,8 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
-  // Hide the companion TIA window (kept alive for a fast re-open)
+  // Hide the TIA window (kept alive for a fast re-open).  The memory-view
+  // window stays open, to show live effects while emulating.
   myTiaWindowPending = false;
   closeTiaWindow();
 
@@ -959,10 +977,12 @@ void Debugger::applyTiaWindowMode()
   if(myTiaWindow == nullptr)
     myTiaWindow = std::make_unique<TiaWindow>(myOSystem);
 
-  // The (single) FrameBuffer owns the secondary window/backend; palette, fonts
-  // and TIASurface are shared with the main window, so nothing can be clobbered.
+  // The FrameBuffer owns this window's backend; palette, fonts and TIASurface
+  // are shared with the main window
+  string title{STELLA_FULL_TITLE};
+  title += ": TIA";
   const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
-    *myTiaWindow, string{STELLA_FULL_TITLE} + ": TIA",
+    *myTiaWindow, title,
     BufferType::TiaWindow, myTiaWindow->size(), TiaWindow::minSize());
 
   myTiaWindowOpen = (status == FBInitStatus::Success);
@@ -977,10 +997,10 @@ void Debugger::resizeTiaWindow(int width, int height)
   // The companion window resizes independently of the debugger's, and re-flows
   // and presents itself here rather than waiting for the next rendered frame
   // (during a modal resize loop there isn't one)
-  if(myOSystem.frameBuffer().resizeSecondaryWindow(*myTiaWindow, width, height))
+  auto& fb = myOSystem.frameBuffer();
+  if(fb.resizeSecondaryWindow(*myTiaWindow, width, height))
   {
-    myOSystem.frameBuffer().renderSecondaryWindow(
-      *myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
+    fb.renderSecondaryWindow(*myTiaWindow, FrameBuffer::UpdateMode::RERENDER);
 
     // Restart the settle: applying the resize suspended vsync on the companion's
     // backend, and only settling puts it back
@@ -1010,7 +1030,7 @@ void Debugger::closeTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
-  myOSystem.frameBuffer().closeSecondaryWindow();
+  myOSystem.frameBuffer().closeSecondaryWindow(*myTiaWindow);
   myTiaWindowOpen = false;
 
   // Nothing left to tick the countdown, and re-opening restores vsync anyway
@@ -1032,6 +1052,8 @@ void Debugger::renderTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
+  auto& fb = myOSystem.frameBuffer();
+
   // Once the countdown reaches zero, run the settle pass.  Driven here rather
   // than from updateTime(): the companion is not the active overlay, so this is
   // its only per-frame tick
@@ -1039,7 +1061,7 @@ void Debugger::renderTiaWindow()
   {
     --myTiaSettleCountdown;
     if(myTiaSettleCountdown == 0)
-      myOSystem.frameBuffer().settleSecondaryWindow(*myTiaWindow);
+      fb.settleSecondaryWindow(*myTiaWindow);
   }
 
   // Render on demand: the companion is presented only when its dialog/widget is
@@ -1047,8 +1069,7 @@ void Debugger::renderTiaWindow()
   // the initial open (Dialog::open() marks it dirty); content changes from
   // stepping the emulation come in via invalidateTiaWindow().  When nothing is
   // dirty this neither redraws nor presents, so an idle companion is free.
-  myOSystem.frameBuffer().renderSecondaryWindow(
-    *myTiaWindow, FrameBuffer::UpdateMode::NONE);
+  fb.renderSecondaryWindow(*myTiaWindow, FrameBuffer::UpdateMode::NONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1065,9 +1086,121 @@ void Debugger::invalidateTiaWindow()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DialogContainer* Debugger::tiaWindowContainer() const
+// The memory-view window methods mirror the TIA window's above; see those
+// for the rationale.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleMemViewWindow()
 {
-  return myTiaWindowOpen ? myTiaWindow.get() : nullptr;
+  if(myMemViewWindowOpen)
+    closeMemViewWindow();
+  else
+    openMemViewWindow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::openMemViewWindow()
+{
+  if(myMemViewWindowOpen)
+    return;
+
+  applyMemViewWindowMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::applyMemViewWindowMode()
+{
+  if(myMemViewWindow == nullptr)
+    myMemViewWindow = std::make_unique<MemViewWindow>(myOSystem);
+
+  string title{STELLA_FULL_TITLE};
+  title += ": Memory View";
+  const FBInitStatus status = myOSystem.frameBuffer().openSecondaryWindow(
+    *myMemViewWindow, title,
+    BufferType::MemViewWindow, myMemViewWindow->size(), myMemViewWindow->minSize());
+
+  myMemViewWindowOpen = (status == FBInitStatus::Success);
+
+  // The window opened at the minimum from before the saved settings were
+  // applied; re-assert it for the applied settings
+  if(myMemViewWindowOpen)
+    myMemViewWindow->updateMinSize();
+
+  myDialog->rom().updateMemViewButton();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::resizeMemViewWindow(int width, int height)
+{
+  if(!myMemViewWindowOpen)
+    return;
+
+  if(myOSystem.frameBuffer().resizeSecondaryWindow(*myMemViewWindow, width, height))
+  {
+    myOSystem.frameBuffer().renderSecondaryWindow(
+      *myMemViewWindow, FrameBuffer::UpdateMode::RERENDER);
+
+    myMemViewSettleCountdown = 15;  // ~frames of idle before the resize is settled
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::rescaleMemViewWindow()
+{
+  if(!myMemViewWindowOpen)
+    return;
+
+  applyMemViewWindowMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::closeMemViewWindow()
+{
+  if(!myMemViewWindowOpen)
+    return;
+
+  myOSystem.frameBuffer().closeSecondaryWindow(*myMemViewWindow);
+  myMemViewWindowOpen = false;
+  myMemViewSettleCountdown = 0;
+
+  myDialog->rom().updateMemViewButton();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::renderMemViewWindow()
+{
+  // Deferred open (now that the state is DEBUGGER); see myMemViewWindowPending
+  if(myMemViewWindowPending)
+  {
+    myMemViewWindowPending = false;
+    openMemViewWindow();
+  }
+
+  if(!myMemViewWindowOpen)
+    return;
+
+  // NOLINTNEXTLINE(bugprone-inc-dec-in-conditions)
+  if(myMemViewSettleCountdown > 0 && --myMemViewSettleCountdown == 0)
+    myOSystem.frameBuffer().settleSecondaryWindow(*myMemViewWindow);
+
+  // The live RAM/heatmap redraw is in MemViewWindowDialog::tick(), run by the
+  // render below; it pauses while a popup is open on top
+  myOSystem.frameBuffer().renderSecondaryWindow(
+    *myMemViewWindow, FrameBuffer::UpdateMode::NONE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::renderSecondaryWindow()
+{
+  // Each render*Window() is a no-op unless its window is open or pending
+  renderTiaWindow();
+  renderMemViewWindow();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::rescaleSecondaryWindows()
+{
+  rescaleTiaWindow();
+  rescaleMemViewWindow();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1191,6 +1324,7 @@ void Debugger::lockSystem()
 {
   mySystem->lockDataBus();
   myConsole->cartridge().lockHotspots();
+  mySystemIsLocked = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1198,6 +1332,7 @@ void Debugger::unlockSystem()
 {
   mySystem->unlockDataBus();
   myConsole->cartridge().unlockHotspots();
+  mySystemIsLocked = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

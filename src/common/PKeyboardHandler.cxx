@@ -546,8 +546,36 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
-                                          bool pressed, bool repeated)
+                                          bool pressed, bool repeated,
+                                          uInt32 windowID)
 {
+#ifdef GUI_SUPPORT
+  // A secondary window's keys go to its own container first, whatever the
+  // state; keys which switch state work from any window
+  if(DialogContainer* container = myHandler.containerForWindow(windowID))
+  {
+    if(!pressed && myHandler.changeStateByEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod)))
+      return;
+
+    container->handleKeyEvent(key, mod, pressed, repeated);
+
+  #ifdef DEBUGGER_SUPPORT
+    // The debugger's own keys work from its companion windows too, unless a
+    // popup or context menu is open there
+    if(myHandler.state() == EventHandlerState::DEBUGGER && container->baseDialogIsActive())
+    {
+      const Debugger& debugger = myOSystem.debugger();
+      if(pressed ? debugger.handleGlobalKeyDown(key, mod, repeated)
+                 : debugger.handleGlobalKeyUp(key, mod))
+        return;
+    }
+  #endif
+
+    // Global events (e.g. Quit), as in the primary window
+    myHandler.handleEvent(myKeyMap.get(EventMode::kMenuMode, key, mod), pressed, repeated);
+    return;
+  }
+#endif
 
   const EventHandlerState estate = myHandler.state();
 
@@ -635,6 +663,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = [] noexcept {
     { Event::ToggleBezel,              StellaKey::B, StellaMod::CTRL },
     { Event::TimeMachineMode,          StellaKey::T, StellaMod::SHIFT },
     { Event::DebuggerMode,             StellaKey::GRAVE },
+    { Event::OpenMemView,              StellaKey::M, MOD3 },
     { Event::PlusRomsSetupMode,        StellaKey::P, StellaMod::SHIFT | StellaMod::CTRL | MOD3 },
     { Event::ExitMode,                 StellaKey::ESCAPE },
   #ifdef BSPF_MACOS

@@ -271,9 +271,10 @@ class System : public Serializable
     /**
       Increase the given address's access counter
 
-      @param address The address to modify
+      @param address  The address to modify
+      @param flag     One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
     */
-    void increaseAccessCounter(uInt16 address, bool isWrite) const;
+    void increaseAccessCounter(uInt16 address, Device::AccessType flag) const;
 
     /**
       Get the read-access counter for the given address.
@@ -333,8 +334,10 @@ class System : public Serializable
         many times each address has been read; used by the debugger to show
         access frequencies.  Null for device-mapped pages that manage their
         own counters.
+        We differentiate between data reads and program counter (code) accesses.
       */
-      Device::AccessCounter* romPeekCounter{nullptr};
+      Device::AccessCounter* romDataPeekCounter{nullptr};
+      Device::AccessCounter* romCodePeekCounter{nullptr};
 
       /**
         Per-address write-access counter indexed by page offset.  Tracks how
@@ -550,13 +553,12 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessType flags)
   else
     access.device->setAccessFlags(addr, flags);
   // Increase access counter
-  if(flags != Device::NONE)
-  {
-    if(access.romPeekCounter)
-      *(access.romPeekCounter + pageOffset) += 1;
-    else
-      access.device->increaseAccessCounter(addr);
-  }
+  if((flags == Device::DATA) && access.romDataPeekCounter)
+      *(access.romDataPeekCounter + pageOffset) += 1;
+  else if((flags == Device::CODE) && access.romCodePeekCounter)
+      *(access.romCodePeekCounter + pageOffset) += 1;
+  else if (flags != Device::NONE)
+      access.device->increaseAccessCounter(addr, flags);
 #endif
 
   const uInt8 result = [&] -> uInt8 {
@@ -605,7 +607,7 @@ inline void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessType flags)
     if(access.romPokeCounter)
       *(access.romPokeCounter + pageOffset) += 1;
     else
-      access.device->increaseAccessCounter(addr, true);
+      access.device->increaseAccessCounter(addr, Device::WRITE);
   }
 #endif
 

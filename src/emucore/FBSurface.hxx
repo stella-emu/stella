@@ -49,16 +49,29 @@ namespace Common {
 class FBSurface
 {
   public:
+    // Surface pixel pointer and pitch (in pixels)
+    template<typename T>
+    struct PixelPtr { T* pixels{nullptr}; uInt32 pitch{0}; };
+
     FBSurface() = default;
     virtual ~FBSurface() = default;
 
     /**
       This method returns the surface pixel pointer and pitch, which are
-      used when one wishes to modify the surface pixels directly.
+      used when one wishes to modify the surface pixels directly.  The
+      surface is marked as changed, so the next render() uploads it.
     */
-    void basePtr(uInt32*& pixels, uInt32& pitch) const {
-      pixels = myPixels;
-      pitch = myPitch;
+    PixelPtr<uInt32> basePtr() {
+      myPixelsDirty = true;
+      return { myPixels, myPitch };
+    }
+
+    /**
+      This method returns the surface pixel pointer and pitch, which are
+      used when one wishes to read the surface pixels directly.
+    */
+    PixelPtr<const uInt32> readBasePtr() const {
+      return { myPixels, myPitch };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -99,6 +112,17 @@ class FBSurface
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color);
 
     /**
+      This method should be called to draw a horizontal line in an arbitrary
+      RGB color, bypassing the palette.
+
+      @param x      The first x coordinate
+      @param y      The y coordinate
+      @param x2     The second x coordinate
+      @param color  The RGB color of the line
+    */
+    virtual void hLineRgb(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
+
+    /**
       This method should be called to draw a vertical line.
 
       @param x      The x coordinate
@@ -119,6 +143,19 @@ class FBSurface
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           ColorId color);
+
+    /**
+      This method should be called to draw a filled rectangle in an
+      arbitrary RGB color, bypassing the palette.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The RGB fill color of the rectangle
+    */
+    virtual void fillRectRgb(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                             uInt32 color);
 
     /**
       This method should be called to draw the specified character.
@@ -328,7 +365,8 @@ class FBSurface
 
     /**
       This method should be called to draw the surface to the screen.
-      It will return true if rendering actually occurred.
+      The pixels are uploaded first only if they changed since the last
+      render.  It will return true if rendering actually occurred.
     */
     virtual bool render() = 0;
 
@@ -386,6 +424,11 @@ class FBSurface
 
     static void setPalette(const FullPaletteArray& palette) { myPalette = palette; }
 
+    // The RGB value a palette ColorId currently resolves to
+    static uInt32 getColorRgb(ColorId color) {
+      return (color < kNumColors) ? myPalette[color] : 0;
+    }
+
   protected:
     /**
       This method should be called to check if the given coordinates
@@ -412,6 +455,10 @@ class FBSurface
     uInt32 myPitch{0};          // NOTE: MUST be set in child classes
     bool myEnableBlend{false};
     uInt32 myBlendLevel{100};
+
+    // The pixels changed since they were last uploaded by render(); set by
+    // every drawing primitive and by basePtr()
+    bool myPixelsDirty{true};
 
     static FullPaletteArray myPalette;
 

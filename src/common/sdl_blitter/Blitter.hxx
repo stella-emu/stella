@@ -30,10 +30,16 @@ class Blitter {
 
     virtual void reinitialize(
       SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
-      uInt8 blendLevel, SDL_Surface* staticData = nullptr
+      uInt8 blendLevel, bool isStatic
     ) = 0;
 
-    virtual void blit(SDL_Surface& surface) = 0;
+    /**
+      Draw the surface.  Its pixels are uploaded first when 'upload' is set
+      (they changed) or when the blitter's own textures don't hold them yet
+      (newly created, or a different source rect); otherwise the texture
+      from the last upload is drawn again.
+    */
+    virtual void blit(SDL_Surface& surface, bool upload) = 0;
 
   protected:
 

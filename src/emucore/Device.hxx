@@ -164,8 +164,9 @@ class Device : public Serializable
       Increase the given address's access counter
 
       @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
     */
-    virtual void increaseAccessCounter(uInt16 address, bool isWrite = false) { }
+    virtual void increaseAccessCounter(uInt16 address, AccessType flag = NONE) { }
 
     /**
       Query the access counters

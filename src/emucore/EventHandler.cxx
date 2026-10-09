@@ -311,11 +311,15 @@ void EventHandler::enableTextEvents(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleTextEvent(char text)
+void EventHandler::handleTextEvent(char text, uInt32 windowID)
 {
 #ifdef GUI_SUPPORT
-  // Text events are only used in GUI mode
-  if(myOverlay && myTextEventsEnabled)
+  // Text events are only used in GUI mode, and go to the window they came from
+  if(!myTextEventsEnabled)
+    return;
+  if(DialogContainer* container = containerForWindow(windowID))
+    container->handleTextEvent(text);
+  else if(myOverlay)
     myOverlay->handleTextEvent(text);
 #endif
 }
@@ -324,6 +328,14 @@ void EventHandler::handleTextEvent(char text)
 void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel,
                                           uInt32 windowID)
 {
+#ifdef GUI_SUPPORT
+  // A secondary window's mouse is its own, even while emulating
+  if(DialogContainer* container = containerForWindow(windowID))
+  {
+    container->handleMouseMotionEvent(x, y);
+    return;
+  }
+#endif
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
   {
@@ -346,6 +358,14 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel,
 void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
                                           int x, int y, uInt32 windowID)
 {
+#ifdef GUI_SUPPORT
+  // A secondary window's mouse is its own, even while emulating
+  if(DialogContainer* container = containerForWindow(windowID))
+  {
+    container->handleMouseButtonEvent(b, pressed, x, y);
+    return;
+  }
+#endif
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
   {
@@ -370,16 +390,23 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer* EventHandler::overlayForWindow([[maybe_unused]] uInt32 windowID) const
 {
-#ifdef DEBUGGER_SUPPORT
-  // While the debugger's companion TIA window is open, events that originate
-  // from it are routed to its own container rather than the main overlay.
-  if(myState == EventHandlerState::DEBUGGER && windowID != 0 &&
-     myOSystem.frameBuffer().secondaryWindowOpen() &&
-     windowID == myOSystem.frameBuffer().secondaryWindowId())
-    return myOSystem.debugger().tiaWindowContainer();
+#ifdef GUI_SUPPORT
+  // Events that originate from a secondary window are routed to its own
+  // container rather than the main overlay
+  if(DialogContainer* container = containerForWindow(windowID))
+    return container;
 #endif
   return myOverlay;
 }
+
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DialogContainer* EventHandler::containerForWindow(uInt32 windowID) const
+{
+  return myOSystem.hasFrameBuffer()
+    ? myOSystem.frameBuffer().containerForWindowId(windowID) : nullptr;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
@@ -392,13 +419,12 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       auto& fb = myOSystem.frameBuffer();
       const auto windowID = U32(data3);
 
-    #ifdef DEBUGGER_SUPPORT
-      // The companion TIA window resizes independently of the debugger window
-      // it belongs to (data3 carries the window ID)
-      if(myState == EventHandlerState::DEBUGGER && fb.secondaryWindowOpen() &&
-         windowID == fb.secondaryWindowId())
+    #ifdef GUI_SUPPORT
+      // A secondary window resizes independently of the primary window
+      // (data3 carries the window ID)
+      if(DialogContainer* container = containerForWindow(windowID))
       {
-        myOSystem.debugger().resizeTiaWindow(data1, data2);
+        container->handleWindowResized(data1, data2);
         break;
       }
     #endif
@@ -437,15 +463,12 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       break;
 
     case SystemEvent::WINDOW_EXPOSED:
-    #ifdef DEBUGGER_SUPPORT
-      // A repaint of the companion TIA window is its own concern (data1 carries
-      // the window ID); just mark it dirty so it redraws, leaving the primary
-      // window untouched
-      if(myState == EventHandlerState::DEBUGGER &&
-         myOSystem.frameBuffer().secondaryWindowOpen() &&
-         U32(data1) == myOSystem.frameBuffer().secondaryWindowId())
+    #ifdef GUI_SUPPORT
+      // A secondary window repaints itself (data1 carries the window ID); just
+      // mark it dirty, leaving the primary window untouched
+      if(DialogContainer* container = containerForWindow(U32(data1)))
       {
-        myOSystem.debugger().invalidateTiaWindow();
+        container->handleWindowExposed();
         break;
       }
     #endif
@@ -478,6 +501,25 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
         setState(EventHandlerState::PAUSE);
       break;
 
+    case SystemEvent::WINDOW_ENTER:
+      myCurrentWindowId = U32(data1);
+    #ifdef GUI_SUPPORT
+      // A secondary window always shows the cursor (see
+      // FrameBuffer::setCursorState()); data1 carries the window ID
+      if(containerForWindow(U32(data1)))
+        myOSystem.frameBuffer().setCursorState();
+    #endif
+      break;
+
+    case SystemEvent::WINDOW_LEAVE:
+      myCurrentWindowId = 0;
+    #ifdef GUI_SUPPORT
+      // We need to switch the cursor to the default state when leaving the window
+      if(containerForWindow(U32(data1)))
+        myOSystem.frameBuffer().setCursorState();
+    #endif
+      break;
+
     case SystemEvent::THEME_CHANGED:
       if(myOSystem.frameBuffer().updateTheme())
       {
@@ -498,15 +540,13 @@ void EventHandler::handleDropfileEvent(string_view file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID)
+void EventHandler::handleWindowCloseEvent([[maybe_unused]] uInt32 windowID) const
 {
-#ifdef DEBUGGER_SUPPORT
-  // A close request on the companion TIA window closes only that window; the
-  // main window's close is left to the normal SDL_EVENT_QUIT path.
-  if(myState == EventHandlerState::DEBUGGER &&
-     myOSystem.frameBuffer().secondaryWindowOpen() &&
-     windowID == myOSystem.frameBuffer().secondaryWindowId())
-    myOSystem.debugger().closeTiaWindow();
+#ifdef GUI_SUPPORT
+  // A close request on a secondary window closes only that window; the main
+  // window's close is left to the normal SDL_EVENT_QUIT path.
+  if(DialogContainer* container = containerForWindow(windowID))
+    container->handleWindowClose();
 #endif
 }
 
@@ -2017,6 +2057,15 @@ bool EventHandler::changeStateByEvent(Event::Type type)
   #endif
       break;
 
+    case Event::OpenMemView:
+  #ifdef DEBUGGER_SUPPORT
+      if(myOSystem.hasConsole() && myOSystem.hasDebugger())
+        myOSystem.debugger().openMemViewWindow();
+      else
+        handled = false;
+  #endif
+      break;
+
     default:
       handled = false;
   }
@@ -2936,6 +2985,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::IncreaseSpeed,           "Increase emulation speed"              },
   { Event::ToggleTurbo,             "Toggle 'Turbo' mode"                   },
   { Event::DebuggerMode,            "Toggle Debugger mode"                  },
+  { Event::OpenMemView,             "Open memory view"                      },
 
   { Event::ConsoleSelect,           "Select"                                },
   { Event::ConsoleReset,            "Reset"                                 },
@@ -3406,7 +3456,7 @@ const Event::EventSet EventHandler::ComboEvents = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
 const Event::EventSet EventHandler::DebugEvents = {
-  Event::DebuggerMode, Event::ToggleDeveloperSet,
+  Event::DebuggerMode, Event::OpenMemView, Event::ToggleDeveloperSet,
   Event::ToggleFrameStats,
   Event::ToggleP0Collision, Event::ToggleP0Bit, Event::ToggleP1Collision, Event::ToggleP1Bit,
   Event::ToggleM0Collision, Event::ToggleM0Bit, Event::ToggleM1Collision, Event::ToggleM1Bit,

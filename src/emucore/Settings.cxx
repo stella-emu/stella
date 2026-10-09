@@ -35,6 +35,7 @@
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
   #include "TiaWindow.hxx"
+  #include "MemViewWindow.hxx"
 #endif
 
 #include "Settings.hxx"
@@ -249,6 +250,22 @@ Settings::Settings()
   setPermanent("tiawindow.res", TiaWindow::defaultSize());
   setPermanent("tiawindow.pos", Common::Point(50, 50));
   setPermanent("tiawindow.display", 0);
+  setPermanent("dbg.memview", "false");
+  setPermanent("memview.res", MemViewWindow::defaultSize());
+  setPermanent("memview.pos", Common::Point(50, 50));
+  setPermanent("memview.display", 0);
+  setPermanent("memview.bh1k", "0");
+  setPermanent("memview.bh2k", "0");
+  setPermanent("memview.bh4k", "0");
+  setPermanent("memview.singlerow", "false");
+  setPermanent("memview.inverted", "false");
+  setPermanent("memview.bytefade", "true");
+  setPermanent("memview.separators", "true");
+  setPermanent("memview.showdata", "true");
+  setPermanent("memview.showpc", "true");
+  setPermanent("memview.showreads", "true");
+  setPermanent("memview.showwrites", "true");
+  setPermanent("memview.decayrate", 40);
   setPermanent("dis.resolve", "true");
   setPermanent("dis.gfxformat", "2");
   setPermanent("dis.showaddr", "true");
@@ -783,6 +800,25 @@ void Settings::usage()
     << "   -pp          <arg>            Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>            Sets the 'Display.PPBlend' property\n"
     << "   -bezelname   <arg>            Sets the 'Bezel.Name' property\n\n"
+
+    << " Commands for memory view\n\n"
+    << "  -dbg.memview        <0|1>      Open the memory view window with the debugger\n"
+    << "  -memview.res        <WxH>      The resolution to use in memory view window\n"
+    << "  -memview.pos        <XxY>      The default position of the memory view window\n"
+    << "  -memview.display    <number>   The default display ID to show the memory window\n"
+    << "  -memview.bh1k       <value>    Preferred bank height in bytes for 1K banks\n"
+    << "  -memview.bh2k       <value>    Preferred bank height in bytes for 2K banks\n"
+    << "  -memview.bh4k       <value>    Preferred bank height in bytes for 4K banks\n"
+    << "                                  (0 = auto-determined, 64, 128, 256 or 512)\n"
+    << "  -memview.singlerow  <0|1>      Show all banks of a ROM in one single row\n"
+    << "  -memview.separators <0|1>      Have separator lines between the banks\n"
+    << "  -memview.inverted   <0|1>      Invert the byte data for display\n"
+    << "  -memview.bytefade   <0|1>      Fade the bits of a byte out to the right\n"
+    << "  -memview.showdata   <0|1>      Show the data by default\n"
+    << "  -memview.showpc     <0|1>      Show the program counter reads by default\n"
+    << "  -memview.showreads  <0|1>      Show data reads by default\n"
+    << "  -memview.showwrites <0|1>      Show data writes by default\n"
+    << "  -memview.decayrate  <0..100>   Controls the speed of the heatmap dissolving\n\n"
   #endif
 
     << " Various development related parameters for player settings mode\n\n"

@@ -201,6 +201,7 @@ class Event
       SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
       QTPaddle3AFire, QTPaddle3BFire, QTPaddle4AFire, QTPaddle4BFire,
       UIHelp,
+      OpenMemView,
       LastType
     };
 

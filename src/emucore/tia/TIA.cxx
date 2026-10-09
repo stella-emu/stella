@@ -180,6 +180,9 @@ void TIA::initialize()
 #ifdef DEBUGGER_SUPPORT
   myCyclesAtFrameStart = 0;
   myFrameWsyncCycles = 0;
+  myBusyRateWsyncCycles = 0;
+  myBusyRateTotalCycles = 0;
+  myBusyRateFrames = 0;
 #endif
 
   if (myFrameManager)
@@ -332,6 +335,9 @@ bool TIA::save(Serializer& out) const
   #ifdef DEBUGGER_SUPPORT
     out.putLong(myCyclesAtFrameStart);
     out.putLong(myFrameWsyncCycles);
+    out.putLong(myBusyRateWsyncCycles);
+    out.putLong(myBusyRateTotalCycles);
+    out.putInt(myBusyRateFrames);
   #endif
 
     out.putInt(myFrameBufferScanlines);
@@ -414,6 +420,9 @@ bool TIA::load(Serializer& in)
   #ifdef DEBUGGER_SUPPORT
     myCyclesAtFrameStart = in.getLong();
     myFrameWsyncCycles = in.getLong();
+    myBusyRateWsyncCycles = in.getLong();
+    myBusyRateTotalCycles = in.getLong();
+    myBusyRateFrames = in.getInt();
   #endif
 
     myFrameBufferScanlines = in.getInt();
@@ -1476,7 +1485,13 @@ void TIA::onFrameStart()
 {
   myXAtRenderingStart = 0;
 #ifdef DEBUGGER_SUPPORT
+  // Add the number of WSYNC-skipped cycles of this frame to the total counter
+  // for the 'busyRate' debug command
+  myBusyRateWsyncCycles += myFrameWsyncCycles;
+  myBusyRateFrames++;
   myFrameWsyncCycles = 0;
+  // Let the RIOT update the total timer read cycles (-> busyRate)
+  mySystem->m6532().updateBusyRateTimReadCycles();
   mySystem->m6532().resetTimReadCycles();
 #endif
 
@@ -1502,6 +1517,7 @@ void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
 #ifdef DEBUGGER_SUPPORT
+  myBusyRateTotalCycles += frameCycles();
   myCyclesAtFrameStart = mySystem->cycles();
 #endif
 
@@ -2510,9 +2526,9 @@ void TIA::setAccessFlags(uInt16 address, Device::AccessType flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
+void TIA::increaseAccessCounter(uInt16 address, Device::AccessType flag)
 {
-  if(isWrite)
+  if(flag == Device::WRITE)
   {
     // the first two write accesses are assumed as initialization
     if(myAccessDelay[address & TIA_MASK])

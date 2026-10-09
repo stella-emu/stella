@@ -92,9 +92,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   surface.setSrcPos(0, 0);
   surface.setSrcSize(width, height);
 
-  uInt32* s_buf{nullptr};
-  uInt32  s_pitch{0};
-  surface.basePtr(s_buf, s_pitch);
+  auto [s_buf, s_pitch] = surface.basePtr();
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
   const size_t i_pitch = SZT(width) * bytesPerPixel;

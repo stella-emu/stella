@@ -412,6 +412,7 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimReadCycles);
     out.putBool(myTimWrappedOnRead);
     out.putBool(myTimWrappedOnWrite);
+    out.putLong(myBusyRateTimReadCycles);
   #endif
 
     out.putByte(myDDRA);
@@ -458,6 +459,7 @@ bool M6532::load(Serializer& in)
     myTimReadCycles = in.getInt();
     myTimWrappedOnRead = in.getBool();
     myTimWrappedOnWrite = in.getBool();
+    myBusyRateTimReadCycles = in.getLong();
   #endif
 
     myDDRA = in.getByte();
@@ -522,9 +524,13 @@ void M6532::createAccessBases()
   myRAMAccessBase.fill(Device::NONE);
   myStackAccessBase.fill(Device::NONE);
   myIOAccessBase.fill(Device::NONE);
-  myRAMAccessCounter.fill(0);
-  myStackAccessCounter.fill(0);
-  myIOAccessCounter.fill(0);
+  myRAMCodePeekCounter.fill(0);
+  myRAMDataPeekCounter.fill(0);
+  myRAMPokeCounter.fill(0);
+  myStackPeekCounter.fill(0);
+  myStackPokeCounter.fill(0);
+  myIOPeekCounter.fill(0);
+  myIOPokeCounter.fill(0);
   myZPAccessDelay.fill(ZP_DELAY);
 }
 
@@ -561,19 +567,45 @@ void M6532::setAccessFlags(uInt16 address, Device::AccessType flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::increaseAccessCounter(uInt16 address, bool isWrite)
+void M6532::increaseAccessCounter(uInt16 address, Device::AccessType flag)
 {
+  const bool isWrite = (flag == Device::WRITE);
   if(address & IO_BIT)
-    myIOAccessCounter[(isWrite ? IO_SIZE : 0) + (address & IO_MASK)]++;
+  {
+    if(isWrite)
+      myIOPokeCounter[address & IO_MASK]++;
+    else
+      myIOPeekCounter[address & IO_MASK]++;
+  }
   else
   {
+    static_assert(STACK_MASK == RAM_MASK, "Mask mismatch");
+    const uInt16 maskedAddr = address & RAM_MASK;
     // The first access, either by direct RAM or stack access is assumed as initialization
-    if(myZPAccessDelay[address & RAM_MASK])
-      myZPAccessDelay[address & RAM_MASK]--;
-    else if(address & STACK_BIT)
-      myStackAccessCounter[(isWrite ? STACK_SIZE : 0) + (address & STACK_MASK)]++;
+    if(myZPAccessDelay[maskedAddr])
+      myZPAccessDelay[maskedAddr]--;
     else
-      myRAMAccessCounter[(isWrite ? RAM_SIZE : 0) + (address & RAM_MASK)]++;
+    {
+      if(isWrite)
+      {
+        if(address & STACK_BIT)
+          myStackPokeCounter[maskedAddr]++;
+        // The stack accesses will also be counted in myRAMPokeCounter
+        // and must later be subtracted if needed
+        myRAMPokeCounter[maskedAddr]++;
+      }
+      else
+      {
+        if(address & STACK_BIT)
+          myStackPeekCounter[maskedAddr]++;
+        // The stack accesses will also be counted in myRAMCodePeekCounter
+        // or myRAMDataPeekCounter and must later be subtracted if needed
+        if(flag == Device::CODE)
+          myRAMCodePeekCounter[maskedAddr]++;
+        else
+          myRAMDataPeekCounter[maskedAddr]++;
+      }
+    }
   }
 }
 
@@ -591,22 +623,32 @@ string M6532::getAccessCounters() const
 
   // Helper: append a labeled section
   const auto addSection = [&](string_view label, uInt16 baseAddr,
-                              uInt16 size, const auto& counters,
-                              uInt16 offset = 0)
+                              uInt16 size, const auto& counters)
   {
     out += label;
     out += '\n';
     for(uInt16 addr = 0x00; addr < size; ++addr)
-      addEntry(addr | baseAddr, counters[offset + addr]);
+      addEntry(addr | baseAddr, counters[addr]);
     out += '\n';
   };
 
-  addSection("RAM reads:\n",   0x080, RAM_SIZE,   myRAMAccessCounter,   0);
-  addSection("RAM writes:\n",  0x080, RAM_SIZE,   myRAMAccessCounter,   RAM_SIZE);
-  addSection("Stack reads:\n", 0x180, STACK_SIZE, myStackAccessCounter, 0);
-  addSection("Stack writes:\n",0x180, STACK_SIZE, myStackAccessCounter, STACK_SIZE);
-  addSection("IO reads:\n",    0x280, IO_SIZE,    myIOAccessCounter,    0);
-  addSection("IO writes:\n",   0x280, IO_SIZE,    myIOAccessCounter,    IO_SIZE);
+  // Create temporary access counter buffers with the stack subtracted from the RAM accesses
+  // (because we have counted stack accesses in both)
+  static_assert(RAM_SIZE == STACK_SIZE, "Size mismatch");
+  std::array<Device::AccessCounter, SZT(RAM_SIZE)> ramPeekCounterWOStack{};
+  std::array<Device::AccessCounter, SZT(RAM_SIZE)> ramPokeCounterWOStack{};
+  for (unsigned int i = 0; i < RAM_SIZE; i++)
+  {
+    ramPeekCounterWOStack[i] = myRAMCodePeekCounter[i] + myRAMDataPeekCounter[i] - myStackPeekCounter[i];
+    ramPokeCounterWOStack[i] = myRAMPokeCounter[i] - myStackPokeCounter[i];
+  }
+
+  addSection("RAM reads:\n",   0x080, RAM_SIZE,   ramPeekCounterWOStack);
+  addSection("RAM writes:\n",  0x080, RAM_SIZE,   ramPokeCounterWOStack);
+  addSection("Stack reads:\n", 0x180, STACK_SIZE, myStackPeekCounter);
+  addSection("Stack writes:\n",0x180, STACK_SIZE, myStackPokeCounter);
+  addSection("IO reads:\n",    0x280, IO_SIZE,    myIOPeekCounter);
+  addSection("IO writes:\n",   0x280, IO_SIZE,    myIOPokeCounter);
 
   return out;
 }

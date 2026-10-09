@@ -73,6 +73,23 @@ class PNGLibrary
                           const VariantList& metaData = VariantList{});
 
     /**
+      Save the given image data to a PNG file.
+
+      @param filename  The filename to save the PNG image
+      @param srcRect   The area of the surface to use
+      @param base      The base address pointing to the raw data to save
+      @param pitch     The pitch in words of the raw data (words per image line)
+      @param metaData  The meta data to add to the PNG image
+
+      @post  On success, the PNG file has been saved to 'filename',
+             otherwise a std::runtime_error is thrown containing a
+             more detailed error message.
+    */
+    static void saveImage(string_view filename, const Common::Rect& srcRect,
+                          const uInt32* base, uInt32 pitch,
+                          const VariantList& metaData = VariantList{});
+
+    /**
       Called at regular intervals, and used to determine whether a
       continuous snapshot is due to be taken.
 

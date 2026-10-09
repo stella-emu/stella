@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-7.0 to 8.0 (mmm dd, 2026)
+7.0 to 8.0 (Dec dd, 2026)
 
   * Ported Stella to SDL3, with all the improvements that the latest
     version of SDL provides (issue #978).
@@ -101,7 +101,7 @@
     - Duplicate label warning; debugger now warns when a label is defined
       that already exists
     - resMP1() display bug fixed in the debugger output
-    - Yacc/Bison (debugger parsing) code converted to modern C++
+    - Yacc/Bison (debugger prompt parsing) code converted to modern C++
     - Uppercase hex setting was not being saved; fixed
     - Cheat code dialog; double-Escape bug fixed, also fixes long-standing
       debugger "Search RAM" Escape lockup
@@ -130,6 +130,8 @@
     - Keymap and JoyMap switched from unordered_map to sorted vector with
       binary search (faster for sizes involved)
     - Fixed state save files being very large when they didn't need to be
+    - Dialog surfaces now upload up to 50% less data per frame, and bezels
+      up to 98% less data per frame
 
   * For the Windows port:
     - FSNodeWINDOWS now uses UTF-16 internally; fixes corruption and not

@@ -131,7 +131,7 @@ class M6532 : public Device
      */
     void updateEmulation();
 
-  #ifdef __LIB_RETRO__
+  #if (defined __LIB_RETRO__) || (defined DEBUGGER_SUPPORT)
     /**
       Get mutable RAM contents for direct external access (libretro cheat/memory interface).
 
@@ -159,8 +159,9 @@ class M6532 : public Device
       Increase the given address's access counter
 
       @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
     */
-    void increaseAccessCounter(uInt16 address, bool isWrite) override;
+    void increaseAccessCounter(uInt16 address, Device::AccessType flag) override;
 
     /**
       Query the access counters
@@ -168,6 +169,62 @@ class M6532 : public Device
       @return  The access counters as comma separated string
     */
     string getAccessCounters() const override;
+
+    /**
+      Get back the full access counters for code reads (reads of the program counter).
+
+      @return Pointer to the buffer holding the counters for each address of the RAM.
+    */
+    Device::AccessCounter* getRamCodePeekCounter() {
+      return myRAMCodePeekCounter.data();
+    }
+
+    /**
+      Get back the full access counters for data reads.
+
+      @return Pointer to the buffer holding the counters for each address of the RAM.
+    */
+    Device::AccessCounter* getRamDataPeekCounter() {
+      return myRAMDataPeekCounter.data();
+    }
+
+    /**
+      Get back the full access counters for data writes to the RAM.
+
+      @return Pointer to the buffer holding the counters for each address of the RAM.
+    */
+    Device::AccessCounter* getRamPokeCounter() {
+      return myRAMPokeCounter.data();
+    }
+
+    /**
+      Get the size of each access counter buffers which will be retrieved by
+      getRamCodePeekCounter(), getRamDataPeekCounter() and getRamPokeCounter().
+
+      @return Size in Device::AccessCounter values
+    */
+    static constexpr uInt32 getRamCounterSize() {
+      return RAM_SIZE;
+    }
+
+    /**
+      Get the offset position of the RAM access counters within the RAM.
+
+      @return Offset in bytes
+    */
+    static constexpr uInt32 getRamCounterOffset() {
+      return 0;
+    }
+
+    /**
+      Add the current number of timer read cycles to the total busy statistics counter
+    */
+    void updateBusyRateTimReadCycles() { myBusyRateTimReadCycles += myTimReadCycles; }
+
+    /**
+      Reset the current number of timer read cycles for the busy statistics
+    */
+    void resetBusyRate() { myBusyRateTimReadCycles = 0; }
 
     /**
       Reset the timer read CPU cycle counter
@@ -272,14 +329,26 @@ class M6532 : public Device
     std::array<Device::AccessType, RAM_SIZE>   myRAMAccessBase{};
     std::array<Device::AccessType, STACK_SIZE> myStackAccessBase{};
     std::array<Device::AccessType, IO_SIZE>    myIOAccessBase{};
+
     // The arrays containing information about every byte of RIOT
     // indicating how often it is accessed.
     std::array<Device::AccessCounter,
-      SZT(RAM_SIZE * 2)>   myRAMAccessCounter{};
+      SZT(RAM_SIZE)>       myRAMCodePeekCounter{};
     std::array<Device::AccessCounter,
-      SZT(STACK_SIZE * 2)> myStackAccessCounter{};
+      SZT(RAM_SIZE)>       myRAMDataPeekCounter{};
     std::array<Device::AccessCounter,
-      SZT(IO_SIZE * 2)>    myIOAccessCounter{};
+      SZT(RAM_SIZE)>       myRAMPokeCounter{};
+
+    std::array<Device::AccessCounter,
+      SZT(STACK_SIZE)>     myStackPeekCounter{};
+    std::array<Device::AccessCounter,
+      SZT(STACK_SIZE)>     myStackPokeCounter{};
+
+    std::array<Device::AccessCounter,
+      SZT(IO_SIZE)>        myIOPeekCounter{};
+    std::array<Device::AccessCounter,
+      SZT(IO_SIZE)>        myIOPokeCounter{};
+
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE> myZPAccessDelay{};
 
@@ -288,6 +357,7 @@ class M6532 : public Device
     bool myTimWrappedOnWrite{false};
     // Timer read CPU cycles
     uInt16 myTimReadCycles{0};
+    uInt64 myBusyRateTimReadCycles{0};
 #endif  // DEBUGGER_SUPPORT
 
   private:

@@ -34,6 +34,7 @@ void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
   uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
 
   *buffer = myPalette[color];
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,6 +111,21 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 
   while(x++ <= x2)
     *buffer++ = ink;
+  myPixelsDirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::hLineRgb(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
+{
+  if(!checkBounds(x, y) || !checkBounds(x2, 2))
+    return;
+
+  // NOLINTNEXTLINE(misc-const-correctness)
+  uInt32* buffer = myPixels + (y * SZT(myPitch)) + x;
+
+  while(x++ <= x2)
+    *buffer++ = color;
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,6 +142,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
     *buffer = ink;
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,6 +150,13 @@ void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
 {
   while(h--)
     hLine(x, y+h, x+w-1, color);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::fillRectRgb(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
+{
+  while(h--)
+    hLineRgb(x, y+h, x+w-1, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,6 +196,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     mask += glyph.stride;
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 #endif
 }
 
@@ -199,6 +224,7 @@ void FBSurface::drawIcon(const GUI::Icon& icon, uInt32 tx, uInt32 ty,
 
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 #endif
 }
 
@@ -211,32 +237,41 @@ void FBSurface::drawArrow(uInt32 tx, uInt32 ty, uInt32 w, uInt32 h,
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
     return;
 
-  const int aw = I32(w), ah = I32(h),
-            thick = I32(thickness);
+  const int thick = I32(thickness);
   uInt32* buffer = myPixels + (ty * SZT(myPitch)) + tx;
   const uInt32 ink = myPalette[color];
 
-  for(int y = 0; y < ah; ++y)
+  // An up/down arrow runs tip to base along y; a left/right one along x
+  const bool vertical = dir == ArrowDirection::Up || dir == ArrowDirection::Down;
+  const bool tipFirst = dir == ArrowDirection::Up || dir == ArrowDirection::Left;
+  const int length = I32(vertical ? h : w),
+            breadth = I32(vertical ? w : h);
+
+  for(int y = 0; y < I32(h); ++y)
   {
-    // How far down the arrow this row is, counting from the tip
-    const int t = (dir == ArrowDirection::Up) ? y : ah - 1 - y;
-
-    // The row's edges, measured in TWICE the distance from the centre line so
-    // that odd and even widths both come out exact with no rounding.  A filled
-    // arrow spans its box; a stroked one runs at 45 degrees and clips to it
-    const int outer = thick ? std::min(aw - 1, 2 * t)
-                            : (ah > 1 ? ((aw - 1) * t) / (ah - 1) : aw - 1);
-    const int inner = thick ? std::max(0, (2 * t) - (2 * (thick - 1))) : 0;
-
-    for(int x = 0; x < aw; ++x)
+    for(int x = 0; x < I32(w); ++x)
     {
-      const int d = std::abs((2 * x) - (aw - 1));
+      const int along = vertical ? y : x,
+                across = vertical ? x : y;
+
+      // How far along the arrow this pixel is, counting from the tip
+      const int t = tipFirst ? along : length - 1 - along;
+
+      // The edges at that point, measured in TWICE the distance from the centre
+      // line so that odd and even breadths both come out exact with no
+      // rounding.  A filled arrow spans its box; a stroked one runs at 45
+      // degrees and clips to it
+      const int outer = thick ? std::min(breadth - 1, 2 * t)
+                              : (length > 1 ? ((breadth - 1) * t) / (length - 1) : breadth - 1);
+      const int inner = thick ? std::max(0, (2 * t) - (2 * (thick - 1))) : 0;
+      const int d = std::abs((2 * across) - (breadth - 1));
 
       if(d >= inner && d <= outer + 1)
         buffer[x] = ink;
     }
     buffer += myPitch;
   }
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,6 +285,7 @@ void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 nump
 
   for(uInt32 i = 0; i < numpixels; ++i)
     *buffer++ = data[i];
+  myPixelsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -45,6 +45,9 @@ Cartridge4A50::Cartridge4A50(ByteSpan image, string_view md5,
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
   createRomAccessArrays(128_KB + myRAM.size());
+
+  // Store full image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = ByteSpan{myImage}.first(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -350,12 +353,6 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
     myImage[(address & 0xffU) + 0x1ff00] = value;
   }
   return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan Cartridge4A50::getImage() const
-{
-  return ByteSpan{myImage}.first(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

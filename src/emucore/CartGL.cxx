@@ -72,6 +72,11 @@ void CartridgeGL::install(System& system)
   mySystem->setPageAccess(0xd80, access);
 
   myReadOffset = myWriteOffset = 0;
+
+#ifdef DEBUGGER_SUPPORT
+  myRamPeekAccessOffset = U32(4_KB);
+  myRamPokeAccessOffset = U32(4_KB);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,3 +136,27 @@ uInt8 CartridgeGL::peek(uInt16 address)
 
   return myRWPRandomValues[address & 0xFFU];
 }
+
+#ifdef DEBUGGER_SUPPORT
+// Note: In theory a RAM bank could be mapped to multiple addresses at the
+// same time and we could return a vector. For now, I am keeping it simple
+// and only return the first found mapped address for display.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::RwAddress CartridgeGL::ramBankOrigin(uInt16 bank, uInt16 PC) const
+{
+  // Bring to RAM bank range (behind the ROM ones)
+  bank += romBankCount();
+
+  // Look if this bank is currently mapped on any segment
+  for (unsigned int segment = 0; segment < segmentCount(); segment++)
+  {
+    if (getSegmentBank(segment) == bank)
+    {
+      uInt16 segmentAddress = ROM_OFFSET + (segment << myBankShift);
+      return Common::RwAddress(true, segmentAddress);
+    }
+  }
+
+  return Common::RwAddress(false, ROM_OFFSET);
+}
+#endif

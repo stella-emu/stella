@@ -150,11 +150,11 @@ void LoggerDialog::saveLogFile(const FSNode& node)
   try
   {
     node.write(Logger::instance().logMessages());
-    instance().frameBuffer().showTextMessage("System log saved");
+    showTextMessage("System log saved");
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error saving system log");
+    showTextMessage("Error saving system log");
   }
 }
 

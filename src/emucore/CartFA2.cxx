@@ -26,6 +26,9 @@ CartridgeFA2::CartridgeFA2(ByteSpan image, string_view md5,
   // 29/32K version of FA2 has valid data @ 1K - 29K
   if(image.size() >= 29_KB)
     myImage.assign(image.begin() + 1_KB, image.begin() + 29_KB);
+
+  // myImage was reassigned above; refresh the scope stored by CartridgeEnhanced
+  myImageScopes[ImageScope::FULL] = myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

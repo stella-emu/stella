@@ -33,10 +33,10 @@ class BilinearBlitter : public Blitter {
 
     void reinitialize(
       SDL_Rect srcRect, SDL_Rect destRect, bool enableBlend,
-      uInt8 blendLevel, SDL_Surface* staticData = nullptr
+      uInt8 blendLevel, bool isStatic
     ) override;
 
-    void blit(SDL_Surface& surface) override;
+    void blit(SDL_Surface& surface, bool upload) override;
 
   private:
     FBBackendSDL& myFB;
@@ -60,7 +60,13 @@ class BilinearBlitter : public Blitter {
     bool myTexturesAreAllocated{false};
     bool myRecreateTextures{false};
 
-    SDL_Surface* myStaticData{nullptr};
+    // Static data changes rarely, so it gets a single texture created as
+    // SDL_TEXTUREACCESS_STATIC rather than a double-buffered streaming pair
+    bool myIsStatic{false};
+
+    // The textures don't hold the surface's current source rect yet, so the
+    // next blit must upload regardless of whether the pixels changed
+    bool myUploadPending{true};
 
   private:
 

@@ -376,6 +376,21 @@ class EventHandler
     DialogContainer& overlay() const  { return *myOverlay; }
     bool hasOverlay() const { return myOverlay != nullptr; }
 
+  #ifdef GUI_SUPPORT
+    /**
+      The container of the secondary window (see
+      FrameBuffer::openSecondaryWindow()) that the given platform window ID
+      belongs to, if any.  Events from such a window go to it in every state.
+    */
+    DialogContainer* containerForWindow(uInt32 windowID) const;
+  #endif
+
+    /**
+      The platform window ID of the window the mouse pointer is in, or 0
+      when it is in none of ours.
+    */
+    uInt32 currentWindowId() const { return myCurrentWindowId; }
+
     /**
       Return a simple list of all physical joysticks currently in the internal database
     */
@@ -455,12 +470,13 @@ class EventHandler
       Methods which are called by derived classes to handle specific types
       of input.
     */
-    void handleTextEvent(char text);
+    void handleTextEvent(char text, uInt32 windowID = 0);
     void handleMouseMotionEvent(int x, int y, int xrel, int yrel, uInt32 windowID = 0);
     void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y,
                                 uInt32 windowID = 0);
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated) {
-      myPKeyHandler->handleEvent(key, mod, pressed, repeated);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated,
+                        uInt32 windowID = 0) {
+      myPKeyHandler->handleEvent(key, mod, pressed, repeated, windowID);
     }
     void handleJoyBtnEvent(int stick, int button, bool pressed) {
       myPJoyHandler->handleBtnEvent(stick, button, pressed);
@@ -513,7 +529,7 @@ class EventHandler
 
       @param windowID  The platform window ID that received the close request
     */
-    void handleWindowCloseEvent(uInt32 windowID);
+    void handleWindowCloseEvent(uInt32 windowID) const;
 
     /**
       Add the given joystick to the list of physical joysticks available to
@@ -613,6 +629,9 @@ class EventHandler
     // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion{true};
 
+    // The window the mouse pointer is currently in (0 = none)
+    uInt32 myCurrentWindowId{0};
+
     // Whether the currently enabled console is emulating certain aspects
     // of the 7800 (for now, only the switches are notified)
     bool myIs7800{false};
@@ -636,7 +655,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 242 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 243 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 20
     ;
 

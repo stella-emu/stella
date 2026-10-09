@@ -222,6 +222,7 @@ class FBBackend
       Make the window user-resizable (or not).  Only meaningful for desktop
       windowed UI modes (the launcher, the debugger and its companion TIA
       window).  Each such window's owner sets its own minimum size, separately.
+      Takes effect on the next setVideoMode(), so call it before that.
     */
     virtual void setWindowResizable(bool resizable) { }
 
@@ -254,6 +255,14 @@ class FBBackend
     */
     virtual void beginLiveResize() { }
     virtual void endLiveResize() { }
+
+    /**
+      Force this backend's vsync on or off, overriding the 'vsync' setting
+      and beginLiveResize()/endLiveResize().  For a window that redraws every
+      emulation frame: presenting it must never block on its own monitor's
+      refresh, which could stall the primary window's pacing.
+    */
+    virtual void setVSyncEnabled(bool enable) { }
 
     /**
       The platform window ID of this backend's window, or 0 if no window

@@ -51,4 +51,7 @@ Cartridge2K::Cartridge2K(ByteSpan image, string_view md5,
   }
   else if(newSize < myImage.size())
     myImage.resize(newSize);
+
+  // myImage was resized above; refresh the scope stored by CartridgeEnhanced
+  myImageScopes[ImageScope::FULL] = myImage;
 }

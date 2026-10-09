@@ -41,6 +41,9 @@ CartridgeCTY::CartridgeCTY(ByteSpan image, string_view md5,
   // Subspan pointing to the first tune
   myFrequencyImage = myTuneData;
 
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
+
   myMusicCounters.fill(0);
   myMusicFrequencies.fill(0);
 }
@@ -262,8 +265,9 @@ bool CartridgeCTY::bank(uInt16 bank, uInt16)
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFFU)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFFU) + myAccessSize];
+    access.romCodePeekCounter = &myRomCodePeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romDataPeekCounter = &myRomDataPeekCounter[myBankOffset + (addr & 0x0FFFU)];
+    access.romPokeCounter = &myRomPokeCounter[myBankOffset + (addr & 0x0FFFU)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -297,12 +301,6 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
     myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeCTY::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

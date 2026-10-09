@@ -31,6 +31,7 @@
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "Bezel.hxx"
+#include "FBMessageHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -49,8 +50,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem{osystem},
-    myMsgHandler{*this, osystem}
+    myPrimaryWindow{myWindows.emplace_back()}
 {
+  myPrimaryWindow.msgHandler =
+    std::make_unique<FBMessageHandler>(*this, osystem, myPrimaryWindow);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,10 +64,10 @@ void FrameBuffer::initialize()
 {
   // First create the platform-specific backend; it is needed before anything
   // else can be used
-  myBackend = MediaFactory::createVideoBackend(myOSystem);
+  myPrimaryWindow.backend = MediaFactory::createVideoBackend(myOSystem);
 
   // Get desktop resolution and supported renderers
-  myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
+  myPrimaryWindow.backend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
 
 #ifdef GUI_SUPPORT
   // The smallest UI the current font can build; 'hidpi' in 'auto' mode weighs
@@ -114,8 +117,8 @@ void FrameBuffer::computeDesktopSizes()
     // Later, the output is scaled and rendered in 2x mode
     if(myHiDPIEnabled[display.first])
     {
-      size.w /= hidpiScaleFactor();
-      size.h /= hidpiScaleFactor();
+      size.w /= hidpiScaleFactor(myPrimaryWindow);
+      size.h /= hidpiScaleFactor(myPrimaryWindow);
     }
     myDesktopSize[display.first] = size;
   }
@@ -124,11 +127,11 @@ void FrameBuffer::computeDesktopSizes()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refreshHiDPI()
 {
-  const uInt32 oldScale = hidpiScaleFactor();
+  const uInt32 oldScale = hidpiScaleFactor(myPrimaryWindow);
 
   computeDesktopSizes();
 
-  if(hidpiScaleFactor() == oldScale)
+  if(hidpiScaleFactor(myPrimaryWindow) == oldScale)
     return;
 
   // Rebuild the window of whatever is on screen at the new scale.  The sizes
@@ -144,10 +147,10 @@ void FrameBuffer::refreshHiDPI()
 #endif
 
 #ifdef DEBUGGER_SUPPORT
-  // The debugger's companion window is a second backend with a window of its
-  // own, which the rebuild above does not reach
-  if(mySecondaryActive)
-    myOSystem.debugger().rescaleTiaWindow();
+  // Each open companion window is a second backend with a window of its own,
+  // which the rebuild above does not reach
+  if(secondaryWindowOpen())
+    myOSystem.debugger().rescaleSecondaryWindows();
 #endif
 }
 
@@ -186,18 +189,14 @@ bool FrameBuffer::wantsHiDPI(const Common::Size& desktop) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::displayId(BufferType bufferType) const
+uInt32 FrameBuffer::displayId(const WindowState& win, BufferType bufferType) const
 {
   uInt32 display = 0;
 
-  if(bufferType == myWindow.bufferType || bufferType == BufferType::None)
-    display = myBackend->getCurrentDisplayID();
+  if(bufferType == win.bufferType || bufferType == BufferType::None)
+    display = win.backend->getCurrentDisplayID();
   else
-    display = myOSystem.settings().getInt(
-      getDisplayKey(bufferType != BufferType::None
-        ? bufferType
-        : myWindow.bufferType)
-    );
+    display = myOSystem.settings().getInt(getDisplayKey(bufferType));
 
   // If the requested display ID is not available, default to the first one
   // in the container (normally the primary display)
@@ -252,18 +251,26 @@ void FrameBuffer::setupTIAMinZoom()
 FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
                                         Common::Size size, bool honourHiDPI)
 {
+  return createDisplay(myPrimaryWindow, title, type, size, honourHiDPI);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBInitStatus FrameBuffer::createDisplay(WindowState& win, string_view title, BufferType type,
+                                        Common::Size size, bool honourHiDPI)
+{
   ++myInitializedCount;
-  myBackend->setTitle(title);
+  win.backend->setTitle(title);
 
   // Always save, maybe only the mode of the window has changed
-  saveCurrentWindowPosition();
-  myWindow.bufferType = type;
+  saveCurrentWindowPosition(win);
+  win.bufferType = type;
 
-  // In HiDPI mode, all created displays must be scaled appropriately
-  if(honourHiDPI && hidpiEnabled())
+  // In HiDPI mode, all created displays must be scaled appropriately, by
+  // this window's own display (a companion window may be on another monitor)
+  if(honourHiDPI && myHiDPIEnabled.at(displayId(win)))
   {
-    size.w *= hidpiScaleFactor();
-    size.h *= hidpiScaleFactor();
+    size.w *= hidpiScaleFactor(win);
+    size.h *= hidpiScaleFactor(win);
   }
 
   // A 'windowed' system is defined as one where the window size can be
@@ -276,7 +283,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   // If the WINDOWED_SUPPORT macro is defined, we treat the system as the
   // former type; if not, as the latter type
 
-  const int display = displayId();
+  const int display = displayId(win);
 #ifdef WINDOWED_SUPPORT
   // We assume that a desktop of at least minimum acceptable size means that
   // we're running on a 'large' system, and the window size requirements
@@ -294,7 +301,7 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
     return FBInitStatus::FailTooLarge;
 #endif
 
-  if(myWindow.bufferType == BufferType::Emulator)
+  if(win.bufferType == BufferType::Emulator)
   {
     myBezel->load(); // make sure we have the correct bezel size
 
@@ -304,18 +311,24 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
       BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
 
-  myMsgHandler.init();
+  win.msgHandler->init();
 
-  // Initialize video mode handler, so it can know what video modes are
-  // appropriate for the requested image size
-  myVidModeHandler.setImageSize(size);
+  // The image size applyVideoMode() builds this window's video modes from
+  win.imageSize = size;
+
+  // Set before the window is shown, otherwise the compositor may draw the
+  // wrong decorations.  Each resizable window's owner sets its own minimum.
+  win.backend->setWindowResizable(isResizable(win.bufferType));
+
+  // A new owner of the window sets its own minimum after this
+  win.minSize = Common::Size();
 
   // Initialize video subsystem
-  const string pre_about = myBackend->about();
-  const FBInitStatus status = applyVideoMode();
+  const string pre_about = win.backend->about();
+  const FBInitStatus status = applyVideoMode(win);
 
   // Only set phosphor once when ROM is started
-  if(myOSystem.eventHandler().inTIAMode())
+  if(inTIAMode(win))
   {
     // Phosphor mode can be enabled either globally or per-ROM
     int p_blend = 0;
@@ -350,26 +363,14 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
   if(status != FBInitStatus::Success)
     return status;
 
-  // The launcher, debugger and companion TIA windows may be freely resized by
-  // the user; all other UI/TIA windows keep their fixed size.  Each resizeable
-  // window's owner applies its own minimum, right after this, via
-  // setWindowMinSize(); imposing one here would enlarge a window the user had
-  // dragged smaller.  (FBMinimum is the TIA emulation-mode floor, sized so the
-  // dialogs fit over the image — not a UI window minimum.)
-  myBackend->setWindowResizable(isResizable(myWindow.bufferType));
-
-  // setVideoMode() cleared the window's minimum, so forget what we last
-  // forwarded, or the owner's (unchanged) minimum would not be re-applied
-  myWindow.minSize = Common::Size();
-
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
   {
-    Logger::info(myBackend->about());
+    Logger::info(win.backend->about());
   }
   else
   {
-    const string post_about = myBackend->about();
+    const string post_about = win.backend->about();
     if(post_about != pre_about)
       Logger::info(post_about);
   }
@@ -380,7 +381,13 @@ FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setWindowMinSize(const Common::Size& size)
 {
-  const uInt32 scale = hidpiScaleFactor();
+  setWindowMinSize(myPrimaryWindow, size);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setWindowMinSize(WindowState& win, const Common::Size& size) const
+{
+  const uInt32 scale = hidpiScaleFactor(win);
   const Common::Size scaled(size.w * scale, size.h * scale);
 
   // The content minimum is font-invariant, so a resizeable dialog re-asserts
@@ -388,19 +395,25 @@ void FrameBuffer::setWindowMinSize(const Common::Size& size)
   // being dragged.  Re-applying an unchanged minimum mid-drag is wasteful and
   // can interfere with the interactive resize, so forward it to the backend
   // only when it actually changes.
-  if(scaled == myWindow.minSize)
+  if(scaled == win.minSize)
     return;
-  myWindow.minSize = scaled;
-  myBackend->setWindowMinSize(scaled);
+  win.minSize = scaled;
+  win.backend->setWindowMinSize(scaled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::growWindowTo(const Common::Size& minSize)
 {
-  setWindowMinSize(minSize);
+  growWindowTo(myPrimaryWindow, minSize);
+}
 
-  const uInt32 scale = hidpiScaleFactor();
-  const Common::Rect& r = imageRect();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::growWindowTo(WindowState& win, const Common::Size& minSize)
+{
+  setWindowMinSize(win, minSize);
+
+  const uInt32 scale = hidpiScaleFactor(win);
+  const Common::Rect& r = imageRect(win);
   const Common::Size current(r.w() / scale, r.h() / scale);
 
   if(current.w >= minSize.w && current.h >= minSize.h)
@@ -410,49 +423,62 @@ void FrameBuffer::growWindowTo(const Common::Size& minSize)
   const Common::Size& d = desktopSize();
   grown.clamp(minSize.w, d.w, minSize.h, d.h);
 
-  myBackend->resizeWindow(Common::Size(grown.w * scale, grown.h * scale));
+  win.backend->resizeWindow(Common::Size(grown.w * scale, grown.h * scale));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::handleResize(int width, int height)
 {
+  handleResize(myPrimaryWindow, width, height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::handleResize(WindowState& win, int width, int height)
+{
   // Only the launcher and debugger windows are user-resizable
-  if(myWindow.bufferType != BufferType::Launcher &&
-     myWindow.bufferType != BufferType::Debugger)
+  if(win.bufferType != BufferType::Launcher &&
+     win.bufferType != BufferType::Debugger)
     return;
 
   // The new window size becomes the new UI image/screen size
-  myVidModeHandler.setImageSize(Common::Size(width, height));
-  myWindow.vidMode = myVidModeHandler.buildMode(
+  win.imageSize = Common::Size(width, height);
+  myVidModeHandler.setImageSize(win.imageSize);
+  win.vidMode = myVidModeHandler.buildMode(
       myOSystem.settings(), false, myBezel->info());
 
   // The window already has its new size; refresh the backend's cached
   // dimensions so the blitters scale correctly, then reload all surfaces
-  myBackend->refreshDimensions();
-  resetSurfaces();
+  win.backend->refreshDimensions();
+  resetSurfaces(win);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::liveResize(int width, int height)
 {
+  return liveResize(myPrimaryWindow, width, height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::liveResize(WindowState& win, int width, int height)
+{
   // The launcher, the debugger and its companion TIA window are the only
   // user-resizable windows, and all re-flow live; everything else resizes
   // immediately via handleResize()
-  if(!isResizable(myWindow.bufferType))
+  if(!isResizable(win.bufferType))
     return false;
 
-  myWindow.pendingResize = Common::Size(width, height);
-  myWindow.liveResizePending = true;
+  win.pendingResize = Common::Size(width, height);
+  win.liveResizePending = true;
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::applyLiveResize()
+bool FrameBuffer::applyLiveResize(WindowState& win)
 {
-  if(!myWindow.liveResizePending)
+  if(!win.liveResizePending)
     return false;
 
-  myWindow.liveResizePending = false;
+  win.liveResizePending = false;
 
   // Rebuild the UI video mode for the new window size and refresh the backend's
   // cached dimensions.  Deliberately does NOT reload surfaces or present: each
@@ -461,32 +487,45 @@ bool FrameBuffer::applyLiveResize()
   // (Reloading here would re-upload every texture every frame.)
   // Let the backend trade whatever it must to keep up with the drag; undone by
   // resizeSettled()
-  myBackend->beginLiveResize();
+  win.backend->beginLiveResize();
 
-  myVidModeHandler.setImageSize(myWindow.pendingResize);
-  myWindow.vidMode = myVidModeHandler.buildMode(
+  win.imageSize = win.pendingResize;
+  myVidModeHandler.setImageSize(win.imageSize);
+  win.vidMode = myVidModeHandler.buildMode(
       myOSystem.settings(), false, myBezel->info());
-  myBackend->refreshDimensions();
+  win.backend->refreshDimensions();
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resizeSettled()
 {
-  myBackend->endLiveResize();
+  resizeSettled(myPrimaryWindow);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::resizeSettled(WindowState& win)
+{
+  win.backend->endLiveResize();
 
   // Restoring vsync disturbs the frame already on screen, so put a correct one
   // up now.  Otherwise it lingers until something else happens to draw -- in
   // the debugger, idle, that is seconds
-  update(UpdateMode::REDRAW);
+  update(win, UpdateMode::REDRAW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::update(UpdateMode mode)
 {
+  update(myPrimaryWindow, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::update(WindowState& win, UpdateMode mode)
+{
   // Ignore re-entrant renders triggered by the SDL event-watch hook while a
   // backend is still building its renderer (see myInVideoMode).  The pending
-  // frame is reissued once applyVideoMode() completes (myPendingRender).
+  // frame is reissued once applyVideoMode() completes (win.pendingRender).
   if(myInVideoMode)
     return;
 
@@ -504,12 +543,14 @@ void FrameBuffer::update(UpdateMode mode)
 
   // Forced render without draw required if messages or dialogs were closed
   // Note: For dialogs only relevant when two or more dialogs were stacked
-  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
-                         || myPendingRender);
-  myPendingRender = false;
+  // A dialog's tick() can request a render too (e.g. a tooltip appearing),
+  // so the GUI states below check again after ticking
+  bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
+                   || win.pendingRender);
+  win.pendingRender = false;
 
   // Show any messages enqueued from other threads (e.g. PlusROM/cart callbacks)
-  myMsgHandler.drainPending();
+  myPrimaryWindow.msgHandler->drainPending();
 
   switch(myOSystem.eventHandler().state())
   {
@@ -523,7 +564,7 @@ void FrameBuffer::update(UpdateMode mode)
       // Show a pause message immediately and then every 7 seconds
       const bool shade = myOSystem.settings().getBool("pausedim");
 
-      if(myMsgHandler.tickPause())
+      if(myPrimaryWindow.msgHandler->tickPause())
       {
         showTextMessage("Paused", MessagePosition::MiddleCenter);
         renderTIA(false, shade);
@@ -544,6 +585,7 @@ void FrameBuffer::update(UpdateMode mode)
       // the active DialogContainer is tracked by EventHandler::overlay()
       DialogContainer& overlay = myOSystem.eventHandler().overlay();
       overlay.tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= overlay.needsRedraw();
       if(redraw)
       {
@@ -561,6 +603,7 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::TIMEMACHINE:
     {
       myOSystem.timeMachine().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.timeMachine().needsRedraw();
       if(redraw)
       {
@@ -617,6 +660,7 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::LAUNCHER:
     {
       myOSystem.launcher().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.launcher().needsRedraw();
       if(redraw)
         myOSystem.launcher().draw(forceRedraw);
@@ -630,6 +674,7 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::DEBUGGER:
     {
       myOSystem.debugger().tick();
+      rerender |= std::exchange(win.pendingRender, false);
       redraw |= myOSystem.debugger().needsRedraw();
       if(redraw)
         myOSystem.debugger().draw(forceRedraw);
@@ -647,25 +692,12 @@ void FrameBuffer::update(UpdateMode mode)
   // If the message is to be disabled, logic inside the draw method
   // indicates that, and then the code at the top of this method sees
   // the change and redraws everything
-  if(myMsgHandler.isShown())
-    redraw |= myMsgHandler.draw();
+  if(win.msgHandler->isShown())
+    redraw |= win.msgHandler->draw();
 
   // Push buffers to screen only when necessary
   if(redraw || rerender)
-    myBackend->renderToScreen();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setRenderTarget(int target)
-{
-  if(target == myRenderTarget)
-    return;
-
-  // Swap only the per-window state; everything else (palette, fonts,
-  // TIASurface, message handler, desktop maps) is shared and stays put.
-  std::swap(myBackend, myOtherBackend);
-  std::swap(myWindow, myOtherWindow);
-  myRenderTarget = target;
+    win.backend->renderToScreen();
 }
 
 #ifdef GUI_SUPPORT
@@ -675,30 +707,42 @@ FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
                                               Common::Size size,
                                               Common::Size minSize)
 {
-  setRenderTarget(1);
-
-  // Lazily create the secondary backend (its own window + renderer).  The
-  // shared state (palette/fonts/TIASurface) already exists from the primary.
-  if(!mySecondaryCreated)
+  // Fullscreen and multiple windows don't mix (see toggleFullscreen())
+  if(fullScreen())
   {
-    myBackend = MediaFactory::createVideoBackend(myOSystem);
-    myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
-    mySecondaryCreated = true;
+    showTextMessage("Not available in fullscreen mode");
+    return FBInitStatus::FailNotSupported;
   }
 
-  const FBInitStatus status = createDisplay(title, type, size);
+  // First call for this container: give it its own window, kept (hidden, not
+  // destroyed) across close/re-open, so a later call reuses it
+  if(container.myWindow == &myPrimaryWindow)
+  {
+    WindowState& win = myWindows.emplace_back();
+    win.backend = MediaFactory::createVideoBackend(myOSystem);
+    win.msgHandler = std::make_unique<FBMessageHandler>(*this, myOSystem, win);
+    win.backend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
+    container.myWindow = &win;
+    win.container = &container;
+  }
+  WindowState& win = *container.myWindow;
+
+  const FBInitStatus status = createDisplay(win, title, type, size);
   if(status == FBInitStatus::Success)
   {
-    setWindowMinSize(minSize);
+    setWindowMinSize(win, minSize);
 
-    // Open the container's base dialog; its surfaces bind to this (secondary)
-    // backend because it is the current render target.
     container.reStack();
-    myBackend->setWindowVisible(true);
-    mySecondaryActive = true;
+    win.backend->setWindowVisible(true);
+    win.active = true;
+
+    // The memory-view window redraws every emulation frame, so presenting it
+    // must never block on vsync, which could stall the primary window's
+    // pacing.  The TIA window redraws only when dirty, so keeps normal vsync.
+    win.vsyncAlwaysOff = (type == BufferType::MemViewWindow);
+    win.backend->setVSyncEnabled(!win.vsyncAlwaysOff);
   }
 
-  setRenderTarget(0);
   return status;
 }
 
@@ -706,99 +750,115 @@ FBInitStatus FrameBuffer::openSecondaryWindow(DialogContainer& container,
 bool FrameBuffer::resizeSecondaryWindow(DialogContainer& container,
                                         int width, int height)
 {
-  if(!mySecondaryActive)
+  if(container.myWindow == &myPrimaryWindow || !container.myWindow->active)
     return false;
 
-  setRenderTarget(1);
-
-  // The container's dialogs own surfaces bound to this backend, so both the
-  // video mode rebuild and the re-flow must happen while it is the target
-  const bool applied = liveResize(width, height) && container.applyResize();
-
-  setRenderTarget(0);
-  return applied;
+  return liveResize(*container.myWindow, width, height) && container.applyResize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::settleSecondaryWindow(DialogContainer& container)
 {
-  if(!mySecondaryActive)
+  if(container.myWindow == &myPrimaryWindow || !container.myWindow->active)
     return;
 
-  // The trade was made against this window's own backend, so it must be the
-  // target here too
-  setRenderTarget(1);
+  WindowState& win = *container.myWindow;
 
-  myBackend->endLiveResize();
+  win.backend->endLiveResize();
+  // endLiveResize() just restored the backend's normal vsync setting; put
+  // the always-off override back for a window that needs it
+  if(win.vsyncAlwaysOff)
+    win.backend->setVSyncEnabled(false);
 
   // Restoring vsync disturbs the frame already on screen, so put a correct one
   // up now; see resizeSettled()
-  updateContainer(container, UpdateMode::RERENDER);
-
-  setRenderTarget(0);
+  updateContainer(win, container, UpdateMode::RERENDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::renderSecondaryWindow(DialogContainer& container, UpdateMode mode)
 {
-  if(!mySecondaryActive)
+  if(container.myWindow == &myPrimaryWindow || !container.myWindow->active)
     return;
 
-  setRenderTarget(1);
-  updateContainer(container, mode);
-  setRenderTarget(0);
+  updateContainer(*container.myWindow, container, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::closeSecondaryWindow(DialogContainer& container)
+{
+  if(container.myWindow == &myPrimaryWindow || !container.myWindow->active)
+    return;
+
+  // Keep the backend and surfaces alive for a fast re-open; just hide it
+  container.myWindow->backend->setWindowVisible(false);
+  container.myWindow->active = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::destroySecondaryWindow(DialogContainer& container)
+{
+  // Surfaces are declared after the backend, so they go first
+  std::erase_if(myWindows, [this, &container](const WindowState& win) {
+    return &win != &myPrimaryWindow && win.container == &container;
+  });
+  container.myWindow = &myPrimaryWindow;
 }
 #endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::closeSecondaryWindow()
+bool FrameBuffer::secondaryWindowOpen() const
 {
-  if(!mySecondaryActive)
-    return;
-
-  // Keep the backend and surfaces alive for a fast re-open; just hide it
-  setRenderTarget(1);
-  myBackend->setWindowVisible(false);
-  setRenderTarget(0);
-  mySecondaryActive = false;
+  for(const WindowState& win: myWindows)
+    if(&win != &myPrimaryWindow && win.active)
+      return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::primaryWindowId() const
 {
-  return primaryBackend().windowId();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::secondaryWindowId() const
-{
-  return mySecondaryCreated ? secondaryBackend().windowId() : 0;
+  return myPrimaryWindow.backend->windowId();
 }
 
 #ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::updateContainer(DialogContainer& container, UpdateMode mode)
+void FrameBuffer::updateContainer(WindowState& win, DialogContainer& container, UpdateMode mode)
 {
   const bool forceRedraw = (mode == UpdateMode::REDRAW);
   bool redraw = forceRedraw;
-  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
-                         || myPendingRender);
-  myPendingRender = false;
 
+  // Tick first: it can request a render (e.g. a tooltip appearing, or a
+  // widget that updated its own surfaces), which belongs in this frame
   container.tick();
+
+  const bool rerender = (mode == UpdateMode::REDRAW || mode == UpdateMode::RERENDER
+                         || win.pendingRender);
+  win.pendingRender = false;
+
   redraw |= container.needsRedraw();
   if(redraw)
     container.draw(forceRedraw);
   else if(rerender)
     container.render();
 
+  // Draw any pending messages, last, so they're on top (see update())
+  if(win.msgHandler->isShown())
+    redraw |= win.msgHandler->draw();
+
   if(redraw || rerender)
-    myBackend->renderToScreen();
+    win.backend->renderToScreen();
 }
 #endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::updateInEmulationMode(float framesPerSecond)
+{
+  updateInEmulationMode(myPrimaryWindow, framesPerSecond);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::updateInEmulationMode(WindowState& win, float framesPerSecond)
 {
   // Update method that is specifically tailored to emulation mode
   //
@@ -809,75 +869,75 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 
   // Show any messages enqueued from the emulation worker thread (e.g. AR
   // Supercharger load notifications) before drawing them this frame
-  myMsgHandler.drainPending();
+  myPrimaryWindow.msgHandler->drainPending();
 
   // Show frame statistics
-  if(myMsgHandler.statsShown())
-    myMsgHandler.drawStats(framesPerSecond);
+  if(myPrimaryWindow.msgHandler->statsShown())
+    myPrimaryWindow.msgHandler->drawStats(framesPerSecond);
 
-  myMsgHandler.onEmulationFrame();
+  myPrimaryWindow.msgHandler->onEmulationFrame();
 
   // Draw any pending messages
-  if(myMsgHandler.isShown())
-    myMsgHandler.draw();
+  if(win.msgHandler->isShown())
+    win.msgHandler->draw();
 
   // Push buffers to screen
-  myBackend->renderToScreen();
+  win.backend->renderToScreen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showTextMessage(string_view message,
-                                  MessagePosition position, bool force)
+                                  MessagePosition position, bool force) const
 {
 #ifdef GUI_SUPPORT
-  myMsgHandler.showText(message, position, force);
+  myPrimaryWindow.msgHandler->showText(message, position, force);
 #else
-  if(myBackend && (force || myOSystem.settings().getBool("uimessages")))
-    myBackend->showMessage(message);
+  if(myPrimaryWindow.backend && (force || myOSystem.settings().getBool("uimessages")))
+    myPrimaryWindow.backend->showMessage(message);
 #endif  // GUI_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
-                                   float value, float minValue, float maxValue)
+                                   float value, float minValue, float maxValue) const
 {
 #ifdef GUI_SUPPORT
-  myMsgHandler.showGauge(message, valueText, value, minValue, maxValue);
+  myPrimaryWindow.msgHandler->showGauge(message, valueText, value, minValue, maxValue);
 #else
-  if(myBackend && (myOSystem.settings().getBool("uimessages")))
-    myBackend->showGaugeMessage(message, valueText, value, minValue, maxValue);
+  if(myPrimaryWindow.backend && (myOSystem.settings().getBool("uimessages")))
+    myPrimaryWindow.backend->showGaugeMessage(message, valueText, value, minValue, maxValue);
 #endif  // GUI_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::messageShown() const
 {
-  return myMsgHandler.isShown();
+  return myPrimaryWindow.msgHandler->isShown();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFrameStats(bool toggle)
 {
   if(toggle)
-    myMsgHandler.showStats(!myMsgHandler.statsEnabled());
+    myPrimaryWindow.msgHandler->showStats(!myPrimaryWindow.msgHandler->statsEnabled());
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats",
-    myMsgHandler.statsEnabled());
+    myPrimaryWindow.msgHandler->statsEnabled());
 
   showTextMessage(std::format("Console info {}",
-    myMsgHandler.statsEnabled() ? "enabled" : "disabled"));
+    myPrimaryWindow.msgHandler->statsEnabled() ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showFrameStats(bool enable)
+void FrameBuffer::showFrameStats(bool enable) const
 {
-  myMsgHandler.showStats(enable);
+  myPrimaryWindow.msgHandler->showStats(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::enableMessages(bool enable)
 {
-  myMsgHandler.enable(enable);
+  myPrimaryWindow.msgHandler->enable(enable);
   if(!enable)
   {
     // Update immediately
@@ -889,33 +949,33 @@ void FrameBuffer::enableMessages(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setPauseDelay()
+void FrameBuffer::setPauseDelay() const
 {
-  myMsgHandler.setPauseDelay();
+  myPrimaryWindow.msgHandler->setPauseDelay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<FBSurface> FrameBuffer::allocateSurface(
-    int w, int h, ScalingInterpolation inter, const uInt32* data)
+    WindowState& win, int w, int h, ScalingInterpolation inter, const uInt32* data)
 {
-  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
-  return mySurfaceList.back();
+  win.surfaceList.push_back(win.backend->createSurface(w, h, inter, data));
+  return win.surfaceList.back();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::deallocateSurface(const shared_ptr<FBSurface>& surface)
+void FrameBuffer::deallocateSurface(WindowState& win, const shared_ptr<FBSurface>& surface)
 {
   if(surface)
-    mySurfaceList.remove(surface);
+    win.surfaceList.remove(surface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resetSurfaces()
+void FrameBuffer::resetSurfaces(WindowState& win)
 {
-  for(const auto& surface: mySurfaceList)
+  for(const auto& surface: win.surfaceList)
     surface->reload();
 
-  update(UpdateMode::REDRAW); // force full update
+  update(win, UpdateMode::REDRAW); // force full update
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1016,17 +1076,14 @@ void FrameBuffer::setDisasmPalette()
 void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Prevent removing state change messages (brand-new ones survive transitions)
-  if(!myMsgHandler.msgJustShown())
-    myMsgHandler.hide();
+  if(!myPrimaryWindow.msgHandler->msgJustShown())
+    myPrimaryWindow.msgHandler->hide();
   update(); // update immediately
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
+string_view FrameBuffer::getDisplayKey(BufferType bufferType)
 {
-  if(bufferType == BufferType::None)
-    bufferType = myWindow.bufferType;
-
   // save current window's display and position
   switch(bufferType)
   {
@@ -1042,6 +1099,9 @@ string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
 
     case BufferType::TiaWindow:
       return "tiawindow.display";
+
+    case BufferType::MemViewWindow:
+      return "memview.display";
     #endif
 
     default:
@@ -1050,11 +1110,8 @@ string_view FrameBuffer::getDisplayKey(BufferType bufferType) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string_view FrameBuffer::getPositionKey(BufferType bufferType) const
+string_view FrameBuffer::getPositionKey(BufferType bufferType)
 {
-  if(bufferType == BufferType::None)
-    bufferType = myWindow.bufferType;
-
   // save current window's display and position
   switch(bufferType)
   {
@@ -1070,6 +1127,9 @@ string_view FrameBuffer::getPositionKey(BufferType bufferType) const
 
     case BufferType::TiaWindow:
       return "tiawindow.pos";
+
+    case BufferType::MemViewWindow:
+      return "memview.pos";
     #endif
 
     default:
@@ -1088,36 +1148,35 @@ void FrameBuffer::savePosition(const FBBackend& backend, BufferType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::saveCurrentWindowPosition() const
+void FrameBuffer::saveCurrentWindowPosition(const WindowState& win) const
 {
-  if(myBackend)
-    savePosition(*myBackend, myWindow.bufferType);
+  if(win.backend)
+    savePosition(*win.backend, win.bufferType);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::saveWindowPosition(uInt32 windowId) const
 {
-  // Each window keeps its own position/display keys, and the one that moved is
-  // not necessarily the current render target
-  if(windowId == primaryWindowId())
-    savePosition(primaryBackend(), primaryWindow().bufferType);
-  else if(mySecondaryCreated && windowId == secondaryWindowId())
-    savePosition(secondaryBackend(), secondaryWindow().bufferType);
+  // Each window keeps its own position/display keys
+  for(const WindowState& win: myWindows)
+    if(win.backend && win.backend->windowId() == windowId)
+    {
+      saveCurrentWindowPosition(win);
+      return;
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::saveConfig(Settings& settings) const
 {
-  // Save the last windowed position and display of each window on shutdown.
-  // The secondary window is never the render target here, so it needs its own
-  // pass (it keeps its window alive even while hidden)
-  saveCurrentWindowPosition();
-  if(mySecondaryCreated)
-    savePosition(secondaryBackend(), secondaryWindow().bufferType);
+  // Save the last windowed position and display of every window on shutdown
+  // (a hidden secondary window keeps its backend alive, so it needs saving too)
+  for(const WindowState& win: myWindows)
+    saveCurrentWindowPosition(win);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setFullscreen(bool enable)
+void FrameBuffer::setFullscreen(WindowState& win, bool enable)
 {
 #ifdef WINDOWED_SUPPORT
   // Switching between fullscreen and windowed modes will invariably mean
@@ -1142,13 +1201,19 @@ void FrameBuffer::setFullscreen(bool enable)
   }
 
   myOSystem.settings().setValue("fullscreen", enable);
-  saveCurrentWindowPosition();
-  applyVideoMode();
+  saveCurrentWindowPosition(win);
+  applyVideoMode(win);
 #endif  // WINDOWED_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
+{
+  toggleFullscreen(myPrimaryWindow, toggle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleFullscreen(WindowState& win, bool toggle)
 {
   const EventHandlerState state = myOSystem.eventHandler().state();
 
@@ -1160,7 +1225,15 @@ void FrameBuffer::toggleFullscreen(bool toggle)
     case EventHandlerState::DEBUGGER:
     {
       const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
-      setFullscreen(isFullscreen);
+
+      // Fullscreen and multiple windows don't mix (see also
+      // openSecondaryWindow())
+      if(isFullscreen && secondaryWindowOpen())
+      {
+        showTextMessage("Fullscreen not available while other windows are open");
+        break;
+      }
+      setFullscreen(win, isFullscreen);
 
       if(state != EventHandlerState::LAUNCHER)
       {
@@ -1170,11 +1243,11 @@ void FrameBuffer::toggleFullscreen(bool toggle)
         {
           const string msg = isFullscreen
             ? std::format("Fullscreen {} ({} Hz, Zoom {}%)",
-                state_str, myBackend->refreshRate(),
-                I32(round(myWindow.vidMode.zoom * 100)))
+                state_str, win.backend->refreshRate(),
+                I32(round(win.vidMode.zoom * 100)))
             : std::format("Fullscreen {} (Zoom {}%)",
                 state_str,
-                I32(round(myWindow.vidMode.zoom * 100)));
+                I32(round(win.vidMode.zoom * 100)));
           showTextMessage(msg);
         }
         else
@@ -1191,12 +1264,18 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleAdaptRefresh(bool toggle)
 {
+  toggleAdaptRefresh(myPrimaryWindow, toggle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleAdaptRefresh(WindowState& win, bool toggle)
+{
   bool isAdaptRefresh = myOSystem.settings().getInt("tia.fs_refresh");
 
   if(toggle)
     isAdaptRefresh = !isAdaptRefresh;
 
-  if(myWindow.bufferType == BufferType::Emulator)
+  if(win.bufferType == BufferType::Emulator)
   {
     if(toggle)
     {
@@ -1207,7 +1286,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
 
     showTextMessage(std::format("Adapt refresh rate {} ({} Hz)",
       isAdaptRefresh ? "enabled" : "disabled",
-      myBackend->refreshRate()));
+      win.backend->refreshRate()));
   }
 }
 #endif  // ADAPTABLE_REFRESH_SUPPORT
@@ -1238,8 +1317,14 @@ void FrameBuffer::changeOverscan(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::switchVideoMode(int direction)
 {
+  switchVideoMode(myPrimaryWindow, direction);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::switchVideoMode(WindowState& win, int direction)
+{
   // Only applicable when in TIA/emulation mode
-  if(!myOSystem.eventHandler().inTIAMode())
+  if(!inTIAMode(win))
     return;
 
   if(!fullScreen())
@@ -1264,14 +1349,14 @@ void FrameBuffer::switchVideoMode(int direction)
     }
   }
 
-  saveCurrentWindowPosition();
-  if(!direction || applyVideoMode() == FBInitStatus::Success)
+  saveCurrentWindowPosition(win);
+  if(!direction || applyVideoMode(win) == FBInitStatus::Success)
   {
     if(fullScreen())
-      showTextMessage(myWindow.vidMode.description);
+      showTextMessage(win.vidMode.description);
     else
-      showGaugeMessage("Zoom", myWindow.vidMode.description,
-                       FLT(myWindow.vidMode.zoom),
+      showGaugeMessage("Zoom", win.vidMode.description,
+                       FLT(win.vidMode.zoom),
                        FLT(supportedTIAMinZoom()),
                        FLT(supportedTIAMaxZoom()));
   }
@@ -1280,9 +1365,15 @@ void FrameBuffer::switchVideoMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleBezel(bool toggle)
 {
+  toggleBezel(myPrimaryWindow, toggle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleBezel(WindowState& win, bool toggle)
+{
   bool enabled = myOSystem.settings().getBool("bezel.show");
 
-  if(toggle && myWindow.bufferType == BufferType::Emulator)
+  if(toggle && win.bufferType == BufferType::Emulator)
   {
     if(!fullScreen() && !myOSystem.settings().getBool("bezel.windowed"))
     {
@@ -1305,8 +1396,8 @@ void FrameBuffer::toggleBezel(bool toggle)
         myOSystem.settings().setValue("tia.zoom",
           BSPF::clamp(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
 
-        saveCurrentWindowPosition();
-        applyVideoMode();
+        saveCurrentWindowPosition(win);
+        applyVideoMode(win);
       }
     }
   }
@@ -1314,27 +1405,48 @@ void FrameBuffer::toggleBezel(bool toggle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::applyVideoMode()
+DialogContainer* FrameBuffer::containerForWindowId(uInt32 id) const
+{
+  if(id == 0)
+    return nullptr;
+
+  for(const WindowState& win: myWindows)
+    if(&win != &myPrimaryWindow && win.active && win.backend && windowId(win) == id)
+      return win.container;
+
+  return nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::inTIAMode(const WindowState& win) const
+{
+  return &win == &myPrimaryWindow && myOSystem.eventHandler().inTIAMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBInitStatus FrameBuffer::applyVideoMode(WindowState& win)
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
-  const int ID = displayId(); // TODO SDL 3:
+  const int ID = displayId(win); // TODO SDL 3:
 
   if(s.getBool("fullscreen"))
     myVidModeHandler.setDisplaySize(myFullscreenDisplays[ID], true);
   else
     myVidModeHandler.setDisplaySize(myAbsDesktopSize[ID], false);
 
-  const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
+  const bool tiaMode = inTIAMode(win);
 
 #ifdef IMAGE_SUPPORT
-  if(inTIAMode)
+  if(tiaMode)
     myBezel->load();
 #endif
 
-  // Build the new mode based on current settings
+  // Build the new mode based on current settings, from this window's own
+  // image size (another window may have set the handler's since)
+  myVidModeHandler.setImageSize(win.imageSize);
   const VideoModeHandler::Mode& mode
-    = myVidModeHandler.buildMode(s, inTIAMode, myBezel->info());
+    = myVidModeHandler.buildMode(s, tiaMode, myBezel->info());
   if(mode.imageR.size() > mode.screenS)
     return FBInitStatus::FailTooLarge;
 
@@ -1349,41 +1461,46 @@ FBInitStatus FrameBuffer::applyVideoMode()
   // myInVideoMode); critical for the companion TIA window whose renderer does
   // not exist yet at this point
   myInVideoMode = true;
-  const bool modeApplied = myBackend->setVideoMode(mode,
-      myOSystem.settings().getInt(getDisplayKey()),
-      myOSystem.settings().getPoint(getPositionKey()));
+  const bool modeApplied = win.backend->setVideoMode(mode,
+      myOSystem.settings().getInt(getDisplayKey(win.bufferType)),
+      myOSystem.settings().getPoint(getPositionKey(win.bufferType)));
   myInVideoMode = false;
 
   if(modeApplied)
   {
-    myWindow.vidMode = mode;
+    win.vidMode = mode;
     status = FBInitStatus::Success;
 
     // A completed mode change supersedes any in-progress interactive resize, so
     // a size still pending from the previous mode (launcher/debugger) can't
     // leak into this one
-    myWindow.liveResizePending = false;
+    win.liveResizePending = false;
+
+    // Going windowed, setVideoMode() cleared the window's minimum; the owner
+    // only sets it when it takes the window (createDisplay()), so put it back
+    if(!mode.fullscreen && win.minSize.valid())
+      win.backend->setWindowMinSize(win.minSize);
 
     // Did we get the requested fullscreen state?
     myOSystem.settings().setValue("fullscreen", fullScreen());
 
     // Inform TIA surface about new mode, and update TIA settings
-    if(inTIAMode)
+    if(tiaMode)
     {
-      myTIASurface->initialize(myOSystem.console(), myWindow.vidMode);
+      myTIASurface->initialize(myOSystem.console(), win.vidMode);
       if(fullScreen())
         myOSystem.settings().setValue("tia.fs_stretch",
-          myWindow.vidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
+          win.vidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
       else
-        myOSystem.settings().setValue("tia.zoom", myWindow.vidMode.zoom);
+        myOSystem.settings().setValue("tia.zoom", win.vidMode.zoom);
 
       myBezel->apply();
     }
 
-    resetSurfaces();
-    setCursorState();
+    resetSurfaces(win);
+    setCursorState(win);
 
-    myPendingRender = true;
+    win.pendingRender = true;
   }
   else
     Logger::error("ERROR: Couldn't initialize video subsystem");
@@ -1397,7 +1514,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double FrameBuffer::maxWindowZoom() const
 {
-  const uInt32 display = displayId(BufferType::Emulator);
+  const uInt32 display = displayId(myPrimaryWindow, BufferType::Emulator);
   double multiplier = 1;
 
   for(;;)
@@ -1418,6 +1535,12 @@ double FrameBuffer::maxWindowZoom() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
+  setCursorState(myPrimaryWindow);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setCursorState(WindowState& win)
+{
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
   // Always grab mouse in emulation (if enabled) and emulating a controller
   // that always uses the mouse
@@ -1432,6 +1555,11 @@ void FrameBuffer::setCursorState()
   // Always enable cursor in lightgun games
   if (usesLightgun && !myGrabMouse)
     cursor |= 1U;  // +Emulation
+
+  // The cursor is application-wide, and a secondary window always shows it
+  // while the pointer is inside, whatever state the main window is in
+  if(containerForWindowId(myOSystem.eventHandler().currentWindowId()) != nullptr)
+    cursor = 3U;
 
   switch(cursor)
   {
@@ -1452,13 +1580,19 @@ void FrameBuffer::setCursorState()
   }
 
   myGrabMouse &= grabMouseAllowed();
-  myBackend->grabMouse(myGrabMouse);
+  win.backend->grabMouse(myGrabMouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::enableTextEvents(bool enable)
 {
-  myBackend->enableTextEvents(enable);
+  enableTextEvents(myPrimaryWindow, enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableTextEvents(WindowState& win, bool enable)
+{
+  win.backend->enableTextEvents(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1514,12 +1648,18 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::updateTheme()
 {
+  return updateTheme(myPrimaryWindow);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::updateTheme(WindowState& win)
+{
   if(myOSystem.settings().getBool("autouipalette"))
   {
     const bool darkTheme = myOSystem.settings().getBool("altuipalette");
 
-    if((myBackend->isLightTheme() && darkTheme) ||
-       (myBackend->isDarkTheme() && !darkTheme))
+    if((win.backend->isLightTheme() && darkTheme) ||
+       (win.backend->isDarkTheme() && !darkTheme))
     {
       myOSystem.settings().setValue("altuipalette", !darkTheme);
       return true;

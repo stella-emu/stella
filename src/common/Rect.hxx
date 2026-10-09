@@ -66,6 +66,7 @@ struct Point
   explicit constexpr Point(Int32 x1, Int32 y1) : x{x1}, y{y1} { }
   explicit Point(string_view p) { parse(p); }
 
+  Point operator+(const Point& p) const { return Point(x + p.x, y + p.y); }
   auto operator<=>(const Point&) const = default;
   bool operator==(const Point&) const = default;
 
@@ -93,9 +94,10 @@ struct Size
   explicit Size(string_view s) { parse(s); }
   [[nodiscard]] constexpr bool valid() const { return w > 0 && h > 0; }
 
+  // Where a lower bound exceeds its upper bound, the upper bound wins
   constexpr void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
-    w = BSPF::clamp(w, lower_w, upper_w);
-    h = BSPF::clamp(h, lower_h, upper_h);
+    w = std::min(std::max(w, lower_w), upper_w);
+    h = std::min(std::max(h, lower_h), upper_h);
   }
 
   std::partial_ordering operator<=>(const Size& other) const {

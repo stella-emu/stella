@@ -91,6 +91,14 @@ class DebuggerDialog : public Dialog
     */
     Common::Size minSize() const { return myMinSize; }
 
+    /**
+      The debugger's own keys (step, trace, rewind, states, etc.), which work
+      from the debugger's companion windows too.  Return true if the key was
+      handled.
+    */
+    bool handleGlobalKeyDown(StellaKey key, StellaMod mod, bool repeated);
+    bool handleGlobalKeyUp(StellaKey key, StellaMod mod);
+
   protected:
     void layout() override;
 

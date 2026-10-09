@@ -230,6 +230,15 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   if(_focusedWidget && _focusedWidget->handleKeyDown(key, mod))
     return;
 
+  if(handleGlobalKeyDown(key, mod, repeated))
+    return;
+
+  Dialog::handleKeyDown(key, mod);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DebuggerDialog::handleGlobalKeyDown(StellaKey key, StellaMod mod, bool repeated)
+{
   // special debugger keys first (cannot be remapped)
   if(StellaModTest::isControl(mod))
   {
@@ -237,16 +246,16 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     {
       case StellaKey::S:
         doStep();
-        return;
+        return true;
       case StellaKey::T:
         doTrace();
-        return;
+        return true;
       case StellaKey::L:
         doScanlineAdvance();
-        return;
+        return true;
       case StellaKey::F:
         doAdvance();
-        return;
+        return true;
       default:
         break;
     }
@@ -263,7 +272,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         // make consistent, exit debugger on key UP
         if(!repeated)
           myExitPressed = true;
-        return;
+        return true;
 
         // events which can be handled 1:1
       case Event::ToggleP0Collision:
@@ -303,54 +312,62 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       case Event::ConsoleRightDiffToggle:
         if(!repeated)
           instance().eventHandler().handleEvent(event);
-        return;
+        return true;
 
         // events which need special handling in debugger
       case Event::TakeSnapshot:
         if(!repeated)
           instance().debugger().parser().run("saveSnap");
-        return;
+        return true;
 
       case Event::Rewind1Menu:
         doRewind();
-        return;
+        return true;
 
       case Event::Rewind10Menu:
         doRewind10();
-        return;
+        return true;
 
       case Event::RewindAllMenu:
         doRewindAll();
-        return;
+        return true;
 
       case Event::Unwind1Menu:
         doUnwind();
-        return;
+        return true;
 
       case Event::Unwind10Menu:
         doUnwind10();
-        return;
+        return true;
 
       case Event::UnwindAllMenu:
         doUnwindAll();
-        return;
+        return true;
 
       default:
         break;
     }
   }
-  Dialog::handleKeyDown(key, mod);
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyUp(StellaKey key, StellaMod mod)
+{
+  handleGlobalKeyUp(key, mod);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DebuggerDialog::handleGlobalKeyUp(StellaKey key, StellaMod mod)
 {
   if(myExitPressed
      && Event::ExitMode == instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod))
   {
     myExitPressed = false;
     instance().debugger().parser().run("run");
+    return true;
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,6 +420,11 @@ void DebuggerDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
     case RomWidget::Cmd::InvalidateListing:
       // Only do a full redraw if the disassembly tab is actually showing
       myRom->invalidate(myRomTab->getActiveTab() == 0);
+      break;
+
+    case RomWidget::Cmd::MemViewButton:
+      // Open Memory View
+      instance().debugger().openMemViewWindow();
       break;
 
     default:

@@ -62,6 +62,8 @@ void CartridgeDPC::install(System& system)
 
   // Subspan for the display ROM (2K @ 8K offset)
   myDisplayImage = ByteMSpan{myImage}.subspan(8_KB, 2_KB);
+  // Store display image scope to be accessible by getImage()
+  myImageScopes[ImageScope::DISPLAY_DATA] = myDisplayImage;
 
   createRomAccessArrays(8_KB);
 

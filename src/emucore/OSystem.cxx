@@ -1097,13 +1097,14 @@ void OSystem::mainLoop()
       // Render the GUI with 60 Hz in all other modes
       timesliceSeconds = 1. / 60.;
       myFrameBuffer->update();
-    #ifdef DEBUGGER_SUPPORT
-      // While in the debugger, also drive its companion TIA window (if open).
-      // It renders into its own window via a scoped active-FrameBuffer swap.
-      if(myEventHandler->state() == EventHandlerState::DEBUGGER && myDebugger)
-        myDebugger->renderTiaWindow();
-    #endif
     }
+
+  #ifdef DEBUGGER_SUPPORT
+    // Render the open companion windows.  Not gated on DEBUGGER state: the
+    // memory-view window stays open while emulating, to show live effects.
+    if(myDebugger)
+      myDebugger->renderSecondaryWindow();
+  #endif
 
     const duration<double> timeslice(timesliceSeconds);
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);

@@ -26,6 +26,7 @@ class EventHandler;
 #include "Event.hxx"
 #include "StellaKeys.hxx"
 #include "Stack.hxx"
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
 /**
@@ -42,13 +43,17 @@ class DialogContainer
 {
   friend class EventHandler;
   friend class Dialog;
+  friend class FrameBuffer;
 
   public:
     /**
-      Create a new DialogContainer stack
+      Create a new DialogContainer stack.  Starts out pointing at the primary
+      window; a companion container (TiaWindow, MemViewWindow) is repointed at
+      its own window the first time FrameBuffer::openSecondaryWindow() is
+      called for it.
     */
     explicit DialogContainer(OSystem& osystem);
-    virtual ~DialogContainer() = default;
+    virtual ~DialogContainer();
 
   public:
     /**
@@ -187,6 +192,16 @@ class DialogContainer
     virtual bool applyResize() { return false; }
 
     /**
+      Events for the platform window of a secondary container (one opened
+      with FrameBuffer::openSecondaryWindow()), routed here in every state.
+      The defaults do the generic work; an owner overrides them to keep its
+      own state in step.
+    */
+    virtual void handleWindowResized(int width, int height);
+    virtual void handleWindowExposed();
+    virtual void handleWindowClose();
+
+    /**
       Re-flow every dialog in the stack for the current window size.
     */
     void relayout();
@@ -204,6 +219,9 @@ class DialogContainer
       Return (and possibly create) the bottom-most dialog of this container.
     */
     virtual Dialog* baseDialog() = 0;
+
+    // FrameBuffer window this container renders into; see the constructor
+    FrameBuffer::WindowState& window() const { return *myWindow; }
 
     /**
       Set input speeds.
@@ -245,6 +263,11 @@ class DialogContainer
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:
+    // Which FrameBuffer window this container's dialogs render into; see
+    // window().  Reassigned once by FrameBuffer::openSecondaryWindow(), the
+    // first time it is called for a companion container (a friend for it)
+    FrameBuffer::WindowState* myWindow;
+
     // Every dialog belonging to this container, in creation order and
     // non-owning (each is owned by whatever created it).  A superset of
     // myDialogStack, which holds only the currently open ones

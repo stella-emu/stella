@@ -184,6 +184,7 @@ class FBBackendSDL : public FBBackend
     void refreshDimensions() override;
     void beginLiveResize() override;
     void endLiveResize() override;
+    void setVSyncEnabled(bool enable) override;
 
     /**
       The SDL window ID of this backend's window, or 0 if none.
@@ -319,6 +320,9 @@ class FBBackendSDL : public FBBackend
     // Text events are sometimes enabled before a window exists
     // So we cache the request here, and honour it after the window has been created
     bool myTextEventsEnabled{false};
+
+    // Resizability, applied by setVideoMode() before the window is shown
+    bool myResizable{false};
 
     // Center setting of current window
     bool myCenter{false};

@@ -57,6 +57,7 @@ template<typename T> constexpr size_t SZT(T x) { return static_cast<size_t>(x); 
 // types: cout, cerr, string, ostream, istream, etc.
 #include <array>
 #include <algorithm>
+#include <cassert>
 #include <bit>
 #include <iostream>
 #include <memory>
@@ -226,6 +227,8 @@ namespace BSPF
   // if it is outside the specified range
   template<typename T> constexpr T clamp(T val, T lower, T upper)
   {
+    // A reversed range is a caller bug (and undefined for std::clamp)
+    assert(!(upper < lower));
     return std::clamp<T>(val, lower, upper);
   }
   template<typename T> constexpr void clamp(T& val, T lower, T upper, T setVal)

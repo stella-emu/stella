@@ -28,6 +28,9 @@ CartridgeCM::CartridgeCM(ByteSpan image, string_view md5,
   // Copy the ROM image into my buffer
   std::copy_n(image.data(), std::min(16_KB, image.size()), myImage.begin());
   createRomAccessArrays(16_KB);
+
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,8 +138,9 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
     const uInt16 offset = myBankOffset + (addr & 0x0FFFU);
     access.directPeekBase  = &myImage[offset];
     access.romAccessBase   = &myRomAccessBase[offset];
-    access.romPeekCounter  = &myRomAccessCounter[offset];
-    access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
+    access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+    access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+    access.romPokeCounter = &myRomPokeCounter[offset];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -150,8 +154,9 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
       const uInt16 offset = myBankOffset + (addr & 0x0FFFU);
       access.directPeekBase  = &myImage[offset];
       access.romAccessBase   = &myRomAccessBase[offset];
-      access.romPeekCounter  = &myRomAccessCounter[offset];
-      access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+      access.romPokeCounter = &myRomPokeCounter[offset];
     }
     else
     {
@@ -159,8 +164,9 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
       const uInt16 offset    = myBankOffset + ramOffset;
       access.directPeekBase  = &myRAM[ramOffset];
       access.romAccessBase   = &myRomAccessBase[offset];
-      access.romPeekCounter  = &myRomAccessCounter[offset];
-      access.romPokeCounter  = &myRomAccessCounter[offset + myAccessSize];
+      access.romCodePeekCounter = &myRomCodePeekCounter[offset];
+      access.romDataPeekCounter = &myRomDataPeekCounter[offset];
+      access.romPokeCounter = &myRomPokeCounter[offset];
     }
 
     access.directPokeBase = ((mySWCHA & 0x30U) == 0x20)
@@ -198,12 +204,6 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
     myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeCM::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

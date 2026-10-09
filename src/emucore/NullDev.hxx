@@ -73,7 +73,7 @@ class NullDevice : public Device
       @return The byte at the specified address
     */
     uInt8 peek(uInt16 address) override {
-      cerr << "NullDevice: peek(0x" << std::hex << address << ")\n";
+      cerr << std::format("NullDevice: peek(0x{:x})\n", address);
       return 0;
     }
 
@@ -86,8 +86,7 @@ class NullDevice : public Device
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value) override {
-      cerr << "NullDevice: poke(" << address << ","
-           << U32(value) << ")\n";
+      cerr << std::format("NullDevice: poke({},{})\n", address, value);
       return false;
     }
 

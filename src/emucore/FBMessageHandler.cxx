@@ -28,9 +28,11 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBMessageHandler::FBMessageHandler(FrameBuffer& fb, OSystem& osystem)
+FBMessageHandler::FBMessageHandler(FrameBuffer& fb, OSystem& osystem,
+                                   FrameBuffer::WindowState& win)
   : myFB{fb},
-    myOSystem{osystem}
+    myOSystem{osystem},
+    myWin{win}
 {
 }
 
@@ -41,14 +43,15 @@ void FBMessageHandler::init()
   myMsg.enabled = false;
 
   // Create surfaces for TIA statistics and general messages
-  const GUI::Font& f = myFB.hidpiEnabled() ? myFB.infoFont() : myFB.font();
+  const GUI::Font& f = (myFB.hidpiScaleFactor(myWin) > 1) ? myFB.infoFont() : myFB.font();
   myStatsMsg.color = kColorInfo;
   myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
   myStatsMsg.h = (f.getFontHeight() + 2) * 3;
 
-  if(!myStatsMsg.surface)
+  // Frame stats are only drawn in the main window
+  if(!myStatsMsg.surface && &myWin == &myFB.primaryWindow())
   {
-    myStatsMsg.surface = myFB.allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface = FrameBuffer::allocateSurface(myWin, myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->enableBlend(true);
     myStatsMsg.surface->setBlendLevel(92); // aligned with TimeMachineDialog
   }
@@ -57,8 +60,9 @@ void FBMessageHandler::init()
   {
     const int fontWidth = myFB.font().getMaxCharWidth(),
               HBORDER = fontWidth * 1.25 / 2.0;
-    myMsg.surface = myFB.allocateSurface(fontWidth * MESSAGE_WIDTH + HBORDER * 2,
-                                         myFB.font().getFontHeight() * 1.5);
+    myMsg.surface = FrameBuffer::allocateSurface(
+        myWin, fontWidth * MESSAGE_WIDTH + HBORDER * 2,
+        myFB.font().getFontHeight() * 1.5);
   }
 #endif  // GUI_SUPPORT
 }
@@ -99,8 +103,8 @@ void FBMessageHandler::create(string_view message, MessagePosition position,
                           std::max(needH, myMsg.surface->height()));
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
-  myMsg.surface->setDstSize(myMsg.w * myFB.hidpiScaleFactor(),
-                            myMsg.h * myFB.hidpiScaleFactor());
+  myMsg.surface->setDstSize(myMsg.w * myFB.hidpiScaleFactor(myWin),
+                            myMsg.h * myFB.hidpiScaleFactor(myWin));
 #endif  // GUI_SUPPORT
 }
 
@@ -221,7 +225,7 @@ void FBMessageHandler::onEmulationFrame()
 void FBMessageHandler::hide()
 {
   if(myMsg.enabled)
-    myFB.setPendingRender();
+    FrameBuffer::setPendingRender(myWin);
   myMsg.enabled = false;
 }
 
@@ -245,6 +249,7 @@ bool FBMessageHandler::draw()
 
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
+    const Common::Rect& img = FrameBuffer::imageRect(myWin);
     const int fontWidth  = myFB.font().getMaxCharWidth(),
               fontHeight = myFB.font().getFontHeight();
     const int VBORDER = fontHeight / 4;
@@ -259,51 +264,51 @@ bool FBMessageHandler::draw()
         break;
 
       case MessagePosition::TopCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
         myMsg.y = 5;
         break;
 
       case MessagePosition::TopRight:
-        myMsg.x = myFB.imageRect().w() - dst.w() - 5;
+        myMsg.x = img.w() - dst.w() - 5;
         myMsg.y = 5;
         break;
 
       case MessagePosition::MiddleLeft:
         myMsg.x = 5;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::MiddleRight:
-        myMsg.x = myFB.imageRect().w() - dst.w() - 5;
-        myMsg.y = (myFB.imageRect().h() - dst.h()) >> 1U;
+        myMsg.x = img.w() - dst.w() - 5;
+        myMsg.y = (img.h() - dst.h()) >> 1U;
         break;
 
       case MessagePosition::BottomLeft:
         myMsg.x = 5;
-        myMsg.y = myFB.imageRect().h() - dst.h() - 5;
+        myMsg.y = img.h() - dst.h() - 5;
         break;
 
       case MessagePosition::BottomCenter:
-        myMsg.x = (myFB.imageRect().w() - dst.w()) >> 1U;
-        myMsg.y = myFB.imageRect().h() - dst.h() - 5;
+        myMsg.x = (img.w() - dst.w()) >> 1U;
+        myMsg.y = img.h() - dst.h() - 5;
         break;
 
       case MessagePosition::BottomRight:
-        myMsg.x = myFB.imageRect().w() - dst.w() - 5;
-        myMsg.y = myFB.imageRect().h() - dst.h() - 5;
+        myMsg.x = img.w() - dst.w() - 5;
+        myMsg.y = img.h() - dst.h() - 5;
         break;
 
       default:
         break;  // Not supposed to get here
     }
 
-    myMsg.surface->setDstPos(myMsg.x + myFB.imageRect().x(),
-                             myMsg.y + myFB.imageRect().y());
+    myMsg.surface->setDstPos(myMsg.x + img.x(),
+                             myMsg.y + img.y());
     myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
     myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2,
                             myMsg.h - BORDER * 2, kBtnColor);
@@ -359,7 +364,7 @@ void FBMessageHandler::drawStats(float framesPerSecond)
   const ConsoleInfo& info = myOSystem.console().about();
   constexpr int xPos = 2;
   int yPos = 0;
-  const GUI::Font& f = myFB.hidpiEnabled() ? myFB.infoFont() : myFB.font();
+  const GUI::Font& f = (myFB.hidpiScaleFactor(myWin) > 1) ? myFB.infoFont() : myFB.font();
   const int dy = f.getFontHeight() + 2;
 
   // Size to the current font (the surface was allocated once in init for the
@@ -418,10 +423,12 @@ void FBMessageHandler::drawStats(float framesPerSecond)
       xPosEnd, yPos, myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   }
 
-  myStatsMsg.surface->setDstPos(myFB.imageRect().x() + myFB.imageRect().w() / 64,
-                                myFB.imageRect().y() + myFB.imageRect().h() / 64);
-  myStatsMsg.surface->setDstSize(myStatsMsg.w * myFB.hidpiScaleFactor(),
-                                 myStatsMsg.h * myFB.hidpiScaleFactor());
+  const Common::Rect& img = FrameBuffer::imageRect(myWin);
+  const uInt32 scale = myFB.hidpiScaleFactor(myWin);
+  myStatsMsg.surface->setDstPos(img.x() + img.w() / 64,
+                                img.y() + img.h() / 64);
+  myStatsMsg.surface->setDstSize(myStatsMsg.w * scale,
+                                 myStatsMsg.h * scale);
   myStatsMsg.surface->render();
 #endif  // GUI_SUPPORT
 }

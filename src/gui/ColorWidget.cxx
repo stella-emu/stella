@@ -43,11 +43,29 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font, bool framed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::setColor(ColorId color)
 {
-  if(_color != color)
+  if(_color != color || _rgbMode)
   {
     _color = color;
+    _rgbMode = false;
     setDirty();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ColorWidget::setColorRgb(uInt32 color)
+{
+  if(color != _colorRgb || !_rgbMode)
+  {
+    _colorRgb = color;
+    _rgbMode = true;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 ColorWidget::getColorRgb() const
+{
+  return _rgbMode ? _colorRgb : FBSurface::getColorRgb(_color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,11 +89,21 @@ void ColorWidget::drawWidget(bool hilite)
     s.frameRect(_x, _y, _w, _h + 1, kColor);
 
     // Show the currently selected color
-    s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, isEnabled() ? _color : kWidColor);
+    if(!isEnabled())
+      s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, kWidColor);
+    else if(_rgbMode)
+      s.fillRectRgb(_x + 1, _y + 1, _w - 2, _h - 1, _colorRgb);
+    else
+      s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, _color);
   }
   else
   {
-    s.fillRect(_x, _y, _w, _h, isEnabled() ? _color : kWidColor);
+    if(!isEnabled())
+      s.fillRect(_x, _y, _w, _h, kWidColor);
+    else if(_rgbMode)
+      s.fillRectRgb(_x, _y, _w, _h, _colorRgb);
+    else
+      s.fillRect(_x, _y, _w, _h, _color);
   }
 
   // Cross out the grid?

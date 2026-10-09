@@ -75,13 +75,6 @@ class CartridgeMVC : public Cartridge
     void install(System& system) override;
 
     /**
-      Access the internal ROM image for this cartridge.
-
-      @return  A const span to the internal ROM image data
-    */
-    ByteSpan getImage() const override;
-
-    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch

@@ -232,6 +232,9 @@ CartridgeELF::CartridgeELF(ByteSpan image, string_view md5,
   myImage.assign(image.size(), 0);
   std::copy_n(image.data(), image.size(), myImage.data());
 
+  // Store image scope to be accessible by getImage()
+  myImageScopes[ImageScope::FULL] = myImage;
+
   myLastPeekResult.assign(0x1000, 0);
 
   createRomAccessArrays(0x1000);
@@ -256,8 +259,9 @@ void CartridgeELF::install(System& system)
 
   for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE) {
     System::PageAccess access(this, System::PageAccessType::READ);
-    access.romPeekCounter = &myRomAccessCounter[addr];
-    access.romPokeCounter = &myRomAccessCounter[addr];
+    access.romCodePeekCounter = &myRomCodePeekCounter[addr];
+    access.romDataPeekCounter = &myRomDataPeekCounter[addr];
+    access.romPokeCounter = &myRomPokeCounter[addr];
 
     mySystem->setPageAccess(0x1000 + addr, access);
   }
@@ -350,12 +354,6 @@ bool CartridgeELF::poke(uInt16 address, uInt8 value)
 void CartridgeELF::consoleChanged(ConsoleTiming timing)
 {
   myConsoleTiming = timing;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteSpan CartridgeELF::getImage() const
-{
-  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

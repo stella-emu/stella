@@ -292,6 +292,9 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     }
   }
 
+  // A fullscreen window is never user-resizable
+  const bool resizable = myResizable && !mode.fullscreen;
+
   if(myWindow)
   {
     // Reuse the existing window.  In windowed mode resize it to the new mode's
@@ -301,6 +304,7 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
     // spans the display and the fullscreen block below keeps it there, so we
     // leave its size/position alone and let the src/dst rects resize the image.
     SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
+    SDL_SetWindowResizable(myWindow, resizable);
     if(!mode.fullscreen)
     {
       SDL_SetWindowMinimumSize(myWindow, 0, 0);
@@ -330,6 +334,8 @@ bool FBBackendSDL::setVideoMode(const VideoModeHandler::Mode& mode,
                            true);
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_FULLSCREEN_BOOLEAN,
                            mode.fullscreen);
+    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN,
+                           resizable);
     myWindow = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if(myWindow == nullptr)
@@ -535,10 +541,7 @@ void FBBackendSDL::setWindowResizable(bool resizable)
 {
   ASSERT_MAIN_THREAD;
 
-  if(myWindow == nullptr)
-    return;
-
-  SDL_SetWindowResizable(myWindow, resizable);
+  myResizable = resizable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -630,6 +633,16 @@ void FBBackendSDL::endLiveResize()
   if(myRenderer)
     SDL_SetRenderVSync(myRenderer,
         vsyncWanted() ? 1 : SDL_RENDERER_VSYNC_DISABLED);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBBackendSDL::setVSyncEnabled(bool enable)
+{
+  ASSERT_MAIN_THREAD;
+
+  if(myRenderer)
+    SDL_SetRenderVSync(myRenderer,
+        enable && vsyncWanted() ? 1 : SDL_RENDERER_VSYNC_DISABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -795,7 +808,7 @@ const FBSurface& FBBackendSDL::compositedSurface()
   ASSERT_MAIN_THREAD;
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const Common::Rect& rectUnscaled = fb.imageRect();
+  const Common::Rect& rectUnscaled = FrameBuffer::imageRect(fb.primaryWindow());
   const Common::Rect rect(
     Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())

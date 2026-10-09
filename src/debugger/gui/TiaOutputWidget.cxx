@@ -58,9 +58,8 @@ TiaOutputWidget::~TiaOutputWidget()
 {
   // The framebuffer keeps a reference to every allocated surface, so release
   // ours explicitly (the dialog can be recreated, which would otherwise leak)
-  FrameBuffer& fb = instance().frameBuffer();
-  if(myTiaSurface)  fb.deallocateSurface(myTiaSurface);
-  if(myMarkSurface) fb.deallocateSurface(myMarkSurface);
+  if(myTiaSurface)  FrameBuffer::deallocateSurface(dialog().window(), myTiaSurface);
+  if(myMarkSurface) FrameBuffer::deallocateSurface(dialog().window(), myMarkSurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,9 +127,9 @@ void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
     }
   }
   if(execDepth == 0)
-    instance().frameBuffer().showTextMessage(message);
+    dialog().showTextMessage(message);
 #else
-  instance().frameBuffer().showTextMessage("PNG image saving not supported");
+  dialog().showTextMessage("PNG image saving not supported");
 #endif
 }
 
@@ -176,7 +175,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       {
         const string message = instance().debugger().parser().run(
           std::format("scanLine #{}", lines));
-        instance().frameBuffer().showTextMessage(message);
+        dialog().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -184,7 +183,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       const int scanline = myClickY + startLine;
       const string message = instance().debugger().parser().run(
         std::format("breakIf _scan==#{}", scanline));
-      instance().frameBuffer().showTextMessage(message);
+      dialog().showTextMessage(message);
     }
     else if(rmb == "zoom")
     {
@@ -245,10 +244,8 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // render callback that composites them on top of the dialog's base surface.
   if(myTiaSurface == nullptr)
   {
-    FrameBuffer& fb = instance().frameBuffer();
-
     // 'none' (nearest-neighbour) scaling keeps the TIA pixels crisp at any size
-    myTiaSurface = fb.allocateSurface(
+    myTiaSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
@@ -256,7 +253,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     // Pixel-locked overlay for the electron-beam cursor: same size/scaling as
     // the image so it can share the image's src/dst rectangles; blended so its
     // transparent background lets the image show through
-    myMarkSurface = fb.allocateSurface(
+    myMarkSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::viewableWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myMarkSurface->setVisible(true);
@@ -339,7 +336,7 @@ void TiaOutputWidget::recalcRects()
   // Map widget-local logical coordinates to physical surface coordinates,
   // accounting for the dialog's on-screen position and any HiDPI scaling
   const Common::Rect& s_dst = dialog().surface().dstRect();
-  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor();
+  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
   myTiaSurface->setDstPos(s_dst.x() + (_x + myImgX) * dpi,
                           s_dst.y() + (_y + myImgY) * dpi);
   myTiaSurface->setDstSize(myImgW * dpi, myImgH * dpi);

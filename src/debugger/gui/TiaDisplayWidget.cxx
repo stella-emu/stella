@@ -157,7 +157,7 @@ void TiaDisplayWidget::recalcRects()
   // Map widget-local logical coordinates to physical surface coordinates,
   // accounting for the dialog's on-screen position and any HiDPI scaling
   const Common::Rect& s_dst = dialog().surface().dstRect();
-  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor();
+  const Int32 dpi = instance().frameBuffer().hidpiScaleFactor(dialog().window());
   myTiaSurface->setDstPos(s_dst.x() + (_x + myImgX) * dpi,
                           s_dst.y() + (_y + myImgY) * dpi);
   myTiaSurface->setDstSize(myImgW * dpi, myImgH * dpi);
@@ -268,10 +268,8 @@ void TiaDisplayWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaDisplayWidget::drawWidget(bool hilite)
 {
-  // Lazily create the display surface the first time we draw.  This runs while
-  // the companion (secondary) backend is the active render target, so the
-  // surface binds to the companion window's renderer.  A render callback then
-  // composites it on top of the dialog's base surface.
+  // Create the display surface on first draw, bound to this dialog's window;
+  // a render callback composites it over the dialog's base surface
   if(myTiaSurface == nullptr)
   {
     // Nearest-neighbour ('none') scaling: crisp pixels (this view is for
@@ -279,7 +277,7 @@ void TiaDisplayWidget::drawWidget(bool hilite)
     // 'sharp' is quasi-integer scaling, which truncates the scale to an integer
     // and so collapses to a zero-size texture (black) for any sub-1x fit, and
     // 'blur' is bilinear, which softens the pixels.
-    myTiaSurface = instance().frameBuffer().allocateSurface(
+    myTiaSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::frameBufferWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myTiaSurface->setVisible(true);
@@ -288,7 +286,7 @@ void TiaDisplayWidget::drawWidget(bool hilite)
     // marks).  Same size/scaling as the image so it can share the image's
     // src/dst rectangles; blended so its transparent background lets the image
     // show through and only the drawn marks appear on top.
-    myMarkSurface = instance().frameBuffer().allocateSurface(
+    myMarkSurface = FrameBuffer::allocateSurface(dialog().window(),
       TIAConstants::frameBufferWidth, TIAConstants::frameBufferHeight,
       ScalingInterpolation::none);
     myMarkSurface->setVisible(true);
