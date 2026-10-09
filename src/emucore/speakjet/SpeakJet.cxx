@@ -96,10 +96,17 @@ void SpeakJet::reset()
   myNextScale = 100;
   myRepeat = 1;
 
-  mySink.setParam(Param::Volume, DEFAULT_VOLUME);
-  mySink.setParam(Param::Speed, DEFAULT_SPEED);
-  mySink.setParam(Param::Pitch, DEFAULT_PITCH);
-  mySink.setParam(Param::Bend, DEFAULT_BEND);
+  setParam(Param::Volume, DEFAULT_VOLUME);
+  setParam(Param::Speed, DEFAULT_SPEED);
+  setParam(Param::Pitch, DEFAULT_PITCH);
+  setParam(Param::Bend, DEFAULT_BEND);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJet::setParam(Param param, uInt8 value)
+{
+  myParams[std::to_underlying(param)] = value;
+  mySink.setParam(param, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,10 +117,10 @@ void SpeakJet::write(uInt8 code)
   {
     switch(myPending)
     {
-      case Pending::Volume:  mySink.setParam(Param::Volume, code);  break;
-      case Pending::Speed:   mySink.setParam(Param::Speed, code);   break;
-      case Pending::Pitch:   mySink.setParam(Param::Pitch, code);   break;
-      case Pending::Bend:    mySink.setParam(Param::Bend, code);    break;
+      case Pending::Volume:  setParam(Param::Volume, code);  break;
+      case Pending::Speed:   setParam(Param::Speed, code);   break;
+      case Pending::Pitch:   setParam(Param::Pitch, code);   break;
+      case Pending::Bend:    setParam(Param::Bend, code);    break;
       case Pending::Repeat:  myRepeat = std::max<uInt8>(code, 1);     break;
       case Pending::Delay:   mySink.delay(U32(code) * 10);            break;
       default: break;
@@ -187,4 +194,52 @@ void SpeakJet::write(uInt8 code)
     // send them, so ignore them rather than choke
     default: break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJet::save(Serializer& out) const
+{
+  try
+  {
+    out.putByte(std::to_underlying(myPending));
+    out.putByte(myRepeat);
+    out.putBool(myStress);
+    out.putBool(myRelax);
+    out.putInt(myNextScale);
+    out.putByteArray(myParams);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: SpeakJet::save\n";
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJet::load(Serializer& in)
+{
+  try
+  {
+    // Only what the command stream itself can set, so a corrupt state can
+    // neither drop a sound nor stretch one without limit
+    const uInt8 pending = in.getByte();
+    myPending = pending <= std::to_underlying(Pending::Ignored)
+      ? static_cast<Pending>(pending) : Pending::None;
+    myRepeat = std::max<uInt8>(in.getByte(), 1);
+    myStress = in.getBool();
+    myRelax = in.getBool();
+    myNextScale = BSPF::clamp(in.getInt(), FAST_PCT, SLOW_PCT);
+
+    std::array<uInt8, 4> params{};
+    in.getByteArray(params);
+    for(size_t i = 0; i < params.size(); ++i)
+      setParam(static_cast<Param>(i), params[i]);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: SpeakJet::load\n";
+    return false;
+  }
+  return true;
 }

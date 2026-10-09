@@ -22,7 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SpeakJetSerial::SpeakJetSerial(string_view portname)
-  : mySerialPort{MediaFactory::createSerialPort()}
+  : mySerialPort{MediaFactory::createSerialPort()},
+    myDecoder{*this}
 {
   const string port{portname};
 
@@ -46,6 +47,7 @@ SpeakJetSerial::~SpeakJetSerial() = default;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJetSerial::write(uInt8 code)
 {
+  myDecoder.write(code);
   mySerialPort->writeByte(code);
 }
 
@@ -84,7 +86,7 @@ bool SpeakJetSerial::save(Serializer& out) const
     cerr << "ERROR: SpeakJetSerial::save\n";
     return false;
   }
-  return true;
+  return myDecoder.save(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,5 +105,8 @@ bool SpeakJetSerial::load(Serializer& in)
     cerr << "ERROR: SpeakJetSerial::load\n";
     return false;
   }
-  return true;
+
+  // The chip itself can't be set, so this only brings the decoder's record
+  // in line with the state, for the next one saved
+  return myDecoder.load(in);
 }

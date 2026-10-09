@@ -170,7 +170,7 @@ bool SpeakJetSoftware::save(Serializer& out) const
     cerr << "ERROR: SpeakJetSoftware::save\n";
     return false;
   }
-  return true;
+  return myDecoder.save(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,7 +190,7 @@ bool SpeakJetSoftware::load(Serializer& in)
     cerr << "ERROR: SpeakJetSoftware::load\n";
     return false;
   }
-  return true;
+  return myDecoder.load(in);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

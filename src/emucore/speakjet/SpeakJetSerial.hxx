@@ -20,16 +20,19 @@
 
 class SerialPort;
 
+#include "SpeakJet.hxx"
 #include "SpeakJetBackend.hxx"
 
 /**
   Speaks through a real SpeakJet chip, in an AtariVox plugged into one of
   the host's serial ports.  The command stream is passed through untouched,
-  and the chip itself reports whether it can accept more data.
+  and the chip itself reports whether it can accept more data.  A decoder
+  follows the stream too, only so a state records the parameters the chip
+  was given.
 
   @author  B. Watson, Stephen Anthony
 */
-class SpeakJetSerial : public SpeakJetBackend
+class SpeakJetSerial : public SpeakJetBackend, public SpeakJet::Sink
 {
   public:
     /**
@@ -56,10 +59,20 @@ class SpeakJetSerial : public SpeakJetBackend
     bool load(Serializer& in) override;
 
   private:
+    // The chip makes the sound; the decoder only keeps track of the stream
+    void play(const SpeakJet::Utterance&) override { }
+    void pause(uInt32) override { }
+    void delay(uInt32) override { }
+    void setParam(SpeakJet::Param, uInt8) override { }
+
+  private:
     // Instance of a real serial port on the system
     // Assuming there's a real AtariVox attached, we can send SpeakJet
     // bytes directly to it
     unique_ptr<SerialPort> mySerialPort;
+
+    // Follows the bytes sent to the chip
+    SpeakJet myDecoder;
 
     // When using software flow control, assume the device starts in READY mode
     bool myReadyStateSoftFlow{true};

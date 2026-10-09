@@ -19,6 +19,7 @@
 #define SPEAKJET_HXX
 
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 /**
   Decodes the Magnevation SpeakJet command stream.
@@ -32,7 +33,7 @@
 
   @author  Stephen Anthony
 */
-class SpeakJet
+class SpeakJet : public Serializable
 {
   public:
     // Power-on defaults, from the manual's control code descriptions
@@ -95,7 +96,7 @@ class SpeakJet
 
   public:
     explicit SpeakJet(Sink& sink);
-    ~SpeakJet() = default;
+    ~SpeakJet() override = default;
 
     /**
       Feed one byte of the command stream.
@@ -108,6 +109,14 @@ class SpeakJet
       Restore the power-on parameter defaults and drop any pending state.
     */
     void reset();
+
+    /**
+      Save/load where the command stream has got to: a two-byte command still
+      waiting for its value, what applies to the next sound, and the
+      parameters, which load() passes on to the sink.
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
 
     /**
       Look up an MSA code's mnemonic, or an empty view if it has none.
@@ -132,7 +141,16 @@ class SpeakJet
                                 Delay, Ignored };
 
   private:
+    // Record a parameter and pass it to the sink
+    void setParam(Param param, uInt8 value);
+
+  private:
     Sink& mySink;
+
+    // The parameters as last set, by Param, so a state can restore them
+    std::array<uInt8, 4> myParams{
+      DEFAULT_VOLUME, DEFAULT_SPEED, DEFAULT_PITCH, DEFAULT_BEND
+    };
 
     // Which two-byte command is waiting for its value
     Pending myPending{Pending::None};
