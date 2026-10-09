@@ -90,10 +90,13 @@ bool SpeakJetSerial::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJetSerial::load(Serializer& in)
 {
+  // Both describe the device attached now, which a saved state can only get
+  // wrong: a stale XOFF would hold READY low, since an idle device never sends
+  // the XON to clear it.  They are read past, keeping the layout.
   try
   {
-    myReadyStateSoftFlow = in.getBool();
-    myCTSFlip = in.getBool();
+    in.getBool();
+    in.getBool();
   }
   catch(...)
   {

@@ -48,10 +48,6 @@ namespace {
   // sound is held back for the next byte
   constexpr uInt32 PRIME_MS = 50;
 
-  // A clip's pitch is unsteady this long past its level ramp, so a join into
-  // a voiced continuant trims that too
-  constexpr uInt32 JOIN_HEAD_MS = 20;
-
   // How far a sound may be time-scaled to take up the change at a join
   constexpr double JOIN_MIN_SCALE = 0.5;
   constexpr double JOIN_MAX_SCALE = 2.0;
@@ -62,9 +58,6 @@ namespace {
   // Out of a vowel into a nasal or liquid the chip moves on this much sooner
   // than the join alone says, the total unchanged
   constexpr double NASAL_LEAD_MS = 24.0;
-
-  // How much of what was last queued the next sound is aligned to
-  constexpr uInt32 ALIGN_CONTEXT_MS = 30;
 
   // A vowel running straight into a nasal or liquid
   constexpr bool leadsIn(int from, int to)
@@ -408,13 +401,6 @@ void SpeakJetSoftware::releasePending(int nextCode, double nextTiming)
   // A repeat either runs the articulation again or the chip holds the sound
   const bool held = SpeakJetTables::holdsRepeat(U8(myPendingCode));
 
-  // Voicing runs on out of any allophone but a stop or an affricate, which
-  // release with an attack of their own
-  const bool release = myPrevCode == 165 || (myPrevCode >= 170 && myPrevCode <= 182) ||
-                       myPrevCode >= 191;
-  const bool prevOk = myPrevCode >= 128 && !release;
-  const bool joinsOn = myPendingTrimHead && prevOk && myPendingCode >= 128 &&
-                       SpeakJet::isContinuant(U8(myPendingCode));
   const int thisCode = myPendingCode;
 
   if(SpeakJetVoice::makes(thisCode))
@@ -458,10 +444,7 @@ void SpeakJetSoftware::releasePending(int nextCode, double nextTiming)
 
   // Only the first and last parts sit at an end of the speech, so only they
   // can keep a ramp
-  size_t headTrim = myPendingTrimHead ? myPendingHead : 0;
-  if(joinsOn)
-    headTrim = std::max(headTrim, std::min(size_t{rate() * JOIN_HEAD_MS / 1000},
-                                           sample.size() / SpeakJetSamples::RAMP_DIVISOR));
+  const size_t headTrim = myPendingTrimHead ? myPendingHead : 0;
   const size_t tailTrim = trimTail ? myPendingTail : 0;
 
   // The parts are laid end to end first, then scaled and pitched in one pass,
@@ -548,9 +531,7 @@ void SpeakJetSoftware::releasePending(int nextCode, double nextTiming)
 
   myKind = "sound";
   myTraceCode = myPendingCode;
-  myAlignNext = joinsOn;
   append(out, myNextXfadeMs);
-  myAlignNext = false;
   myPrevCode = thisCode;
   myNextXfadeMs = XFADE_MS;
   myFlowing = trimTail;
@@ -668,37 +649,6 @@ void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs)
     myStarting = false;
   }
 
-  // Start the new sound at the phase the last one ended at, within half a
-  // period, so the fundamental does not stumble at the join
-  if(myAlignNext && myContext.size() >= 64 && myPendingF0 > 0.0)
-  {
-    const size_t period = SZT(DBL(rate()) / myPendingF0 + 0.5);
-    const size_t n = std::min(myContext.size(), 2 * period);
-    const size_t reach = std::min(period / 2 + 1, pcm.size() > n + 8 ? pcm.size() - n - 8 : 0);
-    const Int16* a = myContext.data() + (myContext.size() - n);
-    double best = -1e30;
-    size_t at = 0;
-
-    for(size_t off = 0; off <= reach; ++off)
-    {
-      double dot = 0.0, energy = 1.0;
-
-      for(size_t i = 0; i < n; i += 2)
-      {
-        dot += DBL(a[i]) * DBL(pcm[off + i]);
-        energy += DBL(pcm[off + i]) * DBL(pcm[off + i]);
-      }
-
-      const double score = dot / std::sqrt(energy);
-      if(score > best)
-      {
-        best = score;
-        at = off;
-      }
-    }
-    pcm = pcm.subspan(at);
-  }
-
   // Short sounds get a proportionally shorter fade, or they are eaten
   const size_t xfade = std::min(size_t{rate() * xfadeMs / 1000},
                                 pcm.size() / XFADE_DIVISOR);
@@ -722,14 +672,6 @@ void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs)
 
   out.insert(out.end(), pcm.begin() + I32(over), pcm.end() - I32(keep));
   myTail.assign(pcm.end() - I32(keep), pcm.end());
-
-  // What was last queued, for aligning the next sound
-  {
-    const size_t want = rate() * ALIGN_CONTEXT_MS / 1000;
-    Samples both{out};
-    both.insert(both.end(), myTail.begin(), myTail.end());
-    myContext.assign(both.end() - I32(std::min(want, both.size())), both.end());
-  }
 
   myOSystem.sound().queueSpeech(out, rate());
 }

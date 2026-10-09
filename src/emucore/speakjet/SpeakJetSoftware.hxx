@@ -137,10 +137,6 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     // The decay now sounding, which plays only while nothing else does
     Samples myDecay;
 
-    // The last 30ms queued, and whether the next sound is aligned to it
-    Samples myContext;
-    bool myAlignNext{false};
-
     // How much the next join should overlap, set by the sound just played
     uInt32 myNextXfadeMs{8};
 
