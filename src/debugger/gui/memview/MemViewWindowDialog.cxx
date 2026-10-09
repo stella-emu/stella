@@ -34,9 +34,6 @@
 #include "MemViewWindow.hxx"
 #include "MemViewWindowDialog.hxx"
 
-// The dialog's border, inside which the memory grid sits
-static constexpr int BORDER = 2;
-
 /*
   Cartridge support status:
 
@@ -106,7 +103,9 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& parent,
                                          int w, int h)
-  : Dialog(osystem, parent, w, h)
+  : Dialog(osystem, parent, w, h),
+    myLastCycles{osystem.console().system().cycles()},
+    myLastFrames{osystem.console().tia().frameCount()}
 {
   const GUI::Font& font = _font;
   WidgetArray wid;
@@ -171,10 +170,6 @@ MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& pare
 
   // Setup rest
   addToFocusList(wid);
-
-  myLastCycles = instance().console().system().cycles();
-  myLastFrames = instance().console().tia().frameCount();
-  myLastHadFrameWrap = false;
 
   // Add a callback for rendering our extra surfaces at the correct time
   // (after the base GUI surface has been rendered and before any overlaying
@@ -266,7 +261,7 @@ void MemViewWindowDialog::cartEvaluation()
       myCartRamLbl = new LabelWidget(this, font, TEXT_RAM);
 
       // Put entry into main area map (view will be instantiated later)
-      const uInt16 bankCount = std::max((uInt16)1, cartRamBankCount);
+      const uInt16 bankCount = std::max<uInt16>(1, cartRamBankCount);
       const uInt16 bankSize = U16(cartRamSize / bankCount);
       myMainAreaScopes[Cartridge::ImageScope::NONE] =
         MainAreaScope(bankSize, bankCount, readBankHeightConfig(bankSize));
@@ -288,7 +283,7 @@ void MemViewWindowDialog::cartEvaluation()
     scope = Cartridge::ImageScope(std::to_underlying(scope) + 1)
   )
   {
-    uInt16 extraBytes = U16(cart.getImage(scope).size());
+    const uInt16 extraBytes = U16(cart.getImage(scope).size());
     if (extraBytes > 0)
       myMainAreaScopes[scope] = MainAreaScope(extraBytes, 1, 0);
   }
@@ -321,7 +316,7 @@ void MemViewWindowDialog::createViews()
           MemViewDataLayer::DATA_COLOR_DEFAULT, MemViewDataLayer::DATA_COLOR_FADED,
           "Cart RAM", MemViewWidget::QUERY_RAM_BANK_ORIGIN
         );
-        myCartRamView->setAccessDataParams(cart.getRamCounterSize(), cart.getRamCounterOffset());
+        myCartRamView->setAccessDataParams(cart.getRamCounterSize(), Cartridge::getRamCounterOffset());
         break;
       }
 
@@ -425,11 +420,11 @@ void MemViewWindowDialog::calcViewSizes(int totalWidth, int totalHeight)
     // First run for assigning raw calculated sizes
     for (auto &[scope, entry] : myMainAreaScopes)
     {
-      double ratio = DBL(entry.myBytes) / DBL(totalBytes);
+      const double ratio = DBL(entry.myBytes) / DBL(totalBytes);
 
-      int width = static_cast<int>(round(DBL(netWidth) * ratio));
-      int clampedWidth = std::max(MIN_ROM_WIDTH, width);
-      int deltaWidth = clampedWidth - width;
+      const int width = static_cast<int>(round(DBL(netWidth) * ratio));
+      const int clampedWidth = std::max(MIN_ROM_WIDTH, width);
+      const int deltaWidth = clampedWidth - width;
       // Subtract extra needs from the largest area
       if (deltaWidth && (scope != largestScope))
       {
@@ -501,7 +496,7 @@ void MemViewWindowDialog::updateViews()
           {
             // Set current content
             view->updateData(ByteSpan(cart.getImage(scope).begin(),
-              entry.myBankSize * entry.myBankCount));
+              entry.myBytes));
           }
         }
         break;

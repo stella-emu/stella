@@ -461,14 +461,13 @@ Common::RwAddress CartridgeEnhanced::ramBankOrigin(uInt16 bank, uInt16 PC) const
 {
   if (myRamSize == 0)
   {
-    return Common::RwAddress();
+    return {};
   }
   else
   {
     // Per default we assume that the RAM is located within the ROM banks
-    uInt16 origin = bankOrigin(bank, PC);
-    return Common::RwAddress(true, U32(origin + myReadOffset),
-      U32(origin + myWriteOffset));
+    const uInt16 origin = bankOrigin(bank, PC);
+    return {true, U32(origin + myReadOffset), U32(origin + myWriteOffset)};
   }
 }
 #endif

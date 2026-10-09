@@ -244,9 +244,9 @@ void PNGLibrary::saveImage(string_view filename, const Common::Rect& srcRect,
 //   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
 
   const size_t rowStride = pitch * sizeof(uInt32);
-  auto* row = reinterpret_cast<png_const_bytep>(base)
-            + srcRect.y() * rowStride
-            + srcRect.x() * sizeof(uInt32);
+  const auto* row = reinterpret_cast<png_const_bytep>(base)
+                  + srcRect.y() * rowStride
+                  + srcRect.x() * sizeof(uInt32);
 
   for(auto y = 0UZ; y < height; ++y, row += rowStride)
     png_write_row(png_ptr, row);

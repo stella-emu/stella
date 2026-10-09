@@ -118,6 +118,7 @@ const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
   rect.setBounds(0, 0, width, height);
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
+  // NOLINTNEXTLINE(misc-const-correctness)
   auto* buf_ptr = myBaseTiaSurface->basePtr().pixels;
 
   for(auto y = 0UZ; y < height; ++y)

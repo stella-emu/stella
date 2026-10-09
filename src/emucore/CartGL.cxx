@@ -152,11 +152,11 @@ Common::RwAddress CartridgeGL::ramBankOrigin(uInt16 bank, uInt16 PC) const
   {
     if (getSegmentBank(segment) == bank)
     {
-      uInt16 segmentAddress = ROM_OFFSET + (segment << myBankShift);
-      return Common::RwAddress(true, segmentAddress);
+      const uInt16 segmentAddress = ROM_OFFSET + (segment << myBankShift);
+      return {true, segmentAddress};
     }
   }
 
-  return Common::RwAddress(false, ROM_OFFSET);
+  return {false, ROM_OFFSET};
 }
 #endif

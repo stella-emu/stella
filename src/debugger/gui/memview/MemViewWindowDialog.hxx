@@ -116,12 +116,12 @@ class MemViewWindowDialog : public Dialog
         : myBytes{U32(bankSize * bankCount)},
         myBankSize{bankSize}, myBankCount{bankCount}, myBankHeight{bankHeight},
         myWidth{width} { }
-      uInt32 myBytes;
-      uInt16 myBankSize;
-      uInt16 myBankCount;
-      uInt16 myBankHeight;
-      int myWidth;
-      Common::Size mySize{};
+      uInt32 myBytes{0};
+      uInt16 myBankSize{0};
+      uInt16 myBankCount{0};
+      uInt16 myBankHeight{0};
+      int myWidth{0};
+      Common::Size mySize;
     };
 
     // Evaluate the contents of the present cartridge and start setup of needed resources

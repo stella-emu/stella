@@ -47,8 +47,8 @@ class MemViewWidget : public Widget, public CommandSender
     static constexpr std::string_view TEXT_UNSUPPORTED = "Unsupported ROM type";
     static constexpr int DEFAULT_BANK_SIZE = 4096;
     using ColorTab = std::array<uInt32, 256>;
-    static constexpr uInt32 QUERY_ROM_BANK_ORIGIN = 1U << 30;
-    static constexpr uInt32 QUERY_RAM_BANK_ORIGIN = 1U << 31;
+    static constexpr uInt32 QUERY_ROM_BANK_ORIGIN = 1U << 30U;
+    static constexpr uInt32 QUERY_RAM_BANK_ORIGIN = 1U << 31U;
 
     // Fixed floor for a non-zoomable region's window-minimum size
     static constexpr int RAM_MIN_ZOOM = 3;

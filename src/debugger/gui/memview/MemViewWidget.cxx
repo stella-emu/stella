@@ -220,8 +220,8 @@ Common::Size MemViewWidget::naturalSize() const
     return Widget::naturalSize();
 
   // Just calculate the size for simple RAM views
-  int dummyZoomLevel;
-  Common::Size size = calcSizeAndZoom(
+  int dummyZoomLevel = 0;
+  const Common::Size size = calcSizeAndZoom(
     myMaxCandidateW, myMaxCandidateH,
     myParams.myBankWidth, myParams.myBankHeight,
     1, 1,
@@ -364,6 +364,7 @@ Common::Size MemViewWidget::calcSizeAndZoom(int availableWidth, int availableHei
   const int totalSeparatorHeight = (separators && (vBanks >= 2)) ? (vBanks - 1) * MemViewParams::SEPARATOR_HEIGHT : 0;
   const int minHeight = bankHeight * vBanks;
   const int minWidth = bankWidth * 8 * hBanks;
+  assert(minWidth > 0 && minHeight > 0);
 
   // Automatically determine minimum zoom level
   const int hZoom = (availableWidth - totalSeparatorWidth) / minWidth;
@@ -418,7 +419,7 @@ std::tuple<Common::Size, MemViewParams::LayoutParams> MemViewWidget::findBestLay
       const int testHBanks = bankCount / testVBanks;
 
       int testZoomLevel = 0;
-      Common::Size testSize = MemViewWidget::calcSizeAndZoom(
+      const Common::Size testSize = MemViewWidget::calcSizeAndZoom(
         innerSurfaceW,
         innerSurfaceH,
         testWidth,
@@ -429,7 +430,7 @@ std::tuple<Common::Size, MemViewParams::LayoutParams> MemViewWidget::findBestLay
         testZoomLevel
       );
 
-      bool testFits =
+      const bool testFits =
         (testSize.w <= U32(innerSurfaceW))
         &&
         (testSize.h <= U32(innerSurfaceH))
@@ -480,9 +481,6 @@ std::tuple<Common::Size, MemViewParams::LayoutParams> MemViewWidget::findBestLay
   // At least one condition must be met
   assert(fits || isZoomable);
 
-  if (layoutParams.vBanks == 1)
-    singleRow = true;
-
   return {bestSize, layoutParams};
 }
 
@@ -493,9 +491,6 @@ std::tuple<Common::Size, MemViewParams::LayoutParams> MemViewWidget::calcNeededS
 )
 {
   uInt32 dataSize = U32(bankSize * bankCount);
-
-  // Evaluate bank height
-  uInt16 bankHeight = U16(std::min(dataSize, U32(initialBankHeight)));
   const bool fixedBankHeight = !isZoomable;
 
   // Check if bank is displayable
@@ -510,6 +505,9 @@ std::tuple<Common::Size, MemViewParams::LayoutParams> MemViewWidget::calcNeededS
     bankCount = 1;
     dataSize = DEFAULT_BANK_SIZE;
   }
+
+  // Evaluate bank height
+  const uInt16 bankHeight = U16(std::min(dataSize, U32(initialBankHeight)));
 
   // Find the initial best layout to use (how are the banks arranged)
   // and return size and layout parameters
@@ -751,7 +749,7 @@ void MemViewWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       }
       else if ((rmb == "bh0") || (rmb == "bh64") || (rmb == "bh128") || (rmb == "bh256") || (rmb == "bh512"))
       {
-        uInt16 bankHeight = U16(BSPF::stoi(rmb.substr(2)));
+        const uInt16 bankHeight = U16(BSPF::stoi(rmb.substr(2)));
         if (myInitialBankHeight != bankHeight)
         {
           myInitialBankHeight = bankHeight;
@@ -1130,12 +1128,12 @@ void MemViewWidget::updateRest()
     if (myParams.myBaseAddress & QUERY_RAM_BANK_ORIGIN)
       bank -= myParams.myCartridge.ramBankOffset();
 
-    if ((bank >= 0) && (bank < myParams.myBankCount))
+    if ((bank >= 0) && std::cmp_less(bank, myParams.myBankCount))
     {
       // Check if the PC really is in the address range of that bank
       const uInt16 pc = U16(instance().debugger().cpuDebug().pc());
 
-      Common::RwAddress address = myParams.getBankOrigin(bank, pc);
+      const Common::RwAddress address = myParams.getBankOrigin(bank, pc);
       if (
         address.valid
         &&
@@ -1222,7 +1220,7 @@ string MemViewWidget::getToolTip(const Common::Point& pos) const
       if (address.write != address.read)
         text += std::format("/${:0>4X})", address.write);
       else
-        text += ")";
+        text += ')';
     }
     text += " [" + myTypeText;
     // Bank?
