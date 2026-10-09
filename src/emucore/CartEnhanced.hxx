@@ -226,7 +226,7 @@ class CartridgeEnhanced : public Cartridge
       @param PC    The current PC
       @return  The origin of the bank
     */
-    virtual Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const;
+    Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const override;
 
     /**
       Get RAM contents for direct external access

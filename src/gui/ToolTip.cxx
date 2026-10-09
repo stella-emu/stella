@@ -153,7 +153,7 @@ void ToolTip::show(string_view tip)
   const uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2,
                                    U32(myFont->getStringWidth(tip)));
   // Draws the text and answers the number of lines drawn
-  const auto drawText = [&]() {
+  const auto drawText = [&] {
     surface()->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
     return std::min(MAX_ROWS,
         U32(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,

@@ -38,12 +38,11 @@ class MemViewParams
     static constexpr int SEPARATOR_HEIGHT = 2;
 
     struct LayoutParams {
-      LayoutParams() : bankWidth{0}, bankHeight{0}, hBanks{0}, vBanks{0}, minZoomLevel{0} { };
-      uInt16 bankWidth;     // Width of one bank in bytes
-      uInt16 bankHeight;    // Height of one bank in bytes
-      int hBanks;           // Number of horizontal banks next to each other
-      int vBanks;           // Number of vertical banks on top of each other
-      int minZoomLevel;     // Minimum zoom level (1..max)
+      uInt16 bankWidth{0};  // Width of one bank in bytes
+      uInt16 bankHeight{0}; // Height of one bank in bytes
+      int hBanks{0};        // Number of horizontal banks next to each other
+      int vBanks{0};        // Number of vertical banks on top of each other
+      int minZoomLevel{0};  // Minimum zoom level (1..max)
     };
 
   public:

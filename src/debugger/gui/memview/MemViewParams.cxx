@@ -424,19 +424,19 @@ Common::RwAddress MemViewParams::getBankOrigin(int bank, uInt16 PC) const
 {
   if (myBaseAddress & MemViewWidget::QUERY_ROM_BANK_ORIGIN)
   {
-    return Common::RwAddress(true, (myBaseAddress & 0xFFF) + myCartridge.bankOrigin(bank, PC));
+    return {true, (myBaseAddress & 0xFFFU) + myCartridge.bankOrigin(bank, PC)};
   }
   else if (myBaseAddress & MemViewWidget::QUERY_RAM_BANK_ORIGIN)
   {
-    Common::RwAddress ramBankOrigin = myCartridge.ramBankOrigin(bank, PC);
-    return Common::RwAddress(
+    const Common::RwAddress ramBankOrigin = myCartridge.ramBankOrigin(bank, PC);
+    return {
       ramBankOrigin.valid,
-      (myBaseAddress & 0xFFF) + ramBankOrigin.read,
-      (myBaseAddress & 0xFFF) + ramBankOrigin.write
-    );
+      (myBaseAddress & 0xFFFU) + ramBankOrigin.read,
+      (myBaseAddress & 0xFFFU) + ramBankOrigin.write
+    };
   }
   else
   {
-    return Common::RwAddress(true, myBaseAddress);
+    return {true, myBaseAddress};
   }
 }

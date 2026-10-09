@@ -348,7 +348,7 @@ class Cartridge : public Device
                if valid (when currently mapped)
     */
     virtual Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const
-    { return Common::RwAddress(); }
+    { return {}; }
 
     /**
       Get cartridge RAM contents for direct external access
