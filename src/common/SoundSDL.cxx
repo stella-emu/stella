@@ -65,6 +65,9 @@ SoundSDL::~SoundSDL()
 {
   ASSERT_MAIN_THREAD;
 
+  // The WAV stream must go before the audio subsystem is shut down below
+  myWavHandler.close();
+
   if(!myIsInitializedFlag)
     return;
 
@@ -89,6 +92,8 @@ bool SoundSDL::openDevice()
   {
     SDL_DestroyAudioStream(myStream);
     myStream = nullptr;
+    // This also unbinds the WAV stream, which is rebound below
+    SDL_CloseAudioDevice(myDevice);
   }
 
   mySpec = { SDL_AUDIO_F32, 2, I32(myAudioSettings.sampleRate()) };
@@ -103,6 +108,7 @@ bool SoundSDL::openDevice()
     return SOUND_ERROR();
   if(!SDL_SetAudioStreamGetCallback(myStream, audioCallback, this))
     return SOUND_ERROR();
+  myWavHandler.rebind(myDevice);
 
   return myIsInitializedFlag = true;
 }
@@ -383,41 +389,55 @@ uInt32 SoundSDL::wavSize() const
 bool SoundSDL::WavHandler::play(SDL_AudioDeviceID device,
     const string& fileName, uInt32 position, uInt32 length)
 {
-  // Load WAV file
-  if(fileName != myFilename || myBuffer == nullptr)
+  // One stream is created on first use, then reused for every WAV
+  if(myStream == nullptr)
   {
-    if(myBuffer)
-    {
-      SDL_free(myBuffer);
-      myBuffer = nullptr;
-    }
-    SDL_zero(mySpec);
-    if(!SDL_LoadWAV(fileName.c_str(), &mySpec, &myBuffer, &myLength))
+    myStream = SDL_CreateAudioStream(nullptr, nullptr);
+    if(myStream == nullptr)
       return false;
+    if(!SDL_SetAudioStreamGetCallback(myStream, WavHandler::wavCallback, this) ||
+       !SDL_BindAudioStream(device, myStream))
+    {
+      SDL_DestroyAudioStream(myStream);  myStream = nullptr;
+      return false;
+    }
+    SDL_SetAudioStreamGain(myStream, myVolumeFactor);
   }
 
-  if(position > myLength)
-    return false;
+  // wavCallback runs under this same lock, so it never sees a half-changed WAV
+  SDL_LockAudioStream(myStream);
+  const bool loaded = [&] -> bool {
+    // Stop the current WAV, dropping whatever of it is still queued
+    myRemaining = 0;
+    SDL_ClearAudioStream(myStream);
 
-  if(myStream)
-    SDL_UnbindAudioStream(myStream);
+    // Load WAV file
+    if(fileName != myFilename || myBuffer == nullptr)
+    {
+      if(myBuffer)
+      {
+        SDL_free(myBuffer);
+        myBuffer = nullptr;
+      }
+      SDL_zero(mySpec);
+      if(!SDL_LoadWAV(fileName.c_str(), &mySpec, &myBuffer, &myLength))
+        return false;
+    }
 
-  myStream = SDL_CreateAudioStream(&mySpec, nullptr);
-  if(myStream == nullptr)
-    return false;
-  if(!SDL_BindAudioStream(device, myStream))
-    return false;
-  if(!SDL_SetAudioStreamGetCallback(myStream, WavHandler::wavCallback, this))
-    return false;
-  SDL_SetAudioStreamGain(myStream, myVolumeFactor);
+    if(position > myLength || !SDL_SetAudioStreamFormat(myStream, &mySpec, nullptr))
+      return false;
 
-  myFilename = fileName;
-  myRemaining = length
-    ? std::min(length, myLength - position)
-    : myLength;
-  myPos = myBuffer + position;
+    myFilename = fileName;
+    myRemaining = length
+      ? std::min(length, myLength - position)
+      : myLength;
+    myPos = myBuffer + position;
 
-  return true;
+    return true;
+  }();
+  SDL_UnlockAudioStream(myStream);
+
+  return loaded;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,11 +445,27 @@ void SoundSDL::WavHandler::stop()
 {
   if(myBuffer)
   {
-    // Clean up
+    // Clean up under the stream lock, as in play()
+    SDL_LockAudioStream(myStream);
     myRemaining = 0;
-    SDL_UnbindAudioStream(myStream);  myStream = nullptr;
+    SDL_ClearAudioStream(myStream);
     SDL_free(myBuffer);  myBuffer = nullptr;
+    SDL_UnlockAudioStream(myStream);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::WavHandler::close()
+{
+  stop();
+  SDL_DestroyAudioStream(myStream);  myStream = nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::WavHandler::rebind(SDL_AudioDeviceID device) const
+{
+  if(myStream)
+    SDL_BindAudioStream(device, myStream);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

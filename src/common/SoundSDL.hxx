@@ -183,6 +183,8 @@ class SoundSDL : public Sound
         bool play(SDL_AudioDeviceID device, const string& fileName,
                   uInt32 position, uInt32 length);
         void stop();
+        void close();
+        void rebind(SDL_AudioDeviceID device) const;
         uInt32 size() const { return myBuffer ? myRemaining : 0; }
         void setSpeed(double speed) { mySpeed = speed; }
         void setVolumeFactor(float volumeFactor);
