@@ -237,6 +237,8 @@ class VideoAudioDialog : public Dialog
     CheckboxWidget* mySoundEnableCheckbox{nullptr};
     LabelWidget*    myVolumeSliderLbl{nullptr};
     SliderWidget*   myVolumeSlider{nullptr};
+    LabelWidget*    myTiaVolumeSliderLbl{nullptr};
+    SliderWidget*   myTiaVolumeSlider{nullptr};
     CheckboxWidget* myStereoSoundCheckbox{nullptr};
     LabelWidget*    myModePopupLbl{nullptr};
     PopUpWidget*    myModePopup{nullptr};

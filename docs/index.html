@@ -2796,7 +2796,13 @@
 
     <tr>
       <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
-      <td>Set the volume.</td>
+      <td>Set the master volume, which applies to all sound.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-audio.tia_volume &lt;0 - 100&gt;</pre></td>
+      <td>Set the TIA volume, relative to the master volume.  0 silences the
+          TIA while leaving AtariVox speech and KidVid audio audible.</td>
     </tr>
 
     <tr>
@@ -3995,7 +4001,8 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Enable audio</td><td>Self-explanatory</td><td>-audio.enabled</td></tr>
-          <tr><td>Volume</td><td>Self-explanatory</td><td>-audio.volume</td></tr>
+          <tr><td>Master volume</td><td>Volume of all sound</td><td>-audio.volume</td></tr>
+          <tr><td>TIA volume</td><td>Volume of the console's own sound, relative to the master volume; AtariVox speech and KidVid audio follow the master volume only</td><td>-audio.tia_volume</td></tr>
           <tr><td>Device</td><td>Use the specified audio device.</td><td>-audio.device</td></tr>
           <tr><td>Mode</td><td>Select an audio preset or choose 'Custom' for manual configuration.</td><td>-audio.preset</td></tr>
           <tr><td>Fragment size</td><td>The number of samples in a single fragment processed by the audio driver. Smaller values mean less latency, but may lead to dropouts (depending on OS and hardware).</td><td>-audio.fragment_size</td></tr>

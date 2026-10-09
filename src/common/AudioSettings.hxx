@@ -47,6 +47,7 @@ class AudioSettings
     static constexpr string_view SETTING_RESAMPLING_QUALITY  = "audio.resampling_quality";
     static constexpr string_view SETTING_STEREO              = "audio.stereo";
     static constexpr string_view SETTING_VOLUME              = "audio.volume";
+    static constexpr string_view SETTING_TIA_VOLUME          = "audio.tia_volume";
     static constexpr string_view SETTING_ENABLED             = "audio.enabled";
     static constexpr string_view SETTING_DPC_PITCH           = "audio.dpc_pitch";
 
@@ -58,6 +59,7 @@ class AudioSettings
     static constexpr ResamplingQuality DEFAULT_RESAMPLING_QUALITY   = ResamplingQuality::lanczos_2;
     static constexpr bool DEFAULT_STEREO                            = false;
     static constexpr uInt32 DEFAULT_VOLUME                          = 80;
+    static constexpr uInt32 DEFAULT_TIA_VOLUME                      = 100;
     static constexpr bool DEFAULT_ENABLED                           = true;
     static constexpr uInt32 DEFAULT_DPC_PITCH                       = 20000;
 
@@ -88,6 +90,8 @@ class AudioSettings
 
     uInt32 volume() const;
 
+    uInt32 tiaVolume() const;
+
     bool enabled() const;
 
     uInt32 dpcPitch() const;
@@ -109,6 +113,8 @@ class AudioSettings
     void setDpcPitch(uInt32 pitch);
 
     void setVolume(uInt32 volume);
+
+    void setTiaVolume(uInt32 volume);
 
     void setEnabled(bool isEnabled);
 

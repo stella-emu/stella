@@ -24,7 +24,6 @@
 #include "Logger.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
-#include "Settings.hxx"
 #include "Console.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
@@ -220,10 +219,10 @@ void SoundSDL::setVolume(uInt32 volume, bool persist)
       ? FLT(volume) / 100.F
       : 0.F;
 
-    // The TIA has its own relative level, so it can be silenced while the
-    // separate WAV stream (AtariVox speech, KidVid, Supercharger) stays audible
-    const uInt32 tiaVolume =
-      std::min(myOSystem.settings().getInt("audio.tiavolume"), 100);
+    // The TIA has its own level, relative to the master volume, so it can be
+    // silenced while AtariVox speech and KidVid audio, which have their own
+    // streams, stay audible
+    const uInt32 tiaVolume = myAudioSettings.tiaVolume();
 
     SDL_SetAudioStreamGain(myStream, myVolumeFactor * FLT(tiaVolume) / 100.F);
     myWavHandler.setVolumeFactor(myVolumeFactor);

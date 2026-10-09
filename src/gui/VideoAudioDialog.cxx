@@ -705,14 +705,23 @@ void VideoAudioDialog::addAudioTab()
   mySoundEnableCheckbox->setToolTip(Event::SoundToggle);
   wid.push_back(mySoundEnableCheckbox);
 
-  // Volume: it sizes its own track (it is not one of the controls that must end
-  // flush with the Mode pop-up below)
-  myVolumeSliderLbl = new LabelWidget(pane, _font, "Volume");
+  // Volumes: each sizes its own track (they are not among the controls that
+  // must end flush with the Mode pop-up below)
+  myVolumeSliderLbl = new LabelWidget(pane, _font, "Master volume");
   myVolumeSlider = new SliderWidget(pane, _font, 0,  GuiCmd::None, 4, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   myVolumeSlider->setTickmarkIntervals(4);
   myVolumeSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
   wid.push_back(myVolumeSlider);
+
+  myTiaVolumeSliderLbl = new LabelWidget(pane, _font, "TIA volume");
+  myTiaVolumeSlider = new SliderWidget(pane, _font, 0,  GuiCmd::None, 4, "%");
+  myTiaVolumeSlider->setMinValue(0); myTiaVolumeSlider->setMaxValue(100);
+  myTiaVolumeSlider->setTickmarkIntervals(4);
+  myTiaVolumeSlider->setToolTip("Relative to the master volume.  AtariVox\n"
+                                "speech and KidVid audio follow the master\n"
+                                "volume only.");
+  wid.push_back(myTiaVolumeSlider);
 
   // Mode
   items.clear();
@@ -782,10 +791,11 @@ void VideoAudioDialog::addAudioTab()
     const int VGAP = Dialog::vGap();
     const int INDENT = CheckboxWidget::prefixSize(_font);
 
-    // Three columns, not one: Volume and Mode read as one, the four controls
-    // indented under Mode as another, and the pitch slider stands alone.  Merging
-    // them would push Mode's box out to the width of "Resampling quality"
-    GUI::alignLabels({{myVolumeSliderLbl}, {myModePopupLbl}});
+    // Three columns, not one: the two volumes and Mode read as one, the four
+    // controls indented under Mode as another, and the pitch slider stands
+    // alone.  Merging them would push Mode's box out to the width of
+    // "Resampling quality"
+    GUI::alignLabels({{myVolumeSliderLbl}, {myTiaVolumeSliderLbl}, {myModePopupLbl}});
     GUI::alignLabels({{myFreqPopupLbl}, {myResamplingPopupLbl},
                       {myHeadroomSliderLbl}, {myBufferSizeSliderLbl}});
     GUI::alignLabels({{myDpcPitchLbl}});
@@ -793,7 +803,8 @@ void VideoAudioDialog::addAudioTab()
     // Everything indented under Mode ends flush with IT -- not with the tab,
     // which is wider (the widest tab in the dialog sets that).  The sliders'
     // tracks reach it; the pop-ups, sitting a level further in, are given a cell
-    // that reaches it.  Volume is not one of them: it keeps its own track.
+    // that reaches it.  The volumes are not among them: they keep their own
+    // tracks.
     // Headroom/BufferSize are a SEPARATE alignLabels group from Mode's (shared
     // with Freq/Resampling instead), so naming one label from each group lets
     // alignTracks() cross that gap itself -- same gap flushWidth below crosses
@@ -811,6 +822,8 @@ void VideoAudioDialog::addAudioTab()
     col.addAuto(anchoredItem(mySoundEnableCheckbox));
     col.addSpace(VGAP);
     col.addAuto(labeledRow(myVolumeSliderLbl, myVolumeSlider, 0, INDENT));
+    col.addSpace(VGAP);
+    col.addAuto(labeledRow(myTiaVolumeSliderLbl, myTiaVolumeSlider, 0, INDENT));
     col.addSpace(VGAP);
     auto modeRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     modeRow->addSpace(INDENT);
@@ -974,8 +987,9 @@ void VideoAudioDialog::loadConfig()
   mySoundEnableCheckbox->setState(false);
 #endif
 
-  // Volume
+  // Volumes
   myVolumeSlider->setValue(audioSettings.volume());
+  myTiaVolumeSlider->setValue(audioSettings.tiaVolume());
 
   // Stereo
   myStereoSoundCheckbox->setState(audioSettings.stereo());
@@ -1119,7 +1133,8 @@ void VideoAudioDialog::saveConfig()
   audioSettings.setEnabled(mySoundEnableCheckbox->getState());
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());
 
-  // Volume
+  // Volumes; the TIA's first, since setting the master volume applies both
+  audioSettings.setTiaVolume(myTiaVolumeSlider->getValue());
   audioSettings.setVolume(myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
@@ -1237,6 +1252,7 @@ void VideoAudioDialog::setDefaults()
 #endif
       mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
+      myTiaVolumeSlider->setValue(AudioSettings::DEFAULT_TIA_VOLUME);
       myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
       myModePopup->setSelected(I32(AudioSettings::DEFAULT_PRESET));
@@ -1679,6 +1695,8 @@ void VideoAudioDialog::updateAudioEnabledState()
 
   myVolumeSliderLbl->setEnabled(active);
   myVolumeSlider->setEnabled(active);
+  myTiaVolumeSliderLbl->setEnabled(active);
+  myTiaVolumeSlider->setEnabled(active);
   myStereoSoundCheckbox->setEnabled(active);
   myModePopupLbl->setEnabled(active);
   myModePopup->setEnabled(active);

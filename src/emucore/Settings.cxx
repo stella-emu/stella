@@ -110,6 +110,7 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
+  setPermanent(AudioSettings::SETTING_TIA_VOLUME, AudioSettings::DEFAULT_TIA_VOLUME);
   setPermanent(AudioSettings::SETTING_PRESET, I32(AudioSettings::DEFAULT_PRESET));
   setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
   setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, I32(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
@@ -224,7 +225,6 @@ Settings::Settings()
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("avoxmode", "hardware");
-  setPermanent("audio.tiavolume", 100);
   setPermanent("fastscbios", "true");
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
@@ -575,10 +575,11 @@ void Settings::usage()
     << "  -bezel.win.bottom  <0-40>      Set bottom bezel window position [%]\n\n"
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
-    << "  -audio.volume             <0-100>    Volume\n"
-    << "  -audio.tiavolume          <0-100>    TIA volume, relative to the master\n"
+    << "  -audio.volume             <0-100>    Master volume\n"
+    << "  -audio.tia_volume         <0-100>    TIA volume, relative to the master\n"
     << "                                       volume; 0 silences the TIA while\n"
-    << "                                       leaving speech and WAV audio audible\n"
+    << "                                       leaving AtariVox speech and KidVid\n"
+    << "                                       audio audible\n"
     << "  -audio.device             <number>   ID of the audio device (0 = default)\n"
     << "  -audio.preset             <1-5>      Audio preset (or 1 for custom)\n"
     << "  -audio.sample_rate        <number>   Output sample rate (44100|48000|96000)\n"

@@ -85,6 +85,10 @@ void AudioSettings::normalize(Settings& settings)
   const int settingVolume = settings.getInt(SETTING_VOLUME);
   if (settingVolume < 0 || settingVolume > 100)
     settings.setValue(SETTING_VOLUME, DEFAULT_VOLUME);
+
+  const int settingTiaVolume = settings.getInt(SETTING_TIA_VOLUME);
+  if (settingTiaVolume < 0 || settingTiaVolume > 100)
+    settings.setValue(SETTING_TIA_VOLUME, DEFAULT_TIA_VOLUME);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,6 +155,13 @@ uInt32 AudioSettings::volume() const
 {
   // 0 is a valid value -> keep it
   return valueOrDefault(mySettings.getInt(SETTING_VOLUME), 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 AudioSettings::tiaVolume() const
+{
+  // 0 is a valid value -> keep it
+  return valueOrDefault(mySettings.getInt(SETTING_TIA_VOLUME), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,6 +279,15 @@ void AudioSettings::setVolume(uInt32 volume)
   if (!myIsPersistent) return;
 
   mySettings.setValue(SETTING_VOLUME, volume);
+  normalize(mySettings);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioSettings::setTiaVolume(uInt32 volume)
+{
+  if (!myIsPersistent) return;
+
+  mySettings.setValue(SETTING_TIA_VOLUME, volume);
   normalize(mySettings);
 }
 
