@@ -17,7 +17,6 @@
 
 #include "MediaFactory.hxx"
 #include "SerialPort.hxx"
-#include "Serializer.hxx"
 #include "SpeakJetSerial.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

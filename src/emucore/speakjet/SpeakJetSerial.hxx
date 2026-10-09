@@ -58,7 +58,7 @@ class SpeakJetSerial : public SpeakJetBackend, public SpeakJet::Sink
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-  private:
+  public:
     // The chip makes the sound; the decoder only keeps track of the stream
     void play(const SpeakJet::Utterance&) override { }
     void pause(uInt32) override { }

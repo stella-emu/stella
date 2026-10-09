@@ -91,7 +91,8 @@ class SpeakJetSamples
     const Clip* pitchClip(uInt8 code, uInt8 pitch, uInt8 bend, uInt8& atPitch);
 
     /**
-      The set recorded at one of the sampled Pitch settings, at a Bend.
+      The set recorded at one of the sampled Pitch settings, at a Bend; an
+      empty set for any other Pitch.
     */
     const SampleSet& pitchSet(uInt8 bend, uInt8 pitch);
 

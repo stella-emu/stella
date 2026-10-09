@@ -53,6 +53,11 @@ namespace {
   // The window and hop the level is followed with
   constexpr uInt32 LEVEL_WINDOW_MS = 20, LEVEL_HOP_MS = 2;
 
+  // Recordings below this rate are refused: the chip itself outputs at about
+  // 8kHz, and far lower rates leave the 1ms windows used on a recording with
+  // no samples at all
+  constexpr uInt32 MIN_RATE = 8000;
+
   string bendDir(const string& path, size_t bend)
   {
     return path + "bend" + (bend < 10 ? "0" : "") + std::to_string(bend) +
@@ -176,7 +181,14 @@ const SpeakJetSamples::Clip* SpeakJetSamples::pitchClip(uInt8 code, uInt8 pitch,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const SpeakJetSamples::SampleSet& SpeakJetSamples::pitchSet(uInt8 bend, uInt8 pitch)
 {
-  return pitchSetAt(bend, SZT(std::ranges::find(ourPitchSet, pitch) - ourPitchSet.begin()));
+  // Nothing is recorded at a Pitch that isn't one of the sampled settings
+  static const SampleSet none{};
+
+  const auto want = SZT(std::ranges::find(ourPitchSet, pitch) - ourPitchSet.begin());
+  if(want == ourPitchSet.size())
+    return none;
+
+  return pitchSetAt(std::min<size_t>(bend, myPitchSamples.size() - 1), want);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,7 +344,7 @@ bool SpeakJetSamples::readWav(const string& path, Samples& samples, uInt32& rate
       channels = u16(body + 2);
       rate = u32(body + 4);
       bits = u16(body + 14);
-      haveFmt = channels > 0 && rate > 0 && (bits == 8 || bits == 16);
+      haveFmt = channels > 0 && rate >= MIN_RATE && (bits == 8 || bits == 16);
     }
     else if(id == "data" && haveFmt)
     {
