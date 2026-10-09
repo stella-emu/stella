@@ -94,6 +94,15 @@ bool SoundSDL::openDevice()
     myStream = nullptr;
   }
 
+  // Speech is bound to the device being replaced, where it would never drain;
+  // queueSpeech() starts a new stream on the new device
+  if(mySpeechStream)
+  {
+    SDL_DestroyAudioStream(mySpeechStream);
+    mySpeechStream = nullptr;
+    mySpeechRate = 0;
+  }
+
   mySpec = { SDL_AUDIO_F32, 2, I32(myAudioSettings.sampleRate()) };
 
   myDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &mySpec);
@@ -238,7 +247,7 @@ void SoundSDL::queueSpeech(sShortSpan samples, uInt32 sampleRate)
     if(mySpeechStream)
       SDL_DestroyAudioStream(mySpeechStream);
 
-    SDL_AudioSpec spec = { SDL_AUDIO_S16, 1, I32(sampleRate) };
+    const SDL_AudioSpec spec = { SDL_AUDIO_S16, 1, I32(sampleRate) };
     mySpeechStream = SDL_CreateAudioStream(&spec, nullptr);
     if(mySpeechStream == nullptr)
       return;

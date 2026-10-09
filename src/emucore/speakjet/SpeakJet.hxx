@@ -95,6 +95,7 @@ class SpeakJet
 
   public:
     explicit SpeakJet(Sink& sink);
+    ~SpeakJet() = default;
 
     /**
       Feed one byte of the command stream.

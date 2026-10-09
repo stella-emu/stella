@@ -206,9 +206,9 @@ namespace SpeakJetChip {
   // One end of a sound: oscillators 1 to 3 by formant band (a negative
   // frequency is a silent oscillator), their levels, and the pedestal
   struct State {
-    std::array<double, 3> hz;
-    std::array<double, 3> level;
-    double pedestal;
+    std::array<double, 3> hz{};
+    std::array<double, 3> level{};
+    double pedestal{0.0};
   };
   // A voiced fricative's noise: osc 4 and 5, their frequencies jittered by a
   // random value held NOISE_HOLD chip samples, scaled by distortion; half
@@ -221,9 +221,9 @@ namespace SpeakJetChip {
     double level{0.0};
   };
   struct Sound {
-    bool voiced;
+    bool voiced{false};
     State start, end;
-    bool glide;
+    bool glide{false};
     State onset;
     Noise noise;
   };
@@ -273,6 +273,8 @@ namespace SpeakJetChip {
 
   // Codes 128 to 199; a diphthong's two states differ, and a glide also has
   // its onset near its start.  A voiced fricative's state is its period's burst
+  // Measured values, some of which merely lie close to a math constant
+  // NOLINTBEGIN(modernize-use-std-numbers)
   constexpr std::array<Sound, 72> SOUNDS = {{
     { true , {{259.1, 2207.1, 2565.2}, {1.45793, 1.34130, 0.95085}, 4.68310}, {{262.8, 2205.3, 2575.1}, {1.57781, 1.50013, 1.03976}, 5.62548}, false, {{259.1, 2207.1, 2565.2}, {1.45793, 1.34130, 0.95085}, 4.68310}, {} },  // 128 IY
     { true , {{344.3, 1773.3, 2460.0}, {1.38317, 1.42117, 0.87196}, -7.11244}, {{352.0, 1767.3, 2477.8}, {1.47175, 1.77740, 0.98713}, -1.13803}, false, {{344.3, 1773.3, 2460.0}, {1.38317, 1.42117, 0.87196}, -7.11244}, {} },  // 129 IH
@@ -347,6 +349,7 @@ namespace SpeakJetChip {
     { false, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, false, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, {} },  // 198 PE
     { false, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, false, {{-1.0, -1.0, -1.0}, {0.00000, 0.00000, 0.00000}, 0.00000}, {} },  // 199 PO
   }};
+  // NOLINTEND(modernize-use-std-numbers)
 
 }  // namespace SpeakJetChip
 

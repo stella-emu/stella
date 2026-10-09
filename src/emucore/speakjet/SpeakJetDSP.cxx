@@ -143,8 +143,8 @@ SpeakJetDSP::Samples SpeakJetDSP::timeScale(sShortSpan in, double factor,
   const auto want = SZT(DBL(n) * factor);
 
   // Frame short enough for brief stops, long enough to carry pitch
-  const size_t frame = BSPF::clamp<size_t>(std::min(n, want) / 4, rate * 5 / 1000,
-                                           rate * 30 / 1000);
+  const auto frame = BSPF::clamp<size_t>(std::min(n, want) / 4, rate * 5 / 1000,
+                                         rate * 30 / 1000);
   if(frame < 32 || std::min(n, want) < frame * 2)
     return Samples{in.begin(), in.end()};
 

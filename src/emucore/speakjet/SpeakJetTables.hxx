@@ -101,6 +101,7 @@ class SpeakJetTables
 
   private:
     SpeakJetTables() = delete;
+    ~SpeakJetTables() = delete;
     SpeakJetTables(const SpeakJetTables&) = delete;
     SpeakJetTables(SpeakJetTables&&) = delete;
     SpeakJetTables& operator=(const SpeakJetTables&) = delete;

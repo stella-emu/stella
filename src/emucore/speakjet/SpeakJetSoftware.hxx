@@ -54,6 +54,9 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     void update() override;
     string about() const override { return myAboutString; }
 
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+
   public:
     void play(const SpeakJet::Utterance& utterance) override;
     void pause(uInt32 durationMs) override;
@@ -65,6 +68,9 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     using Samples = SpeakJetDSP::Samples;
     using Clip = SpeakJetSamples::Clip;
     using Part = SpeakJetVoice::Part;
+
+    // Drop all speech, queued or still being made; the parameters stay
+    void silence();
 
     /**
       Release the sound held back awaiting its successor.
@@ -159,6 +165,7 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     string myAboutString;
 
     // With SPEAKJET_TRACE set, every piece queued is printed with what made it
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     const bool myTrace{std::getenv("SPEAKJET_TRACE") != nullptr};
     const char* myKind{"?"};
     int myTraceCode{-1};
@@ -166,6 +173,7 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     uInt64 myFrame{0};
 
     // With SPEAKJET_PHRASES set, each phrase's sounds are printed as it ends
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     const bool myShowPhrases{std::getenv("SPEAKJET_PHRASES") != nullptr};
     string myPhrase;
 

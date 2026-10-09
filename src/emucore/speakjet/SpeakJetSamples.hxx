@@ -57,6 +57,7 @@ class SpeakJetSamples
       @param path  The directory holding the samples, with a trailing separator
     */
     explicit SpeakJetSamples(const string& path);
+    ~SpeakJetSamples() = default;
 
     // Where the samples live, and how many of the default set were found
     const string& path() const { return myPath; }

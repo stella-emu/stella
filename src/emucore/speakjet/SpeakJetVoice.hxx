@@ -53,6 +53,7 @@ class SpeakJetVoice
 
   public:
     explicit SpeakJetVoice(SpeakJetSamples& samples);
+    ~SpeakJetVoice() = default;
 
     // Whether a code is made here rather than played from its recording
     static bool makes(int code);
@@ -87,7 +88,7 @@ class SpeakJetVoice
     void carryFrom(int code) { myCarryCode = code; }
 
     // Forget the voicing, as at power-on
-    void reset() { myVoicing = Voicing{}; }
+    void reset() { myVoicing = Voicing{}; myCarryCode = -1; }
 
   private:
     // The points of a sound its states are measured at: a glide's onset near
@@ -203,8 +204,8 @@ class SpeakJetVoice
     int myCarryCode{-1};
 
     // residual() per Bend, code and point, worked out once
-    mutable BSPF::array2D<vector<double>, 16 * 72, 3> myResidual;
-    mutable BSPF::array2D<bool, 16 * 72, 3> myResidualDone{};
+    mutable BSPF::array2D<vector<double>, 16UZ * 72, 3> myResidual;
+    mutable BSPF::array2D<bool, 16UZ * 72, 3> myResidualDone{};
 
   private:
     SpeakJetVoice() = delete;

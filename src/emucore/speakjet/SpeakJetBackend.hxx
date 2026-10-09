@@ -18,24 +18,25 @@
 #ifndef SPEAKJET_BACKEND_HXX
 #define SPEAKJET_BACKEND_HXX
 
-class Serializer;
-
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 /**
   Abstract interface to whatever produces the AtariVox's speech.
 
   The AtariVox recovers a byte stream from the controller pins and passes it
   here.  An implementation either forwards those bytes to a real SpeakJet
-  chip, or synthesizes the speech itself.
+  chip, or synthesizes the speech itself.  Every implementation saves the
+  same state layout, since a state may be loaded with a different backend
+  than it was saved with.
 
   @author  Stephen Anthony
 */
-class SpeakJetBackend
+class SpeakJetBackend : public Serializable
 {
   public:
     SpeakJetBackend() = default;
-    virtual ~SpeakJetBackend() = default;
+    ~SpeakJetBackend() override = default;
 
     /**
       Send one byte of the SpeakJet command stream to the device.
@@ -68,12 +69,6 @@ class SpeakJetBackend
       @return  Text appended to the AtariVox description
     */
     virtual string about() const = 0;
-
-    /**
-      Save/load any backend state that must survive a state save.
-    */
-    virtual bool save(Serializer&) const { return true; }
-    virtual bool load(Serializer&) { return true; }
 
   private:
     // Following constructors and assignment operators not supported

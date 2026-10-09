@@ -495,8 +495,11 @@ const vector<double>& SpeakJetVoice::residual(int code, Point which, uInt8 bend)
     vector<double> mean(period, 0.0);
     size_t n = 0;
     const size_t half = period / 2;
-    for(double g = DBL(at) - std::floor(DBL(at) / per) * per; g + DBL(period + half) <= 0.8 * DBL(x.size()); g += per)
+    const double first = DBL(at) - std::floor(DBL(at) / per) * per;
+    const double last = 0.8 * DBL(x.size()) - DBL(period + half);
+    for(size_t p = 0; first + DBL(p) * per <= last; ++p)
     {
+      const double g = first + DBL(p) * per;
       if(g < 0.2 * DBL(x.size()) || g < DBL(lead + half))
         continue;
       const auto a = SZT(std::lround(g));

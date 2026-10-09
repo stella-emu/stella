@@ -67,6 +67,8 @@ SpeakJetSamples::SpeakJetSamples(const string& path)
   // Without a per-Bend layout one flat directory serves every Bend
   myPerBend = FSNode(myPath + "bend05").isDirectory();
   myPerPitch = FSNode(myPath + "pitch114").isDirectory();
+  // Not in the initializer list: loadSet() needs the layout found above
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   myFound = loadSet(SpeakJet::DEFAULT_BEND);
 }
 
@@ -301,11 +303,11 @@ bool SpeakJetSamples::readWav(const string& path, Samples& samples, uInt32& rate
     return false;
 
   const auto u16 = [&buf](size_t o) {
-    return U16(U8(buf[o]) | (U8(buf[o + 1]) << 8));
+    return U16(U8(buf[o]) | (U32(U8(buf[o + 1])) << 8U));
   };
   const auto u32 = [&buf](size_t o) {
-    return U32(U8(buf[o]) | (U8(buf[o + 1]) << 8) |
-               (U8(buf[o + 2]) << 16) | (U32(U8(buf[o + 3])) << 24));
+    return U32(U8(buf[o]) | (U32(U8(buf[o + 1])) << 8U) |
+               (U32(U8(buf[o + 2])) << 16U) | (U32(U8(buf[o + 3])) << 24U));
   };
 
   if(string(buf.data(), 4) != "RIFF" || string(buf.data() + 8, 4) != "WAVE")
@@ -355,7 +357,7 @@ bool SpeakJetSamples::readWav(const string& path, Samples& samples, uInt32& rate
       return !samples.empty();
     }
 
-    pos = body + size + (size & 1);
+    pos = body + size + (size & 1U);
   }
 
   return false;

@@ -97,7 +97,11 @@ SpeakJetSoftware::SpeakJetSoftware(const OSystem& osystem, string_view deadPort)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SpeakJetSoftware::~SpeakJetSoftware() = default;
+SpeakJetSoftware::~SpeakJetSoftware()
+{
+  // Queued speech would otherwise play on into whatever runs next
+  myOSystem.sound().stopSpeech();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJetSoftware::ready()
@@ -108,17 +112,26 @@ bool SpeakJetSoftware::ready()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJetSoftware::reset()
 {
+  silence();
+  myDecoder.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJetSoftware::silence()
+{
   myOSystem.sound().stopSpeech();
   myTail.clear();
   myPendingSound.clear();
   myPendingDecay.clear();
+  myPendingParts.clear();
+  myPendingCode = myPrevCode = -1;
   myDecay.clear();
   myVoice.reset();
   myPhrase.clear();
   myAfterPause = false;
   myFlowing = false;
   myStarting = true;
-  myDecoder.reset();
+  myIdleFrames = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,6 +161,43 @@ void SpeakJetSoftware::update()
     myTraceCode = -1;
     append(takeDecay(rate() * DECAY_LEAD_MS / 1000), 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJetSoftware::save(Serializer& out) const
+{
+  // The serial port's flow control state, as it reads with no device attached
+  try
+  {
+    out.putBool(true);
+    out.putBool(false);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: SpeakJetSoftware::save\n";
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJetSoftware::load(Serializer& in)
+{
+  // Whatever was speaking belongs to the moment the loaded state replaces
+  silence();
+
+  // The serial port's flow control state, which means nothing here
+  try
+  {
+    in.getBool();
+    in.getBool();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: SpeakJetSoftware::load\n";
+    return false;
+  }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,7 +286,8 @@ void SpeakJetSoftware::play(const SpeakJet::Utterance& utterance)
 
   // The same sound again is not started over but keeps sounding, so it
   // becomes another part of the pending sound, spliced mid-sound
-  if(!myPendingSound.empty() && utterance.code == myPendingCode && !myAfterPause)
+  if(!myPendingSound.empty() && std::cmp_equal(utterance.code, myPendingCode) &&
+     !myAfterPause)
   {
     const double timing = DBL(utterance.scalePct) / 100.0 *
                           SpeakJetTables::speedFactor(mySpeed);

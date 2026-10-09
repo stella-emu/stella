@@ -166,7 +166,8 @@ void AtariVox::update()
 void AtariVox::reset()
 {
   myLastDataWriteCycle = 0;
-  myBackend->reset();
+  // SpeakJetBackend::reset(), not unique_ptr::reset()
+  (*myBackend).reset();
   myEEPROM->systemReset();
 }
 
