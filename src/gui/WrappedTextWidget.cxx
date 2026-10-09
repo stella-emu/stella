@@ -58,15 +58,12 @@ void WrappedTextWidget::refreshFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WrappedTextWidget::rewrap()
 {
-  // Wrap into however many characters fit the width a row is actually DRAWN in.
-  // Wrap to anything wider -- _w, say -- and the longest line does not fit its
-  // row, so the renderer ELLIPSIZES it, eating the end of the very word that
-  // wrapping should have carried whole onto the next line
+  // Wrap to the width a row is actually DRAWN in; anything wider (_w, say) and the
+  // renderer ellipsizes the longest line
   const int usable = textWidth();
 
-  // Nothing sensible to wrap into until we have a width to speak of.  We keep
-  // the line count we had (0 before the first wrap), which is what makes
-  // naturalSize() fall back to the floor -- see the class comment
+  // No width to wrap into yet, so keep the line count we had (0 before the first
+  // wrap), which makes naturalSize() fall back to the floor
   if(usable <= 0)
     return;
 

@@ -75,10 +75,8 @@ void ControllerWidget::reflow()
   }
   layoutContent(col);
 
-  // The content sizes the block: no wider than it needs, and at least eight
-  // lines tall so the leaf controllers and the register rows beside them line
-  // up -- but taller if the content (a QuadTari's two embedded controllers,
-  // AtariVox's page list) needs it
+  // The content sizes the block, at least eight lines tall so the leaf controllers
+  // line up with the register rows beside them, but taller if the content needs it
   const Common::Size natural = col.naturalSize();
   _w = I32(natural.w);
   _h = std::max(8 * _font.getLineHeight(), I32(natural.h));

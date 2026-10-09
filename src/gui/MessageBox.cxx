@@ -109,10 +109,8 @@ void MessageBox::layout()
     root->addAuto(stretchedItem(w));
   root->addSpace(VGAP * 2);
 
-  // As wide as the longest line, and as tall as the lines need -- but never
-  // narrower than the button group below them. If this ends up bigger than
-  // the screen, Dialog::open()'s exceedsScreen() check reports it, the same
-  // as any other dialog.
+  // As wide as the longest line but never narrower than the buttons, and as tall as
+  // the lines need; Dialog::open() reports one too big for the screen
   int str_w = 0;
   for(const auto& s: myText)
     str_w = std::max(I32(s.length()), str_w);

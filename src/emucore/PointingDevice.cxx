@@ -39,12 +39,8 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 PointingDevice::read()
 {
-  // SWCHA may be polled many times per frame, so the gray-code pins are sampled
-  // cycle-accurately on every read -- the motion is sub-window accurate by
-  // construction.  These motion pins deliberately do NOT use the Event
-  // transition schedule (which replays discrete user-input events): the encoder
-  // instead synthesizes an evenly-spaced pulse train from the whole-window mouse
-  // delta (see update()).  The fire button is event-bound separately in update()
+  // The gray-code pins are sampled cycle-accurately on every SWCHA read, from an
+  // evenly-spaced pulse train synthesized in update(), not from the Event schedule
 
   // Elapsed CPU cycles since the start of the current input window; this is
   // the controller's only notion of time, just as a real quadrature encoder

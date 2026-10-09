@@ -510,11 +510,8 @@ ByteSpan CartridgeAR::getImage(ImageScope scope) const
   // 2K BIOS area within each load is left blank, so the copyrighted BIOS is
   // never exposed; the BIN format itself may bundle a dummy, non-copyright BIOS.
   //
-  // Refresh the in-progress load's header so a saved image's page checksums
-  // match its (possibly game-modified) RAM; completed loads were already
-  // finalised at their tape boundaries.  Skipped before the cart is installed
-  // (mySystem null) — e.g. the about-string size query — where finalizeLoad()
-  // can't peek zero-page and the header is irrelevant anyway.
+  // Refresh the in-progress load's header so a saved image's checksums match its RAM;
+  // skipped before install (mySystem null), when finalizeLoad() can't peek zero-page
   if(myIsSoundLoad && mySystem)
     const_cast<CartridgeAR*>(this)->finalizeLoad(myCurrentLoadBlock);
 

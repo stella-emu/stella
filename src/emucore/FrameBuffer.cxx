@@ -162,23 +162,15 @@ bool FrameBuffer::wantsHiDPI(const Common::Size& desktop) const
   if(setting != "auto")
     return myOSystem.settings().getBool("hidpi");
 
-  // Only a high resolution screen is a candidate at all: on anything smaller a
-  // 2x UI is too big.  Since any scaling the OS applies is already divided out
-  // of what we see (see below), this reads as a density test, and the height
-  // does most of the work -- an ultrawide is broad at an ordinary density
+  // Only a high resolution screen is a candidate; with OS scaling divided out this
+  // is a density test, and the height does the work (an ultrawide is merely broad)
   static constexpr uInt32 HIDPI_AUTO_WIDTH = 3000, HIDPI_AUTO_HEIGHT = 1600;
 
   if(desktop.w <= HIDPI_AUTO_WIDTH || desktop.h <= HIDPI_AUTO_HEIGHT)
     return false;
 
-  // Whatever scaling the OS applies to our window on the user's behalf has
-  // already been divided out of the desktop size we see here -- Windows
-  // stretches us, since we ask it to treat us as DPI-unaware, and macOS and
-  // Wayland hand us points rather than pixels.  What is left is the room a 1x
-  // UI really has, so weigh the smallest UI the current font can build against
-  // it: the less of the desktop that UI covers, the smaller it reads, and past
-  // this point 2x serves the user better.  Measuring both dimensions keeps a
-  // wide but short desktop (an ultrawide) at 1x, where its height belongs
+  // OS scaling is already divided out of this desktop size, so past this coverage the
+  // smallest UI the font can build reads too small, and 2x serves the user better
   static constexpr double HIDPI_AUTO_COVERAGE = 0.38;
 
   const double minW = TIAConstants::viewableWidth * myTIAMinZoom,
@@ -390,11 +382,8 @@ void FrameBuffer::setWindowMinSize(WindowState& win, const Common::Size& size) c
   const uInt32 scale = hidpiScaleFactor(win);
   const Common::Size scaled(size.w * scale, size.h * scale);
 
-  // The content minimum is font-invariant, so a resizeable dialog re-asserts
-  // the same value on every layout() — i.e. every frame while the window is
-  // being dragged.  Re-applying an unchanged minimum mid-drag is wasteful and
-  // can interfere with the interactive resize, so forward it to the backend
-  // only when it actually changes.
+  // A resizeable dialog re-asserts the same minimum every frame of a drag, and
+  // re-applying it mid-drag can disturb the resize, so forward only a change
   if(scaled == win.minSize)
     return;
   win.minSize = scaled;
@@ -480,13 +469,8 @@ bool FrameBuffer::applyLiveResize(WindowState& win)
 
   win.liveResizePending = false;
 
-  // Rebuild the UI video mode for the new window size and refresh the backend's
-  // cached dimensions.  Deliberately does NOT reload surfaces or present: each
-  // dialog re-flows its own surfaces afterwards (updating dst rects only — no
-  // texture re-upload), and the main loop then renders one correct frame.
-  // (Reloading here would re-upload every texture every frame.)
-  // Let the backend trade whatever it must to keep up with the drag; undone by
-  // resizeSettled()
+  // Rebuild the video mode without reloading surfaces (each dialog re-flows its own),
+  // and let the backend trade what it must to keep up with the drag until resizeSettled()
   win.backend->beginLiveResize();
 
   win.imageSize = win.pendingResize;
@@ -508,9 +492,8 @@ void FrameBuffer::resizeSettled(WindowState& win)
 {
   win.backend->endLiveResize();
 
-  // Restoring vsync disturbs the frame already on screen, so put a correct one
-  // up now.  Otherwise it lingers until something else happens to draw -- in
-  // the debugger, idle, that is seconds
+  // Restoring vsync disturbs the frame on screen, so redraw now rather than wait
+  // for the next draw (seconds, in an idle debugger)
   update(win, UpdateMode::REDRAW);
 }
 
@@ -992,7 +975,7 @@ void FrameBuffer::renderTIA(bool doClear, bool shade)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
 {
-  // Hoist shift values — surface format is constant
+  // Hoist the shift values, as the surface format is constant
   const uInt32 rShift = std::countr_zero(rMask());
   const uInt32 gShift = std::countr_zero(gMask());
   const uInt32 bShift = std::countr_zero(bMask());
@@ -1030,7 +1013,7 @@ void FrameBuffer::setUIPalette()
      (settings.getString(key) == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
-  // Hoist shift values — surface format is constant
+  // Hoist the shift values, as the surface format is constant
   const uInt32 rShift = std::countr_zero(rMask());
   const uInt32 gShift = std::countr_zero(gMask());
   const uInt32 bShift = std::countr_zero(bMask());
@@ -1768,7 +1751,7 @@ UIPaletteArray FrameBuffer::ourDarkUIPalette = {
   }
 };
 
-// Disassembly palettes — entry order matches kDisasmBlack..kDisasmWhite
+// Disassembly palettes, in kDisasmBlack..kDisasmWhite entry order
 // "standard": muted shades readable on light UI backgrounds (Standard, Light)
 DisasmPaletteArray FrameBuffer::ourStandardDisasmPalette = {{
   0x202020,  // Black

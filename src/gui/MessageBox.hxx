@@ -35,7 +35,7 @@ namespace GUI {
  *
  * The c'tor is private: there is no point calling it directly, since the
  * result can't be gotten back that way. Use confirm() (from a dialog) or
- * create() (the transient TIA-overlay case, see EventHandler) instead —
+ * create() (the transient TIA-overlay case, see EventHandler) instead;
  * both funnel into the one c'tor; they differ only in how they get an
  * (OSystem&, DialogContainer&) and in what happens to the box afterwards.
  */
@@ -46,7 +46,7 @@ class MessageBox : public Dialog
 
     /**
       Ask a simple OK/Cancel question, sized to its own content. Owns its
-      own lifetime (one shared instance, recreated as needed — see
+      own lifetime (one shared instance, recreated as needed; see
       BrowserDialog::show() for the same idea), so the caller keeps
       nothing: no member, no command id, no handleCommand() case. The
       answer comes back through 'callback' instead.
@@ -67,7 +67,7 @@ class MessageBox : public Dialog
 
     /**
       Variant for transient use over TIA mode (via EventHandler::openDialog):
-      there is no boss to send commands to — answering leaves the menu mode
+      there is no boss to send commands to, so answering leaves the menu mode
       instead of closing normally. Returns ownership to the caller, which is
       expected to hand it straight to EventHandler::openDialog().
     */

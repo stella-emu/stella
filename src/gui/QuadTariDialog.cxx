@@ -60,9 +60,8 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font,
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  // A couple of characters more than the items strictly need, which looks better
-  // overall -- so these state a width instead of taking the self-sizing ctor.
-  // layout() re-applies it, so it follows a live font change
+  // Two characters roomier than the items need, which looks better; layout()
+  // re-applies it to follow a live font change
   const int pwidth = PopUpWidget::calcWidth(font, ctrls) + Dialog::fontWidth() * 2;
 
   // Widgets are only created here (at placeholder position); layout() assigns

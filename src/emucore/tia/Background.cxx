@@ -28,9 +28,7 @@ void Background::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::setColor(uInt8 color)
 {
-  // Color may have changed mid-line — cached pixels used the old value.
-  // The "if changed" guard is an optimization; flushing unconditionally
-  // would also be correct (see TIA::flushLineCache).
+  // Cached pixels used the old color; the guard only skips needless flushes
   if (color != myObjectColor) myTIA->flushLineCache();
 
   myObjectColor = color;

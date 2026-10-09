@@ -29,13 +29,13 @@ namespace GUI {
 
   Unlike StringListWidget (which renders a fixed list of strings, one per row),
   this widget owns its raw text and re-wraps it to its current width whenever it
-  is resized or the font changes.  So a dialog only has to resize it — the
+  is resized or the font changes.  So a dialog only has to resize it; the
   wrapping is the widget's own concern.
 
   Its HEIGHT, however, is the layout's: this is squeezable content (see the
   Auto-vs-Stretch note in Layout.cxx), so it is placed in a stretching cell that
   it never has to be told the size of.  It states only the two ends of that
-  range — minHeight() and naturalSize() — and scrolls whatever does not fit.
+  range (minHeight() and naturalSize()) and scrolls whatever does not fit.
   That is what keeps a column holding one measurable BEFORE anything has been
   given a width, which a widget that sized itself to its wrap could not be: the
   line count is not known until the width is, and the width arrives last.
@@ -60,7 +60,7 @@ class WrappedTextWidget : public StringListWidget
     /**
       How tall I want to be with none of my text hidden: as many lines as the
       last wrap came to, capped at 'maxLines'.  This DOES depend on my width,
-      so it means nothing until I have been given one — before that it is the
+      so it means nothing until I have been given one; before that it is the
       floor below.  Use it as a stretching cell's maximum, so that a roomy tab
       shows the whole text and no more.
     */
@@ -82,9 +82,8 @@ class WrappedTextWidget : public StringListWidget
     // Pixel height of a box showing this many lines (mirrors ListWidget::calcHeight)
     int heightForLines(int lines) const { return lines * _lineHeight + 2; }
 
-    // The raw, unwrapped text, and the most/least lines to show: past the one
-    // the text scrolls, and below the other it does not shrink -- squeezable
-    // content wants a floor, content a dialog sizes itself to does not
+    // The raw, unwrapped text, and the most/least lines to show: past the most it
+    // scrolls, and below the least it does not shrink
     string myText;
     uInt16 myMaxLines{10};
     uInt16 myMinLines{4};

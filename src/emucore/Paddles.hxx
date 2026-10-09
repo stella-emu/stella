@@ -26,7 +26,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   Paddle input is handled by four cooperating layers. This class (Paddles)
-  interprets raw input events — analog axis, mouse, or keyboard/digital — and
+  interprets raw input events (analog axis, mouse, or keyboard/digital) and
   outputs a normalized [0,1] resistance via setPin(AnalogPin, Connection).
   AnalogReadout owns the RC circuit physics and converts that resistance into
   the INPT0-3 comparator output. TIA is the wiring layer that connects Paddles

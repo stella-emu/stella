@@ -66,10 +66,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myColorRegs->setID(kColorRegsID);
   addFocusWidget(myColorRegs);
 
-  // A colour swatch stands at the house proportion (ColorWidget::calcWidth) and
-  // is inset a little within its row; buildLayout() re-applies both, so they
-  // follow the font.  A swatch draws no text, so it carries the tab's own font --
-  // the one its size is derived from -- rather than the grids' narrow one
+  // A swatch draws no text, so it takes the tab's font (which its size derives
+  // from) rather than the grids' narrow one; buildLayout() re-applies its size
   const auto swatch = [&] {
     auto* c = new ColorWidget(boss, lfont,
                               ColorWidget::calcWidth(lfont), lineHeight - 4);
@@ -442,8 +440,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);
 
-  // PFx bit labels, in the small font: PF0 shows bits 4-7, PF1 counts down from
-  // 7, PF2 counts up from 0 -- one label per bit box, in that order
+  // PFx bit labels in the small font, one per bit box: PF0 shows bits 4-7, PF1
+  // counts down from 7, PF2 counts up from 0
   {
     int label = 0;
     for(int i = 4; i <= 7; ++i)
@@ -550,10 +548,8 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
   const auto onBaseline = [](Widget* wid) {
     return alignedItem(wid, HAlign::Left, VAlign::Baseline);
   };
-  // A register row is a line of single-line parts of differing heights -- a
-  // grid, a checkbox, a button.  They agree on the row's MIDDLE: a baseline
-  // would line their text up and leave the frames around it stepped, since a
-  // grid reports its text near its top and everything else reports its centre
+  // A row's parts (grid, checkbox, button) differ in height, so they share the
+  // row's MIDDLE; a baseline would leave their frames stepped
   const auto onRow = [](Widget* wid) {
     return alignedItem(wid, HAlign::Left, VAlign::Center);
   };
@@ -635,21 +631,12 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
       collGrid->place(col + 1, row + 1, centeredItem(myCollision[idx]));
     }
   }
-  // Parked in the corner the triangle leaves empty: it lies across the columns
-  // the last row does not use, and sits in them the way a bit would -- ending
-  // with the last column, and centred on the row rather than hanging below it
+  // Parked in the corner the triangle leaves empty, across the columns the last
+  // row does not use, ending with the last column and centred on the row
   collGrid->place(2, 5, alignedItem(myCxclrButton, HAlign::Right, VAlign::Center), 4);
 
-  // The band is three columns staggered against ONE set of rows: VSync/VBlank
-  // own the first line, the Debug Colors switch the second, and the two colour
-  // blocks start together on the third, with the collisions running down the
-  // whole height beside them.
-  // VSync/VBlank LIE ACROSS the colour and debug columns rather than sitting in
-  // the first: that row is wider than the COLUPx rows below it, and a column
-  // sized by it would push the debug block (and the collisions after it) right.
-  // The collisions are taller than the three rows come to, so the row holding
-  // the colour blocks takes up that slack -- it is the one with room below its
-  // content, so growing it moves nothing
+  // Three columns staggered over one set of rows; VSync/VBlank span the colour and
+  // debug columns, and the colour blocks' row takes the collisions' extra height
   enum TCol: uInt8 { COLOURS, TGAP0, DEBUG, TGAP1, COLLS, TSLACK, T_COLS };
   enum TRow: uInt8 { VSYNC_LN, DBGSW_LN, BLOCKS_LN, T_ROWS };
 
@@ -669,20 +656,14 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
   // The register table: every block over one set of columns, which is what
   // lines the five RESxx buttons up without anyone tracking an x position
   ////////////////////////////////////////////////////////////////////
-  // A missile or ball row is far more compact than a player's, so it takes one
-  // cell that LIES ACROSS the player columns instead of sitting in them -- put
-  // every field in a shared column and the compact rows stretch to the players'
-  // widths.  OVERRUN holds nothing of its own: it is the flexible track that
-  // takes the NuSiz readout's overhang, so a readout wider than the block
-  // cannot push the button column along with it
+  // Compact missile/ball rows span the player columns rather than stretch to them;
+  // OVERRUN takes the NuSiz readout's overhang so it cannot push the buttons along
   enum RCol: uInt8 {
     NAME, GAP1, TOGGLE, GAP2, POSLBL, LGAP1, POS, GAP3, HMLBL, LGAP2, HM,
     GAP4, EXTRA, GAP5, BTN, OVERRUN, R_COLS
   };
-  // A player's two rows belong together, so the gap that separates one register
-  // block from the next is a row of its own -- the same way the gaps between
-  // the register groups across a row are columns of their own.  The missile and
-  // ball rows read as one block, so nothing separates them
+  // The gap between register blocks is a row of its own, as the gaps across a row
+  // are columns; the missile and ball rows read as one block, so nothing separates them
   enum RRow: uInt8 {
     P0_A, P0_B, RGAP0, P1_A, P1_B, RGAP1, M0_R, M1_R, BL_A, BL_B, R_ROWS
   };
@@ -723,11 +704,8 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
     regs->place(EXTRA,  row, onRow(ref));
     regs->place(BTN,    row, onRow(myResButtons[block]));
 
-    // The readout spells a NUSIZ setting out, so it is as wide as the longest
-    // one.  It belongs to the grid beside it, so it starts from the gap column
-    // rather than the checkbox one -- that keeps it near its grid without
-    // touching the column the checkboxes above and below it are sized by.
-    // Spanning it out to OVERRUN lets it run past the button as it always has
+    // The NUSIZ readout starts from the gap column, near its grid without resizing
+    // the checkbox column, and spans to OVERRUN so it can run past the button
     auto textCell = std::make_unique<BoxLayout>(Dir::Horizontal);
     textCell->addSpace(LBLGAP);
     textCell->addFixed(alignedItem(nusizText, HAlign::Fill, VAlign::Center),
@@ -799,11 +777,8 @@ unique_ptr<GUI::Layout> TiaWidget::buildLayout() const
   ////////////////////////////////////////////////////////////////////
   // Playfield
   ////////////////////////////////////////////////////////////////////
-  // One column per playfield BIT: the bit number goes in it, and each toggle
-  // SPANS the columns of its own group.  Sharing the columns is what keeps a
-  // number over the box it names -- the alternative, sizing the number's cell
-  // to the toggle's bit pitch, only lines up while the two agree, and drifts a
-  // box at a time when they do not.  PF0 has four bits, PF1 and PF2 eight
+  // One column per playfield bit, each toggle spanning its group's columns, which
+  // keeps every bit number over its box.  PF0 has four bits, PF1 and PF2 eight
   static constexpr int PF_NAME = 0, PF_GAP0 = 1,
                        PF_G0 = 2,           PF_GAP1 = PF_G0 + 4,
                        PF_G1 = PF_GAP1 + 1, PF_GAP2 = PF_G1 + 8,

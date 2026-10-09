@@ -180,8 +180,7 @@ void EmulationDialog::layout()
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   pathRow->addAuto(anchoredItem(myStatePathButton));
   pathRow->addSpace(fontWidth);
-  // The path widens with the dialog, but it says how much room a path needs —
-  // which is what the dialog's own width is derived from
+  // The path widens with the dialog, but the room it needs sets the dialog's width
   pathRow->addStretch(stretchedItem(myStatePath,
                                     EditTextWidget::calcWidth(_font, 24)));
 

@@ -124,19 +124,14 @@ void CheatCodeDialog::layout()
   buttonCol->addAuto(stretchedItem(myOneShotButton));
   buttonCol->addStretchSpace();
 
-  // The list fills the width to the left of the button column, and shows
-  // eleven cheats -- which, with the room its names need, is what sizes the
-  // dialog
+  // Eleven cheats, plus the room their names need, is what sizes the dialog
   auto mainRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   mainRow->addStretch(widgetItem(myCheatList, 32 * fontWidth,
                                  ListWidget::calcHeight(_font, 11)));
   mainRow->addSpace(fontWidth);
   mainRow->addFixed(std::move(buttonCol), buttonWidth);
 
-  // The list STRETCHES, so the band for the button group has to be reserved
-  // here: laying the tree out over the whole dialog would otherwise let the list
-  // grow down into it.  (A dialog whose rows are all addAuto -- EmulationDialog
-  // -- has nothing that can expand, and simply adds the band to its height.)
+  // Reserve the button group's band here, or the stretching list would grow into it
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addStretch(std::move(mainRow));
   root->addSpace(VBORDER);

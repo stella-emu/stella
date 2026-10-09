@@ -51,8 +51,7 @@ class RamWidget : public Widget, public CommandSender
     // the RAM grid, its labels/buttons and the detail row out for the width
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how big I am -- that is however big my grid,
-    // buttons and detail row make me -- so report what my layout tree comes to
+    // Report my layout tree's size; it follows from my grid, buttons and detail row
     Common::Size naturalSize() const override;
 
     virtual string getLabel(int addr) const = 0;

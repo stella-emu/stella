@@ -27,7 +27,7 @@ class EditTextWidget : public EditableWidget
   public:
     /**
       A box `chars` characters wide and `lines` lines tall.  State the content
-      you need to show — how many characters, how many lines — and I derive my
+      you need to show (how many characters, how many lines) and I derive my
       own pixel size from the font; see calcWidth()/calcHeight() if a dialog
       ever needs that pixel size itself (to line a column up with a sibling
       that isn't an EditTextWidget, say).

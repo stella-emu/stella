@@ -67,9 +67,8 @@ void Cartridge3EPlusWidget::createBankWidgets()
   VarList::push_back(banktype, "ROM", "ROM");
   VarList::push_back(banktype, "RAM", "RAM");
 
-  // The segment selectors sit in rows of their own rather than under the ROM
-  // info fields, so none of them joins the tab's label column (myLabelColumn):
-  // they align in groups of their own — see layoutBankSelect()
+  // The segment selectors sit in rows of their own, so they align in their own groups
+  // (see layoutBankSelect()) rather than joining myLabelColumn
   myBankWidgets.resize(bankSegs());
 
   const uInt16 start = (((U32(image[0x400 - 3]) << 8U) |

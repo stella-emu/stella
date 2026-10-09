@@ -156,8 +156,8 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     cStart{c_start},
     cStack{c_stack},
     decodedRom{std::make_unique<Op[]>(romSize / 2)},
-    // +1: reserved slot for decodeInstructionWord()'s uncached (RAM-resident
-    // code) path, whose pc falls outside [0, romSize) -- see execute()
+    // +1: a slot for decodeInstructionWord()'s uncached (RAM-resident code) path,
+    // whose pc falls outside [0, romSize); see execute()
     decodedParam{std::make_unique<uInt32[]>(romSize / 2 + 1)},
     ram{ram_ptr},
     configuration{configurefor},

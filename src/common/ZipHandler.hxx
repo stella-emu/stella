@@ -126,7 +126,7 @@ class ZipHandler
       uInt64 uncompressedLength{0};  // uncompressed size
       uInt32 startDiskNumber{0};     // disk number start
       uInt64 localHeaderOffset{0};   // relative offset of local header
-      string_view filename;          // view into myCd — valid for ZipFile lifetime
+      string_view filename;          // view into myCd, valid for ZipFile lifetime
     };
 
     // Contains extracted end of central directory information

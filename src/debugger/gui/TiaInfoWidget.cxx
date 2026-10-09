@@ -167,8 +167,7 @@ unique_ptr<GUI::BoxLayout> TiaInfoWidget::buildLayout() const
 
   const int VGAP = _font.getLineHeight() / 4;
   const int VBORDER = _font.getFontHeight() / 2;
-  // Every label keeps one character of clearance before its value field, which
-  // is simply the row's spacing -- so a row is that much wider than its parts
+  // One character of clearance before each value field, as the row's spacing
   const int space = _font.getMaxCharWidth();
 
   // A field is as wide as the characters it has to show; it fills the cell that
@@ -239,8 +238,7 @@ int TiaInfoWidget::naturalWidthFor(bool longstr)
 {
   setLabels(longstr);
 
-  // Called from our own ctor via reflow(), but this dispatches to our own
-  // override regardless -- TiaInfoWidget has no subclasses to be incomplete
+  // Called from our ctor via reflow(), which is safe: TiaInfoWidget has no subclasses
   // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
   return I32(naturalSize().w);
 }

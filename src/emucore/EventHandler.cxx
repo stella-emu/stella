@@ -432,13 +432,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       if(windowID != fb.primaryWindowId())
         break;
 
-      // A user-resizable window (the launcher and the debugger) records the
-      // latest size, then applies + re-flows + presents it right here
-      // (throttled inside applyResize()).  Driving it from the handler — rather
-      // than only from the main loop's updateTime() — is what makes it work
-      // during the Windows/macOS modal resize loop, where the main loop is
-      // blocked and this handler is reached only via the SDL resize
-      // event-watch.  Every other window resizes immediately.
+      // A user-resizable window re-flows and presents here (throttled), so it keeps working
+      // during the Windows/macOS modal resize loop, when the main loop is blocked
       if(fb.liveResize(data1, data2))
       {
       #ifdef GUI_SUPPORT
@@ -473,12 +468,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2,
       }
     #endif
     #ifdef GUI_SUPPORT
-      // The resize handler above has already re-flowed and presented this
-      // frame, so repainting it again is a second present of identical
-      // content.  Only where the drag blocks the main loop, though: elsewhere
-      // applyResize() throttles, and this repaint covers the events it drops.
-      // Nor where our last frame is rescaled as the window changes -- there a
-      // dropped repaint is a stale, resampled frame, not a saved one
+      // Skip the repaint the resize handler already did, but only where the drag blocks
+      // the main loop and our last frame isn't rescaled with the window
       if(LiveResize::blocksMainLoop() &&
          !LiveResize::rescalesOurLastFrame())
       {

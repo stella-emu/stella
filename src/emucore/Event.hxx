@@ -395,7 +395,7 @@ class Event
     }
 
     /**
-      Whether 'type' carries a continuous whole-window value — an analog axis or
+      Whether 'type' carries a continuous whole-window value: an analog axis or
       mouse motion (the contiguous MouseAxis* range, NOT the mouse buttons that
       follow it, which are bound to digital pins).  These are read once per
       window via get(type) and never replayed, so set() leaves them out of the

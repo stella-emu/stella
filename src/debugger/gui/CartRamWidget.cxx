@@ -71,10 +71,8 @@ unique_ptr<GUI::Layout> CartRamWidget::buildLayout() const
 
   const int contentW = CartDebugWidget::contentWidth(_w);
 
-  // Word wrap couples width to height: the description only knows how tall it is
-  // once it knows how wide it is, so it is given its width before the column is
-  // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
-  // filling row below will hand it -- the content, less the shared label column
+  // Word wrap needs the width before the height, so give the description the one
+  // the filling row below will: the content, less the shared label column
   myDesc->setWidth(contentW - myDescLbl->getWidth());
 
   auto col = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical,

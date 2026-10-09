@@ -117,9 +117,8 @@ class EditableWidget : public Widget, public CommandSender
     // Suppresses the tooltip while actively editing
     bool wantsToolTip() const override;
 
-    // Enter/leave text-entry mode; endEditMode() keeps the change (commit()),
-    // abortEditMode() discards it (abort()) -- a subclass overrides either to
-    // add its own effect (e.g. ListWidget writing the row back on commit)
+    // Enter/leave text-entry mode: endEditMode() commits the change, abortEditMode()
+    // discards it; subclasses override either to add an effect
     virtual void startEditMode() { setFlags(Widget::Flag::WantsRawData);   }
     virtual void endEditMode()   {
       clearFlags(Widget::Flag::WantsRawData);

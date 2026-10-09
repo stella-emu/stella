@@ -317,8 +317,7 @@ class Bankswitch
     };
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Extension table — sorted case-insensitively for binary search.
-    // Precondition: entries below MUST remain in case-insensitive sorted order.
+    // Extension table: entries MUST stay sorted case-insensitively (binary search)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     static constexpr std::array<TypeEntry, 115> ourExtensions = {{
       { "03E"   , Bankswitch::Type::_03E0   },
@@ -414,8 +413,7 @@ class Bankswitch
     }};
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Name-to-type table — sorted case-insensitively for binary search.
-    // Precondition: entries below MUST remain in case-insensitive sorted order.
+    // Name-to-type table: entries MUST stay sorted case-insensitively (binary search)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     static constexpr std::array<TypeEntry, 62> ourNameToTypes = {{
       { "03E0"    , Bankswitch::Type::_03E0   },

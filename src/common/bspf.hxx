@@ -196,8 +196,7 @@ namespace BSPF
     #define FORCE_INLINE inline __attribute__((always_inline))
   #endif
 
-  // Portable restrict hint — tells the compiler that pointer arguments
-  // do not alias each other, enabling auto-vectorization of hot loops.
+  // Portable restrict hint: pointer arguments do not alias, enabling auto-vectorization
   #if defined(__clang__) || defined(__GNUC__)
     #define FORCE_RESTRICT __restrict__
   #elifdef _MSC_VER
@@ -397,7 +396,7 @@ namespace BSPF
         while(pos < s1.size() && s1[pos] != c2)
         {
           if(isUpperAscii(s1[pos]))
-            return false;  // skipped an uppercase — not a valid match
+            return false;
           ++pos;
         }
         if(pos == s1.size())

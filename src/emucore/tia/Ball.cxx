@@ -57,10 +57,8 @@ void Ball::enabl(uInt8 value)
   myIsEnabledNew = (value & 0x02U) > 0;
 
   if (myIsEnabledNew != enabledNewOldValue && !myIsDelaying) {
-    // Without VDEL the new ENABL value is what's actually rendered — flush
-    // when it really changes. With VDEL, the live enabled state is the
-    // "old" one until shuffleStatus latches the new one, so no flush is
-    // needed here. Guarded optimization.
+    // Without VDEL the new ENABL value is what's rendered, so flush when it changes;
+    // with VDEL the old one stays live until shuffleStatus latches the new one
     myTIA->flushLineCache();
 
     updateEnabled();
@@ -93,8 +91,7 @@ void Ball::ctrlpf(uInt8 value)
   const uInt8 newWidth = ourWidths[(value & 0x30U) >> 4U];
 
   if (newWidth != myWidth) {
-    // CTRLPF ball width determines how many clocks the signal stays active
-    // — cached pixels used the old width.
+    // Cached pixels used the old CTRLPF ball width
     myTIA->flushLineCache();
     myWidth = newWidth;
   }
@@ -108,8 +105,7 @@ void Ball::vdelbl(uInt8 value)
   myIsDelaying = (value & 0x01U) > 0;
 
   if (oldIsDelaying != myIsDelaying) {
-    // VDELBL flip switches between myIsEnabledOld and myIsEnabledNew as
-    // the live enabled source — visible behaviour changes from here on.
+    // A VDELBL flip swaps the live enabled source between myIsEnabledOld and New
     myTIA->flushLineCache();
     updateEnabled();
   }
@@ -131,8 +127,7 @@ void Ball::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setColor(uInt8 color)
 {
-  // Same pattern as Player/Missile::setColor — the "&& myIsEnabled" guard
-  // is an optimization (skip flush when the ball isn't emitting).
+  // As in Player/Missile::setColor, "&& myIsEnabled" skips the flush while not emitting
   if (color != myObjectColor && myIsEnabled) myTIA->flushLineCache();
 
   myObjectColor = color;
@@ -216,8 +211,7 @@ void Ball::shuffleStatus()
 
   myIsEnabledOld = myIsEnabledNew;
 
-  // With VDEL active myIsEnabledOld is the live source — latching a
-  // different value mid-line changes the visible state from here on.
+  // With VDEL active myIsEnabledOld is live, so latching a new value changes the line
   if (myIsEnabledOld != oldIsEnabledOld && myIsDelaying) {
     myTIA->flushLineCache();
     updateEnabled();

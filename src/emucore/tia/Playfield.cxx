@@ -55,9 +55,7 @@ void Playfield::pf0(uInt8 value)
 {
   if (myPf0 == value >> 4U) return;
 
-  // PF0 nibble changed — the low 4 bits of the 20-bit pattern shift in,
-  // and any pixels already drawn on this line used the old pattern. The
-  // early return above is an optimization.
+  // Pixels already drawn this line used the old PF0 nibble (the pattern's low 4 bits)
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x000FFFF0U) | U32(value >> 4U);
@@ -71,7 +69,7 @@ void Playfield::pf1(uInt8 value)
 {
   if (myPf1 == value) return;
 
-  // PF1 byte changed — bit-shuffled into the middle 8 bits of myPattern.
+  // PF1 changed, and is bit-shuffled into the middle 8 bits of myPattern
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x000FF00FU)
@@ -93,7 +91,7 @@ void Playfield::pf2(uInt8 value)
 {
   if (myPf2 == value) return;
 
-  // PF2 byte changed — slotted into the high 8 bits of myPattern.
+  // PF2 changed, and is slotted into the high 8 bits of myPattern
   myTIA->flushLineCache();
 
   myPattern = (myPattern & 0x00000FFFU) | U32(value << 12U);
@@ -110,8 +108,7 @@ void Playfield::ctrlpf(uInt8 value)
 
   if (myReflected == reflected && myColorMode == colorMode) return;
 
-  // CTRLPF affects reflect mode (right-half indexing) and score-mode color
-  // selection — both change rendered output mid-line.
+  // CTRLPF's reflect and score modes both change the rendered output mid-line
   myTIA->flushLineCache();
 
   myReflected = reflected;
@@ -138,9 +135,8 @@ void Playfield::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColor(uInt8 color)
 {
-  // COLUPF only feeds the playfield in normal mode — in score mode the
-  // halves take colors from COLUP0/COLUP1 instead. The mode check is the
-  // optimization that skips the flush when this color isn't visible.
+  // COLUPF only shows in normal mode (score mode uses COLUP0/COLUP1), so the mode
+  // check skips the flush when it isn't visible
   if (color != myObjectColor && myColorMode == ColorMode::normal) myTIA->flushLineCache();
 
   myObjectColor = color;

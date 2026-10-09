@@ -929,7 +929,7 @@ void PromptWidget::setLine(string_view text)
 void PromptWidget::killSelectedText()
 {
   if(_selectSize == 0) return;
-  // Clamp to the editable prompt area — scrollback content is read-only
+  // Clamp to the editable prompt area, since scrollback content is read-only
   const int start = std::max(selectStartPos(), _promptStartPos);
   const int end = std::min(selectEndPos(), _promptEndPos);
   _selectSize = 0;
@@ -966,15 +966,14 @@ string PromptWidget::selectedText() const
 
   if(start >= _promptStartPos)
   {
-    // Entirely within the prompt area — preserve as-is (may include intentional spaces)
+    // Entirely within the prompt area, so keep it as-is (spaces may be intentional)
     for(int i = start; i < end; i++)
       text += static_cast<char>(buffer(i) & 0x7fU);
   }
   else
   {
-    // Includes scrollback — strip trailing blanks per line and join with newlines.
-    // Unwritten cells hold NUL (0), not space, so treat both as blank; an embedded
-    // NUL would otherwise truncate the clipboard text at the end of the first line.
+    // Includes scrollback: strip trailing blanks per line, counting NUL (unwritten
+    // cells) as blank, since an embedded NUL would truncate the clipboard text
     const auto isBlank = [&](int idx) {
       const int ch = buffer(idx) & 0x7fU;
       return ch == ' ' || ch == '\0';

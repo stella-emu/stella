@@ -85,7 +85,7 @@ class Dialog : public GuiObject
     // A Dialog draws via drawDialog()/drawChain() (see redraw()), not draw();
     // this override keeps it out of the normal Widget draw chain
     void draw() override { }
-    // Unlike Widget's, these don't propagate to a boss -- a Dialog IS the top
+    // Unlike Widget's, these don't propagate to a boss, since a Dialog IS the top
     void setDirty() override;
     void setDirtyChain() override;
     /** Redraws this dialog if visible, optionally forcing a full repaint */
@@ -217,15 +217,12 @@ class Dialog : public GuiObject
     /** This dialog's tooltip popup */
     ToolTip& tooltip() { return *_toolTip; }
 
-    // Font metrics, and the standard spacing/sizing constants layout() methods
-    // derive from them -- so every dialog measures itself the same way
+    // Font metrics and derived spacing constants, so every dialog measures alike
     int lineHeight() const { return _font.getLineHeight(); }
     int fontHeight() const { return _font.getFontHeight(); }
     int fontWidth() const { return _font.getMaxCharWidth(); }
-    // How tall a button is — a unit other things are measured in (a navigation
-    // bar is one button tall).  There is deliberately no buttonWidth(): a button
-    // sizes itself to its label, and a GROUP of them is equalized by the layout
-    // (GUI::alignButtons), so no dialog ever names a button's width
+    // How tall a button is, a unit other things are measured in; there is no
+    // buttonWidth(), as buttons size themselves and GUI::alignButtons equalizes groups
     int buttonHeight() const { return ButtonWidget::calcHeight(_font); }
     // The standard button group (Defaults / OK / Cancel) is the same size in
     // every dialog rather than shrink-wrapping to whatever its labels happen to
@@ -301,18 +298,12 @@ class Dialog : public GuiObject
                                         string_view defaultsText = "Defaults",
                                         bool focusOKButton = true);
 
-    // (Re)position the standard bottom button group — Defaults (and optional
-    // Extra) at the left, OK/Cancel at the right (platform order) — along the
-    // dialog's bottom edge for the current _w/_h.  Only the buttons that exist
-    // are moved.  Used both when the group is first created and by a resizeable
-    // dialog's layout() so the group follows font/size changes.
+    // (Re)position the standard bottom button group (Defaults/Extra left, OK/Cancel
+    // right in platform order) along the bottom edge, for creation and every layout()
     void layoutButtonGroup();
 
     // The same, then lay 'bandContent' out in the part of the button band the
-    // standard group leaves free: from the left group's end (or the border) to
-    // the right group's start.  This is how a dialog puts its OWN content on the
-    // button row — navigation buttons (About/Help/Browser) — without re-deriving
-    // where the band is.
+    // standard group leaves free (e.g. a dialog's own About/Help/Browser buttons)
     void layoutButtonGroup(unique_ptr<GUI::Layout> bandContent);
 
     // Lay 'content' out across the WHOLE button band, with no standard group
@@ -348,7 +339,7 @@ class Dialog : public GuiObject
       (Re)compute this dialog's size and the positions/sizes of its child
       widgets for the current available area.  Unlike the constructor (which
       *creates* the widgets), layout() only sizes/positions them, so it may
-      be called repeatedly — e.g. on a window-resize event.
+      be called repeatedly (e.g. on a window-resize event).
 
       The base implementation does nothing; legacy dialogs still size
       themselves in their constructor.  Resizeable dialogs override this.

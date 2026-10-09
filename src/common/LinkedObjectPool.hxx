@@ -78,7 +78,8 @@ class LinkedObjectPool
         uInt32 index() const { return idx; }
 
       private:
-        LinkedObjectPool* pool;  // non-const pointer — allows mutation
+        // Non-const, so the pool can be mutated through this iterator
+        LinkedObjectPool* pool;
         uInt32 idx;
     };
     class const_iter {

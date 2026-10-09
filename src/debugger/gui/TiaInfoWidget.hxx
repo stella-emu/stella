@@ -44,8 +44,7 @@ class TiaInfoWidget : public Widget, public CommandSender
     // short or long label variants to fit
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall my rows,
-    // gaps and margins make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; my height follows from my rows, gaps and margins
     Common::Size naturalSize() const override;
 
     // The narrowest width the fields still fit into, i.e. the width at which

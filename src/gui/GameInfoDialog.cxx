@@ -132,9 +132,8 @@ void GameInfoDialog::addEmulationTab()
   myTab->setPaneWidget(tabID, pane);
 
   myBSTypeLbl = new LabelWidget(pane, _font, "Type (*)");
-  // The list is refilled per ROM, but never with an entry wider than the full
-  // scheme list, so size the box to that -- the way GlobalPropsDialog sizes this
-  // same list, rather than measuring a copy of its widest entry
+  // Refilled per ROM but never wider than the full scheme list, so size the box to
+  // that list (as GlobalPropsDialog does)
   for(const auto& [name, desc]: Bankswitch::BSList)
     VarList::push_back(items, desc, name);
   myBSType = new PopUpWidget(pane, _font, items, Cmd::BankswitchTypeChanged);
@@ -146,8 +145,8 @@ void GameInfoDialog::addEmulationTab()
   myTypeDetected = new LabelWidget(pane, ifont,
                                         "CM (SpectraVideo CompuMate) detected");
 
-  // Start bank -- "Auto" is always present and the widest fixed entry, so the
-  // box sizes to it; the per-ROM bank numbers are refilled later
+  // Start bank: "Auto" is always present and the widest fixed entry, so the box
+  // sizes to it; the per-ROM bank numbers are refilled later
   items.clear();
   VarList::push_back(items, "Auto", "AUTO");
   myStartBankLbl = new LabelWidget(pane, _font, "Start bank (*)");
@@ -306,10 +305,8 @@ void GameInfoDialog::addConsoleTab()
   addToFocusList(wid, myTab, tabID);
   pane->setHelpAnchor("ConsoleProps");
 
-  // Describe the layout once; the pane runs it on every resize.  Each switch is
-  // a label with its two radio buttons stacked to the right of it, and the three
-  // switches line up because they share the grid's label column — which is as
-  // wide as the longest of the three labels, without anyone measuring one
+  // Described once, run on every resize: each switch's radio buttons stack beside
+  // its label, and the grid's shared label column lines the three switches up
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::GridLayout;
     using GUI::anchoredItem;
@@ -479,12 +476,8 @@ void GameInfoDialog::addControllersTab()
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
 
-    // The two ports and the EEPROM all take the same form: a label, the control
-    // it names, and something beside that.  A grid IS that form -- the labels get
-    // one column, as wide as the widest of them, and the controls get another --
-    // so the three line up without anyone measuring a label.  What each port
-    // detected goes in the control column too, which is what puts it under the
-    // pop-up that reported it
+    // The ports and EEPROM share one grid (label, control, extra), so they line up;
+    // each port's detected line goes under the pop-up that reported it
     enum Col: uInt8 { LABEL, CTRL, EXTRA, COLS };
     enum Row: uInt8 { LEFT, LEFTDET, RIGHT, RIGHTDET, BREAK, EEPROM, ROWS };
 
@@ -556,8 +549,7 @@ void GameInfoDialog::addControllersTab()
     lowerRow->addFixed(std::move(paddleCol), fontWidth * 24 - INDENT);
     lowerRow->addStretch(std::move(mouseCol));
 
-    // Every row is as tall as what it holds — including the two-column block at
-    // the bottom, which is as tall as its taller column
+    // Every row is as tall as what it holds, the two-column block as its taller column
     col.addAuto(std::move(ports));
     col.addSpace(VGAP * 4);
     col.addAuto(std::move(lowerRow));
@@ -627,11 +619,8 @@ void GameInfoDialog::addCartridgeTab()
   addToFocusList(wid, myTab, tabID);
   pane->setHelpAnchor("CartridgeProps");
 
-  // Describe the layout once; the pane runs it on every resize
-  // The properties are a form: a label column, a field column that widens with
-  // the dialog, and a button column used by the rows that have one.  A grid says
-  // exactly that — and its label column is as wide as the longest label in it,
-  // so adding a longer one needs no change here
+  // Described once, run on every resize: the properties are a form, so a grid with
+  // a label column, a field column that widens, and a button column
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::GridLayout;
     using GUI::anchoredItem;
@@ -659,8 +648,7 @@ void GameInfoDialog::addCartridgeTab()
     };
     auto grid = std::make_unique<GridLayout>(COLS, ROWS, Dialog::fontWidth(),
                                              Dialog::vGap());
-    // The fields widen with the dialog, but they are what the dialog is FOR, so
-    // they say how much room they need — and the dialog's width follows from it
+    // The fields widen with the dialog, but the room they need sets the dialog's width
     grid->columnAuto(LABEL)
          .columnStretch(FIELD, 1, EditTextWidget::calcWidth(_font, 30))
          .columnAuto(BUTTON);
@@ -851,16 +839,12 @@ void GameInfoDialog::addHighScoresTab()
     const int fontWidth = Dialog::fontWidth(),
               VGAP      = Dialog::vGap(),
               INDENT    = Dialog::indent();
-    // The gap between the groups within a row -- it is the grid's own column
-    // spacing, so no group has to open one for itself -- and the tight one that
-    // ties a value field to the address it reads
+    // GAP separates the groups within a row (the grid's own column spacing); TIE
+    // binds a value field to the address it reads
     const int GAP = fontWidth * 2, TIE = fontWidth / 4;
 
-    // The tab reads as three groups, and the values line up WITHIN a group, not
-    // across the tab: Variations on its own, the three rows under Score, and
-    // Special with the Note beneath it.  Each group's labels therefore get a
-    // column of their own -- so a long label in one group cannot push the values
-    // of another out -- and the clearance after a label comes with it
+    // Three groups (Variations, the Score rows, Special and Note), each with its own
+    // label column so a long label in one cannot push another's values out
     GUI::alignLabels({{myVariationsLbl}});
     GUI::alignLabels({{myScoreDigitsLbl}, {myScoreAddressesLbl},
                       {myCurrentScoreLbl}});

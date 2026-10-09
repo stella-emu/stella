@@ -26,8 +26,7 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
     CommandSender(boss),
     _scrollBarWidth{scrollBarWidth(font)}
 {
-  // My width is my own business -- it follows the font.  My position and height
-  // are the list's, which sets them whenever it moves or resizes
+  // My width follows the font; my position and height are set by the list
   _w = _scrollBarWidth;
 
   _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
@@ -40,9 +39,8 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::setArrows()
 {
-  // The arrow is sized from the font, and everything around it follows from
-  // the arrow -- so the scroll bar scales instead of stepping at one font size.
-  // At the default 9x18 this reproduces the old 7x6 arrow in an 18px box
+  // Everything follows from the font-sized arrow, so the bar scales smoothly; at
+  // the default 9x18 font this is the old 7x6 arrow in an 18px box
   _arrowWidth = arrowWidth(_font);
   _arrowHeight = _arrowWidth - 1;
   _arrowThickness = (_arrowWidth / 3) + 1;

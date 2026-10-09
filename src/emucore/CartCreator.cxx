@@ -241,9 +241,8 @@ namespace  // anonymous namespace, to keep these functions private
       while(nEnd < s.size() &&
             std::isdigit(static_cast<unsigned char>(s[nEnd]))) ++nEnd;
       const int num = BSPF::stoi(s.substr(nStart, nEnd - nStart));
-      // Return only the prefix before the token — the suffix can differ
-      // between companion tapes (e.g. per-side subtitles), so we must not
-      // include it in the comparison key.
+      // Return only the prefix before the token, since the suffix can differ between
+      // companion tapes (e.g. per-side subtitles)
       return {string{s.substr(0, pos)}, num};
     }
     return {"", 0};

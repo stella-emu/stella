@@ -48,10 +48,8 @@ namespace {
     return !(segmentBase1 + segmentSize1 <= segmentBase2 || segmentBase2 + segmentSize2 <= segmentBase1);
   }
 
-  // Add `delta` to `size`, rejecting via ElfLinkError instead of silently
-  // wrapping -- a crafted ELF (e.g. an oversized .bss) can otherwise wrap this
-  // to a tiny value while copySections()/copyInitArrays() still copy the full,
-  // un-wrapped byte count into the undersized allocation that value produces
+  // Add `delta` to `size`, throwing ElfLinkError on overflow: a crafted ELF could
+  // otherwise wrap it small and overflow the allocation it sizes
   uInt32 checkedAdd(uInt32 size, uInt32 delta) {
     const uInt64 sum = U64(size) + delta;
     if (sum > std::numeric_limits<uInt32>::max())
@@ -546,8 +544,7 @@ void ElfLinker::applyRelocationsToInitArrays(uInt8 initArrayType, vector<uInt32>
       if (relocatedSymbol->undefined)
         Logger::error("unable to relocate symbol " + relocation.symbolName);
 
-      // See the identical comment in applyRelocationToSection() -- this is
-      // the same unvalidated relocation.offset, same 32-bit wraparound risk
+      // Same unchecked offset and wraparound risk as in applyRelocationToSection()
       if (U64(relocation.offset) + 4 > section.size)
         ElfLinkError::raise("unable relocate init array: symbol " + relocation.symbolName + " out of range");
 

@@ -41,9 +41,8 @@ class CartRamWidget : public Widget, public CommandSender
 
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall my fields
-    // make me -- so report what my own layout tree comes to.  The RAM view below
-    // them fills, and so adds nothing of its own
+    // Report my layout tree's size; my height follows from my fields (the RAM view
+    // below them fills, so adds nothing)
     Common::Size naturalSize() const override;
 
   protected:

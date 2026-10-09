@@ -45,7 +45,7 @@ namespace elfEnvironment {
   constexpr uInt32 ADDR_RODATA_BASE = 0x00300000; // 3MB
   constexpr uInt32 RODATA_SIZE = 0x00080000;      // 512kB
 
-  // lookup tables (4kB): 4MB -- 4.004MB
+  // lookup tables (4kB): 4MB - 4.004MB
   constexpr uInt32 ADDR_TABLES_BASE = 0x00400000; // 4MB
   constexpr uInt32 TABLES_SIZE = 0x1000;          // 4kB
 

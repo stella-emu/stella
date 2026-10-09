@@ -61,10 +61,8 @@ void Player::grp(uInt8 pattern)
 
   myPatternNew = pattern;
 
-  // Without VDEL the new pattern is what's actually rendered — flush when
-  // it really differs. (With VDEL, the live pattern is myPatternOld until
-  // shufflePatterns latches the new one, so no flush is needed here.)
-  // The guards on this branch are optimizations; see TIA::flushLineCache.
+  // Without VDEL the new pattern is what's rendered, so flush when it differs; with
+  // VDEL myPatternOld stays live until shufflePatterns latches the new one
   if (!myIsDelaying && myPatternNew != oldPatternNew) {
     myTIA->flushLineCache();
     updatePattern();
@@ -215,8 +213,7 @@ void Player::vdelp(uInt8 value)
   myIsDelaying = (value & 0x01U) > 0;
 
   if (oldIsDelaying != myIsDelaying) {
-    // VDEL flip switches which of myPatternOld/New is rendered — the live
-    // pattern source changes mid-line. Guarded optimization.
+    // A VDEL flip switches which of myPatternOld/New is rendered mid-line
     myTIA->flushLineCache();
     updatePattern();
   }
@@ -241,10 +238,8 @@ void Player::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setColor(uInt8 color)
 {
-  // Color may have changed mid-line — cached pixels used the old value.
-  // The extra "&& myPattern" guard is an optimization: when the pattern is
-  // empty the player isn't emitting, so the color isn't on screen anyway.
-  // Flushing unconditionally would also be correct (see TIA::flushLineCache).
+  // Cached pixels used the old color; "&& myPattern" skips the flush when an empty
+  // pattern means the color isn't on screen
   if (color != myObjectColor && myPattern) myTIA->flushLineCache();
 
   myObjectColor = color;
@@ -254,8 +249,7 @@ void Player::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setDebugColor(uInt8 color)
 {
-  // Debug palette override changed — any pixels drawn this line used the
-  // previous override.
+  // Pixels drawn this line used the previous debug palette override
   myTIA->flushLineCache();
   myDebugColor = color;
   applyColors();
@@ -318,8 +312,7 @@ void Player::shufflePatterns()
 
   myPatternOld = myPatternNew;
 
-  // With VDEL active myPatternOld is the live pattern — latching a
-  // different value mid-line changes what gets drawn from here on.
+  // With VDEL active myPatternOld is live, so latching a new value changes the line
   if (myIsDelaying && myPatternOld != oldPatternOld) {
     myTIA->flushLineCache();
     updatePattern();
@@ -442,9 +435,8 @@ uInt8 Player::getPosition() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setPosition(uInt8 newPosition)
 {
-  // Debugger-only direct move — the position counter is the live source
-  // for the next decode, so any cached line for the current scanline is
-  // about to disagree with reality.
+  // A debugger-only direct move: the position counter drives the next decode, so
+  // the cached line no longer matches
   myTIA->flushLineCache();
 
   const uInt8 shift = myDivider == 1 ? 0 : 1;

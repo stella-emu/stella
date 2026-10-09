@@ -66,12 +66,8 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size NavigationWidget::naturalSize() const
 {
-  // My ctor is built at a placeholder, so I cannot know my own height any other
-  // way.  Read it from the font directly (the same formula the icon buttons use
-  // to size themselves) rather than from a button's current height: that height
-  // is mutable and layoutChildren() -- called once from the ctor at height 0 --
-  // would otherwise have already overwritten it with a stale 0 by the time
-  // anyone asks
+  // Take my height from the font, as the icon buttons do: a button's own height may
+  // still be the 0 the ctor's placeholder layout gave it
   return Common::Size(std::max(_w, 0), ButtonWidget::calcHeight(_font));
 }
 
@@ -92,12 +88,8 @@ void NavigationWidget::layoutChildren()
   myNextButton->setIcon(nextIcon);
   myUpButton->setIcon(upIcon);
 
-  // setIcon() re-sized each button around its new bitmap, so it knows its width.
-  // Its HEIGHT comes from the font, the same as naturalSize() reports -- not
-  // from _h, which is 0 on the placeholder pass the ctor makes before anyone
-  // has given me a real height, and would otherwise squash the buttons down to
-  // that placeholder permanently (setArea() is the only place their height is
-  // ever set again). Center the row within whatever height I was actually given.
+  // Button height comes from the font, as in naturalSize(), not _h (0 on the ctor's
+  // placeholder pass); the row is centred in whatever height I was given
   const int buttonWidth = myHomeButton->getWidth();
   const int buttonHeight = ButtonWidget::calcHeight(_font);
   const int ypos = _y + (_h - buttonHeight) / 2;

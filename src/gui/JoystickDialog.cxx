@@ -88,8 +88,8 @@ void JoystickDialog::layout()
 
   GUI::alignLabels({{myJoyPortLbl}});
 
-  // The list shows a reasonable number of joysticks by default -- which, with
-  // the room device names need, is what sizes the dialog; more entries scroll.
+  // A default count of joysticks, plus the room their names need, sizes the dialog;
+  // more entries scroll
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
   root->addStretch(widgetItem(myJoyList, 60 * fontWidth,
                               ListWidget::calcHeight(_font, 12)));

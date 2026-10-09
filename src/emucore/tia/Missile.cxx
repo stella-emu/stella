@@ -58,9 +58,7 @@ void Missile::enam(uInt8 value)
   myEnam = (value & 0x02U) > 0;
 
   if (oldEnam != myEnam) {
-    // ENAM toggling changes whether the missile contributes pixels — flush
-    // since cached pixels were rendered with the old enable state. Guarded
-    // optimization.
+    // Cached pixels used the old ENAM state; the guard only skips needless flushes
     myTIA->flushLineCache();
 
     updateEnabled();
@@ -172,8 +170,7 @@ void Missile::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setColor(uInt8 color)
 {
-  // Same pattern as Player::setColor — the "&& myIsEnabled" guard is an
-  // optimization that skips flushes when the missile isn't emitting.
+  // As in Player::setColor, "&& myIsEnabled" skips the flush while not emitting
   if (color != myObjectColor && myIsEnabled)  myTIA->flushLineCache();
 
   myObjectColor = color;

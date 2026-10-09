@@ -275,15 +275,10 @@ void Widget::setVisible(bool visible)
   {
     setFlags(Widget::Flag::Invisible);
 
-    // Going invisible leaves whatever we were covering unpainted: marking
-    // ourselves dirty only ever redraws US, and we now draw nothing.  So the
-    // boss has to repaint that area -- it is the one that owns the background
+    // Going invisible leaves our area unpainted; the boss owns the background there
     _boss->setDirty();
 
-    // Going invisible while holding the dialog's focus would otherwise leave
-    // Dialog::drawDialog()'s per-frame focus highlight drawn over us forever
-    // (it redraws at the focused widget's last position regardless of
-    // visibility) -- so hand focus to the next enabled widget instead
+    // Hand focus on, or drawDialog() keeps drawing the focus highlight where we were
     if(_hasFocus)
       dialog().releaseFocus(this);
   }
@@ -404,11 +399,8 @@ Widget* Widget::findWidgetInList(const WidgetList& list, int x, int y)
   // Search newest-first, so where widgets overlap the one added last wins
   for(const auto& w: std::views::reverse(list))
   {
-    // Stop as soon as we find a VISIBLE widget containing the point (x,y).  A
-    // hidden widget keeps its coordinates, so without this test it would go on
-    // taking the clicks meant for whatever it is covering -- and a dialog that
-    // hides part of itself would have to move the remains off-screen to be rid
-    // of them.  Nothing can want events while invisible: it cannot be aimed at
+    // Stop at the first VISIBLE widget containing (x,y); a hidden one keeps its
+    // coordinates and would otherwise take clicks meant for what it covers
     if(w->isVisible() &&
        x >= w->_x && x < w->_x + w->_w &&
        y >= w->_y && y < w->_y + w->_h)
@@ -780,11 +772,8 @@ void ButtonWidget::refreshFont()
   // NOLINTNEXTLINE(bugprone-parent-virtual-call)
   Widget::refreshFont();
 
-  // A button that sized itself from its content re-derives that size, so it
-  // follows the font on its own.  Any other size came from outside — a width
-  // shared with its neighbours — and is re-applied by the owning layout().  An
-  // icon-and-label button keeps whichever icon it holds; a dialog that swaps in a
-  // different variant for the new font does so with setIcon(), which re-sizes it
+  // A self-sized button re-derives its size; any other size came from outside (a shared
+  // width) and the owning layout() re-applies it.  Icon swaps go through setIcon()
   if(_autoSize)
   {
     _w = autoWidth();
@@ -982,7 +971,7 @@ void CheckboxWidget::setFill(FillType type)
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      // A solid square, which needs no bitmap -- drawWidget fills it
+      // A solid square needs no bitmap; drawWidget fills it
       _img = nullptr;
       _drawBox = true;
       break;

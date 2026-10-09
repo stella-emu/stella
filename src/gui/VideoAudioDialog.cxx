@@ -368,9 +368,8 @@ void VideoAudioDialog::addPaletteTab()
     GUI::alignTracks({myPhaseShift, myTVHue, myTVSatur, myTVContrast,
                       myTVBright, myTVGamma}, myTIAPalette);
 
-    // Each R/G/B row's two sliders SHARE the span under the pop-up, so the shift
-    // slider's track still ends where the pop-up does -- lining up with the phase
-    // slider above it
+    // Each R/G/B row's two sliders share the span under the pop-up, so the shift
+    // slider ends where the pop-up does, level with the phase slider above
     const int rgbSpan = GUI::flushSpan(myTIAPalette, myTIAPaletteLbl, INDENT);
     GUI::alignTracks({myTVRedScale, myTVRedShift}, {myTVRedScaleLbl, nullptr},
                      rgbSpan, fontWidth);
@@ -411,9 +410,8 @@ void VideoAudioDialog::addPaletteTab()
     controls->addSpace(VGAP);
     controls->addAuto(labeledRow(myTVGammaLbl, myTVGamma));
 
-    // The palette takes the width left over, but it says how much room it needs
-    // -- a couple of characters per luminance -- and that is what gives the tab
-    // (and so the dialog) a width of its own
+    // The palette takes the leftover width but needs a couple of characters per
+    // luminance, which is what gives the tab (and dialog) its own width
     auto main = std::make_unique<BoxLayout>(Dir::Horizontal);
     main->addAuto(std::move(controls));
     main->addSpace(fontWidth * 2);
@@ -518,16 +516,12 @@ void VideoAudioDialog::addTVEffectsTab()
               VGAP      = Dialog::vGap();
     const int INDENT = CheckboxWidget::prefixSize(_font);
 
-    // The two pop-ups read as one column and must END at the same place, so they
-    // share both a label column and a box width.  (The old code did this by
-    // padding a specimen -- "Bad adjust  " -- until the two came out equal.)
+    // The two pop-ups read as one column, so they share a label column and box width
     GUI::alignLabels({{myTVModeLbl}, {myTVPhosphorLbl}});
     GUI::alignPopUps({myTVMode, myTVPhosphor});
 
-    // Every slider sits a level in from those pop-ups and reads as one column of
-    // its own -- a SEPARATE alignLabels group from TV mode/Phosphor's, so its
-    // label column is its own width, not theirs; naming one label from each
-    // group lets alignTracks() cross that gap itself
+    // The sliders, a level in, are a separate alignLabels() group from the pop-ups';
+    // naming one label from each lets alignTracks() bridge the two
     GUI::alignLabels({{myTVSharpLbl}, {myTVResLbl}, {myTVArtifactsLbl},
                       {myTVFringeLbl}, {myTVBleedLbl}, {myTVPhosLevelLbl},
                       {myTVScanIntenseLbl}});
@@ -562,18 +556,16 @@ void VideoAudioDialog::addTVEffectsTab()
     modes->addSpace(VGAP);
     modes->addAuto(labeledRow(myTVBleedLbl, myTVBleed, 0, INDENT));
 
-    // Neither column fills, so nothing here claims the tab's leftover width
-    // (the widest tab in the dialog, not this one, may demand more than
-    // "modes" and "clones" need) -- send it past the clone buttons instead of
-    // letting "modes" swallow it invisibly, which would push the buttons out
+    // Neither column fills, so send the tab's leftover width past the clone buttons
+    // rather than let "modes" swallow it and push the buttons out
     auto main = std::make_unique<BoxLayout>(Dir::Horizontal);
     main->addAuto(std::move(modes));
     main->addSpace(fontWidth * 2);
     main->addAuto(std::move(clones));
     main->addStretchSpace();
 
-    // The scanline row: its intensity slider, then the mask pop-up filling the
-    // rest of the tab -- which is what runs it out under the buttons
+    // The scanline row: its intensity slider, then the mask pop-up filling the rest
+    // of the tab, which runs it out under the buttons
     auto scanRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     scanRow->addSpace(INDENT);
     scanRow->addAuto(labeledRow(myTVScanIntenseLbl, myTVScanIntense));
@@ -790,14 +782,8 @@ void VideoAudioDialog::addAudioTab()
                       {myHeadroomSliderLbl}, {myBufferSizeSliderLbl}});
     GUI::alignLabels({{myDpcPitchLbl}});
 
-    // Everything indented under Mode ends flush with IT -- not with the tab,
-    // which is wider (the widest tab in the dialog sets that).  The sliders'
-    // tracks reach it; the pop-ups, sitting a level further in, are given a cell
-    // that reaches it.  Volume is not one of them: it keeps its own track.
-    // Headroom/BufferSize are a SEPARATE alignLabels group from Mode's (shared
-    // with Freq/Resampling instead), so naming one label from each group lets
-    // alignTracks() cross that gap itself -- same gap flushWidth below crosses
-    // by hand for the pop-up rows it sizes
+    // Everything indented under Mode (except Volume) ends flush with it, not the tab;
+    // naming one label from each alignLabels() group lets alignTracks() bridge them
     GUI::alignTracks({myHeadroomSlider, myBufferSizeSlider}, myModePopup, INDENT,
                      myHeadroomSliderLbl, myModePopupLbl);
     // DpcPitch sits at Mode's OWN indent level (not a level further in), so only
@@ -1617,9 +1603,8 @@ unique_ptr<GUI::Layout> VideoAudioDialog::paletteLayout()
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
 
-  // A chroma per row, a luminance per column, plus a column for the hex digit
-  // naming the chroma.  The swatches FILL their cells, so the grid tiles the
-  // area it is given exactly -- whatever size that is, and with no gaps
+  // A chroma per row, a luminance per column, plus the chroma's hex digit; the
+  // swatches fill their cells, so the grid tiles its area exactly
   auto grid = std::make_unique<GridLayout>(1 + NUM_LUMA, NUM_CHROMA);
 
   grid->columnFixed(0, I32(ifont.getMaxCharWidth() * 1.5));

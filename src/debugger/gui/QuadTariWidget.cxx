@@ -55,9 +55,8 @@ void QuadTariWidget::layoutContent(GUI::BoxLayout& col)
   using GUI::anchoredItem;
   using Dir = BoxLayout::Dir;
 
-  // The two embedded controllers side by side, the pointer between them.  Each
-  // is a full controller widget, so the row lays it out via its setArea(),
-  // which re-flows its own content -- no need to position them by hand
+  // The two controllers side by side, the pointer between; each re-flows its own
+  // content from setArea()
   auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _font.getMaxCharWidth());
   row->addAuto(anchoredItem(myFirst));
   row->addAuto(anchoredItem(myPointer));

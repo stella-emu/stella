@@ -99,8 +99,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
-  // The five buttons stand in one column, so they share one width -- a standard
-  // one, so they match the dialog's own buttons rather than shrink to their labels
+  // One standard width for the column, matching the dialog's own buttons
   GUI::alignButtons({myMapButton, myCancelMapButton, myEraseButton,
                      myResetButton, myComboButton},
                     boss->dialog().standardButtonWidth());
@@ -118,13 +117,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Size EventMappingWidget::naturalSize() const
 {
-  // The actions list is what needs the room — it shows an event's description —
-  // and everything else here is sized from it: the buttons stand beside it, the
-  // filter pop-up above it, the mapping field below.  So what this tab asks for
-  // is the list's width plus that button column, and it is what makes the input
-  // settings as wide as they are.
-  // The height is whatever it is given: the list takes up the slack (see
-  // setArea), so there is no height of our own to report
+  // The actions list needs the room (an event's description) and sizes everything
+  // else, so this tab is its width plus the buttons; its height is whatever it gets
   const int fontWidth   = dialog().fontWidth(),
             buttonWidth = myMapButton->getWidth(),
             HBORDER     = dialog().hBorder();
@@ -181,8 +175,7 @@ void EventMappingWidget::setArea(int x, int y, int w, int h)
   buttonCol->addAuto(stretchedItem(myComboButton));
   buttonCol->addStretchSpace();
 
-  // The list widens with the dialog, but it says how narrow it may be — which is
-  // what the dialog's own width is derived from (see naturalSize)
+  // The list widens with the dialog, but how narrow it may be sets the dialog's width
   auto listRow = std::make_unique<BoxLayout>(Dir::Horizontal);
   listRow->addStretch(widgetItem(myActionsList, listWidth()));
   listRow->addSpace(fontWidth);

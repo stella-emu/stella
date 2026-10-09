@@ -126,8 +126,8 @@ void AboutDialog::layout()
 }
 
 // The following commands can be put at the start of a line (all subject to change):
-//   \C, \L, \R  -- set center/left/right alignment
-//   \c0 - \c5   -- set a custom color:
+//   \C, \L, \R     set center/left/right alignment
+//   \c0 - \c5      set a custom color:
 //                  0 normal text (green)
 //                  1 highlighted text (light green)
 //                  2 light border (light gray)

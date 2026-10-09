@@ -36,8 +36,7 @@ class AudioWidget : public Widget, public CommandSender
     // lay the registers/labels out for the available width (recomputes _h)
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall
-    // my register rows make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; my height follows from my register rows
     Common::Size naturalSize() const override;
 
   protected:

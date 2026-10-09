@@ -182,11 +182,11 @@ class DialogContainer
     /**
       Apply a pending live window resize (recorded via FrameBuffer::liveResize)
       and re-flow this container, throttled to roughly the display rate.
-      Returns true if it applied — the caller then presents the new frame.
+      Returns true if it applied, and the caller then presents the new frame.
 
       This is driven from the resize event handler (not just the main loop) so
       that it also runs during the Windows/macOS modal resize loop, when the
-      main loop — and hence updateTime() — is blocked.  The base container does
+      main loop (and hence updateTime()) is blocked.  The base container does
       nothing.
     */
     virtual bool applyResize() { return false; }

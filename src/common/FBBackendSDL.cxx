@@ -475,8 +475,7 @@ bool FBBackendSDL::createRenderer()
   // - different renderer vsync
   const bool enableVSync = vsyncWanted();
   const string& video = myOSystem.settings().getString("video");
-  // An empty or "auto" preference defers to the platform, which may still have
-  // nothing to say -- an empty request lets SDL choose
+  // "auto" or empty defers to the platform; an empty request lets SDL choose
   const string request{
       (video.empty() || video == "auto") ? autoRenderer() : video};
 
@@ -562,10 +561,8 @@ void FBBackendSDL::resizeWindow(const Common::Size& size)
   if(myWindow)
   {
     SDL_SetWindowSize(myWindow, I32(size.w), I32(size.h));
-    // Block until the window manager has actually applied the new size, the
-    // same way the video-mode reuse-path above does -- so the resize event
-    // we rely on to re-flow (see EventHandler::handleSystemEvent) reports the
-    // real, settled size rather than racing an async X11/Wayland compositor
+    // Wait for the window manager to apply the size (as the reuse path above does), so
+    // the resize event that re-flows us reports the settled size
     SDL_SyncWindow(myWindow);
   }
 }
@@ -602,11 +599,8 @@ void FBBackendSDL::beginLiveResize()
 {
   ASSERT_MAIN_THREAD;
 
-  // With vsync the present blocks for a whole refresh -- measured 16.6ms per
-  // dragged frame against 0.95ms without -- which spends the step's entire
-  // budget waiting.  Where the ack rides on the present that also halves the
-  // drag rate; elsewhere it merely delays our own next frame, which still shows
-  // once a window draws enough to fill the interval.  So: everywhere
+  // With vsync each dragged frame's present blocks a whole refresh (16.6ms vs 0.95ms),
+  // spending the step's entire budget, so vsync is suspended for the drag everywhere
   if(!LiveResize::suspendsVsync())
     return;
 

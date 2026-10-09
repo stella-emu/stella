@@ -45,8 +45,7 @@ class CpuWidget : public Widget, public CommandSender
     // the registers/labels out for the width given
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall my three
-    // register rows make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; my height follows from my three register rows
     Common::Size naturalSize() const override;
 
   protected:

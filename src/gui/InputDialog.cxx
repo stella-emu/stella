@@ -122,9 +122,8 @@ void InputDialog::addDevicePortTab()
   const int swidth = 13;
   WidgetArray wid;
 
-  // Devices & ports.  The tab's controls are parented to a content pane; the
-  // pane lays them out (see setLayout below) whenever the tab is sized — no
-  // resize code
+  // Devices & ports: the controls are parented to a pane, which lays them out (see
+  // setLayout below) whenever the tab is sized
   const int tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);
@@ -278,9 +277,8 @@ void InputDialog::addDevicePortTab()
     // but it still wants the clearance between a label and the box beside it
     GUI::alignLabels({{myAVoxPortLbl}});
 
-    // Every row is as tall as what it holds (addAuto), so no height is stated
-    // here and none can be wrong — the pop-ups frame their text and are taller
-    // than the sliders and checkboxes, and the rows follow the font on their own
+    // Every row is as tall as what it holds (addAuto), so no height is stated and the
+    // rows follow the font on their own
     col.addAuto(labeledRow(myDigitalDeadzoneLbl, myDigitalDeadzone));
     col.addSpace(VGAP);
     col.addAuto(labeledRow(myAnalogDeadzoneLbl, myAnalogDeadzone));
@@ -310,14 +308,8 @@ void InputDialog::addDevicePortTab()
     col.addAuto(anchoredItem(myModCombo));
     col.addSpace(VGAP);
 
-    // The ports section runs as two parallel columns, since the EEPROM group's
-    // heading rides directly above its button and so does not share the left
-    // column's rhythm.  Left: the Stelladaptor option above the controller
-    // database button.  Right: the EEPROM heading above the Erase button, both
-    // right-aligned (the left column takes the horizontal slack).
-    // Each column ENDS with its button and takes up its vertical slack in a
-    // stretch, so the two buttons land on the same line whatever is above them —
-    // rather than the columns having to add up to the same height by hand
+    // The ports section is two columns, each ending with its button and stretching
+    // above it, so the two buttons land on the same line whatever is above them
     auto dbRow = std::make_unique<BoxLayout>(Dir::Horizontal);
     dbRow->addAuto(anchoredItem(myJoyDlgButton));
     dbRow->addStretchSpace();
@@ -353,8 +345,8 @@ void InputDialog::addMouseTab()
   WidgetArray wid;
   VariantList items;
 
-  // Mouse.  The tab's controls are parented to a content pane; the pane lays
-  // them out (see setLayout below) whenever the tab is sized — no resize code
+  // Mouse: the controls are parented to a pane, which lays them out (see setLayout
+  // below) whenever the tab is sized
   const int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
   auto* pane = new TabPaneWidget(myTab, _font);
   myTab->setPaneWidget(tabID, pane);

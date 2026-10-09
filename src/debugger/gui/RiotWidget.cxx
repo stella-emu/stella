@@ -75,7 +75,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     return wid;
   };
 
-  // SWCHA(W) / SWACNT / SWCHA(R) -- the read register carries per-bit labels
+  // SWCHA(W) / SWACNT / SWCHA(R); the read register carries per-bit labels
   labels.clear();
   mySWCHAWriteBits = ioReg("SWCHA(W)", kSWCHABitsID);
   mySWACNTBits = ioReg("SWACNT", kSWACNTBitsID);

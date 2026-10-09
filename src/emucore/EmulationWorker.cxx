@@ -54,10 +54,8 @@ EmulationWorker::~EmulationWorker()
 
   myThread.join();
 
-  // A pending exception here was never surfaced by a normal start()/end()
-  // cycle before the app began shutting down. Destructors must not throw --
-  // rethrowing would call std::terminate() and skip main()'s save-on-exit,
-  // cheat-database and settings writes -- so report it and move on instead
+  // An exception never surfaced before shutdown; rethrowing from a destructor would
+  // terminate and skip main()'s save-on-exit writes, so just report it
   try
   {
     handlePossibleException();

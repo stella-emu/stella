@@ -441,9 +441,8 @@ void LauncherDialog::layout()
     ? (largeIcons ? GUI::icon_subdirs_large_on  : GUI::icon_subdirs_small_on)
     : (largeIcons ? GUI::icon_subdirs_large_off : GUI::icon_subdirs_small_off));
 
-  // Filtering row: the filter field absorbs the slack; everything else packs
-  // around it.  This row is the widest thing in the dialog, so it is what the
-  // window minimum ends up being -- which is why everything in it always fits
+  // Filtering row: the filter field absorbs the slack.  As the widest row, it sets
+  // the window minimum, so everything in it always fits
   const auto makeFilterRow = [&] {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, 0, HBORDER, 0);
     row->addAuto(anchoredItem(myReloadButton));
@@ -538,11 +537,8 @@ void LauncherDialog::layout()
     return stack;
   };
 
-  // The ROM image is square, so how WIDE the column may be depends on how TALL
-  // the main row is -- and only the layout knows that.  So lay the stack out
-  // once with the list alone, ask the list what height it was given, and lay it
-  // out again for real.  (The ROM widgets are not in that first pass, so nothing
-  // rescales an image for it.)
+  // The square image's width depends on the main row's height, so lay out once
+  // with the list alone to learn that height, then again for real
   int imageWidth = 0;
   if(showRom)
   {
@@ -558,13 +554,8 @@ void LauncherDialog::layout()
   auto root = makeRoot(imageWidth);
   root->doLayout(0, 0, _w, _h);
 
-  // The layout tree also yields the minimum content size (from the items'
-  // declared minimums, so it is independent of the current size), used to
-  // clamp the next layout and as the window manager's minimum-size hint.
-  // The hint is NOT re-applied while an interactive resize is in progress —
-  // re-asserting a minimum mid-drag fights the resize itself (the window can
-  // only shrink up to the last hint per motion, felt as heavy lag).  The
-  // settle pass applies the final value once the drag ends.
+  // The tree also yields the minimum size, but the hint is applied only by the settle
+  // pass: re-asserting a minimum mid-drag fights the resize itself
   myMinSize = root->minSize();
   if(!resizing)
     instance().frameBuffer().setWindowMinSize(myMinSize);
@@ -701,8 +692,8 @@ void LauncherDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateUI()
 {
-  // Only enable the 'up' button if there's a parent directory (and the
-  // button row is even shown -- showButtonWidgets() sets the other half)
+  // Only enable the 'up' button if there's a parent directory and the button row
+  // is shown (showButtonWidgets() handles the other half)
   if(myGoUpButton)
     myGoUpButton->setEnabled(myShowButtons && myList->currentDir().hasParent());
   // Only enable the navigation buttons if function is available
@@ -1248,9 +1239,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       break;
 
     case Cmd::FontChanged:
-      // The launcher font was changed at runtime.  Swap it in place (every
-      // widget references the same Font object), then refresh the cached
-      // font-derived state and re-flow — no restart required.
+      // The launcher font changed at runtime; every widget shares the one Font object,
+      // so refresh the cached font-derived state and re-flow, with no restart
       instance().refreshFonts();
       // A larger font can raise the content minimum past the window's
       // current size; layout() (run by refreshFont() above) has already

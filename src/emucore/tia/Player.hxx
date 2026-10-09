@@ -42,11 +42,11 @@ class TIA;
       bit-reverses myPatternNew/myPatternOld up front when not reflected
       so tick() can always shift in the same direction.
     - With VDEL active, myPattern is sourced from myPatternOld (latched
-      from myPatternNew by shufflePatterns() — queued from the OTHER
+      from myPatternNew by shufflePatterns(), which is queued from the OTHER
       player's GRPx write, modelling the real TIA cross-coupling).
 
   The .collision field encodes both pair-collision contribution and
-  visibility (bit 15) — see TIA.cxx's CollisionMask enum and
+  visibility (bit 15); see TIA.cxx's CollisionMask enum and
   TIA::updateCollision for the encoding.
 
   @author  Christian Speckner (DirtyHairy)
@@ -168,7 +168,7 @@ class Player : public Serializable
 
     /**
       True when the player is actively rendering its main copy and the graphics
-      scan counter has just reached pixel 4 — the "FSTOB" condition that triggers
+      scan counter has just reached pixel 4: the "FSTOB" condition that triggers
       RESMP-locked missile repositioning (per Andrew Towers' TIA notes).
      */
     bool isDrawingMainCopyAt4() const {

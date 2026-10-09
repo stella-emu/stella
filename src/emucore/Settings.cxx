@@ -208,8 +208,7 @@ Settings::Settings()
   setPermanent("confirmexit", false);
   setPermanent("autopause", false);
 
-  // One font per part of the UI.  "auto" leaves the role to work its own font
-  // out -- see FontManager::loadConfig()
+  // One font per UI part; "auto" lets the role choose (see FontManager::loadConfig())
   setPermanent("ui.font.dialog", "medium");
   setPermanent("ui.font.info", "auto");
   setPermanent("ui.font.small", "auto");

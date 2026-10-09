@@ -160,10 +160,8 @@ unique_ptr<GUI::Layout> CpuWidget::buildLayout() const
     return col;
   };
 
-  // The four data-source fields, one per grid row.  Each is a pixel taller than
-  // its row, so that its bottom frame falls on the next one's top frame and the
-  // two draw as a single line -- the height the constructor gave them, restored
-  // here because a font change resets a field to the standard framed height
+  // Each data-source field is a pixel taller than its row so adjacent frames merge;
+  // re-applied here because a font change resets a field's height
   for(auto* wid: myCpuDataSrc)
     wid->setHeight(lineHeight + 1);
 
@@ -171,10 +169,8 @@ unique_ptr<GUI::Layout> CpuWidget::buildLayout() const
   for(auto* wid: myCpuDataSrc)
     srcCol->addFixed(alignedItem(wid, HAlign::Fill, VAlign::Top), lineHeight);
 
-  // Three rows over one set of columns.  Sharing the columns is what lines the
-  // hex grid up under the PC grid and -- the point of doing it this way -- puts
-  // the destination field in the very column the source fields are in, with
-  // nobody reading back where those ended up
+  // Three rows over shared columns, which lines the hex grid up under the PC grid
+  // and puts the destination field in the source fields' column
   enum Col: uInt8 {
     LABEL, GRID, DECPFX, DEC, GAP1, BINPFX, BIN, GAP2, DATA, NUM_COLS
   };

@@ -59,11 +59,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
 
   _toolTip = std::make_unique<ToolTip>(*this, font);
 
-  // Make ourselves known to the container from here on, the way a Widget adds
-  // itself to its boss's child list.  Every Dialog has a container (not every
-  // one has an owning Dialog or Widget), so this is the one hook that reaches
-  // all of them -- which is what lets a font change find a dialog nobody
-  // remembered to forward it to
+  // Register with the container, as a Widget joins its boss's child list; every
+  // Dialog has one, so a font change reaches dialogs nobody forwarded it to
   parent.registerDialog(this);
 }
 
@@ -592,10 +589,8 @@ void Dialog::releaseFocus(const Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Dialog::tabStateKey(const TabWidget* tab) const
 {
-  // The title is what tells two dialogs apart (RTTI is disabled, so the class
-  // itself cannot be asked).  An untitled dialog gets no key, and so simply
-  // does not take part -- which is what the debugger, the one dialog whose tab
-  // count varies from ROM to ROM, relies on
+  // The title tells dialogs apart (no RTTI); an untitled one gets no key and opts
+  // out, which the debugger relies on since its tab count varies by ROM
   if(_builtTitle.empty())
     return {};
 
@@ -611,8 +606,7 @@ void Dialog::saveActiveTab(int tabID, int id)
 
   const string key = tabStateKey(_myTabList[id].widget);
   if(!key.empty())
-    // The key is never registered as a permanent setting, so this can only
-    // ever reach the temporary settings -- it is remembered for this run only
+    // The key is never a permanent setting, so this is remembered for this run only
     instance().settings().setValue(key, tabID);
 }
 
@@ -1084,11 +1078,8 @@ void Dialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
   switch(cmd)
   {
     case TabWidget::Cmd::TabChanged:
-      // Only a visible dialog can be reporting a tab the *user* chose.  While
-      // it is being built or opened this same command also arrives for tabs
-      // nobody selected -- activateTabs() announces every tab in turn, and
-      // TabWidget::loadConfig() re-announces the active one -- and remembering
-      // those would store whichever tab happened to be announced last
+      // Only a visible dialog reports a tab the user chose; while building or opening,
+      // activateTabs() and TabWidget::loadConfig() announce tabs nobody selected
       if(_visible)
       {
         // Remember the choice, so reopening this dialog returns to it
@@ -1169,10 +1160,8 @@ int Dialog::buttonGroupWidth() const
   const int BUTTON_GAP = Dialog::buttonGap(),
             HBORDER    = Dialog::hBorder();
 
-  // Every button in the group ends up as wide as the widest of them (see
-  // layoutButtonGroup), so count them and multiply -- this holds whether or not
-  // they have been equalized yet, which is what lets a dialog derive its own
-  // width from this before the group is laid out
+  // Every button ends up as wide as the widest (see layoutButtonGroup), so count
+  // and multiply; that holds before they are equalized, so a dialog can size from it
   int bwidth = standardButtonWidth(), left = 0, right = 0;
 
   for(const auto* b: {_defaultWidget, _extraWidget, _okWidget, _cancelWidget})

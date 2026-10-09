@@ -46,8 +46,7 @@ class TiaWidget : public Widget, public CommandSender
     // lay its register blocks out for the available area
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how big I am -- that is however big my blocks
-    // make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; it follows from my blocks
     Common::Size naturalSize() const override;
 
   protected:
@@ -86,7 +85,7 @@ class TiaWidget : public Widget, public CommandSender
     std::array<BlockLabels, 5> myBlockLabels{};
 
     ButtonWidget* myCxclrButton{nullptr};
-    // RESP0, RESP1, RESM0, RESM1, RESBL -- these share one column
+    // RESP0, RESP1, RESM0, RESM1 and RESBL, which share one column
     std::array<ButtonWidget*, 5> myResButtons{nullptr};
     // WSYNC, RSYNC, HMOVE, HMCLR
     std::array<ButtonWidget*, 4> myStrobeButtons{nullptr};

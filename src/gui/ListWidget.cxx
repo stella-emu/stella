@@ -37,8 +37,8 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font, bool useScrollbar
 
   _editMode = false;
 
-  // My real dimensions -- and the row count that follows from them -- arrive
-  // via setWidth()/setHeight(), which reserve the scrollbar's room the same way
+  // My real size (and so row count) arrives via setWidth()/setHeight(), which
+  // reserve the scrollbar's room the same way
   if(_useScrollbar)
   {
     _scrollBar = new ScrollBarWidget(boss, font);
@@ -90,10 +90,8 @@ bool ListWidget::scrollBarNeeded() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::updateScrollBarRoom()
 {
-  // Nothing to re-split before we have been given a footprint.  The guard is
-  // for the subclass that re-wraps its text to the new width: that lands back
-  // in recalc(), and the answer there cannot change again -- a wider list
-  // never needs MORE lines -- so one pass is always enough
+  // Nothing to re-split before we have a footprint; the guard stops a re-wrapping
+  // subclass re-entering recalc(), where one pass is always enough
   if(_fullWidth == 0 || _inScrollBarRoom)
     return;
 
@@ -207,9 +205,8 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::getWidth() const
 {
-  // Our footprint is what setWidth() was given, however we have since split it
-  // with the scrollbar -- a hidden bar must not shrink what we report, or the
-  // focus rect (and anything else measuring us) would no longer fit us
+  // Report the width setWidth() was given, however the scrollbar has since split
+  // it, or the focus rect would no longer fit us
   return _fullWidth != 0
     ? _fullWidth
     : _w + ScrollBarWidget::scrollBarWidth(_font);

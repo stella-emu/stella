@@ -138,9 +138,8 @@ unique_ptr<GUI::Layout> CartridgeCDFWidget::layoutDatastreams() const
   using GUI::HAlign;
   using GUI::VAlign;
 
-  // The stream labels down the left of the pointer grid: one per GRID row, which
-  // no cell can say -- so the column is built to the grid's own row pitch, and
-  // starts where the grid insets its first row's text (as RamWidget's do)
+  // Stream labels, one per grid row: built at the grid's row pitch and starting
+  // where it insets its first row's text (as RamWidget's do)
   auto streams = std::make_unique<BoxLayout>(BoxLayout::Dir::Vertical);
   streams->addSpace(myDatastreamPointers->firstTextY()
                     - myDatastreamLabels[0]->firstTextY());
@@ -229,8 +228,7 @@ void CartridgeCDFWidget::layoutContent(GUI::BoxLayout& col) const
   col.addSpace(_lineHeight / 2);
   col.addAuto(anchoredItem(myMusicLbl));
 
-  // Packed with no gap between rows -- the grids' own borders are enough to
-  // tell them apart, and the tab has a lot of these to fit
+  // No row gap: the grids' own borders separate them, and the tab has many to fit
   auto music = std::make_unique<BoxLayout>(Dir::Vertical);
   music->addAuto(baselineRow(myCountersLbl,      myMusicCounters));
   music->addAuto(baselineRow(myFrequenciesLbl,   myMusicFrequencies));

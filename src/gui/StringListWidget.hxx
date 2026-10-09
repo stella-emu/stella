@@ -30,8 +30,8 @@ class StringListWidget : public ListWidget
     ~StringListWidget() override = default;
 
     void setList(const StringList& list);
-    // Unlike EditableWidget's, always wants focus -- a plain (non-editable) list
-    // still takes keyboard/joystick navigation
+    // Unlike EditableWidget's, always wants focus, since even a non-editable list
+    // takes keyboard/joystick navigation
     bool wantsFocus() const override { return true; }
 
     // The hovered row's text, in full, when it doesn't fit its row (see getToolTipIndex)
@@ -42,11 +42,8 @@ class StringListWidget : public ListWidget
     void refreshFont() override;
 
   protected:
-    // The width a row's text is actually DRAWN in: my box, less the inset I keep
-    // on BOTH sides of it (the scrollbar, if any, is already out of _w).  Anything
-    // measuring text against my rows must ask for this rather than work it out
-    // from _w -- a word wrapped to a wider figure does not fit its row, and the
-    // renderer silently ellipsizes it.  0 while I am still at a placeholder width
+    // The width a row's text is drawn in (0 at a placeholder width); measure text
+    // against this, not _w, or the renderer ellipsizes what does not fit
     int textWidth() const { return std::max(_w - 2 * _textOfs, 0); }
 
     // display depends on _hasFocus so we have to redraw when focus changes
@@ -58,9 +55,8 @@ class StringListWidget : public ListWidget
     int getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
-    // Draws an optional per-row icon before the text; returns the width it
-    // took up (0 by default -- a plain string list has none). Overridden by
-    // e.g. FileListWidget to draw folder/file icons
+    // Draws an optional per-row icon before the text and returns its width (0 for a
+    // plain list); FileListWidget overrides it for folder/file icons
     virtual int drawIcon(int i, int x, int y, ColorId color) { return 0; }
     Common::Rect getEditRect() const override;
 

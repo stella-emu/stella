@@ -279,7 +279,7 @@ class MicroChip24LC
 
     /**
       Handle a falling edge on the SCL clock line.
-      Drives the I2C state machine — shifts bits in or out depending on
+      Drives the I2C state machine, shifting bits in or out depending on
       the current state (ByteIn, Acknowledge, ByteOut, WaitAck).
     */
     void jpee_clock_fall();
@@ -581,10 +581,8 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
     if constexpr(DEBUG_EEPROM_LOG)
       jpee_logproc("I2C_STOP");
 
-    // Do NOT call jpee_timercheck(TimerMode::Set) here — the write timer
-    // must only be armed after a committed page write. Arming it on an
-    // abandoned transaction causes the next jpee_data_start() to see a
-    // false busy condition and drop the transaction.
+    // Don't call jpee_timercheck(TimerMode::Set) here: arming the write timer for an
+    // abandoned transaction makes the next jpee_data_start() see a false busy and drop it
   }
 
   jpee_state = JPEEState::Idle;

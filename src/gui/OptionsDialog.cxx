@@ -136,9 +136,8 @@ void OptionsDialog::layout()
   const int VGAP    = Dialog::vGap();
   const int HGAP    = Dialog::buttonGap();
 
-  // Every option button is as wide as the widest of them, so the two columns come
-  // out even.  The Close button below is NOT one of them -- it keeps the width its
-  // own (deliberately roomy) label needs -- hence the subrange
+  // Equal-width option buttons keep the two columns even; the subrange leaves out
+  // the Close button, which keeps its own roomy width
   GUI::alignButtons(std::span{myButtons}.first(myButtons.size() - 1));
 
   // Two columns of equal buttons over six rows, plus a seventh row holding the

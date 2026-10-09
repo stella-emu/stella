@@ -90,9 +90,8 @@ class EventMappingWidget : public Widget, public CommandSender
         Combo    = GuiCmd::of("EventMappingWidget.Combo");
     };
 
-    // The actions list shows an event's description, so it needs room for one.
-    // How much is this widget's ONE design decision: everything else it needs —
-    // and, through naturalSize(), the width of the dialog holding it — follows
+    // Room for an event's description: this widget's ONE design decision, from which
+    // its size (and, via naturalSize(), its dialog's width) follows
     static constexpr int ACTION_CHARS = 40;
 
     int listWidth() const { return dialog().fontWidth() * ACTION_CHARS; }

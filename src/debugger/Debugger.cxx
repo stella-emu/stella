@@ -123,10 +123,8 @@ void Debugger::initialize()
   mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
 
-  // Only a laid-out dialog can say how small the window may be -- that is what
-  // its layout tree reports -- so build it at the saved size first, then clamp
-  // to what it asks for.  The dialog reads mySize back the next time it lays out
-  // (from open()), so there is nothing to rebuild here
+  // Only a laid-out dialog knows the window minimum, so build at the saved size, then
+  // clamp; the dialog reads mySize back when it next lays out, so nothing is rebuilt
   mySize.clamp(FBMinimum::Width, d.w, FBMinimum::Height, d.h);
 
   myDialog = std::make_unique<DebuggerDialog>(myOSystem, *this,
@@ -231,10 +229,8 @@ void Debugger::updateTime(uInt64 time)
     return;
   }
 
-  // Live re-flow is normally applied straight from the event handler
-  // (applyResize(), which also covers the Windows/macOS modal resize loop).
-  // Here we catch any size the handler's throttle skipped — notably the final
-  // one when the drag stops — and, once idle, persist the settled size
+  // Catch any size the event handler's throttle skipped (notably the final one), and
+  // persist the settled size once idle
   auto& fb = myOSystem.frameBuffer();
   if(fb.applyLiveResize(window()))
   {
@@ -1014,13 +1010,8 @@ void Debugger::rescaleTiaWindow()
   if(!myTiaWindowOpen)
     return;
 
-  // createDisplay() applies the scale factor to the (logical) size the window
-  // tracks, so the open path is what puts the new one into effect.  Closing
-  // only hides the window, leaving its backend and surfaces in place
-  // Re-run the open path with the window still shown: it tracks its size in
-  // logical units, and createDisplay() applies the current factor to that.
-  // Hiding it first would be wrong -- a resize applied to a hidden window
-  // does not survive being shown again
+  // Re-run the open path with the window still shown, so createDisplay() applies the
+  // new factor; a resize applied to a hidden window does not survive being shown
   applyTiaWindowMode();
 }
 
