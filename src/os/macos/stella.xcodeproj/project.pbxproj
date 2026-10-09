@@ -458,6 +458,22 @@
 		DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA311037FF200F199A7 /* DiStella.hxx */; };
 		DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */; };
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
+		DC6D286C30793918009BF1F9 /* SpeakJetSerial.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D286230793918009BF1F9 /* SpeakJetSerial.hxx */; };
+		DC6D286D30793918009BF1F9 /* SpeakJetTables.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D286630793918009BF1F9 /* SpeakJetTables.hxx */; };
+		DC6D286E30793918009BF1F9 /* SpeakJetSoftware.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D286430793918009BF1F9 /* SpeakJetSoftware.hxx */; };
+		DC6D286F30793918009BF1F9 /* SpeakJetBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D285C30793918009BF1F9 /* SpeakJetBackend.hxx */; };
+		DC6D287030793918009BF1F9 /* SpeakJetSamples.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D286030793918009BF1F9 /* SpeakJetSamples.hxx */; };
+		DC6D287130793918009BF1F9 /* SpeakJetDSP.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D285E30793918009BF1F9 /* SpeakJetDSP.hxx */; };
+		DC6D287230793918009BF1F9 /* SpeakJetChip.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D285D30793918009BF1F9 /* SpeakJetChip.hxx */; };
+		DC6D287330793918009BF1F9 /* SpeakJetVoice.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D286830793918009BF1F9 /* SpeakJetVoice.hxx */; };
+		DC6D287430793918009BF1F9 /* SpeakJet.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D285A30793918009BF1F9 /* SpeakJet.hxx */; };
+		DC6D287530793918009BF1F9 /* SpeakJetSamples.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D286130793918009BF1F9 /* SpeakJetSamples.cxx */; };
+		DC6D287630793918009BF1F9 /* SpeakJetTables.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D286730793918009BF1F9 /* SpeakJetTables.cxx */; };
+		DC6D287730793918009BF1F9 /* SpeakJetDSP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D285F30793918009BF1F9 /* SpeakJetDSP.cxx */; };
+		DC6D287830793918009BF1F9 /* SpeakJetVoice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D286930793918009BF1F9 /* SpeakJetVoice.cxx */; };
+		DC6D287930793918009BF1F9 /* SpeakJetSoftware.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D286530793918009BF1F9 /* SpeakJetSoftware.cxx */; };
+		DC6D287A30793918009BF1F9 /* SpeakJetSerial.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D286330793918009BF1F9 /* SpeakJetSerial.cxx */; };
+		DC6D287B30793918009BF1F9 /* SpeakJet.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D285B30793918009BF1F9 /* SpeakJet.cxx */; };
 		DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */; };
 		DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */; };
 		DC6DC5E0273C2A5E00F64413 /* PlusRomsSetupDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6DC5DA273C2A5D00F64413 /* PlusRomsSetupDialog.hxx */; };
@@ -1380,6 +1396,22 @@
 		DC6B2BA311037FF200F199A7 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DiStella.hxx; sourceTree = "<group>"; };
 		DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LoggerDialog.cxx; sourceTree = "<group>"; };
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LoggerDialog.hxx; sourceTree = "<group>"; };
+		DC6D285A30793918009BF1F9 /* SpeakJet.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJet.hxx; sourceTree = "<group>"; };
+		DC6D285B30793918009BF1F9 /* SpeakJet.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJet.cxx; sourceTree = "<group>"; };
+		DC6D285C30793918009BF1F9 /* SpeakJetBackend.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetBackend.hxx; sourceTree = "<group>"; };
+		DC6D285D30793918009BF1F9 /* SpeakJetChip.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetChip.hxx; sourceTree = "<group>"; };
+		DC6D285E30793918009BF1F9 /* SpeakJetDSP.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetDSP.hxx; sourceTree = "<group>"; };
+		DC6D285F30793918009BF1F9 /* SpeakJetDSP.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetDSP.cxx; sourceTree = "<group>"; };
+		DC6D286030793918009BF1F9 /* SpeakJetSamples.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetSamples.hxx; sourceTree = "<group>"; };
+		DC6D286130793918009BF1F9 /* SpeakJetSamples.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetSamples.cxx; sourceTree = "<group>"; };
+		DC6D286230793918009BF1F9 /* SpeakJetSerial.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetSerial.hxx; sourceTree = "<group>"; };
+		DC6D286330793918009BF1F9 /* SpeakJetSerial.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetSerial.cxx; sourceTree = "<group>"; };
+		DC6D286430793918009BF1F9 /* SpeakJetSoftware.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetSoftware.hxx; sourceTree = "<group>"; };
+		DC6D286530793918009BF1F9 /* SpeakJetSoftware.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetSoftware.cxx; sourceTree = "<group>"; };
+		DC6D286630793918009BF1F9 /* SpeakJetTables.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetTables.hxx; sourceTree = "<group>"; };
+		DC6D286730793918009BF1F9 /* SpeakJetTables.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetTables.cxx; sourceTree = "<group>"; };
+		DC6D286830793918009BF1F9 /* SpeakJetVoice.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpeakJetVoice.hxx; sourceTree = "<group>"; };
+		DC6D286930793918009BF1F9 /* SpeakJetVoice.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpeakJetVoice.cxx; sourceTree = "<group>"; };
 		DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWDWidget.cxx; sourceTree = "<group>"; };
 		DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWDWidget.hxx; sourceTree = "<group>"; };
 		DC6DC5DA273C2A5D00F64413 /* PlusRomsSetupDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PlusRomsSetupDialog.hxx; sourceTree = "<group>"; };
@@ -2416,6 +2448,7 @@
 				2D733D77062895F1006265D9 /* Settings.hxx */,
 				2D944848062904E800DD9879 /* Settings.cxx */,
 				2DE2DF8D0627AE34006BEC99 /* Sound.hxx */,
+				DC6D286A30793918009BF1F9 /* speakjet */,
 				2DE2DF8F0627AE34006BEC99 /* Switches.hxx */,
 				2DE2DF8E0627AE34006BEC99 /* Switches.cxx */,
 				DCC527CF10B9DA19005E1287 /* System.hxx */,
@@ -2731,6 +2764,29 @@
 				DC564F6D28C1154F00177588 /* tinyexif.cxx */,
 			);
 			path = tinyexif;
+			sourceTree = "<group>";
+		};
+		DC6D286A30793918009BF1F9 /* speakjet */ = {
+			isa = PBXGroup;
+			children = (
+				DC6D285A30793918009BF1F9 /* SpeakJet.hxx */,
+				DC6D285B30793918009BF1F9 /* SpeakJet.cxx */,
+				DC6D285C30793918009BF1F9 /* SpeakJetBackend.hxx */,
+				DC6D285D30793918009BF1F9 /* SpeakJetChip.hxx */,
+				DC6D285E30793918009BF1F9 /* SpeakJetDSP.hxx */,
+				DC6D285F30793918009BF1F9 /* SpeakJetDSP.cxx */,
+				DC6D286030793918009BF1F9 /* SpeakJetSamples.hxx */,
+				DC6D286130793918009BF1F9 /* SpeakJetSamples.cxx */,
+				DC6D286230793918009BF1F9 /* SpeakJetSerial.hxx */,
+				DC6D286330793918009BF1F9 /* SpeakJetSerial.cxx */,
+				DC6D286430793918009BF1F9 /* SpeakJetSoftware.hxx */,
+				DC6D286530793918009BF1F9 /* SpeakJetSoftware.cxx */,
+				DC6D286630793918009BF1F9 /* SpeakJetTables.hxx */,
+				DC6D286730793918009BF1F9 /* SpeakJetTables.cxx */,
+				DC6D286830793918009BF1F9 /* SpeakJetVoice.hxx */,
+				DC6D286930793918009BF1F9 /* SpeakJetVoice.cxx */,
+			);
+			path = speakjet;
 			sourceTree = "<group>";
 		};
 		DC6F394621B897AD00897AD8 /* exception */ = {
@@ -3218,6 +3274,15 @@
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
+				DC6D286C30793918009BF1F9 /* SpeakJetSerial.hxx in Headers */,
+				DC6D286D30793918009BF1F9 /* SpeakJetTables.hxx in Headers */,
+				DC6D286E30793918009BF1F9 /* SpeakJetSoftware.hxx in Headers */,
+				DC6D286F30793918009BF1F9 /* SpeakJetBackend.hxx in Headers */,
+				DC6D287030793918009BF1F9 /* SpeakJetSamples.hxx in Headers */,
+				DC6D287130793918009BF1F9 /* SpeakJetDSP.hxx in Headers */,
+				DC6D287230793918009BF1F9 /* SpeakJetChip.hxx in Headers */,
+				DC6D287330793918009BF1F9 /* SpeakJetVoice.hxx in Headers */,
+				DC6D287430793918009BF1F9 /* SpeakJet.hxx in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
 				DCCD9FAA2FBF43F100C75466 /* CartDevCardWidget.hxx in Headers */,
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
@@ -3823,6 +3888,13 @@
 				DC1E89082C4033280033E15F /* ElfUtil.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DC0E98E42801CD1600097C68 /* Cart0FA0.cxx in Sources */,
+				DC6D287530793918009BF1F9 /* SpeakJetSamples.cxx in Sources */,
+				DC6D287630793918009BF1F9 /* SpeakJetTables.cxx in Sources */,
+				DC6D287730793918009BF1F9 /* SpeakJetDSP.cxx in Sources */,
+				DC6D287830793918009BF1F9 /* SpeakJetVoice.cxx in Sources */,
+				DC6D287930793918009BF1F9 /* SpeakJetSoftware.cxx in Sources */,
+				DC6D287A30793918009BF1F9 /* SpeakJetSerial.cxx in Sources */,
+				DC6D287B30793918009BF1F9 /* SpeakJet.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
