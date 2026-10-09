@@ -3076,6 +3076,14 @@
     </tr>
 
     <tr>
+      <td><pre>-avoxmode &lt;hardware|software&gt;</pre></td>
+      <td>Whether AtariVox speech comes from a real device attached to the serial
+          port, or is synthesized in software from recorded samples.  The default,
+          'hardware', falls back to software when no device can be reached, so
+          'software' is only needed to ignore a device that is plugged in.</td>
+    </tr>
+
+    <tr>
       <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
       <td>Use mouse as a controller as specified by ROM properties in specific case.
       Always and never are self-explanatory, analog means only for analog-type devices

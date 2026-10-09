@@ -102,7 +102,7 @@ unique_ptr<Controller> QuadTari::addController(Controller::Type type, bool secon
     {
       FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "atarivox_eeprom.dat";
-      return std::make_unique<AtariVox>(myJack, myEvent, mySystem,
+      return std::make_unique<AtariVox>(myJack, myEvent, myOSystem, mySystem,
                                    myOSystem.settings().getString("avoxport"),
                                    nvramfile, callback); // no alternative mapping here
     }

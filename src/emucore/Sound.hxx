@@ -127,6 +127,28 @@ class Sound
     */
     virtual uInt32 wavSize() const { return 0; }
 
+    /**
+      Queue PCM for continuous playback alongside the TIA audio, for a device
+      with its own speaker such as the AtariVox.  Unlike playWav() this
+      appends, so successive calls play back-to-back with no gap.
+
+      @param samples     16-bit mono samples
+      @param sampleRate  Their sample rate, in Hz
+    */
+    virtual void queueSpeech(sShortSpan samples, uInt32 sampleRate) { }
+
+    /**
+      Discard any speech queued but not yet played.
+    */
+    virtual void stopSpeech() { }
+
+    /**
+      How much queued speech remains unplayed.
+
+      @return  The remaining duration, in milliseconds
+    */
+    virtual uInt32 speechQueued() const { return 0; }
+
   protected:
     // The OSystem for this sound object
     OSystem& myOSystem;

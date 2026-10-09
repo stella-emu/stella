@@ -1031,7 +1031,7 @@ unique_ptr<Controller> Console::getControllerPort(
           if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
             os.frameBuffer().showTextMessage(msg);
         };
-      controller = std::make_unique<AtariVox>(port, myEvent, *mySystem,
+      controller = std::make_unique<AtariVox>(port, myEvent, myOSystem, *mySystem,
           myOSystem.settings().getString("avoxport"), nvramfile, callback);
       break;
     }

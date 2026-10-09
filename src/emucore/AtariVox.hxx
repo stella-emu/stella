@@ -19,22 +19,23 @@
 #define ATARIVOX_HXX
 
 class OSystem;
-class SerialPort;
+class MT24LC256;
+class SpeakJetBackend;
 class FSNode;
 
 #include "Control.hxx"
-#include "SaveKey.hxx"
 
 /**
-  Richard Hutchinson's AtariVox "controller": A speech synthesizer and
-  storage device.
+  Richard Hutchinson's AtariVox "controller": a 32KB EEPROM accessed over
+  I2C, plus a SpeakJet speech synthesizer.  The two are independent; the
+  EEPROM is the same part the SaveKey uses, on the same pins.
 
   This code owes a great debt to Alex Herbert's AtariVox documentation and
   driver code.
 
   @author  B. Watson, Stephen Anthony
 */
-class AtariVox : public SaveKey
+class AtariVox : public Controller
 {
   public:
     /**
@@ -42,14 +43,16 @@ class AtariVox : public SaveKey
 
       @param jack       The jack the controller is plugged into
       @param event      The event object to use for events
+      @param osystem    The OSystem object to use
       @param system     The system using this controller
-      @param portname   Name of the serial port used for reading and writing
+      @param portname   Serial port of a real AtariVox; speech is synthesized
+                        in software when this is empty
       @param eepromfile The file containing the EEPROM data
       @param callback   Called to pass messages back to the parent controller
     */
-    AtariVox(Jack jack, const Event& event, const System& system,
-             const string& portname, const FSNode& eepromfile,
-             const onMessageCallback& callback);
+    AtariVox(Jack jack, const Event& event, const OSystem& osystem,
+             const System& system, const string& portname,
+             const FSNode& eepromfile, const onMessageCallback& callback);
     ~AtariVox() override;
 
   public:
@@ -77,7 +80,7 @@ class AtariVox : public SaveKey
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update() override { }
+    void update() override;
 
     /**
       Returns the name of this controller.
@@ -91,14 +94,23 @@ class AtariVox : public SaveKey
     */
     void reset() override;
 
-    string about(bool swappedPorts) const override {
-      return Controller::about(swappedPorts) + myAboutString;
-    }
+    /**
+      Force the EEPROM object to cleanup
+    */
+    void close() override;
+
+    /** Erase the pages used by the current ROM to known state ($FF) */
+    void eraseCurrent();
+
+    /** Returns true if the page is used by the current ROM */
+    bool isPageUsed(uInt32 page) const;
+
+    string about(bool swappedPorts) const override;
 
     /**
-      Save/load the controller state.  Extends the base (which handles the
-      EEPROM) with the SpeakJet serial shift state, so a state saved mid-byte
-      doesn't drop the partially-shifted speech byte.
+      Save/load the controller state: the EEPROM's in-flight I2C transaction,
+      then the SpeakJet shift state, so a state saved mid-byte doesn't drop
+      the partially-shifted speech byte.
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
@@ -107,10 +119,12 @@ class AtariVox : public SaveKey
    void clockDataIn(bool value);
 
   private:
-    // Instance of an real serial port on the system
-    // Assuming there's a real AtariVox attached, we can send SpeakJet
-    // bytes directly to it
-    unique_ptr<SerialPort> mySerialPort;
+    // The 24LC256 EEPROM, the same part the SaveKey uses
+    unique_ptr<MT24LC256> myEEPROM;
+
+    // Produces the speech: either a real SpeakJet chip reached over a
+    // serial port, or a software synthesizer
+    unique_ptr<SpeakJetBackend> myBackend;
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount{0};
@@ -126,16 +140,6 @@ class AtariVox : public SaveKey
     // driver code sends data at 62 CPU cycles per bit, which is
     // "close enough".
     uInt64 myLastDataWriteCycle{0};
-
-    // When using software flow control, assume the device starts in READY mode
-    bool myReadyStateSoftFlow{true};
-
-    // Some USB-Serial adaptors send the CTS signal inverted; we detect
-    // that when opening the port, and flip the signal when necessary
-    bool myCTSFlip{false};
-
-    // Holds information concerning serial port usage
-    string myAboutString;
 
   private:
     // Following constructors and assignment operators not supported

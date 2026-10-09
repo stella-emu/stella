@@ -108,12 +108,13 @@ using StringList = std::vector<std::string>;
 template<typename T>
 using SpanOf = std::span<const T>;
 
-using BoolSpan  = SpanOf<bool>;
-using ByteSpan  = SpanOf<uInt8>;
-using ShortSpan = SpanOf<uInt16>;
-using IntSpan   = SpanOf<uInt32>;
-using sIntSpan  = SpanOf<Int32>;
-using FloatSpan = SpanOf<float>;
+using BoolSpan   = SpanOf<bool>;
+using ByteSpan   = SpanOf<uInt8>;
+using ShortSpan  = SpanOf<uInt16>;
+using sShortSpan = SpanOf<Int16>;
+using IntSpan    = SpanOf<uInt32>;
+using sIntSpan   = SpanOf<Int32>;
+using FloatSpan  = SpanOf<float>;
 
 // Common mutable span types
 template<typename T>

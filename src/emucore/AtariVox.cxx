@@ -15,29 +15,44 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "MediaFactory.hxx"
+#include "MT24LC256.hxx"
+#include "OSystem.hxx"
+#include "Settings.hxx"
 #include "Serializer.hxx"
+#include "SpeakJetSerial.hxx"
+#include "SpeakJetSoftware.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
-                   const string& portname, const FSNode& eepromfile,
-                   const onMessageCallback& callback)
-  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox),
-    mySerialPort{MediaFactory::createSerialPort()}
+AtariVox::AtariVox(Jack jack, const Event& event, const OSystem& osystem,
+                   const System& system, const string& portname,
+                   const FSNode& eepromfile, const onMessageCallback& callback)
+  : Controller(jack, event, system, Controller::Type::AtariVox),
+    myEEPROM{std::make_unique<MT24LC256>(eepromfile, system, callback)}
 {
-  if(mySerialPort->openPort(portname))
-  {
-    myCTSFlip = !mySerialPort->isCTS();
-    if(myCTSFlip)
-      myAboutString = " (serial port \'" + portname + "\', inverted CTS)";
-    else
-      myAboutString = " (serial port \'" + portname + "\')";
-  }
-  else
-    myAboutString = " (invalid serial port \'" + portname + "\')";
+  // Talk to a real AtariVox when one is reachable on the configured port,
+  // unless speech has been forced to software
+  string deadPort;
 
+  if(!portname.empty() &&
+     osystem.settings().getString("avoxmode") != "software")
+  {
+    auto serial = std::make_unique<SpeakJetSerial>(portname);
+
+    if(serial->isOpen())
+      myBackend = std::move(serial);
+    else
+      // Tried and failed, so say which port in about(); choosing software
+      // outright is not a failure and gets no such note
+      deadPort = portname;
+  }
+
+  if(myBackend == nullptr)
+    myBackend = std::make_unique<SpeakJetSoftware>(osystem, deadPort);
+
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
   setPin(DigitalPin::Three, true);
   setPin(DigitalPin::Four, true);
 }
@@ -51,45 +66,53 @@ bool AtariVox::read(DigitalPin pin)
   // We need to override the Controller::read() method, since the timing
   // of the actual read is important for the EEPROM (we can't just read
   // 60 times per second in the ::update() method)
-  // Pin 2: SpeakJet READY
-  //        READY signal is sent directly to pin 2
-  if(pin == DigitalPin::Two)
+  switch(pin)
   {
-    // Some USB-serial adaptors support only CTS, others support only
-    // software flow control
-    // So we check the state of both then AND the results, on the
-    // assumption that if a mode isn't supported, then it reads as TRUE
-    // and doesn't change the boolean result
-    // Thus the logic is:
-    //   READY_SIGNAL = READY_STATE_CTS && READY_STATE_FLOW
-    // Note that we also have to take inverted CTS into account
+    // Pin 2: SpeakJet READY
+    //        READY signal is sent directly to pin 2
+    case DigitalPin::Two:
+      return setPin(pin, myBackend->ready());
 
-    // When using software flow control, only update on a state change
-    uInt8 flowCtrl = 0;
-    if(mySerialPort->readByte(flowCtrl))
-      myReadyStateSoftFlow = flowCtrl == 0x11;  // XON
+    // Pin 3: EEPROM SDA
+    //        input data from the 24LC256 EEPROM using the I2C protocol
+    case DigitalPin::Three:
+      return setPin(pin, myEEPROM->readSDA());
 
-    // Now combine the results of CTS and'ed with flow control
-    return setPin(pin,
-        (mySerialPort->isCTS() ^ myCTSFlip) && myReadyStateSoftFlow);
+    default:
+      return Controller::read(pin);
   }
-
-  return SaveKey::read(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::write(DigitalPin pin, bool value)
 {
   // Change the pin state based on value
-  // Pin 1: SpeakJet DATA
-  //        output serial data to the speakjet
-  if(pin == DigitalPin::One)
+  switch(pin)
   {
-    setPin(pin, value);
-    clockDataIn(value);
+    // Pin 1: SpeakJet DATA
+    //        output serial data to the speakjet
+    case DigitalPin::One:
+      setPin(pin, value);
+      clockDataIn(value);
+      break;
+
+    // Pin 3: EEPROM SDA
+    //        output data to the 24LC256 EEPROM using the I2C protocol
+    case DigitalPin::Three:
+      setPin(pin, value);
+      myEEPROM->writeSDA(value);
+      break;
+
+    // Pin 4: EEPROM SCL
+    //        output clock data to the 24LC256 EEPROM using the I2C protocol
+    case DigitalPin::Four:
+      setPin(pin, value);
+      myEEPROM->writeSCL(value);
+      break;
+
+    default:
+      break;
   }
-  else
-    SaveKey::write(pin, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,7 +147,7 @@ void AtariVox::clockDataIn(bool value)
       else
       {
         const uInt8 data = ((U32(myShiftRegister) >> 1U) & 0xffU);
-        mySerialPort->writeByte(data);
+        myBackend->write(data);
       }
       myShiftRegister = 0;
     }
@@ -134,48 +157,75 @@ void AtariVox::clockDataIn(bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::update()
+{
+  myBackend->update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::reset()
 {
   myLastDataWriteCycle = 0;
-  SaveKey::reset();
+  myBackend->reset();
+  myEEPROM->systemReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::close()
+{
+  myEEPROM.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::eraseCurrent()
+{
+  myEEPROM->eraseCurrent();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AtariVox::isPageUsed(uInt32 page) const
+{
+  return myEEPROM->isPageUsed(page);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AtariVox::about(bool swappedPorts) const
+{
+  return Controller::about(swappedPorts) + myBackend->about();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::save(Serializer& out) const
 {
-  if(!SaveKey::save(out)) return false;
+  if(!(Controller::save(out) && myEEPROM->save(out))) return false;
   try
   {
     out.putByte(myShiftCount);
     out.putShort(myShiftRegister);
     out.putLong(myLastDataWriteCycle);
-    out.putBool(myReadyStateSoftFlow);
-    out.putBool(myCTSFlip);
   }
   catch(...)
   {
     cerr << "ERROR: AtariVox::save\n";
     return false;
   }
-  return true;
+  return myBackend->save(out);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::load(Serializer& in)
 {
-  if(!SaveKey::load(in)) return false;
+  if(!(Controller::load(in) && myEEPROM->load(in))) return false;
   try
   {
     myShiftCount = in.getByte();
     myShiftRegister = in.getShort();
     myLastDataWriteCycle = in.getLong();
-    myReadyStateSoftFlow = in.getBool();
-    myCTSFlip = in.getBool();
   }
   catch(...)
   {
     cerr << "ERROR: AtariVox::load\n";
     return false;
   }
-  return true;
+  return myBackend->load(in);
 }

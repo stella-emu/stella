@@ -24,6 +24,7 @@
 #include "Logger.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
+#include "Settings.hxx"
 #include "Console.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
@@ -68,6 +69,8 @@ SoundSDL::~SoundSDL()
   if(!myIsInitializedFlag)
     return;
 
+  if(mySpeechStream)
+    SDL_DestroyAudioStream(mySpeechStream);
   SDL_DestroyAudioStream(myStream);
   SDL_CloseAudioDevice(myDevice);
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -208,12 +211,68 @@ void SoundSDL::setVolume(uInt32 volume, bool persist)
       ? FLT(volume) / 100.F
       : 0.F;
 
-    SDL_SetAudioStreamGain(myStream, myVolumeFactor);
+    // The TIA has its own relative level, so it can be silenced while the
+    // separate WAV stream (AtariVox speech, KidVid, Supercharger) stays audible
+    const uInt32 tiaVolume =
+      std::min(myOSystem.settings().getInt("audio.tiavolume"), 100);
+
+    SDL_SetAudioStreamGain(myStream, myVolumeFactor * FLT(tiaVolume) / 100.F);
     myWavHandler.setVolumeFactor(myVolumeFactor);
+    if(mySpeechStream)
+      SDL_SetAudioStreamGain(mySpeechStream, myVolumeFactor);
 
     if(persist)
       myAudioSettings.setVolume(volume);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::queueSpeech(sShortSpan samples, uInt32 sampleRate)
+{
+  if(!myIsInitializedFlag || samples.empty() || sampleRate == 0)
+    return;
+
+  // One stream for the whole session, so successive queues play seamlessly
+  if(mySpeechStream == nullptr || mySpeechRate != sampleRate)
+  {
+    if(mySpeechStream)
+      SDL_DestroyAudioStream(mySpeechStream);
+
+    SDL_AudioSpec spec = { SDL_AUDIO_S16, 1, I32(sampleRate) };
+    mySpeechStream = SDL_CreateAudioStream(&spec, nullptr);
+    if(mySpeechStream == nullptr)
+      return;
+
+    if(!SDL_BindAudioStream(SDL_GetAudioStreamDevice(myStream), mySpeechStream))
+    {
+      SDL_DestroyAudioStream(mySpeechStream);
+      mySpeechStream = nullptr;
+      return;
+    }
+    mySpeechRate = sampleRate;
+    SDL_SetAudioStreamGain(mySpeechStream, myVolumeFactor);
+  }
+
+  SDL_PutAudioStreamData(mySpeechStream, samples.data(),
+                         I32(samples.size() * sizeof(Int16)));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::stopSpeech()
+{
+  if(mySpeechStream)
+    SDL_ClearAudioStream(mySpeechStream);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 SoundSDL::speechQueued() const
+{
+  if(mySpeechStream == nullptr || mySpeechRate == 0)
+    return 0;
+
+  const int bytes = SDL_GetAudioStreamQueued(mySpeechStream);
+
+  return bytes > 0 ? U32(bytes / sizeof(Int16)) * 1000 / mySpeechRate : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

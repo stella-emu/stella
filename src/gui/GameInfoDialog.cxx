@@ -20,6 +20,7 @@
 #include "Cart.hxx"
 #include "MouseControl.hxx"
 #include "SaveKey.hxx"
+#include "AtariVox.hxx"
 #include "EditTextWidget.hxx"
 #include "RadioButtonWidget.hxx"
 #include "Launcher.hxx"
@@ -1608,19 +1609,15 @@ void GameInfoDialog::eraseEEPROM()
   Controller& lport = instance().console().leftController();
   Controller& rport = instance().console().rightController();
 
-  if(lport.type() == Controller::Type::SaveKey ||
-     lport.type() == Controller::Type::AtariVox)
-  {
-    auto& skey = static_cast<SaveKey&>(lport);
-    skey.eraseCurrent();
-  }
+  if(lport.type() == Controller::Type::SaveKey)
+    static_cast<SaveKey&>(lport).eraseCurrent();
+  else if(lport.type() == Controller::Type::AtariVox)
+    static_cast<AtariVox&>(lport).eraseCurrent();
 
-  if(rport.type() == Controller::Type::SaveKey ||
-     rport.type() == Controller::Type::AtariVox)
-  {
-    auto& skey = static_cast<SaveKey&>(rport);
-    skey.eraseCurrent();
-  }
+  if(rport.type() == Controller::Type::SaveKey)
+    static_cast<SaveKey&>(rport).eraseCurrent();
+  else if(rport.type() == Controller::Type::AtariVox)
+    static_cast<AtariVox&>(rport).eraseCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

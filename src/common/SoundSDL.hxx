@@ -97,6 +97,10 @@ class SoundSDL : public Sound
     */
     void setVolume(uInt32 volume, bool persist = true) override;
 
+    void queueSpeech(sShortSpan samples, uInt32 sampleRate) override;
+    void stopSpeech() override;
+    uInt32 speechQueued() const override;
+
     /**
       Adjusts the volume of the sound device based on the given direction.
 
@@ -213,6 +217,10 @@ class SoundSDL : public Sound
     };
 
     WavHandler myWavHandler;
+
+    // Continuous PCM for a device with its own speaker; see queueSpeech()
+    SDL_AudioStream* mySpeechStream{nullptr};
+    uInt32 mySpeechRate{0};
 
   private:
     // Callback functions invoked by the SDL Audio library when it needs data

@@ -222,6 +222,8 @@ Settings::Settings()
   setPermanent("loglevel", I32(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
+  setPermanent("avoxmode", "hardware");
+  setPermanent("audio.tiavolume", 100);
   setPermanent("fastscbios", "true");
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
@@ -557,6 +559,9 @@ void Settings::usage()
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
     << "  -audio.volume             <0-100>    Volume\n"
+    << "  -audio.tiavolume          <0-100>    TIA volume, relative to the master\n"
+    << "                                       volume; 0 silences the TIA while\n"
+    << "                                       leaving speech and WAV audio audible\n"
     << "  -audio.device             <number>   ID of the audio device (0 = default)\n"
     << "  -audio.preset             <1-5>      Audio preset (or 1 for custom)\n"
     << "  -audio.sample_rate        <number>   Output sample rate (44100|48000|96000)\n"
@@ -703,6 +708,11 @@ void Settings::usage()
     << "  -basic_settings <0|1>          Display only a basic settings dialog\n"
     << "  -avoxport     <name>           The name of the serial port where an AtariVox is\n"
     << "                                  connected\n"
+    << "  -avoxmode     <hardware|software>\n"
+    << "                                 Whether AtariVox speech comes from a real device\n"
+    << "                                  on the serial port, or is synthesized from\n"
+    << "                                  samples.  Hardware falls back to software when\n"
+    << "                                  the device is not reachable\n"
     << "  -holdreset                     Start the emulator with the Game Reset switch\n"
     << "                                  held down\n"
     << "  -holdselect                    Start the emulator with the Game Select switch\n"
