@@ -33,9 +33,10 @@
  * archive is empty.  Hence, if a ZIP archive isn't a directory *or* a file,
  * it is invalid.
  *
- * The above is ZipMode::Rom.  In ZipMode::Data the archive is a plain
- * directory tree instead: an entry is a file whatever its extension, a path
- * that entries lie under is a directory, and any other path doesn't exist.
+ * The above is ZipMode::Rom; in ZipMode::Data the archive is always a
+ * directory.  In both modes, a path into the archive is a file if it names an
+ * entry, whatever its extension, and a directory if entries lie under it; any
+ * other path doesn't exist.
  *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */

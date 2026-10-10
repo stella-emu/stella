@@ -21,7 +21,6 @@
 
 #include "bspf.hxx"
 #include "AsciiFold.hxx"
-#include "Bankswitch.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
 
@@ -47,7 +46,7 @@ FSNodeZIP::FSNodeZIP(string_view p, ZipMode mode)
   _zipFile = _realNode->getPath();
 
   // Set before opening, so a path into an unreadable archive doesn't exist
-  if(_mode == ZipMode::Data && pos+5 < p.length())
+  if(pos+5 < p.length())  // if something comes after '.zip'
   {
     _virtualPath = p.substr(pos+5);
     // ZIP entries always use '/', and never end a directory with it
@@ -70,13 +69,11 @@ FSNodeZIP::FSNodeZIP(string_view p, ZipMode mode)
     return;
   }
 
-  if(_mode == ZipMode::Data)
+  if(!_virtualPath.empty())
   {
     // An entry is a file whatever its extension, and a path that entries lie
     // under is a directory; anything else doesn't exist
-    if(_virtualPath.empty())
-      _kind = NodeKind::Directory;
-    else if(const auto [size, found] = zipHandler().find(_virtualPath); found)
+    if(const auto [size, found] = zipHandler().find(_virtualPath); found)
     {
       _size = size;
       _kind = NodeKind::File;
@@ -89,24 +86,12 @@ FSNodeZIP::FSNodeZIP(string_view p, ZipMode mode)
           _kind = NodeKind::Directory;
       });
     }
-    setFlags(_zipFile, _virtualPath, _realNode);
-    return;
   }
-
-  if(numFiles == 0)
-    return;
-
-  // We always need a virtual file/path
-  // Either one is given, or we use the first one
-  if(pos+5 < p.length())  // if something comes after '.zip'
-  {
-    _virtualPath = p.substr(pos+5);
-    _kind = Bankswitch::isValidRomName(_virtualPath) ? NodeKind::File : NodeKind::Directory;
-    if(_kind == NodeKind::File)
-      _size = zipHandler().find(_virtualPath).first;
-  }
+  else if(_mode == ZipMode::Data || numFiles > 1)
+    _kind = NodeKind::Directory;
   else if(numFiles == 1)
   {
+    // A single ROM stands for the whole archive
     try
     {
       if(const auto rom = zipHandler().firstRom(); rom)
@@ -122,7 +107,7 @@ FSNodeZIP::FSNodeZIP(string_view p, ZipMode mode)
     }
   }
   else
-    _kind = NodeKind::Directory;
+    return;
 
   setFlags(_zipFile, _virtualPath, _realNode);
 }
