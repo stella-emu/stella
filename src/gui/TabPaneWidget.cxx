@@ -78,13 +78,8 @@ void TabPaneWidget::setArea(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabPaneWidget::drawWidget(bool hilite)
 {
-  // The pane has nothing of its own to draw.  But drawing is incremental — a
-  // widget is only repainted when it is itself dirty — so as a container it has
-  // to pass a repaint of itself on to its children, which are not otherwise
-  // re-dirtied.  Without this they would vanish whenever something forces a full
-  // redraw of the dialog underneath them (e.g. closing a popup menu) and only
-  // reappear as each was individually touched.  TabWidget does the same for the
-  // widgets it holds directly
+  // Nothing of our own to draw, but drawing is incremental, so pass our repaint on to
+  // the children, or a full redraw of the dialog beneath would make them vanish
   Widget::setDirtyInList(_children);
 }
 

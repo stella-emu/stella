@@ -88,9 +88,7 @@ void RomListSettings::layout()
             HBORDER = Dialog::hBorder(),
             VGAP    = Dialog::vGap();
 
-  // The four action buttons stand in one column, so they share one width -- the
-  // widest of them.  (They size themselves from their labels, and re-do it on a
-  // font change, so nothing here names a width or a height)
+  // The four action buttons form one column, so they share the widest one's width
   GUI::alignButtons({mySetPC, myRuntoPC, mySetTimer, myDisassemble});
 
   auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);

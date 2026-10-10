@@ -74,11 +74,8 @@ void RomWidget::reflow()
   using GUI::widgetItem;
   using Dir = BoxLayout::Dir;
 
-  // This tab insets itself by the same small border on every side -- the listing
-  // fills it, and its frame is meant to sit close to the tab's own, as it did
-  // before the engine laid this widget out.  VGAP is the gap BETWEEN the two
-  // rows, and was standing in for the vertical border as well, which left the
-  // listing twice as far off the bottom of the tab as it should be
+  // A small, even border on every side keeps the listing's frame close to the tab's;
+  // VGAP is only the gap between the two rows
   constexpr int HBORDER = 2, VBORDER = 2, VGAP = 4;
 
   // The label and the bank display are sibling widgets parented to the boss,

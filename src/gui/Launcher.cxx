@@ -131,12 +131,8 @@ void Launcher::updateTime(uInt64 time)
 {
   DialogContainer::updateTime(time);
 
-  // Live re-flow is normally applied straight from the event handler
-  // (applyResize(), which also covers the Windows/macOS modal loop).  Here we
-  // catch any size the handler's throttle skipped — notably the final one when
-  // the drag stops — and, once idle, run one settle pass with
-  // resizeInProgress() false so layout() performs the finalization it defers
-  // during the drag (window minimum-size hint, persisting the final size).
+  // Catch any size the event handler's throttle skipped (notably the final one), and
+  // once idle run a settle pass so layout() does the finalization it defers mid-drag
   if(myOSystem.frameBuffer().applyLiveResize(window()))
   {
     relayout();

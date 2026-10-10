@@ -167,8 +167,8 @@ void RomListWidget::reflowCheckboxes()
   // append (surplus rows are hidden below).
   while(std::cmp_less(myCheckList.size(), _rows))
   {
-    // _font, because the row reserves boxSize(_font) for it -- in _lineHeight,
-    // in the column separator and in getLineRect (mirrors CheckListWidget)
+    // _font, since the row reserves boxSize(_font) for it in _lineHeight, the column
+    // separator and getLineRect (as CheckListWidget does)
     auto* t = new CheckboxWidget(_boss, _font, "",
                                  CheckboxWidget::Cmd::CheckAction);
     t->setTarget(this);

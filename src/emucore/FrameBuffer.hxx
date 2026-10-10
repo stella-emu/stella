@@ -162,7 +162,7 @@ class FrameBuffer
 
     /**
       Record the latest window size for a live, per-frame re-flow.  Returns true
-      for a user-resizable window — the caller then applies it via
+      for a user-resizable window, which the caller then applies it via
       applyLiveResize() and re-lays-out its dialogs; false otherwise, so the
       caller falls back to handleResize().
 

@@ -149,11 +149,8 @@ void FrameManager::onSetVblank(uInt64 cycles)
 void FrameManager::onSetVsync(uInt64 cycles)
 {
   if (myVsync) {
-    // VSYNC rising edge.  Don't commit to waitForVsyncEnd immediately — real
-    // TVs require at least 2 full scanlines of VSYNC before locking.  Record
-    // timing state and let onNextLine() promote this to waitForVsyncEnd once
-    // the minimum scanline count is reached.  Pulses shorter than 2 scanlines
-    // are ignored entirely.
+    // VSYNC rising edge: a TV needs 2 full scanlines of VSYNC to lock, so onNextLine()
+    // promotes this to waitForVsyncEnd only then (shorter pulses are ignored)
     if (myState == State::waitForVsyncEnd || myVsyncPending) return;
 
     myVsyncStart = cycles;

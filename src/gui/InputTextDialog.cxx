@@ -67,10 +67,8 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   myWidthChars = widthChars;
   myMaxLen.resize(labels.size(), 0);
 
-  // Create a label + editbox for each entry; layout() assigns all geometry.
-  // A label takes its width from its own text (the auto-sizing ctor), because
-  // the label column is sized from what the labels ask for -- one built at a
-  // placeholder width would report that width and collapse the column
+  // A label + editbox per entry; labels self-size from their text, since the label
+  // column is sized from what they ask for
   for(const auto& label: labels)
   {
     myLbl.push_back(new LabelWidget(this, lfont, label));

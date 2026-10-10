@@ -95,8 +95,7 @@ void TabWidget::updateTabSizes()
     _tabWidth = std::min(_tabWidth, maxWidth);
   }
 
-  // The content area (below the tab bar) has now changed, so re-lay the tabs'
-  // content out — the container owns this, so dialogs need no such code
+  // The content area changed; re-laying the tabs out is our job, not the dialogs'
   layoutTabs();
 }
 
@@ -105,12 +104,8 @@ void TabWidget::refreshFont()
 {
   Widget::refreshFont();
 
-  // A caller's recursion over _children reaches only the active tab (see
-  // setActiveTab); each hidden tab's widgets live in _tabs[i].children
-  // instead, so refresh those directly.  This is safe to do while hidden --
-  // unlike layoutTabs(), it only recomputes cached metrics, it does not lay
-  // anything out or create widgets -- and it is what lets a hidden tab already
-  // hold correct sizes for the new font once it is later activated and reflowed
+  // A recursion over _children reaches only the active tab, so refresh the hidden
+  // tabs' widgets directly; this only updates cached metrics, so is safe while hidden
   for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
     if(i != _activeTab)
       refreshFontInList(_tabs[i].children);
@@ -162,12 +157,8 @@ void TabWidget::layoutTabs()
 {
   for(int i = 0; std::cmp_less(i, _tabs.size()); ++i)
   {
-    // A pane parents the tab's controls to itself, so it can be laid out while
-    // hidden — and it must be, since a dialog's loadConfig() feeds the controls
-    // of every tab, not just the visible one, and they have to be at their real
-    // size by then.  Content parented directly to us must NOT be laid out while
-    // hidden: any child it creates lazily (e.g. RomListWidget's checkbox pool,
-    // which grows with the height) would be added to whichever tab is active
+    // A pane can (and must) be laid out while hidden, as loadConfig() feeds every tab;
+    // other content must not, or a child it creates lazily joins the active tab
     if(i == _activeTab || _tabs[i].isPane)
       layoutContent(i);
   }
@@ -203,12 +194,8 @@ Common::Size TabWidget::naturalSize() const
 {
   int contentW = 0, contentH = 0;
 
-  // Every tab is asked, pane or self-contained composite alike: the tab that
-  // needs the most room is not always one built of rows (the event mapper's list
-  // is what makes the input settings as wide as they are).  Content that simply
-  // fills an axis reports 0 for it and so does not constrain us — but it must
-  // SAY so by overriding naturalSize(), since the default reports its current
-  // size, which for such a widget is merely what it was last given
+  // Ask every tab; content that fills an axis must override naturalSize() to report 0
+  // for it, since the default reports whatever size it was last given
   for(const auto& tab: _tabs)
     if(tab.parentWidget != nullptr)
     {
@@ -217,9 +204,8 @@ Common::Size TabWidget::naturalSize() const
       contentH = std::max(contentH, I32(natural.h));
     }
 
-  // The bar height is taken from the font rather than the cached _tabHeight,
-  // which a live font change leaves stale until updateTabSizes() runs — and a
-  // dialog's layout() asks us how big we want to be before it gets there
+  // Take the bar height from the font: a live font change leaves _tabHeight stale
+  // until updateTabSizes(), and a dialog's layout() asks us before then
   return Common::Size(contentW + 2 * CONTENT_BORDER,
                       contentH + tabBarHeight() + 2 * CONTENT_BORDER);
 }

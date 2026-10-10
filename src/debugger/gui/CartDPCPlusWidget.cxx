@@ -139,8 +139,7 @@ void CartridgeDPCPlusWidget::layoutContent(GUI::BoxLayout& col) const
 
   col.addSpace(_lineHeight / 2);
 
-  // Packed with no gap between rows -- the grids' own borders are enough to
-  // tell them apart, and the tab has a lot of these to fit
+  // No row gap: the grids' own borders separate them, and the tab has many to fit
   auto registers = std::make_unique<BoxLayout>(Dir::Vertical);
   registers->addAuto(baselineRow(myTopsLbl,             myTops));
   registers->addAuto(baselineRow(myBottomsLbl,          myBottoms));

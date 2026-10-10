@@ -41,8 +41,7 @@ class RiotWidget : public Widget, public CommandSender
     // lay its two columns out for the available area
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall
-    // my two columns make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; my height follows from my two columns
     Common::Size naturalSize() const override;
 
   protected:

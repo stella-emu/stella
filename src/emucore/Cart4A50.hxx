@@ -216,10 +216,11 @@ class Cartridge4A50 : public Cartridge
     uInt16 mySliceMiddle{0};  // index pointer for $1800-$1dff slice
     uInt16 mySliceHigh{0};    // index pointer for $1e00-$1eff slice
 
-    // Indicates whether the given slice is mapped to ROM or RAM
-    bool myIsRomLow{true};    // true = ROM -- false = RAM at $1000-$17ff
-    bool myIsRomMiddle{true}; // true = ROM -- false = RAM at $1800-$1dff
-    bool myIsRomHigh{true};   // true = ROM -- false = RAM at $1e00-$1eFF
+    // Indicates whether the given slice is mapped to ROM (true) or RAM (false):
+    // $1000-$17ff, $1800-$1dff and $1e00-$1eff
+    bool myIsRomLow{true};
+    bool myIsRomMiddle{true};
+    bool myIsRomHigh{true};
 
     // The previous address and data values (from peek and poke)
     uInt16 myLastAddress{0};

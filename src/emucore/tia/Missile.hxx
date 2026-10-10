@@ -31,7 +31,7 @@ class TIA;
   RESM, RESMP, NUSIZ), producing a per-clock collision mask and color
   output.
 
-  Stripped-down Player: no graphics pattern — the missile emits a constant
+  Stripped-down Player: no graphics pattern, as the missile emits a constant
   signal for myWidth clocks (1/2/4/8 from NUSIZ). Two extras over Player:
 
    - RESMP locks the missile to its associated player. While the RESMP bit

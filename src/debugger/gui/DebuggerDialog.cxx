@@ -102,9 +102,7 @@ void DebuggerDialog::layout()
 
   auto root = buildLayout();
 
-  // The window minimum is the same tree's answer to a different question, so it
-  // follows the font, the current ROM's tabs and the proportional band by
-  // construction -- and can never depend on the size we happen to be at
+  // The window minimum comes from the same tree, never from the current size
   myMinSize = root->minSize();
 
   root->doLayout(0, 0, _w, _h);
@@ -131,11 +129,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildLayout()
   left->addStretch(GUI::widgetItem(myTab, I32(tabNatural.w),
                                           I32(tabNatural.h)));
 
-  // The two halves meet at the centre with the divider between them: the prompt
-  // gets exactly half the window and the disassembly the other half, whatever
-  // either of them holds.  Stating it as two halves rather than two equal
-  // stretches matters -- stretch cells share the LEFTOVER, so unequal content
-  // would put the divider off centre
+  // Two halves, not two equal stretches: stretch cells share the LEFTOVER, so
+  // unequal content would put the divider off centre
   auto root = std::make_unique<BoxLayout>(Dir::Horizontal);
   root->addPercent(std::move(left), 50);
   root->addSpace(1);
@@ -150,13 +145,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildTopBand()
   using GUI::BoxLayout;
   using Dir = BoxLayout::Dir;
 
-  // The image is as wide as its own height calls for, so extra width goes to the
-  // status area beside it -- but it is also the one thing here that gives way,
-  // and this is where it does: a TALLER window makes the image want to be wider
-  // without making the window any wider, so unchecked it would squeeze the
-  // status column below what its fields need.  Its cell says it can be squeezed
-  // away entirely (a floor of 0), so the window minimum is decided by the status
-  // fields and the tabs alone -- what a small display can least afford to lose
+  // Extra width goes to the status area, but the image is what gives way: its cell
+  // can squeeze to 0, so only the status fields and tabs set the window minimum
   const int available = _w / 2 - (1 + HBORDER) - myTiaInfo->minWidth();
   const int imageWidth = std::max(0, std::min(tiaImageWidth(), available));
 
@@ -798,12 +788,8 @@ unique_ptr<GUI::Layout> DebuggerDialog::buildRomArea()
 
   const int bheight = lfont().getLineHeight() + 2;
 
-  // Every column in this band -- the register grids, the grid operations and the
-  // step buttons -- ends level with the others.  The grids set the height, and
-  // the button columns divide it into ROWS rows that SHARE what is left after a
-  // fixed VGAP between each: the engine divides the same slack the same way in
-  // every column, so they stay level at any font without anyone measuring anyone.
-  // The rows take the slack rather than the gaps, so it goes into the buttons
+  // Every column in this band ends level: the grids set the height, and the button
+  // columns split it into ROWS rows sharing the slack, so it goes into the buttons
   const int bwidth = lfont().getStringWidth("Frame +1 ");
   const int lastRow = (DataGridOpsWidget::ROWS - 1) * 2;
 

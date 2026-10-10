@@ -95,9 +95,8 @@ class CartDebug : public DebuggerSystem
     // Entry 0 in each map is unused (reserved for the Default role).
     static constexpr std::array<DisasmTheme, 4> ourDisasmThemes = {{
       // clang-format off
-      // Default: no highlighting — reproduces pre-coloring behaviour.
-      // AddressLabel (role 3) uses gray to match the original kColor shade
-      // that raw address labels were drawn in before syntax colours were added.
+      // Default: no highlighting, as before syntax colouring; AddressLabel (role 3) keeps
+      // the gray (kColor) that raw address labels always used
       {"Default",    {0, 0xFF, 0xFF,  14, 0xFF, 0xFF, 0xFF, 0xFF,
                          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}},
       // Colorful: full syntax highlighting

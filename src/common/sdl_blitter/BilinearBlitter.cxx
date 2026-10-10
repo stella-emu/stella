@@ -51,12 +51,8 @@ void BilinearBlitter::reinitialize(
   uInt8 blendLevel, bool isStatic
 )
 {
-  // The textures are sized from the SOURCE only; the destination rect is
-  // applied at render time (SDL_RenderTexture).  So a destination change (e.g.
-  // rescaling as the window is resized) needs no texture recreation.  A source
-  // that fits the current texture is reused too — only the rendered sub-rect
-  // shrinks — so a live window resize does not thrash textures.  Recreate only
-  // when the source grows past the allocation, or blending/static data changes.
+  // Textures are sized from the source only, and reused while it fits, so resizing the
+  // window never recreates them; only a larger source or a blending/static change does
   myRecreateTextures = myRecreateTextures ||
     srcRect.w > myTexW || srcRect.h > myTexH ||
     blendLevel  != myBlendLevel ||

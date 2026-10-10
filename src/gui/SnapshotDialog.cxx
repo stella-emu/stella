@@ -98,12 +98,8 @@ void SnapshotDialog::layout()
   // The slider's label stands on its own, so give it a label column of its own
   GUI::alignLabels({{mySnapIntervalLbl}});
 
-  // Save-path row: a button plus an edit field that fills the remaining width.
-  // The row is the only one with several widgets, so it needs its own HBox; the
-  // outer VBox already supplies the HBORDER inset (hence marginH 0 here).  The
-  // edit field keeps its own (natural) height, vertically centered in the taller
-  // button row, and how much of a path it must show is this dialog's one width
-  // decision -- everything else is derived from it
+  // Save-path row: a button plus an edit field filling the rest (the outer box
+  // supplies the inset); the path width is the one width this dialog decides
   auto pathRow = std::make_unique<BoxLayout>(Dir::Horizontal, 0, 0, 0);
   pathRow->addAuto(anchoredItem(mySnapSaveButton));
   pathRow->addSpace(fontWidth);

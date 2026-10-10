@@ -285,9 +285,8 @@ size_t FSNodeLIBRETRO::read(ByteArray& image, size_t size) const
   if(const size_t bytesRead = vfsReadFile(_path, image, size); bytesRead > 0)
     return bytesRead;
 
-  // File not accessible through the VFS — serve the in-memory ROM buffer.
-  // This handles platforms (e.g. Android) where need_fullpath=false means
-  // RetroArch loads the ROM into memory but the path isn't directly readable.
+  // Not accessible through the VFS, so serve the in-memory ROM buffer (e.g. Android,
+  // where need_fullpath=false loads the ROM into memory but the path isn't readable)
   if(isMemoryROM())
   {
     image.resize(Cartridge::maxSize());

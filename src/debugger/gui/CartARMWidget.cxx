@@ -107,15 +107,14 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
 
-  // "Chip", "Cycle factor" and the counter captions are each beside their own
-  // control: the clearance from what follows comes from a group -- and each of
-  // these has nothing to line up with, so each is a group of one
+  // Each label here lines up with nothing, but a group is what gives it clearance
+  // from its control, so each is a group of one
   GUI::alignLabels({{myChipTypeLbl}});
   GUI::alignLabels({{myCycleFactorLbl}});
   GUI::alignLabels({{myCyclesLbl}});
   GUI::alignLabels({{myInstructionsLbl}});
 
-  // A pair of counters -- the previous run, then the last -- beside their label
+  // A pair of counters (the previous run, then the last) beside their label
   const auto counters = [&](LabelWidget* label, DataGridWidget* prev,
                             DataGridWidget* last) {
     auto row = std::make_unique<BoxLayout>(Dir::Horizontal, _fontWidth / 2);
@@ -130,10 +129,8 @@ void CartridgeARMWidget::layoutContent(GUI::BoxLayout& col) const
   mam->addAuto(anchoredItem(myLockMamMode));
   mam->addStretch(stretchedItem(myMamMode));
 
-  // Two columns, each as wide as the counters at its foot: the cycle figures on
-  // the left, the instruction figures on the right, and the controls that drive
-  // them above.  The pop-ups FILL their column, so each ends flush with the
-  // counters below it -- which is what they were hand-measured against before
+  // Cycle figures on the left, instruction figures on the right, controls above;
+  // the pop-ups fill their column, so each ends flush with the counters below it
   auto grid = std::make_unique<GridLayout>(2, 3, _fontWidth * 2, VGAP);
   grid->columnAuto(0);
   grid->columnAuto(1);

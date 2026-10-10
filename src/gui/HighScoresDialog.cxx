@@ -228,13 +228,8 @@ void HighScoresDialog::layout()
   // which is where its clearance from the pop-up comes from
   GUI::alignLabels({{myVariationLbl}});
 
-  // These widths are the dialog's choice rather than the widgets' own, so they
-  // are re-applied here and follow a live font change (neither PopUpWidget nor
-  // ButtonWidget re-derives its own width -- see their refreshFont).
-  // A pop-up takes setBoxWidth(), NOT setWidth(): its c'tor parameter is the
-  // VALUE BOX width and it adds the drop-down arrow itself, so setWidth() would
-  // hand it a total and swallow the arrow's room, clipping the text.
-  // Each button's HEIGHT comes from its row, keeping it level with its neighbour
+  // These widths are the dialog's choice, so re-apply them to follow a live font
+  // change; a pop-up takes setBoxWidth(), as setWidth() would swallow its arrow
   myVariationPopup->setBoxWidth(fontWidth * HSM::MAX_VARIATION_DIGITS);
   myPrevVarButton->setWidth(fontWidth * 5);
   myNextVarButton->setWidth(fontWidth * 5);
@@ -251,9 +246,8 @@ void HighScoresDialog::layout()
   varRow->addSpace(BUTTON_GAP);
   varRow->addAuto(alignedItem(myNextVarButton, HAlign::Left, VAlign::Fill));
 
-  // The score table: a header row plus a row per rank.  A column is as wide as
-  // the widest thing in it -- except where the FIELD it shows is wider than its
-  // heading, which no widget in it can say, since the values arrive later
+  // The score table: a header row plus a row per rank, each column as wide as its
+  // widest widget unless its field (whose values arrive later) needs more
   auto table = std::make_unique<GridLayout>(NUM_COLUMNS, 1 + numRanks,
                                             COL_GAP, VGAP);
   for(int col = 0; col < NUM_COLUMNS; ++col)
@@ -278,10 +272,8 @@ void HighScoresDialog::layout()
   {
     const int row = r + 1;
 
-    // Every cell here fills its column, so what is loaded into it can neither
-    // stretch it nor collapse it.  The name's editor takes the name's place, so
-    // it shares its cell -- and the row is as tall as the editor, which frames
-    // its text
+    // Every cell fills its column, so loaded values cannot resize it; the name's
+    // editor shares the name's cell, and the row is as tall as that editor
     table->place(COL_RANK, row, stretchedItem(myRankWidgets[r]));
     table->place(COL_SCORE, row, stretchedItem(myScoreWidgets[r]));
     table->place(COL_SPECIAL, row, stretchedItem(mySpecialWidgets[r]));

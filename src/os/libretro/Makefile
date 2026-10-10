@@ -596,7 +596,7 @@ else
 endif
 
 CXXFLAGS += $(CODE_DEFINES) $(WARNINGS_DEFINES) $(fpic)
-CXXFLAGS += -D__LIB_RETRO__ -DSOUND_SUPPORT -MMD
+CXXFLAGS += -D__LIB_RETRO__ -DSOUND_SUPPORT -DZIP_SUPPORT -MMD
 CXXFLAGS += -DHAVE_STDINT_H
 
 ifeq (,$(findstring msvc,$(platform)))
@@ -656,10 +656,14 @@ endif
 	fi
 	$(CXX) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $(OBJOUT)$@ $<
 
-%.o: %.c	@if [ $(SILENT) -ne 1 ]; then\
+# C sources take the platform's C++ flags, minus those only valid for C++
+CXX_ONLY_FLAGS := -std=% -stdlib=% -fno-rtti -fno-exceptions -fno-aligned-allocation -EH% -ZW%
+
+%.o: %.c
+	@if [ $(SILENT) -ne 1 ]; then\
 		$(if $@, $(shell echo echo CC $<),);\
 	fi
-	$(CC) $(INCFLAGS) -c $(OBJOUT)$@ $<
+	$(CC) $(INCFLAGS) $(CPPFLAGS) $(CFLAGS) $(filter-out $(CXX_ONLY_FLAGS),$(CXXFLAGS)) -c $(OBJOUT)$@ $<
 
 clean:
 	rm -f $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET)

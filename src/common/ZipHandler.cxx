@@ -20,8 +20,12 @@
 #include <zlib.h>
 
 #include "Bankswitch.hxx"
-#include "Cart.hxx"
 #include "ZipHandler.hxx"
+
+#ifdef __LIB_RETRO__
+  #include "libretro.h"
+  extern retro_vfs_interface* libretro_vfs;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::open(string_view filename)
@@ -89,8 +93,10 @@ uInt64 ZipHandler::decompress(string_view name, ByteArray& image)
 
   // Guard against decompression bombs: a malformed ZIP can claim an enormous
   // uncompressed size, forcing a huge allocation before decompression even
-  // begins.  No loadable Stella ROM exceeds Cartridge::maxSize().
-  if(header->uncompressedLength > Cartridge::maxSize())
+  // begins.  Nothing Stella reads from a ZIP exceeds MAX_FILE_SIZE; the
+  // smaller limit on a ROM is checked by OSystem before the ROM is read.
+  constexpr size_t MAX_FILE_SIZE = 64 * 1024_KB;
+  if(header->uncompressedLength > MAX_FILE_SIZE)
     throw ZipException(ZipError::UNSUPPORTED);
 
   const size_t length = header->uncompressedLength;
@@ -165,6 +171,18 @@ bool ZipHandler::ZipFile::open()
   // NOTE: This can't be opened with FSNode::openFStream(), since we're
   //       already in FSNode when accessing a ZIP file, and this leads to
   //       recursion.
+#ifdef __LIB_RETRO__
+  // The frontend may only allow file access through its VFS
+  if(libretro_vfs && libretro_vfs->open && libretro_vfs->size &&
+     libretro_vfs->seek && libretro_vfs->read && libretro_vfs->close)
+  {
+    myVfsFile.reset(libretro_vfs->open(myFilename.c_str(),
+        RETRO_VFS_FILE_ACCESS_READ, RETRO_VFS_FILE_ACCESS_HINT_NONE));
+    const int64_t size = myVfsFile ? libretro_vfs->size(myVfsFile.get()) : -1;
+    myLength = size > 0 ? U64(size) : 0;
+    return size >= 0;
+  }
+#endif
   myStream.open(myFilename, std::fstream::in | std::fstream::binary);
   if(!myStream.is_open())
   {
@@ -277,9 +295,20 @@ void ZipHandler::ZipFile::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::close()
 {
+#ifdef __LIB_RETRO__
+  myVfsFile.reset();
+#endif
   if(myStream.is_open())
     myStream.close();
 }
+
+#ifdef __LIB_RETRO__
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ZipHandler::ZipFile::VfsClose::operator()(retro_vfs_file_handle* file) const
+{
+  libretro_vfs->close(file);
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::readEcd()
@@ -332,6 +361,18 @@ void ZipHandler::ZipFile::readEcd()
 bool ZipHandler::ZipFile::readStream(uInt8* out, uInt64 offset,
                                      uInt64 length, uInt64& actual)
 {
+#ifdef __LIB_RETRO__
+  if(myVfsFile)
+  {
+    if(libretro_vfs->seek(myVfsFile.get(), I64(offset),
+                          RETRO_VFS_SEEK_POSITION_START) < 0)
+      return false;
+
+    const int64_t read = libretro_vfs->read(myVfsFile.get(), out, length);
+    actual = read > 0 ? U64(read) : 0;
+    return read >= 0;
+  }
+#endif
   myStream.seekg(offset, std::ios::beg);
   if(!myStream) return false;
 
@@ -456,12 +497,8 @@ void ZipHandler::ZipFile::decompressDataType0(const ZipHeader& header,
 void ZipHandler::ZipFile::decompressDataType8(const ZipHeader& header,
                                               ByteMSpan out, uInt64 offset)
 {
-  // Seek ONCE to start of compressed data
-  myStream.seekg(offset, std::ios::beg);
-  if(!myStream)
-    throw ZipException(ZipError::FILE_ERROR);
-
   size_t input_remaining = header.compressedLength;
+  uInt64 input_offset = offset;
 
   z_stream stream{};
   stream.next_out  = out.data();
@@ -492,22 +529,21 @@ void ZipHandler::ZipFile::decompressDataType8(const ZipHeader& header,
     {
       const size_t chunkSize = std::min(input_remaining, DECOMPRESS_BUFSIZE);
 
-      myStream.read(reinterpret_cast<char*>(myBuffer.data()), chunkSize);
-      const auto read_length =
-        U64(myStream.gcount());
+      uInt64 read_length = 0;
+
+      // Fail only on real errors (not EOF)
+      if(!readStream(myBuffer.data(), input_offset, chunkSize, read_length))
+        throw ZipException(ZipError::FILE_ERROR);
 
       // If we read nothing, but still have data left, the file is truncated
       if(read_length == 0)
         throw ZipException(ZipError::FILE_TRUNCATED);
 
-      // Fail only on real errors (not EOF)
-      if(!myStream && !myStream.eof())
-        throw ZipException(ZipError::FILE_ERROR);
-
       // Fill out the input data
       stream.next_in  = myBuffer.data();
       stream.avail_in = U32(read_length);
 
+      input_offset += read_length;
       input_remaining -= read_length;
     }
 

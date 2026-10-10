@@ -46,7 +46,8 @@ class FSNodeFactory
     enum class Type: uInt8 { SYSTEM, ZIP };
 
   public:
-    static AbstractFSNodePtr create(string_view path, Type type)
+    static AbstractFSNodePtr create(string_view path, Type type,
+        FSNode::ZipMode zipMode = FSNode::ZipMode::Rom)
     {
       switch(type)
       {
@@ -60,7 +61,7 @@ class FSNodeFactory
         #endif
         case Type::ZIP:
         #ifdef ZIP_SUPPORT
-          return std::make_shared<FSNodeZIP>(path);
+          return std::make_shared<FSNodeZIP>(path, zipMode);
         #else
           throw std::runtime_error("ZIP support not compiled in");
         #endif

@@ -49,7 +49,7 @@ void CartridgeFE::install(System& system)
 bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 {
   // The patent shows that the mapping circuit watches for 0x01fe to appear on
-  // the address bus and then, with one cycle delay, stores bits 5 -- 7 on the data
+  // the address bus and then, with one cycle delay, stores bits 5-7 on the data
   // bus into a latch. The latch drives a demux which controls bank selection.
   // The only thing not specify in the patent is the way the demux connects to
   // the ROM chip.

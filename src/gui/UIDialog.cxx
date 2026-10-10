@@ -176,9 +176,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   lookPane->setHelpAnchor("UserInterface");
 
-  // Describe the layout once; the pane runs it on every resize.  Three of the
-  // controls have a checkbox beside them, and those checkboxes share a column —
-  // so the tab is a grid, and the rows without one simply span across it
+  // Described once, run on every resize: a grid, since three controls have a checkbox
+  // beside them sharing a column, and the other rows span across it
   lookPane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::GridLayout;
     using GUI::anchoredItem;
@@ -320,10 +319,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   launchPane->setHelpAnchor("ROMInfo");
 
-  // Describe the layout once; the pane runs it on every resize.  The launcher
-  // options each have a checkbox beside them, and those checkboxes share a
-  // column flush with the tab's right edge — which is what the grid's stretching
-  // left column produces, without anyone measuring the widest of them
+  // Described once, run on every resize: the grid's stretching left column puts the
+  // launcher options' checkboxes in a column flush with the tab's right edge
   launchPane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::BoxLayout;
     using GUI::GridLayout;
@@ -344,10 +341,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                       {myLauncherHeightSliderLbl}, {myRomViewerSizeLbl}});
     const int labelW = myLauncherFontLbl->getWidth();
 
-    // A path row: its browse button, then the path filling the rest.  The
-    // button may be given the shared label column to sit in (anchored left),
-    // which is what lines its path up with the value boxes around it — no one
-    // computes the gap between the button and the path
+    // A path row: its browse button, then the path filling the rest; giving the button
+    // the shared label column lines its path up with the value boxes around it
     const auto pathRow = [&](ButtonWidget* button, EditTextWidget* path,
                              int indent, int labelCol = 0) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
@@ -731,10 +726,8 @@ void UIDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
         sendCommand(LauncherDialog::Cmd::FontChanged, 0, 0);
       if(informDialogFont)
       {
-        // Change the dialog font in place, then re-font every dialog in the
-        // application -- the font is global, so other containers' dialogs go
-        // stale too.  One that no longer fits the window is detected +
-        // reported when it (re)opens via Dialog::open() (see exceedsScreen)
+        // The font is global, so re-font every dialog in the application; one that no
+        // longer fits is reported when it next opens (see exceedsScreen)
         instance().refreshFonts();
       }
       if(informHiDPI)

@@ -216,12 +216,8 @@ void DialogContainer::relayout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::refreshFont()
 {
-  // Re-font every dialog belonging to this container (the font object was
-  // already mutated in place; each dialog refreshes its cached metrics and
-  // re-flows).  Registration means this reaches the dialogs that are cached
-  // or not yet opened as well as the open ones -- Dialog::relayout() no-ops
-  // while a dialog is not visible, so those simply get their font-derived
-  // metrics brought up to date, ready for whenever they are next shown
+  // Re-font every registered dialog, open or not; relayout() no-ops while hidden,
+  // so a closed dialog just has its metrics ready for when it is next shown
   for(auto* d: myAllDialogs)
     d->refreshFont();
 }

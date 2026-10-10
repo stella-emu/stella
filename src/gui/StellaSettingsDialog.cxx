@@ -197,9 +197,8 @@ void StellaSettingsDialog::layout()
   buttonRow->addSpace(fontWidth);
   buttonRow->addAuto(anchoredItem(myHelpButton));
 
-  // Game settings: the two controller ports.  Each pop-up sits right of its
-  // label in a column as wide as the longer of the two, and its "detected" line
-  // sits beneath it in that same column -- so nothing measures a label
+  // Game settings: the two controller ports, each pop-up with its "detected" line
+  // beneath it in a shared column, so nothing measures a label
   auto ports = std::make_unique<GridLayout>(2, 4, fontWidth, VGAP);
   ports->columnAuto(0).columnAuto(1);
   for(int r = 0; r < 4; ++r)

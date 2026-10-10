@@ -2693,7 +2693,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
     return;
   }
 
-  // Check for duplicate — duplicates remove each other
+  // Check for a duplicate, since duplicates remove each other
   const auto& traps = debugger.m6502().getCondTraps();
   const auto it = std::ranges::find_if(traps,
     [&](const M6502::CondTrap& trap)

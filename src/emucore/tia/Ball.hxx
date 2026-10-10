@@ -33,7 +33,7 @@ class TIA;
      shuffleStatus(). The effective myIsEnabled reads from old or new
      depending on whether VDEL is active.
    - Width: comes from CTRLPF bits 5-4 (1/2/4/8), shared with the
-     playfield width control — both Playfield::ctrlpf and Ball::ctrlpf
+     playfield width control: both Playfield::ctrlpf and Ball::ctrlpf
      are called from TIA's CTRLPF handler.
    - Starfield: same HMOVE/regular-clock phase trick as Missile produces
      the Cosmic Ark-style width quirk.

@@ -34,8 +34,7 @@ DelayQueueWidget::DelayQueueWidget(
 {
   _textcolor = kTextColor;
 
-  // Called from our own ctor, but this dispatches to our own override
-  // regardless -- DelayQueueWidget has no subclasses to be incomplete
+  // Called from our own ctor, which is safe: DelayQueueWidget has no subclasses
   // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
   refreshFont();
 }

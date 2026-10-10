@@ -83,7 +83,7 @@ void JPGLibrary::loadImage(string_view filename, FBSurface& surface,
   const bool isColor       = njIsColor() != 0;
   const auto bytesPerPixel = isColor ? 3UZ : 1UZ;
 
-  // njGetImage() points into nanojpeg's internal buffer — no extra copy needed
+  // njGetImage() points into nanojpeg's internal buffer, so no copy is needed
   const ByteSpan pixels{ njGetImage(), SZT(width) * SZT(height) * bytesPerPixel };
 
   if(width > surface.width() || height > surface.height())

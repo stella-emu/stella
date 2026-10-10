@@ -140,7 +140,7 @@ class Widget : public GuiObject
     /**
       The size the widget would like to be (Qt calls this the size hint): what a
       layout gives it when it is neither filled nor stretched, and what
-      GUI::BoxLayout::addAuto() sizes a cell from — so a row is as tall as its
+      GUI::BoxLayout::addAuto() sizes a cell from, so a row is as tall as its
       tallest widget without anyone hard-coding a height.  The default reports
       the current size, which for most widgets their constructor derives from the
       font; one whose constructor cannot know it overrides this.
@@ -157,7 +157,7 @@ class Widget : public GuiObject
       What GUI::alignLabels() uses to give a group of labels ONE column, sized to
       the longest of them, so that the controls they name line up down the group.
 
-      Only LabelWidget answers meaningfully — it IS a label, so what it needs and
+      Only LabelWidget answers meaningfully: it IS a label, so what it needs and
       what it has been given are simply its text width and its own width (see its
       overrides).  Everything else names nothing and reports 0, which is why a
       control must never be handed to alignLabels() in place of its label: that
@@ -186,7 +186,7 @@ class Widget : public GuiObject
       hold the lines below it: an EditTextWidget built two lines tall, or a data
       grid / toggle list, which is several rows of text in one box.  Such a widget
       reports where its first line starts, which is also the line a label beside
-      it must sit on — GUI::VAlign::Baseline consumes exactly this.
+      it must sit on; GUI::VAlign::Baseline consumes exactly this.
     */
     virtual int firstTextY() const {
       return (_h - _font.getFontHeight()) / 2;
@@ -197,7 +197,7 @@ class Widget : public GuiObject
       picked a different launcher font).  Re-read any cached font-derived state.
       The base refreshes the common metrics; widgets that cache additional
       font-derived values override and extend this.  Geometry is not touched
-      here — the owning dialog's layout() repositions/resizes widgets after the
+      here; the owning dialog's layout() repositions/resizes widgets after the
       refresh.
     */
     void refreshFont() override;
@@ -427,12 +427,12 @@ class ButtonWidget : public LabelWidget
     /**
       Size me from my own label: as wide as it needs plus a comfortable margin,
       and a little taller than a line of text.  This is what a button standing on
-      its own wants, so a dialog states nothing about it but the label — and I
+      its own wants, so a dialog states nothing about it but the label, and I
       follow a live font change by myself (see refreshFont).
 
       Buttons that must share ONE width (a column of them, an OK/Cancel group)
       are still built this way: no button can know what the widest of its
-      neighbours needs, so the LAYOUT equalizes them — see GUI::alignButtons().
+      neighbours needs, so the LAYOUT equalizes them (see GUI::alignButtons()).
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  string_view label, GuiCmd::Code cmd = GuiCmd::None,
@@ -450,9 +450,9 @@ class ButtonWidget : public LabelWidget
     /**
       Size me from my own icon, and from my label if I have one: I am laid out
       around my bitmap (see drawWidget), so only I can say how much room that
-      needs — nobody passes an icon button a size.  A dialog that swaps my icon
-      for a different one — a larger variant for a larger font, a different
-      state — just calls setIcon(), and I re-size to it.
+      needs; nobody passes an icon button a size.  A dialog that swaps my icon
+      for a different one (a larger variant for a larger font, a different
+      state) just calls setIcon(), and I re-size to it.
     */
     ButtonWidget(GuiObject* boss, const GUI::Font& font, const GUI::Icon& icon,
                  GuiCmd::Code cmd = GuiCmd::None, bool repeat = false);
@@ -512,7 +512,7 @@ class ButtonWidget : public LabelWidget
   protected:
     /**
       Take a size from outside.  PROTECTED on purpose: a dialog must not bake a
-      button's geometry at construction — that size is never re-derived on a live
+      button's geometry at construction: that size is never re-derived on a live
       font change (Widget::refreshFont leaves _w/_h alone, and this c'tor
       leaves _autoSize false), so it goes stale.  Size yourself from your label
       or icon and let layout() say the rest.  Only a SUBCLASS that is a button
@@ -522,10 +522,8 @@ class ButtonWidget : public LabelWidget
                  string_view label, GuiCmd::Code cmd = GuiCmd::None,
                  bool repeat = false);
 
-    // The width my content needs: an icon-and-label button is laid out around
-    // its icon -- a half-gap, the icon, a half-gap, then the label (see
-    // drawWidget); an icon-only one just centers its icon; a plain one is
-    // sized by its label alone
+    // The width my content needs: half-gap, icon, half-gap, label for an icon button
+    // (see drawWidget); otherwise just the icon or just the label
     int autoWidth() const
     {
       if(_icon == nullptr)
@@ -548,11 +546,8 @@ class ButtonWidget : public LabelWidget
     }
 
   public:
-    // How tall a button is.  Unlike its width — which is its own business, and
-    // which only GUI::alignButtons() ever overrides — a button's height is a unit
-    // other things measure themselves against (a navigation bar is one button
-    // tall, a file list four), so it is asked for from outside; Dialog::
-    // buttonHeight() is the wrapper they use
+    // How tall a button is: unlike its width, a unit other things measure against (a
+    // navigation bar is one button tall), via the Dialog::buttonHeight() wrapper
     static int calcHeight(const GUI::Font& font) {
       return font.getLineHeight() * 1.25;
     }
@@ -565,8 +560,8 @@ class ButtonWidget : public LabelWidget
     static int calcWidth(const GUI::Font& font, string_view label) {
       return font.getStringWidth(label) + font.getMaxCharWidth() * 2.5;
     }
-    // The same, for a label of the given length -- how a dialog states a button
-    // width in characters rather than pixels (see Dialog::standardButtonWidth)
+    // The same for a label of 'chars' characters, so a dialog can state a button
+    // width in characters (see Dialog::standardButtonWidth)
     static int calcWidth(const GUI::Font& font, int chars) {
       return font.getMaxCharWidth() * (chars + 2.5);
     }

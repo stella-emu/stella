@@ -40,9 +40,6 @@ CartridgeCV::CartridgeCV(ByteSpan image, string_view md5,
     // The game has something saved in the RAM
     // Useful for MagiCard program listings
 
-    // Copy the ROM image into my buffer
-    std::copy_n(image.data() + 2_KB, 2_KB, myImage.data());
-
     // Copy the RAM image into a buffer for use in reset()
     myInitialRAM.assign(image.begin(), image.begin() + 1_KB);
   }

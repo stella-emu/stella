@@ -38,14 +38,14 @@ class PopUpWidget : public EditableWidget
   public:
     /**
       Size me from my own items: the value box is as wide as the widest of them
-      and I am as tall as my font — so a dialog with a list of things to offer
+      and I am as tall as my font, so a dialog with a list of things to offer
       states only the list, and adding a longer entry simply widens me.
 
       ⚠ Only for a list that is FIXED for my lifetime.  A pop-up refilled in
       loadConfig() (the per-ROM controller and bankswitch lists) must be given an
       explicit width, or the dialog would change size as the user browses: how
       wide an entry it is prepared to show is then the DIALOG's decision.  Such a
-      dialog can still say it in items rather than pixels — see calcWidth().
+      dialog can still say it in items rather than pixels (see calcWidth()).
     */
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items, GuiCmd::Code cmd = GuiCmd::None);
@@ -89,8 +89,8 @@ class PopUpWidget : public EditableWidget
     void setSelectedName(string_view name);
     const Variant& getSelectedTag() const;
 
-    // Unlike EditableWidget's, always wants focus -- Tab must reach even a
-    // pop-up whose value box isn't otherwise editable
+    // Unlike EditableWidget's, always wants focus, so Tab reaches even a pop-up
+    // whose value box isn't editable
     bool wantsFocus() const override { return true; }
     /**
       The drop-down arrow I draw at my right-hand end.  Odd, so it has a
@@ -111,7 +111,7 @@ class PopUpWidget : public EditableWidget
       The value-box width (the 'w' the full constructor takes, i.e. excluding the
       label and the drop-down arrow) needed to show the widest of these items.
       The self-sizing constructor above uses this; a dialog only needs it for a
-      pop-up it must size itself — to give one a little more room than its items
+      pop-up it must size itself: to give one a little more room than its items
       strictly need, or to size a *dynamic* list from a fixed set of specimen
       entries rather than a pixel literal.
     */
@@ -125,8 +125,8 @@ class PopUpWidget : public EditableWidget
 
     /**
       My value box: the part between my left edge and my drop-down arrow.  I size
-      it to my own items, but a COLUMN of pop-ups wants them all the same width —
-      which none of us can know alone — so GUI::alignPopUps() equalizes them.
+      it to my own items, but a COLUMN of pop-ups wants them all the same width,
+      which none of us can know alone, so GUI::alignPopUps() equalizes them.
     */
     int boxWidth() const { return _w - dropDownWidth(_font); }
     void setBoxWidth(int w);

@@ -46,10 +46,8 @@ unique_ptr<GUI::Layout> CartDebugWidget::buildLayout() const
   layoutBaseInformation(*col);
   layoutContent(*col);
 
-  // Soak up whatever the rows above did not need.  The description stretches
-  // (see layoutBaseInformation) but stops at the height of its own text, and a
-  // box hands the leftover to its LAST stretching cell -- so without this the
-  // description would be handed back the very slack its cap just declined
+  // Soak up the leftover: a box hands it to its LAST stretching cell, which would
+  // otherwise give the description the slack its height cap just declined
   col->addStretchSpace(0);
 
   return col;
@@ -110,22 +108,15 @@ void CartDebugWidget::layoutBaseInformation(GUI::BoxLayout& col) const
   if(myROMSizeLbl == nullptr)
     return;
 
-  // Word wrap couples width to height: the description only knows how tall it is
-  // once it knows how wide it is, so it is given its width before the column is
-  // built (see the heightForWidth note in Layout.hxx).  Its width is the one the
-  // filling row below will hand it -- the content, less the shared label column
+  // Word wrap needs the width before the height, so give the description the one
+  // the filling row below will: the content, less the shared label column
   myDesc->setWidth(contentWidth(_w) - myDescLbl->getWidth());
 
   col.addAuto(labeledRow(myROMSizeLbl, myROMSize, 0, 0, true));
   col.addAuto(labeledRow(myManufacturerLbl, myManufacturer, 0, 0, true));
 
-  // The description is the one row here that can be SQUEEZED: it scrolls, so it
-  // gives up height before anything below it is pushed off the tab.  Hence a
-  // stretching cell rather than an Auto one -- between the floor it always shows
-  // and the height of its own text, so a roomy tab looks as it always did while
-  // a short one keeps the rows below visible.  Both ends come from the widget:
-  // only the floor is width-independent, which is what lets this column be
-  // measured before anything has been sized (see the class comment there)
+  // The description scrolls, so it is the row that gets squeezed: a stretching cell
+  // between its floor and its text's height keeps the rows below on a short tab
   auto descRow = std::make_unique<GUI::BoxLayout>(GUI::BoxLayout::Dir::Horizontal);
   descRow->addFixed(GUI::anchoredItem(myDescLbl), myDescLbl->getWidth());
   descRow->addStretch(GUI::widgetItem(myDesc, 0, myDesc->minHeight()));

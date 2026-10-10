@@ -56,14 +56,11 @@ class CartDebugWidget : public Widget, public CommandSender
     // reflow() so a cart tab re-flows live with the debugger window
     void setArea(int x, int y, int w, int h) override;
 
-    // My constructor cannot know how tall I am -- that is however tall the rows
-    // this cart contributes make me -- so report what my own layout tree comes to
+    // Report my layout tree's size; my height follows from this cart's rows
     Common::Size naturalSize() const override;
 
-    // Lay this tab out for its current area and font.  EVERY cart tab has the
-    // same skeleton -- one label column, the ROM info rows, the cart's own rows
-    // beneath them, all within the shared margins -- so it is written once, here.
-    // A cart says only what goes in the middle: see layoutContent()
+    // Lay this tab out for its area and font.  Every cart tab shares this skeleton;
+    // a cart supplies only the rows in the middle, via layoutContent()
     void reflow();
 
     // Inform the ROM Widget that the underlying cart has somehow changed
@@ -98,12 +95,8 @@ class CartDebugWidget : public Widget, public CommandSender
     void createBaseInformation(size_t bytes, string_view manufacturer,
         string_view desc, uInt16 maxlines = 10);
 
-    // THE hook: append this cart's own rows to the tab's column.  Everything
-    // around them — the label column, the ROM info rows above, the margins — is
-    // the skeleton's business (see reflow()), so a cart states only its content.
-    // A cart adding to what its base class lays out calls the base first, then
-    // appends; one REPLACING a part of it overrides that part instead (see
-    // CartridgeEnhancedWidget's bank selectors)
+    // THE hook: append this cart's own rows; reflow() owns the rest.  A subclass adding
+    // rows calls the base first; one replacing a part overrides that part instead
     virtual void layoutContent(GUI::BoxLayout& col) const { }
 
     // Append the ROM size / manufacturer / description rows to a vertical box
@@ -116,11 +109,8 @@ class CartDebugWidget : public Widget, public CommandSender
     unique_ptr<GUI::Layout> buildLayout() const;
 
   protected:
-    // The controls sharing this tab's label column.  A control says it belongs
-    // here as it is CREATED — the ROM info rows below, the PlusROM fields and
-    // bank selectors in the carts — and one GUI::alignLabels() call at reflow
-    // time gives them all the same column.  So no label carries padding of its
-    // own, and a cart whose selectors sit elsewhere simply does not join
+    // The controls sharing this tab's label column, added as each is created; one
+    // GUI::alignLabels() call at reflow time gives them all the same column
     std::vector<GUI::LabeledControl> myLabelColumn;
 
     // Arrays used to hold current and previous internal RAM values

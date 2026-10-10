@@ -171,8 +171,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     drawChar(font, chr, tx + 1, ty + 1, shadowColor);
   }
 
-  // The font hands out the glyph's mask and where to put it, so how a glyph
-  // is stored -- and how wide it is -- stays the font's business, not ours
+  // The font supplies each glyph's mask and placement; storage is the font's business
   const GUI::Glyph glyph = font.glyph(chr);
   if(glyph.mask == nullptr)
     return;

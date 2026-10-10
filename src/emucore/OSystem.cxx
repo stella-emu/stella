@@ -519,12 +519,8 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
   myEventHandler->handleConsoleStartupEvents();
   try
   {
-    // Build and validate the replacement console before tearing down
-    // whatever is currently running: openConsole() doesn't touch myConsole
-    // and can fail either by throwing or (e.g. an unreadable ROM file, no
-    // cart created) by returning null, so a bad ROM load -- dropped onto an
-    // active game, say -- leaves the current session untouched either way
-    // instead of destroying it for nothing
+    // Build the replacement console before tearing down the current one, so a ROM that
+    // fails to load (by throwing or returning null) leaves the running session intact
     auto newConsole = openConsole(myRomFile, myRomMD5);
     if(newConsole)
     {

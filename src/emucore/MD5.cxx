@@ -217,7 +217,7 @@ void MD5::update(ByteSpan input)
 // the message digest and zeroizing the context.
 void MD5::finalize()
 {
-  // 0x80 leading byte is required by the MD5 spec — it's the padding sentinel
+  // The 0x80 leading byte is the padding sentinel the MD5 spec requires
   static constexpr std::array<uInt8, BLOCKSIZE> padding = { 0x80 };
 
   if(!finalized)

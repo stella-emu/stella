@@ -503,13 +503,8 @@ class Debugger : public DialogContainer
     int myMemViewSettleCountdown{0};
     bool myMemViewWindowPending{false};
 
-    // Deferred ROM exit: 'exitRom' tears the console down, but it can be
-    // reached from call stacks that keep using that console after it returns
-    // -- a script run from the prompt's first-time load (which happens inside
-    // the dialog's loadConfig(), itself inside createConsole() under '-debug'),
-    // or DebuggerParser::run(), which touches its own members afterwards.  So
-    // record the request here and act on it from updateTime(), once the stack
-    // that asked for it has unwound
+    // Deferred ROM exit: 'exitRom' can run from stacks that still use the console after
+    // it returns, so the request is acted on from updateTime() once they unwind
     bool myExitRomPending{false};
 
     // Various builtin functions and operations

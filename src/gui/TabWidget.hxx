@@ -100,27 +100,16 @@ class TabWidget : public Widget, public CommandSender
     // back the insets that height was measured inside of
     static constexpr int CONTENT_BORDER = 2;
 
-    // The height the tallest tab's content ASKS to be; tabs whose content simply
-    // fills the area (e.g. a list or prompt) report 0 and are ignored.  Answered
-    // from each content's own layout tree, so it holds before anything has been
-    // laid out -- which is what lets a dialog derive its minimum at build time
+    // The height the tallest tab's content asks for (filling tabs report 0), taken
+    // from layout trees so a dialog can derive its minimum at build time
     int getMaxContentHeight() const;
 
-    // The size we need for our largest tab's content, plus the tab bar and the
-    // content frame — so a fixed-size dialog sizes itself from the layout rather
-    // than counting the rows and columns of its biggest tab.  Only content panes
-    // report a size; a self-contained composite (a list, the event mapper) fills
-    // whatever it is given and so does not constrain us.  Nor does the tab BAR:
-    // a dialog too narrow for its tab titles would squeeze them, so keep a width
-    // floor if the tabs are many or their titles long
+    // Our largest tab's content plus the bar and frame (filling content does not count);
+    // the tab titles do not either, so keep a width floor for many or long titles
     Common::Size naturalSize() const override;
 
-    // Only the active tab's widgets live in _children (see setActiveTab), so
-    // the base walk a caller does over _children reaches those; each hidden
-    // tab keeps its widgets in its own list instead, invisible to that walk,
-    // so refresh those here too -- otherwise a live font change leaves a
-    // hidden tab's content sized/positioned from the OLD font until it is
-    // next activated and reflowed, while it already draws with the new one
+    // Also refresh the hidden tabs' widgets, which a walk over _children misses, so a
+    // live font change does not leave them sized for the old font
     void refreshFont() override;
 
     // Activates the initial tab on first call, then loads the active tab's config

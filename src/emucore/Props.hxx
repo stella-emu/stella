@@ -179,7 +179,7 @@ class Properties
     // throwing static initialization.  Currently only 'Display.PPBlend'.
     inline static std::array<string, NUM_PROPS> ourDefaultOverrides;
 
-    // Default property values — constexpr string_view, no heap allocation
+    // Default property values, as constexpr string_view (no heap allocation)
     static constexpr std::array<string_view, NUM_PROPS> ourDefaultProperties = {{
       "",       // Cart.MD5
       "",       // Cart.Manufacturer
@@ -213,7 +213,7 @@ class Properties
       ""        // Bezel.Name
     }};
 
-    // Property name strings — constexpr string_view, no heap allocation
+    // Property name strings, as constexpr string_view (no heap allocation)
     static constexpr std::array<string_view, NUM_PROPS> ourPropertyNames = {{
       "Cart.MD5",
       "Cart.Manufacturer",

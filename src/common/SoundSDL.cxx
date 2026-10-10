@@ -21,6 +21,7 @@
 #include <iomanip>
 
 #include "SDL_lib.hxx"
+#include "FSNode.hxx"
 #include "Logger.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
@@ -65,6 +66,9 @@ SoundSDL::~SoundSDL()
 {
   ASSERT_MAIN_THREAD;
 
+  // The WAV stream must go before the audio subsystem is shut down below
+  myWavHandler.close();
+
   if(!myIsInitializedFlag)
     return;
 
@@ -91,6 +95,8 @@ bool SoundSDL::openDevice()
   {
     SDL_DestroyAudioStream(myStream);
     myStream = nullptr;
+    // This also unbinds the WAV stream, which is rebound below
+    SDL_CloseAudioDevice(myDevice);
   }
 
   // Speech is bound to the device being replaced, where it would never drain;
@@ -114,6 +120,7 @@ bool SoundSDL::openDevice()
     return SOUND_ERROR();
   if(!SDL_SetAudioStreamGetCallback(myStream, audioCallback, this))
     return SOUND_ERROR();
+  myWavHandler.rebind(myDevice);
 
   return myIsInitializedFlag = true;
 }
@@ -450,53 +457,118 @@ uInt32 SoundSDL::wavSize() const
 bool SoundSDL::WavHandler::play(SDL_AudioDeviceID device,
     const string& fileName, uInt32 position, uInt32 length)
 {
-  // Load WAV file
-  if(fileName != myFilename || myBuffer == nullptr)
+  // One stream is created on first use, then reused for every WAV
+  if(myStream == nullptr)
   {
-    if(myBuffer)
-    {
-      SDL_free(myBuffer);
-      myBuffer = nullptr;
-    }
-    SDL_zero(mySpec);
-    if(!SDL_LoadWAV(fileName.c_str(), &mySpec, &myBuffer, &myLength))
+    myStream = SDL_CreateAudioStream(nullptr, nullptr);
+    if(myStream == nullptr)
       return false;
+    if(!SDL_SetAudioStreamGetCallback(myStream, WavHandler::wavCallback, this) ||
+       !SDL_BindAudioStream(device, myStream))
+    {
+      SDL_DestroyAudioStream(myStream);  myStream = nullptr;
+      return false;
+    }
+    SDL_SetAudioStreamGain(myStream, myVolumeFactor);
   }
 
-  if(position > myLength)
+  // Reuse a loaded WAV, else load it over the less recently played one;
+  // wavCallback never reads that one, so loading needs no lock
+  const auto loaded = std::ranges::find_if(myWavs, [&](const Wav& w) {
+    return w.buffer && w.name == fileName;
+  });
+  const size_t idx = loaded != myWavs.end() ? SZT(loaded - myWavs.begin()) : 1 - myLast;
+  const Wav& wav = myWavs[idx];
+  if(loaded == myWavs.end() && !load(myWavs[idx], fileName))
+  {
+    // Whatever was playing stops, as when this WAV can't be started below
+    stop();
+    return false;
+  }
+
+  // wavCallback runs under this same lock, so it never sees a half-changed WAV
+  SDL_LockAudioStream(myStream);
+  const bool started = [&] -> bool {
+    // Stop the current WAV, dropping whatever of it is still queued
+    myRemaining = 0;
+    SDL_ClearAudioStream(myStream);
+
+    if(position > wav.length || !SDL_SetAudioStreamFormat(myStream, &wav.spec, nullptr))
+      return false;
+
+    myLast = idx;
+    myRemaining = length
+      ? std::min(length, wav.length - position)
+      : wav.length - position;
+    myPos = wav.buffer + position;
+
+    return true;
+  }();
+  SDL_UnlockAudioStream(myStream);
+  myPlaying = started;
+
+  return started;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL::WavHandler::load(Wav& wav, const string& fileName)
+{
+  release(wav);
+
+  // The file may be an entry in a ZIP archive
+  ByteArray file;
+  try
+  {
+    FSNode(fileName, FSNode::ZipMode::Data).read(file);
+  }
+  catch(const std::runtime_error&)
+  {
+    return false;
+  }
+
+  if(!SDL_LoadWAV_IO(SDL_IOFromConstMem(file.data(), file.size()), true,
+                     &wav.spec, &wav.buffer, &wav.length))
     return false;
 
-  if(myStream)
-    SDL_UnbindAudioStream(myStream);
-
-  myStream = SDL_CreateAudioStream(&mySpec, nullptr);
-  if(myStream == nullptr)
-    return false;
-  if(!SDL_BindAudioStream(device, myStream))
-    return false;
-  if(!SDL_SetAudioStreamGetCallback(myStream, WavHandler::wavCallback, this))
-    return false;
-  SDL_SetAudioStreamGain(myStream, myVolumeFactor);
-
-  myFilename = fileName;
-  myRemaining = length
-    ? std::min(length, myLength - position)
-    : myLength;
-  myPos = myBuffer + position;
-
+  wav.name = fileName;
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::WavHandler::release(Wav& wav)
+{
+  SDL_free(wav.buffer);
+  wav = Wav{};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::WavHandler::stop()
 {
-  if(myBuffer)
+  if(myPlaying)
   {
-    // Clean up
+    // Clean up under the stream lock, as in play(); the WAV stays loaded
+    SDL_LockAudioStream(myStream);
     myRemaining = 0;
-    SDL_UnbindAudioStream(myStream);  myStream = nullptr;
-    SDL_free(myBuffer);  myBuffer = nullptr;
+    SDL_ClearAudioStream(myStream);
+    SDL_UnlockAudioStream(myStream);
+    myPlaying = false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::WavHandler::close()
+{
+  stop();
+  SDL_DestroyAudioStream(myStream);  myStream = nullptr;
+  for(auto& wav: myWavs)
+    release(wav);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::WavHandler::rebind(SDL_AudioDeviceID device) const
+{
+  if(myStream)
+    SDL_BindAudioStream(device, myStream);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -545,8 +617,8 @@ SoundSDL::WavHandler::~WavHandler()
 {
   ASSERT_MAIN_THREAD;
 
-  if(myBuffer)
-    SDL_free(myBuffer);
+  for(const auto& wav: myWavs)
+    SDL_free(wav.buffer);
 }
 
 #endif  // SOUND_SUPPORT

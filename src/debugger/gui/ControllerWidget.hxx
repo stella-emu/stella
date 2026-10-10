@@ -61,10 +61,8 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
     // simply does not call this.  reflow() is what positions it
     void createHeader();
 
-    // Lay this widget out for its current area and font.  EVERY controller has
-    // the same skeleton -- an optional header above its content, centered in a
-    // fixed block -- so it is written once, here.  A controller states only what
-    // goes below the header: see layoutContent()
+    // Lay this widget out for its area and font.  Every controller shares this skeleton;
+    // a controller supplies only what goes below the header, via layoutContent()
     void reflow();
 
     // THE hook: add this controller's own pins/cross/grid to the column

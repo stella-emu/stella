@@ -92,10 +92,8 @@ class DataGridWidget : public EditableWidget
     }
     void setWidth(int) override { }
 
-    // The scrollbar (when present) is a sibling widget, and so is never placed
-    // by a layout itself: the grid tracks it when the layout moves or resizes
-    // the grid (mirrors ListWidget).  Only the height is passed on -- the grid's
-    // width is intrinsic, so setWidth() above leaves both of us alone
+    // The scrollbar is a sibling no layout places, so the grid moves it along (as
+    // ListWidget does); only the height is passed on, as the width is intrinsic
     using Widget::setPos;
     void setPos(const Common::Point& pos) override;
     void setHeight(int h) override;

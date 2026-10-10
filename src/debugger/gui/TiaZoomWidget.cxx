@@ -42,9 +42,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font)
 
   addFocusWidget(this);
 
-  // A zoom view has no size of its own -- setArea() gives it the real one and
-  // redoes this.  Until then the grid still has to be counted from something,
-  // so use a placeholder area big enough to yield a sane row and column count
+  // Until setArea() gives the real size, count the grid from a placeholder area big
+  // enough for a sane row and column count
   constexpr int PLACEHOLDER_AREA = 16;
   recomputeGrid(PLACEHOLDER_AREA, PLACEHOLDER_AREA);
 

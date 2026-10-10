@@ -106,10 +106,8 @@ void Cartridge3EWidget::layoutBankSelect(GUI::BoxLayout& col) const
   using GUI::anchoredItem;
   using GUI::labeledRow;
 
-  // A row per selector, each annotated with the kind of bank it selects.  Both
-  // boxes sit in the tab's label column (see collectBankLabels), so they line up
-  // with each other and with the ROM info fields above -- and the row's width no
-  // longer grows with the bank labels, as a side-by-side pair's did
+  // A row per selector, annotated with its bank kind; both sit in the tab's label
+  // column (see collectBankLabels), lining up with the ROM info fields above
   const std::array<LabelWidget*, 2> labels{myBankLbl, myRAMBankLbl};
   const std::array<LabelWidget*, 2> types{myROMTypeLbl, myRAMTypeLbl};
 

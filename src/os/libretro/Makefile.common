@@ -1,5 +1,5 @@
 LIBRETRO_COMM_DIR = $(CORE_DIR)/../libretro-common
-INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/elf -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib -I$(CORE_DIR)/lib/sqlite
+INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/elf -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/lib -I$(CORE_DIR)/lib/sqlite -I$(CORE_DIR)/lib/zlib
 
 ifneq (,$(findstring msvc2003,$(platform)))
 INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
@@ -30,6 +30,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/StateManager.cxx \
 	$(CORE_DIR)/common/TimerManager.cxx \
 	$(CORE_DIR)/common/VideoModeHandler.cxx \
+	$(CORE_DIR)/common/ZipHandler.cxx \
 	$(CORE_DIR)/common/tv_filters/AtariNTSC.cxx \
 	$(CORE_DIR)/common/tv_filters/NTSCFilter.cxx \
 	$(CORE_DIR)/common/repository/CompositeKeyValueRepository.cxx \
@@ -157,4 +158,11 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/TIASurface.cxx \
 	$(CORE_DIR)/emucore/tia/TIA.cxx
 
-SOURCES_C :=
+# zlib, for inflating ZIP archives
+SOURCES_C := \
+	$(CORE_DIR)/lib/zlib/adler32.c \
+	$(CORE_DIR)/lib/zlib/crc32.c \
+	$(CORE_DIR)/lib/zlib/inffast.c \
+	$(CORE_DIR)/lib/zlib/inflate.c \
+	$(CORE_DIR)/lib/zlib/inftrees.c \
+	$(CORE_DIR)/lib/zlib/zutil.c

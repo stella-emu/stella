@@ -83,9 +83,8 @@ void CartridgeE7Widget::layoutContent(GUI::BoxLayout& col) const
 {
   using GUI::labeledRow;
 
-  // The two selectors are a column of their own: their labels are far longer than
-  // the ROM info's, so they get their own label column -- and one box width, so
-  // their boxes end level despite listing different things
+  // The selectors' labels are far longer than the ROM info's, so they get a label
+  // column of their own, and one box width so their boxes end level
   GUI::alignLabels({{myLower2KLbl}, {myUpper256BLbl}});
   GUI::alignPopUps({myLower2K, myUpper256B});
 

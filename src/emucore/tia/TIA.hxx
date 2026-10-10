@@ -1020,7 +1020,7 @@ class TIA : public Device
      * current one (cloneLastLine).
      *
      * The contract: any state change that could alter rendering must call
-     * flushLineCache(). Flushing is always safe — it merely replays the
+     * flushLineCache(). Flushing is always safe, as it merely replays the
      * partial current line. Call sites that guard the flush on "value
      * actually changed" do so as an optimization to skip unneeded replays;
      * see TIA::flushLineCache.
@@ -1072,7 +1072,7 @@ class TIA : public Device
     /**
      * Shadow registers: the last value written to each TIA register as the
      * program saw it, before any DelayQueue processing. The simulation
-     * never reads these — they exist purely so the debugger can display
+     * never reads these; they exist purely so the debugger can display
      * "what the CPU just wrote" without having to wait for the delayed
      * effect to take place. Pokes that go through the delay queue update
      * the shadow in delayedWrite once the entry fires; pokes that take

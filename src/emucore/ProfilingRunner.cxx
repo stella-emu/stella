@@ -21,6 +21,7 @@
 #include "FSNode.hxx"
 #include "Cart.hxx"
 #include "CartCreator.hxx"
+#include "CartDetector.hxx"
 #include "MD5.hxx"
 #include "Control.hxx"
 #include "M6502.hxx"
@@ -99,6 +100,13 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   if (!imageFile.isFile()) {
     cout << "ERROR: " << run.romFile << " is not a ROM image\n";
+    return false;
+  }
+
+  // Same size check as OSystem::openROM(), which streams MVC ROMs instead
+  if (CartDetector::isProbablyMVC(imageFile) == 0 &&
+      imageFile.getSize() > Cartridge::maxSize()) {
+    cout << "ERROR: " << run.romFile << " is too large\n";
     return false;
   }
 

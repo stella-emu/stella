@@ -47,8 +47,8 @@ namespace {
     vblank = 1
   };
 
-  // RESPx/RESMx/RESBL counter targets — depend on whether the strobe lands
-  // in late HBLANK, regular HBLANK, or the visible region (see TIA::resxCounter).
+  // RESPx/RESMx/RESBL counter targets, by whether the strobe lands in late HBLANK,
+  // regular HBLANK or the visible region (see TIA::resxCounter)
   enum ResxCounter: uInt8 {
     hblank = 159,
     lateHblank = 158,
@@ -59,10 +59,8 @@ namespace {
   constexpr bool bmBool(T v) noexcept { return Bitmask::Enum{v}.any(); }
 }  // namespace
 
-// Flags the last possible RESx write during extended HBLANK — CPU cycle 75.
-// Selects ResxCounter::lateHblank (158) vs ResxCounter::hblank (159) so that
-// the strobe lands on the correct sprite counter relative to the HMOVE
-// movement clocks (MOTCK).
+// The last possible RESx write during extended HBLANK (CPU cycle 75), choosing
+// lateHblank (158) or hblank (159) so the strobe lands right relative to MOTCK
 static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -616,8 +614,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RSYNC:
-      // RSYNC rewinds the horizontal counter and zeroes the rest of the
-      // line — anything cached for this line is no longer correct.
+      // RSYNC rewinds the horizontal counter, invalidating the cached line
       flushLineCache();
       applyRsync();
       myShadowRegisters[address] = value;
@@ -764,9 +761,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case CTRLPF:
-      // Priority encoder mode, playfield reflect / color mode, and ball
-      // width can all change here — any of these may alter pixels already
-      // rendered on the current line.
+      // Priority, playfield reflect/color mode and ball width may all change the line
       flushLineCache();
       myPriority = (value & 0x04U) ? Priority::pfp :
                    (value & 0x02U) ? Priority::score : Priority::normal;
@@ -840,8 +835,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESM0:
-      // Missile position counter is being reset — anything already drawn
-      // for this line was drawn with the old counter.
+      // Resetting the missile position counter invalidates the cached line
       flushLineCache();
       myMissile0.resm(resxCounter(), myHstate == HState::blank,
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -849,7 +843,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESM1:
-      // Same as RESM0 — counter reset invalidates the cached line.
+      // Same as RESM0: the counter reset invalidates the cached line
       flushLineCache();
       myMissile1.resm(resxCounter(), myHstate == HState::blank,
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -876,7 +870,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case NUSIZ1:
-      // Same as NUSIZ0 — copy count / size change invalidates the line.
+      // Same as NUSIZ0: a copy count or size change invalidates the line
       flushLineCache();
       myMissile1.nusiz(value);
       myPlayer1.nusiz(value, myHstate == HState::blank);
@@ -921,9 +915,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case RESP0:
-      // Player position counter reset — any pixels already drawn used the
-      // old position; render-counter rewind in Player::resp may also
-      // affect this scanline.
+      // A player position reset (and Player::resp's rewind) invalidates the cached line
       flushLineCache();
       myPlayer0.resp(resxCounter(),
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -969,7 +961,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESBL:
-      // Ball position counter reset — same reasoning as RESPx/RESMx.
+      // A ball position reset, for the same reason as RESPx/RESMx
       flushLineCache();
       myBall.resbl(resxCounter(),
         myHstate == HState::blank && myMovementInProgress && myMovementClock == 0);
@@ -1634,10 +1626,8 @@ void TIA::onHalt()
 //      accumulate collisions (skipped during VBLANK to match real hardware).
 //   3. Advance the master horizontal counter; wrap into next scanline at 228.
 //
-// Audio is processed up front for the whole batch: nothing in the per-clock
-// loop can affect audio state (AUDxx writes are applied in poke(), outside
-// cycle(), and delayedWrite() never touches audio), and the audio clock
-// free-runs on total color clocks independent of myHctr — see Audio::tick.
+// Audio is processed up front for the whole batch: nothing in the loop touches audio
+// state, and the audio clock free-runs on total color clocks (see Audio::tick).
 //
 // The full sprite path (step 2) is bypassed once myLinesSinceChange reaches
 // 2: subsequent lines are memcpy clones of the previous one until the next
@@ -1682,8 +1672,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      // Collisions are only latched during the visible portion of each
-      // scanline on real hardware — VBLANK gates the collision latches.
+      // On real hardware VBLANK gates the collision latches
       if (!myFrameManager->vblank()) updateCollision();
     }
 
@@ -1696,10 +1685,8 @@ void TIA::cycle(uInt32 colorClocks)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// HMOVE distributes movement clocks at 1/4 of the color-clock rate (only
-// on color-clocks where the low 2 bits of myHctr are zero). The movement
-// counter saturates at 15 — beyond that no further per-sprite tick is
-// signalled, matching the HMxx high-nibble interpretation.
+// HMOVE sends movement clocks at 1/4 the color-clock rate (myHctr's low 2 bits
+// zero); the counter saturates at 15, matching the HMxx high nibble
 FORCE_INLINE void TIA::tickMovement()
 {
   if (!myMovementInProgress) [[likely]] return;
@@ -1726,11 +1713,8 @@ FORCE_INLINE void TIA::tickMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// During HBLANK each sprite's F1 latch still receives the CLKP color clock
-// (used to latch the display signal); tickClkpInHblank updates each
-// sprite's collision/visibility latch without advancing its counter or
-// sample logic — see Player::tickClkpInHblank / Missile::tickClkpInHblank
-// / Ball::tickClkpInHblank for the per-sprite split.
+// During HBLANK each sprite's F1 latch still gets CLKP, so tickClkpInHblank updates
+// its collision/visibility latch without advancing its counter (see each sprite's)
 //
 // HBLANK is normally 68 color clocks (H_BLANK_CLOCKS); HMOVE extends it
 // by 8 (myExtendedHblank). When extended, the playfield still starts
@@ -1766,9 +1750,8 @@ FORCE_INLINE void TIA::tickHblank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Visible-frame per-color-clock tick. Missiles take the associated player
-// as an argument so their RESMP "lock to player" tracking can sample the
-// player's main-copy scan counter — see Missile::resmpTick.
+// Visible-frame per-color-clock tick; missiles take their player so RESMP locking
+// can sample its main-copy scan counter (see Missile::resmpTick)
 FORCE_INLINE void TIA::tickHframe()
 {
   const uInt32 x = myHctr - TIAConstants::H_BLANK_CLOCKS - myHctrDelta;
@@ -1830,8 +1813,7 @@ FORCE_INLINE void TIA::nextLine()
 
   if(myFrameManager->isRendering())
   {
-    // First rendered line of a new frame — discard any cache carried over
-    // from the previous frame so y=0 is rebuilt from a clean replay.
+    // On a new frame's first line, drop any cache carried over so y=0 is replayed cleanly
     if(myFrameManager->getY() == 0)
       flushLineCache();
 
@@ -2006,9 +1988,8 @@ FORCE_INLINE void TIA::renderPixel(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Drop the line-cache fast path and replay the partial current line so
-// subsequent ticks see correct sprite-counter state. Always safe to call —
-// when nothing has actually changed, replay just rebuilds the same state.
+// Drop the line-cache fast path and replay the partial current line, so later ticks
+// see correct sprite counters; always safe, as a no-op change rebuilds the same state.
 //
 // Call sites that guard with "if (newValue != oldValue)" or similar are
 // doing so as an optimization (avoiding a needless replay), not because
@@ -2158,9 +2139,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       break;
 
     case HMOVE:
-      // HMOVE extends HBLANK by 8 clocks, paints the comb pattern, and
-      // arms movement on every sprite — none of these can be reused from
-      // a cloned line.
+      // HMOVE's HBLANK extension, comb and sprite movement can't come from a cloned line
       flushLineCache();
 
       myMovementClock = 0;

@@ -33,13 +33,8 @@ Common::Size WidgetLayout::naturalSize() const
   if(myWidget == nullptr)
     return {};
 
-  // An axis the widget FILLS has no size of its own: the cell decides it.  The
-  // widget's extent along that axis is merely what the last layout gave it, and
-  // reporting that would feed back — a field would drive the width of the column
-  // that is supposed to be sizing the field.  What it CAN say is how small it is
-  // prepared to be, and that is what it wants when nothing else is pushing: so a
-  // filled axis reports the minimum the dialog declared for it, if any.  This is
-  // how a dialog whose fields simply stretch still has a width of its own
+  // A filled axis reports its declared minimum, not its current extent: that is only
+  // what the last layout gave it, and reporting it would feed back into the column
   const Common::Size natural = myWidget->naturalSize();
 
   return Common::Size(myHAlign == HAlign::Fill ? std::max(myMinW, 0) : natural.w,
@@ -247,21 +242,16 @@ Common::Size BoxLayout::minSize() const
     const Common::Size cs = it.layout->minSize();
     int childMain = I32(horiz ? cs.w : cs.h);
     const int childCross = I32(horiz ? cs.h : cs.w);
-    // A fixed cell can never be smaller than its fixed size — unless the
-    // dialog declared a compression floor (minMain), promising to recompute
-    // the fixed value down to that floor as the available space shrinks.  A
-    // floor of zero is a real answer, and a different one from declaring none:
-    // it says the cell gives way entirely, so it holds nothing open
+    // A fixed cell holds its size unless the dialog declared a compression floor
+    // (minMain); a floor of zero means it gives way entirely
     if(it.policy == SizePolicy::Fixed)
       childMain = std::max(childMain, it.minMain >= 0 ? it.minMain : it.value);
     else if(it.policy == SizePolicy::Stretch)
       childMain = std::max(childMain, it.minMain);
     else if(it.policy == SizePolicy::Auto)
     {
-      // A cell sized by its content cannot be squeezed below it (a row of
-      // controls does not get shorter than the controls).  Note this is the
-      // only place the two queries meet: content that CAN be squeezed — a list,
-      // an image — stretches instead, and keeps a small minSize of its own
+      // A content-sized cell cannot be squeezed below its content; content that can be
+      // (a list, an image) stretches instead, with a small minSize of its own
       const Common::Size natural = it.layout->naturalSize();
       childMain = std::max(childMain,
                            I32(horiz ? natural.w : natural.h));
@@ -287,12 +277,8 @@ Common::Size BoxLayout::minSize() const
 
   if(pctTotal > 0)
   {
-    // Everything that is NOT a percentage has to fit in the share left over,
-    // which gives the box's length directly.  Both regimes have to hold: the
-    // percentage cells sitting on their floors (so their lengths simply add),
-    // and them taking their share of a box grown large enough that what is left
-    // still holds the rest.  The larger is the true minimum -- the other regime
-    // does not apply at that size, and is always the smaller of the two
+    // Two regimes must hold: percentage cells on their floors, and a box large enough
+    // that the non-percentage rest fits its leftover share; the larger is the minimum
     const int atFloors = mainMin + pctFloors;
     const int atShare  = pctTotal < 100
       ? ceilDiv(mainMin * 100, 100 - pctTotal)
@@ -416,9 +402,8 @@ void alignTracks(std::initializer_list<SliderWidget*> sliders,
   if(count == 0)
     return;
 
-  // What in the span is NOT track: the gaps between them, every slider's label
-  // (now a separate widget, so the CALLER names it -- a slider with none passes
-  // nullptr), and every readout but the LAST, which hangs past the end
+  // What in the span is not track: the gaps, each caller-named label (nullptr for
+  // none), and every readout but the last, which hangs past the end
   int overhead = spacing * (count - 1);
   int idx = 0;
   const auto* label = labels.begin();
@@ -538,13 +523,8 @@ void GridLayout::trackNaturals(bool horiz, IntArray& naturals) const
     if(span == 1)
       naturals[idx] = std::max(naturals[idx], I32(horiz ? cs.w : cs.h));
   }
-  // ...and a spanning cell grows its tracks when they cannot hold it between
-  // them.  The growth goes to the FLEXIBLE tracks of the span if it has any,
-  // since those are the ones that take up slack; a content-sized track must not
-  // be widened by something that merely LIES ACROSS it (the wide detected-bezel
-  // note, spanning the field and button columns, would otherwise make the button
-  // column as wide as itself).  With no flexible track in the span, they all
-  // grow — the cell has to fit somewhere
+  // ...and a spanning cell grows its tracks when they cannot hold it: the flexible
+  // ones if the span has any (never a content-sized one it merely lies across), else all
   const int spacing = horiz ? myHSpacing : myVSpacing;
 
   for(const auto& cell: myCells)
@@ -708,12 +688,8 @@ Common::Size GridLayout::minSize() const
   trackNaturals(true, colNat);
   trackNaturals(false, rowNat);
 
-  // A track can never be smaller than its own fixed size, nor one sized by its
-  // content smaller than that content, nor a stretching one than its base.
-  // A fixed track gives way only as far as the dialog declared a compression
-  // floor (minSize), promising to recompute the fixed value down to it as the
-  // space shrinks; a negative floor means none was declared, and zero is a
-  // real answer -- it says the track holds nothing open at all
+  // A track never shrinks below its fixed size, content or base, except a fixed one
+  // down to its declared floor (minSize; negative means none, 0 means fully)
   for(int c = 0; c < cols; ++c)
     if(myColumns[c].policy == SizePolicy::Fixed)
       colMin[c] = myColumns[c].minSize >= 0
@@ -769,9 +745,8 @@ Common::Size GridLayout::naturalSize() const
   trackNaturals(true, colNat);
   trackNaturals(false, rowNat);
 
-  // A track sized in pixels wants exactly those, whatever is placed in it; a
-  // stretching one wants at least the base it was given (its content — a field,
-  // a list — has no width of its own to ask for)
+  // A pixel-sized track wants exactly those pixels; a stretching one at least its
+  // base, since its content (a field, a list) has no width of its own
   for(int c = 0; c < cols; ++c)
     if(myColumns[c].policy == SizePolicy::Fixed)
       colNat[c] = myColumns[c].value;

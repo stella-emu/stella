@@ -76,9 +76,7 @@ class DebuggerDialog : public Dialog
     // without being recreated.
     void changeFont();
 
-    // Refresh cached font-derived widget state and re-flow after changeFont()
-    // -- like Dialog::refreshFont(), but also re-fonts the tooltip to nfont()
-    // (the debugger's own font, not the shared dialog font used by _font).
+    // As Dialog::refreshFont(), but also re-fonts the tooltip to the debugger's nfont()
     void refreshFont() override;
 
     void setPosition() override { positionAt(0); }
@@ -192,8 +190,8 @@ class DebuggerDialog : public Dialog
     // What the layout tree last reported it cannot be squeezed below
     Common::Size myMinSize;
 
-    // The TIA image band's share of the dialog height, and the floor below which
-    // it does not shrink -- a full PAL frame, so the image is never scaled down
+    // The TIA band's share of the dialog height; its floor is a full PAL frame, so the
+    // image is never scaled down
     static constexpr int TIA_BAND_PERCENT = 35;
 
   private:

@@ -36,11 +36,8 @@ using WidgetArray = vector<Widget*>;
 // as their boss
 using WidgetList = vector<unique_ptr<Widget>>;
 
-// Bits of GuiObject::_flags, controlling appearance/behavior.  A free enum
-// (not nested in GuiObject) because its Bitmask::is_enum_v specialization
-// must be visible before GuiObject's inline members use it, and those are
-// compiled as if written immediately after the class -- too late for a
-// specialization declared after the closing brace.
+// Bits of GuiObject::_flags; a free enum so its Bitmask::is_enum_v specialization
+// is visible before GuiObject's inline members use it
 enum class GuiObjectFlag: uInt16 {
   None         = 0,
   Enabled      = Bitmask::bit<GuiObjectFlag>(0),

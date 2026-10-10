@@ -232,10 +232,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   pane->setHelpAnchor("DeveloperEmulator");
 
-  // Describe the layout once; the pane runs it on every resize.  Three of the
-  // options have a second option beside them, and those three share a column —
-  // which is what a grid is for: the column is as wide as the widest option in
-  // it, and the rows that have no second option simply span across it
+  // Described once, run on every resize: a grid, since three options have a second
+  // beside them sharing a column, and the other rows span across it
   pane->setLayout([this](GUI::BoxLayout& col) {
     using GUI::BoxLayout;
     using GUI::GridLayout;
@@ -634,9 +632,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
     for(int i = 0; i < DEBUG_COLORS; ++i)
     {
-      // The pop-up width is the dialog's choice, not the pop-up's own, so it is
-      // re-applied here and follows a live font change (PopUpWidget does not
-      // re-derive its width -- see its refreshFont)
+      // The pop-up width is the dialog's choice, so re-apply it here to follow a live
+      // font change (PopUpWidget does not re-derive it)
       myDbgColour[i]->setBoxWidth(fontWidth * 6);
 
       auto colourRow = std::make_unique<BoxLayout>(Dir::Horizontal);

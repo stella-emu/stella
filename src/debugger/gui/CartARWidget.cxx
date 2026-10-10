@@ -93,10 +93,8 @@ CartridgeARWidget::CartridgeARWidget(
   myWriteState->setEditable(false);
   myLabelColumn.emplace_back(myWriteStateLbl);
 
-  // Only sound-load carts have anything to log here; myIsSoundLoad never
-  // changes after construction, so whether this exists at all is decided once.
-  // A heading of its own, not a label beside a control -- it has nothing to
-  // line up with, so it does not join myLabelColumn (see alignLabels())
+  // Only sound-load carts log anything (fixed at construction); the heading lines up
+  // with nothing, so it stays out of myLabelColumn
   if(myCart.myIsSoundLoad)
   {
     myLoadLog = new WrappedTextWidget(boss, _nfont, myCart.myLoadLog, 5, 5);
@@ -132,9 +130,8 @@ void CartridgeARWidget::layoutContent(GUI::BoxLayout& col) const
 
   if(myLoadLog)
   {
-    // WrappedTextWidget needs its width before it can report its own height
-    // (see its class comment), so it gets one here, matching the indent
-    // indentedFill() below gives it -- not a label beside it (see the ctor)
+    // WrappedTextWidget needs its width before it knows its height, so give it the
+    // one indentedFill() below will
     myLoadLog->setWidth(contentWidth(_w) - _fontWidth * 2);
     col.addAuto(indentedFill(myLoadLog, _fontWidth * 2));
   }
