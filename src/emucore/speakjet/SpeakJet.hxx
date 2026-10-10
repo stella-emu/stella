@@ -37,10 +37,10 @@ class SpeakJet : public Serializable
 {
   public:
     // Power-on defaults, from the manual's control code descriptions
-    static constexpr uInt8 DEFAULT_VOLUME = 96;
-    static constexpr uInt8 DEFAULT_SPEED = 114;
-    static constexpr uInt8 DEFAULT_PITCH = 88;
-    static constexpr uInt8 DEFAULT_BEND = 5;
+    static constexpr uInt8 INITIAL_VOLUME = 96;
+    static constexpr uInt8 INITIAL_SPEED = 114;
+    static constexpr uInt8 INITIAL_PITCH = 88;
+    static constexpr uInt8 INITIAL_BEND = 5;
 
     // The highest Bend the manual allows
     static constexpr uInt8 MAX_BEND = 15;
@@ -149,7 +149,7 @@ class SpeakJet : public Serializable
 
     // The parameters as last set, by Param, so a state can restore them
     std::array<uInt8, 4> myParams{
-      DEFAULT_VOLUME, DEFAULT_SPEED, DEFAULT_PITCH, DEFAULT_BEND
+      INITIAL_VOLUME, INITIAL_SPEED, INITIAL_PITCH, INITIAL_BEND
     };
 
     // Which two-byte command is waiting for its value

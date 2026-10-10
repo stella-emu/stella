@@ -74,7 +74,7 @@ SpeakJetSamples::SpeakJetSamples(const string& path)
   myPerPitch = FSNode(myPath + "pitch114").isDirectory();
   // Not in the initializer list: loadSet() needs the layout found above
   // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
-  myFound = loadSet(SpeakJet::DEFAULT_BEND);
+  myFound = loadSet(SpeakJet::INITIAL_BEND);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +144,7 @@ const SpeakJetSamples::SampleSet& SpeakJetSamples::setFor(uInt8 bend)
     loadSet(want);
 
   return mySamples[want][0].body.empty() && mySamples[want][1].body.empty()
-      ? mySamples[SpeakJet::DEFAULT_BEND] : mySamples[want];
+      ? mySamples[SpeakJet::INITIAL_BEND] : mySamples[want];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,7 +197,7 @@ const SpeakJetSamples::SampleSet& SpeakJetSamples::pitchSetAt(size_t bend, size_
   if(!myPitchLoaded[bend][want])
   {
     myPitchLoaded[bend][want] = true;
-    const string dir = bend == SpeakJet::DEFAULT_BEND ? myPath : bendDir(myPath, bend);
+    const string dir = bend == SpeakJet::INITIAL_BEND ? myPath : bendDir(myPath, bend);
     loadInto(myPitchSamples[bend][want], dir + "pitch" +
              std::to_string(ourPitchSet[want]) + FSNode::PATH_SEPARATOR,
              SpeakJet::FIRST_SOUND);

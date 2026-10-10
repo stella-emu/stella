@@ -96,10 +96,10 @@ void SpeakJet::reset()
   myNextScale = 100;
   myRepeat = 1;
 
-  setParam(Param::Volume, DEFAULT_VOLUME);
-  setParam(Param::Speed, DEFAULT_SPEED);
-  setParam(Param::Pitch, DEFAULT_PITCH);
-  setParam(Param::Bend, DEFAULT_BEND);
+  setParam(Param::Volume, INITIAL_VOLUME);
+  setParam(Param::Speed, INITIAL_SPEED);
+  setParam(Param::Pitch, INITIAL_PITCH);
+  setParam(Param::Bend, INITIAL_BEND);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -212,7 +212,7 @@ void SpeakJetSoftware::play(const SpeakJet::Utterance& utterance)
 
   // A sound recorded at the Pitch in force needs none of the pitch laws, only
   // the little left over to the nearest sampled setting
-  uInt8 atPitch = SpeakJet::DEFAULT_PITCH;
+  uInt8 atPitch = SpeakJet::INITIAL_PITCH;
   const Clip* sampled = voiced
       ? mySamples.pitchClip(utterance.code, myPitch, myBend, atPitch) : nullptr;
   const Clip* chosen = sampled ? sampled : &mySamples.setFor(myBend)[index];
@@ -220,10 +220,10 @@ void SpeakJetSoftware::play(const SpeakJet::Utterance& utterance)
   // Off the default Bend a sound rings on longer, which inside a phrase is
   // decay; it is held to the default Bend's length at the same Pitch
   Clip capped;
-  if(myBend != SpeakJet::DEFAULT_BEND && utterance.code <= SpeakJet::LAST_ALLOPHONE)
+  if(myBend != SpeakJet::INITIAL_BEND && utterance.code <= SpeakJet::LAST_ALLOPHONE)
   {
-    const Clip& ref = sampled ? mySamples.pitchSet(SpeakJet::DEFAULT_BEND, atPitch)[index]
-                              : mySamples.setFor(SpeakJet::DEFAULT_BEND)[index];
+    const Clip& ref = sampled ? mySamples.pitchSet(SpeakJet::INITIAL_BEND, atPitch)[index]
+                              : mySamples.setFor(SpeakJet::INITIAL_BEND)[index];
     const auto keep = ref.body.size();
 
     if(keep > 0 && chosen->body.size() > keep)
@@ -253,11 +253,11 @@ void SpeakJetSoftware::play(const SpeakJet::Utterance& utterance)
 
   // Below the default Pitch a made sound keeps its length there, whatever
   // Pitch set it is played from
-  const bool held = myPitch <= SpeakJet::DEFAULT_PITCH && SpeakJetVoice::makes(utterance.code);
+  const bool held = myPitch <= SpeakJet::INITIAL_PITCH && SpeakJetVoice::makes(utterance.code);
   if(held && sampled)
   {
-    const Clip& base = mySamples.pitchSet(SpeakJet::DEFAULT_BEND, SpeakJet::DEFAULT_PITCH)[index];
-    const Clip& set = mySamples.pitchSet(SpeakJet::DEFAULT_BEND, atPitch)[index];
+    const Clip& base = mySamples.pitchSet(SpeakJet::INITIAL_BEND, SpeakJet::INITIAL_PITCH)[index];
+    const Clip& set = mySamples.pitchSet(SpeakJet::INITIAL_BEND, atPitch)[index];
     if(!base.body.empty() && !set.body.empty())
       targetMs *= DBL(base.body.size()) / DBL(set.body.size());
   }

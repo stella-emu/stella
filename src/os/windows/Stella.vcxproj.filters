@@ -160,6 +160,12 @@
     <Filter Include="Source Files\debugger\gui\memview">
       <UniqueIdentifier>{55cc5b16-9afe-4ed2-b052-80ae04396afc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\emucore\speakjet">
+      <UniqueIdentifier>{3e8dcb60-a5c1-4388-94b2-ca23e8bec61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\emucore\speakjet">
+      <UniqueIdentifier>{bcfde2ce-3913-4693-b4e8-0d7b54cfe206}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\emucore\AtariVox.cxx">
@@ -1319,6 +1325,27 @@
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\memview\MemViewWindowDialog.cxx">
       <Filter>Source Files\debugger\gui\memview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJet.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetDSP.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetSamples.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetSerial.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetSoftware.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetTables.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\emucore\speakjet\SpeakJetVoice.cxx">
+      <Filter>Source Files\emucore\speakjet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2701,6 +2728,33 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\memview\MemViewWindowDialog.hxx">
       <Filter>Header Files\debugger\gui\memview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJet.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetBackend.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetChip.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetDSP.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetSamples.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetSerial.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetSoftware.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetTables.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\speakjet\SpeakJetVoice.hxx">
+      <Filter>Header Files\emucore\speakjet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

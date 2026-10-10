@@ -114,7 +114,7 @@ namespace {
   // relative to the default Bend the states are given at
   State bent(State s, uInt8 bend)
   {
-    const double offset = BEND_HZ[bend] - BEND_HZ[SpeakJet::DEFAULT_BEND];
+    const double offset = BEND_HZ[bend] - BEND_HZ[SpeakJet::INITIAL_BEND];
     for(double& hz: s.hz)
       if(hz > 0.0)
         hz += offset;

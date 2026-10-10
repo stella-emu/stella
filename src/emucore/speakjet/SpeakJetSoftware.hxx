@@ -125,8 +125,8 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
 
     // The Speed and Bend it was spoken at, which a command before the next
     // sound may since have changed
-    uInt8 myPendingSpeed{SpeakJet::DEFAULT_SPEED};
-    uInt8 myPendingBend{SpeakJet::DEFAULT_BEND};
+    uInt8 myPendingSpeed{SpeakJet::INITIAL_SPEED};
+    uInt8 myPendingBend{SpeakJet::INITIAL_BEND};
 
     // The sound before the one being released
     int myPrevCode{-1};
@@ -153,10 +153,10 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     uInt32 myIdleFrames{0};
 
     // Current MSA parameters
-    uInt8 myVolume{SpeakJet::DEFAULT_VOLUME};
-    uInt8 mySpeed{SpeakJet::DEFAULT_SPEED};
-    uInt8 myPitch{SpeakJet::DEFAULT_PITCH};
-    uInt8 myBend{SpeakJet::DEFAULT_BEND};
+    uInt8 myVolume{SpeakJet::INITIAL_VOLUME};
+    uInt8 mySpeed{SpeakJet::INITIAL_SPEED};
+    uInt8 myPitch{SpeakJet::INITIAL_PITCH};
+    uInt8 myBend{SpeakJet::INITIAL_BEND};
 
     string myAboutString;
 

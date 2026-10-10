@@ -47,8 +47,8 @@ class SpeakJetVoice
       double targetMs{0.0};
       double pitch{1.0};
       double gain{1.0};
-      uInt8 setting{SpeakJet::DEFAULT_PITCH};
-      uInt8 volume{SpeakJet::DEFAULT_VOLUME};
+      uInt8 setting{SpeakJet::INITIAL_PITCH};
+      uInt8 volume{SpeakJet::INITIAL_VOLUME};
     };
 
   public:
@@ -142,7 +142,7 @@ class SpeakJetVoice
       // The state the last residual was taken for, to blend from
       int resCode{-1};
       Point resAt{Point::Start};
-      uInt8 resBend{SpeakJet::DEFAULT_BEND};
+      uInt8 resBend{SpeakJet::INITIAL_BEND};
 
       // Time since the run started, whether from nothing, and the slide's start
       double runMs{0.0};

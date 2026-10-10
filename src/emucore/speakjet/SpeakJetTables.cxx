@@ -855,7 +855,7 @@ double SpeakJetTables::pitchFactor(uInt8 pitch)
   if(pitch == 0)
     return 1.0;
 
-  return DBL(pitch) / DBL(SpeakJet::DEFAULT_PITCH);
+  return DBL(pitch) / DBL(SpeakJet::INITIAL_PITCH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -888,14 +888,14 @@ double SpeakJetTables::pitchDuration(uInt8 pitch)
 double SpeakJetTables::phraseDuration(uInt8 pitch)
 {
   const double law = pitchDuration(pitch);
-  return pitch > SpeakJet::DEFAULT_PITCH ? 1.0 + (law - 1.0) * PHRASE_KEPT : law;
+  return pitch > SpeakJet::INITIAL_PITCH ? 1.0 + (law - 1.0) * PHRASE_KEPT : law;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double SpeakJetTables::volumeFactor(uInt8 volume)
 {
   const double here = VOLUME_SLOPE * DBL(volume) + VOLUME_OFFSET;
-  const double ref = VOLUME_SLOPE * DBL(SpeakJet::DEFAULT_VOLUME) + VOLUME_OFFSET;
+  const double ref = VOLUME_SLOPE * DBL(SpeakJet::INITIAL_VOLUME) + VOLUME_OFFSET;
 
   return std::max(0.0, here / ref);
 }
