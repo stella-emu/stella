@@ -142,23 +142,36 @@ MemViewWindowDialog::MemViewWindowDialog(OSystem& osystem, DialogContainer& pare
   myShowData = new CheckboxWidget(this, font, TEXT_SHOW_DATA, Cmd::ShowDataChanged);
   wid.push_back(myShowData);
 
+  // Use a slightly different size for the swatch boxes than default
+  // - 1 because the frame will be drawn one pixel larger than commanded (?)
+  const int swatchHeight = CheckboxWidget::boxSize(font) + 2 * (font.getLineHeight() / 8) - 1;
+  const int swatchWidth = swatchHeight * 2;
+
   myShowPc = new CheckboxWidget(this, font, TEXT_SHOW_PC, Cmd::ShowPcChanged);
   wid.push_back(myShowPc);
-  myPcColor = new ColorWidget(this, font);
+  myPcColor = new ColorWidget(this, font, swatchWidth, swatchHeight);
   myPcColor->setColorRgb(pcWidgetColor);
 
   myShowReads = new CheckboxWidget(this, font, TEXT_SHOW_READS, Cmd::ShowReadsChanged);
   wid.push_back(myShowReads);
-  myReadColor = new ColorWidget(this, font);
+  myReadColor = new ColorWidget(this, font, swatchWidth, swatchHeight);
   myReadColor->setColorRgb(readWidgetColor);
 
   myShowWrites = new CheckboxWidget(this, font, TEXT_SHOW_WRITES, Cmd::ShowWritesChanged);
   wid.push_back(myShowWrites);
-  myWriteColor = new ColorWidget(this, font);
+  myWriteColor = new ColorWidget(this, font, swatchWidth, swatchHeight);
   myWriteColor->setColorRgb(writeWidgetColor);
 
-  myDecayLbl = new LabelWidget(this, font, TEXT_DECAY_RATE);
-  myDecaySlider = new SliderWidget(this, font, 10, Cmd::DecayRateChanged, 4, "%");
+  if constexpr (TWO_LINE_DECAY)
+    myDecayLbl = new LabelWidget(this, font, TEXT_DECAY_RATE);
+  else
+    // If you ask me, the full text would make the settings too wide
+    myDecayLbl = new LabelWidget(this, font, TEXT_DECAY);
+
+  // Make the slider wide enough to be able to set every value between 0..100
+  const int fontWidth = _font.getMaxCharWidth();
+  const int sliderChars = (101 + fontWidth - 1) / fontWidth;
+  myDecaySlider = new SliderWidget(this, font, sliderChars, Cmd::DecayRateChanged, 4, "%", 0, false, true);
   myDecaySlider->setMinValue(0);
   myDecaySlider->setMaxValue(100);
   myDecaySlider->setStepValue(1);
@@ -516,6 +529,7 @@ void MemViewWindowDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
+  using GUI::stretchedItem;
   using GUI::widgetItem;
   using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
@@ -526,24 +540,25 @@ void MemViewWindowDialog::layout()
 
   const int HBORDER = Dialog::hBorder(),
             VBORDER  = Dialog::vBorder(),
-            VGAP     = Dialog::vGap();
-  static constexpr int DIALOG_MARGIN_H = 14;
-  static constexpr int DIALOG_MARGIN_V = 12;
+            VGAP     = Dialog::vGap(),
+            DIALOG_MARGIN_H = HBORDER * 1.6,
+            DIALOG_MARGIN_V = VBORDER * 1.6,
+            RAM_SETTINGS_GAP = VGAP * 4;
 
   // Create views now that it is foreseeable they will be assigned a size
   if (myFirstLayout)
     createViews();
 
   const auto buildRoot = [&](int mainMaxW) {
-    const auto swatchRow = [](CheckboxWidget* cb, ColorWidget* swatch) {
+    const auto swatchRow = [&](CheckboxWidget* cb, ColorWidget* swatch) {
       auto row = std::make_unique<BoxLayout>(Dir::Horizontal);
       row->addAuto(anchoredItem(cb));
-      row->addStretchSpace();
+      row->addStretchSpace(1, fontWidth() * 3);
       row->addAuto(anchoredItem(swatch));
       return row;
     };
 
-    auto settingsCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP, 0, DIALOG_MARGIN_V);
+    auto settingsCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
     settingsCol->addAuto(anchoredItem(mySingleRow));
     settingsCol->addAuto(anchoredItem(mySeparators));
     settingsCol->addAuto(anchoredItem(myInverted));
@@ -554,7 +569,12 @@ void MemViewWindowDialog::layout()
     settingsCol->addAuto(swatchRow(myShowReads, myReadColor));
     settingsCol->addAuto(swatchRow(myShowWrites, myWriteColor));
     settingsCol->addSpace(VGAP);
-    settingsCol->addAuto(labeledRow(myDecayLbl, myDecaySlider));
+    if constexpr (TWO_LINE_DECAY) {
+      settingsCol->addAuto(anchoredItem(myDecayLbl));
+      settingsCol->addAuto(stretchedItem(myDecaySlider));
+    } else {
+      settingsCol->addAuto(labeledRow(myDecayLbl, myDecaySlider));
+    }
     settingsCol->addSpace(VGAP);
     settingsCol->addAuto(anchoredItem(myClearButton));
 
@@ -571,7 +591,8 @@ void MemViewWindowDialog::layout()
     // different border constants and drift apart by a few px, which is enough
     // to drop a whole zoom level and strand unused space below the grid
     const int ramMaxH = std::max(I32(ramMin.h),
-      _h - 2 * VBORDER - I32(settingsSize.h) - VGAP);
+      _h - 2 * DIALOG_MARGIN_V - I32(settingsSize.h) - RAM_SETTINGS_GAP);
+
     myRamView->setMaxCandidateSize(settingsW, ramMaxH);
 
     auto ramRow = std::make_unique<BoxLayout>(Dir::Horizontal, HBORDER);
@@ -591,7 +612,7 @@ void MemViewWindowDialog::layout()
                                        I32(cartRamMin.h)));
     }
 
-    auto leftCol = std::make_unique<BoxLayout>(Dir::Vertical, VGAP);
+    auto leftCol = std::make_unique<BoxLayout>(Dir::Vertical, RAM_SETTINGS_GAP);
     // Reserve the full candidate height so the settings column tracks a drag
     // continuously, rather than snapping when RAM's zoom level steps down
     leftCol->addFixed(std::move(ramRow), ramMaxH, 0);

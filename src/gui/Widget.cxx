@@ -1035,14 +1035,15 @@ void CheckboxWidget::drawWidget(bool hilite)
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int trackChars, GuiCmd::Code cmd, int valueChars,
                            string_view valueUnit, int valueLabelGap,
-                           bool forceLabelSign)
+                           bool forceLabelSign, bool valueRightAligned)
   : ButtonWidget(boss, font,
                  (trackChars != 0 ? trackChars : 10) * font.getMaxCharWidth(),
                  font.getLineHeight(), "", cmd),
     _valueUnit{valueUnit},
     _valueLabelGap{valueLabelGap},
     _valueLabelWidth{valueChars * font.getMaxCharWidth()},
-    _forceLabelSign{forceLabelSign}
+    _forceLabelSign{forceLabelSign},
+    _valueRightAligned{valueRightAligned}
 {
   _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
@@ -1242,8 +1243,9 @@ void SliderWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth,
-                 _y + firstTextY(), _valueLabelWidth,
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - (_valueRightAligned ?
+                 (_valueLabel.size() + _valueUnit.size()) * _fontWidth :
+                 _valueLabelWidth), _y + firstTextY(), _valueLabelWidth,
                  isEnabled() ? kTextColor : kColor);
 }
 

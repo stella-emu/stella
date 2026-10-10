@@ -689,7 +689,8 @@ class SliderWidget : public ButtonWidget
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int trackChars = 0, GuiCmd::Code cmd = GuiCmd::None,
                  int valueChars = 0, string_view valueUnit = "",
-                 int valueLabelGap = 0, bool forceLabelSign = false);
+                 int valueLabelGap = 0, bool forceLabelSign = false,
+                 bool valueRightAligned = false);
     ~SliderWidget() override = default;
 
     /** Clamps to [min, max], updates the value label, and sends _cmd if it actually changed */
@@ -757,6 +758,8 @@ class SliderWidget : public ButtonWidget
     int    _valueLabelWidth{0};
     // Whether a positive value label is prefixed with '+'
     bool   _forceLabelSign{false};
+    // Show the value and unit right-aligned when there are fewer chars than intended
+    bool   _valueRightAligned{false};
     // Number of tickmark intervals drawn along the track (see setTickmarkIntervals)
     int    _numIntervals{0};
 
