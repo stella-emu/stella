@@ -65,7 +65,7 @@ void KidVid::update()
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the remaining WAV file
-    const string fileName = myBasePath + ((temp < 10) ? "KVSHARED.WAV": getFileName());
+    const string fileName = sampleDir() + ((temp < 10) ? "KVSHARED.WAV": getFileName());
     myOSystem.sound().playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
 
     myContinueSong = false;
@@ -252,6 +252,22 @@ string KidVid::getFileName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string KidVid::sampleDir() const
+{
+  const auto found = [this](const string& dir) {
+    return FSNode(dir + getFileName(), FSNode::ZipMode::Data).exists() &&
+           FSNode(dir + "KVSHARED.WAV", FSNode::ZipMode::Data).exists();
+  };
+
+#ifdef ZIP_SUPPORT
+  if(const string zip = myBasePath + "KidVidAudio.zip" + FSNode::PATH_SEPARATOR; found(zip))
+    return zip;
+#endif
+
+  return found(myBasePath) ? myBasePath : string{};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 KidVid::tapeIndex() const
 {
   assert(myTape >= 1 && myTape <= 4);
@@ -284,8 +300,7 @@ void KidVid::openSampleFiles()
 
   if(!myFilesFound)
   {
-    myFilesFound = FSNode(myBasePath + getFileName()).exists() &&
-                   FSNode(myBasePath + "KVSHARED.WAV").exists();
+    myFilesFound = !sampleDir().empty();
 
   #ifdef DEBUG_BUILD
     if(myFilesFound)
@@ -313,7 +328,7 @@ void KidVid::setNextSong()
 
     // Play the WAV file
     const string fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
-    myOSystem.sound().playWav(myBasePath + fileName,
+    myOSystem.sound().playWav(sampleDir() + fileName,
                               ourSongStart[temp], mySongLength);
     myCallback(std::format("Read song #{} ({})",
                            mySongPointer, fileName), false);

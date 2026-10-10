@@ -19,12 +19,6 @@
 
 #include <unordered_set>
 
-#ifdef BSPF_WINDOWS
-  #include "HomeFinder.hxx"
-#else
-  #include "XDGPaths.hxx"
-#endif
-
 #include "bspf.hxx"
 #include "AsciiFold.hxx"
 #include "Bankswitch.hxx"
@@ -32,7 +26,8 @@
 #include "FSNodeZIP.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodeZIP::FSNodeZIP(string_view p)
+FSNodeZIP::FSNodeZIP(string_view p, ZipMode mode)
+  : _mode{mode}
 {
   // Extract ZIP file and virtual file (if specified)
   const size_t pos = BSPF::findIgnoreCase(p, ".zip");
@@ -51,6 +46,18 @@ FSNodeZIP::FSNodeZIP(string_view p)
   // Update _zipFile with the fully resolved path from the real node
   _zipFile = _realNode->getPath();
 
+  // Set before opening, so a path into an unreadable archive doesn't exist
+  if(_mode == ZipMode::Data && pos+5 < p.length())
+  {
+    _virtualPath = p.substr(pos+5);
+    // ZIP entries always use '/', and never end a directory with it
+    std::ranges::replace(_virtualPath, '\\', '/');
+    while(_virtualPath.ends_with('/'))
+      _virtualPath.pop_back();
+  }
+
+  const std::scoped_lock lock(zipMutex());
+
   // Open file at least once to initialize the virtual file count
   uInt16 numFiles = 0;
   try
@@ -62,6 +69,30 @@ FSNodeZIP::FSNodeZIP(string_view p)
   {
     return;
   }
+
+  if(_mode == ZipMode::Data)
+  {
+    // An entry is a file whatever its extension, and a path that entries lie
+    // under is a directory; anything else doesn't exist
+    if(_virtualPath.empty())
+      _kind = NodeKind::Directory;
+    else if(const auto [size, found] = zipHandler().find(_virtualPath); found)
+    {
+      _size = size;
+      _kind = NodeKind::File;
+    }
+    else
+    {
+      const string dir = _virtualPath + '/';
+      zipHandler().forEachEntry([&](string_view name, uInt64) {
+        if(name.starts_with(dir))
+          _kind = NodeKind::Directory;
+      });
+    }
+    setFlags(_zipFile, _virtualPath, _realNode);
+    return;
+  }
+
   if(numFiles == 0)
     return;
 
@@ -71,6 +102,8 @@ FSNodeZIP::FSNodeZIP(string_view p)
   {
     _virtualPath = p.substr(pos+5);
     _kind = Bankswitch::isValidRomName(_virtualPath) ? NodeKind::File : NodeKind::Directory;
+    if(_kind == NodeKind::File)
+      _size = zipHandler().find(_virtualPath).first;
   }
   else if(numFiles == 1)
   {
@@ -96,9 +129,11 @@ FSNodeZIP::FSNodeZIP(string_view p)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodeZIP::FSNodeZIP(Key, string_view zipfile, string_view virtualpath,
-                     const AbstractFSNodePtr& realnode, size_t size, bool isdir)
+                     const AbstractFSNodePtr& realnode, size_t size, bool isdir,
+                     ZipMode mode)
   : _size{size},
-    _kind{isdir ? NodeKind::Directory : NodeKind::File}
+    _kind{isdir ? NodeKind::Directory : NodeKind::File},
+    _mode{mode}
 {
   setFlags(zipfile, virtualpath, realnode);
 }
@@ -106,9 +141,10 @@ FSNodeZIP::FSNodeZIP(Key, string_view zipfile, string_view virtualpath,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeZIP::makeShared(string_view zipfile, string_view virtualpath,
                                         const AbstractFSNodePtr& realnode,
-                                        size_t size, bool isdir)
+                                        size_t size, bool isdir, ZipMode mode)
 {
-  return std::make_shared<FSNodeZIP>(Key{}, zipfile, virtualpath, realnode, size, isdir);
+  return std::make_shared<FSNodeZIP>(Key{}, zipfile, virtualpath, realnode,
+                                     size, isdir, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,7 +168,7 @@ void FSNodeZIP::setFlags(string_view zipfile, string_view virtualpath,
   }
   _name = AsciiFold::toAscii(lastPathComponent(_path));
 
-  if(!_realNode->isFile() || !_realNode->isReadable())
+  if(!_realNode->exists() || !_realNode->isReadable())
     throw ZipException(ZipError::FILE_ERROR);
 }
 
@@ -147,6 +183,7 @@ bool FSNodeZIP::exists() const
     return true;
 
   // We need to inspect the actual path, not just the ZIP file itself
+  const std::scoped_lock lock(zipMutex());
   try
   {
     zipHandler().open(_zipFile);
@@ -168,6 +205,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
 
   std::unordered_set<string> dirs;
 
+  const std::scoped_lock lock(zipMutex());
   try
   {
     zipHandler().open(_zipFile);
@@ -205,7 +243,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
       if(pos != string_view::npos)
         dirs.emplace(remainder.substr(0, pos));
       else
-        myList.emplace_back(makeShared(_zipFile, name, _realNode, size, false));
+        myList.emplace_back(makeShared(_zipFile, name, _realNode, size, false, _mode));
     });
   }
   catch(const ZipException&)
@@ -217,7 +255,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
   {
     const string vpath = _virtualPath.empty() ? string{dir}
                        : std::format("{}/{}", _virtualPath, dir);
-    myList.emplace_back(makeShared(_zipFile, vpath, _realNode, 0, true));
+    myList.emplace_back(makeShared(_zipFile, vpath, _realNode, 0, true, _mode));
   }
 
   return true;
@@ -226,6 +264,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodeZIP::read(ByteArray& buffer, size_t) const
 {
+  const std::scoped_lock lock(zipMutex());
   zipHandler().open(_zipFile);
   return zipHandler().decompress(_virtualPath, buffer);
 }
@@ -250,7 +289,7 @@ AbstractFSNodePtr FSNodeZIP::getParent() const
   const string_view vparent = stemPathComponent(_virtualPath);
   // stemPathComponent includes trailing slash; strip it
   const string_view vpath = vparent.empty() ? vparent : vparent.substr(0, vparent.size() - 1);
-  return makeShared(_zipFile, vpath, _realNode, 0, true);
+  return makeShared(_zipFile, vpath, _realNode, 0, true, _mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,7 +309,7 @@ AbstractFSNodePtr FSNodeZIP::getSiblingNode(string_view ext) const
     newVirtual += name;
   newVirtual += ext;
 
-  return makeShared(_zipFile, newVirtual, _realNode, 0, false);
+  return makeShared(_zipFile, newVirtual, _realNode, 0, false, _mode);
 }
 
 #endif  // ZIP_SUPPORT

@@ -21,13 +21,21 @@
 #include "FSNode.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNode::FSNode(const AbstractFSNodePtr& realNode)
-  : _realNode{realNode}
+FSNode::FSNode(const AbstractFSNodePtr& realNode, ZipMode zipMode)
+  : _realNode{realNode},
+    _zipMode{zipMode}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNode::FSNode(string_view path)
+{
+  setPath(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode::FSNode(string_view path, ZipMode zipMode)
+  : _zipMode{zipMode}
 {
   setPath(path);
 }
@@ -41,8 +49,14 @@ void FSNode::setPath(string_view path)
 
   // Is this potentially a ZIP archive?
 #ifdef ZIP_SUPPORT
-  if(BSPF::containsIgnoreCase(path, ".zip"))
-    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::ZIP);
+  // A libretro frontend loads ROMs itself, extracting them from archives
+  #ifdef __LIB_RETRO__
+  const bool zipAllowed = _zipMode == ZipMode::Data;
+  #else
+  constexpr bool zipAllowed = true;
+  #endif
+  if(zipAllowed && BSPF::containsIgnoreCase(path, ".zip"))
+    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::ZIP, _zipMode);
   else
 #endif
     _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::SYSTEM);
@@ -93,8 +107,8 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
       if(i.hasExtension(".zip"))
       {
         const AbstractFSNodePtr ptr = FSNodeFactory::create(
-            i.getPath(), FSNodeFactory::Type::ZIP);
-        i = FSNode(ptr);
+            i.getPath(), FSNodeFactory::Type::ZIP, _zipMode);
+        i = FSNode(ptr, _zipMode);
       }
     }
   #endif
@@ -153,16 +167,16 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     {
       // Force ZIP c'tor to be called
       const AbstractFSNodePtr ptr = FSNodeFactory::create(
-          i->getPath(), FSNodeFactory::Type::ZIP);
+          i->getPath(), FSNodeFactory::Type::ZIP, _zipMode);
 
-      if(FSNode zipNode(ptr); filter(zipNode))
+      if(FSNode zipNode(ptr, _zipMode); filter(zipNode))
       {
         if(!includeChildDirectories)
           fslist.emplace_back(std::move(zipNode));
         else
         {
           // Filter by zip node but add the underlying file node
-          FSNode node(i);
+          FSNode node(i, _zipMode);
           fslist.emplace_back(std::move(node));
         }
       }
@@ -170,7 +184,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     else
   #endif
     {
-      if(FSNode node(i); includeChildDirectories)
+      if(FSNode node(i, _zipMode); includeChildDirectories)
       {
         if(i->isDirectory())
           node.getChildren(fslist, mode, filter, includeChildDirectories, false, isCancelled);
@@ -217,7 +231,7 @@ FSNode FSNode::getSiblingNode(string_view ext) const
 {
   if(_realNode)
     if(const auto sibling = _realNode->getSiblingNode(ext); sibling)
-      return FSNode(sibling);
+      return FSNode(sibling, _zipMode);
 
   string s = getPath();
   const size_t dot = s.find_last_of('.');
@@ -226,7 +240,7 @@ FSNode FSNode::getSiblingNode(string_view ext) const
   else
     s.append(ext);
 
-  return FSNode(s);
+  return FSNode(s, _zipMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,7 +285,7 @@ FSNode FSNode::getParent() const
     return *this;
 
   const AbstractFSNodePtr node = _realNode->getParent();
-  return node ? FSNode(node) : *this;
+  return node ? FSNode(node, _zipMode) : *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

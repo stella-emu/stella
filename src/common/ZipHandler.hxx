@@ -28,6 +28,10 @@
 
 #include "bspf.hxx"
 
+#ifdef __LIB_RETRO__
+  struct retro_vfs_file_handle;
+#endif
+
 /**
   This class implements a thin wrapper around the zip file management code
   from the MAME project.
@@ -147,6 +151,11 @@ class ZipHandler
 
       string  myFilename;     // copy of ZIP filename (for caching)
       std::fstream myStream;  // C++ fstream file handle
+    #ifdef __LIB_RETRO__
+      // Frontend VFS file handle, used instead of myStream when available
+      struct VfsClose { void operator()(retro_vfs_file_handle* file) const; };
+      std::unique_ptr<retro_vfs_file_handle, VfsClose> myVfsFile;
+    #endif
       uInt64  myLength{0};    // length of zip file
       uInt16  myRomfiles{0};  // number of ROM files in central directory
 

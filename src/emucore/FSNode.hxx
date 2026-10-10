@@ -63,6 +63,12 @@ class FSNode
      */
     enum class ListMode: uInt8 { FilesOnly, DirectoriesOnly, All };
 
+    /**
+     * How a path into a ZIP archive is resolved: Rom treats the archive as a
+     * container of ROMs (as the launcher does), Data as a plain directory tree.
+     */
+    enum class ZipMode: uInt8 { Rom, Data };
+
     /** Function used to filter the file listing.  Returns true if the filename
         should be included, else false.*/
     using NameFilter = std::function<bool(const FSNode& node)>;
@@ -86,6 +92,13 @@ class FSNode
      * used (usually the root directory).
      */
     explicit FSNode(string_view path);
+
+    /**
+     * Create a new FSNode referring to the specified path, resolving any ZIP
+     * archive in it with the given mode.  Nodes derived from this one (its
+     * children, parent, etc.) use the same mode.
+     */
+    FSNode(string_view path, ZipMode zipMode);
 
     /**
      * Assignment operators.
@@ -350,8 +363,9 @@ class FSNode
     std::fstream  openFStream (std::ios::openmode mode = std::ios_base::binary) const;
 
   private:
-    explicit FSNode(const AbstractFSNodePtr& realNode);
+    FSNode(const AbstractFSNodePtr& realNode, ZipMode zipMode);
     AbstractFSNodePtr _realNode;
+    ZipMode _zipMode{ZipMode::Rom};
     void setPath(string_view path);
 };
 

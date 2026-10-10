@@ -96,6 +96,10 @@ class KidVid : public Controller
     // Get name of the current sample file
     string getFileName() const;
 
+    // Directory holding the current tape's sample files, preferring the ZIP
+    // of the whole collection; empty if they aren't found
+    string sampleDir() const;
+
     // Map myTape (1-4) + myGame to an index
     uInt32 tapeIndex() const;
 

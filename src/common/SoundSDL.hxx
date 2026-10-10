@@ -185,17 +185,35 @@ class SoundSDL : public Sound
         void stop();
         void close();
         void rebind(SDL_AudioDeviceID device) const;
-        uInt32 size() const { return myBuffer ? myRemaining : 0; }
+        uInt32 size() const { return myRemaining; }
         void setSpeed(double speed) { mySpeed = speed; }
         void setVolumeFactor(float volumeFactor);
         void pause(bool state) const;
 
       private:
-        string myFilename;
+        // A loaded WAV file
+        struct Wav
+        {
+          string name;
+          SDL_AudioSpec spec{};
+          uInt8* buffer{nullptr};
+          uInt32 length{0};
+        };
+
+        // Load the given file into a WAV that wavCallback isn't reading
+        static bool load(Wav& wav, const string& fileName);
+        static void release(Wav& wav);
+
+      private:
+        // The two most recently played stay loaded, since KidVid alternates
+        // between a tape's own file and one shared by all tapes
+        std::array<Wav, 2> myWavs;
+        // Index of the most recently played
+        size_t myLast{1};
+        // Started and not yet stopped
+        bool myPlaying{false};
+
         SDL_AudioStream* myStream{nullptr};
-        SDL_AudioSpec mySpec{};
-        uInt8* myBuffer{nullptr};
-        uInt32 myLength{0};
         double mySpeed{1.0};
         float myVolumeFactor{1.F};  // Current volume level (0.F - 1.F)
 

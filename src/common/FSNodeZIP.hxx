@@ -20,6 +20,7 @@
 #ifndef FS_NODE_ZIP_HXX
 #define FS_NODE_ZIP_HXX
 
+#include <mutex>
 #include <stdexcept>
 
 #include "ZipHandler.hxx"
@@ -32,6 +33,10 @@
  * archive is empty.  Hence, if a ZIP archive isn't a directory *or* a file,
  * it is invalid.
  *
+ * The above is ZipMode::Rom.  In ZipMode::Data the archive is a plain
+ * directory tree instead: an entry is a file whatever its extension, a path
+ * that entries lie under is a directory, and any other path doesn't exist.
+ *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */
 class FSNodeZIP : public AbstractFSNode
@@ -39,13 +44,15 @@ class FSNodeZIP : public AbstractFSNode
   public:
     using ZipError = ZipHandler::ZipError;
     using ZipException = ZipHandler::ZipException;
+    using ZipMode = FSNode::ZipMode;
 
     /**
      * Creates a FSNodeZIP for a given path.
      *
      * @param path  String with the path the new node should point to.
+     * @param mode  How the path into the archive is resolved
      */
-    explicit FSNodeZIP(string_view path);
+    FSNodeZIP(string_view path, ZipMode mode);
 
     bool exists() const override;
     const string& getName() const override  { return _name; }
@@ -82,14 +89,14 @@ class FSNodeZIP : public AbstractFSNode
     // Passkey: only FSNodeZIP internals can construct Key{}, enabling make_shared
     struct Key { explicit Key() = default; };
     FSNodeZIP(Key, string_view zipfile, string_view virtualpath,
-        const AbstractFSNodePtr& realnode, size_t size, bool isdir);
+        const AbstractFSNodePtr& realnode, size_t size, bool isdir, ZipMode mode);
 
   private:
     void setFlags(string_view zipfile, string_view virtualpath,
         const AbstractFSNodePtr& realnode);
 
     static AbstractFSNodePtr makeShared(string_view zipfile, string_view virtualpath,
-        const AbstractFSNodePtr& realnode, size_t size, bool isdir);
+        const AbstractFSNodePtr& realnode, size_t size, bool isdir, ZipMode mode);
 
     friend std::ostream& operator<<(std::ostream& os, const FSNodeZIP& node) {
       os << "_zipFile:     " << node._zipFile << '\n'
@@ -112,11 +119,18 @@ class FSNodeZIP : public AbstractFSNode
 
     enum class NodeKind : uInt8 { Invalid, File, Directory };
     NodeKind _kind{NodeKind::Invalid};
+    ZipMode _mode{ZipMode::Rom};
 
     // ZipHandler static reference variable responsible for accessing ZIP files
     static ZipHandler& zipHandler() {
       static ZipHandler z;
       return z;
+    }
+
+    // Held for every use of zipHandler(), which the emulation thread also uses
+    static std::mutex& zipMutex() {
+      static std::mutex m;
+      return m;
     }
 };
 

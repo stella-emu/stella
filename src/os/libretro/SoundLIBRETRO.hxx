@@ -35,6 +35,7 @@
 #include "System.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "FSNode.hxx"
 #include "Sound.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
@@ -151,74 +152,23 @@ class SoundLIBRETRO : public Sound
     public:
       bool play(const string& fileName, uInt32 position, uInt32 length)
       {
-        if(fileName != myFilename || myBuffer.empty())
-        {
-          myBuffer.clear();
-          myFilename.clear();
+        // Reuse a loaded WAV, else load it over the less recently played one
+        const auto loaded = std::ranges::find_if(myWavs, [&](const Wav& w) {
+          return !w.data.empty() && w.name == fileName;
+        });
+        const size_t idx = loaded != myWavs.end() ? SZT(loaded - myWavs.begin()) : 1 - myLast;
+        const Wav& wav = myWavs[idx];
 
-          std::ifstream f(fileName, std::ios::binary);
-          if(!f) return false;
+        // Whatever was playing stops, even if this WAV can't be played
+        stop();
+        if((loaded == myWavs.end() && !load(myWavs[idx], fileName)) ||
+           position > U32(wav.data.size()))
+          return false;
 
-          auto read32 = [&](uInt32& v) { f.read(reinterpret_cast<char*>(&v), 4); };
-          auto read16 = [&](uInt16& v) { f.read(reinterpret_cast<char*>(&v), 2); };
-
-          char tag[4];
-          uInt32 u32{}; uInt16 u16{};
-
-          f.read(tag, 4); if(std::memcmp(tag, "RIFF", 4) != 0) return false;
-          read32(u32);
-          f.read(tag, 4); if(std::memcmp(tag, "WAVE", 4) != 0) return false;
-
-          uInt16 audioFormat = 0, channels = 0, bitsPerSample = 0;
-          uInt32 sampleRate = 0, dataSize = 0;
-          bool haveFmt = false, haveData = false;
-
-          while(f && !(haveFmt && haveData))
-          {
-            char id[4]; uInt32 chunkSize{};
-            f.read(id, 4);
-            read32(chunkSize);
-            if(!f) break;
-
-            const auto chunkStart = f.tellg();
-
-            if(!std::memcmp(id, "fmt ", 4) && chunkSize >= 16)
-            {
-              read16(audioFormat);
-              read16(channels);
-              read32(sampleRate);
-              read32(u32);  // byte rate
-              read16(u16);  // block align
-              read16(bitsPerSample);
-              haveFmt = true;
-            }
-            else if(!std::memcmp(id, "data", 4))
-            {
-              myBuffer.resize(chunkSize);
-              f.read(reinterpret_cast<char*>(myBuffer.data()), chunkSize);
-              dataSize = U32(f.gcount());
-              haveData = true;
-            }
-
-            f.seekg(chunkStart +
-                    static_cast<std::streamoff>(chunkSize) +
-                    static_cast<std::streamoff>(chunkSize & 1));
-          }
-
-          if(!haveFmt || !haveData || audioFormat != 1) return false;
-          if(!channels || (bitsPerSample != 8 && bitsPerSample != 16)) return false;
-
-          myFilename      = fileName;
-          mySampleRate    = sampleRate;
-          myChannels      = channels;
-          myBitsPerSample = bitsPerSample;
-          myLength        = dataSize;
-          myBuffer.resize(dataSize);
-        }
-
-        if(position > myLength) return false;
+        myLast        = idx;
         myPos         = position;
-        myEnd         = length ? std::min(position + length, myLength) : myLength;
+        myEnd         = length ? std::min(position + length, U32(wav.data.size()))
+                               : U32(wav.data.size());
         myRemaining   = myEnd - myPos;
         myAccumulator = 0.0;
         return true;
@@ -230,15 +180,16 @@ class SoundLIBRETRO : public Sound
 
       void mix(Int16* stream, uInt32 numSamples, uInt32 outputRate)
       {
-        if(!myRemaining || !mySampleRate) return;
+        const Wav& wav = myWavs[myLast];
+        if(!myRemaining || !wav.rate) return;
 
-        const uInt32 frameSize = myChannels * (myBitsPerSample / 8);
-        const double step = DBL(mySampleRate) / outputRate;
+        const uInt32 frameSize = wav.channels * (wav.bits / 8);
+        const double step = DBL(wav.rate) / outputRate;
 
         for(auto i = 0UZ; i < numSamples && myPos < myEnd; ++i)
         {
-          const Int16 wavL = sample(myPos);
-          const Int16 wavR = (myChannels > 1) ? sample(myPos + myBitsPerSample / 8) : wavL;
+          const Int16 wavL = sample(wav, myPos);
+          const Int16 wavR = (wav.channels > 1) ? sample(wav, myPos + wav.bits / 8) : wavL;
 
           stream[i * 2]     = I16(std::clamp(
               I32(stream[i * 2])     + wavL, -32768, 32767));
@@ -257,22 +208,96 @@ class SoundLIBRETRO : public Sound
       }
 
     private:
-      Int16 sample(uInt32 pos) const
+      // A loaded PCM WAV file
+      struct Wav
       {
-        if(myBitsPerSample == 8)
-          return I16((I32(myBuffer[pos]) - 128) << 8);
-        return I16(myBuffer[pos] | (U16(myBuffer[pos + 1]) << 8));
+        string    name;
+        ByteArray data;
+        uInt32    rate{0};
+        uInt16    channels{1};
+        uInt16    bits{8};
+      };
+
+      // Load a PCM WAV file, which may be an entry in a ZIP archive
+      static bool load(Wav& wav, const string& fileName)
+      {
+        wav = Wav{};
+
+        ByteArray file;
+        try
+        {
+          FSNode(fileName, FSNode::ZipMode::Data).read(file);
+        }
+        catch(const std::runtime_error&)
+        {
+          return false;
+        }
+
+        const auto u16 = [&file](size_t at) {
+          return U16(file[at] | (U32(file[at + 1]) << 8U));
+        };
+        const auto u32 = [&u16](size_t at) {
+          return U32(u16(at) | (U32(u16(at + 2)) << 16U));
+        };
+        const auto isChunk = [&file](size_t at, const char* id) {
+          return std::memcmp(file.data() + at, id, 4) == 0;
+        };
+
+        if(file.size() < 12 || !isChunk(0, "RIFF") || !isChunk(8, "WAVE"))
+          return false;
+
+        uInt16 format = 0;
+        bool haveFmt = false, haveData = false;
+        for(size_t at = 12; at + 8 <= file.size() && !(haveFmt && haveData); )
+        {
+          const size_t size = u32(at + 4), body = at + 8;
+          const size_t avail = std::min(size, file.size() - body);
+
+          if(isChunk(at, "fmt ") && avail >= 16)
+          {
+            format       = u16(body);
+            wav.channels = u16(body + 2);
+            wav.rate     = u32(body + 4);
+            wav.bits     = u16(body + 14);
+            haveFmt = true;
+          }
+          else if(isChunk(at, "data"))
+          {
+            wav.data.assign(file.begin() + I64(body), file.begin() + I64(body + avail));
+            haveData = true;
+          }
+          at = body + size + (size & 1);
+        }
+
+        if(!haveFmt || !haveData || format != 1 || !wav.channels ||
+           (wav.bits != 8 && wav.bits != 16))
+        {
+          wav = Wav{};
+          return false;
+        }
+
+        // Whole frames only, so mix() never reads past the end
+        const size_t frameSize = wav.channels * (wav.bits / 8U);
+        wav.data.resize(wav.data.size() / frameSize * frameSize);
+        wav.name = fileName;
+        return !wav.data.empty();
       }
 
-      string    myFilename;
-      ByteArray myBuffer;
-      uInt32    myLength{0};
+      static Int16 sample(const Wav& wav, uInt32 pos)
+      {
+        if(wav.bits == 8)
+          return I16((I32(wav.data[pos]) - 128) << 8);
+        return I16(wav.data[pos] | (U16(wav.data[pos + 1]) << 8));
+      }
+
+      // The two most recently played stay loaded, since KidVid alternates
+      // between a tape's own file and one shared by all tapes
+      std::array<Wav, 2> myWavs;
+      // Index of the most recently played
+      size_t    myLast{1};
       uInt32    myPos{0};
       uInt32    myEnd{0};
       uInt32    myRemaining{0};
-      uInt32    mySampleRate{0};
-      uInt16    myChannels{1};
-      uInt16    myBitsPerSample{8};
       double    myAccumulator{0.0};
     };
 

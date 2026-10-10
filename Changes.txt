@@ -39,6 +39,9 @@
   * Added support for AR/Supercharger cassette load from MP3 and WAV,
     using real Supercharger BIOS (issue #286).
 
+  * Added full KidVid audio support; simply place KidVidAudio.zip in
+    your config directory (see docs).
+
   * Paddle / Driving Controller; extra buttons added for both left and
     right paddle.
 
@@ -159,7 +162,7 @@
   * For the libretro port:
     - RetroAchievements; basic support added
     - KidVid WAV playback; libretro port can now play WAV files for KidVid
-      carts (files go in saves/stella/)
+      carts (KidVidAudio.zip goes in saves/stella/)
     - Keyboard/Keypad controller handling added; Star Raiders now playable
     - SaveKey/AtariVox support added (NVRAM files go in saves/stella/nvram)
     - Expanded controller list in RetroArch UI with documentation
