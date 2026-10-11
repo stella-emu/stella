@@ -57,7 +57,7 @@ FBBackendSDL::FBBackendSDL(OSystem& osystem)
   // Resolve the live-resize facts now: this runs before any other subsystem
   // (see the note in OSystem::create), and X11 and Wayland disagree
   LiveResize::initialize(SDL_GetCurrentVideoDriver());
-  Logger::info(LiveResize::describe());
+  Logger::debug(LiveResize::describe());
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL object)
