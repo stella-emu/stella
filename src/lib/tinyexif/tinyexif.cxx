@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "tinyexif_lib.hxx"
+
 /*
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.

@@ -112,8 +112,8 @@ void KidVid::update()
     if(myTape)
     {
       static constexpr std::array<string_view, 6> gameName = {
-        "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
-        "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
+        "Greedy Smurf", "Harmony Smurf", "Handy Smurf",
+        "Spooky Spelling Bee", "Big Number Hunt", "Great Letter Roundup"
       };
 
       myIdx = myGame == Game::BBears ? NumBlockBits : 0; // KVData48/KVData44
