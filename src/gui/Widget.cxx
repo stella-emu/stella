@@ -1242,10 +1242,13 @@ void SliderWidget::drawWidget(bool hilite)
   s.fillRect(x + p, y - 2, 2, h + 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
-  if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - (_valueRightAligned ?
-                 (_valueLabel.size() + _valueUnit.size()) * _fontWidth :
-                 _valueLabelWidth), _y + firstTextY(), _valueLabelWidth,
+  // Draw the value and unit
+  const int alignmentOffset = _valueRightAligned ?
+    std::max(_valueLabelWidth - (static_cast<int>(_valueLabel.size() + _valueUnit.size())
+    * _fontWidth), 0) : 0;
+  if((_valueLabelWidth - alignmentOffset) > 0)
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth +
+                 alignmentOffset, _y + firstTextY(), _valueLabelWidth - alignmentOffset,
                  isEnabled() ? kTextColor : kColor);
 }
 

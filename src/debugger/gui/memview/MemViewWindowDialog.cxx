@@ -523,13 +523,13 @@ void MemViewWindowDialog::updateViews()
   updateAccessData();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MemViewWindowDialog::layout()
 {
   using GUI::BoxLayout;
   using GUI::anchoredItem;
   using GUI::stretchedItem;
+  using GUI::alignedItem;
   using GUI::widgetItem;
   using GUI::labeledRow;
   using Dir = BoxLayout::Dir;
@@ -546,7 +546,7 @@ void MemViewWindowDialog::layout()
             RAM_SETTINGS_GAP = VGAP * 4;
 
   // Create views now that it is foreseeable they will be assigned a size
-  if (myFirstLayout)
+  if(myFirstLayout)
     createViews();
 
   const auto buildRoot = [&](int mainMaxW) {
@@ -569,11 +569,14 @@ void MemViewWindowDialog::layout()
     settingsCol->addAuto(swatchRow(myShowReads, myReadColor));
     settingsCol->addAuto(swatchRow(myShowWrites, myWriteColor));
     settingsCol->addSpace(VGAP);
-    if constexpr (TWO_LINE_DECAY) {
+    if constexpr(TWO_LINE_DECAY) {
       settingsCol->addAuto(anchoredItem(myDecayLbl));
       settingsCol->addAuto(stretchedItem(myDecaySlider));
     } else {
-      settingsCol->addAuto(labeledRow(myDecayLbl, myDecaySlider));
+      auto decayRow = std::make_unique<BoxLayout>(BoxLayout::Dir::Horizontal);
+      decayRow->addAuto(anchoredItem(myDecayLbl));
+      decayRow->addStretch(alignedItem(myDecaySlider, GUI::HAlign::Right, GUI::VAlign::Center));
+      settingsCol->addAuto(std::move(decayRow));
     }
     settingsCol->addSpace(VGAP);
     settingsCol->addAuto(anchoredItem(myClearButton));
@@ -612,13 +615,22 @@ void MemViewWindowDialog::layout()
                                        I32(cartRamMin.h)));
     }
 
+    // Add correct first label for main area
+    ramRow->addStretchSpace(1, HBORDER);
+    ramRow->addAuto(GUI::alignedItem((myCartRamView && myBigCartRam) ? myCartRamLbl : myRomLbl,
+                    GUI::HAlign::Left, GUI::VAlign::Top));
+
     auto leftCol = std::make_unique<BoxLayout>(Dir::Vertical, RAM_SETTINGS_GAP);
     // Reserve the full candidate height so the settings column tracks a drag
     // continuously, rather than snapping when RAM's zoom level steps down
     leftCol->addFixed(std::move(ramRow), ramMaxH, 0);
-    leftCol->addAuto(std::move(settingsCol));
+    auto lowerLeft = std::make_unique<BoxLayout>(Dir::Horizontal);
+    lowerLeft->addAuto(std::move(settingsCol));
+    // Minimum extra space between the swatches and the first big view
+    lowerLeft->addSpace(HBORDER * 2);
+    leftCol->addAuto(std::move(lowerLeft));
 
-    if (mainMaxW > 0)
+    if(mainMaxW > 0)
     {
       // Calculate the best sizes of the main views
       const int mainMaxH = _h - 2 * DIALOG_MARGIN_V;
@@ -642,10 +654,10 @@ void MemViewWindowDialog::layout()
     root->addAuto(std::move(leftCol));
     if(myBigCartRam)
     {
-      root->addAuto(GUI::alignedItem(myCartRamLbl, GUI::HAlign::Left, GUI::VAlign::Top));
       addMainView(*root, Cartridge::ImageScope::NONE, myCartRamView);
+      root->addAuto(GUI::alignedItem(myRomLbl, GUI::HAlign::Left, GUI::VAlign::Top));
     }
-    root->addAuto(GUI::alignedItem(myRomLbl, GUI::HAlign::Left, GUI::VAlign::Top));
+
     for(const auto& [scope, view]: myViews)
       if(scope != Cartridge::ImageScope::NONE)
         addMainView(*root, scope, view);
