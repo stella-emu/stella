@@ -8,13 +8,6 @@
 #ifndef ZCONF_H
 #define ZCONF_H
 
-/* Added by SA: 2018-12-18 */
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-#  define HAVE_UNISTD_H
-#endif
-#define HAVE_STDARG_H
-/***************************/
-
 /*
  * If you *really* need a unique prefix for all types and library functions,
  * compile with -DZ_PREFIX. The "standard" zlib should be compiled without it.

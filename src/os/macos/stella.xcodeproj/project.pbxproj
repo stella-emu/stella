@@ -3980,6 +3980,7 @@
 					SOUND_SUPPORT,
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
+					HAVE_UNISTD_H,
 					MAC_OSX,
 					"PNG_ARM_NEON_OPT=0",
 				);
@@ -4048,6 +4049,7 @@
 					SOUND_SUPPORT,
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
+					HAVE_UNISTD_H,
 					MAC_OSX,
 					"PNG_ARM_NEON_OPT=0",
 				);
