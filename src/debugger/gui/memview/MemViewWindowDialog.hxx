@@ -75,7 +75,9 @@ class MemViewWindowDialog : public Dialog
     static constexpr std::string_view TEXT_SHOW_PC = "Show PC";
     static constexpr std::string_view TEXT_SHOW_READS = "Show reads";
     static constexpr std::string_view TEXT_SHOW_WRITES = "Show writes";
-    static constexpr std::string_view TEXT_DECAY_RATE = "Decay rate:";
+    static constexpr bool TWO_LINE_DECAY = false;
+    static constexpr std::string_view TEXT_DECAY_RATE = "Decay rate: ";
+    static constexpr std::string_view TEXT_DECAY = "Decay: ";
     static constexpr std::string_view TEXT_CLEAR = "Clear";
 
   public:

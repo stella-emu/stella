@@ -1035,14 +1035,15 @@ void CheckboxWidget::drawWidget(bool hilite)
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int trackChars, GuiCmd::Code cmd, int valueChars,
                            string_view valueUnit, int valueLabelGap,
-                           bool forceLabelSign)
+                           bool forceLabelSign, bool valueRightAligned)
   : ButtonWidget(boss, font,
                  (trackChars != 0 ? trackChars : 10) * font.getMaxCharWidth(),
                  font.getLineHeight(), "", cmd),
     _valueUnit{valueUnit},
     _valueLabelGap{valueLabelGap},
     _valueLabelWidth{valueChars * font.getMaxCharWidth()},
-    _forceLabelSign{forceLabelSign}
+    _forceLabelSign{forceLabelSign},
+    _valueRightAligned{valueRightAligned}
 {
   _flags = Widget::Flag::Enabled | Widget::Flag::TrackMouse | Widget::Flag::ClearBG;
   _bgcolor = kDlgColor;
@@ -1241,9 +1242,13 @@ void SliderWidget::drawWidget(bool hilite)
   s.fillRect(x + p, y - 2, 2, h + 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
-  if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth,
-                 _y + firstTextY(), _valueLabelWidth,
+  // Draw the value and unit
+  const int alignmentOffset = _valueRightAligned ?
+    std::max(_valueLabelWidth - (static_cast<int>(_valueLabel.size() + _valueUnit.size())
+    * _fontWidth), 0) : 0;
+  if((_valueLabelWidth - alignmentOffset) > 0)
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth +
+                 alignmentOffset, _y + firstTextY(), _valueLabelWidth - alignmentOffset,
                  isEnabled() ? kTextColor : kColor);
 }
 
