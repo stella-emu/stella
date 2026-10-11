@@ -2,51 +2,41 @@
   TinyEXIF.h -- A simple ISO C++ library to parse basic EXIF and XMP
                 information from a JPEG file.
 
-  Copyright (c) 2015-2017 Seacave
+  Copyright (c) 2015-2025 Seacave
   cdc.seacave@gmail.com
-  All rights reserved.
-
-  Based on the easyexif library (2013 version)
-    https://github.com/mayanklahiri/easyexif
-  of Mayank Lahiri (mlahiri@gmail.com).
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-
-   - Redistributions of source code must retain the above copyright notice,
-     this list of conditions and the following disclaimer.
-   - Redistributions in binary form must reproduce the above copyright notice,
-     this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY EXPRESS
-  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
-  NO EVENT SHALL THE FREEBSD PROJECT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  MIT License
 */
 
 #ifndef __TINYEXIF_H__
 #define __TINYEXIF_H__
-
-//////////////////////////////////////////////
-// Added by SA (2023-05-05), needed for gcc-13
-#define TINYEXIF_NO_XMP_SUPPORT
-#include <cstdlib>
-//////////////////////////////////////////////
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
 #define TINYEXIF_MAJOR_VERSION 1
-#define TINYEXIF_MINOR_VERSION 0
-#define TINYEXIF_PATCH_VERSION 3
+#define TINYEXIF_MINOR_VERSION 2
+#define TINYEXIF_PATCH_VERSION 0
+
+// TINYEXIF_VERSION_STRING and TINYEXIF_VERSION are derived from the three
+// macros above -- change only MAJOR/MINOR/PATCH above, never these directly.
+// CMakeLists.txt also reads MAJOR/MINOR/PATCH out of this header, so it is
+// the single source of truth for the library version.
+#define TINYEXIF_STRINGIZE_(x) #x
+#define TINYEXIF_STRINGIZE(x) TINYEXIF_STRINGIZE_(x)
+#define TINYEXIF_VERSION_STRING \
+	TINYEXIF_STRINGIZE(TINYEXIF_MAJOR_VERSION) "." \
+	TINYEXIF_STRINGIZE(TINYEXIF_MINOR_VERSION) "." \
+	TINYEXIF_STRINGIZE(TINYEXIF_PATCH_VERSION)
+
+// Numeric version for #if comparisons (macro values, not strings, are
+// required in preprocessor conditions). Encodes MAJOR/MINOR/PATCH as
+// MAJOR*10000 + MINOR*100 + PATCH, leaving room for two-digit MINOR/PATCH
+// components. Example: gate use of an API added in 1.1.0 like this:
+//   #if TINYEXIF_VERSION >= 10100
+//   // use TinyEXIF::EXIFInfo::HasField(), added in 1.1.0
+//   #endif
+#define TINYEXIF_VERSION (TINYEXIF_MAJOR_VERSION*10000 + TINYEXIF_MINOR_VERSION*100 + TINYEXIF_PATCH_VERSION)
 
 #ifdef _MSC_VER
 #   ifdef TINYEXIF_EXPORT
@@ -78,6 +68,126 @@ enum FieldCode {
 	FIELD_XMP                = (1 << 1), // XMP data available
 	FIELD_ALL                = FIELD_EXIF|FIELD_XMP
 };
+
+// Identifies one data field of EXIFInfo, for HasField()/GetFields(); it tells
+// "tag absent" apart from "tag present and legitimately zero", which the value
+// of a zero-initialized field alone can not.
+// There is one enumerator per destination field, named FIELD_ID_ after the
+// member it fills, not after the EXIF tag number: several EXIF tags and their
+// XMP equivalents write the same member, and either source setting it counts
+// as present. Note that FieldCode above (FIELD_EXIF/FIELD_XMP) is a different
+// thing: it says which segment was found, not which tags were parsed.
+// A floating point field only ever holds a finite value: a tag whose value is
+// NaN or infinite, or converts to one, is treated as malformed and left absent.
+// New enumerators are appended before FIELD_ID_COUNT, so the numeric value of
+// an existing one never changes.
+enum FieldID {
+	// EXIFInfo
+	FIELD_ID_ImageWidth = 0,
+	FIELD_ID_ImageHeight,
+	FIELD_ID_RelatedImageWidth,
+	FIELD_ID_RelatedImageHeight,
+	FIELD_ID_ImageDescription,
+	FIELD_ID_Make,
+	FIELD_ID_Model,
+	FIELD_ID_SerialNumber,
+	FIELD_ID_Orientation,
+	FIELD_ID_XResolution,
+	FIELD_ID_YResolution,
+	FIELD_ID_ResolutionUnit,
+	FIELD_ID_BitsPerSample,
+	FIELD_ID_Software,
+	FIELD_ID_DateTime,
+	FIELD_ID_DateTimeOriginal,
+	FIELD_ID_DateTimeDigitized,
+	FIELD_ID_SubSecTimeOriginal,
+	FIELD_ID_Copyright,
+	FIELD_ID_ExposureTime,
+	FIELD_ID_FNumber,
+	FIELD_ID_ExposureProgram,
+	FIELD_ID_ISOSpeedRatings,           // also set by the ExposureIndex tag, used interchangeably
+	FIELD_ID_ShutterSpeedValue,
+	FIELD_ID_ApertureValue,
+	FIELD_ID_BrightnessValue,
+	FIELD_ID_ExposureBiasValue,
+	FIELD_ID_SubjectDistance,
+	FIELD_ID_FocalLength,
+	FIELD_ID_Flash,
+	FIELD_ID_MeteringMode,
+	FIELD_ID_LightSource,
+	FIELD_ID_ProjectionType,            // the numeric value derived from GPano:ProjectionType
+	FIELD_ID_SubjectArea,               // set if at least one of its components was read
+	// EXIFInfo::Calibration
+	FIELD_ID_Calibration_FocalLength,
+	FIELD_ID_Calibration_OpticalCenterX,
+	FIELD_ID_Calibration_OpticalCenterY,
+	// EXIFInfo::Distortion
+	FIELD_ID_Distortion_DewarpFlag,
+	FIELD_ID_Distortion_K1,
+	FIELD_ID_Distortion_K2,
+	FIELD_ID_Distortion_P1,
+	FIELD_ID_Distortion_P2,
+	FIELD_ID_Distortion_K3,
+	// EXIFInfo::LensInfo
+	FIELD_ID_LensInfo_FStopMin,
+	FIELD_ID_LensInfo_FStopMax,
+	FIELD_ID_LensInfo_FocalLengthMin,
+	FIELD_ID_LensInfo_FocalLengthMax,
+	FIELD_ID_LensInfo_DigitalZoomRatio,
+	FIELD_ID_LensInfo_FocalLengthIn35mm,
+	FIELD_ID_LensInfo_FocalPlaneXResolution,
+	FIELD_ID_LensInfo_FocalPlaneYResolution,
+	FIELD_ID_LensInfo_FocalPlaneResolutionUnit,
+	FIELD_ID_LensInfo_Make,
+	FIELD_ID_LensInfo_Model,
+	// EXIFInfo::GeoLocation
+	FIELD_ID_GeoLocation_Latitude,      // set by the GPSLatitude components feeding LatComponents
+	FIELD_ID_GeoLocation_Longitude,     // set by the GPSLongitude components feeding LonComponents
+	FIELD_ID_GeoLocation_Altitude,
+	FIELD_ID_GeoLocation_AltitudeRef,
+	FIELD_ID_GeoLocation_RelativeAltitude,
+	FIELD_ID_GeoLocation_RollDegree,
+	FIELD_ID_GeoLocation_PitchDegree,
+	FIELD_ID_GeoLocation_YawDegree,
+	FIELD_ID_GeoLocation_SpeedX,
+	FIELD_ID_GeoLocation_SpeedY,
+	FIELD_ID_GeoLocation_SpeedZ,
+	FIELD_ID_GeoLocation_AccuracyXY,
+	FIELD_ID_GeoLocation_AccuracyZ,
+	FIELD_ID_GeoLocation_GPSDOP,
+	FIELD_ID_GeoLocation_GPSDifferential,
+	FIELD_ID_GeoLocation_GPSMapDatum,
+	FIELD_ID_GeoLocation_GPSTimeStamp,
+	FIELD_ID_GeoLocation_GPSDateStamp,
+	FIELD_ID_GeoLocation_LatComponents_direction,// GPSLatitudeRef, the N/S hemisphere of Latitude
+	FIELD_ID_GeoLocation_LonComponents_direction,// GPSLongitudeRef, the E/W hemisphere of Longitude
+	// EXIFInfo::GPano
+	FIELD_ID_GPano_PosePitchDegrees,
+	FIELD_ID_GPano_PoseRollDegrees,
+	FIELD_ID_GPano_PoseHeadingDegrees,
+	FIELD_ID_GPano_ProjectionType,
+	FIELD_ID_GPano_CroppedAreaImageWidthPixels,
+	FIELD_ID_GPano_CroppedAreaImageHeightPixels,
+	FIELD_ID_GPano_FullPanoWidthPixels,
+	FIELD_ID_GPano_FullPanoHeightPixels,
+	FIELD_ID_GPano_CroppedAreaLeftPixels,
+	FIELD_ID_GPano_CroppedAreaTopPixels,
+	// EXIFInfo::MicroVideo
+	FIELD_ID_MicroVideo_HasMicroVideo,
+	FIELD_ID_MicroVideo_MicroVideoVersion,
+	FIELD_ID_MicroVideo_MicroVideoOffset,
+	FIELD_ID_MicroVideo_HasMotionPhoto,
+	FIELD_ID_MicroVideo_MotionPhotoLength,
+	FIELD_ID_MicroVideo_MotionPhotoMime,
+	// added in 1.2.0
+	FIELD_ID_MaxApertureValue,
+	FIELD_ID_MPImages,                  // set if the MPF index listed at least one image
+	FIELD_ID_COUNT                      // number of known fields; not a field itself
+};
+
+// Return the name of the given field as the path of the member it fills,
+// e.g. "GeoLocation.Altitude"; empty string if the ID is not a known field.
+TINYEXIF_LIB const char* FieldName(FieldID id);
 
 class EntryParser;
 
@@ -138,15 +248,37 @@ public:
 	// Should be called before parsing a new stream.
 	void clear();
 
+	// Return true if the given field was actually present in the parsed data;
+	// this is what distinguishes a tag that was absent from a tag that was
+	// present and legitimately zero, which the field value alone can not.
+	bool HasField(FieldID id) const;
+	// Return the ID of every field that was found, in FieldID order;
+	// see FieldName() to turn one into a printable name.
+	std::vector<FieldID> GetFields() const;
+
 private:
-	// Parse tag as Image IFD.
-	void parseIFDImage(EntryParser&, unsigned&, unsigned&);
+	// Parse tag as Image IFD; the sub-IFD offsets are 64bit as they are read from
+	// attacker controlled data and must be range checked before being used.
+	void parseIFDImage(EntryParser&, uint64_t&, uint64_t&);
 	// Parse tag as Exif IFD.
 	void parseIFDExif(EntryParser&);
 	// Parse tag as GPS IFD.
 	void parseIFDGPS(EntryParser&);
 	// Parse tag as MakerNote IFD.
 	void parseIFDMakerNote(EntryParser&);
+	// Parse the MPF index, given the stream offset of its TIFF header.
+	int parseFromMPFSegment(const uint8_t* buf, unsigned len, uint64_t offset);
+
+	// Mark the given field as present.
+	void SetField(FieldID id);
+	// Mark the given field as present if 'fetched' says its fetch succeeded, and
+	// return 'fetched' unchanged; every fetch site is instrumented through this,
+	// so it neither hides which field it marks nor alters the control flow around it.
+	bool SetFieldIf(FieldID id, bool fetched);
+
+	// Presence bit per FieldID, queried by HasField(); a vector rather than a
+	// fixed-size array so that adding fields later does not change this layout.
+	std::vector<uint64_t> FieldsPresent;
 
 public:
 	// Data fields
@@ -192,8 +324,9 @@ public:
 	                                    // 7: portrait mode
 	                                    // 8: landscape mode
 	uint16_t ISOSpeedRatings;           // ISO speed
-	double ShutterSpeedValue;           // Shutter speed (reciprocal of exposure time)
-	double ApertureValue;               // The lens aperture
+	double ShutterSpeedValue;           // Shutter speed, converted from APEX to an exposure time in seconds
+	double ApertureValue;               // The lens aperture, converted from APEX to an f-number
+	double MaxApertureValue;            // The widest aperture of the lens, as an f-number
 	double BrightnessValue;             // The value of brightness
 	double ExposureBiasValue;           // Exposure bias value in EV
 	double SubjectDistance;             // Distance to focus point in meters
@@ -257,10 +390,24 @@ public:
 		double FocalLength;             // Focal length (pixels)
 		double OpticalCenterX;          // Principal point X (pixels)
 		double OpticalCenterY;          // Principal point Y (pixels)
+		bool hasCalibration() const;    // Return true if FocalLength, OpticalCenterX, OpticalCenterY are available (nonzero)
 	} Calibration;
+	struct TINYEXIF_LIB Distortion_t { // Lens distortion information
+		uint32_t DewarpFlag;            // Dewarp flag - indicates whether undistortion has been applied to the image
+										// UINT32_MAX: flag missing from EXIF data
+										// 0: no dewarp (raw image) - the image is distorted, should also have coefficients
+										// 1: dewarp applied (undistorted image)
+		double K1;
+		double K2;
+		double P1;
+		double P2;
+		double K3;
+		bool hasDewarpFlag() const; // Return true if DewarpFlag is available
+		bool hasDistortion() const; // Return true if any of K1, K2, P1, P2, K3 are available
+	} Distortion;
 	struct TINYEXIF_LIB LensInfo_t {    // Lens information
-		double FStopMin;                // Min aperture (f-stop)
-		double FStopMax;                // Max aperture (f-stop)
+		double FStopMin;                // Widest aperture (f-number) at FocalLengthMin
+		double FStopMax;                // Widest aperture (f-number) at FocalLengthMax
 		double FocalLengthMin;          // Min focal length (mm)
 		double FocalLengthMax;          // Max focal length (mm)
 		double DigitalZoomRatio;        // Digital zoom ratio when the image was shot
@@ -279,7 +426,10 @@ public:
 		double Latitude;                // Image latitude expressed as decimal
 		double Longitude;               // Image longitude expressed as decimal
 		double Altitude;                // Altitude in meters, relative to sea level
-		int8_t AltitudeRef;             // 0: above sea level, -1: below sea level
+		int8_t AltitudeRef;             // 0: above sea level
+										// 1: below sea level
+										// 2: positive sea-level reference
+										// 3: negative sea-level reference
 		double RelativeAltitude;        // Relative altitude in meters
 		double RollDegree;              // Flight roll in degrees
 		double PitchDegree;             // Flight pitch in degrees
@@ -303,23 +453,64 @@ public:
 			uint8_t direction;
 		} LatComponents, LonComponents; // Latitude/Longitude expressed in deg/min/sec
 		void parseCoords();             // Convert Latitude/Longitude from deg/min/sec to decimal
-		bool hasLatLon() const;         // Return true if (lat,lon) is available
+		bool hasLatLon() const;         // Return true if (lat,lon) is available; not when the GPS had no fix (GPSStatus 'V')
 		bool hasAltitude() const;       // Return true if (alt) is available
 		bool hasRelativeAltitude()const;// Return true if (rel_alt) is available
 		bool hasOrientation() const;    // Return true if (roll,yaw,pitch) is available
 		bool hasSpeed() const;          // Return true if (speedX,speedY,speedZ) is available
+		bool hasAccuracy() const;       // Return true if (accuracyXY,accuracyZ) is available
 	} GeoLocation;
-	struct TINYEXIF_LIB GPano_t {           // Spherical metadata. https://developers.google.com/streetview/spherical-metadata
+	struct TINYEXIF_LIB GPano_t {       // Spherical metadata. https://developers.google.com/streetview/spherical-metadata
 		double PosePitchDegrees;        // Pitch, measured in degrees above the horizon, for the center in the image. Value must be >= -90 and <= 90.
 		double PoseRollDegrees;         // Roll, measured in degrees, of the image where level with the horizon is 0. As roll increases, the horizon rotates counterclockwise in the image. Value must be > -180 and <= 180.
+		double PoseHeadingDegrees;      // Compass heading, measured in degrees, for the center in the image. Value must be >= 0 and < 360.
+		std::string ProjectionType;     // Type of image projection, e.g. "equirectangular" (raw spec string; see also EXIFInfo::ProjectionType for the derived numeric value)
+		uint32_t CroppedAreaImageWidthPixels;// Width of the image after cropping to the panoramic field-of-view
+		uint32_t CroppedAreaImageHeightPixels;// Height of the image after cropping to the panoramic field-of-view
+		uint32_t FullPanoWidthPixels;   // Width of the full panorama the cropped image represents (may exceed CroppedAreaImageWidthPixels)
+		uint32_t FullPanoHeightPixels;  // Height of the full panorama the cropped image represents (may exceed CroppedAreaImageHeightPixels)
+		uint32_t CroppedAreaLeftPixels; // Column where the left edge of the cropped image was cropped from the full panorama
+		uint32_t CroppedAreaTopPixels;  // Row where the top edge of the cropped image was cropped from the full panorama
 		bool hasPosePitchDegrees() const; // Return true if PosePitchDegrees is available
 		bool hasPoseRollDegrees() const; // Return true if PoseRollDegrees is available
+		bool hasPoseHeadingDegrees() const; // Return true if PoseHeadingDegrees is available
+		bool hasCroppedAreaImageWidthPixels() const; // Return true if CroppedAreaImageWidthPixels is available
+		bool hasCroppedAreaImageHeightPixels() const; // Return true if CroppedAreaImageHeightPixels is available
+		bool hasFullPanoWidthPixels() const; // Return true if FullPanoWidthPixels is available
+		bool hasFullPanoHeightPixels() const; // Return true if FullPanoHeightPixels is available
+		bool hasCroppedAreaLeftPixels() const; // Return true if CroppedAreaLeftPixels is available
+		bool hasCroppedAreaTopPixels() const; // Return true if CroppedAreaTopPixels is available
+		bool isEquirectangular() const; // Return true if ProjectionType is "equirectangular" or "spherical" (case-insensitive)
 	} GPano;
-	struct TINYEXIF_LIB MicroVideo_t {      // Google camera video file in metadata
+	struct TINYEXIF_LIB MicroVideo_t {  // Google camera video file in metadata
 		uint32_t HasMicroVideo;         // not zero if exists
 		uint32_t MicroVideoVersion;     // just regularinfo
-		uint32_t MicroVideoOffset;      // offset from end of file
+		uint32_t MicroVideoOffset;      // legacy GCamera:MicroVideo - offset from end of file
+		uint32_t HasMotionPhoto;        // GCamera:MotionPhoto - not zero if exists (newer container format, supersedes GCamera:MicroVideo)
+		uint32_t MotionPhotoLength;     // GCamera:MotionPhoto - length in bytes of the trailing video item, saturated at UINT32_MAX; a length, not an offset: it differs from MicroVideoOffset as soon as the container holds items after the video
+		std::string MotionPhotoMime;    // GCamera:MotionPhoto - mime type of the trailing video item, e.g. "video/mp4" (empty if the container declared none)
 	} MicroVideo;
+	struct TINYEXIF_LIB MPImage_t {     // An image stored in the file, as listed by its Multi-Picture Format index (MPF, CIPA DC-007)
+		uint32_t Type;                  // MP type code
+		                                // 0x000000: undefined
+		                                // 0x010001..0x010005: large thumbnail, a preview of the primary image (VGA, full HD, 4K, 8K, 16K equivalent)
+		                                // 0x020001: multi-frame panorama
+		                                // 0x020002: multi-frame disparity, one view of a stereo image
+		                                // 0x020003: multi-frame multi-angle
+		                                // 0x030000: baseline MP primary image
+		                                // 0x040000: original preservation image
+		                                // 0x050000: gain map image
+		uint8_t Format;                 // Image data format; 0: JPEG, the only one defined
+		uint8_t Flags;                  // Bit mask of
+		                                // 4: representative image
+		                                // 8: dependent child image
+		                                // 16: dependent parent image
+		uint32_t Length;                // Size of the image in bytes
+		uint64_t Offset;                // Start of the image in bytes, from the start of the JPEG stream; 0 for the first image, normally the one this metadata belongs to
+		bool isLargeThumbnail() const;  // Return true if this is a preview of the primary image (Type 0x01xxxx)
+	};
+	std::vector<MPImage_t> MPImages;    // Images listed by the MPF index, in its order (empty if there is none); they are only located, never read:
+	                                    // Offset and Length come from the file, so check them against its size before reading the image
 };
 
 } // namespace TinyEXIF

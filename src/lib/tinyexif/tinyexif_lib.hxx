@@ -18,6 +18,9 @@
 #ifndef TINYEXIF_LIB_HXX
 #define TINYEXIF_LIB_HXX
 
+// Stella doesn't read XMP metadata, which would also need tinyxml2
+#define TINYEXIF_NO_XMP_SUPPORT
+
 /*
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.

@@ -610,43 +610,48 @@ else
 fi
 
 #
-# Check for ZLib
+# Check for zlib and libpng
 #
-echocheck "zlib"
 if test "$_build_zip" = yes ; then
     _zlib=no
     $_pkg_config --exists zlib && _zlib=yes
-
-    if test "$_zlib" = yes ; then
-        echo "`$_pkg_config --modversion zlib`"
-    else
-        echo "disabled"
-        _build_png=no
-        _build_zip=no
-    fi
 else
-    echo "disabled"
     _build_png=no
     _build_zip=no
 fi
 
-#
-# Check for libpng
-#
-echocheck "libpng"
 if test "$_build_png" = yes ; then
     _libpng=no
     $_pkg_config --exists libpng && _libpng=yes
 
-    if test "$_libpng" = yes ; then
-        echo "`$_pkg_config --modversion libpng`"
+    # The built-in libpng is tied to the built-in zlib's version, so if
+    # either library is missing, both built-in versions are used
+    if test "$_zlib" != yes || test "$_libpng" != yes ; then
+        _zlib=no
+        _libpng=no
+    fi
+fi
+
+echocheck "zlib"
+if test "$_build_zip" = yes ; then
+    if test "$_zlib" = yes ; then
+        echo "`$_pkg_config --modversion zlib`"
     else
-        echo "disabled"
-        _build_png=no
+        echo "built-in"
     fi
 else
     echo "disabled"
-    _build_png=no
+fi
+
+echocheck "libpng"
+if test "$_build_png" = yes ; then
+    if test "$_libpng" = yes ; then
+        echo "`$_pkg_config --modversion libpng`"
+    else
+        echo "built-in"
+    fi
+else
+    echo "disabled"
 fi
 
 #
@@ -805,12 +810,12 @@ LD=$CXX
 
 case $_host_os in
     unix)
-      DEFINES="$DEFINES -DBSPF_UNIX"
+      DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_UNISTD_H"
       MODULES="$MODULES $SRC_OS/unix"
       INCLUDES="$INCLUDES -I$SRC_OS/unix"
       ;;
     darwin)
-      DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
+      DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS -DHAVE_UNISTD_H"
       MODULES="$MODULES $SRC_OS/unix"
       INCLUDES="$INCLUDES -I$SRC_OS/unix"
       if test "$have_clang" == yes; then
