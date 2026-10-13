@@ -44,6 +44,7 @@
 
 class AudioQueue;
 class DispatchResult;
+class RawStream;
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -151,6 +152,12 @@ class TIA : public Device
       playback with sound.
     */
     void setAudioRewindMode(bool enable);
+
+    /**
+      Send every finished frame and every audio sample, untouched, to the
+      raw stream (nullptr to stop).
+    */
+    void setRawStream(RawStream* stream);
 
     /**
       Clear the configured frame manager and deteach the lifecycle callbacks.
@@ -911,6 +918,8 @@ class TIA : public Device
     Ball myBall;
 
     Audio myAudio;
+
+    RawStream* myRawStream{nullptr};
 
     /**
      * The paddle readout circuits.

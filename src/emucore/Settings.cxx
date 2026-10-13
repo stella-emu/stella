@@ -354,6 +354,7 @@ Settings::Settings()
 #endif
 
   setTemporary("elf.dump", false);
+  setTemporary("rawstream", "");
 
   // Must flip only after the setPermanent/setTemporary calls above;
   // see the assert(!myConstructed) in each
@@ -651,7 +652,9 @@ void Settings::usage()
     << "  -sscrop       <1|0>            Automatically crop black borders from\n"
     << "                                  snapshots\n"
     << "  -ssinterval   <number>         Number of seconds between snapshots in\n"
-    << "                                  continuous snapshot mode\n\n"
+    << "                                  continuous snapshot mode\n"
+    << "  -rawstream    <path|->         Write every frame and audio sample, raw, to\n"
+    << "                                  a file, pipe or stdout ('-')\n\n"
     << "  -saveonexit   <none|current|   Automatically save state(s) when exiting\n"
     << "                 all>             emulation\n"
     << "  -autoslot     <0|1>            Automatically change to next save slot when\n"
