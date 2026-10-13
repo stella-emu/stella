@@ -1279,6 +1279,7 @@
     <ClCompile Include="..\..\emucore\Paddles.cxx" />
     <ClCompile Include="..\..\emucore\Props.cxx" />
     <ClCompile Include="..\..\emucore\PropsSet.cxx" />
+    <ClCompile Include="..\..\emucore\RawStream.cxx" />
     <ClCompile Include="..\..\emucore\SaveKey.cxx" />
     <ClCompile Include="..\..\emucore\Serializer.cxx" />
     <ClCompile Include="..\..\emucore\Settings.cxx" />
@@ -2769,6 +2770,7 @@
     <ClInclude Include="..\..\emucore\Props.hxx" />
     <ClInclude Include="..\..\emucore\PropsSet.hxx" />
     <ClInclude Include="..\..\emucore\Random.hxx" />
+    <ClInclude Include="..\..\emucore\RawStream.hxx" />
     <ClInclude Include="..\..\emucore\SaveKey.hxx" />
     <ClInclude Include="..\..\emucore\Serializable.hxx" />
     <ClInclude Include="..\..\emucore\Serializer.hxx" />

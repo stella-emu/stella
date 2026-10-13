@@ -17,6 +17,7 @@
 
 #include "Audio.hxx"
 #include "AudioQueue.hxx"
+#include "RawStream.hxx"
 
 #include <cmath>
 
@@ -65,6 +66,16 @@ void Audio::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Audio::setRawStream(RawStream* stream)
+{
+  myRawStream = stream;
+
+  if(myRawStream)
+    myRawStream->setMixingTables(myMixingTableSum.data(),
+                                 myMixingTableIndividual.data());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::createSample()
 {
   // Calculate average of all recent volume samples. the average for each
@@ -74,6 +85,8 @@ void Audio::createSample()
   mySumChannel0 = mySumChannel1 = mySumCt = 0;
 
   addSample(sample0, sample1);
+  if(myRawStream)
+    myRawStream->audioSample(U8(U32(sample0) | (U32(sample1) << 4U)));
   if(myRewindMode)
     mySamples.push_back(U32(sample0) | (U32(sample1) << 4U));
 }
