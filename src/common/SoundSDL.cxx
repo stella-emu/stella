@@ -474,7 +474,7 @@ bool SoundSDL::WavHandler::play(SDL_AudioDeviceID device,
 
   // Reuse a loaded WAV, else load it over the less recently played one;
   // wavCallback never reads that one, so loading needs no lock
-  const auto loaded = std::ranges::find_if(myWavs, [&](const Wav& w) {
+  const auto loaded = std::ranges::find_if(myWavs, [&](const Wav& w) { // NOLINT(readability-qualified-auto)
     return w.buffer && w.name == fileName;
   });
   const size_t idx = loaded != myWavs.end() ? SZT(loaded - myWavs.begin()) : 1 - myLast;
