@@ -162,7 +162,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     LabelWidget*    myRightPortDetected{nullptr};
     ButtonWidget*   myQuadTariButton{nullptr};
     CheckboxWidget* mySwapPorts{nullptr};
-    CheckboxWidget* myKeyPortari{nullptr};
+    ButtonWidget*   myKeyPortariButton{nullptr};
     CheckboxWidget* mySwapPaddles{nullptr};
     LabelWidget*    myEraseEEPROMLbl{nullptr};
     ButtonWidget*   myEraseEEPROMButton{nullptr};

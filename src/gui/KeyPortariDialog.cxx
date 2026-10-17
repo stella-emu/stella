@@ -20,6 +20,7 @@
 #include "EventHandler.hxx"
 #include "Widget.hxx"
 #include "PopUpWidget.hxx"
+#include "Layout.hxx"
 #include "Font.hxx"
 #include "Variant.hxx"
 #include "Props.hxx"
@@ -31,32 +32,18 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h, Properties& properties)
+KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, Properties& properties)
   : Dialog(boss->instance(), boss->parent(), font),
     myGameProperties{properties}
 {
-  // take as much space as available
-  _w = max_w;
-  _h = max_h;
-  
-  const int lineHeight = Dialog::lineHeight(),
-            VBORDER    = Dialog::vBorder(),
-            HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap();
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   WidgetArray wid;
+  VariantList protocols;
+  VarList::push_back(protocols, "ALPHANUMERIC");
+  VarList::push_back(protocols, "ASCII");
+
   VariantList ctrls;
 
-  const int pwidth = font.getStringWidth("Alphanumeric  "); // a bit wider looks better overall
-
-  ctrls.clear();
-  VarList::push_back(ctrls, "Alphanumeric", "ALPHANUMERIC");
-  VarList::push_back(ctrls, "Ascii", "ASCII");
-
-  myProtocolLabel = new LabelWidget(this, font, "Protocol");
-  myProtocol = new PopUpWidget(this, font, lineHeight, ctrls);
-  wid.push_back(myProtocol);
-
-  ctrls.clear();
   //VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
@@ -75,22 +62,91 @@ KeyPortariDialog::KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int m
   //VarList::push_back(ctrls, "Kid Vid", "KIDVID");
   //VarList::push_back(ctrls, "Light Gun", "LIGHTGUN");
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
-  //VarList::push_back(ctrls, "KeyPortari", "KeyPortari");
+  //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
+  // A couple of characters more than the items strictly need, which looks better
+  // overall -- so these state a width instead of taking the self-sizing ctor.
+  // layout() re-applies it, so it follows a live font change
+  const int pwidth = PopUpWidget::calcWidth(font, protocols) + Dialog::fontWidth() * 2;
+
+  myProtocolLabel = new LabelWidget(this, font, "Protocol");
+  myProtocol = new PopUpWidget(this, font, pwidth, protocols);
+  wid.push_back(myProtocol);
+
+  // A couple of characters more than the items strictly need, which looks better
+  // overall -- so these state a width instead of taking the self-sizing ctor.
+  // layout() re-applies it, so it follows a live font change
+  const int cwidth = PopUpWidget::calcWidth(font, protocols) + Dialog::fontWidth() * 2;
+  
   myLeftPortLabel = new LabelWidget(this, font, "Left port");
-  myLeft1Port = new PopUpWidget(this, font, lineHeight, ctrls);
-  myLeft1Port->setEnabled(true);
+  myLeft1Port = new PopUpWidget(this, font, cwidth, ctrls);
   wid.push_back(myLeft1Port);
 
   myRightPortLabel = new LabelWidget(this, font, "Right port");
-
-  myRight1Port = new PopUpWidget(this, font, lineHeight, ctrls);
+  myRight1Port = new PopUpWidget(this, font, cwidth, ctrls);
   wid.push_back(myRight1Port);
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
 
   setHelpAnchor("KeyPortari");
+  // NOLINTEND(cppcoreguidelines-prefer-member-initializer)
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void KeyPortariDialog::layout()
+{
+  using GUI::BoxLayout;
+  using GUI::stretchedItem;
+  using GUI::anchoredItem;
+  using GUI::labeledRow;
+  using Dir = BoxLayout::Dir;
+
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+
+  // See the c'tor: the width is the dialog's choice, so it is re-applied here
+  // from the live font rather than left at whatever the c'tor computed
+  const int pwidth = _font.getStringWidth("Alphanumeric  ");
+  for(auto* p: {myProtocol, myLeft1Port, myRight1Port})
+    p->setBoxWidth(pwidth);
+
+  // The popups' labels share one column, keeping their
+  // value boxes the same width and in line across both ports
+  GUI::alignLabels({{myProtocolLabel}, {myLeftPortLabel}, {myRightPortLabel}});
+
+  // Both ports have the same structure: a header label, then a popup
+  const auto portColumn = [&](LabelWidget* label, PopUpWidget* popup)
+  {
+    auto col = std::make_unique<BoxLayout>(Dir::Vertical, 0, 0, 0);
+    col->addAuto(anchoredItem(label));
+    col->addSpace(VGAP * 2);
+    col->addAuto(labeledRow(label, popup));
+    col->addSpace(VGAP);
+    return col;
+  };
+
+  // The protocol and port columns stacked
+  auto root = std::make_unique<BoxLayout>(Dir::Vertical, 0, HBORDER, VBORDER);
+  root->addAuto(portColumn(myProtocolLabel, myProtocol));
+  root->addSpace(VGAP);
+  root->addAuto(portColumn(myLeftPortLabel, myLeft1Port));
+  root->addSpace(VGAP);
+  root->addAuto(portColumn(myRightPortLabel, myRight1Port));
+
+  // The dialog is as large as the columns ask to be, and at least wide
+  // enough for the button row below them
+  const Common::Size natural = root->naturalSize();
+
+  _w = std::max(static_cast<int>(natural.w), Dialog::buttonGroupWidth());
+  _h = _th + static_cast<int>(natural.h) + buttonHeight + VBORDER;
+
+  root->doLayout(0, _th, _w, _h - _th);
+
+  // Standard button group (Defaults / OK / Cancel) along the bottom edge
+  layoutButtonGroup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,3 +205,4 @@ void KeyPortariDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd, in
       break;
   }
 }
+

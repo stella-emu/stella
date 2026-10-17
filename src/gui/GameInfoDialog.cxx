@@ -395,10 +395,10 @@ void GameInfoDialog::addControllersTab()
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
   
-  myKeyPortari = new CheckboxWidget(myTab, _font,
+  myKeyPortariButton = new ButtonWidget(myTab, _font,
                                   " KeyPortari" + ELLIPSIS + " ",
                                   Cmd::KeyPortariPressed);
-  wid.push_back(myKeyPortari);
+  wid.push_back(myKeyPortariButton);
 
   myQuadTariButton = new ButtonWidget(pane, _font,
                                       " QuadTari" + ELLIPSIS + " ", Cmd::QuadTariPressed);
@@ -511,9 +511,12 @@ void GameInfoDialog::addControllersTab()
     ports->place(CTRL,  LEFT, anchoredItem(myLeftPort));
     ports->place(EXTRA, LEFT, indentedItem(mySwapPorts, fontWidth * 3));
     ports->place(CTRL,  LEFTDET, stretchedItem(myLeftPortDetected), COLS - CTRL);
+    
+    ports->place(EXTRA, LEFTDET, indentedItem(myKeyPortariButton, fontWidth * 3));
 
     ports->place(LABEL, RIGHT, anchoredItem(myRightPortLbl));
     ports->place(CTRL,  RIGHT, anchoredItem(myRightPort));
+
     ports->place(EXTRA, RIGHT, indentedItem(myQuadTariButton, fontWidth * 3));
     ports->place(CTRL,  RIGHTDET, stretchedItem(myRightPortDetected), COLS - CTRL);
 
@@ -1581,7 +1584,7 @@ void GameInfoDialog::updateControllerStates()
                                BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
-  myKeyPortari->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
+  myKeyPortariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
                            BSPF::startsWithIgnoreCase(contrRight, "KEYPORTARI"));
   mySwapPaddles->setEnabled(enablePaddles);
 
@@ -1830,8 +1833,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
     {
       if(!myKeyPortariDialog)
         myKeyPortariDialog = make_unique<KeyPortariDialog>
-          (this, _font, _font.getMaxCharWidth() * 42, _font.getFontHeight() * 10,
-           myGameProperties);
+          (this, _font, myGameProperties);
       myKeyPortariDialog->open();
       break;
     }

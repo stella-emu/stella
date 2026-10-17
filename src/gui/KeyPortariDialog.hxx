@@ -29,20 +29,21 @@ class PopUpWidget;
 class KeyPortariDialog: public Dialog
 {
   public:
-    KeyPortariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
-                   Properties& properties);
+    KeyPortariDialog(GuiObject* boss, const GUI::Font& font, Properties& properties);
     ~KeyPortariDialog() override = default;
 
-  private:
     void loadConfig() override;
     void saveConfig() override;
-    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
     void setDefaults() override;
 
-    void loadControllerProperties(const Properties& props);
+  protected:
+    void handleCommand(CommandSender* sender, GuiCmd::Code cmd, int data, int id) override;
+    void layout() override;
 
   private:
-  
+    void loadControllerProperties(const Properties& props);
+
+  private:  
     LabelWidget* myProtocolLabel{nullptr};
     PopUpWidget*      myProtocol{nullptr};
   
