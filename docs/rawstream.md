@@ -1,6 +1,6 @@
 # Raw stream (`-rawstream`)
 
-This fork of Stella can write every emulated frame and every audio sample,
+Stella can write every emulated frame and every audio sample,
 untouched, to a file, a pipe or stdout. Stella does nothing else with it: no
 palette, scaling, filters, resampling or encoding. Outside tools turn it into
 whatever they need (a video, a live stream, a test log).
@@ -36,7 +36,7 @@ versions may add new chunks, and may add fields to the end of a payload.
 |---|---|---|
 | `HEAD` | Before the first frame, and again when the ROM or the TV type changes | Format and timing, see below |
 | `PALT` | After every `HEAD`, and whenever the palette changes | 256 x (R, G, B) bytes, indexed by the TIA color value |
-| `AUDI` | Before each `FRAM` | The audio samples since the previous `FRAM` |
+| `AUDI` | Before each `FRAM`, and before a `JUMP` | The audio samples since the previous `FRAM` |
 | `RAM ` | Just before each `FRAM` | The console's 128 bytes of RAM as the frame ended |
 | `FRAM` | Every emulated frame | One frame of TIA color values |
 | `JUMP` | Reset, state load (including rewind), ROM load | 1 byte: why |
@@ -110,7 +110,10 @@ previous frame's.
 | 1 | State loaded (save state, rewind, Time Machine) |
 | 2 | ROM loaded or reloaded (a `HEAD` follows) |
 
-Emulated time runs on from frame to frame except across a `JUMP`.
+Emulated time runs on from frame to frame except across a `JUMP`. The samples
+made since the last `FRAM` are written as an `AUDI` chunk just before the
+`JUMP`, so an `AUDI` is not always followed by a `FRAM`; those samples belong
+to the time before the jump.
 
 ## Where the data comes from
 
