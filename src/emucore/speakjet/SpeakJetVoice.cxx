@@ -430,6 +430,8 @@ const vector<double>& SpeakJetVoice::residual(int code, Point which, uInt8 bend)
   if(myResidualDone[slot][point])
     return r;
   myResidualDone[slot][point] = true;
+  if(myNoResidual)
+    return r;
 
   // That Bend's own recording, against the state as that Bend moves it
   const uInt32 rate = mySamples.rate();

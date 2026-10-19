@@ -17,9 +17,13 @@
 
 #include <cmath>
 
+#include "Console.hxx"
+#include "EmulationTiming.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
+#include "Serializer.hxx"
 #include "Sound.hxx"
+#include "System.hxx"
 #include "SpeakJetTables.hxx"
 #include "SpeakJetSoftware.hxx"
 
@@ -31,9 +35,17 @@ namespace {
   // and never more than this fraction of the sound being spliced
   constexpr size_t XFADE_DIVISOR = 8;
 
-  // READY drops while this much audio is still queued, standing in for the
-  // chip's 64-byte input buffer
-  constexpr uInt32 READY_MS = 250;
+  // The chip's input buffer, and the fill above which its Buffer Half Full
+  // line drops READY
+  constexpr size_t BUFFER_SIZE = 64;
+  constexpr size_t BUFFER_HALF = 32;
+
+  // The CPU clock to pace by before the console's timing is available
+  constexpr uInt64 NTSC_CPU_HZ = 1193182;
+
+  // Speech queued this far beyond what the chip has yet to say is dropped,
+  // as when emulation runs faster than real time
+  constexpr uInt64 MAX_AHEAD_MS = 500;
 
   // Sounds shorter than this are left alone; WSOLA needs room to work
   constexpr uInt32 MIN_SCALE_MS = 12;
@@ -68,8 +80,10 @@ namespace {
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SpeakJetSoftware::SpeakJetSoftware(const OSystem& osystem, string_view deadPort)
+SpeakJetSoftware::SpeakJetSoftware(const OSystem& osystem, const System& system,
+                                   string_view deadPort)
   : myOSystem{osystem},
+    mySystem{system},
     myDecoder{*this},
     mySamples{osystem.baseDir().getPath() + "speakjet" + FSNode::PATH_SEPARATOR},
     myVoice{mySamples}
@@ -97,9 +111,81 @@ SpeakJetSoftware::~SpeakJetSoftware()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJetSoftware::write(uInt8 code)
+{
+  retire();
+
+  // A full buffer loses the byte, as the chip's does
+  if(myBuffer.size() >= BUFFER_SIZE)
+    return;
+
+  // Time with nothing to say passes unspoken, so the chip reaches a byte
+  // arriving then at once
+  const uInt64 now = mySystem.cycles();
+  const uInt64 end = runEnd();
+  if(end < now)
+    myTimelineCycle += now - end;
+
+  myBuffer.push_back({code, std::max(end, now), myDecoder.state()});
+
+  // Any byte means the phrase goes on, even a command between two sounds
+  myIdleFrames = 0;
+  myDecoder.write(code);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJetSoftware::ready()
 {
-  return myOSystem.sound().speechQueued() < READY_MS;
+  // The AtariVox wires the chip's Buffer Half Full line to READY
+  retire();
+  return myBuffer.size() <= BUFFER_HALF;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJetSoftware::retire()
+{
+  const uInt64 now = mySystem.cycles();
+
+  // The cycle count starts again on a reset, so the timeline moves back with
+  // it, keeping what it holds in step
+  if(now < myTimelineCycle)
+  {
+    const uInt64 back = myTimelineCycle - now;
+    myTimelineCycle = now;
+    for(Queued& queued: myBuffer)
+      queued.atCycle -= std::min(queued.atCycle, back);
+  }
+
+  while(!myBuffer.empty() && myBuffer.front().atCycle <= now)
+    myBuffer.pop_front();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 SpeakJetSoftware::runEnd() const
+{
+  // The sound held back for its successor is already the chip's to say
+  double pendingMs = 0.0;
+  if(!myPendingSound.empty())
+    for(const Part& part: myPendingParts)
+      pendingMs += std::max(part.targetMs, 0.0);
+
+  return myTimelineCycle +
+         cyclesFor(myTimeline + U64(pendingMs * DBL(rate()) / 1000.0));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 SpeakJetSoftware::cyclesPerSecond() const
+{
+  // The controllers are made while the console is still being built, before
+  // OSystem has it, so until then the NTSC CPU clock stands in
+  return myOSystem.hasConsole()
+      ? myOSystem.console().emulationTiming().cyclesPerSecond() : NTSC_CPU_HZ;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 SpeakJetSoftware::cyclesFor(uInt64 samples) const
+{
+  return rate() == 0 ? 0 : samples * cyclesPerSecond() / rate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,6 +211,9 @@ void SpeakJetSoftware::silence()
   myFlowing = false;
   myStarting = true;
   myIdleFrames = 0;
+  myBuffer.clear();
+  myTimelineCycle = mySystem.cycles();
+  myTimeline = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,25 +241,40 @@ void SpeakJetSoftware::update()
   {
     myKind = "decay";
     myTraceCode = -1;
-    append(takeDecay(rate() * DECAY_LEAD_MS / 1000), 0);
+    append(takeDecay(rate() * DECAY_LEAD_MS / 1000), 0, false);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJetSoftware::save(Serializer& out) const
 {
-  // The serial port's flow control state, as it reads with no device attached
+  // Only the bytes the chip has yet to reach, and the decoder as it stood
+  // before them
+  const uInt64 now = mySystem.cycles();
+  const auto first = std::ranges::find_if(myBuffer,
+      [now](const Queued& queued) { return queued.atCycle > now; });
+  const SpeakJet::State state = first != myBuffer.end()
+      ? first->before : myDecoder.state();
+
   try
   {
+    // The serial port's flow control state, as it reads with no device attached
     out.putBool(true);
     out.putBool(false);
+
+    if(!SpeakJet::putState(out, state))
+      return false;
+
+    out.putByte(U8(std::distance(first, myBuffer.end())));
+    for(auto it = first; it != myBuffer.end(); ++it)
+      out.putByte(it->code);
   }
   catch(...)
   {
     cerr << "ERROR: SpeakJetSoftware::save\n";
     return false;
   }
-  return myDecoder.save(out);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,18 +283,32 @@ bool SpeakJetSoftware::load(Serializer& in)
   // Whatever was speaking belongs to the moment the loaded state replaces
   silence();
 
-  // The serial port's flow control state, which means nothing here
+  SpeakJet::State state;
+  ByteArray bytes;
   try
   {
+    // The serial port's flow control state, which means nothing here
     in.getBool();
     in.getBool();
+
+    if(!SpeakJet::getState(in, state))
+      return false;
+
+    bytes.resize(in.getByte());
+    in.getByteArray(bytes);
   }
   catch(...)
   {
     cerr << "ERROR: SpeakJetSoftware::load\n";
     return false;
   }
-  return myDecoder.load(in);
+
+  // What the chip had yet to say is said from here
+  myDecoder.setState(state);
+  for(const uInt8 code: bytes)
+    write(code);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -628,7 +746,7 @@ void SpeakJetSoftware::setParam(SpeakJet::Param param, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs)
+void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs, bool timed)
 {
   if(pcm.empty() || rate() == 0)
     return;
@@ -655,6 +773,10 @@ void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs)
   const size_t over = std::min({xfade, myTail.size(), pcm.size()});
   Samples out;
 
+  // The splice overlaps the two, so only the rest lengthens the speech
+  if(timed)
+    myTimeline += pcm.size() - over;
+
   out.reserve(myTail.size() + pcm.size());
 
   // Whatever of the tail the new sound does not overlap goes out as it is
@@ -672,6 +794,15 @@ void SpeakJetSoftware::append(sShortSpan pcm, uInt32 xfadeMs)
 
   out.insert(out.end(), pcm.begin() + I32(over), pcm.end() - I32(keep));
   myTail.assign(pcm.end() - I32(keep), pcm.end());
+
+  // Running faster than real time lays speech down faster than it plays, so
+  // beyond what the chip has yet to say it is dropped rather than queued
+  const uInt64 now = mySystem.cycles();
+  const uInt64 end = runEnd();
+  const uInt64 perSecond = cyclesPerSecond();
+  const uInt64 aheadMs = end > now && perSecond > 0 ? (end - now) * 1000 / perSecond : 0;
+  if(myOSystem.sound().speechQueued() > aheadMs + MAX_AHEAD_MS)
+    return;
 
   myOSystem.sound().queueSpeech(out, rate());
 }

@@ -19,8 +19,10 @@
 #define SPEAKJET_SOFTWARE_HXX
 
 class OSystem;
+class System;
 
 #include <cstdlib>
+#include <deque>
 
 #include "SpeakJet.hxx"
 #include "SpeakJetBackend.hxx"
@@ -33,6 +35,11 @@ class OSystem;
   each is joined to the next as the chip joins them, then handed to the
   sound system as continuous PCM.
 
+  The chip's 64-byte input buffer runs in emulated time: each byte is
+  rendered when it arrives, but stays in the buffer until the CPU cycle at
+  which the chip would reach it, and READY is the chip's Buffer Half Full
+  line, as on the real AtariVox.
+
   @author  Stephen Anthony
 */
 class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
@@ -40,15 +47,16 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
   public:
     /**
       @param osystem   The OSystem object to use
+      @param system    The system the AtariVox is attached to
       @param deadPort  A serial port that was configured but could not be
                        opened, named in about() so the fallback is visible
     */
-    explicit SpeakJetSoftware(const OSystem& osystem, string_view deadPort = "");
+    SpeakJetSoftware(const OSystem& osystem, const System& system,
+                     string_view deadPort = "");
     ~SpeakJetSoftware() override;
 
   public:
-    // Any byte means the phrase goes on, even a command between two sounds
-    void write(uInt8 code) override { myIdleFrames = 0; myDecoder.write(code); }
+    void write(uInt8 code) override;
     bool ready() override;
     void reset() override;
     void update() override;
@@ -86,8 +94,9 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     // The closure before a stop, filled with the last sound dying away
     void playClosure(double closureMs, int nextCode);
 
-    // Crossfade onto the held-back tail, then queue for playback
-    void append(sShortSpan pcm, uInt32 xfadeMs);
+    // Crossfade onto the held-back tail, then queue for playback; untimed
+    // sound (a decay playing out) keeps the chip from nothing
+    void append(sShortSpan pcm, uInt32 xfadeMs, bool timed = true);
 
     // Queue the held-back tail, ending the current run of sound
     void flush();
@@ -101,8 +110,19 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
     // The rate everything is rendered at
     uInt32 rate() const { return mySamples.rate(); }
 
+    // Drop the bytes the chip has reached by now from the input buffer
+    void retire();
+
+    // The CPU cycle at which the chip runs out of what it has been given
+    uInt64 runEnd() const;
+
+    // The CPU clock, and how many of its cycles a number of samples last
+    uInt64 cyclesPerSecond() const;
+    uInt64 cyclesFor(uInt64 samples) const;
+
   private:
     const OSystem& myOSystem;
+    const System& mySystem;
 
     SpeakJet myDecoder;
     SpeakJetSamples mySamples;
@@ -151,6 +171,22 @@ class SpeakJetSoftware : public SpeakJetBackend, public SpeakJet::Sink
 
     // Frames since the last byte; once nothing follows, the tail is released
     uInt32 myIdleFrames{0};
+
+    // A byte in the input buffer, the CPU cycle at which the chip reaches it,
+    // and the decoder as it stood before it, which a saved state resumes from
+    struct Queued
+    {
+      uInt8 code{0};
+      uInt64 atCycle{0};
+      SpeakJet::State before;
+    };
+    std::deque<Queued> myBuffer;
+
+    // Speech laid end to end from this CPU cycle on, in samples; it says when
+    // the chip reaches the next byte.  Decay is left out, since a new sound
+    // cuts it short
+    uInt64 myTimelineCycle{0};
+    uInt64 myTimeline{0};
 
     // Current MSA parameters
     uInt8 myVolume{SpeakJet::INITIAL_VOLUME};

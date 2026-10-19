@@ -49,7 +49,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const OSystem& osystem,
   }
 
   if(myBackend == nullptr)
-    myBackend = std::make_unique<SpeakJetSoftware>(osystem, deadPort);
+    myBackend = std::make_unique<SpeakJetSoftware>(osystem, system, deadPort);
 
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);

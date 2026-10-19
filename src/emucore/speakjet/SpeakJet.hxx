@@ -53,6 +53,22 @@ class SpeakJet : public Serializable
     enum class Param: uInt8 { Volume, Speed, Pitch, Bend };
 
     /**
+      Where the command stream has got to: a two-byte command still waiting
+      for its value, what applies to the next sound, and the parameters.
+    */
+    struct State
+    {
+      uInt8 pending{0};
+      uInt8 repeat{1};
+      bool stress{false};
+      bool relax{false};
+      uInt32 nextScale{100};
+      std::array<uInt8, 4> params{
+        INITIAL_VOLUME, INITIAL_SPEED, INITIAL_PITCH, INITIAL_BEND
+      };
+    };
+
+    /**
       One sound to render, either an allophone or a sound effect.
     */
     struct Utterance
@@ -111,12 +127,24 @@ class SpeakJet : public Serializable
     void reset();
 
     /**
-      Save/load where the command stream has got to: a two-byte command still
-      waiting for its value, what applies to the next sound, and the
-      parameters, which load() passes on to the sink.
+      Where the command stream has got to, and a way back to it; setState()
+      passes the parameters on to the sink.
+    */
+    State state() const;
+    void setState(const State& state);
+
+    /**
+      Save/load the decoder's state, which load() passes on to the sink.
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
+
+    /**
+      Save/load a state in the layout save() and load() use; getState()
+      limits each field to what the command stream itself can set.
+    */
+    static bool putState(Serializer& out, const State& state);
+    static bool getState(Serializer& in, State& state);
 
     /**
       Look up an MSA code's mnemonic, or an empty view if it has none.

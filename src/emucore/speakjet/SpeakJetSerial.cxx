@@ -79,13 +79,18 @@ bool SpeakJetSerial::save(Serializer& out) const
   {
     out.putBool(myReadyStateSoftFlow);
     out.putBool(myCTSFlip);
+    if(!myDecoder.save(out))
+      return false;
+
+    // The chip's own buffer can't be read, so none of it is saved
+    out.putByte(0);
   }
   catch(...)
   {
     cerr << "ERROR: SpeakJetSerial::save\n";
     return false;
   }
-  return myDecoder.save(out);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,14 +103,21 @@ bool SpeakJetSerial::load(Serializer& in)
   {
     in.getBool();
     in.getBool();
+
+    // The chip itself can't be set, so this only brings the decoder's record
+    // in line with the state, for the next one saved
+    if(!myDecoder.load(in))
+      return false;
+
+    // Bytes a software chip had yet to reach; the device has its own buffer,
+    // so they are read past
+    ByteArray bytes(in.getByte());
+    in.getByteArray(bytes);
   }
   catch(...)
   {
     cerr << "ERROR: SpeakJetSerial::load\n";
     return false;
   }
-
-  // The chip itself can't be set, so this only brings the decoder's record
-  // in line with the state, for the next one saved
-  return myDecoder.load(in);
+  return true;
 }

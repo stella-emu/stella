@@ -24,6 +24,7 @@ namespace SpeakJetChip {
 }
 
 #include <complex>
+#include <cstdlib>
 
 #include "SpeakJet.hxx"
 #include "SpeakJetDSP.hxx"
@@ -206,6 +207,10 @@ class SpeakJetVoice
     // residual() per Bend, code and point, worked out once
     mutable BSPF::array2D<vector<double>, 16UZ * 72, 3> myResidual;
     mutable BSPF::array2D<bool, 16UZ * 72, 3> myResidualDone{};
+
+    // With SPEAKJET_NORESIDUAL set, every residual is left out
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    const bool myNoResidual{std::getenv("SPEAKJET_NORESIDUAL") != nullptr};
 
   private:
     SpeakJetVoice() = delete;

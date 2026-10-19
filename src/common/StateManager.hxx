@@ -39,7 +39,7 @@ class StateManager
 //       MovieRecord,
 //       MoviePlayback
     };
-    static constexpr string_view STATE_HEADER = "07000006state";
+    static constexpr string_view STATE_HEADER = "07000007state";
 
     /**
       Create a new statemananger class.

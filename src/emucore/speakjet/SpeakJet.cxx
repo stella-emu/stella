@@ -197,48 +197,86 @@ void SpeakJet::write(uInt8 code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SpeakJet::State SpeakJet::state() const
+{
+  return {
+    .pending = std::to_underlying(myPending),
+    .repeat = myRepeat,
+    .stress = myStress,
+    .relax = myRelax,
+    .nextScale = myNextScale,
+    .params = myParams
+  };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SpeakJet::setState(const State& state)
+{
+  myPending = static_cast<Pending>(state.pending);
+  myRepeat = state.repeat;
+  myStress = state.stress;
+  myRelax = state.relax;
+  myNextScale = state.nextScale;
+  for(size_t i = 0; i < state.params.size(); ++i)
+    setParam(static_cast<Param>(i), state.params[i]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJet::save(Serializer& out) const
+{
+  return putState(out, state());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJet::load(Serializer& in)
+{
+  State loaded;
+  if(!getState(in, loaded))
+    return false;
+
+  setState(loaded);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJet::putState(Serializer& out, const State& state)
 {
   try
   {
-    out.putByte(std::to_underlying(myPending));
-    out.putByte(myRepeat);
-    out.putBool(myStress);
-    out.putBool(myRelax);
-    out.putInt(myNextScale);
-    out.putByteArray(myParams);
+    out.putByte(state.pending);
+    out.putByte(state.repeat);
+    out.putBool(state.stress);
+    out.putBool(state.relax);
+    out.putInt(state.nextScale);
+    out.putByteArray(state.params);
   }
   catch(...)
   {
-    cerr << "ERROR: SpeakJet::save\n";
+    cerr << "ERROR: SpeakJet::putState\n";
     return false;
   }
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SpeakJet::load(Serializer& in)
+bool SpeakJet::getState(Serializer& in, State& state)
 {
   try
   {
     // Only what the command stream itself can set, so a corrupt state can
     // neither drop a sound nor stretch one without limit
     const uInt8 pending = in.getByte();
-    myPending = pending <= std::to_underlying(Pending::Ignored)
-      ? static_cast<Pending>(pending) : Pending::None;
-    myRepeat = std::max<uInt8>(in.getByte(), 1);
-    myStress = in.getBool();
-    myRelax = in.getBool();
-    myNextScale = BSPF::clamp(in.getInt(), FAST_PCT, SLOW_PCT);
-
-    std::array<uInt8, 4> params{};
-    in.getByteArray(params);
-    for(size_t i = 0; i < params.size(); ++i)
-      setParam(static_cast<Param>(i), params[i]);
+    state.pending = pending <= std::to_underlying(Pending::Ignored)
+      ? pending : std::to_underlying(Pending::None);
+    state.repeat = std::max<uInt8>(in.getByte(), 1);
+    state.stress = in.getBool();
+    state.relax = in.getBool();
+    state.nextScale = BSPF::clamp(in.getInt(), FAST_PCT, SLOW_PCT);
+    in.getByteArray(state.params);
   }
   catch(...)
   {
-    cerr << "ERROR: SpeakJet::load\n";
+    cerr << "ERROR: SpeakJet::getState\n";
     return false;
   }
   return true;
