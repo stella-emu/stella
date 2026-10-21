@@ -372,7 +372,14 @@ void CartridgeFUJI::note(uInt16 offset)
     return;                                   // full; the client will retry
 
   myQueue[head] = offset;
-  myQueueHead.store(next, std::memory_order_release);
+  {
+    // Under the worker's mutex: otherwise the store and the notify can both
+    // land between its predicate check and its wait, and the write sits in
+    // the queue until the next one -- which a client polling ACKSEQ never
+    // sends
+    const std::lock_guard<std::mutex> lock(myWakeMutex);
+    myQueueHead.store(next, std::memory_order_release);
+  }
   myWake.notify_one();
 }
 
@@ -395,7 +402,10 @@ void CartridgeFUJI::stopWorker()
   // Closed FIRST: a worker parked in select() on a sixty-second mount wakes
   // immediately instead of holding up the console's teardown.
   myLink.close();
-  myStop.store(true, std::memory_order_release);
+  {
+    const std::lock_guard<std::mutex> lock(myWakeMutex);  // as in note()
+    myStop.store(true, std::memory_order_release);
+  }
   myWake.notify_all();
   myWorker.join();
 }
