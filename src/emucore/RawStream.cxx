@@ -73,11 +73,7 @@ RawStream::RawStream(string_view path)
 {
   if(path == "-")
   {
-  #if defined(BSPF_WINDOWS)
-    _setmode(_fileno(stdout), _O_BINARY);
-  #endif
-    // Stella's own console messages go to stderr from now on
-    myCoutBuffer = cout.rdbuf(cerr.rdbuf());
+    claimStdout();
     myFile = stdout;
     myIsStdout = true;
   }
@@ -121,12 +117,24 @@ RawStream::~RawStream()
   myWriter.join();
 
   if(myIsStdout)
-  {
     std::fflush(stdout);
-    cout.rdbuf(myCoutBuffer);
-  }
   else
     std::fclose(myFile);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RawStream::claimStdout()
+{
+  static bool claimed = false;
+  if(claimed)
+    return;
+  claimed = true;
+
+#if defined(BSPF_WINDOWS)
+  _setmode(_fileno(stdout), _O_BINARY);
+#endif
+  // stdout carries only the stream, so Stella's own messages go to stderr
+  cout.rdbuf(cerr.rdbuf());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

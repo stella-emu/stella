@@ -98,9 +98,12 @@ when Stella changes its display window. A reader that needs a fixed size
 (video encoders do) should choose one and pad or crop.
 
 Each frame's audio is the `AUDI` chunk just before it, so picture and sound
-never drift: for an unbroken run of frames, a frame's sample count is twice
-its scanline count, and its cycle count is 76 x its scanlines past the
-previous frame's.
+never drift. Once a game's frames are steady, each ending at the same point
+of a scanline, a frame's sample count is twice its scanline count, and its
+cycle count is 76 x its scanlines past the previous frame's. In the first
+frames after power-on or a reset, before the game's VSYNC settles, the
+scanline count (Stella's own, as the debugger shows it) can differ from the
+time the frame took; the cycle count and the samples still measure that time.
 
 ### `JUMP`
 

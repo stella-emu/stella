@@ -56,6 +56,13 @@ class RawStream
 
     bool isOpen() const { return myFile != nullptr; }
 
+    /**
+      Give stdout to the stream ('-rawstream -') for the rest of the run:
+      binary mode, and Stella's own console messages go to stderr.  main()
+      calls this before anything is logged; later calls do nothing.
+    */
+    static void claimStdout();
+
     void setRom(string_view name, string_view md5);
     void setPalette(const PaletteArray& rgb);
     void setMixingTables(const Int16* mono, const Int16* stereo);
@@ -91,7 +98,6 @@ class RawStream
 
     FILE* myFile{nullptr};
     bool myIsStdout{false};
-    std::streambuf* myCoutBuffer{nullptr};
 
     // Set on the main thread, read on the emulation thread
     std::mutex myInfoMutex;
