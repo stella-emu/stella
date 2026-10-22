@@ -184,7 +184,9 @@
 		2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */; };
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
+		40071556A1199DC53E8D8235 /* RawStream.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9F24C1B9876386A2FD6D51FA /* RawStream.cxx */; };
 		55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55FE2A3C1EE487CA00078ADE /* InfoPlist.strings */; };
+		5DB49B1227067319AA99C6DA /* RawStream.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 110E32567797E88CDA4F6F1B /* RawStream.hxx */; };
 		AA111111AA111111AA111111 /* MacOSUtils.hxx in Headers */ = {isa = PBXBuildFile; fileRef = AA333333AA333333AA333333 /* MacOSUtils.hxx */; };
 		AA222222AA222222AA222222 /* MacOSUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA444444AA444444AA444444 /* MacOSUtils.mm */; };
 		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
@@ -927,6 +929,7 @@
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		110E32567797E88CDA4F6F1B /* RawStream.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RawStream.hxx; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2D02207F08A301F200B9C76B /* InputTextDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = InputTextDialog.cxx; sourceTree = "<group>"; };
@@ -1105,6 +1108,7 @@
 		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerSystem.hxx; sourceTree = "<group>"; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
+		9F24C1B9876386A2FD6D51FA /* RawStream.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RawStream.cxx; sourceTree = "<group>"; };
 		AA333333AA333333AA333333 /* MacOSUtils.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MacOSUtils.hxx; sourceTree = SOURCE_ROOT; };
 		AA444444AA444444AA444444 /* MacOSUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSUtils.mm; sourceTree = SOURCE_ROOT; };
 		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
@@ -2407,6 +2411,8 @@
 				DC22F12B2507D20800AB43E9 /* QuadTari.hxx */,
 				DC22F12C2507D20800AB43E9 /* QuadTari.cxx */,
 				2DE2DF890627AE34006BEC99 /* Random.hxx */,
+				110E32567797E88CDA4F6F1B /* RawStream.hxx */,
+				9F24C1B9876386A2FD6D51FA /* RawStream.cxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC932D400F278A5200FEFEFC /* Serializable.hxx */,
@@ -3414,6 +3420,7 @@
 				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
 				CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */,
 				DCF3A6F01DFC75E3008A8AF3 /* DrawCounterDecodes.hxx in Headers */,
+				5DB49B1227067319AA99C6DA /* RawStream.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3932,6 +3939,7 @@
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
 				E0D4153D25A120340031A8D6 /* SettingsRepositoryMACOS.mm in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
+				40071556A1199DC53E8D8235 /* RawStream.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

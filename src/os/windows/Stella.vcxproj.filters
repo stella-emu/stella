@@ -300,6 +300,9 @@
     <ClCompile Include="..\..\emucore\PropsSet.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\RawStream.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\SaveKey.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -1476,6 +1479,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\Random.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\emucore\RawStream.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\SaveKey.hxx">

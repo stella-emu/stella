@@ -23,6 +23,7 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
+#include "RawStream.hxx"
 #include "Sound.hxx"
 #include "AudioSettings.hxx"
 #include "MediaFactory.hxx"
@@ -991,6 +992,10 @@ void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
                    | (((rgb >>  8U) & 0xFFU) << gShift)
                    | (( rgb        & 0xFFU) << bShift);
   }
+
+  if(myOSystem.rawStream())
+    myOSystem.rawStream()->setPalette(rgb_palette);
+
   // Remember the TIA palette; place it at the beginning of the full palette
   std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
 

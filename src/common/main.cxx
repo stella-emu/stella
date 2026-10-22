@@ -33,6 +33,7 @@
 #include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
 #include "ProfilingRunner.hxx"
+#include "RawStream.hxx"
 
 #include "ThreadDebugging.hxx"
 
@@ -217,6 +218,12 @@ int main(int ac, char* av[])
   // locally or globally
   Settings::Options globalOpts, localOpts;
   parseCommandLine(ac, av, globalOpts, localOpts);
+
+  // With '-rawstream -' stdout carries only the stream: move Stella's own
+  // messages to stderr now, before the first one is logged
+  if(const auto it = globalOpts.find("rawstream");
+     it != globalOpts.end() && it->second.toString() == "-")
+    RawStream::claimStdout();
 
   // Check for custom base directory; some ports make use of this
   checkForCustomBaseDir(localOpts);
