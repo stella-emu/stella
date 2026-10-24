@@ -345,6 +345,13 @@ class CartridgeCDF : public CartridgeARM
     // or for CDFJ+ variations if A0 (LDY #) or A2 (LDX #)
     uInt16 myLDAXYimmediateOperandAddress{LDAXY_OVERRIDE_INACTIVE};
 
+    // CPU cycle of the peek that armed the override above; the operand must
+    // be fetched on the very next cycle, as a real LDA/LDX/LDY # does.
+    // Otherwise a zero-page operand that happens to be $A9/$A2/$A0 (e.g.
+    // 'ora $A2') arms it, the RIOT read that follows goes unseen here, and
+    // the next opcode is taken as a fast-fetch operand
+    uInt64 myLDAXYarmCycle{0};
+
     // Some CDFJ+ drivers also override LDX # and/or LDY # for fast fetcher
     // use. These flag if this has been done.
     bool myLDXenabled{false};

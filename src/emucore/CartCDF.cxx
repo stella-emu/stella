@@ -267,10 +267,12 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   bool fastfetch = false;
   if (myFastFetcherOffset)
     fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+                 && mySystem->cycles() == myLDAXYarmCycle + 1
                  && peekvalue >= myRAM[myFastFetcherOffset]
                  && peekvalue <= myRAM[myFastFetcherOffset]+myAmplitudeStream);
   else
     fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+                 && mySystem->cycles() == myLDAXYarmCycle + 1
                  && peekvalue <= myAmplitudeStream);
   if (fastfetch)
   {
@@ -367,7 +369,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       ((peekvalue == 0xA9) ||
        (myLDXenabled && peekvalue == 0xA2 ) ||
        (myLDYenabled && peekvalue == 0xA0)))
+  {
     myLDAXYimmediateOperandAddress = address + 1;
+    myLDAXYarmCycle = mySystem->cycles();
+  }
 
   return peekvalue;
 }
@@ -569,6 +574,7 @@ bool CartridgeCDF::save(Serializer& out) const
 
     // operand addresses
     out.putShort(myLDAXYimmediateOperandAddress);
+    out.putLong(myLDAXYarmCycle);
     out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
@@ -611,6 +617,7 @@ bool CartridgeCDF::load(Serializer& in)
 
     // Address of LDA # operand
     myLDAXYimmediateOperandAddress = in.getShort();
+    myLDAXYarmCycle = in.getLong();
     myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
