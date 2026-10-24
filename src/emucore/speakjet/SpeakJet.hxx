@@ -36,14 +36,20 @@
 class SpeakJet : public Serializable
 {
   public:
-    // Power-on defaults, from the manual's control code descriptions
-    static constexpr uInt8 INITIAL_VOLUME = 96;
-    static constexpr uInt8 INITIAL_SPEED = 114;
+    // Power-on defaults as measured, not the manual's: a Reset leaves master
+    // at 80 (not 96) and runs the effects' clock as Speed 113 (not 114)
+    static constexpr uInt8 INITIAL_VOLUME = 80;
+    static constexpr uInt8 INITIAL_SPEED = 113;
     static constexpr uInt8 INITIAL_PITCH = 88;
     static constexpr uInt8 INITIAL_BEND = 5;
 
-    // The highest Bend the manual allows
+    // The highest Speed and Bend the manual allows
+    static constexpr uInt8 MAX_SPEED = 127;
     static constexpr uInt8 MAX_BEND = 15;
+
+    // What Fast and Slow ask of the part of a sound Speed stretches, in percent
+    static constexpr uInt32 FAST_PCT = 65;
+    static constexpr uInt32 SLOW_PCT = 134;
 
     // The MSA codes: allophones up to LAST_ALLOPHONE, then sound effects
     static constexpr uInt8 FIRST_SOUND = 128;
@@ -75,7 +81,7 @@ class SpeakJet : public Serializable
     {
       // MSA code, 128-254
       uInt8 code{0};
-      // Mnemonic from Table E, e.g. "IY" or "M1"; also the sample's name
+      // Mnemonic from Table E, e.g. "IY" or "M1"
       string_view name;
       // Table E's duration, scaled by any Fast or Slow; only good for silence
       uInt32 durationMs{0};
@@ -85,6 +91,8 @@ class SpeakJet : public Serializable
       // Set by a preceding Stress (14) or Relax (15) code
       bool stress{false};
       bool relax{false};
+      // Another copy of it follows at once, by Repeat
+      bool more{false};
     };
 
     /**
@@ -98,7 +106,9 @@ class SpeakJet : public Serializable
 
         virtual void play(const Utterance& utterance) = 0;
         virtual void pause(uInt32 durationMs) = 0;
-        // Silence of a fixed length, which Speed does not scale
+        /**
+          Silence of a fixed length, which Speed does not scale.
+        */
         virtual void delay(uInt32 durationMs) = 0;
         virtual void setParam(Param param, uInt8 value) = 0;
         virtual void endOfPhrase() { }
@@ -164,12 +174,16 @@ class SpeakJet : public Serializable
     static bool isContinuant(uInt8 code);
 
   private:
-    // Codes 20-30 take a value byte; this is the one we are waiting on
+    /**
+      Codes 20-30 take a value byte; this is the one we are waiting on.
+    */
     enum class Pending: uInt8 { None, Volume, Speed, Pitch, Bend, Repeat,
                                 Delay, Ignored };
 
   private:
-    // Record a parameter and pass it to the sink
+    /**
+      Record a parameter and pass it to the sink.
+    */
     void setParam(Param param, uInt8 value);
 
   private:

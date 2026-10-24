@@ -143,6 +143,11 @@ class Sound
     virtual void stopSpeech() { }
 
     /**
+      Play out all queued speech, the speech having ended for now.
+    */
+    virtual void flushSpeech() { }
+
+    /**
       How much queued speech remains unplayed.
 
       @return  The remaining duration, in milliseconds

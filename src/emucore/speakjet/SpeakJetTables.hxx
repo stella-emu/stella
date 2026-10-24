@@ -24,32 +24,20 @@
 
 /**
   How long the SpeakJet takes over its sounds and the joins between them,
-  and how its parameters scale length and level, as measured on the chip.
+  and how its parameters scale length, as measured on the chip.
 
   @author  Stephen Anthony
 */
 class SpeakJetTables
 {
   public:
-    // Lifts the recordings to sit level with the TIA at the same master volume
+    // Lifts speech to sit level with the TIA at the same master volume
     static constexpr double SPEECH_GAIN = 2.818;
 
     /**
       How Speed scales a sound's duration, relative to the default Speed.
     */
     static double speedFactor(uInt8 speed);
-
-    /**
-      How Pitch shifts the fundamental, which is the setting in Hz, relative
-      to the default.
-    */
-    static double pitchFactor(uInt8 pitch);
-
-    /**
-      The level a voiced sound recorded at 'atPitch' needs at 'pitch': lower
-      voices are quieter, at close to constant energy per glottal pulse.
-    */
-    static double pitchGain(uInt8 pitch, uInt8 atPitch);
 
     /**
       How Pitch scales a voiced sound's length, relative to the default.
@@ -61,11 +49,6 @@ class SpeakJetTables
       isolated sound's lengthening shows.
     */
     static double phraseDuration(uInt8 pitch);
-
-    /**
-      How Volume scales amplitude, relative to the default.
-    */
-    static double volumeFactor(uInt8 volume);
 
     /**
       The part of a sound, in ms, that Speed, Fast and Slow leave unstretched.
@@ -95,7 +78,7 @@ class SpeakJetTables
     static double closureMs(uInt8 code);
 
     /**
-      Time a quiet code takes mid-phrase that its trimmed recording lacks.
+      Time a quiet code takes mid-phrase beyond the length measured for it.
     */
     static uInt32 quietPadMs(uInt8 code);
 

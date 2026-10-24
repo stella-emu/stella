@@ -226,9 +226,8 @@ void SoundSDL::setVolume(uInt32 volume, bool persist)
       ? FLT(volume) / 100.F
       : 0.F;
 
-    // The TIA has its own level, relative to the master volume, so it can be
-    // silenced while AtariVox speech and KidVid audio, which have their own
-    // streams, stay audible
+    // The TIA has its own level under the master volume, so it can be silenced
+    // while AtariVox speech and KidVid audio, on their own streams, stay audible
     const uInt32 tiaVolume = myAudioSettings.tiaVolume();
 
     SDL_SetAudioStreamGain(myStream, myVolumeFactor * FLT(tiaVolume) / 100.F);
@@ -277,6 +276,14 @@ void SoundSDL::stopSpeech()
 {
   if(mySpeechStream)
     SDL_ClearAudioStream(mySpeechStream);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL::flushSpeech()
+{
+  // The resampler holds back the last samples until more arrive; let them go
+  if(mySpeechStream)
+    SDL_FlushAudioStream(mySpeechStream);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

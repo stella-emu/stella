@@ -99,6 +99,7 @@ class SoundSDL : public Sound
 
     void queueSpeech(sShortSpan samples, uInt32 sampleRate) override;
     void stopSpeech() override;
+    void flushSpeech() override;
     uInt32 speechQueued() const override;
 
     /**

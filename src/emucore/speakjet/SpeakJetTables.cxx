@@ -831,37 +831,14 @@ namespace {
     1.166F, 1.212F, 1.212F
   }};
 
-  // Power goes as Pitch^0.88, close to constant energy per glottal pulse
-  constexpr double PITCH_POWER_EXP = 0.88;
-
   // Above the default Pitch, the share of a sound's lengthening a phrase keeps
   constexpr double PHRASE_KEPT = 0.2;
-
-  // Peak amplitude against Volume, in percent of full scale
-  constexpr double VOLUME_SLOPE = 0.2627;
-  constexpr double VOLUME_OFFSET = 0.15;
 }  // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double SpeakJetTables::speedFactor(uInt8 speed)
 {
   return ourSpeedFactor[std::min<size_t>(speed, ourSpeedFactor.size() - 1)];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double SpeakJetTables::pitchFactor(uInt8 pitch)
-{
-  // Pitch 0 still voices, at no fundamental that can be pinned down
-  if(pitch == 0)
-    return 1.0;
-
-  return DBL(pitch) / DBL(SpeakJet::INITIAL_PITCH);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double SpeakJetTables::pitchGain(uInt8 pitch, uInt8 atPitch)
-{
-  return std::pow(pitchFactor(pitch) / pitchFactor(atPitch), PITCH_POWER_EXP / 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -889,15 +866,6 @@ double SpeakJetTables::phraseDuration(uInt8 pitch)
 {
   const double law = pitchDuration(pitch);
   return pitch > SpeakJet::INITIAL_PITCH ? 1.0 + (law - 1.0) * PHRASE_KEPT : law;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double SpeakJetTables::volumeFactor(uInt8 volume)
-{
-  const double here = VOLUME_SLOPE * DBL(volume) + VOLUME_OFFSET;
-  const double ref = VOLUME_SLOPE * DBL(SpeakJet::INITIAL_VOLUME) + VOLUME_OFFSET;
-
-  return std::max(0.0, here / ref);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -945,7 +913,7 @@ double SpeakJetTables::closureMs(uInt8 code)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SpeakJetTables::quietPadMs(uInt8 code)
 {
-  // EK, OK, WH, HO and HE, whose recordings are cut short at their quiet ends
+  // EK, OK, WH, HO and HE, whose measured lengths stop short at their quiet ends
   switch(code)
   {
     case 196: return 92;

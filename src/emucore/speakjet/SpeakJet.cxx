@@ -18,8 +18,7 @@
 #include "SpeakJet.hxx"
 
 namespace {
-  // Mnemonic and documented duration for MSA codes 128-254, from Table E;
-  // the mnemonic also names the sample file
+  // Mnemonic and documented duration for MSA codes 128-254, from Table E
   struct CodeInfo { string_view name; uInt16 ms; };
 
   constexpr std::array<CodeInfo, 127> ourCodes = {{
@@ -50,10 +49,6 @@ namespace {
   // What pause codes 0-6 add to a phrase, in ms; a stop's closure after one
   // is added separately
   constexpr std::array<uInt32, 7> ourPauseMs = { 0, 90, 190, 642, 20, 47, 75 };
-
-  // What Fast and Slow ask of the part of a sound Speed stretches, in percent
-  constexpr uInt32 FAST_PCT = 65;
-  constexpr uInt32 SLOW_PCT = 134;
 
   // The last of the continuants; the fricatives and stops follow
   constexpr uInt8 LAST_CONTINUANT = 164;
@@ -132,7 +127,7 @@ void SpeakJet::write(uInt8 code)
   // Allophones and sound effects
   if(code >= FIRST_SOUND && code <= LAST_SOUND)
   {
-    const Utterance utterance{
+    Utterance utterance{
       .code = code,
       .name = ourCodes[code - FIRST_SOUND].name,
       .durationMs = ourCodes[code - FIRST_SOUND].ms * myNextScale / 100,
@@ -141,13 +136,19 @@ void SpeakJet::write(uInt8 code)
       .relax = myRelax
     };
 
-    // Repeat plays the sound several times over, just as writing it out would
-    for(uInt8 i = 0; i < myRepeat; ++i)
-      mySink.play(utterance);
-
+    // The modifiers are this sound's alone, gone before it plays, so a look
+    // at what follows sees none of them
+    const uInt8 repeat = myRepeat;
     myStress = myRelax = false;
     myNextScale = 100;
     myRepeat = 1;
+
+    // Repeat plays the sound several times over, just as writing it out would
+    for(uInt8 i = 0; i < repeat; ++i)
+    {
+      utterance.more = i + 1 < repeat;
+      mySink.play(utterance);
+    }
     return;
   }
 
@@ -158,8 +159,11 @@ void SpeakJet::write(uInt8 code)
       mySink.pause(ourPauseMs[code]);
       break;
 
-    // Fast and Slow, for the next sound only
-    case 7:  myNextScale = FAST_PCT;  break;
+    // Fast and Slow, for the next sound only; given both, Slow wins
+    case 7:
+      if(myNextScale != SLOW_PCT)
+        myNextScale = FAST_PCT;
+      break;
     case 8:  myNextScale = SLOW_PCT;  break;
 
     // Stress and Relax apply to the next sound only

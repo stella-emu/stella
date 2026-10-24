@@ -20,7 +20,7 @@
 #include "Settings.hxx"
 #include "Serializer.hxx"
 #include "SpeakJetSerial.hxx"
-#include "SpeakJetSoftware.hxx"
+#include "SpeakJetStream.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
 
@@ -49,7 +49,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const OSystem& osystem,
   }
 
   if(myBackend == nullptr)
-    myBackend = std::make_unique<SpeakJetSoftware>(osystem, system, deadPort);
+    myBackend = std::make_unique<SpeakJetStream>(osystem, system, deadPort);
 
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);
