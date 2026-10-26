@@ -26,12 +26,15 @@ class Settings;
 
 /**
   3EX ("3E eXtended") is an enhanced version of the 3E scheme that increases
-  the maximum RAM from 32K (32 banks x 1K) to 256K (512 banks x 512 bytes).
+  the maximum RAM from 32K (32 banks x 1K) to 256K (256 banks x 1K).
   The bankswitching protocol is identical to 3E: write to $3E to map a RAM
-  bank into the lower 2K segment, write to $3F to map a ROM bank.  The 512
-  extended RAM banks are numbered 256-767, immediately after the 256 ROM bank
-  slots in the combined numbering space, so existing 3E code that targets only
-  ROM or the lower 32 RAM banks is fully compatible.
+  bank into the lower 2K segment, write to $3F to map a ROM bank.  As in 3E,
+  the RAM bank is read at $1000-$13FF and written at $1400-$17FF, and the
+  RAM banks are numbered after the ROM banks in the combined numbering space.
+
+  The byte at $FFFA (the 6th last byte of the image) holds the number of RAM
+  banks minus 1.  For autodetection, the image must contain the string "3EX"
+  at least twice.
 
   @author  Thomas Jentzsch
 */
