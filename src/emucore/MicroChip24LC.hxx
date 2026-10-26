@@ -557,22 +557,26 @@ void MicroChip24LC<FLASH_SIZE, PAGE_SIZE>
       jpee_pptr = 4 + jpee_pagemask - (jpee_address & jpee_pagemask);
       JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to {} bytes)", jpee_pptr - 3);
     }
-    for(uInt32 i = 3; i < jpee_pptr; ++i)
+    // Discard writes made during autodetection, since they survive the reset that follows
+    if(!mySystem.autodetectMode())
     {
-      myDataChanged = true;
-      myPageHit[(jpee_address & jpee_sizemask) / PAGE_SIZE] = true;
-
-      if(myCallback)
+      for(uInt32 i = 3; i < jpee_pptr; ++i)
       {
-        if constexpr(jpee_smallmode)
-          myCallback("Cartridge EEPROM write");
-        else
-          myCallback("AtariVox/SaveKey EEPROM write");
-      }
+        myDataChanged = true;
+        myPageHit[(jpee_address & jpee_sizemask) / PAGE_SIZE] = true;
 
-      myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
-      if(!(jpee_address & jpee_pagemask))
-        break;  /* Writes can't cross page boundary! */
+        if(myCallback)
+        {
+          if constexpr(jpee_smallmode)
+            myCallback("Cartridge EEPROM write");
+          else
+            myCallback("AtariVox/SaveKey EEPROM write");
+        }
+
+        myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
+        if(!(jpee_address & jpee_pagemask))
+          break;  /* Writes can't cross page boundary! */
+      }
     }
     jpee_ad_known = false;
   }
