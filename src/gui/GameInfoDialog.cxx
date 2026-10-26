@@ -30,6 +30,7 @@
 #include "PopUpWidget.hxx"
 #include "PropsSet.hxx"
 #include "BrowserDialog.hxx"
+#include "KeyPortariDialog.hxx"
 #include "QuadTariDialog.hxx"
 #include "TabWidget.hxx"
 #include "TabPaneWidget.hxx"
@@ -371,6 +372,7 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "Light Gun", "LIGHTGUN");
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
+  VarList::push_back(items, "KeyPortari", "KEYPORTARI");
 
   myLeftPortLbl = new LabelWidget(pane, _font, "Left port");
   myLeftPort = new PopUpWidget(pane, _font, items, Cmd::LeftControllerChanged);
@@ -389,9 +391,14 @@ void GameInfoDialog::addControllersTab()
   mySwapPorts = new CheckboxWidget(pane, _font, "Swap ports");
   mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
+  
+  myKeyPortariButton = new ButtonWidget(myTab, _font,
+                                  " KeyPortari" + ELLIPSIS + " ",
+                                  Cmd::KeyPortariPressed);
+  wid.push_back(myKeyPortariButton);
 
-  myQuadTariButton =
-    new ButtonWidget(pane, _font, " QuadTari" + ELLIPSIS + " ", Cmd::QuadTariPressed);
+  myQuadTariButton = new ButtonWidget(pane, _font,
+                                      " QuadTari" + ELLIPSIS + " ", Cmd::QuadTariPressed);
   wid.push_back(myQuadTariButton);
 
   // EEPROM erase button for left/right controller
@@ -497,9 +504,12 @@ void GameInfoDialog::addControllersTab()
     ports->place(CTRL,  LEFT, anchoredItem(myLeftPort));
     ports->place(EXTRA, LEFT, indentedItem(mySwapPorts, fontWidth * 3));
     ports->place(CTRL,  LEFTDET, stretchedItem(myLeftPortDetected), COLS - CTRL);
+    
+    ports->place(EXTRA, LEFTDET, indentedItem(myKeyPortariButton, fontWidth * 3));
 
     ports->place(LABEL, RIGHT, anchoredItem(myRightPortLbl));
     ports->place(CTRL,  RIGHT, anchoredItem(myRightPort));
+
     ports->place(EXTRA, RIGHT, indentedItem(myQuadTariButton, fontWidth * 3));
     ports->place(CTRL,  RIGHTDET, stretchedItem(myRightPortDetected), COLS - CTRL);
 
@@ -1558,6 +1568,8 @@ void GameInfoDialog::updateControllerStates()
                                BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
+  myKeyPortariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "KEYPORTARI") ||
+                           BSPF::startsWithIgnoreCase(contrRight, "KEYPORTARI"));
   mySwapPaddles->setEnabled(enablePaddles);
 
   myEraseEEPROMLbl->setEnabled(enableEEEraseButton);
@@ -1794,9 +1806,21 @@ void GameInfoDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       myQuadTariDialog->show(enableLeft, enableRight);
       break;
     }
+
     case Cmd::EraseEeprom:
+    {
       eraseEEPROM();
       break;
+    }
+      
+    case Cmd::KeyPortariPressed:
+    {
+      if(!myKeyPortariDialog)
+        myKeyPortariDialog = make_unique<KeyPortariDialog>
+          (this, _font, myGameProperties);
+      myKeyPortariDialog->open();
+      break;
+    }
 
     case Cmd::BankswitchTypeChanged:
       updateMultiCart();
@@ -1884,6 +1908,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
       updateHighScoresWidgets();
       break;
 
+      
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
