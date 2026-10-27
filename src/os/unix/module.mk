@@ -3,6 +3,7 @@ MODULE := src/os/unix
 MODULE_OBJS := \
 	src/os/unix/FSNodePOSIX.o \
 	src/os/unix/OSystemUNIX.o \
+	src/os/unix/RawStreamOutputPOSIX.o \
 	src/os/unix/SerialPortPOSIX.o
 
 MODULE_TEST_OBJS =

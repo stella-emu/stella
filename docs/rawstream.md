@@ -17,7 +17,9 @@ binary data between programs; start Stella from the reading program instead.
 
 The stream is written in emulated time, not wall-clock time. If the reader
 falls behind, Stella waits for it rather than drop anything. If the reader
-goes away, the stream stops and Stella keeps running.
+goes away, the stream stops and Stella keeps running. When Stella closes,
+it waits for the reader to take the rest of the stream, but gives up on a
+reader that has taken nothing for 2 seconds; the stream then has no `END `.
 
 ## Chunks
 

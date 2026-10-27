@@ -18,10 +18,13 @@
 #ifndef RAW_STREAM_HXX
 #define RAW_STREAM_HXX
 
+#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <mutex>
 #include <thread>
+
+class RawStreamOutput;
 
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
@@ -40,7 +43,9 @@
   jump() run on the main thread while emulation is paused.  A dedicated
   thread does the writing; when the reader falls MAX_QUEUED bytes behind,
   emulation waits for it, so the stream never skips data.  If the reader
-  goes away, the stream stops and emulation carries on.
+  goes away, the stream stops and emulation carries on.  When the stream
+  closes, it waits for the reader to take the rest, unless the reader has
+  stopped reading for STALL_TIMEOUT.
 
   @author  Newbroo Games
 */
@@ -54,12 +59,12 @@ class RawStream
     explicit RawStream(string_view path);
     ~RawStream();
 
-    bool isOpen() const { return myFile != nullptr; }
+    bool isOpen() const { return myOutput != nullptr; }
 
     /**
       Give stdout to the stream ('-rawstream -') for the rest of the run:
-      binary mode, and Stella's own console messages go to stderr.  main()
-      calls this before anything is logged; later calls do nothing.
+      Stella's own console messages go to stderr.  main() calls this before
+      anything is logged; later calls do nothing.
     */
     static void claimStdout();
 
@@ -96,8 +101,10 @@ class RawStream
   private:
     static constexpr size_t MAX_QUEUED = 64 * 1024 * 1024;
 
-    FILE* myFile{nullptr};
-    bool myIsStdout{false};
+    // How long closing waits on a reader that has stopped reading
+    static constexpr auto STALL_TIMEOUT = std::chrono::seconds(2);
+
+    unique_ptr<RawStreamOutput> myOutput;
 
     // Set on the main thread, read on the emulation thread
     std::mutex myInfoMutex;
@@ -114,8 +121,12 @@ class RawStream
     std::condition_variable myQueueChanged;
     std::deque<ByteArray> myQueue;
     size_t myQueuedBytes{0};
+    // Closing: send() no longer waits for queue space
+    bool myClosing{false};
+    // Stopping: everything is queued, so the writer finishes once it's written
     bool myStopping{false};
     bool myBroken{false};
+    bool myWriterDone{false};
     std::thread myWriter;
 
   private:

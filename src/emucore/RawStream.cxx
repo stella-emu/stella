@@ -15,14 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <csignal>
-
-#if defined(BSPF_WINDOWS)
-  #include <fcntl.h>
-  #include <io.h>
-#endif
-
 #include "Logger.hxx"
+#include "MediaFactory.hxx"
 #include "TIAConstants.hxx"
 #include "RawStream.hxx"
 
@@ -70,32 +64,18 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RawStream::RawStream(string_view path)
+  : myOutput{MediaFactory::createRawStreamOutput()}
 {
-  if(path == "-")
-  {
+  const string name{path};
+  if(name == "-")
     claimStdout();
-    myFile = stdout;
-    myIsStdout = true;
-  }
-  else
+
+  if(!myOutput->open(name))
   {
-    const string name{path};
-  #if defined(BSPF_WINDOWS)
-    if(fopen_s(&myFile, name.c_str(), "wb") != 0)
-      myFile = nullptr;
-  #else
-    myFile = std::fopen(name.c_str(), "wb");
-  #endif
-    if(!myFile)
-    {
-      Logger::error(std::format("ERROR: rawstream couldn't open '{}'", name));
-      return;
-    }
+    Logger::error(std::format("ERROR: rawstream couldn't open '{}'", name));
+    myOutput.reset();
+    return;
   }
-#ifdef SIGPIPE
-  // A reader that quits must not take Stella down with it
-  std::signal(SIGPIPE, SIG_IGN);
-#endif
 
   myPendingAudio.reserve(1024);
   myWriter = std::thread([this] { writerLoop(); });
@@ -104,22 +84,43 @@ RawStream::RawStream(string_view path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RawStream::~RawStream()
 {
-  if(!myFile)
+  if(!isOpen())
     return;
 
+  {
+    // The last chunks don't wait for queue space; the wait below deals
+    // with a reader that has stopped reading
+    const std::scoped_lock lock(myQueueMutex);
+    myClosing = true;
+  }
   writePendingAudio();
   send(newChunk("END ", 0));
-  {
-    const std::scoped_lock lock(myQueueMutex);
-    myStopping = true;
-  }
-  myQueueChanged.notify_all();
-  myWriter.join();
 
-  if(myIsStdout)
-    std::fflush(stdout);
-  else
-    std::fclose(myFile);
+  std::unique_lock lock(myQueueMutex);
+  myStopping = true;
+  myQueueChanged.notify_all();
+
+  // Wait as long as the reader keeps taking chunks
+  size_t queued = myQueuedBytes;
+  while(!myWriterDone)
+  {
+    if(myQueueChanged.wait_for(lock, STALL_TIMEOUT) == std::cv_status::timeout &&
+       myQueuedBytes == queued)
+      break;
+    queued = myQueuedBytes;
+  }
+  // Marked broken first, so the writer doesn't also report the cancelled write
+  const bool stalled = !myWriterDone;
+  if(stalled)
+    myBroken = true;
+  lock.unlock();
+
+  if(stalled)
+  {
+    Logger::error("ERROR: rawstream reader stopped reading, stream abandoned");
+    myOutput->cancel();
+  }
+  myWriter.join();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,9 +131,6 @@ void RawStream::claimStdout()
     return;
   claimed = true;
 
-#if defined(BSPF_WINDOWS)
-  _setmode(_fileno(stdout), _O_BINARY);
-#endif
   // stdout carries only the stream, so Stella's own messages go to stderr
   cout.rdbuf(cerr.rdbuf());
 }
@@ -176,7 +174,7 @@ void RawStream::frame(const uInt8* pixels, uInt32 height, uInt32 startLine,
                       uInt32 scanlines, uInt32 frameNumber, uInt64 cycles,
                       ConsoleTiming timing, ByteSpan ram)
 {
-  if(!myFile)
+  if(!isOpen())
     return;
 
   {
@@ -207,7 +205,7 @@ void RawStream::frame(const uInt8* pixels, uInt32 height, uInt32 startLine,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RawStream::jump(Jump reason)
 {
-  if(!myFile)
+  if(!isOpen())
     return;
 
   {
@@ -285,7 +283,9 @@ void RawStream::send(ByteArray&& chunk)
 
   std::unique_lock lock(myQueueMutex);
   // Wait for a slow reader rather than drop anything
-  myQueueChanged.wait(lock, [this] { return myQueuedBytes < MAX_QUEUED || myBroken; });
+  myQueueChanged.wait(lock, [this] {
+    return myQueuedBytes < MAX_QUEUED || myBroken || myClosing;
+  });
   if(myBroken)
     return;
 
@@ -298,6 +298,8 @@ void RawStream::send(ByteArray&& chunk)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RawStream::writerLoop()
 {
+  bool failed = false;
+
   std::unique_lock lock(myQueueMutex);
   for(;;)
   {
@@ -305,36 +307,30 @@ void RawStream::writerLoop()
     if(myQueue.empty())
       break;  // stopping, and everything is written
 
-    std::deque<ByteArray> batch;
-    batch.swap(myQueue);
+    const ByteArray chunk = std::move(myQueue.front());
+    myQueue.pop_front();
     lock.unlock();
-
-    bool ok = true;
-    size_t written = 0;
-    for(const ByteArray& chunk: batch)
-    {
-      if(ok)
-        ok = std::fwrite(chunk.data(), 1, chunk.size(), myFile) == chunk.size();
-      written += chunk.size();
-    }
-    if(ok)
-      ok = std::fflush(myFile) == 0;
-
+    const bool ok = myOutput->write(chunk);
     lock.lock();
-    myQueuedBytes -= written;
+
+    // Each chunk taken is progress for the destructor's wait
+    myQueuedBytes -= chunk.size();
+    myQueueChanged.notify_all();
     if(!ok)
     {
-      // The reader has gone away; drop everything from here on
+      // The reader has gone away, unless the destructor gave up on it;
+      // drop everything from here on
+      failed = !myBroken;
       myBroken = true;
       myQueue.clear();
       myQueuedBytes = 0;
-    }
-    myQueueChanged.notify_all();
-    if(myBroken)
-    {
-      lock.unlock();
-      Logger::error("ERROR: rawstream write failed, stream stopped");
-      return;
+      break;
     }
   }
+  myWriterDone = true;
+  lock.unlock();
+  myQueueChanged.notify_all();
+
+  if(failed)
+    Logger::error("ERROR: rawstream write failed, stream stopped");
 }

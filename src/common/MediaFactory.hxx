@@ -26,14 +26,18 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SerialPort.hxx"
+#include "RawStreamOutput.hxx"
 #ifdef BSPF_UNIX
   #include "SerialPortPOSIX.hxx"
+  #include "RawStreamOutputPOSIX.hxx"
   #include "OSystemUNIX.hxx"
 #elifdef BSPF_WINDOWS
   #include "SerialPortWINDOWS.hxx"
+  #include "RawStreamOutputWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
 #elifdef BSPF_MACOS
   #include "SerialPortPOSIX.hxx"
+  #include "RawStreamOutputPOSIX.hxx"
   #include "OSystemMACOS.hxx"
 #elifdef __LIB_RETRO__
   #include "OSystemLIBRETRO.hxx"
@@ -105,6 +109,19 @@ class MediaFactory
       return std::make_unique<SerialPortPOSIX>();
     #else
       return std::make_unique<SerialPort>();
+    #endif
+    }
+
+    static unique_ptr<RawStreamOutput> createRawStreamOutput()
+    {
+    #ifdef BSPF_UNIX
+      return std::make_unique<RawStreamOutputPOSIX>();
+    #elifdef BSPF_WINDOWS
+      return std::make_unique<RawStreamOutputWINDOWS>();
+    #elifdef BSPF_MACOS
+      return std::make_unique<RawStreamOutputPOSIX>();
+    #else
+      return std::make_unique<RawStreamOutput>();
     #endif
     }
 
