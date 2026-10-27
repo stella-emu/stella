@@ -158,6 +158,7 @@ class TIA : public Device
       raw stream (nullptr to stop).
     */
     void setRawStream(RawStream* stream);
+    RawStream* rawStream() const { return myRawStream; }
 
     /**
       Clear the configured frame manager and deteach the lifecycle callbacks.

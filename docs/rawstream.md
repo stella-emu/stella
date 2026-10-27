@@ -66,7 +66,9 @@ A stream normally looks like: `HEAD PALT AUDI RAM FRAM AUDI RAM FRAM ...`
 These are the numbers Stella's own emulation runs on: an NTSC frame of 262
 lines is 1/60 s, so 524 samples; a PAL frame of 312 lines is 1/50 s, so 624
 samples. The mixing tables are the ones Stella uses to turn TIA volumes into
-sound, so a reader can reproduce Stella's output exactly, or mix its own way.
+sound, so a reader can mix the TIA's sound exactly as Stella does, or mix its
+own way. Only the TIA's sound is in the stream: KidVid tape audio, which
+Stella plays separately, is not.
 
 ### `AUDI`
 
@@ -129,6 +131,10 @@ to the time before the jump.
 | RAM | `M6532::getRAM()`, read in `TIA::onFrameComplete()` |
 | Samples | `Audio::createSample()`, before Stella resamples for the sound card |
 | Palette | `FrameBuffer::setTIAPalette()`, the RGB palette Stella displays with |
+
+The frames and palette give Stella's picture as it looks with TV effects
+off. The NTSC filters, phosphor, scanlines and bezels are applied after this
+point, so they aren't in the stream.
 
 Frames and samples are produced on the emulation thread in emulated order,
 which is why the interleaving is exact. Frame layout autodetection runs the

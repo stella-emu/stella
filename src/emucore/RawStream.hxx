@@ -106,7 +106,7 @@ class RawStream
     void writerLoop();
 
   private:
-    static constexpr size_t MAX_QUEUED = 64 * 1024 * 1024;
+    static constexpr size_t MAX_QUEUED = size_t{64} * 1024 * 1024;
 
     // Emulation waits for the reader here; the rest of the queue is room for
     // a timeslice that is already running, or for a debugger command

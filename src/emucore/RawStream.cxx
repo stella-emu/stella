@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "EmulationTiming.hxx"
 #include "Logger.hxx"
 #include "MediaFactory.hxx"
 #include "TIAConstants.hxx"
@@ -53,12 +54,6 @@ namespace {
     b.insert(b.end(), tag, tag + 4);
     put32(b, 0);
     return b;
-  }
-
-  // Two samples per scanline: (lines per frame * 76 cycles * frames per second) / 38
-  uInt32 audioSampleRate(ConsoleTiming timing)
-  {
-    return timing == ConsoleTiming::ntsc ? 262 * 76 * 60 / 38 : 312 * 76 * 50 / 38;
   }
 } // namespace
 
@@ -234,14 +229,16 @@ void RawStream::jump(Jump reason)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RawStream::writeHeader(ConsoleTiming timing)
 {
-  const uInt32 sampleRate = audioSampleRate(timing);
+  // The stream is in emulated time, so it always runs at normal speed; there
+  // are two audio samples per scanline, one every 38 CPU cycles
+  const uInt32 cyclesPerSecond = EmulationTiming::nominalCyclesPerSecond(timing);
 
   ByteArray chunk = newChunk("HEAD", 128);
   put16(chunk, VERSION);
   put8(chunk, U8(timing));
   put8(chunk, 0);
-  put32(chunk, sampleRate);
-  put32(chunk, sampleRate * 38);  // CPU cycles per second
+  put32(chunk, cyclesPerSecond / 38);
+  put32(chunk, cyclesPerSecond);
   put16(chunk, U16(TIAConstants::H_PIXEL));
   put16(chunk, 0);
   for(const Int16 v: myMixMono)   put16(chunk, U16(v));
