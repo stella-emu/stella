@@ -738,6 +738,9 @@
 		DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
+		DCE3CE323090F8CF005BDF39 /* RawStreamOutputPOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3CE313090F8CF005BDF39 /* RawStreamOutputPOSIX.cxx */; };
+		DCE3CE333090F8CF005BDF39 /* RawStreamOutputPOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3CE303090F8CF005BDF39 /* RawStreamOutputPOSIX.hxx */; };
+		DCE3CE353090F93B005BDF39 /* RawStreamOutput.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3CE343090F93B005BDF39 /* RawStreamOutput.hxx */; };
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
 		DCE7161A2AA78BD700B870EA /* Bezel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE716182AA78BD700B870EA /* Bezel.cxx */; };
@@ -1664,6 +1667,9 @@
 		DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ZipHandler.hxx; sourceTree = "<group>"; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RomInfoWidget.cxx; sourceTree = "<group>"; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RomInfoWidget.hxx; sourceTree = "<group>"; };
+		DCE3CE303090F8CF005BDF39 /* RawStreamOutputPOSIX.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RawStreamOutputPOSIX.hxx; sourceTree = "<group>"; };
+		DCE3CE313090F8CF005BDF39 /* RawStreamOutputPOSIX.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RawStreamOutputPOSIX.cxx; sourceTree = "<group>"; };
+		DCE3CE343090F93B005BDF39 /* RawStreamOutput.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RawStreamOutput.hxx; sourceTree = "<group>"; };
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RiotRamWidget.hxx; sourceTree = "<group>"; };
 		DCE716182AA78BD700B870EA /* Bezel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bezel.cxx; sourceTree = "<group>"; };
@@ -2196,6 +2202,8 @@
 			children = (
 				DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */,
 				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
+				DCE3CE303090F8CF005BDF39 /* RawStreamOutputPOSIX.hxx */,
+				DCE3CE313090F8CF005BDF39 /* RawStreamOutputPOSIX.cxx */,
 				DCCE57842F8FF759009D8036 /* SerialPortPOSIX.hxx */,
 				DCCE57852F8FF759009D8036 /* SerialPortPOSIX.cxx */,
 				DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */,
@@ -2413,6 +2421,7 @@
 				2DE2DF890627AE34006BEC99 /* Random.hxx */,
 				110E32567797E88CDA4F6F1B /* RawStream.hxx */,
 				9F24C1B9876386A2FD6D51FA /* RawStream.cxx */,
+				DCE3CE343090F93B005BDF39 /* RawStreamOutput.hxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC932D400F278A5200FEFEFC /* Serializable.hxx */,
@@ -3283,6 +3292,7 @@
 				DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */,
 				DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */,
 				DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */,
+				DCE3CE353090F93B005BDF39 /* RawStreamOutput.hxx in Headers */,
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
 				DCD043A02FCDE2B10053802F /* DisasmColorsDialog.hxx in Headers */,
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
@@ -3331,6 +3341,7 @@
 				E0A384182589741A0062AA93 /* SqliteStatement.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
+				DCE3CE333090F8CF005BDF39 /* RawStreamOutputPOSIX.hxx in Headers */,
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
 				DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */,
 				DCAAE5DD1715887B0080BB82 /* CartDebugWidget.hxx in Headers */,
@@ -3782,6 +3793,7 @@
 				DCB20EC71A0C506C0048F595 /* main.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				DC3C9BCB2469C93D00CF2D47 /* VideoAudioDialog.cxx in Sources */,
+				DCE3CE323090F8CF005BDF39 /* RawStreamOutputPOSIX.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
 				E08D2F3E23089B9B000BD709 /* JoyMap.cxx in Sources */,
 				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
