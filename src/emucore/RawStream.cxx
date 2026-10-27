@@ -124,6 +124,13 @@ RawStream::~RawStream()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RawStream::isBacklogged() const
+{
+  const std::scoped_lock lock(myQueueMutex);
+  return myQueuedBytes >= BACKLOG;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RawStream::claimStdout()
 {
   static bool claimed = false;
@@ -282,7 +289,9 @@ void RawStream::send(ByteArray&& chunk)
     chunk[4 + i] = U8((length >> (8 * i)) & 0xFFU);
 
   std::unique_lock lock(myQueueMutex);
-  // Wait for a slow reader rather than drop anything
+  // Wait for a slow reader rather than drop anything.  Normal emulation
+  // stops at BACKLOG, so this only waits for the debugger, which runs
+  // frames on the main thread
   myQueueChanged.wait(lock, [this] {
     return myQueuedBytes < MAX_QUEUED || myBroken || myClosing;
   });

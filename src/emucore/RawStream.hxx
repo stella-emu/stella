@@ -41,8 +41,9 @@ class RawStreamOutput;
 
   audioSample() and frame() run on the emulation thread.  The setters and
   jump() run on the main thread while emulation is paused.  A dedicated
-  thread does the writing; when the reader falls MAX_QUEUED bytes behind,
-  emulation waits for it, so the stream never skips data.  If the reader
+  thread does the writing; when the reader falls BACKLOG bytes behind, the
+  main loop stops emulating until it catches up, so the stream never skips
+  data and the UI stays responsive meanwhile.  If the reader
   goes away, the stream stops and emulation carries on.  When the stream
   closes, it waits for the reader to take the rest, unless the reader has
   stopped reading for STALL_TIMEOUT.
@@ -60,6 +61,12 @@ class RawStream
     ~RawStream();
 
     bool isOpen() const { return myOutput != nullptr; }
+
+    /**
+      The reader has fallen BACKLOG bytes behind.  The main loop holds off
+      emulating until it catches up.
+    */
+    bool isBacklogged() const;
 
     /**
       Give stdout to the stream ('-rawstream -') for the rest of the run:
@@ -101,6 +108,10 @@ class RawStream
   private:
     static constexpr size_t MAX_QUEUED = 64 * 1024 * 1024;
 
+    // Emulation waits for the reader here; the rest of the queue is room for
+    // a timeslice that is already running, or for a debugger command
+    static constexpr size_t BACKLOG = MAX_QUEUED / 2;
+
     // How long closing waits on a reader that has stopped reading
     static constexpr auto STALL_TIMEOUT = std::chrono::seconds(2);
 
@@ -117,7 +128,7 @@ class RawStream
 
     ByteArray myPendingAudio;
 
-    std::mutex myQueueMutex;
+    mutable std::mutex myQueueMutex;
     std::condition_variable myQueueChanged;
     std::deque<ByteArray> myQueue;
     size_t myQueuedBytes{0};

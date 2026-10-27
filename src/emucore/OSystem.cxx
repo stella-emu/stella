@@ -1083,7 +1083,14 @@ void OSystem::mainLoop()
 
     double timesliceSeconds;  // NOLINT(cppcoreguidelines-init-variables)
 
-    if (myEventHandler->state() == EventHandlerState::EMULATION)
+    if (myEventHandler->state() == EventHandlerState::EMULATION &&
+        myRawStream && myRawStream->isBacklogged()) [[unlikely]]
+    {
+      // Hold off emulating until the raw stream's reader catches up, so the
+      // UI stays responsive meanwhile
+      timesliceSeconds = 1. / 60.;
+    }
+    else if (myEventHandler->state() == EventHandlerState::EMULATION)
     {
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
