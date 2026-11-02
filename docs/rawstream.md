@@ -103,6 +103,12 @@ The rows are the part of the frame Stella displays, so the height can change
 when Stella changes its display window. A reader that needs a fixed size
 (video encoders do) should choose one and pad or crop.
 
+With the TV jitter effect on ('Jitter/roll effect' in Developer Settings; on
+by default), Stella moves the picture up and down when a game's frame timing
+is unstable, as a TV losing sync would. The rows move with it, and the
+scanline of the first row doesn't include that shift. For a capture whose
+rows always start where that field says, turn the effect off.
+
 Each frame's audio is the `AUDI` chunk just before it, so picture and sound
 never drift. Once a game's frames are steady, each ending at the same point
 of a scanline, a frame's sample count is twice its scanline count, and its
@@ -135,7 +141,8 @@ to the time before the jump.
 
 The frames and palette give Stella's picture as it looks with TV effects
 off. The NTSC filters, phosphor, scanlines and bezels are applied after this
-point, so they aren't in the stream.
+point, so they aren't in the stream. The TV jitter effect is the exception:
+it moves the rows themselves (see `FRAM`).
 
 Frames and samples are produced on the emulation thread in emulated order,
 which is why the interleaving is exact. Frame layout autodetection runs the
