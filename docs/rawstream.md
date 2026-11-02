@@ -1,26 +1,27 @@
 # Raw stream (`-rawstream`)
 
 Stella can write every emulated frame and every audio sample,
-untouched, to a file, a pipe or stdout. Stella does nothing else with it: no
+untouched, to a file. Stella does nothing else with it: no
 palette, scaling, filters, resampling or encoding. Outside tools turn it into
-whatever they need (a video, a live stream, a test log).
+whatever they need (a video, a test log).
 
 ```
-Stella -rawstream capture.raw game.bin      write to a file
-Stella -rawstream - game.bin | tool         write to stdout
-Stella -rawstream \\.\pipe\name game.bin    write to a Windows named pipe
+Stella -rawstream capture.raw game.bin
 ```
 
-With `-`, Stella's own console messages move to stderr so stdout carries only
-the stream. On Windows, don't pipe it through PowerShell 5.1, which corrupts
-binary data between programs; start Stella from the reading program instead.
+The file is created, or emptied if it exists. It must be a regular file,
+not a pipe or a device: Stella turns away a FIFO or a device such as
+`/dev/stdout` or `/dev/null`, logs an error and runs on without a stream.
 
-The stream is written in emulated time, not wall-clock time. If the reader
+The stream is written in emulated time, not wall-clock time. If the disk
 falls behind, emulation waits for it rather than drop anything; Stella's
-window and menus keep working meanwhile. If the reader
-goes away, the stream stops and Stella keeps running. When Stella closes,
-it waits for the reader to take the rest of the stream, but gives up on a
-reader that has taken nothing for 2 seconds; the stream then has no `END `.
+window and menus keep working meanwhile. If a write fails (a full disk, say),
+the stream stops and Stella keeps running; the file then has no `END `.
+
+A tool can read the file while Stella is still writing it. Each chunk is
+written as soon as it's made, so a reader that reaches the end of the file
+partway through a chunk only has to wait for the rest of it; the chunk's
+length says how much is still to come. `END ` says the stream is finished.
 
 ## Chunks
 

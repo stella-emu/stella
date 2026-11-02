@@ -18,22 +18,22 @@
 #ifndef RAW_STREAM_HXX
 #define RAW_STREAM_HXX
 
-#include <chrono>
+#include <atomic>
 #include <condition_variable>
 #include <deque>
+#include <fstream>
 #include <mutex>
 #include <thread>
-
-class RawStreamOutput;
 
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
 #include "FrameBufferConstants.hxx"
 
 /**
-  Writes the emulated TIA picture and sound, untouched, to a file or to
-  stdout ('-'), so that outside tools can record, stream or analyse them.
-  Enabled with '-rawstream <path>'.
+  Writes the emulated TIA picture and sound, untouched, to a file, so that
+  outside tools can record or analyse them.  Enabled with
+  '-rawstream <file>'.  Each chunk is written as soon as it is made, so a
+  tool can follow the file while it is being written.
 
   The stream is a sequence of chunks: a 4-character tag, a little-endian
   uInt32 payload length, then the payload.  Readers skip tags they don't
@@ -41,12 +41,10 @@ class RawStreamOutput;
 
   audioSample() and frame() run on the emulation thread.  The setters and
   jump() run on the main thread while emulation is paused.  A dedicated
-  thread does the writing; when the reader falls BACKLOG bytes behind, the
-  main loop stops emulating until it catches up, so the stream never skips
-  data and the UI stays responsive meanwhile.  If the reader
-  goes away, the stream stops and emulation carries on.  When the stream
-  closes, it waits for the reader to take the rest, unless the reader has
-  stopped reading for STALL_TIMEOUT.
+  thread does the writing; when it falls BACKLOG bytes behind (a slow disk),
+  the main loop stops emulating until it catches up, so the stream never
+  skips data and the UI stays responsive meanwhile.  If a write fails, the
+  stream stops and emulation carries on.
 
   @author  Newbroo Games
 */
@@ -60,20 +58,17 @@ class RawStream
     explicit RawStream(string_view path);
     ~RawStream();
 
-    bool isOpen() const { return myOutput != nullptr; }
+    /**
+      The file is open and still being written: false when it couldn't be
+      opened, and once a write has failed.
+    */
+    bool isOpen() const { return myOpen; }
 
     /**
-      The reader has fallen BACKLOG bytes behind.  The main loop holds off
+      The writer has fallen BACKLOG bytes behind.  The main loop holds off
       emulating until it catches up.
     */
     bool isBacklogged() const;
-
-    /**
-      Give stdout to the stream ('-rawstream -') for the rest of the run:
-      Stella's own console messages go to stderr.  main() calls this before
-      anything is logged; later calls do nothing.
-    */
-    static void claimStdout();
 
     void setRom(string_view name, string_view md5);
     void setPalette(const PaletteArray& rgb);
@@ -108,14 +103,13 @@ class RawStream
   private:
     static constexpr size_t MAX_QUEUED = size_t{64} * 1024 * 1024;
 
-    // Emulation waits for the reader here; the rest of the queue is room for
+    // Emulation waits for the writer here; the rest of the queue is room for
     // a timeslice that is already running, or for a debugger command
     static constexpr size_t BACKLOG = MAX_QUEUED / 2;
 
-    // How long closing waits on a reader that has stopped reading
-    static constexpr auto STALL_TIMEOUT = std::chrono::seconds(2);
-
-    unique_ptr<RawStreamOutput> myOutput;
+    // Only the writer thread touches the file once it is open
+    std::ofstream myFile;
+    std::atomic<bool> myOpen{false};
 
     // Set on the main thread, read on the emulation thread
     std::mutex myInfoMutex;
@@ -132,12 +126,8 @@ class RawStream
     std::condition_variable myQueueChanged;
     std::deque<ByteArray> myQueue;
     size_t myQueuedBytes{0};
-    // Closing: send() no longer waits for queue space
-    bool myClosing{false};
     // Stopping: everything is queued, so the writer finishes once it's written
     bool myStopping{false};
-    bool myBroken{false};
-    bool myWriterDone{false};
     std::thread myWriter;
 
   private:

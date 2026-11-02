@@ -1086,7 +1086,7 @@ void OSystem::mainLoop()
     if (myEventHandler->state() == EventHandlerState::EMULATION &&
         myRawStream && myRawStream->isBacklogged()) [[unlikely]]
     {
-      // Hold off emulating until the raw stream's reader catches up, so the
+      // Hold off emulating until the raw stream's writer catches up, so the
       // UI stays responsive meanwhile
       timesliceSeconds = 1. / 60.;
     }
