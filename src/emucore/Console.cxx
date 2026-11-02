@@ -307,7 +307,10 @@ void Console::redetectFrameLayout()
 
   save(s);
   autodetectFrameLayout(false);
-  load(s);
+  // Reading and writing share one position, so read back from the start
+  s.rewind();
+  if(!load(s))
+    cerr << "ERROR: Console::redetectFrameLayout\n";
 
   initializeAudio();
 }
