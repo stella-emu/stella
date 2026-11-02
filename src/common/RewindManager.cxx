@@ -131,7 +131,8 @@ bool RewindManager::addState(string_view message, bool timeMachine)
   RewindState& state = myStateList.current();
   Serializer& s = state.data;
 
-  s.rewind();  // rewind Serializer internal buffers
+  // Empty the slot, so that its size is just this state
+  s.clear();
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
     state.message = message;
@@ -271,7 +272,7 @@ string RewindManager::loadAllStates()
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
 
-      s.rewind();
+      s.clear();
       buffer.resize(stateSize);
       in.getByteArray(buffer);
       s.putByteArray(buffer);

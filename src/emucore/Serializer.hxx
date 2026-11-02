@@ -80,6 +80,12 @@ class Serializer
     void rewind();
 
     /**
+      Empties a memory stream, so that it can be written again from the
+      start; its buffer is kept for reuse.
+    */
+    void clear();
+
+    /**
       Returns the current total size of the stream.
     */
     size_t size();
