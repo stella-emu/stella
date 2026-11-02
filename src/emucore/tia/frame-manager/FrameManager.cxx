@@ -22,7 +22,8 @@
 #include "FrameManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameManager::FrameManager()
+FrameManager::FrameManager(uInt32 jitterSeed)
+  : myJitterEmulation{jitterSeed}
 {
   // Establish the reset state without invoking the virtual-dispatching reset()
   // from the constructor: doing so lets GCC's LTO devirtualizer speculatively

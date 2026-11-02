@@ -174,7 +174,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   (cout << '\n').flush();
 
-  FrameManager frameManager;
+  FrameManager frameManager(rng.next());
   tia.setFrameManager(&frameManager);
   tia.setLayout(frameLayout);
 

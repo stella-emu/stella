@@ -36,6 +36,11 @@ class VcsLib: public CortexM0::BusTransactionDelegate, public Serializable {
 
     void reset();
 
+    /**
+      Seed the random numbers that the ELF program asks for.
+    */
+    void seedRandom(uInt32 seed) { myRand.initSeed(seed); }
+
     CortexM0::err_t fetch16(uInt32 address, uInt16& value, uInt8& op, CortexM0& cortex) override;
 
     bool updateBus(uInt16 address, uInt8 value) {
