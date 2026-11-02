@@ -279,8 +279,17 @@ string RewindManager::loadAllStates()
       state.cycles = in.getLong();
     }
 
-    // initialize current state (parameters ignored)
-    loadState(0, 0);
+    // saveAllStates() never writes an empty file
+    if(!myStateList.currentIsValid())
+      return "Corrupt all states file";
+
+    // Restore the newest state; reading and writing share one position, so
+    // read it from the start
+    RewindState& state = myStateList.current();
+    state.data.rewind();
+    if(!myStateManager.loadState(state.data) ||
+       !myOSystem.console().tia().loadDisplay(state.data))
+      return "Error loading all states";
 
     return std::format("Loaded {} states", numStates);
   }
