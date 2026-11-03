@@ -25,6 +25,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/PhysicalJoystick.cxx \
 	$(CORE_DIR)/common/PJoystickHandler.cxx \
 	$(CORE_DIR)/common/PKeyboardHandler.cxx \
+	$(CORE_DIR)/common/RawStream.cxx \
 	$(CORE_DIR)/common/RewindManager.cxx \
 	$(CORE_DIR)/common/StaggeredLogger.cxx \
 	$(CORE_DIR)/common/StateManager.cxx \
@@ -129,7 +130,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Props.cxx \
 	$(CORE_DIR)/emucore/PropsSet.cxx \
 	$(CORE_DIR)/emucore/QuadTari.cxx \
-	$(CORE_DIR)/emucore/RawStream.cxx \
 	$(CORE_DIR)/emucore/SaveKey.cxx \
 	$(CORE_DIR)/emucore/Serializer.cxx \
 	$(CORE_DIR)/emucore/Settings.cxx \
