@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Cart3E.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,18 +47,40 @@ void Cartridge3E::install(System& system)
 bool Cartridge3E::checkSwitchBank(uInt16 address, uInt8 value)
 {
   // Switch banks if necessary
-  address &= ROM_MASK;
-  if(address == 0x3F)
+  if(address == 0x003F)
   {
     // Switch ROM bank into segment <value>
     bank(value);
     return true;
   }
-  if(address == 0x3E)
+  if(address == 0x003E)
   {
     // Switch RAM bank into segment <value>
     bank(value + romBankCount());
     return true;
   }
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Cartridge3E::peek(uInt16 address)
+{
+  // The TIA page claimed in install()
+  if((address & ADDR_MASK) < 0x0040)
+    return mySystem->tia().peek(address);
+
+  return CartridgeEnhanced::peek(address);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3E::poke(uInt16 address, uInt8 value)
+{
+  // The TIA page claimed in install(); the hotspots are TIA writes too
+  if((address & ADDR_MASK) < 0x0040)
+  {
+    checkSwitchBank(address & ADDR_MASK, value);
+    return mySystem->tia().poke(address, value);
+  }
+
+  return CartridgeEnhanced::poke(address, value);
 }

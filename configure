@@ -826,12 +826,6 @@ case $_host_os in
       fi
       _libsqlite3=no
       ;;
-    win32)
-      DEFINES="$DEFINES -DBSPF_WINDOWS"
-      MODULES="$MODULES $SRC_OS/windows"
-      INCLUDES="$INCLUDES -I$SRC_OS/windows"
-      LIBS="$LIBS -lmingw32 -lwinmm"
-      ;;
     *)
       echo "WARNING: host system not currently supported"
       exit

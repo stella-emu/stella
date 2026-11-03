@@ -79,6 +79,15 @@ void Serializer::rewind()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::clear()
+{
+  if(!myMemory)
+    throw std::runtime_error("Serializer is not a memory stream");
+
+  myMemory->pos = myMemory->size = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t Serializer::size()
 {
   if(myMemory)

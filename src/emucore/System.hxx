@@ -209,6 +209,7 @@ class System : public Serializable
       Read the byte at the specified address out-of-band (e.g. from the
       debugger or high-score manager).  Skips bus-stuffing overdrive and
       calls the device's peekOob() so it can suppress emulation side-effects.
+      Access flags are still recorded, but access counters are not increased.
 
       @param address  The address to read
       @param flags    Access type hint for the debugger (CODE, DATA, GFX, etc.)
@@ -236,7 +237,8 @@ class System : public Serializable
     /**
       Write a byte to the specified address out-of-band (e.g. from the
       debugger).  Skips bus-stuffing overdrive and calls the device's
-      pokeOob() so it can suppress emulation side-effects.
+      pokeOob() so it can suppress emulation side-effects.  Access flags
+      are still recorded, but access counters are not increased.
 
       @param address  The address to write
       @param value    The byte to write
@@ -552,13 +554,16 @@ inline uInt8 System::peekImpl(uInt16 addr, Device::AccessType flags)
     *(access.romAccessBase + pageOffset) |= (flags | Device::addrBits(addr));
   else
     access.device->setAccessFlags(addr, flags);
-  // Increase access counter
-  if((flags == Device::DATA) && access.romDataPeekCounter)
+  // Increase access counter (out-of-band accesses aren't counted)
+  if constexpr(!oob)
+  {
+    if((flags == Device::DATA) && access.romDataPeekCounter)
       *(access.romDataPeekCounter + pageOffset) += 1;
-  else if((flags == Device::CODE) && access.romCodePeekCounter)
+    else if((flags == Device::CODE) && access.romCodePeekCounter)
       *(access.romCodePeekCounter + pageOffset) += 1;
-  else if (flags != Device::NONE)
+    else if(flags != Device::NONE)
       access.device->increaseAccessCounter(addr, flags);
+  }
 #endif
 
   const uInt8 result = [&] -> uInt8 {
@@ -601,13 +606,16 @@ inline void System::pokeImpl(uInt16 addr, uInt8 value, Device::AccessType flags)
     *(access.romAccessBase + pageOffset) |= (flags | Device::addrBits(addr));
   else
     access.device->setAccessFlags(addr, flags);
-  // Increase access counter
-  if(flags != Device::NONE)
+  // Increase access counter (out-of-band accesses aren't counted)
+  if constexpr(!oob)
   {
-    if(access.romPokeCounter)
-      *(access.romPokeCounter + pageOffset) += 1;
-    else
-      access.device->increaseAccessCounter(addr, Device::WRITE);
+    if(flags != Device::NONE)
+    {
+      if(access.romPokeCounter)
+        *(access.romPokeCounter + pageOffset) += 1;
+      else
+        access.device->increaseAccessCounter(addr, Device::WRITE);
+    }
   }
 #endif
 

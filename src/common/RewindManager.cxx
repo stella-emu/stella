@@ -131,7 +131,8 @@ bool RewindManager::addState(string_view message, bool timeMachine)
   RewindState& state = myStateList.current();
   Serializer& s = state.data;
 
-  s.rewind();  // rewind Serializer internal buffers
+  // Empty the slot, so that its size is just this state
+  s.clear();
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
     state.message = message;
@@ -271,7 +272,7 @@ string RewindManager::loadAllStates()
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
 
-      s.rewind();
+      s.clear();
       buffer.resize(stateSize);
       in.getByteArray(buffer);
       s.putByteArray(buffer);
@@ -279,8 +280,17 @@ string RewindManager::loadAllStates()
       state.cycles = in.getLong();
     }
 
-    // initialize current state (parameters ignored)
-    loadState(0, 0);
+    // saveAllStates() never writes an empty file
+    if(!myStateList.currentIsValid())
+      return "Corrupt all states file";
+
+    // Restore the newest state; reading and writing share one position, so
+    // read it from the start
+    RewindState& state = myStateList.current();
+    state.data.rewind();
+    if(!myStateManager.loadState(state.data) ||
+       !myOSystem.console().tia().loadDisplay(state.data))
+      return "Error loading all states";
 
     return std::format("Loaded {} states", numStates);
   }

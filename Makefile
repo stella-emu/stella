@@ -424,8 +424,4 @@ uninstall:
 src/emucore/M6502.ins: src/emucore/M6502.m4
 	m4 src/emucore/M6502.m4 > src/emucore/M6502.ins
 
-# Special rule for windows icon stuff (there's probably a better way to do this ...)
-src/os/windows/stella_icon.o: src/os/windows/stella.ico src/os/windows/stella.rc
-	windres --include-dir src/os/windows src/os/windows/stella.rc src/os/windows/stella_icon.o
-
 .PHONY: deb bundle test install uninstall

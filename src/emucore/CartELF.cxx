@@ -250,6 +250,10 @@ void CartridgeELF::reset()
 
   setupConfig();
   resetWithConfig();
+
+  // Not in resetWithConfig(), which a state load also runs: drawing from
+  // the system RNG there would change its sequence after the load
+  myVcsLib.seedRandom(mySystem->randGenerator().next());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
