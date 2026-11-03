@@ -21,42 +21,6 @@
 #include "TIAConstants.hxx"
 #include "RawStream.hxx"
 
-namespace {
-  // All values are little-endian
-  void put8(ByteArray& b, uInt8 v)  { b.push_back(v); }
-  void put16(ByteArray& b, uInt16 v)
-  {
-    b.push_back(U8(v & 0xFFU));
-    b.push_back(U8(v >> 8U));
-  }
-  void put32(ByteArray& b, uInt32 v)
-  {
-    for(uInt32 shift = 0; shift < 32; shift += 8)
-      b.push_back(U8((v >> shift) & 0xFFU));
-  }
-  void put64(ByteArray& b, uInt64 v)
-  {
-    for(uInt32 shift = 0; shift < 64; shift += 8)
-      b.push_back(U8((v >> shift) & 0xFFU));
-  }
-  void putString(ByteArray& b, string_view s)
-  {
-    const auto len = U16(std::min<size_t>(s.size(), 0xFFFF));
-    put16(b, len);
-    b.insert(b.end(), s.begin(), s.begin() + len);
-  }
-
-  // Tag plus a length that send() fills in
-  ByteArray newChunk(const char* tag, size_t payloadSize)
-  {
-    ByteArray b;
-    b.reserve(8 + payloadSize);
-    b.insert(b.end(), tag, tag + 4);
-    put32(b, 0);
-    return b;
-  }
-} // namespace
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RawStream::RawStream(string_view path)
 {
@@ -88,7 +52,9 @@ RawStream::~RawStream()
     return;
 
   writePendingAudio();
-  send(newChunk("END ", 0));
+  beginChunk("END ");
+  endChunk();
+  send();
 
   {
     const std::scoped_lock lock(myQueueMutex);
@@ -121,6 +87,10 @@ void RawStream::setRom(string_view name, string_view md5)
 void RawStream::setPalette(const PaletteArray& rgb)
 {
   const std::scoped_lock lock(myInfoMutex);
+  // The palette is often set again unchanged (leaving the debugger, say)
+  if(rgb == myPalette)
+    return;
+
   myPalette = rgb;
   myPaletteDirty = true;
 }
@@ -160,20 +130,22 @@ void RawStream::frame(const uInt8* pixels, uInt32 height, uInt32 startLine,
   }
   writePendingAudio();
 
-  ByteArray ramChunk = newChunk("RAM ", ram.size());
-  ramChunk.insert(ramChunk.end(), ram.begin(), ram.end());
-  send(std::move(ramChunk));
+  beginChunk("RAM ");
+  myBatch.putByteArray(ram);
+  endChunk();
 
   constexpr uInt32 width = TIAConstants::H_PIXEL;
-  ByteArray chunk = newChunk("FRAM", 20 + size_t{width} * height);
-  put64(chunk, cycles);
-  put32(chunk, frameNumber);
-  put16(chunk, U16(scanlines));
-  put16(chunk, U16(startLine));
-  put16(chunk, U16(width));
-  put16(chunk, U16(height));
-  chunk.insert(chunk.end(), pixels, pixels + size_t{width} * height);
-  send(std::move(chunk));
+  beginChunk("FRAM");
+  myBatch.putLong(cycles);
+  myBatch.putInt(frameNumber);
+  myBatch.putShort(U16(scanlines));
+  myBatch.putShort(U16(startLine));
+  myBatch.putShort(U16(width));
+  myBatch.putShort(U16(height));
+  myBatch.putByteArray(ByteSpan(pixels, size_t{width} * height));
+  endChunk();
+
+  send();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,9 +165,29 @@ void RawStream::jump(Jump reason)
   }
   writePendingAudio();
 
-  ByteArray chunk = newChunk("JUMP", 1);
-  put8(chunk, U8(reason));
-  send(std::move(chunk));
+  beginChunk("JUMP");
+  myBatch.putByte(U8(reason));
+  endChunk();
+
+  send();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RawStream::beginChunk(string_view tag)
+{
+  // The payload length is filled in by endChunk()
+  myChunkStart = myBatch.size();
+  myBatch.putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(tag.data()), 4));
+  myBatch.putInt(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RawStream::endChunk()
+{
+  const size_t end = myBatch.size();
+  myBatch.setPosition(myChunkStart + 4);
+  myBatch.putInt(U32(end - myChunkStart - 8));
+  myBatch.setPosition(end);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,19 +197,19 @@ void RawStream::writeHeader(ConsoleTiming timing)
   // are two audio samples per scanline, one every 38 CPU cycles
   const uInt32 cyclesPerSecond = EmulationTiming::nominalCyclesPerSecond(timing);
 
-  ByteArray chunk = newChunk("HEAD", 128);
-  put16(chunk, VERSION);
-  put8(chunk, U8(timing));
-  put8(chunk, 0);
-  put32(chunk, cyclesPerSecond / 38);
-  put32(chunk, cyclesPerSecond);
-  put16(chunk, U16(TIAConstants::H_PIXEL));
-  put16(chunk, 0);
-  for(const Int16 v: myMixMono)   put16(chunk, U16(v));
-  for(const Int16 v: myMixStereo) put16(chunk, U16(v));
-  putString(chunk, myRomName);
-  putString(chunk, myRomMD5);
-  send(std::move(chunk));
+  beginChunk("HEAD");
+  myBatch.putShort(VERSION);
+  myBatch.putByte(U8(timing));
+  myBatch.putByte(0);
+  myBatch.putInt(cyclesPerSecond / 38);
+  myBatch.putInt(cyclesPerSecond);
+  myBatch.putShort(U16(TIAConstants::H_PIXEL));
+  myBatch.putShort(0);
+  for(const Int16 v: myMixMono)   myBatch.putShort(U16(v));
+  for(const Int16 v: myMixStereo) myBatch.putShort(U16(v));
+  myBatch.putString(myRomName);
+  myBatch.putString(myRomMD5);
+  endChunk();
 
   myTiming = timing;
   myHeaderDirty = false;
@@ -227,14 +219,14 @@ void RawStream::writeHeader(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RawStream::writePalette()
 {
-  ByteArray chunk = newChunk("PALT", myPalette.size() * 3);
+  beginChunk("PALT");
   for(const uInt32 rgb: myPalette)
   {
-    put8(chunk, U8((rgb >> 16U) & 0xFFU));
-    put8(chunk, U8((rgb >> 8U) & 0xFFU));
-    put8(chunk, U8(rgb & 0xFFU));
+    myBatch.putByte(U8((rgb >> 16U) & 0xFFU));
+    myBatch.putByte(U8((rgb >> 8U) & 0xFFU));
+    myBatch.putByte(U8(rgb & 0xFFU));
   }
-  send(std::move(chunk));
+  endChunk();
   myPaletteDirty = false;
 }
 
@@ -244,18 +236,31 @@ void RawStream::writePendingAudio()
   if(myPendingAudio.empty())
     return;
 
-  ByteArray chunk = newChunk("AUDI", myPendingAudio.size());
-  chunk.insert(chunk.end(), myPendingAudio.begin(), myPendingAudio.end());
-  send(std::move(chunk));
+  beginChunk("AUDI");
+  myBatch.putByteArray(myPendingAudio);
+  endChunk();
   myPendingAudio.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RawStream::send(ByteArray&& chunk)
+void RawStream::send()
 {
-  const auto length = U32(chunk.size() - 8);
-  for(uInt32 i = 0; i < 4; ++i)
-    chunk[4 + i] = U8((length >> (8 * i)) & 0xFFU);
+  // Hand the batch over without copying it, and carry on in a buffer the
+  // writer is done with; a new one (made without holding up the writer)
+  // starts big enough for any batch so far
+  Batch batch;
+  {
+    const std::scoped_lock lock(myQueueMutex);
+    if(!mySpare.empty())
+    {
+      batch.bytes = std::move(mySpare.back());
+      mySpare.pop_back();
+    }
+  }
+  myLargestBatch = std::max(myLargestBatch, myBatch.size());
+  if(batch.bytes.empty())
+    batch.bytes.resize(myLargestBatch);
+  batch.size = myBatch.swapBuffer(batch.bytes);
 
   std::unique_lock lock(myQueueMutex);
   // Wait for a slow disk rather than drop anything.  Normal emulation
@@ -264,11 +269,13 @@ void RawStream::send(ByteArray&& chunk)
   myQueueChanged.wait(lock, [this] {
     return myQueuedBytes < MAX_QUEUED || !myOpen;
   });
+
+  // The stream has stopped, so the batch is dropped
   if(!myOpen)
     return;
 
-  myQueuedBytes += chunk.size();
-  myQueue.push_back(std::move(chunk));
+  myQueuedBytes += batch.size;
+  myQueue.push_back(std::move(batch));
   lock.unlock();
   myQueueChanged.notify_all();
 }
@@ -285,16 +292,16 @@ void RawStream::writerLoop()
     if(myQueue.empty())
       break;  // stopping, and everything is written
 
-    const ByteArray chunk = std::move(myQueue.front());
+    Batch batch = std::move(myQueue.front());
     myQueue.pop_front();
     lock.unlock();
-    // Flushed at once, so a tool following the file sees each chunk
-    myFile.write(reinterpret_cast<const char*>(chunk.data()),
-                 static_cast<std::streamsize>(chunk.size()));
+    // Flushed at once, so a tool following the file sees each frame
+    myFile.write(reinterpret_cast<const char*>(batch.bytes.data()),
+                 static_cast<std::streamsize>(batch.size));
     ok = myFile.flush().good();
     lock.lock();
 
-    myQueuedBytes -= chunk.size();
+    myQueuedBytes -= batch.size;
     if(!ok)
     {
       // Drop everything from here on
@@ -302,6 +309,8 @@ void RawStream::writerLoop()
       myQueue.clear();
       myQueuedBytes = 0;
     }
+    else if(mySpare.size() < MAX_SPARE)
+      mySpare.push_back(std::move(batch.bytes));
     // send() may be waiting for queue space
     myQueueChanged.notify_all();
   }

@@ -28,20 +28,23 @@
 #include "bspf.hxx"
 #include "ConsoleTiming.hxx"
 #include "FrameBufferConstants.hxx"
+#include "Serializer.hxx"
 
 /**
   Writes the emulated TIA picture and sound, untouched, to a file, so that
   outside tools can record or analyse them.  Enabled with
-  '-rawstream <file>'.  Each chunk is written as soon as it is made, so a
-  tool can follow the file while it is being written.
+  '-rawstream <file>'.  Each frame's chunks are written as soon as the
+  frame ends, so a tool can follow the file while it is being written.
 
   The stream is a sequence of chunks: a 4-character tag, a little-endian
   uInt32 payload length, then the payload.  Readers skip tags they don't
   know.  The chunk layouts are described in docs/rawstream.md.
 
   audioSample() and frame() run on the emulation thread.  The setters and
-  jump() run on the main thread while emulation is paused.  A dedicated
-  thread does the writing; when it falls BACKLOG bytes behind (a slow disk),
+  jump() run on the main thread while emulation is paused.  Each frame's
+  chunks are built into one buffer, which is handed to a dedicated writer
+  thread and comes back for reuse once written.  When the writer falls
+  BACKLOG bytes behind (a slow disk),
   the main loop stops emulating until it catches up, so the stream never
   skips data and the UI stays responsive meanwhile.  If a write fails, the
   stream stops and emulation carries on.
@@ -94,10 +97,13 @@ class RawStream
     void jump(Jump reason);
 
   private:
+    // Chunks are added to the current batch, which send() hands to the writer
+    void beginChunk(string_view tag);
+    void endChunk();
     void writeHeader(ConsoleTiming timing);
     void writePalette();
     void writePendingAudio();
-    void send(ByteArray&& chunk);
+    void send();
     void writerLoop();
 
   private:
@@ -106,6 +112,16 @@ class RawStream
     // Emulation waits for the writer here; the rest of the queue is room for
     // a timeslice that is already running, or for a debugger command
     static constexpr size_t BACKLOG = MAX_QUEUED / 2;
+
+    // Written buffers kept for reuse; while the writer keeps up, a frame's
+    // buffer is back before the next frame needs one
+    static constexpr size_t MAX_SPARE = 4;
+
+    // A batch of chunks; only the first 'size' bytes are used
+    struct Batch {
+      vector<std::byte> bytes;
+      size_t size{0};
+    };
 
     // Only the writer thread touches the file once it is open
     std::ofstream myFile;
@@ -122,9 +138,16 @@ class RawStream
 
     ByteArray myPendingAudio;
 
+    // The batch being built, the start of its current chunk, and the size
+    // of the largest batch so far (a new buffer starts that big)
+    Serializer myBatch;
+    size_t myChunkStart{0};
+    size_t myLargestBatch{0};
+
     mutable std::mutex myQueueMutex;
     std::condition_variable myQueueChanged;
-    std::deque<ByteArray> myQueue;
+    std::deque<Batch> myQueue;
+    vector<vector<std::byte>> mySpare;
     size_t myQueuedBytes{0};
     // Stopping: everything is queued, so the writer finishes once it's written
     bool myStopping{false};

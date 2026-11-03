@@ -88,6 +88,19 @@ void Serializer::clear()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t Serializer::swapBuffer(vector<std::byte>& buffer)
+{
+  if(!myMemory)
+    throw std::runtime_error("Serializer is not a memory stream");
+
+  const size_t written = myMemory->size;
+  std::swap(myMemory->buffer, buffer);
+  myMemory->pos = myMemory->size = 0;
+
+  return written;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t Serializer::size()
 {
   if(myMemory)
@@ -255,7 +268,7 @@ bool Serializer::getBool()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Serializer::getString()
 {
-  const uInt32 len = getInt();
+  const uInt16 len = getShort();
 
   // A serialized string cannot be larger than the entire stream.  Reject a
   // corrupt/hostile length before allocating, to avoid a huge allocation
@@ -345,7 +358,10 @@ void Serializer::putDouble(double value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(string_view str)
 {
-  putInt(U32(str.size()));
+  if(str.size() > 0xFFFF)
+    throw std::runtime_error("Serializer: string too long");
+
+  putShort(U16(str.size()));
   putByteArray(ByteSpan(reinterpret_cast<const uInt8*>(str.data()), str.size()));
 }
 

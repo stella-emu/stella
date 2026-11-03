@@ -32,8 +32,9 @@
 
   Bytes are written as characters, shorts as 2 characters (16-bits),
   integers as 4 characters (32-bits), long integers and doubles as 8 bytes
-  (64-bits), strings are written as characters prepended by the length of
-  the string, boolean values are written using a special character pattern.
+  (64-bits), strings are written as characters prepended by their length
+  as a short (so at most 65535 characters), boolean values are written
+  using a special character pattern.
 
   @author  Stephen Anthony
 */
@@ -89,6 +90,19 @@ class Serializer
       Returns the current total size of the stream.
     */
     size_t size();
+
+    /**
+      Swaps the buffer of a memory stream with the given one, so that the
+      bytes written so far can be handed on without copying them.  The
+      stream carries on, empty, in the given buffer, reusing its memory as
+      is, so a recycled buffer isn't zero-filled again.
+
+      @param buffer  In: the buffer to write into from now on.
+                     Out: the stream's buffer, which may be longer than
+                     the number of bytes written
+      @return  The number of bytes written before the swap
+    */
+    size_t swapBuffer(vector<std::byte>& buffer);
 
     /**
       Reads a byte value (unsigned 8-bit) from the current input stream.
@@ -217,7 +231,8 @@ class Serializer
     void putDouble(double value);
 
     /**
-      Writes a string(view) to the current output stream.
+      Writes a string(view) to the current output stream; one longer than
+      65535 characters is an error.
 
       @param str The string to write to the output stream.
     */
