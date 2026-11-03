@@ -434,9 +434,12 @@ bool CartridgeEnhanced::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::load(Serializer& in)
 {
+  // Segment offsets are committed only once the whole load has succeeded,
+  // so a failed load can't leave unvalidated offsets in place
+  uIntArray segOffset(myCurrentSegOffset.size());
   try
   {
-    in.getIntArray(myCurrentSegOffset);
+    in.getIntArray(segOffset);
     if(myRamSize > 0)
       in.getByteArray(myRAM);
 
@@ -448,7 +451,8 @@ bool CartridgeEnhanced::load(Serializer& in)
     cerr << "ERROR: " << name() << "::load\n";
     return false;
   }
-  // Restore bank segments
+  // Restore bank segments; bank() re-derives each offset from a bounded bank
+  myCurrentSegOffset = std::move(segOffset);
   for(uInt16 i = 0; i < myBankSegs; ++i)
     bank(getSegmentBank(i), i);
 
