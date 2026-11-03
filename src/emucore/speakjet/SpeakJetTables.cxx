@@ -786,7 +786,7 @@ namespace {
        0,    0,    0,    0,    0,    0,    0    // D8 D9 D10 D11 M0 M1 M2
   }};
 
-  // Duration against Speed, relative to the default of 114
+  // Duration against Speed, relative to the Reset's (1 from 112 to 115)
   constexpr std::array<float, 128> ourSpeedFactor = {{
     4.756F, 4.748F, 4.739F, 4.727F,
     4.727F, 4.727F, 4.576F, 4.576F, 4.500F, 4.500F, 4.492F, 4.492F, 4.340F, 4.340F, 4.303F,

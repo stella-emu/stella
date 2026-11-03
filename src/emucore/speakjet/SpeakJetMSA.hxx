@@ -142,7 +142,8 @@ class SpeakJetMSA : public SpeakJet::Sink
     static bool voicedThrough(int code);
 
     /**
-      How far Speed speeds the slides.
+      How far Speed speeds the slides: on speech's own Speed table, as it
+      scales the lengths.
     */
     static double slewScale(uInt8 speed);
 
@@ -235,8 +236,8 @@ class SpeakJetMSA : public SpeakJet::Sink
     SpeakJetSynth::Registers myRegs, myFrom, myTo;
     size_t mySlide{1};
 
-    // The fundamental, gliding to each Pitch
-    double myF0{0.0};
+    // The fundamental, and where it stood as the voiced slide began
+    double myF0{0.0}, myF0From{0.0};
 
     // A run of voicing: whether it is sounding, whether it started from
     // nothing, and how long it has run

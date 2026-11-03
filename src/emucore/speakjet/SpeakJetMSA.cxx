@@ -31,10 +31,6 @@ namespace {
   constexpr double PLAIN_VOLUME = 127.0 / (VOLUME_STEP * FIT_MASTER);
   constexpr double GRAIN_VOLUME = PLAIN_VOLUME * ENVELOPE_PEAK;
 
-  // Where in a sound each state is measured, as a share of its length: a
-  // glide's onset, then the start and end states
-  constexpr double ONSET_AT = 0.15, START_AT = 0.3, END_AT = 0.75;
-
   // Under this share of its state's loudest, an oscillator is all but silent
   constexpr double QUIET_LEVEL = 0.1;
 
@@ -202,14 +198,7 @@ bool SpeakJetMSA::voicedThrough(int code)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double SpeakJetMSA::slewScale(uInt8 speed)
 {
-  for(size_t i = 1; i < SPEED_SLEW.size(); ++i)
-    if(DBL(speed) <= SPEED_SLEW[i][0])
-    {
-      const auto& lo = SPEED_SLEW[i - 1];
-      const auto& hi = SPEED_SLEW[i];
-      return lo[1] + (DBL(speed) - lo[0]) / (hi[0] - lo[0]) * (hi[1] - lo[1]);
-    }
-  return SPEED_SLEW.back()[1];
+  return 1.0 / SpeakJetTables::speedFactor(speed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -393,7 +382,7 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
   const State end = endState(code);
 
   // Each state is reached by one slide from wherever the registers are; a
-  // glide's slides span the points its states were measured at
+  // diphthong's glide spans GLIDE_FROM to GLIDE_TO of its length
   struct Point { size_t from; Registers target; size_t span; bool jump; };
   const auto share = [total](double f) { return SZT(f * DBL(total)); };
   const auto regs = [&](const State& s) { return registersFor(s, code, myBend); };
@@ -417,9 +406,8 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
               {share(RELEASE_AT), regs(bar), 0, true}};
   }
   else if(sound.glide)
-    points = {{0, regs(sound.onset), 0, false},
-              {share(ONSET_AT), regs(sound.start), share(START_AT - ONSET_AT), false},
-              {share(END_STATE_AT), regs(end), share(END_AT - END_STATE_AT), false}};
+    points = {{0, regs(sound.start), 0, false},
+              {share(GLIDE_FROM), regs(end), share(GLIDE_TO - GLIDE_FROM), false}};
   else
     points = {{0, regs(sound.start), 0, false},
               {share(END_STATE_AT), regs(end), 0, false}};
@@ -657,6 +645,7 @@ void SpeakJetMSA::begin()
   // Voicing from nothing starts at its state, rising from silence if cold as
   // a stop's noise before it falls away; running on, it slides there
   myJumpWait = false;
+  myF0From = myF0;
   if(!myLive)
   {
     myTo = settle(s.target, s.target);
@@ -694,6 +683,11 @@ void SpeakJetMSA::begin()
     ms = std::max(ms, std::abs(myTo.hz[k] - myFrom.hz[k]) / (SLEW_HZ_PER_MS[k] * scale));
   }
 
+  // The pitch moves on the same slide, at its own rate per speech tick
+  if(myF0From > 0.0)
+    ms = std::max(ms, std::abs(pitchHz(s.pitch) - myF0From) / PITCH_SLEW_HZ_PER_TICK *
+                      TICK_MS[SpeakJet::INITIAL_SPEED] / scale);
+
   // A silent noise oscillator takes its new setting at once
   for(size_t k = 3; k < 5; ++k)
     if(myFrom.volume[k] <= 0.0)
@@ -720,10 +714,10 @@ double SpeakJetMSA::next()
     begin();
   const Segment& s = mySegments.front();
 
-  // Pitch glides to each setting
+  // The pitch moves with the formants over a voiced slide, elsewhere at once
   const double want = pitchHz(s.pitch);
-  const double step = PITCH_GLIDE_HZ_PER_MS * 1000.0 / SpeakJetSynth::RATE;
-  myF0 = myF0 <= 0.0 ? want : myF0 + BSPF::clamp(want - myF0, -step, step);
+  myF0 = s.kind == Kind::Voiced && myF0From > 0.0
+       ? myF0From + std::min(1.0, DBL(myPos) / DBL(mySlide)) * (want - myF0From) : want;
 
   double y = 0.0;
   if(s.kind == Kind::Voiced)
