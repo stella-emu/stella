@@ -369,8 +369,8 @@ class CartridgeEnhanced : public Cartridge
     // confirmed reachable today (needs a RAM-banking scheme whose image
     // size isn't bank-aligned). If it ever is, bounds-check the result
     // against myRAM.size() at the two call sites, as peek()'s ROM read was.
-    uInt16 ramAddressSegmentOffset(uInt16 address) const {
-      return U16(
+    uInt32 ramAddressSegmentOffset(uInt16 address) const {
+      return U32(
         (myCurrentSegOffset[((U32(address) & ROM_MASK) >> myBankShift) % myBankSegs] - myImage.size())
         >> U32(myBankShift - myRamBankShift));
     }
