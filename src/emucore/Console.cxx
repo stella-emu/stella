@@ -131,14 +131,16 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   #endif
   };
   myTIA  = std::make_unique<TIA>(*this, [this] { return timing(); }, myOSystem.settings(), callback);
-  myFrameManager = std::make_unique<FrameManager>();
+
+  // Reinitialize the RNG; with '-seed', every run starts the same way
+  const int seed = myOSystem.settings().getInt("seed");
+  myOSystem.random().initSeed(seed != 0 ? U32(seed) : U32(TimerManager::getTicks()));
+
+  myFrameManager = std::make_unique<FrameManager>(myOSystem.random().next());
   mySwitches = std::make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
   myTIA->setFrameManager(myFrameManager.get());
   myOSystem.sound().stopWav();
-
-  // Reinitialize the RNG
-  myOSystem.random().initSeed(U32(TimerManager::getTicks()));
 
   // Construct the system and components
   mySystem = std::make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
@@ -312,7 +314,10 @@ void Console::redetectFrameLayout()
 
   save(s);
   autodetectFrameLayout(false);
-  load(s);
+  // Reading and writing share one position, so read back from the start
+  s.rewind();
+  if(!load(s))
+    cerr << "ERROR: Console::redetectFrameLayout\n";
 
   myTIA->setRawStream(rawStream);
 

@@ -22,7 +22,8 @@
 #include "FrameManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameManager::FrameManager()
+FrameManager::FrameManager(uInt32 jitterSeed)
+  : myJitterEmulation{jitterSeed}
 {
   // Establish the reset state without invoking the virtual-dispatching reset()
   // from the constructor: doing so lets GCC's LTO devirtualizer speculatively
@@ -257,12 +258,13 @@ bool FrameManager::onLoad(Serializer& in)
   myY = in.getInt();
   myLastY = in.getInt();
 
-  // Reject a corrupt save state before myY/myLastY can drive TIA::nextLine()
-  // or TIA::onFrameComplete() to build a row pointer or fill_n span that
-  // reaches past myBackBuffer
+  // Reject a corrupt save state before myY can drive TIA::nextLine() or
+  // TIA::onFrameComplete() to build a row pointer or fill_n span that
+  // reaches past myBackBuffer.  myLastY is a scanline (myYStart + myY), only
+  // ever compared, and legitimately reaches past frameBufferHeight when the
+  // picture is moved down
   if (myState > State::frame ||
-      myY >= TIAConstants::frameBufferHeight ||
-      myLastY >= TIAConstants::frameBufferHeight)
+      myY >= TIAConstants::frameBufferHeight)
     throw std::runtime_error("frame manager: invalid save state");
 
   myVcenter = in.getInt();

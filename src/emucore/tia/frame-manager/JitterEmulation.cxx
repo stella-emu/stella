@@ -23,8 +23,9 @@ using std::round;
 #include "JitterEmulation.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JitterEmulation::JitterEmulation()
+JitterEmulation::JitterEmulation(uInt32 seed)
 {
+  myRandom.initSeed(seed);
   reset();
 }
 

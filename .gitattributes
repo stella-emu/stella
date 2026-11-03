@@ -1,0 +1,6 @@
+# Vendored third-party code: exclude from GitHub language stats
+src/lib/** linguist-vendored
+src/os/libretro/libretro.h linguist-vendored
+
+# ROM properties database, not IDL source
+src/emucore/stella.pro linguist-detectable=false

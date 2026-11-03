@@ -161,9 +161,14 @@ bool Audio::load(Serializer& in)
     // (tick()'s counter == 38 or 150), twice per 228-clock scanline, so a
     // legitimate mySumCt is never more than ~116 (the longer of the two
     // reset intervals); 256 gives a clean rounding margin above that
+    //
+    // A zero mySumCt is legitimate (power-on, and right after
+    // createSample()), with both sums zero as well; tick() adds to mySumCt
+    // before createSample() divides by it
     static constexpr uInt32 MAX_SUM_CT = 256;
-    if (sumCt == 0 || sumCt > MAX_SUM_CT ||
-        sumChannel0 / sumCt > 15 || sumChannel1 / sumCt > 15)
+    if (sumCt == 0 ? (sumChannel0 != 0 || sumChannel1 != 0)
+                   : (sumCt > MAX_SUM_CT ||
+                      sumChannel0 / sumCt > 15 || sumChannel1 / sumCt > 15))
       return false;
 
     mySumChannel0 = sumChannel0;

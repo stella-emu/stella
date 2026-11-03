@@ -52,7 +52,10 @@ class FrameManager: public AbstractFrameManager
     };
 
   public:
-    FrameManager();
+    /**
+      @param jitterSeed  Seed for the random part of the jitter emulation
+    */
+    explicit FrameManager(uInt32 jitterSeed);
     ~FrameManager() override = default;
 
     /**

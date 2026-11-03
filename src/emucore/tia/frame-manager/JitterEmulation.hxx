@@ -48,7 +48,10 @@ class JitterEmulation : public Serializable
     static constexpr Int32 DEV_RECOVERY = 2;
 
   public:
-    JitterEmulation();
+    /**
+      @param seed  Seed for the random part of the roll recovery
+    */
+    explicit JitterEmulation(uInt32 seed);
     ~JitterEmulation() override = default;
 
     /**
