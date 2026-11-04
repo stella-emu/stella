@@ -392,7 +392,7 @@ def counterpart(base, old_names, new_names):
 
 def load_pro(path):
     with contextlib.redirect_stdout(sys.stderr):
-        raw = propset.load_prop_set(path)
+        raw = propset.load(path)
     names = propset.prop_names()
     return {md5: dict(zip(names, values)) for md5, values in raw.items()}
 
@@ -400,7 +400,7 @@ def load_pro(path):
 def save_pro(path, pro):
     names = propset.prop_names()
     with contextlib.redirect_stdout(sys.stderr):
-        propset.save_prop_set(path, {md5: [p[n] for n in names] for md5, p in pro.items()})
+        propset.save(path, {md5: [p[n] for n in names] for md5, p in pro.items()})
 
 
 def main(argv):
@@ -425,7 +425,8 @@ examples, from the top of the source tree:
     ap.add_argument("new", help="directory with the new RomHunter set")
     ap.add_argument("--old", help="directory with the previous RomHunter set "
                     "(original filenames); enables the three-way merge")
-    ap.add_argument("--pro", help="properties file (default: src/emucore/stella.pro)")
+    ap.add_argument("--pro", help="properties file, or a propsdb.py database "
+                    "(default: src/emucore/stella.pro)")
     ap.add_argument("--write", action="store_true", help="save changes to the properties file")
     ap.add_argument("--remove", action="store_true",
                     help="with --write, also delete entries for ROMs that are "
@@ -666,8 +667,13 @@ examples, from the top of the source tree:
                   f"{' or '.join(REQUIRED)}: {', '.join(bad)}", file=sys.stderr)
             return 1
         print(file=sys.stderr)
-        save_pro(pro_path, pro)
-        print("Now run create_props.py to regenerate DefProps.hxx", file=sys.stderr)
+        try:
+            save_pro(pro_path, pro)
+        except ValueError as err:
+            print(f"\nERROR: not saving, {err}", file=sys.stderr)
+            return 1
+        print("Now run " + ("propsdb.py export, then " if propset.is_db(pro_path) else "")
+              + "create_props.py to regenerate DefProps.hxx", file=sys.stderr)
     return 0
 
 
