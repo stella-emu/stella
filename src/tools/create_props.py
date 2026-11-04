@@ -72,6 +72,10 @@ def main(argv):
         print(USAGE)
         return 1
 
+    if not Path(infile).is_file():
+        print(f"ERROR: properties file '{infile}' not found")
+        return 1
+
     propset_map = propset.load_prop_set(infile)
     setsize = len(propset_map)
     typesize = propset.num_prop_types()

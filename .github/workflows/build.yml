@@ -15,7 +15,7 @@ jobs:
       SDL3_VERSION: 3.4.18
     steps:
       - name: Check out the repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install SDL3
         run: |
           wget https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/SDL3-${SDL3_VERSION}.tar.gz
@@ -35,11 +35,11 @@ jobs:
     env:
       SDL3_VERSION: 3.4.18
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90
         with:
           xcode-version: '26'
       - name: Check out the repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install SDL3
         run: |
           wget https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/SDL3-${SDL3_VERSION}.dmg
@@ -63,9 +63,9 @@ jobs:
       SDL3_version: 3.4.18
     steps:
       - name: Check out the repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Set up MSBUILD
-        uses: microsoft/setup-msbuild@34cfbaee7f672c76950673338facd8a73f637506
+        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57
       - name: Install SDL3
         shell: cmd
         run: |
