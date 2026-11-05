@@ -224,12 +224,14 @@ bool KidVid::load(Serializer& in)
   // Reject a corrupt save state whose indices would read past the read-only
   // KidVid data tables: myTape drives tapeIndex()/ourBlocks[], mySongPointer
   // indexes ourSongPositions[], (myIdx >> 3) indexes ourData[], and
-  // myBlockIdx == 0 would underflow on the next update() tick, permanently
-  // defeating the periodic re-clamp that otherwise keeps myIdx in range
+  // myBlockIdx == 0 with a tape running would underflow on the next update()
+  // tick, permanently defeating the periodic re-clamp that otherwise keeps
+  // myIdx in range.  Legitimately, mySongPointer is one past the end after
+  // the last song, and myBlockIdx is 0 until a tape is started
   if(myTape > 4 ||
-     mySongPointer >= ourSongPositions.size() ||
+     mySongPointer > ourSongPositions.size() ||
      (myIdx >> 3U) >= ourData.size() ||
-     myBlockIdx == 0 || myBlockIdx > NumBlockBits)
+     (myTape != 0 && myBlockIdx == 0) || myBlockIdx > NumBlockBits)
     return false;
 
   myContinueSong = myFilesFound && mySongPlaying;
@@ -318,7 +320,8 @@ void KidVid::openSampleFiles()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::setNextSong()
 {
-  if(myFilesFound)
+  // After the last song there is nothing more to play
+  if(myFilesFound && mySongPointer < ourSongPositions.size())
   {
     myBeep = (ourSongPositions[mySongPointer] & 0x80U) == 0;
 

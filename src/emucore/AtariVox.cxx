@@ -121,7 +121,8 @@ void AtariVox::clockDataIn(bool value)
         cerr << "AtariVox: bad start bit\n";
       else if((myShiftRegister & 1U))
         cerr << "AtariVox: bad stop bit\n";
-      else
+      // Speech sent during autodetection would be heard twice on a real AtariVox
+      else if(!mySystem.autodetectMode())
       {
         const uInt8 data = ((U32(myShiftRegister) >> 1U) & 0xffU);
         mySerialPort->writeByte(data);
@@ -136,6 +137,9 @@ void AtariVox::clockDataIn(bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::reset()
 {
+  // Drop any partially received byte, so it can't be completed after the reset
+  myShiftRegister = 0;
+  myShiftCount = 0;
   myLastDataWriteCycle = 0;
   SaveKey::reset();
 }

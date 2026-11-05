@@ -231,7 +231,7 @@ FSNode FSNode::getSiblingNode(string_view ext) const
 {
   if(_realNode)
     if(const auto sibling = _realNode->getSiblingNode(ext); sibling)
-      return FSNode(sibling, _zipMode);
+      return {sibling, _zipMode};
 
   string s = getPath();
   const size_t dot = s.find_last_of('.');
@@ -240,7 +240,7 @@ FSNode FSNode::getSiblingNode(string_view ext) const
   else
     s.append(ext);
 
-  return FSNode(s, _zipMode);
+  return {s, _zipMode};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

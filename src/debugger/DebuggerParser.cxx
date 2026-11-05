@@ -1376,6 +1376,11 @@ void DebuggerParser::executeDump()
     outputCommandError("wrong number of arguments", myCommand);
     return;
   }
+  if(argCount > 1 && args[1] > 0xffff)
+  {
+    outputCommandError("invalid word argument (must be 0-$ffff)", myCommand);
+    return;
+  }
   if(argCount > 1 && args[1] < args[0])
   {
     commandResult << red("start address must be <= end address");
@@ -1393,7 +1398,7 @@ void DebuggerParser::executeDump()
     return;
   }
 
-  if((U32(args[2]) & 0x07U) == 0)
+  if(args[2] < 1 || args[2] > 7)
   {
     commandResult << red("dump flags must be 1..7");
     return;
@@ -3312,7 +3317,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_LABEL },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     &DebuggerParser::executeDump
   },
 

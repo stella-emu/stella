@@ -26,7 +26,9 @@ If any of them fall out of alignment, import fails with a clear error rather
 than producing a subtly wrong DefProps.hxx.
 """
 
+import json
 import re
+import sqlite3
 from pathlib import Path
 
 
@@ -223,3 +225,161 @@ def build_prop_string(values):
         for i, value in enumerate(values)
     ]
     return "  { " + ", ".join(items) + " }"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Stella's database format
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# The same layout as the 'properties' table of Stella's stella.sqlite3: one
+# JSON object per ROM, keyed by md5sum.  Values that parse as JSON are stored
+# as JSON and read back as compact JSON text, as KeyValueRepositoryJsonFile
+# does.  Property-set values stay in their stella.pro form (quotes and
+# backslashes escaped), so both formats load into the same structure.
+
+_DB_TABLE = ("CREATE TABLE IF NOT EXISTS `{}` "
+             "(`md5` TEXT PRIMARY KEY, `properties` TEXT) WITHOUT ROWID")
+_DB_SUFFIXES = (".sqlite3", ".sqlite", ".db")
+
+
+def _unescape(text):
+    """stella.pro text -> real value, as KeyValueRepositoryPropertyFile reads it."""
+    out, i = [], 0
+    while i < len(text):
+        if text[i] == "\\" and i + 1 < len(text) and text[i + 1] in '"\\':
+            i += 1
+        out.append(text[i])
+        i += 1
+    return "".join(out)
+
+
+def _escape(value):
+    """Real value -> stella.pro text, as KeyValueRepositoryPropertyFile writes it."""
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _reject_constant(name):
+    raise ValueError(name)
+
+
+def _json_if_valid(value):
+    """The JSON a value is stored as, or the value itself (jsonIfValid)."""
+    try:
+        return json.loads(value, parse_constant=_reject_constant)
+    except ValueError:
+        return value
+
+
+def _json_text(value):
+    """A stored JSON value as the text Stella reads back."""
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, separators=(",", ":"), ensure_ascii=False, sort_keys=True)
+
+
+def to_db_value(text):
+    """stella.pro text -> the JSON value Stella stores for it.
+
+    Raises ValueError for text that wouldn't read back unchanged.
+    """
+    value = _unescape(text)
+    stored = _json_if_valid(value)
+    too_big = isinstance(stored, int) and not isinstance(stored, bool) and abs(stored) >= 2**63
+    if _escape(value) != text or _json_text(stored) != value or too_big:
+        raise ValueError(f"'{text}' doesn't survive the database format unchanged")
+    return stored
+
+
+def from_db_value(value):
+    """A JSON value from the database -> stella.pro text."""
+    return _escape(_json_text(value))
+
+
+def load_prop_db(path, table="properties"):
+    """Load a database in Stella's format into a dict keyed by md5sum.
+
+    The same structure as load_prop_set() returns; a missing table is empty.
+    """
+    print(f"Loading properties from database: {path}")
+
+    db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                            (table,)).fetchone()
+        rows = db.execute(f"SELECT md5, properties FROM `{table}`").fetchall() if exists else []
+    finally:
+        db.close()
+
+    propset = {}
+    for md5, text in rows:
+        props = [""] * len(_PROP_NAMES)
+        props[_MD5_INDEX] = md5
+        for key, value in json.loads(text).items():
+            if key in _NAME_TO_INDEX:
+                props[_NAME_TO_INDEX[key]] = from_db_value(value)
+            else:
+                print(f"Invalid key = '{key}' for md5 = '{md5}', ignoring ...")
+        propset[md5] = props
+    return propset
+
+
+def db_rows(propset):
+    """(md5, JSON) rows for a properties dict.
+
+    Raises ValueError if a value can't be stored unchanged, so this also
+    checks a properties dict before anything is written.
+    """
+    rows = []
+    for md5 in sorted(propset):
+        entry = {}
+        for i, text in enumerate(propset[md5]):
+            if text != "":
+                try:
+                    entry[_PROP_NAMES[i]] = to_db_value(text)
+                except ValueError as err:
+                    raise ValueError(f"md5 = '{md5}', {_PROP_NAMES[i]}: {err}") from None
+        rows.append((md5, json.dumps(entry, indent=2, sort_keys=True, ensure_ascii=False)))
+    return rows
+
+
+def save_prop_db(path, propset, table="properties"):
+    """Replace a table of a database in Stella's format with a properties dict.
+
+    Raises ValueError, before anything is written, if a value can't be stored.
+    """
+    rows = db_rows(propset)
+    print(f"Saving {len(rows)} properties to database: {path}")
+    db = sqlite3.connect(path)
+    try:
+        with db:
+            db.execute(_DB_TABLE.format(table))
+            db.execute(f"DELETE FROM `{table}`")
+            db.executemany(f"INSERT INTO `{table}` VALUES (?, ?)", rows)
+    finally:
+        db.close()
+
+
+def db_tables(path):
+    """Names of the tables in a database."""
+    db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        return {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    finally:
+        db.close()
+
+
+def is_db(path):
+    return Path(path).suffix.lower() in _DB_SUFFIXES
+
+
+def load(path):
+    """Load a properties file or database, by its extension."""
+    return load_prop_db(path) if is_db(path) else load_prop_set(path)
+
+
+def save(path, propset):
+    """Save a properties file or database, by its extension."""
+    if is_db(path):
+        save_prop_db(path, propset)
+    else:
+        save_prop_set(path, propset)

@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "System.hxx"
-#include "TIA.hxx"
 #include "Cart3EPlus.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -28,18 +27,6 @@ Cartridge3EPlus::Cartridge3EPlus(ByteSpan image, string_view md5,
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
   myRamBankCount = RAM_BANKS;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlus::install(System& system)
-{
-  CartridgeEnhanced::install(system); // NOLINT(bugprone-parent-virtual-call)
-
-  const System::PageAccess access(this, System::PageAccessType::WRITE);
-
-  // The hotspots ($3E and $3F) are in TIA address space, so we claim them here
-  for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,31 +56,4 @@ bool Cartridge3EPlus::checkSwitchBank(uInt16 address, uInt8 value)
     return true;
   }
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge3EPlus::peek(uInt16 address)
-{
-  const uInt16 peekAddress = address;
-  address &= ROM_MASK;
-
-  if(address < 0x0040)  // TIA access
-    return mySystem->tia().peek(address);
-
-  return CartridgeEnhanced::peek(peekAddress);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
-{
-  const uInt16 pokeAddress = address;
-  address &= ROM_MASK;
-
-  if(address < 0x0040)  // TIA access
-  {
-    checkSwitchBank(address, value);
-    return mySystem->tia().poke(address, value);
-  }
-
-  return CartridgeEnhanced::poke(pokeAddress, value);
 }
