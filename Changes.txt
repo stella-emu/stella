@@ -178,12 +178,16 @@
     - OSD messaging from Stella routed to libretro core
     - Fast-forward audio suppression
 
+  * Codebase now uses C++23 features; minimum required compilers are listed
+    above.
+
   * Removed R77 port; SDL3 not supported on that platform.
 
   * Updated included libraries (libpng, zlib, etc) to latest stable version.
 
-  * Codebase now uses C++23 features; minimum required compilers are listed
-    above.
+  * Updated internal ROM properties database to ROM-Hunter version 20
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
 
 -Have fun!
 

@@ -62,10 +62,6 @@ class Cartridge3EX : public Cartridge3E
     string name() const override { return "Cartridge3EX"; }
 
   private:
-    // RAM size
-    static constexpr size_t RAM_SIZE = U32(RAM_BANKS) << U32(BANK_SHIFT - 1); // = 256K = 0x40000;
-
-  private:
     // Following constructors and assignment operators not supported
     Cartridge3EX() = delete;
     Cartridge3EX(const Cartridge3EX&) = delete;
