@@ -61,6 +61,7 @@
 #endif
 #include "Version.hxx"
 #include "TIA.hxx"
+#include "RawStream.hxx"
 #include "DispatchResult.hxx"
 #include "EmulationWorker.hxx"
 #include "AudioSettings.hxx"
@@ -517,6 +518,16 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
 
   // Create an instance of the 2600 game console
   myEventHandler->handleConsoleStartupEvents();
+
+  // One raw stream for the whole run; it must exist before the framebuffer
+  // is created, since that is when the palette is set
+  if(!myRawStream && !mySettings->getString("rawstream").empty())
+  {
+    myRawStream = std::make_unique<RawStream>(mySettings->getString("rawstream"));
+    if(!myRawStream->isOpen())
+      myRawStream.reset();
+  }
+
   try
   {
     // Build the replacement console before tearing down the current one, so a ROM that
@@ -560,6 +571,12 @@ string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom
       return "ERROR: Couldn't create framebuffer for console";
     }
     myConsole->initializeAudio();
+
+    if(myRawStream)
+    {
+      myRawStream->setRom(myRomFile.getName(), myRomMD5);
+      myConsole->tia().setRawStream(myRawStream.get());
+    }
 
     const string saveOnExit = settings().getString("saveonexit");
     const bool devSettings = settings().getBool("dev.settings");
@@ -1066,7 +1083,14 @@ void OSystem::mainLoop()
 
     double timesliceSeconds;  // NOLINT(cppcoreguidelines-init-variables)
 
-    if (myEventHandler->state() == EventHandlerState::EMULATION)
+    if (myEventHandler->state() == EventHandlerState::EMULATION &&
+        myRawStream && myRawStream->isBacklogged()) [[unlikely]]
+    {
+      // Hold off emulating until the raw stream's writer catches up, so the
+      // UI stays responsive meanwhile
+      timesliceSeconds = 1. / 60.;
+    }
+    else if (myEventHandler->state() == EventHandlerState::EMULATION)
     {
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);

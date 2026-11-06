@@ -75,6 +75,10 @@
   * Added 'seed' commandline argument, which sets the seed of Stella's
     random number generator, so that a run can be repeated exactly.
 
+  * Added 'rawstream' commandline argument (Newbroo-Games), which writes
+    every frame, audio sample and RIOT RAM state to a file for use by
+    external tools (issue #1185).
+
   * Converted Perl programs in src/tools to Python, and found/fixed
     some bugs in the process.
 

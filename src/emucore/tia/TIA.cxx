@@ -22,6 +22,7 @@
 #include "DelayQueueIteratorImpl.hxx"
 #include "TIAConstants.hxx"
 #include "AudioQueue.hxx"
+#include "RawStream.hxx"
 #include "DispatchResult.hxx"
 #include "PhosphorHandler.hxx"
 #include "Base.hxx"
@@ -101,6 +102,9 @@ void TIA::setFrameManager(AbstractFrameManager* frameManager, bool layoutDetecto
   myFrameManager = frameManager;
   myIsLayoutDetector = layoutDetector;
 
+  // Frame layout detection runs the emulation ahead; keep it out of the stream
+  myAudio.setRawStream(layoutDetector ? nullptr : myRawStream);
+
   myFrameManager->setHandlers(
     [this] { onFrameStart();    },
     [this] { onFrameComplete(); }
@@ -121,6 +125,13 @@ void TIA::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 void TIA::setAudioRewindMode(bool enable)
 {
   myAudio.setAudioRewindMode(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setRawStream(RawStream* stream)
+{
+  myRawStream = stream;
+  myAudio.setRawStream(myIsLayoutDetector ? nullptr : myRawStream);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,6 +242,9 @@ void TIA::reset()
   // Simply call initialize(); mostly to get around calling a virtual method
   // from the constructor
   initialize();
+
+  if(myRawStream && !myIsLayoutDetector)
+    myRawStream->jump(RawStream::Jump::reset);
 
   if(myRandomize && !mySystem->autodetectMode())
   {
@@ -445,6 +459,9 @@ bool TIA::load(Serializer& in)
     const uInt32 y = std::min(myFrameManager->getY(),
                               TIAConstants::frameBufferHeight - 1);
     myCurrentRowPtr = myBackBuffer.data() + SZT(y) * TIAConstants::H_PIXEL;
+
+    if(myRawStream && !myIsLayoutDetector)
+      myRawStream->jump(RawStream::Jump::stateLoad);
   }
   catch(...)
   {
@@ -1526,6 +1543,13 @@ void TIA::onFrameComplete()
   myFrontBuffer = myBackBuffer;
 
   myFrontBufferScanlines = scanlinesLastFrame();
+
+  // Every emulated frame, including the ones the screen never shows
+  if(myRawStream && !myIsLayoutDetector)
+    myRawStream->frame(myFrontBuffer.data(), myFrameManager->height(),
+                       myFrameManager->startLine(), myFrontBufferScanlines,
+                       myFrameManager->frameCount(), mySystem->cycles(),
+                       myTimingProvider(), mySystem->m6532().getRAM());
 
   if(myAutoPhosphorEnabled)
   {

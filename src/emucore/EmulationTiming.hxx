@@ -61,6 +61,9 @@ class EmulationTiming {
 
     uInt32 prebufferFragmentCount() const;
 
+    // CPU cycles per second at normal (100%) speed
+    static uInt32 nominalCyclesPerSecond(ConsoleTiming consoleTiming);
+
   private:
 
     void recalculate();

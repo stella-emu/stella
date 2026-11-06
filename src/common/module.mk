@@ -24,6 +24,7 @@ MODULE_OBJS := \
 	src/common/PJoystickHandler.o \
 	src/common/PKeyboardHandler.o \
 	src/common/PNGLibrary.o \
+	src/common/RawStream.o \
 	src/common/RewindManager.o \
 	src/common/SoundSDL.o \
 	src/common/StaggeredLogger.o \
