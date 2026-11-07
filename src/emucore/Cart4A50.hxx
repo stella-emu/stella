@@ -118,7 +118,7 @@ class Cartridge4A50 : public Cartridge
 
       @return The internal RAM size
     */
-    uInt32 internalRamSize() const override { return 32_KB; }
+    uInt32 internalRamSize() const override { return U32(32_KB); }
 
   #ifdef DEBUGGER_SUPPORT
     /**
