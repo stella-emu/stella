@@ -43,6 +43,12 @@ void CartridgeE7::initialize(ByteSpan image)
   std::copy_n(image.data(), std::min<size_t>(romSize(), image.size()), myImage.data());
   createRomAccessArrays(romSize() + myRAM.size());
 
+#if DEBUGGER_SUPPORT
+  myRamAccessSize = U32(RAM_SIZE);
+  myRamPeekAccessOffset = U32(romSize());
+  myRamPokeAccessOffset = U32(romSize());
+#endif
+
   // Store image scope to be accessible by getImage()
   myImageScopes[ImageScope::FULL] = myImage;
 
@@ -145,7 +151,7 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
   else if(romBankCount() == 6 && (address >= 0x0FE0) && (address <= 0x0FE7))
   {
     static constexpr std::array<int, 8> banks = {
-      0, 1, 0, 1, 2, 3, 4 ,5
+      0, 1, 0, 1, 2, 3, 4, 5
     };
 
     bank(banks[address & 0x0007U]);
@@ -264,9 +270,11 @@ void CartridgeE7::bankRAM(uInt16 bank)
 
   // Setup the page access methods for the current bank
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1800, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
+  setAccess(0x1800, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2 + offset,
+    System::PageAccessType::WRITE);
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1900, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
+  setAccess(0x1900, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2 + offset,
+    System::PageAccessType::READ);
 
   myBankChanged = true;
 }
@@ -398,3 +406,31 @@ uInt16 CartridgeE7::romSize() const
 {
   return romBankCount() * BANK_SIZE;  // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::RwAddress CartridgeE7::ramBankOrigin(uInt16 bank, uInt16 PC) const
+{
+  switch (bank)
+  {
+    case 0:
+      // Lower 1KB of total RAM can only be mapped
+      // on the first 1KB of address space
+      return {true, 0x1400, 0x1000};
+    case 1:
+      {
+        // Note that this will show invalid addresses for the 3 RAM pages
+        // within the second 1KB RAM section which are currently not mapped.
+        // There is no easy way to improve this right now. It only affects
+        // the Memory View address display though.
+        const uInt16 negOffset = myCurrentRAM << 8U; // * RAM_BANK_SIZE (256)
+        return {true, U32(0x1900 - negOffset), U32(0x1800 - negOffset)};
+      }
+    default:
+      break;
+  }
+
+  // Bank currently not mapped / unknown
+  return {false, 0x1000};
+}
+#endif

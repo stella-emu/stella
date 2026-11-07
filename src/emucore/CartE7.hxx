@@ -151,6 +151,14 @@ class CartridgeE7 : public Cartridge
     */
     bool load(Serializer& in) override;
 
+    /**
+      Query the number of RAM 'banks' supported by the cartridge.
+      Note: This may technically not be 100% correct to have 2 x 1KB
+      RAM banks but is necessary to make ramBankOrigin() be able to
+      even close return some usable addresses for Memory View.
+    */
+    uInt16 ramBankCount() const override { return 2; }
+
   public:
     /**
       Get the byte at the specified address.
@@ -200,6 +208,13 @@ class CartridgeE7 : public Cartridge
             myPlusROM->setMessageCallback(myMsgCallback);
     }
 
+    /**
+      Query the internal RAM size of the cart.
+
+      @return The internal RAM size
+    */
+    uInt32 internalRamSize() const override { return RAM_SIZE; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
@@ -210,6 +225,22 @@ class CartridgeE7 : public Cartridge
     {
       return new CartridgeE7Widget(boss, lfont, nfont, *this);
     }
+
+    /**
+      Get cartridge RAM contents for direct external access
+
+      @return  Mutable span over RAM array.
+    */
+    ByteSpan getRAM() override { return myRAM; }
+
+    /**
+      Determine a RAM's bank origin
+
+      @param bank  The RAM bank to query
+      @param PC    The current PC
+      @return  The origin of the bank
+    */
+    Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const override;
   #endif
 
   protected:
