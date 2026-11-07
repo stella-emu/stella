@@ -305,6 +305,11 @@ void Console::autodetectFrameLayout(bool reset)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::redetectFrameLayout()
 {
+  // Detection runs the emulation ahead and then restores it, so emulated time
+  // runs on; the raw stream mustn't see the restore as a jump
+  RawStream* const rawStream = myTIA->rawStream();
+  myTIA->setRawStream(nullptr);
+
   Serializer s;
 
   save(s);
@@ -313,6 +318,8 @@ void Console::redetectFrameLayout()
   s.rewind();
   if(!load(s))
     cerr << "ERROR: Console::redetectFrameLayout\n";
+
+  myTIA->setRawStream(rawStream);
 
   initializeAudio();
 }

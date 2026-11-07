@@ -154,6 +154,22 @@ uInt32 EmulationTiming::prebufferFragmentCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::nominalCyclesPerSecond(ConsoleTiming consoleTiming)
+{
+  switch (consoleTiming) {
+    case ConsoleTiming::ntsc:
+      return 262 * 76 * 60;
+
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      return 312 * 76 * 50;
+
+    default:
+      throw std::runtime_error("invalid console timing");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationTiming::recalculate()
 {
   switch (myFrameLayout) {
@@ -169,20 +185,8 @@ void EmulationTiming::recalculate()
       throw std::runtime_error("invalid frame layout");
   }
 
-  switch (myConsoleTiming) {
-    case ConsoleTiming::ntsc:
-      myAudioSampleRate = U32(round(mySpeedFactor * 262 * 76 * 60) / 38);
-      break;
-
-    case ConsoleTiming::pal:
-    case ConsoleTiming::secam:
-      myAudioSampleRate = U32(round(mySpeedFactor * 312 * 76 * 50) / 38);
-      break;
-
-    default:
-      throw std::runtime_error("invalid console timing");
-  }
-
+  myAudioSampleRate =
+    U32(round(mySpeedFactor * nominalCyclesPerSecond(myConsoleTiming)) / 38);
   myCyclesPerSecond = myAudioSampleRate * 38;
 
   myCyclesPerFrame = 76 * myLinesPerFrame;

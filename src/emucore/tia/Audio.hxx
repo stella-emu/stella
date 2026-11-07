@@ -19,6 +19,7 @@
 #define AUDIO_HXX
 
 class AudioQueue;
+class RawStream;
 
 #include "bspf.hxx"
 #include "AudioChannel.hxx"
@@ -53,6 +54,11 @@ class Audio : public Serializable
       playback with sound.
     */
     void setAudioRewindMode(bool enable) { myRewindMode = enable; }
+
+    /**
+      Send every sample, as generated, to the raw stream (nullptr to stop).
+    */
+    void setRawStream(RawStream* stream);
 
     /**
       Tick the given number of color clocks: accumulate channel volumes and
@@ -127,6 +133,9 @@ class Audio : public Serializable
     Int16* myCurrentFragment{nullptr};
     // Write index within the current fragment
     uInt32 mySampleIndex{0};
+
+    // Every sample also goes here, if a raw stream is open
+    RawStream* myRawStream{nullptr};
 
     bool myRewindMode{false};
     mutable ByteArray mySamples;
