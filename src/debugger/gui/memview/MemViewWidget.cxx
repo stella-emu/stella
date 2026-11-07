@@ -701,7 +701,7 @@ void MemViewWidget::handleCommand(CommandSender* sender, GuiCmd::Code cmd,
           if (rmb == "bp")
           {
             if (!(myParams.myBaseAddress & QUERY_RAM_BANK_ORIGIN))
-              command = std::format("break ${:X} {}", address.read, bank);
+              command = std::format("break ${:X} #{}", address.read, bank);
             else
               command = std::format("break ${:X}", address.read);
           }
