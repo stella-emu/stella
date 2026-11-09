@@ -166,7 +166,8 @@ bool JitterEmulation::load(Serializer& in)
 {
   try
   {
-    mySensitivity = in.getInt();
+    // Derives the tuning values first, since it also resets the state read below
+    setSensitivity(in.getInt());
     myJitterRecovery = in.getInt();
     myYStart = in.getInt();
     myLastFrameScanlines = in.getInt();
@@ -180,7 +181,6 @@ bool JitterEmulation::load(Serializer& in)
 
     return false;
   }
-  setSensitivity(mySensitivity);
 
   return true;
 }

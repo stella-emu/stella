@@ -37,36 +37,44 @@
 /*
   Cartridge support status:
 
-  03E0      Breakpoints not working (Montezuma's Revenge) (Cartridge::bankOrigin), Stepping through code shows false reads at ROM end.
+  In some bank-switching schemes, issues arise with incorrectly displayed addresses in the mouse-over
+  tooltip and hence also setting of breakpoints via the context menu. This is due to the current state
+  of Cartridge::bankOrigin(), where only the three most significant address bits are available from
+  the AccessType::HADDR fields. This results in incorrect reported base addresses for banks smaller than
+  4 KB, as well as for mapped segments.
+
+  Type      Issue(s)
+  -------   ---------------------------------------------------------------------------------------
+  03E0      Addresses/breakpoints
   0FA0      OK
   2K        OK
-  3E        Breakpoints not working, no access data for cartridge RAM (Cartridge::bankOrigin!)
-  3E+       Breakpoints not working, no access data for cartridge RAM (Cartridge::bankOrigin!)
+  3E        Addresses/breakpoints
+  3E+       Addresses/breakpoints
   3EX       ?
-  3F        Breakpoints not working for big ROMs (Bad Apple)
-  4A50      No access data for internal RAM, program ROM only 4K, cart RAM not exposed
+  3F        Addresses/breakpoints
+  4A50      Program ROM only 4K
   4K        OK
   4KSC      OK
   0840      OK
   AR        Unsure - what is RAM/ROM? No access data
   BF        OK
   BFSC      OK
-  BUS       Cart RAM without content, no access data for cart RAM, no access data for internal RAM 
-  CDF       Cart RAM without content, no access data for cart RAM, no access data for internal RAM
-  CDFJ+     Cart RAM without content, no access data for cart RAM, no access data for internal RAM
-  CM        No access data for internal RAM
-  CTY       Cart RAM not exposed
+  BUS       OK
+  CDF       OK
+  CDFJ+     OK
+  CM        OK
+  CTY       Cart RAM not exposed. Won't fix for one single game because there's not much to see in that RAM anyway.
   CV        OK
   DevCard   ?
   DF        OK
   DFSC      OK
   DPC       OK
-  DPC+      Cart RAM without content, PC in cart RAM (false addresses)
-  E0        Breakpoints not always working
-  E7        Cart RAM not exposed, Stepping through code shows false reads at ROM end.
-  EF/EFF    Breakpoints not always working (invalid bank)
+  DPC+      OK
+  E0        Addresses/breakpoints
+  E7        Invalid addresses shown of unmapped pages of the second 1KB RAM section
+  EF/EFF    OK
   EFSC      OK
-  ELF       Only 4K of ROM(?) exposed
+  ELF       Shown data content of the 4KB ROM space is invalid due to the nature of the cart's operation
   F0        OK
   F4        OK
   F4SC      OK
@@ -82,12 +90,12 @@
   JANE      ?
   MDM       OK
   MVC       Unsupported
-  SB        Breakpoints not always working (invalid bank)
+  SB        OK
   TVBoy     OK
   UA        OK
   WD        OK
   WF8       OK
-  X07       No access data for internal RAM
+  X07       OK
 */
 
 namespace {

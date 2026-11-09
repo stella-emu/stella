@@ -226,11 +226,11 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
 
   // Isolate the high 3 address bits, count them, include the PC if provided
   // and select the most frequent to define the bank origin
-  constexpr int intervals = 0x8000 / 0x100;
+  constexpr int origins = 8;  // number of possible origins (top 3 bits)
   const uInt32 offset = bank * bankSize();
   //uInt16 addrMask = (4_KB - 1) & ~(bankSize(bank) - 1);
   //int addrShift = 0;
-  std::array<uInt16, intervals> count{}; // up to 128 256 byte interval origins
+  std::array<uInt16, origins> count{};
 
   //if(addrMask)
   //  addrShift = log(addrMask) / log(2);
@@ -249,7 +249,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
     }
   }
   uInt16 max = 0, maxIdx = 0;
-  for(int idx = 0; idx < intervals; ++idx)
+  for(int idx = 0; idx < origins; ++idx)
   {
     if(count[idx] > max)
     {

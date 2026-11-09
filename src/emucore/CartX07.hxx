@@ -85,6 +85,14 @@ class CartridgeX07 : public CartridgeEnhanced
     {
       return new CartridgeX07Widget(boss, lfont, nfont, *this);
     }
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
+    */
+    void increaseAccessCounter(uInt16 address, AccessType flag = NONE) override;
   #endif
 
   public:

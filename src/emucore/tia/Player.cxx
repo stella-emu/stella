@@ -518,10 +518,9 @@ bool Player::load(Serializer& in)
     myCopy = in.getByte();
     myDivider = in.getByte();
     myDividerPending = in.getByte();
-    // Masked as myDecodesOffset is below: used as a shift count (1 <<
-    // mySampleCounter) in tick(), so a corrupt save file must not push it
-    // past the 8 pixels a player sprite actually has
-    mySampleCounter = in.getByte() & 0x07U;
+    // Used as a shift count (1 << mySampleCounter) in tick(), so a corrupt save
+    // file must not push it past 8, its value once a copy has been drawn
+    mySampleCounter = std::min<uInt8>(in.getByte(), 8);
     myDividerChangeCounter = in.getByte();
 
     // Mask as in setNusiz(); the decode table has only 8 entries, so an

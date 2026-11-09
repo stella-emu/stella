@@ -28,6 +28,11 @@
     type with 24 KB of flat RAM across six non-contiguous 4 KB windows
     (issue #1149).
 
+  * Added Memory View (Christian Hammers), a new debugger window that
+    shows RIOT RAM, cartridge RAM and ROM as a live map of reads, writes
+    and executed code, for most bankswitching schemes.  Breakpoints and
+    traps can be set directly from the map (issue #1161, #1196).
+
   * Further enhanced UA bankswitching to support more Brazilian carts,
     including one discovered by bootsector and Eric Fraga of AtariAge.
     (issue #1152).

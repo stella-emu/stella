@@ -24,5 +24,6 @@ Cartridge3EX::Cartridge3EX(ByteSpan image, string_view md5,
 {
   // 0xFFFA contains RAM bank count - 1;
   myRamBankCount = image[image.size() - 6] + 1;
-  myRamSize = SZT(myBankSize >> 1U) * myRamBankCount;
+  // Each RAM bank is half a ROM bank; myBankSize isn't set until install()
+  myRamSize = SZT(myRamBankCount) << U32(BANK_SHIFT - 1);
 }

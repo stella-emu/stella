@@ -119,6 +119,9 @@ class RamWidget : public Widget, public CommandSender
     uInt32 myRamSize{0};
     uInt32 myNumRows{0};
     uInt32 myPageSize{0};
+    // Hex digits in the page heading: a read port is a 16-bit address or a
+    // RAM index, so only RAM over 64K needs more than 4
+    int myPageDigits{4};
 
     unique_ptr<InputTextDialog> myInputBox;
 

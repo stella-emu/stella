@@ -247,3 +247,15 @@ bool CartridgeCM::load(Serializer& in)
 
   return true;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCM::increaseAccessCounter(uInt16 address, AccessType flag)
+{
+  // Since we took responsibility for RIOT accesses during install(),
+  // we must make sure to pass the calls to increase the corresponding
+  // access counters for RIOT access needed for debugging and Memory View
+  if ((address & 0x1080U) == 0x0080U)
+    mySystem->m6532().increaseAccessCounter(address, flag);
+}
+#endif
