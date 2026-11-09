@@ -37,7 +37,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     _nfont{nfont},
     myRamSize{ramsize},
     myNumRows{numrows},
-    myPageSize{pagesize}
+    myPageSize{pagesize},
+    myPageDigits{std::max(4, I32((std::bit_width(ramsize - 1) + 3) / 4))}
 {
   WidgetArray wid;
 
@@ -89,7 +90,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Row-address label and column headers for the RAM grid.  Each is built with
   // a value of the length it always shows, so it owns its own width
-  myRamStart = new LabelWidget(_boss, lfont, "00xx");
+  myRamStart = new LabelWidget(_boss, lfont, string(SZT(myPageDigits - 2), '0') + "xx");
 
   for(int col = 0; col < 16; ++col)
     myColHeaders[col] = new LabelWidget(_boss, lfont,
@@ -428,9 +429,9 @@ void RamWidget::fillGrid(bool updateOld)
   // Update RAM labels
   const uInt32 rport = readPort(start);
   uInt32 page = rport & 0xf0U;
-  string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
+  string label = Common::Base::hexN(I32(rport), myPageDigits);
 
-  label[2] = label[3] = 'x';
+  label.replace(label.size() - 2, 2, "xx");
   myRamStart->setLabel(label);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
     myRamLabels[row]->setLabel(Common::Base::toString(page>>4U, Common::Base::Fmt::_16_1));
