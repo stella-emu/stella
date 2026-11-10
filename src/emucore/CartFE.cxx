@@ -140,3 +140,14 @@ bool CartridgeFE::load(Serializer& in)
 
   return true;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFE::increaseAccessCounter(uInt16 address, AccessType flag)
+{
+  // install() claimed the hotspot's stack page from the RIOT, so its
+  // access counters must be passed on as well
+  if((address & 0x1080U) == 0x0080U)
+    mySystem->m6532().increaseAccessCounter(address, flag);
+}
+#endif
