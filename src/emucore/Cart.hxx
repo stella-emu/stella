@@ -242,6 +242,16 @@ class Cartridge : public Device
     string getAccessCounters() const override;
 
     /**
+      Increase the given address's access counter.  Only called for
+      addresses on pages the cart has claimed without counters; accesses
+      to claimed TIA and RIOT pages are passed on to those devices.
+
+      @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
+    */
+    void increaseAccessCounter(uInt16 address, AccessType flag = NONE) override;
+
+    /**
       Determine the bank's origin
 
       @param bank  The bank to query

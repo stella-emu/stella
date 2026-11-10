@@ -99,6 +99,16 @@ class CartridgeGL : public CartridgeEnhanced
       @return  The origin of the bank
     */
     Common::RwAddress ramBankOrigin(uInt16 bank, uInt16 PC = 0) const override;
+
+    /**
+      Increase the given address's access counter.  The claimed RIOT pages
+      are used for bankswitching only and never reach the RIOT, so there
+      is nothing to count.
+
+      @param address The address to modify
+      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
+    */
+    void increaseAccessCounter(uInt16 address, AccessType flag = NONE) override { }
   #endif
 
   public:
