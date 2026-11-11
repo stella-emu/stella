@@ -8,6 +8,7 @@ MODULE_OBJS := \
         src/debugger/gui/Cart0FA0Widget.o \
         src/debugger/gui/Cart2KWidget.o \
         src/debugger/gui/Cart3EPlusWidget.o \
+        src/debugger/gui/Cart3POWidget.o \
         src/debugger/gui/Cart3EWidget.o \
         src/debugger/gui/Cart3FWidget.o \
         src/debugger/gui/Cart4A50Widget.o \

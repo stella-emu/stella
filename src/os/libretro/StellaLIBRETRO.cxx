@@ -34,8 +34,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
-  : rom_image(getROMMax()),
-    audio_buffer{std::make_unique<Int16[]>(audio_buffer_max)}
+  : audio_buffer{std::make_unique<Int16[]>(audio_buffer_max)}
 {
 }
 
@@ -291,7 +290,9 @@ void StellaLIBRETRO::setROM(const char* path, const void* data, size_t size)
 {
   rom_path = path;
 
-  memcpy(rom_image.data(), data, size);
+  // Sized to this ROM, not to the largest one Stella opens
+  const auto* bytes = static_cast<const uInt8*>(data);
+  rom_image.assign(bytes, bytes + size);
 
   rom_size = U32(size);
 }
