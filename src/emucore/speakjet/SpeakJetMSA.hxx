@@ -123,6 +123,9 @@ class SpeakJetMSA : public SpeakJet::Sink
       uInt8 bend{SpeakJet::INITIAL_BEND};
       double tick{1.0};
       double lastTick{1.0};
+
+      // What Speed, Fast and Slow make of a voiced sound's lengths
+      double timing{1.0};
     };
 
     /**
@@ -160,15 +163,22 @@ class SpeakJetMSA : public SpeakJet::Sink
 
     /**
       A voiced sound's segments, 'ms' long; a held repeat only carries on
-      to the sound's end state, and 'into' is the code that follows at once.
+      to the sound's end state, 'into' is the code that follows at once, and
+      'timing' is what Speed, Fast and Slow make of a length.
     */
-    void expand(int code, double ms, bool rearticulate, int into);
+    void expand(int code, double ms, bool rearticulate, int into, double timing);
 
     /**
       What the join from 'code' into 'next' adds to the sound's length, and
       the closure a stop takes of it.
     */
     double extra(int code, const Next& next, double& closureMs) const;
+
+    /**
+      A sound's length once joined to 'next'; what a pulsed effect leaves of
+      the join goes to the sound after it.
+    */
+    double joinedMs(int code, const Next& next, double ms, double& closureMs);
 
     /**
       Running straight into the stop 'into', the registers 'code' slides to
@@ -215,6 +225,15 @@ class SpeakJetMSA : public SpeakJet::Sink
       Whether voicing runs straight on after the front segment.
     */
     bool runsOn() const;
+
+    // Whether the front segment's noise runs straight on into more noise
+    bool noiseRunsOn() const;
+
+    // The index of the front sound's last segment, the queue's size if not queued
+    size_t lastOfSound() const;
+
+    // Whether the sound after the front segment's is voiced
+    bool voicedNext() const;
 
     /**
       Start the front segment: what the registers slide from and to.
@@ -267,6 +286,9 @@ class SpeakJetMSA : public SpeakJet::Sink
       int code{-1};
       double ms{0.0};
       size_t after{0};
+
+      // What ending a run took off it, given back if a sound follows
+      double endLessMs{0.0};
     };
     Join myJoin;
 
@@ -278,6 +300,19 @@ class SpeakJetMSA : public SpeakJet::Sink
     // Whether the front segment fades the voicing out at its end, once known
     bool myEndKnown{false};
     bool myEnds{false};
+
+    // Whether the pitch falls as the front segment's voicing fades out
+    bool myEndFalls{false};
+
+    // The step of that fade the current period is on, of how many; 0 before it
+    size_t myEndStep{0};
+    size_t myEndSteps{1};
+
+    // Whether the front segment's noise runs straight on from noise before it
+    bool myNoiseRunsFrom{false};
+
+    // It ended with no sound yet in sight, so what comes starts afresh
+    bool myStarved{false};
 
     // The controls
     uInt8 myVolume{SpeakJet::INITIAL_VOLUME};

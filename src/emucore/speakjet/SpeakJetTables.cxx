@@ -35,7 +35,7 @@ namespace {
       -4,    7,   23,   29,    5,    0,    0,    0,   12,    0,   // GE GO EG OG CH HE HO WH FF SE
       31,    1,   20,    5,    0,   92,   17,   15,    0,    0,   // SO SH TH TT TU TS KE KO EK OK
       -5,    2,   -3,    1,   -4,    0,    1,   -6,  -13,   -4,   // PE PO R0 R1 R2 R3 R4 R5 R6 R7
-     -11,   -1,  -16,  -31, -100,  -24,  -19,  -19,  -21,    4,   // R8 R9 A0 A1 A2 A3 A4 A5 A6 A7
+     -11,   -1,  -16,  -31,  -32,  -24,  -19,  -19,  -21,    4,   // R8 R9 A0 A1 A2 A3 A4 A5 A6 A7
      -23,  -15,  -13,  -18,  -21,  -20,  -11,  -20,  -25,  -18,   // A8 A9 B0 B1 B2 B3 B4 B5 B6 B7
      -20,  -23,   53,   25,   31,  121,  103,    7,   27,  -19,   // B8 B9 C0 C1 C2 C3 C4 C5 C6 C7
       -3,  -12,  -20,  -24,  -26,  -23,  -23,  -28,  -11,  -16,   // C8 C9 D0 D1 D2 D3 D4 D5 D6 D7
@@ -888,6 +888,12 @@ double SpeakJetTables::joinMs(uInt8 from, uInt8 to)
   return measured != NO_PAIR ? DBL(measured)
        : (a == b) ? DBL(ourMergeMs[a])
                   : DBL(ourJoinOut[a]) + DBL(ourJoinIn[b]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+double SpeakJetTables::joinOutMs(uInt8 from)
+{
+  return DBL(ourJoinOut[from - SpeakJet::FIRST_SOUND]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

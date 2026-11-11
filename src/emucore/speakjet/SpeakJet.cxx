@@ -48,7 +48,7 @@ namespace {
 
   // What pause codes 0-6 add to a phrase, in ms; a stop's closure after one
   // is added separately
-  constexpr std::array<uInt32, 7> ourPauseMs = { 0, 90, 190, 642, 20, 47, 75 };
+  constexpr std::array<uInt32, 7> ourPauseMs = { 5, 90, 190, 642, 20, 47, 75 };
 
   // The last of the continuants; the fricatives and stops follow
   constexpr uInt8 LAST_CONTINUANT = 164;

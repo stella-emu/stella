@@ -62,6 +62,11 @@ class SpeakJetTables
     static double joinMs(uInt8 from, uInt8 to);
 
     /**
+      The part of a join's time, in ms, that belongs to the sound going out.
+    */
+    static double joinOutMs(uInt8 from);
+
+    /**
       What one more copy of a sound adds, in ms, where that is known.
     */
     static std::optional<double> repeatMs(uInt8 code);

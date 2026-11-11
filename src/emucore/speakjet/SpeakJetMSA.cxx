@@ -31,6 +31,10 @@ namespace {
   constexpr double PLAIN_VOLUME = 127.0 / (VOLUME_STEP * FIT_MASTER);
   constexpr double GRAIN_VOLUME = PLAIN_VOLUME * ENVELOPE_PEAK;
 
+  // Where in a sound each state is measured, as a share of its length: a
+  // glide's onset, then the start and end states
+  constexpr double ONSET_AT = 0.15, START_AT = 0.3, END_AT = 0.75;
+
   // Under this share of its state's loudest, an oscillator is all but silent
   constexpr double QUIET_LEVEL = 0.1;
 
@@ -41,10 +45,23 @@ namespace {
   constexpr int FIRST_VOICED_STOP = 169, LAST_VOICED_STOP = 181;
 
   // A stop's voice bar is oscillator 1 alone near 266Hz, a final stop's fading
-  // at about 0.17; the release takes over half way (BE, DE: three periods each)
+  // at about 0.17; the release takes over half way, but where a bar is held
   constexpr double VOICE_BAR_HZ = 266.0;
   constexpr double FINAL_BAR_LEVEL = 0.17;
   constexpr double RELEASE_AT = 0.5;
+
+  // BE BO DE DO hold their bar this long at the Reset's Speed whatever follows
+  constexpr double VOICE_BAR_MS = 32.0;
+  constexpr bool holdsBar(int code)
+  {
+    return code == 170 || code == 171 || code == 174 || code == 175;
+  }
+
+  // And then their release this long, before a voiced sound: BE BO DE DO
+  constexpr double releaseMs(int code)
+  {
+    return code == 170 ? 23.0 : code == 171 ? 23.0 : code == 174 ? 34.0 : 46.0;
+  }
 
   // A voiced stop starting a syllable (BE BO DE DO GE GO) or ending one
   constexpr bool initialStop(int code)
@@ -76,19 +93,73 @@ namespace {
            to >= 140 && to <= 148;
   }
 
+  // The effects that keep a voice's pitch pulses
+  constexpr bool pulsed(int code)
+  {
+    return code > SpeakJet::LAST_ALLOPHONE &&
+           EFFECTS[SZT(code - SpeakJet::LAST_ALLOPHONE - 1)].enveloped;
+  }
+
   // Voicing after these starts from nothing: CH and the voiceless stops
   constexpr bool stopsVoicing(int code)
   {
     return code == 182 || (code >= 191 && code <= 199);
   }
 
+  // TT KE KO sound this much longer at the Reset's Speed than their length
+  // and joins give, which a voiced sound after them gives up
+  constexpr double burstExtraMs(int code)
+  {
+    return code == 191 ? 9.0 : code == 194 ? 8.0 : code == 195 ? 5.0 : 0.0;
+  }
+
+  // The voiceless fricatives sound this much shorter between voiced sounds
+  // than their length and joins give: HE HO WH FF SE SO SH TH
+  constexpr double hissLessMs(int code)
+  {
+    constexpr std::array<double, 8> less = {{ 8.0, 6.0, 32.0, 12.0, 14.0, 32.0, 14.0, 7.0 }};
+    return code >= 183 && code <= 190 ? less[SZT(code - 183)] : 0.0;
+  }
+
+  // A sound this much longer than the chip's look ahead is judged from there
+  constexpr double END_JUDGE_MS = 20.0;
+
+  // The continuants end a run in steps; the voiced fricatives and stops fade
+  // plainly over this long
+  constexpr int LAST_STEPPED = 164;
+  constexpr double STOP_END_MS = 20.0;
+
+  // A voiced sound takes over from a pulsed effect in this long
+  constexpr double EFFECT_JOIN_MS = 23.0;
+
+  // JH ends a run over this long, as a noise does
+  constexpr int JH = 165;
+  constexpr double JH_END_MS = 10.0;
+
   // PE and PO, a low sine with a little noise
   constexpr int PE = 198, PO = 199;
 
-  // A noise sound ramps in over this long, and out over the second, as the
-  // hardware's falls 20dB in about 10ms
-  constexpr double NOISE_RAMP_MS = 5.0;
+  // The chip looks this long before a run's end, as Speed, Fast and Slow time
+  // it, for a sound to carry on into; seeing none, the run ends, whatever
+  // arrives after
+  constexpr double END_LEAD_MS = 35.0;
+
+  // A noise sound ramps in over this long, and out over the second
+  constexpr double NOISE_RAMP_MS = 1.5;
   constexpr double NOISE_END_MS = 11.0;
+
+  // FF SE SH TH end over their own time
+  constexpr double noiseEndMs(int code)
+  {
+    return code == 186 ? 5.0 : code == 187 ? 17.0 : code == 190 ? 4.0 : NOISE_END_MS;
+  }
+
+  // And ending a run sound this much shorter at the Reset's Speed, JH too
+  constexpr double hissEndLessMs(int code)
+  {
+    return code == 165 ? -4.5 : code == 186 ? -3.0 : code == 187 ? 9.5
+         : code == 189 ? 7.5 : code == 190 ? 0.5 : 0.0;
+  }
 
   // A measured state as registers in the chip's whole steps, Bend's offset on
   // every sounding oscillator, the code's noise; a negative frequency is silent
@@ -231,6 +302,7 @@ void SpeakJetMSA::rest()
   myLive = false;
   myColdNext = true;
   myLastCode = -1;
+  myLastKind = Kind::Quiet;
 
   // Time passes unsaid, so the output stage is at rest; nothing rings on, as
   // the chip's apparent decay is only its output's DC settling
@@ -258,6 +330,16 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
 {
   const uInt8 code = utterance.code;
   const auto index = SZT(code - SpeakJet::FIRST_SOUND);
+
+  // A run the chip let end for want of a sound is over: this one starts as
+  // after silence
+  if(myStarved)
+  {
+    myLastCode = -1;
+    myColdNext = true;
+    myJoin = {};
+    myHandOverMs = 0.0;
+  }
 
   // The sound coming next, a copy bringing its own; until the chip can see
   // what follows, nothing does
@@ -296,6 +378,7 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
 
   // The same sound again carries on or is said over, taking what a copy adds
   const bool again = std::cmp_equal(code, myLastCode);
+  const bool flowingIn = myLastCode >= 0;
   if(again)
   {
     if(const auto repeatMs = SpeakJetTables::repeatMs(code))
@@ -315,9 +398,26 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   const bool seen = utterance.more || next.code >= 0 || next.pause;
   const double baseMs = ms;
   double closureMs = 0.0;
-  if(next.code >= 0 && next.code != code && ms > 0.0)
-    ms = BSPF::clamp(ms + extra(code, next, closureMs), ms * JOIN_MIN_SCALE,
-                     ms * JOIN_MAX_SCALE);
+  if(holdsBar(code) && !again && next.code >= 0 && next.code != code &&
+     voicedThrough(next.code))
+  {
+    // Bar and release keep their own time before a voiced sound, which
+    // takes the difference, the pair's time staying what it was
+    const double joined = BSPF::clamp(ms + extra(code, next, closureMs),
+                                      ms * JOIN_MIN_SCALE, ms * JOIN_MAX_SCALE);
+    ms = (VOICE_BAR_MS + releaseMs(code)) * timing;
+    myHandOverMs = joined - ms;
+  }
+  else if(next.code >= 0 && next.code != code && ms > 0.0)
+    ms = joinedMs(code, next, ms, closureMs);
+
+  // A burst's own time, and a hiss's
+  const double burstMs = burstExtraMs(code) * timing;
+  ms += burstMs;
+  if(flowingIn && next.code >= 0)
+    ms = std::max(ms / 2, ms - hissLessMs(code) * timing);
+  const double endLessMs = next.code < 0 ? std::min(ms / 2, hissEndLessMs(code) * timing) : 0.0;
+  ms -= endLessMs;
 
   // A pause does not take away the closure of a stop after it
   if(myAfterPause)
@@ -333,7 +433,7 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   myLastCode = code;
   const size_t before = mySegments.size();
   if(voicedThrough(code))
-    expand(code, ms, !again || !SpeakJetTables::holdsRepeat(code), next.code);
+    expand(code, ms, !again || !SpeakJetTables::holdsRepeat(code), next.code, timing);
   else
   {
     unvoiced(code, ms, tickMs, lastTickMs);
@@ -346,9 +446,11 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   if(flowing && SpeakJetTables::quietPadMs(code) > 0)
     quiet(DBL(SpeakJetTables::quietPadMs(code)) * timing);
   myClosureMs = closureMs;
-  myJoin = {!seen && sound > before, code, baseMs, mySegments.size() - sound};
+  myJoin = {!seen && sound > before, code, baseMs, mySegments.size() - sound, endLessMs};
   if(next.code >= 0 && !utterance.more)
     handOver(code, next.code, mySegments.size() - sound);
+  if(next.code >= 0 && voicedThrough(next.code))
+    myHandOverMs -= burstMs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -361,8 +463,9 @@ void SpeakJetMSA::pause(uInt32 durationMs)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJetMSA::delay(uInt32 durationMs)
 {
-  // A pause is not a join, and voicing after it starts from nothing
-  quiet(DBL(durationMs));
+  // A pause is not a join, and voicing after it starts from nothing; even
+  // the shortest is silence, which no noise carries across
+  quiet(std::max(DBL(durationMs), 1000.0 / SpeakJetSynth::RATE));
   myClosureMs = 0.0;
   myHandOverMs = 0.0;
   myJoin = {};
@@ -372,7 +475,7 @@ void SpeakJetMSA::delay(uInt32 durationMs)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
+void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into, double timing)
 {
   const Sound& sound = SOUNDS[SZT(code - SpeakJet::FIRST_SOUND)];
   const auto total = SZT(std::max(0.0, ms) * SpeakJetSynth::RATE / 1000.0);
@@ -382,7 +485,7 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
   const State end = endState(code);
 
   // Each state is reached by one slide from wherever the registers are; a
-  // diphthong's glide spans GLIDE_FROM to GLIDE_TO of its length
+  // glide's slides span the points its states were measured at
   struct Point { size_t from; Registers target; size_t span; bool jump; };
   const auto share = [total](double f) { return SZT(f * DBL(total)); };
   const auto regs = [&](const State& s) { return registersFor(s, code, myBend); };
@@ -394,8 +497,10 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
   {
     // The voice bar, then the release
     bar.level[1] = bar.level[2] = 0.0;
+    const size_t held = !holdsBar(code) ? share(RELEASE_AT)
+        : std::min(SZT(VOICE_BAR_MS * timing * SpeakJetSynth::RATE / 1000.0), share(0.85));
     points = {{0, regs(bar), 0, true},
-              {share(RELEASE_AT), regs(end), 0, true}};
+              {held, regs(end), 0, true}};
   }
   else if(finalStop(code))
   {
@@ -406,8 +511,9 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
               {share(RELEASE_AT), regs(bar), 0, true}};
   }
   else if(sound.glide)
-    points = {{0, regs(sound.start), 0, false},
-              {share(GLIDE_FROM), regs(end), share(GLIDE_TO - GLIDE_FROM), false}};
+    points = {{0, regs(sound.onset), 0, false},
+              {share(ONSET_AT), regs(sound.start), share(START_AT - ONSET_AT), false},
+              {share(END_STATE_AT), regs(end), share(END_AT - END_STATE_AT), false}};
   else
     points = {{0, regs(sound.start), 0, false},
               {share(END_STATE_AT), regs(end), 0, false}};
@@ -437,7 +543,8 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into)
       .last = i + 1 == points.size(),
       .speed = mySpeed,
       .pitch = myPitch,
-      .master = myVolume
+      .master = myVolume,
+      .timing = timing
     });
   }
 }
@@ -465,6 +572,22 @@ double SpeakJetMSA::extra(int code, const Next& next, double& closureMs) const
   const double closure = BSPF::clamp(extraMs, 0.0, SpeakJetTables::closureMs(to) * speedTiming);
   closureMs = closure * stretch(next.scalePct, next.speed);
   return extraMs - closure;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+double SpeakJetMSA::joinedMs(int code, const Next& next, double ms, double& closureMs)
+{
+  const double joined = BSPF::clamp(ms + extra(code, next, closureMs),
+                                    ms * JOIN_MIN_SCALE, ms * JOIN_MAX_SCALE);
+  if(!pulsed(code) || next.code > SpeakJet::LAST_ALLOPHONE)
+    return joined;
+
+  // A pulsed effect gives up the same time whatever sound follows, which
+  // takes the rest of the join
+  const double own = std::max(ms * JOIN_MIN_SCALE, ms + SpeakJetTables::joinOutMs(U8(code)) *
+                              SpeakJetTables::speedFactor(next.speed));
+  myHandOverMs = joined - own;
+  return own;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -499,15 +622,15 @@ void SpeakJetMSA::join()
     return;
 
   double closureMs = 0.0;
-  const double ms = BSPF::clamp(myJoin.ms + extra(myJoin.code, next, closureMs),
-                                myJoin.ms * JOIN_MIN_SCALE, myJoin.ms * JOIN_MAX_SCALE);
+  const double ms = joinedMs(myJoin.code, next, myJoin.ms, closureMs);
   myClosureMs = closureMs;
 
   // The sound's last segment takes the difference, as far as it still can
   const size_t at = mySegments.size() - 1 - myJoin.after;
   Segment& last = mySegments[at];
   const size_t least = at == 0 ? myPos + 1 : 1;
-  const double samples = DBL(last.samples) + (ms - myJoin.ms) * SpeakJetSynth::RATE / 1000.0;
+  const double samples = DBL(last.samples) +
+      (ms - myJoin.ms + myJoin.endLessMs) * SpeakJetSynth::RATE / 1000.0;
   last.samples = std::max(least, SZT(std::max(0.0, samples)));
 
   // Into a stop, the entry slide ends the sound
@@ -611,10 +734,20 @@ double SpeakJetMSA::still()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t SpeakJetMSA::lastOfSound() const
+{
+  for(size_t i = 0; i < mySegments.size() && mySegments[i].kind == Kind::Voiced; ++i)
+    if(mySegments[i].last)
+      return i;
+  return mySegments.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SpeakJetMSA::runsOn() const
 {
-  if(mySegments.size() > 1)
-    return mySegments[1].kind == Kind::Voiced;
+  const size_t after = lastOfSound() + 1;
+  if(mySegments.size() > after)
+    return mySegments[after].kind == Kind::Voiced;
 
   // A stop's closure comes first
   const Next next = myLookahead();
@@ -622,15 +755,46 @@ bool SpeakJetMSA::runsOn() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJetMSA::voicedNext() const
+{
+  for(size_t i = lastOfSound() + 1; i < mySegments.size(); ++i)
+    if(mySegments[i].code >= 0)
+      return mySegments[i].kind == Kind::Voiced;
+
+  const Next next = myLookahead();
+  return next.code >= 0 && voicedThrough(next.code);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SpeakJetMSA::noiseRunsOn() const
+{
+  if(mySegments.size() > 1)
+    return mySegments[1].kind == Kind::Noise;
+
+  // A stop's closure comes first
+  const Next next = myLookahead();
+  if(next.code < SpeakJet::FIRST_SOUND || next.code > SpeakJet::LAST_ALLOPHONE ||
+     voicedThrough(next.code) || next.code == PE || next.code == PO || myClosureMs > 0.0)
+    return false;
+  const NoiseRegisters& noise = NOISE_REGISTERS[SZT(next.code - SpeakJet::FIRST_SOUND)];
+  return noise.volume4 > 0 || noise.volume5 > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJetMSA::begin()
 {
   const Segment& s = mySegments.front();
   myEndKnown = false;
+  myEndFalls = false;
+  myStarved = false;
 
   if(s.kind != Kind::Voiced)
   {
     if(s.kind == Kind::Noise)
+    {
       myRegs = s.target;
+      myNoiseRunsFrom = myLastKind == Kind::Noise;
+    }
     else if(s.kind == Kind::Effect)
     {
       const Effect& fx = EFFECTS[SZT(s.code - SpeakJet::LAST_ALLOPHONE - 1)];
@@ -646,14 +810,30 @@ void SpeakJetMSA::begin()
   // a stop's noise before it falls away; running on, it slides there
   myJumpWait = false;
   myF0From = myF0;
+
+  // Out of a pulsed effect the voicing carries on, the sound there within
+  // about a period
+  if(!myLive && myLastKind == Kind::Effect && myRegs.enveloped)
+  {
+    myFrom = myRegs;
+    myTo = settle(s.target, s.target);
+    myCold = myColdNext = false;
+    mySlide = SZT(EFFECT_JOIN_MS * SpeakJetSynth::RATE / 1000.0);
+    myLive = true;
+    myRunMs = 0.0;
+    return;
+  }
   if(!myLive)
   {
     myTo = settle(s.target, s.target);
     myFrom = myTo;
     myCold = myColdNext;
     myColdNext = false;
-    if(myCold)
-      for(size_t k = 0; k < 3; ++k)
+    // (its own noise with it, unless a noise before carries over); out of a
+    // closure a voiced fricative rises the same way
+    const bool rises = myCold || (myLastKind == Kind::Closure && s.code >= 165 && s.code <= 169);
+    if(rises)
+      for(size_t k = 0; k < 5; ++k)
         myFrom.volume[k] = 0.0;
     if(myLastKind == Kind::Noise)
     {
@@ -665,7 +845,7 @@ void SpeakJetMSA::begin()
       myFrom.distortion = myRegs.distortion;
     }
     myRegs = myFrom;
-    mySlide = myCold || myLastKind == Kind::Noise
+    mySlide = rises || myLastKind == Kind::Noise
         ? SZT(COLD_FADE_MS * SpeakJetSynth::RATE / 1000.0) : 1;
     myLive = true;
     myRunMs = 0.0;
@@ -738,22 +918,57 @@ double SpeakJetMSA::next()
     myRegs.distortion = myFrom.distortion + p * (myTo.distortion - myFrom.distortion);
     myRegs.noiseHalf = myTo.noiseHalf;
     myRegs.enveloped = true;
-    myRegs.envelopeHz = f0;
 
     // A run ends faded, the chip having read ahead to see it end
     double ending = 1.0;
-    const auto fadeLength = SZT(END_FADE_MS * SpeakJetSynth::RATE / 1000.0);
-    const size_t left = s.samples - myPos;
-    if(s.last && left < fadeLength)
+    // (a vowel, nasal or liquid in steps; JH and the stops plainly, sooner)
+    const bool stepped = s.code <= LAST_STEPPED;
+    const auto fadeLength = SZT((s.code == JH ? JH_END_MS : stepped ? END_FADE_MS : STOP_END_MS) *
+                                SpeakJetSynth::RATE / 1000.0);
+    const auto leadLength = std::max(fadeLength,
+        SZT(END_LEAD_MS * s.timing * SpeakJetSynth::RATE / 1000.0));
+    // (a sound too short to look ahead from is judged as it fades)
+    // (the fade runs to the sound's end, over as many segments as it takes)
+    const size_t tail = lastOfSound();
+    size_t left = s.samples - myPos;
+    for(size_t i = 1; i <= tail && tail < mySegments.size(); ++i)
+      left += mySegments[i].samples;
+    const bool looks = left + myPos >= leadLength + SZT(END_JUDGE_MS * SpeakJetSynth::RATE / 1000.0);
+    const auto period = SZT(SpeakJetSynth::RATE / std::max(1.0, f0));
+    if(tail < mySegments.size() && left < (looks ? leadLength : fadeLength + (stepped ? period : 0)))
     {
-      if(!myEndKnown)
+      // (too short to look ahead from, it carries on if a sound comes in time)
+      if(!myEndKnown || (!looks && myEnds))
       {
         myEnds = !runsOn();
         myEndKnown = true;
+        myEndFalls = myEnds && !voicedNext();
+        const Next ahead = myLookahead();
+        myStarved = looks && myEnds && mySegments.size() == tail + 1 && ahead.code < 0 &&
+                    !ahead.pause;
+
+        // Let end for want of a sound, it takes no join from one arriving late
+        if(myStarved)
+          myJoin = {};
       }
-      if(myEnds)
+      // A vowel's fade steps down a period at a time, as the chip's last
+      // pulses do
+      if(myEnds && !stepped && left < fadeLength)
         ending = DBL(left) / DBL(fadeLength);
+      else if(myEnds && stepped && (!mySounding || mySynth.startsPeriod(f0)))
+      {
+        const size_t steps = std::max(size_t{1}, (fadeLength + period / 2) / period);
+        const size_t periodsLeft = std::max(size_t{1}, (left + period / 2) / period);
+        myEndStep = periodsLeft <= steps ? steps - periodsLeft + 1 : 0;
+        myEndSteps = steps;
+      }
     }
+    else
+      myEndStep = 0;
+    if(myEndStep > 0)
+      ending = 1.0 - DBL(myEndStep) / (DBL(myEndSteps) + 0.25);
+    const double fall = myEndFalls && myEndStep > 0 ? END_FALL_TO : 1.0;
+    myRegs.envelopeHz = f0 * fall;
     myRegs.master = s.master * ending;
     y = synth(myRegs) * SpeakJetTables::SPEECH_GAIN;
     myRunMs += 1000.0 / SpeakJetSynth::RATE;
@@ -764,12 +979,19 @@ double SpeakJetMSA::next()
     const double pos = DBL(myPos), length = DBL(s.samples);
     if(s.kind == Kind::Noise)
     {
-      // It ramps in and out, but where it hands over to voicing
+      // It ramps in and out, but where it hands over to voicing or to noise
       const double ramp = NOISE_RAMP_MS * SpeakJetSynth::RATE / 1000.0;
-      const double fade = NOISE_END_MS * SpeakJetSynth::RATE / 1000.0;
-      const double out = s.handsOver ? 1.0 : std::min(1.0, (length - pos) / fade);
+      const double fade = noiseEndMs(s.code) * SpeakJetSynth::RATE / 1000.0;
+      const double in = myNoiseRunsFrom ? 1.0 : std::min(1.0, (pos + 1.0) / ramp);
+      if(!myEndKnown && length - pos < fade)
+      {
+        myEnds = !noiseRunsOn();
+        myEndKnown = true;
+      }
+      const double out = s.handsOver || (myEndKnown && !myEnds) ? 1.0
+                       : std::min(1.0, (length - pos) / fade);
       myRegs.envelopeHz = myF0;
-      myRegs.master = s.master * std::min(1.0, (pos + 1.0) / ramp) * out;
+      myRegs.master = s.master * in * out;
       y = synth(myRegs) * SpeakJetTables::SPEECH_GAIN;
     }
     else if(s.kind == Kind::Effect)
