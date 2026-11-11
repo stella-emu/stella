@@ -146,14 +146,6 @@ class Cartridge4A50 : public Cartridge
     void setAccessFlags(uInt16 address, Device::AccessType flags) override;
 
     /**
-      Increase the given address's access counter
-
-      @param address The address to modify
-      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
-    */
-    void increaseAccessCounter(uInt16 address, AccessType flag = NONE) override;
-
-    /**
       Get cartridge RAM contents for direct external access
 
       @return  Mutable span over RAM array.

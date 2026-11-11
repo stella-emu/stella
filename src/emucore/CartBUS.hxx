@@ -176,14 +176,6 @@ class CartridgeBUS : public CartridgeARM
       @return  Mutable span over RAM array.
     */
     ByteSpan getRAM() override { return myRAM; }
-
-    /**
-      Increase the given address's access counter
-
-      @param address The address to modify
-      @param flag    One flag indicating the kind of access (e.g. CODE, DATA, WRITE)
-    */
-    void increaseAccessCounter(uInt16 address, AccessType flag = NONE) override;
   #endif
 
   public:

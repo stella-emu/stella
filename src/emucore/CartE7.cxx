@@ -43,7 +43,7 @@ void CartridgeE7::initialize(ByteSpan image)
   std::copy_n(image.data(), std::min<size_t>(romSize(), image.size()), myImage.data());
   createRomAccessArrays(romSize() + myRAM.size());
 
-#if DEBUGGER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myRamAccessSize = U32(RAM_SIZE);
   myRamPeekAccessOffset = U32(romSize());
   myRamPokeAccessOffset = U32(romSize());

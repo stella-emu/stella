@@ -21,6 +21,8 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Base.hxx"
+  #include "M6532.hxx"
+  #include "TIA.hxx"
 #endif
 
 #include "Cart.hxx"
@@ -177,6 +179,17 @@ void Cartridge::createRomAccessArrays(size_t size)
 }
 
 #ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::increaseAccessCounter(uInt16 address, AccessType flag)
+{
+  // Carts claiming TIA or RIOT pages pass those accesses through,
+  // so their access counters must be passed on as well
+  if((address & 0x1080U) == 0x0080U)
+    mySystem->m6532().increaseAccessCounter(address, flag);
+  else if((address & 0x1080U) == 0x0000U)
+    mySystem->tia().increaseAccessCounter(address, flag);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::getAccessCounters() const
 {
