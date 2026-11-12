@@ -853,6 +853,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\Cart3POWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\debugger\gui\Cart3EWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -1117,6 +1121,7 @@
     <ClCompile Include="..\..\debugger\yacc\stella.tab.cxx" />
     <ClCompile Include="..\..\emucore\Cart03E0.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx" />
+    <ClCompile Include="..\..\emucore\Cart3PO.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EX.cxx" />
     <ClCompile Include="..\..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\..\emucore\CartARM.cxx" />
@@ -2306,6 +2311,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\Cart3POWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\debugger\gui\Cart3EWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|ARM64'">true</ExcludedFromBuild>
@@ -2571,6 +2580,7 @@
     <ClInclude Include="..\..\emucore\Bankswitch.hxx" />
     <ClInclude Include="..\..\emucore\Cart03E0.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EPlus.hxx" />
+    <ClInclude Include="..\..\emucore\Cart3PO.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\..\emucore\CartARM.hxx" />

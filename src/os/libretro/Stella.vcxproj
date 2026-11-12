@@ -178,6 +178,7 @@
     <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx" />
+    <ClCompile Include="..\..\emucore\Cart3PO.cxx" />
     <ClCompile Include="..\..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\..\emucore\CartBF.cxx" />
     <ClCompile Include="..\..\emucore\CartBFSC.cxx" />
@@ -320,6 +321,7 @@
     <ClInclude Include="..\..\emucore\Bankswitch.hxx" />
     <ClInclude Include="..\..\emucore\BSType.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EPlus.hxx" />
+    <ClInclude Include="..\..\emucore\Cart3PO.hxx" />
     <ClInclude Include="..\..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\..\emucore\CartARM.hxx" />

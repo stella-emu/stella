@@ -643,6 +643,10 @@
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
 		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
 		DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */; };
+		DCBDDEA41D6A5F2F009DF1E9 /* Cart3PO.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDEA01D6A5F2F009DF1E9 /* Cart3PO.cxx */; };
+		DCBDDEA51D6A5F2F009DF1E9 /* Cart3PO.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDEA11D6A5F2F009DF1E9 /* Cart3PO.hxx */; };
+		DCBDDEA61D6A5F2F009DF1E9 /* Cart3POWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDEA21D6A5F2F009DF1E9 /* Cart3POWidget.cxx */; };
+		DCBDDEA71D6A5F2F009DF1E9 /* Cart3POWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDEA31D6A5F2F009DF1E9 /* Cart3POWidget.hxx */; };
 		DCBE0DCC2F9F9B9900D48AD2 /* XDGPaths.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */; };
 		DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */; };
 		DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */; };
@@ -1569,6 +1573,10 @@
 		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
 		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlus.cxx; sourceTree = "<group>"; };
 		DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlus.hxx; sourceTree = "<group>"; };
+		DCBDDEA01D6A5F2F009DF1E9 /* Cart3PO.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3PO.cxx; sourceTree = "<group>"; };
+		DCBDDEA11D6A5F2F009DF1E9 /* Cart3PO.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Cart3PO.hxx; sourceTree = "<group>"; };
+		DCBDDEA21D6A5F2F009DF1E9 /* Cart3POWidget.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3POWidget.cxx; sourceTree = "<group>"; };
+		DCBDDEA31D6A5F2F009DF1E9 /* Cart3POWidget.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Cart3POWidget.hxx; sourceTree = "<group>"; };
 		DCBE0DCB2F9F9B9900D48AD2 /* XDGPaths.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = XDGPaths.hxx; sourceTree = "<group>"; };
 		DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ToolTip.hxx; sourceTree = "<group>"; };
 		DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToolTip.cxx; sourceTree = "<group>"; };
@@ -1910,6 +1918,8 @@
 				DC676A251729A0B000E4E73D /* Cart3EWidget.cxx */,
 				DCAAE5B51715887B0080BB82 /* Cart3FWidget.hxx */,
 				DCAAE5B41715887B0080BB82 /* Cart3FWidget.cxx */,
+				DCBDDEA31D6A5F2F009DF1E9 /* Cart3POWidget.hxx */,
+				DCBDDEA21D6A5F2F009DF1E9 /* Cart3POWidget.cxx */,
 				DC676A281729A0B000E4E73D /* Cart4A50Widget.hxx */,
 				DC676A271729A0B000E4E73D /* Cart4A50Widget.cxx */,
 				DCAACB05188D636F00A4D282 /* Cart4KSCWidget.hxx */,
@@ -2231,6 +2241,8 @@
 				DC3C9BD22469C9A200CF2D47 /* Cart3EX.cxx */,
 				2DE2DF170627AE07006BEC99 /* Cart3F.hxx */,
 				2DE2DF160627AE07006BEC99 /* Cart3F.cxx */,
+				DCBDDEA11D6A5F2F009DF1E9 /* Cart3PO.hxx */,
+				DCBDDEA01D6A5F2F009DF1E9 /* Cart3PO.cxx */,
 				DCD56D370B247D920092F9F8 /* Cart4A50.hxx */,
 				DCD56D360B247D920092F9F8 /* Cart4A50.cxx */,
 				2DE2DF190627AE07006BEC99 /* Cart4K.hxx */,
@@ -3236,6 +3248,7 @@
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
 				DC857D362482F66200C7C14F /* CartCreator.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
+				DCBDDEA51D6A5F2F009DF1E9 /* Cart3PO.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */,
 				E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */,
@@ -3301,6 +3314,7 @@
 				DCF3A6EA1DFC75E3008A8AF3 /* Ball.hxx in Headers */,
 				E007231E210FBF5E002CF343 /* FpsMeter.hxx in Headers */,
 				DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */,
+				DCBDDEA71D6A5F2F009DF1E9 /* Cart3POWidget.hxx in Headers */,
 				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
 				E050876F25A1337400E4B62A /* OSystemStandalone.hxx in Headers */,
@@ -3639,6 +3653,7 @@
 				DCE9681527553F1000E99839 /* FavoritesManager.cxx in Sources */,
 				DC1E474E24D34F3B0047E61A /* WhatsNewDialog.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
+				DCBDDEA61D6A5F2F009DF1E9 /* Cart3POWidget.cxx in Sources */,
 				DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */,
 				DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */,
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
@@ -3879,6 +3894,7 @@
 				DC2AADB0194F389C0026C7A4 /* TIASurface.cxx in Sources */,
 				DC6DC5E7273C2BED00F64413 /* GlobalKeyHandler.cxx in Sources */,
 				DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */,
+				DCBDDEA41D6A5F2F009DF1E9 /* Cart3PO.cxx in Sources */,
 				DCAAE5E61715887B0080BB82 /* CartF4Widget.cxx in Sources */,
 				E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */,
 				DCAAE5E81715887B0080BB82 /* CartF6SCWidget.cxx in Sources */,
