@@ -621,7 +621,7 @@ vector<SpeakJetMSA::EntryStep> SpeakJetMSA::entry(int code, int into, double tim
 {
   // The oscillators slide at the ordinary rate to the stop's entry state
   const State end = endState(code);
-  const auto* stop = std::ranges::find(ENTRIES, into, &Release::code);
+  const auto stop = std::ranges::find(ENTRIES, into, &Release::code);
   const bool known = stop != ENTRIES.end();
   if(!known && !holdsBar(into))
     return {};
