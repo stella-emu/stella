@@ -184,8 +184,13 @@ void Paddles::updateA()
     updateMouseA(fire, n);
     updateDigitalAxesA();
 
-    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
-        AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
+    // Only drive the pin on change, so idle mouse/digital input can't override analog
+    if(myPosition[0] != myLastPosition[0])
+    {
+      setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
+          AnalogReadout::MAX_POT_RESISTANCE * myPosition[0]));
+      myLastPosition[0] = myPosition[0];
+    }
   }
 
   // Bind the fire button for replay within the input window (static only under autofire)
@@ -197,7 +202,7 @@ void Paddles::updateA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::conditionAxisInput(int lastAxis, int& newAxis)
+float Paddles::conditionAxisInput(int lastAxis, int& newAxis, int center)
 {
   const float range = ANALOG_RANGE - analogDeadZone() * 2;
 
@@ -237,8 +242,12 @@ void Paddles::conditionAxisInput(int lastAxis, int& newAxis)
   linearVal = std::copysign(std::pow(std::abs(linearVal), LINEARITY), linearVal);
   newAxis = linearVal * (range / 2);
 
-  // rescale to full ANALOG_RANGE to compensate for the dead zone range reduction
-  newAxis = newAxis * ANALOG_RANGE / range;
+  // Rescale for the dead zone; newAxis stays unscaled, as it is the dejitter history
+  const float scaledAxis = newAxis * (ANALOG_RANGE / range);
+
+  return BSPF::clamp(
+      (ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) / float{ANALOG_RANGE},
+      0.F, 1.F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,11 +267,8 @@ bool Paddles::updateAnalogAxesA()
 
   if(std::abs(myLastAxisX - sa_xaxis) > 10)
   {
-    conditionAxisInput(myLastAxisX, sa_xaxis);
-    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(
-        AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
-            (ANALOG_MAX_VALUE - (sa_xaxis * SENSITIVITY + XCENTER)) / float{ANALOG_RANGE},
-            0.F, 1.F)));
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE *
+        conditionAxisInput(myLastAxisX, sa_xaxis, XCENTER)));
     sa_changed = true;
   }
 
@@ -346,8 +352,13 @@ void Paddles::updateB()
     updateMouseB(fire, n);
     updateDigitalAxesB();
 
-    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
-        AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
+    // Only drive the pin on change, so idle mouse/digital input can't override analog
+    if(myPosition[1] != myLastPosition[1])
+    {
+      setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
+          AnalogReadout::MAX_POT_RESISTANCE * myPosition[1]));
+      myLastPosition[1] = myPosition[1];
+    }
   }
 
   // Bind the fire button for replay within the input window (static only under autofire)
@@ -362,11 +373,8 @@ bool Paddles::updateAnalogAxesB()
 
   if(std::abs(myLastAxisY - sa_yaxis) > 10)
   {
-    conditionAxisInput(myLastAxisY, sa_yaxis);
-    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(
-        AnalogReadout::MAX_POT_RESISTANCE * BSPF::clamp(
-            (ANALOG_MAX_VALUE - (sa_yaxis * SENSITIVITY + YCENTER)) / float{ANALOG_RANGE},
-            0.F, 1.F)));
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(AnalogReadout::MAX_POT_RESISTANCE *
+        conditionAxisInput(myLastAxisY, sa_yaxis, YCENTER)));
     sa_changed = true;
   }
 

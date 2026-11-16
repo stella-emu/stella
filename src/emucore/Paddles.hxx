@@ -197,6 +197,8 @@ class Paddles : public Controller
     bool myKeyRepeatA{false}, myKeyRepeatB{false};
     float myPaddleRepeatA{0.F}, myPaddleRepeatB{0.F};
     std::array<float, 2> myPosition{0.5F, 0.5F};
+    // Last mouse/digital position sent to the pin; -1 forces the first write
+    std::array<float, 2> myLastPosition{-1.F, -1.F};
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
@@ -210,7 +212,7 @@ class Paddles : public Controller
     inline static int DEJITTER_BASE = 0;
     inline static int DEJITTER_DIFF = 0;
 
-    static void conditionAxisInput(int lastAxis, int& newAxis);
+    static float conditionAxisInput(int lastAxis, int& newAxis, int center);
 
     void updateA();
     void updateB();
