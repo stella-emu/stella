@@ -33,7 +33,7 @@ namespace {
 
   // Where in a sound each state is measured, as a share of its length: a
   // glide's onset, then the start and end states
-  constexpr double ONSET_AT = 0.15, START_AT = 0.3, END_AT = 0.75;
+  constexpr double ONSET_AT = 0.15, START_AT = 0.3, END_AT = 0.93;
 
   // Under this share of its state's loudest, an oscillator is all but silent
   constexpr double QUIET_LEVEL = 0.1;
@@ -48,19 +48,37 @@ namespace {
   // at about 0.17; the release takes over half way, but where a bar is held
   constexpr double VOICE_BAR_HZ = 266.0;
   constexpr double FINAL_BAR_LEVEL = 0.17;
+
+  // After EG and OG it is all but silent
+  constexpr double VELAR_FINAL_BAR_LEVEL = 0.06;
   constexpr double RELEASE_AT = 0.5;
 
   // BE BO DE DO hold their bar this long at the Reset's Speed whatever follows
-  constexpr double VOICE_BAR_MS = 32.0;
+  constexpr double VOICE_BAR_MS = 27.0;
+
+  // The sound before them fades to the bar's level over this long
+  constexpr double BAR_FADE_MS = 31.0;
   constexpr bool holdsBar(int code)
   {
     return code == 170 || code == 171 || code == 174 || code == 175;
   }
 
-  // And then their release this long, before a voiced sound: BE BO DE DO
+  // GE and GO hold theirs, the second formant weak in it, after a closure
+  constexpr double VELAR_BAR_MS = 34.0;
+  constexpr bool velarBar(int code)
+  {
+    return code == 178 || code == 179;
+  }
+  constexpr double barMs(int code)
+  {
+    return velarBar(code) ? VELAR_BAR_MS : VOICE_BAR_MS;
+  }
+
+  // And then their release this long, before a voiced sound
   constexpr double releaseMs(int code)
   {
-    return code == 170 ? 23.0 : code == 171 ? 23.0 : code == 174 ? 34.0 : 46.0;
+    return code == 170 ? 23.0 : code == 171 ? 23.0 : code == 174 ? 34.0
+         : code == 175 ? 28.0 : 10.0;
   }
 
   // A voiced stop starting a syllable (BE BO DE DO GE GO) or ending one
@@ -398,14 +416,14 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   const bool seen = utterance.more || next.code >= 0 || next.pause;
   const double baseMs = ms;
   double closureMs = 0.0;
-  if(holdsBar(code) && !again && next.code >= 0 && next.code != code &&
-     voicedThrough(next.code))
+  if((holdsBar(code) || velarBar(code)) && !again && next.code >= 0 &&
+     next.code != code && voicedThrough(next.code))
   {
     // Bar and release keep their own time before a voiced sound, which
     // takes the difference, the pair's time staying what it was
     const double joined = BSPF::clamp(ms + extra(code, next, closureMs),
                                       ms * JOIN_MIN_SCALE, ms * JOIN_MAX_SCALE);
-    ms = (VOICE_BAR_MS + releaseMs(code)) * timing;
+    ms = (barMs(code) + releaseMs(code)) * timing;
     myHandOverMs = joined - ms;
   }
   else if(next.code >= 0 && next.code != code && ms > 0.0)
@@ -496,17 +514,20 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into, doubl
   else if(initialStop(code))
   {
     // The voice bar, then the release
-    bar.level[1] = bar.level[2] = 0.0;
-    const size_t held = !holdsBar(code) ? share(RELEASE_AT)
-        : std::min(SZT(VOICE_BAR_MS * timing * SpeakJetSynth::RATE / 1000.0), share(0.85));
+    if(!velarBar(code))
+      bar.level[1] = 0.0;
+    bar.level[2] = 0.0;
+    const size_t held =
+        std::min(SZT(barMs(code) * timing * SpeakJetSynth::RATE / 1000.0), share(0.85));
     points = {{0, regs(bar), 0, true},
               {held, regs(end), 0, true}};
   }
   else if(finalStop(code))
   {
     // Out of the vowel, then the voice bar fading
+    const bool velar = code == 180 || code == 181;
     bar = {{VOICE_BAR_HZ, sound.start.hz[1], sound.start.hz[2]},
-           {FINAL_BAR_LEVEL, 0.0, 0.0}, 0.0};
+           {velar ? VELAR_FINAL_BAR_LEVEL : FINAL_BAR_LEVEL, 0.0, 0.0}, 0.0};
     points = {{0, regs(sound.start), 0, false},
               {share(RELEASE_AT), regs(bar), 0, true}};
   }
@@ -519,14 +540,17 @@ void SpeakJetMSA::expand(int code, double ms, bool rearticulate, int into, doubl
               {share(END_STATE_AT), regs(end), 0, false}};
 
   // Running straight into a stop, its entry slide ends the sound
-  Registers to;
+  const auto steps = entry(code, into, timing);
   size_t slide = 0;
-  if(entry(code, into, to, slide))
-  {
-    const size_t from = total - std::min(total, slide);
-    if(from > points.back().from)
-      points.push_back({from, to, 0, false});
-  }
+  for(const auto& step: steps)
+    slide += step.samples;
+  size_t from = total - std::min(total, slide);
+  if(!steps.empty() && from > points.back().from)
+    for(const auto& step: steps)
+    {
+      points.push_back({from, step.target, step.span, false});
+      from += step.samples;
+    }
 
   for(size_t i = 0; i < points.size(); ++i)
   {
@@ -569,7 +593,9 @@ double SpeakJetMSA::extra(int code, const Next& next, double& closureMs) const
   double extraMs = SpeakJetTables::joinMs(U8(code), to) * speedTiming;
   if(leadsIn(code, to))
     extraMs -= NASAL_LEAD_MS * speedTiming;
-  const double closure = BSPF::clamp(extraMs, 0.0, SpeakJetTables::closureMs(to) * speedTiming);
+  // A held bar follows a voiced sound with no silence between them
+  const double closure = holdsBar(to) && voicedThrough(code) ? 0.0
+      : BSPF::clamp(extraMs, 0.0, SpeakJetTables::closureMs(to) * speedTiming);
   closureMs = closure * stretch(next.scalePct, next.speed);
   return extraMs - closure;
 }
@@ -591,24 +617,46 @@ double SpeakJetMSA::joinedMs(int code, const Next& next, double ms, double& clos
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SpeakJetMSA::entry(int code, int into, Registers& to, size_t& samples) const
+vector<SpeakJetMSA::EntryStep> SpeakJetMSA::entry(int code, int into, double timing) const
 {
   // The oscillators slide at the ordinary rate to the stop's entry state
   const State end = endState(code);
-  for(const auto& stop: ENTRIES)
-    if(stop.code == into)
-    {
-      const double scale = slewScale(mySpeed);
-      double slideMs = 0.0;
-      for(size_t k = 0; k < 3; ++k)
-        if(end.hz[k] > 0.0 && end.level[k] > 0.0)
-          slideMs = std::max(slideMs, std::abs(stop.hz[k] - end.hz[k]) /
-                                      (SLEW_HZ_PER_MS[k] * scale));
-      to = registersFor({stop.hz, end.level, end.pedestal}, code, myBend);
-      samples = SZT(slideMs * SpeakJetSynth::RATE / 1000.0);
-      return true;
-    }
-  return false;
+  const auto* stop = std::ranges::find(ENTRIES, into, &Release::code);
+  const bool known = stop != ENTRIES.end();
+  if(!known && !holdsBar(into))
+    return {};
+
+  double slideMs = 0.0;
+  if(known)
+  {
+    const double scale = slewScale(mySpeed);
+    for(size_t k = 0; k < 3; ++k)
+      if(end.hz[k] > 0.0 && end.level[k] > 0.0)
+        slideMs = std::max(slideMs, std::abs(stop->hz[k] - end.hz[k]) /
+                                    (SLEW_HZ_PER_MS[k] * scale));
+  }
+  const State at{known ? stop->hz : end.hz, end.level, end.pedestal};
+  const auto slide = SZT(slideMs * SpeakJetSynth::RATE / 1000.0);
+  if(!holdsBar(into))
+    return {{registersFor(at, code, myBend), slide, 0}};
+
+  // Before a held bar the volumes reach the bar's as it starts, the slide's
+  // last part with them
+  State bar = SOUNDS[SZT(into - SpeakJet::FIRST_SOUND)].start;
+  bar.level[1] = bar.level[2] = 0.0;
+  const Registers held = registersFor(bar, into, myBend);
+  Registers faded = registersFor(at, code, myBend);
+  for(size_t k = 0; k < 3; ++k)
+    faded.volume[k] = held.volume[k];
+  const auto fade = SZT(BAR_FADE_MS * timing * SpeakJetSynth::RATE / 1000.0);
+  if(slide <= fade)
+    return {{faded, fade, fade}};
+
+  const double part = DBL(slide - fade) / DBL(slide);
+  State via = at;
+  for(size_t k = 0; k < 3; ++k)
+    via.hz[k] = end.hz[k] + part * (at.hz[k] - end.hz[k]);
+  return {{registersFor(via, code, myBend), slide - fade, slide - fade}, {faded, fade, fade}};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -634,19 +682,26 @@ void SpeakJetMSA::join()
   last.samples = std::max(least, SZT(std::max(0.0, samples)));
 
   // Into a stop, the entry slide ends the sound
-  Registers to;
+  const auto steps = last.kind == Kind::Voiced
+      ? entry(myJoin.code, next.code, last.timing) : vector<EntryStep>{};
   size_t slide = 0;
-  if(last.kind == Kind::Voiced && entry(myJoin.code, next.code, to, slide) &&
-     slide > 0 && last.samples >= least + slide)
+  for(const auto& step: steps)
+    slide += step.samples;
+  if(slide > 0 && last.samples >= least + slide)
   {
     Segment tail = last;
-    tail.samples = slide;
-    tail.target = to;
-    tail.span = 0;
     tail.jump = false;
     last.samples -= slide;
     last.last = false;
-    mySegments.insert(mySegments.begin() + I32(at) + 1, tail);
+    size_t to = at;
+    for(size_t i = 0; i < steps.size(); ++i)
+    {
+      tail.samples = steps[i].samples;
+      tail.target = steps[i].target;
+      tail.span = steps[i].span;
+      tail.last = i + 1 == steps.size();
+      mySegments.insert(mySegments.begin() + I32(++to), tail);
+    }
   }
   handOver(myJoin.code, next.code, myJoin.after);
 }
@@ -806,6 +861,10 @@ void SpeakJetMSA::begin()
     return;
   }
 
+  // A jump still waiting for its period when its segment ends is taken now
+  if(myJumpWait && myLive)
+    myRegs = myTo;
+
   // Voicing from nothing starts at its state, rising from silence if cold as
   // a stop's noise before it falls away; running on, it slides there
   myJumpWait = false;
@@ -830,8 +889,9 @@ void SpeakJetMSA::begin()
     myCold = myColdNext;
     myColdNext = false;
     // (its own noise with it, unless a noise before carries over); out of a
-    // closure a voiced fricative rises the same way
-    const bool rises = myCold || (myLastKind == Kind::Closure && s.code >= 165 && s.code <= 169);
+    // closure a voiced fricative rises the same way; a held bar does not
+    const bool rises = (myCold && !holdsBar(s.code) && !velarBar(s.code)) ||
+                       (myLastKind == Kind::Closure && s.code >= 165 && s.code <= 169);
     if(rises)
       for(size_t k = 0; k < 5; ++k)
         myFrom.volume[k] = 0.0;

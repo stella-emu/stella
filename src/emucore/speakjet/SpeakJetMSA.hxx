@@ -180,11 +180,19 @@ class SpeakJetMSA : public SpeakJet::Sink
     */
     double joinedMs(int code, const Next& next, double ms, double& closureMs);
 
+    // One slide of a sound's way into a stop: its length, the least it may take
+    struct EntryStep
+    {
+      SpeakJetSynth::Registers target;
+      size_t samples{0};
+      size_t span{0};
+    };
+
     /**
-      Running straight into the stop 'into', the registers 'code' slides to
-      and the slide's length; false if 'into' has no entry state.
+      Running straight into the stop 'into', the slides that end 'code';
+      none if 'into' has no entry state.
     */
-    bool entry(int code, int into, SpeakJetSynth::Registers& to, size_t& samples) const;
+    std::vector<EntryStep> entry(int code, int into, double timing) const;
 
     /**
       The open join of the sound being said, once the chip can see what comes

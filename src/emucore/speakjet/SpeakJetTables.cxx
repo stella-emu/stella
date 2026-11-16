@@ -776,7 +776,7 @@ namespace {
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // RR IYRR EYRR AXRR AWRR OWRR EYIY OHIY OWIY OHIH
        0,    0,    0,    0,    0,    0,    0,   20,    0,    0,   // IYEH EHLL IYUW AXUW IHWW AYWW OWWW JH VV ZZ
        0,    0,    0,    5,   10,    5,    0,    0,   10,   10,   // ZH DH BE BO EB OB DE DO ED OD
-      10,   15,   15,   10,   20,    0,    0,    0,    0,    0,   // GE GO EG OG CH HE HO WH FF SE
+      15,   16,   15,   10,   20,    0,    0,    0,    0,    0,   // GE GO EG OG CH HE HO WH FF SE
        0,    0,    0,   20,   10,   30,   40,   40,   25,   25,   // SO SH TH TT TU TS KE KO EK OK
       30,   30,    0,    0,    0,    0,    0,    0,    0,    0,   // PE PO R0 R1 R2 R3 R4 R5 R6 R7
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // R8 R9 A0 A1 A2 A3 A4 A5 A6 A7
