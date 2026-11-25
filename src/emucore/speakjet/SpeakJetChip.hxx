@@ -150,7 +150,7 @@ namespace SpeakJetChip {
   constexpr std::array<double, 3> SLEW_HZ_PER_MS = { 12, 16.6, 20 };
   constexpr double PITCH_SLEW_HZ_PER_TICK = 4.04;
 
-  // The fundamental each Pitch setting gives, from 32 up: (Pitch, Hz)
+  // The fundamental each Pitch setting gives an effect, from 32 up: (Pitch, Hz)
   constexpr BSPF::array2D<double, 26, 2> PITCH_HZ = {{
     {{ 32, 32.1884 }},
     {{ 34, 34.2338 }},
@@ -188,6 +188,13 @@ namespace SpeakJetChip {
   constexpr double COLD_GLIDE_MS = 25.0;
   constexpr double END_FADE_MS = 36.0;
   constexpr double END_FALL_TO = 0.885;
+
+  // Voicing out of a voiceless stop's noise takes over in this many ticks
+  constexpr double STOP_VOICING_TICKS = 8.0;
+
+  // A voiceless stop's formants leave its release this many ticks into it,
+  // the voice joining their glide where it has got to
+  constexpr double RELEASE_DEPART_TICKS = 20.0;
 
   // Where in a sound its end state takes over from its start state
   constexpr double END_STATE_AT = 0.3;
@@ -238,17 +245,23 @@ namespace SpeakJetChip {
   constexpr double HALF_BASE = 0.5037;
   constexpr double HALF_DEPTH = 0.2431;
 
-  // Where a voiced stop's release hands the voice on, for the stops whose
-  // release is not their end state
+  // Where a release hands the voice on: an initial voiced stop's end, a final
+  // one's after its bar, a voiceless sound's (a negative Hz keeps the vowel's)
   struct Release {
     int code;
     std::array<double, 3> hz;
   };
-  constexpr std::array<Release, 4> RELEASES = {{
-    { 170, {346.0, 1886.6, 2305.9} },  // BE
-    { 174, {254.0, 2083.5, 2674.0} },  // DE
+  constexpr std::array<Release, 10> RELEASES = {{
+    { 170, {346.0, 1766.1, 2305.9} },  // BE
+    { 172, {-1.0, 1790.0, -1.0} },  // EB
+    { 174, {254.0, 1938.4, 2674.0} },  // DE
+    { 176, {-1.0, 1930.0, -1.0} },  // ED
     { 178, {334.7, 1908.7, 2501.1} },  // GE
     { 179, {277.3, 1407.0, 2060.6} },  // GO
+    { 180, {-1.0, 2050.0, -1.0} },  // EG
+    { 185, {430.0, 930.0, -1.0} },  // WH
+    { 186, {530.0, 1580.0, -1.0} },  // FF
+    { 198, {312.8, 1963.0, -1.0} },  // PE
   }};
 
   // Where a sound's oscillators slide to as it runs straight into one of these
@@ -496,7 +509,7 @@ namespace SpeakJetChip {
   // past Speed 127; Slow makes it half as long again, short of a fixed part
   constexpr uInt8 FAST_SPEED_BASE = 68;
   constexpr double SLOW_TICK_SCALE = 1.5;
-  constexpr double SLOW_TICK_FIXED_MS = 0.27;
+  constexpr double SLOW_TICK_FIXED_MS = 0.20;
 
   // The ticks at an allophone's end that Fast and Slow leave plain
   constexpr double SPEECH_LAST_TICKS = 10.3;

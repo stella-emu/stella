@@ -157,9 +157,14 @@ class SpeakJetMSA : public SpeakJet::Sink
     static double stretch(uInt32 scalePct, uInt8 speed);
 
     /**
-      The fundamental a Pitch setting gives.
+      The fundamental a Pitch setting gives an effect, from the table.
     */
     static double pitchHz(uInt8 setting);
+
+    /**
+      The fundamental a Pitch setting gives speech: a whole number of ticks.
+    */
+    static double voiceHz(uInt8 setting);
 
     /**
       A voiced sound's segments, 'ms' long; a held repeat only carries on
@@ -207,9 +212,10 @@ class SpeakJetMSA : public SpeakJet::Sink
     void handOver(int code, int next, size_t after);
 
     /**
-      Silence 'ms' long, or a stop's closure, and voicing stops.
+      Silence 'ms' long, or a stop's closure, and voicing stops; 'code' is
+      the sound whose time it is, if any.
     */
-    void quiet(double ms, Kind kind = Kind::Quiet);
+    void quiet(double ms, Kind kind = Kind::Quiet, int code = -1);
 
     /**
       A voiceless sound or an effect, 'ms' long; an effect steps its program
@@ -237,6 +243,9 @@ class SpeakJetMSA : public SpeakJet::Sink
     // Whether the front segment's noise runs straight on into more noise
     bool noiseRunsOn() const;
 
+    // Whether voicing follows the front segment directly, no closure between
+    bool voicingFollows() const;
+
     // The index of the front sound's last segment, the queue's size if not queued
     size_t lastOfSound() const;
 
@@ -254,14 +263,20 @@ class SpeakJetMSA : public SpeakJet::Sink
 
     std::deque<Segment> mySegments;
 
-    // What the segment before the front one made
+    // What the segment before the front one made, its sound, and how long a
+    // voiceless stop there ran past its release
     Kind myLastKind{Kind::Quiet};
+    int myLastSound{-1};
+    size_t myPastRelease{0};
 
     // Samples into the front segment, the registers now, the slide they are
     // on and its length
     size_t myPos{0};
     SpeakJetSynth::Registers myRegs, myFrom, myTo;
     size_t mySlide{1};
+
+    // The formants' own slide length after a voiceless release (0 = the slide's)
+    size_t myGlide{0};
 
     // The fundamental, and where it stood as the voiced slide began
     double myF0{0.0}, myF0From{0.0};
