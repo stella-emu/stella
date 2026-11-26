@@ -769,7 +769,7 @@ namespace {
     NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR,   // D8 D9 D10 D11 M0 M1 M2
   }};
 
-  // The near-silent closure before a stop's burst, in ms
+  // The near-silent closure before a stop's burst, in ms; EK's is in ticks
   constexpr std::array<uInt8, 127> ourClosureMs = {{
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // IY IH EY EH AY AX UX OH AW OW
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // UH UW MM NE NO NGE NGO LE LO WW
@@ -777,10 +777,10 @@ namespace {
        0,    0,    0,    0,    0,    0,    0,   20,    0,    0,   // IYEH EHLL IYUW AXUW IHWW AYWW OWWW JH VV ZZ
        0,    0,    0,    5,   10,    5,    0,    0,   10,   10,   // ZH DH BE BO EB OB DE DO ED OD
       15,   16,   15,   10,   20,    0,    0,    0,    0,    0,   // GE GO EG OG CH HE HO WH FF SE
-       0,    0,    0,   20,   10,   30,   40,   40,   25,   25,   // SO SH TH TT TU TS KE KO EK OK
+       0,    0,    0,   20,   10,   30,   40,   40,    0,   25,   // SO SH TH TT TU TS KE KO EK OK
       30,   30,    0,    0,    0,    0,    0,    0,    0,    0,   // PE PO R0 R1 R2 R3 R4 R5 R6 R7
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // R8 R9 A0 A1 A2 A3 A4 A5 A6 A7
-       0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // A8 A9 B0 B1 B2 B3 B4 B5 B6 B7
+ 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // A8 A9 B0 B1 B2 B3 B4 B5 B6 B7
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // B8 B9 C0 C1 C2 C3 C4 C5 C6 C7
        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,   // C8 C9 D0 D1 D2 D3 D4 D5 D6 D7
        0,    0,    0,    0,    0,    0,    0    // D8 D9 D10 D11 M0 M1 M2
@@ -919,10 +919,9 @@ double SpeakJetTables::closureMs(uInt8 code)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SpeakJetTables::quietPadMs(uInt8 code)
 {
-  // EK, OK, WH, HO and HE, whose measured lengths stop short at their quiet ends
+  // OK, WH, HO and HE, whose measured lengths stop short at their quiet ends
   switch(code)
   {
-    case 196: return 92;
     case 197: return 58;
     case 185: return 60;
     case 184: return 28;

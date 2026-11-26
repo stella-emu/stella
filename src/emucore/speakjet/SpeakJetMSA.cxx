@@ -96,6 +96,20 @@ namespace {
   // Voicing after a voiceless stop starts this long before its noise ends
   constexpr double HAND_OVER_MS = 10.0;
 
+  // EK between sounds, in Speed ticks: a silent closure, its noise, silence;
+  // no join on either side moves its time or the sound before's
+  constexpr int EK = 196;
+  constexpr double EK_CLOSURE_TICKS = 17.0;
+  constexpr double EK_TAIL_TICKS = 4.0;
+
+  // A stop's closure at a Speed, stretched by Fast and Slow; EK's in ticks
+  double closureOf(int code, uInt8 speed, double stretch)
+  {
+    return code == EK
+        ? EK_CLOSURE_TICKS * TICK_MS[std::min(speed, SpeakJet::MAX_SPEED)] * stretch
+        : SpeakJetTables::closureMs(U8(code)) * (stretch * SpeakJetTables::speedFactor(speed));
+  }
+
   // How far a join may stretch or shrink the sound before it
   constexpr double JOIN_MIN_SCALE = 0.5;
   constexpr double JOIN_MAX_SCALE = 2.0;
@@ -463,7 +477,7 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
 
   // A pause does not take away the closure of a stop after it
   if(myAfterPause)
-    quiet(SpeakJetTables::closureMs(code) * timing, Kind::Closure);
+    quiet(closureOf(code, mySpeed, fastSlow), Kind::Closure);
   myAfterPause = false;
 
   // A stop opens with the closure the sound before it left room for
@@ -486,9 +500,12 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
 
   // Between two sounds a quiet code takes time its sound does not have; a
   // voiceless fricative's hiss runs on through it
-  if(flowing && SpeakJetTables::quietPadMs(code) > 0)
+  const double padMs = code == EK
+      ? EK_TAIL_TICKS * TICK_MS[std::min(mySpeed, SpeakJet::MAX_SPEED)] * fastSlow
+      : DBL(SpeakJetTables::quietPadMs(code)) * timing;
+  if(flowing && padMs > 0.0)
   {
-    quiet(DBL(SpeakJetTables::quietPadMs(code)) * timing, Kind::Quiet, code);
+    quiet(padMs, Kind::Quiet, code);
     if(voicelessFricative(code) && sound > before && mySegments.size() > sound &&
        mySegments[sound - 1].kind == Kind::Noise)
     {
@@ -622,6 +639,13 @@ double SpeakJetMSA::stretch(uInt32 scalePct, uInt8 speed)
 double SpeakJetMSA::extra(int code, const Next& next, double& closureMs) const
 {
   const auto to = U8(next.code);
+  // EK takes no join either side: it brings its own closure, and a stop
+  // after it keeps all of its own
+  if(code == EK || to == EK)
+  {
+    closureMs = closureOf(to, next.speed, stretch(next.scalePct, next.speed));
+    return 0.0;
+  }
   // Fast and Slow on the incoming sound stretch only its closure
   const double speedTiming = SpeakJetTables::speedFactor(next.speed);
   double extraMs = SpeakJetTables::joinMs(U8(code), to) * speedTiming;
