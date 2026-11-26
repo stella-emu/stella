@@ -148,6 +148,8 @@
     - 'runTo' and 'stepWhile' can now be rewound/unwound
     - 'timer' now reports invalid arguments, instead of silently using
       an invalid bank
+    - 'runTo' now reports the correct instruction count, and 'runTo' /
+      'runToPc' can be rewound even when the target wasn't found
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

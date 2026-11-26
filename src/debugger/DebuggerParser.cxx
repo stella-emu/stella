@@ -2115,6 +2115,7 @@ void DebuggerParser::executeRunTo()
   bool done = false;
   do {
     debugger.step(false);
+    ++count;
 
     // Update romlist to point to current PC
     const int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
@@ -2123,16 +2124,16 @@ void DebuggerParser::executeRunTo()
 
     // Update the progress bar
     progress.incProgress();
-  } while(!done && ++count < max_iterations && !progress.isCancelled());
+  } while(!done && count < max_iterations && !progress.isCancelled());
 
   progress.close();
 
+  // Emulation advanced either way
+  debugger.addState(std::format("RunTo {}", target));
+
   if(done)
-  {
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "found {} in {} disassembled instructions", target, count);
-    debugger.addState(std::format("RunTo {}", target));
-  }
   else
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "{} not found in {} disassembled instructions", target, count);
@@ -2169,12 +2170,12 @@ void DebuggerParser::executeRunToPc()
 
   progress.close();
 
+  // Emulation advanced either way
+  debugger.addState(std::format("RunTo PC @ {}", Base::hex4(args[0])));
+
   if(done)
-  {
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "Set PC to ${} in {} instructions", Base::hex4(args[0]), count);
-    debugger.addState(std::format("RunTo PC @ {}", Base::hex4(args[0])));
-  }
   else
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "PC ${:04x} not reached or found in {} instructions",
