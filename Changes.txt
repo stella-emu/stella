@@ -150,6 +150,11 @@
       an invalid bank
     - 'runTo' now reports the correct instruction count, and 'runTo' /
       'runToPc' can be rewound even when the target wasn't found
+    - Errors in debugger scripts are now listed (with line numbers) in
+      the script's summary, instead of only in the dbg.logexec log
+    - Debugger scripts run at startup (autoexec, romname.script,
+      -dbg.script) now name their 'dump'/'saveSnap' files with a
+      timestamp, instead of no prefix
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

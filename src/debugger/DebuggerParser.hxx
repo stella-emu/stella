@@ -54,8 +54,10 @@ class DebuggerParser
     /** Run the given command, and return the result */
     string run(string_view command);
 
-    /** Execute parser commands given in 'file' */
-    string exec(const FSNode& file, StringList* history = nullptr);
+    /** Execute parser commands given in 'file'; files written by dump and
+        saveSnap are named with 'prefix', or a timestamp when it's empty */
+    string exec(const FSNode& file, StringList* history = nullptr,
+                string_view prefix = {});
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
@@ -67,9 +69,25 @@ class DebuggerParser
     /** String representation of all watches currently defined */
     string showWatches();
 
-    /** Prefix msg with the PromptWidget color-red control byte */
+    /** Prefix msg with the PromptWidget color-red control byte; for
+        highlighting only, use error() or warning() for messages */
     static string red(string_view msg = {}) {
       return static_cast<char>(kDbgColorRed & 0xffU) + string{msg};
+    }
+    /** Control byte marking an error; PromptWidget shows it as red, and
+        exec() reports any command whose result contains it as failed */
+    static constexpr char kErrorMark{'\x1b'};
+    /** Prefix msg with the error control byte */
+    static string error(string_view msg) {
+      return kErrorMark + string{msg};
+    }
+    /** A warning is shown in red, but doesn't mark the command as failed */
+    static string warning(string_view msg) {
+      return red(msg);
+    }
+    /** Whether a command result contains an error */
+    static bool hasError(string_view result) {
+      return result.find(kErrorMark) != string_view::npos;
     }
     /** Prefix msg with the PromptWidget inverse-video control byte (ASCII DEL, 0x7f) */
     static string inverse(string_view msg = {}) {

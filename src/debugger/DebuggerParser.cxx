@@ -94,7 +94,7 @@ string DebuggerParser::run(string_view command)
   if(it == commands.end())
   {
     restoreCtx();
-    return red("No such command (try \"help\")");
+    return error("No such command (try \"help\")");
   }
 
   const int i = I32(it - commands.begin());
@@ -115,74 +115,104 @@ string DebuggerParser::run(string_view command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::exec(const FSNode& file, StringList* history)
+string DebuggerParser::exec(const FSNode& file, StringList* history,
+                            string_view prefix)
 {
   if(execDepth >= kMaxExecDepth)
-    return red(std::format("exec nesting too deep (max {})", kMaxExecDepth));
+    return error(std::format("exec nesting too deep (max {})", kMaxExecDepth));
 
   if(!file.exists())
-    return red(std::format("script file '{}' not found",
-                           file.getShortPath()));
+    return error(std::format("script file '{}' not found", file.getShortPath()));
 
   std::stringstream in;
   try        { file.read(in); }
-  catch(...) { return red(std::format("script file '{}' not found",
-                                      file.getShortPath())); }
+  catch(...) { return error(std::format("script file '{}' not found",
+                                        file.getShortPath())); }
+
+  // Restored afterwards, so a nested exec doesn't change the outer prefix
+  string outerPrefix = std::move(execPrefix);
+  execPrefix = prefix.empty()
+    ? std::format("{:08x}", U32(TimerManager::getTicks() / 1000))
+    : string{prefix};
 
   const bool logExec = settings.getBool("dbg.logexec");
-  string buf;     buf.reserve(256);
   string logBuf;  logBuf.reserve(4096);  // log output tends to be large
-  int count = 0;
+  string errors;
+  int count = 0, failed = 0, lineNum = 0;
 
   string command;
   while(getline(in, command))
   {
+    ++lineNum;
+
     // Skip empty/comment lines
     const string_view cmd = BSPF::trim(command);
     if(cmd.empty() || cmd[0] == ';')
       continue;
 
     ++execDepth;
+    const string result = run(cmd);
+    --execDepth;
+
     if(logExec)
     {
       logBuf += "> ";
       logBuf += cmd;
       logBuf += '\n';
-      const string result = run(cmd);
       if(!result.empty() && result != kExitDebugger && result != kNoPrompt)
       {
         logBuf += result;
         logBuf += '\n';
       }
     }
-    else
-      run(cmd);
-    --execDepth;
+
+    // Other output is only seen in the log, so list each error in the
+    // summary (a nested exec's errors are listed in its own summary)
+    if(hasError(result))
+    {
+      ++failed;
+      for(auto pos = result.find(kErrorMark); pos != string::npos;
+          pos = result.find(kErrorMark, pos + 1))
+      {
+        const auto end = std::min(result.find('\n', pos), result.size());
+        const string_view msg = string_view{result}.substr(pos + 1, end - pos - 1);
+        errors += '\n';
+        errors += error(std::format("line {}: {}: {}", lineNum, cmd, msg));
+      }
+    }
 
     if(history != nullptr)
       history->emplace_back(cmd);
     ++count;
   }
+  execPrefix = std::move(outerPrefix);
 
   // Write execution log if enabled
   if(logExec && !logBuf.empty())
   {
     const FSNode logNode(file.getPath() + ".output.txt");
     try        { logNode.write(logBuf); }
-    catch(...) { buf += red(std::format("\nUnable to write exec output to file '{}'\n",
-                                        logNode.getShortPath())); }
+    catch(...)
+    {
+      errors += '\n';
+      errors += error(std::format("Unable to write exec output to file '{}'",
+                                  logNode.getShortPath()));
+    }
   }
 
-  std::format_to(std::back_inserter(buf), "\nExecuted {} {} from \"{}\"",
-                 count, count != 1 ? "commands" : "command", file.getShortPath());
-  return buf;
+  string buf = std::format("\nExecuted {} {} from \"{}\"",
+                           count, count != 1 ? "commands" : "command",
+                           file.getShortPath());
+  if(failed)
+    std::format_to(std::back_inserter(buf), ", {} failed", failed);
+  return buf + errors;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 {
   commandResult.str("");
-  commandResult << red(errorMsg);
+  commandResult << error(errorMsg);
   if(!commands[command].example.empty())
     commandResult << "\nExample: " << commands[command].example;
 }
@@ -599,7 +629,7 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
 {
   if(idx >= debugger.m6502().numTimers())
   {
-    commandResult << red("invalid timer");
+    commandResult << error("invalid timer");
     return;
   }
 
@@ -903,7 +933,7 @@ string DebuggerParser::saveScriptFile(string file)
   }
   catch(...)
   {
-    return std::format("Unable to save script to {}", node.getShortPath());
+    return error(std::format("Unable to save script to {}", node.getShortPath()));
   }
   return std::format("saved {} OK", node.getShortPath());
 }
@@ -919,7 +949,7 @@ void DebuggerParser::saveDump(const FSNode& node, const std::ostringstream& out,
   }
   catch(...)
   {
-    result.str(red("Unable to append dump to file " + node.getShortPath()));
+    result.str(error("Unable to append dump to file " + node.getShortPath()));
   }
 }
 
@@ -933,7 +963,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
   }
   if(args[1] < args[0])
   {
-    commandResult << red("start address must be <= end address");
+    commandResult << error("start address must be <= end address");
     return;
   }
 
@@ -1023,7 +1053,7 @@ void DebuggerParser::executeBreak()
     allBanks = (bank == 0xff);
     if(bank >= romBankCount && !allBanks)
     {
-      commandResult << red("invalid bank");
+      commandResult << error("invalid bank");
       return;
     }
   }
@@ -1072,7 +1102,7 @@ void DebuggerParser::executeBreakIf()
   auto expr = YaccParser::parse(condition);
   if(!expr)
   {
-    commandResult << red("invalid expression");
+    commandResult << error("invalid expression");
     return;
   }
 
@@ -1149,10 +1179,10 @@ void DebuggerParser::executeCheat()
     if(debugger.myOSystem.cheat().add("DBG", cheat))
       commandResult << "cheat code " << cheat << " enabled\n";
     else
-      commandResult << red("invalid cheat code ") << cheat << '\n';
+      commandResult << error("invalid cheat code ") << cheat << '\n';
   }
 #else
-  commandResult << red("Cheat support not enabled\n");
+  commandResult << error("Cheat support not enabled\n");
 #endif
 }
 
@@ -1277,7 +1307,7 @@ void DebuggerParser::executeDefine()
   if(debugger.cartDebug().getAddress(argStrings[0]) != -1)
     commandResult << "warning: label '" << argStrings[0] << "' already defined\n";
   if(!debugger.cartDebug().addLabel(argStrings[0], args[1]))
-    commandResult << red("invalid address");
+    commandResult << error("invalid address");
   else
     debugger.rom().invalidate();
 }
@@ -1289,7 +1319,7 @@ void DebuggerParser::executeDelBreakIf()
   if(debugger.m6502().delCondBreak(args[0]))
     commandResult << "removed breakIf " << Base::toString(args[0]);
   else
-    commandResult << red("no such breakIf");
+    commandResult << error("no such breakIf");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1299,7 +1329,7 @@ void DebuggerParser::executeDelFunction()
   if(debugger.delFunction(argStrings[0]))
     commandResult << "removed function " << argStrings[0];
   else
-    commandResult << "function " << argStrings[0] << " built-in or not found";
+    commandResult << error(std::format("function {} built-in or not found", argStrings[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1309,7 +1339,7 @@ void DebuggerParser::executeDelSaveStateIf()
   if(debugger.m6502().delCondSaveState(args[0]))
     commandResult << "removed saveStateIf " << Base::toString(args[0]);
   else
-    commandResult << red("no such saveStateIf");
+    commandResult << error("no such saveStateIf");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1320,7 +1350,7 @@ void DebuggerParser::executeDelTimer()
   if(debugger.m6502().delTimer(index))
     commandResult << "removed timer " << Base::toString(index);
   else
-    commandResult << red("no such timer");
+    commandResult << error("no such timer");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1332,7 +1362,7 @@ void DebuggerParser::executeDelTrap()
 
   if(std::cmp_greater_equal(index, traps.size()) || index < 0)
   {
-    commandResult << red("no such trap");
+    commandResult << error("no such trap");
     return;
   }
 
@@ -1354,7 +1384,7 @@ void DebuggerParser::executeDelWatch()
   const int which = args[0] - 1;
   if(which < 0 || std::cmp_greater_equal(which, myWatches.size()))
   {
-    commandResult << red("no such watch");
+    commandResult << error("no such watch");
     return;
   }
 
@@ -1403,7 +1433,7 @@ void DebuggerParser::executeDump()
   }
   if(argCount > 1 && args[1] < args[0])
   {
-    commandResult << red("start address must be <= end address");
+    commandResult << error("start address must be <= end address");
     return;
   }
 
@@ -1420,12 +1450,12 @@ void DebuggerParser::executeDump()
 
   if(args[2] < 1 || args[2] > 7)
   {
-    commandResult << red("dump flags must be 1..7");
+    commandResult << error("dump flags must be 1..7");
     return;
   }
   if(argCount == 4 && argStrings[3] != "?")
   {
-    commandResult << red("browser dialog parameter must be '?'");
+    commandResult << error("browser dialog parameter must be '?'");
     return;
   }
 
@@ -1536,17 +1566,9 @@ void DebuggerParser::executeExec()
   if(!node.exists())
     node = FSNode(debugger.myOSystem.userDir().getPath() + file);
 
-  // Restored afterwards, so a nested exec doesn't change the outer prefix
-  string outerPrefix = std::move(execPrefix);
-  if(argCount == 2)
-    execPrefix = argStrings[1];
-  else
-    execPrefix = std::format("{:08x}",
-                             U32(TimerManager::getTicks() / 1000));
-
   StringList history;
-  const string execResult = exec(node, &history);
-  execPrefix = std::move(outerPrefix);
+  const string execResult = exec(node, &history,
+                                 argCount == 2 ? argStrings[1] : string_view{});
   commandResult.str("");
   commandResult << execResult;
 
@@ -1583,7 +1605,7 @@ void DebuggerParser::executeFunction()
   }
   if(args[0] >= 0)
   {
-    commandResult << red("name already in use");
+    commandResult << error("name already in use");
     return;
   }
 
@@ -1591,7 +1613,7 @@ void DebuggerParser::executeFunction()
   auto expr = YaccParser::parse(exprStr);
   if(!expr)
   {
-    commandResult << red("invalid expression");
+    commandResult << error("invalid expression");
     return;
   }
 
@@ -1639,7 +1661,7 @@ void DebuggerParser::executeHelp()
         commandResult << "Example: " << it->example;
     }
     else
-      commandResult << red("no such command");
+      commandResult << error("no such command");
   }
 }
 
@@ -1922,7 +1944,7 @@ void DebuggerParser::executeLoadState()
   if(args[0] >= 0 && args[0] <= 9)
     debugger.loadState(args[0]);
   else
-    commandResult << red("invalid slot (must be 0-9)");
+    commandResult << error("invalid slot (must be 0-9)");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2059,7 +2081,7 @@ void DebuggerParser::executeRom()
   {
     if(!debugger.patchROM(addr++, args[i]))
     {
-      commandResult << red("patching ROM unsupported for this cart type");
+      commandResult << error("patching ROM unsupported for this cart type");
       return;
     }
   }
@@ -2347,7 +2369,7 @@ void DebuggerParser::executeSaveState()
   if(args[0] >= 0 && args[0] <= 9)
     debugger.saveState(args[0]);
   else
-    commandResult << red("invalid slot (must be 0-9)");
+    commandResult << error("invalid slot (must be 0-9)");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2368,7 +2390,7 @@ void DebuggerParser::executeSaveStateIf()
   auto expr = YaccParser::parse(condition);
   if(!expr)
   {
-    commandResult << red("invalid expression");
+    commandResult << error("invalid expression");
     return;
   }
 
@@ -2410,7 +2432,7 @@ void DebuggerParser::executeStepWhile()
   auto expr = YaccParser::parse(buildExprStr());
   if(!expr)
   {
-    commandResult << red("invalid expression");
+    commandResult << error("invalid expression");
     return;
   }
   int ncycles = 0;
@@ -2529,7 +2551,7 @@ void DebuggerParser::executeTimer()
       }
       if(std::cmp_greater_equal(args[i], romBankCount))
       {
-        commandResult << red("invalid bank");
+        commandResult << error("invalid bank");
         return;
       }
       bank[numBanks++] = args[i];
@@ -2668,7 +2690,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
     if(!found)
     {
-      commandResult << red("invalid expression");
+      commandResult << error("invalid expression");
       return;
     }
   }
@@ -2693,12 +2715,12 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
 
   if(begin > 0xFFFF || end > 0xFFFF)
   {
-    commandResult << red("invalid word argument(s) (must be 0-$ffff)");
+    commandResult << error("invalid word argument(s) (must be 0-$ffff)");
     return;
   }
   if(begin > end)
   {
-    commandResult << red("start address must be <= end address");
+    commandResult << error("start address must be <= end address");
     return;
   }
 
@@ -2749,7 +2771,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
   auto expr = YaccParser::parse(condition);
   if(!expr)
   {
-    commandResult << red("invalid expression");
+    commandResult << error("invalid expression");
     return;
   }
 
@@ -2768,7 +2790,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
     const auto i = U32(it - traps.begin());
     if(!debugger.m6502().delCondTrap(i))
     {
-      commandResult << "Internal error! Duplicate trap removal failed!";
+      commandResult << error("Internal error! Duplicate trap removal failed!");
       return;
     }
     commandResult << "removed trap " << Base::toString(i);
@@ -2883,7 +2905,7 @@ void DebuggerParser::executeUndef()
     commandResult << argStrings[0] << " now undefined";
   }
   else
-    commandResult << red("no such label");
+    commandResult << error("no such label");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

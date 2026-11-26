@@ -187,7 +187,7 @@ string CartDebug::toString()
 
     case Base::Fmt::DEFAULT:
     default:
-      return DebuggerParser::red("invalid base, this is a BUG");
+      return DebuggerParser::error("invalid base, this is a BUG");
   }
 
   const auto& state    = static_cast<const CartState&>(getState());
@@ -789,17 +789,17 @@ string CartDebug::loadListFile()
 
   const FSNode lst = myOSystem.romFile().getSiblingNode(".lst");
   if(!lst.isReadable())
-    return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
+    return DebuggerParser::warning("list file \'" + lst.getShortPath() + "\' not found");
 
   std::stringstream in;
   try
   {
     if(lst.read(in) == 0)
-      return DebuggerParser::red("list file '" + lst.getShortPath() + "' not found");
+      return DebuggerParser::warning("list file '" + lst.getShortPath() + "' not found");
   }
   catch(...)
   {
-    return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
+    return DebuggerParser::error("list file '" + lst.getShortPath() + "' not readable");
   }
 
   string line;
@@ -845,7 +845,7 @@ string CartDebug::loadSymbolFile()
 
   const FSNode sym = myOSystem.romFile().getSiblingNode(".sym");
   if(!sym.isReadable())
-    return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
+    return DebuggerParser::warning("symbol file \'" + sym.getShortPath() + "\' not found");
 
   myUserAddresses.clear();
   myUserLabels.clear();
@@ -854,11 +854,11 @@ string CartDebug::loadSymbolFile()
   try
   {
     if(sym.read(in) == 0)
-      return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not found");
+      return DebuggerParser::warning("symbol file '" + sym.getShortPath() + "' not found");
   }
   catch(...)
   {
-    return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
+    return DebuggerParser::error("symbol file '" + sym.getShortPath() + "' not readable");
   }
 
   string label;
@@ -904,7 +904,7 @@ string CartDebug::loadConfigFile()
   const FSNode romNode = myOSystem.romFile().getSiblingNode(".cfg");
   FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
   if(!cfg.isReadable())
-    return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
+    return DebuggerParser::error("config file \'" + cfg.getShortPath() + "\' not found");
 
   std::stringstream in;
   try
@@ -913,7 +913,7 @@ string CartDebug::loadConfigFile()
   }
   catch(...)
   {
-    return "Unable to load directives from " + cfg.getPath();
+    return DebuggerParser::error("Unable to load directives from " + cfg.getPath());
   }
 
   // Erase all previous directives
@@ -1011,7 +1011,7 @@ string CartDebug::loadConfigFile()
 
   string retVal;
   if(myConsole.cartridge().romBankCount() > 1)
-    retVal = DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+    retVal = DebuggerParser::warning("config file for multi-bank ROM not fully supported\n");
   retVal += std::format("config file '{}' loaded OK", cfg.getShortPath());
   return retVal;
 }
@@ -1041,13 +1041,13 @@ string CartDebug::saveConfigFile()
     FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
 
     if(!cfg.getParent().isWritable())
-      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
+      return DebuggerParser::error("config file \'" + cfg.getShortPath() + "\' not writable");
     if(cfg.write(out) == 0)
-      return "Unable to save directives to " + cfg.getShortPath();
+      return DebuggerParser::error("Unable to save directives to " + cfg.getShortPath());
 
     string retVal;
     if(myConsole.cartridge().romBankCount() > 1)
-      retVal += DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+      retVal += DebuggerParser::warning("config file for multi-bank ROM not fully supported\n");
     retVal += "config file '";
     retVal += cfg.getShortPath();
     retVal += "' saved OK";
@@ -1055,7 +1055,7 @@ string CartDebug::saveConfigFile()
   }
   catch(const std::runtime_error& e)
   {
-    return "Unable to save directives: " + string{e.what()};
+    return DebuggerParser::error("Unable to save directives: " + string{e.what()});
   }
 }
 
@@ -1081,7 +1081,7 @@ string CartDebug::saveRom(string path)
   if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
   else
-    return DebuggerParser::red("failed to save ROM");
+    return DebuggerParser::error("failed to save ROM");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1107,7 +1107,7 @@ string CartDebug::saveAccessFile(string path)
   }
   catch(...)
   {
-    return DebuggerParser::red("failed to save access counters file");
+    return DebuggerParser::error("failed to save access counters file");
   }
 }
 
@@ -1138,7 +1138,7 @@ string CartDebug::listConfig(int bank)
 
   if(myConsole.cartridge().romBankCount() > 1)
   {
-    out += DebuggerParser::red("config file for multi-bank ROM not fully supported");
+    out += DebuggerParser::warning("config file for multi-bank ROM not fully supported");
     out += '\n';
   }
 
@@ -1263,7 +1263,7 @@ string CartDebug::getBankDirectives(const BankInfo& info) const
 string CartDebug::accessTypeAsString(uInt16 addr) const
 {
   if(!(addr & 0x1000U))
-    return DebuggerParser::red("type only defined for cart address space");
+    return DebuggerParser::error("type only defined for cart address space");
 
   // The "value type" flags: what a directive/access can be, excluding the
   // REFERENCED/VALID_ENTRY bookkeeping bits and the code/graphics bits.

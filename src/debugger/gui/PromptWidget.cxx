@@ -1328,6 +1328,9 @@ void PromptWidget::putcharIntern(uInt32 c)
                        // don't print or advance cursor
     _textcolor = static_cast<ColorId>((c & 0x7fU) << 1U);
   }
+  else if(c == U8(DebuggerParser::kErrorMark)) {
+    _textcolor = kDbgColorRed;
+  }
   else if(c && c < 0x1e) { // first actual character is large dash
     // More colors (the regular GUI ones)
     _textcolor = static_cast<ColorId>(c + 0x100);
@@ -1444,11 +1447,11 @@ string PromptWidget::saveBuffer(const FSNode& file)
     if(file.write(out) > 0)
       return "saved " + file.getShortPath() + " OK";
     else
-      return "unable to save session";
+      return DebuggerParser::error("unable to save session");
   }
   catch(...)
   {
-    return "unable to save session";
+    return DebuggerParser::error("unable to save session");
   }
 }
 

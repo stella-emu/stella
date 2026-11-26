@@ -480,13 +480,14 @@ string CartDisassemblyWriter::save(string path)
   {
     node.write(out.view());
     if(multiBank && !cart.supportsSaveDisassembly())
-      return DebuggerParser::red(
+      return DebuggerParser::warning(
         std::format("saved {} (multi-bank type not fully supported)",
                     node.getShortPath()));
     return std::format("saved {} OK", node.getShortPath());
   }
   catch(...)
   {
-    return std::format("Unable to save disassembly to {}", node.getShortPath());
+    return DebuggerParser::error(std::format("Unable to save disassembly to {}",
+                                             node.getShortPath()));
   }
 }
