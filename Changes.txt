@@ -155,6 +155,7 @@
     - Debugger scripts run at startup (autoexec, romname.script,
       -dbg.script) now name their 'dump'/'saveSnap' files with a
       timestamp, instead of no prefix
+    - 'exec' now reports a missing script file by the name given
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

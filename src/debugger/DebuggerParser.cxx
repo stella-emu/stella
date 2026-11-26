@@ -1020,10 +1020,10 @@ void DebuggerParser::executeBase()
   commandResult << "default number base set to ";
   switch(Base::format())
   {
-    case Base::Fmt::_2:   commandResult << "#2/bin";        break;
-    case Base::Fmt::_10:  commandResult << "#10/dec";       break;
-    case Base::Fmt::_16:  commandResult << "#16/hex";       break;
-    default:              commandResult << red("UNKNOWN");  break;
+    case Base::Fmt::_2:   commandResult << "#2/bin";          break;
+    case Base::Fmt::_10:  commandResult << "#10/dec";         break;
+    case Base::Fmt::_16:  commandResult << "#16/hex";         break;
+    default:              commandResult << error("UNKNOWN");  break;
   }
 }
 
@@ -1562,9 +1562,15 @@ void DebuggerParser::executeExec()
   if(file.find_last_of('.') == string::npos)
     file += ".script";
 
+  // Fall back to the user directory, but if that fails too, report the
+  // path as given
   FSNode node(file);
   if(!node.exists())
-    node = FSNode(debugger.myOSystem.userDir().getPath() + file);
+  {
+    FSNode userNode(debugger.myOSystem.userDir().getPath() + file);
+    if(userNode.exists())
+      node = std::move(userNode);
+  }
 
   StringList history;
   const string execResult = exec(node, &history,
