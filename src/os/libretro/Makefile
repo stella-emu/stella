@@ -175,6 +175,18 @@ else ifeq ($(platform), libnx)
    CXXFLAGS += -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd -ffast-math $(ASFLAGS)
    STATIC_LINKING = 1
 
+# Nintendo Switch 2 (libounce)
+else ifeq ($(platform), libounce)
+   include $(DEVKITPRO)/libounce/switch2_rules
+   TARGET := $(TARGET_NAME)_libretro_$(platform).elf
+   DEFINES := -DSWITCH2=1 -D__SWITCH2__ -DARM
+   CXXFLAGS += $(DEFINES) -D_GNU_SOURCE -fPIC -I$(DEVKITPRO)/libounce/include -ffunction-sections -fdata-sections -ftls-model=initial-exec
+   CXXFLAGS += -march=armv8.2-a+crypto -mtune=cortex-a78 -mtp=soft -mcpu=cortex-a78c+crypto -ffast-math $(ASFLAGS)
+   LDFLAGS += -L$(PORTLIBS_PREFIX)/lib/shared
+   LDFLAGS += -Wl,-rpath-link,$(PORTLIBS_PREFIX)/lib/shared
+   LDFLAGS += -shared
+   LDFLAGS += -Wl,-soname,$(TARGET:.elf=.nro)
+
 # Classic Platforms ####################
 # Platform affix = classic_<ISA>_<µARCH>
 # Help at https://modmyclassic.com/comp
@@ -639,7 +651,11 @@ info:
 	$(info CXXFLAGS: $(CXXFLAGS))
 	$(info -------)
 
+ifeq ($(platform), libounce)
+all: $(TARGET:.elf=.nro)
+else
 all: $(TARGET)
+endif
 
 -include $(OBJECTS:.o=.d))
 
@@ -648,6 +664,11 @@ ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
 	+$(LD) $(fpic) $(SHARED) $(LINKOUT)$@ $(OBJECTS) $(LDFLAGS) $(LIBS)
+endif
+
+ifeq ($(platform), libounce)
+$(TARGET:.elf=.nro): $(TARGET)
+	elf2nro $< $@
 endif
 
 %.o: %.cxx
@@ -666,5 +687,5 @@ CXX_ONLY_FLAGS := -std=% -stdlib=% -fno-rtti -fno-exceptions -fno-aligned-alloca
 	$(CC) $(INCFLAGS) $(CPPFLAGS) $(CFLAGS) $(filter-out $(CXX_ONLY_FLAGS),$(CXXFLAGS)) -c $(OBJOUT)$@ $<
 
 clean:
-	rm -f $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET)
+	rm -f $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET) $(TARGET:.elf=.nro)
 endif
