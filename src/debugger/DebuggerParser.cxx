@@ -1518,6 +1518,8 @@ void DebuggerParser::executeExec()
   if(!node.exists())
     node = FSNode(debugger.myOSystem.userDir().getPath() + file);
 
+  // Restored afterwards, so a nested exec doesn't change the outer prefix
+  string outerPrefix = std::move(execPrefix);
   if(argCount == 2)
     execPrefix = argStrings[1];
   else
@@ -1526,6 +1528,7 @@ void DebuggerParser::executeExec()
 
   StringList history;
   const string execResult = exec(node, &history);
+  execPrefix = std::move(outerPrefix);
   commandResult.str("");
   commandResult << execResult;
 
@@ -2540,12 +2543,9 @@ void DebuggerParser::executeTimer()
 void DebuggerParser::executeTrace()
 {
   const uInt32 count = (argCount == 0) ? 1 : U32(args[0]);
-  int cycles = 0;
 
-  for(uInt32 i = 0; i < count; ++i)
-    cycles += debugger.trace();
-
-  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", cycles);
+  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles",
+                 debugger.trace(count));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

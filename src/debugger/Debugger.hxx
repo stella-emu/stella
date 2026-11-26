@@ -415,7 +415,7 @@ class Debugger : public DialogContainer
     void setQuitState();
 
     int step(bool save = true);
-    int trace();
+    int trace(uInt32 count = 1);
     void nextScanline(int lines);
     void nextFrame(int frames);
     uInt16 rewindStates(uInt16 numStates, string& message);

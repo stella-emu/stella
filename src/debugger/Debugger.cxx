@@ -452,9 +452,16 @@ int Debugger::step(bool save)
     saveOldState();
 
   const uInt64 startCycle = mySystem->cycles();
+  auto& tia = myOSystem.console().tia();
 
   unlockSystem();
-  myOSystem.console().tia().updateScanlineByStep().flushLineCache();
+  tia.updateScanlineByStep();
+  // A break at the current cycle (breakpoint at PC, or a trap hit by the
+  // previous step) stops the first attempt before anything executes; the
+  // second attempt gets past it
+  if(mySystem->cycles() == startCycle)
+    tia.updateScanlineByStep();
+  tia.flushLineCache();
   lockSystem();
 
   if(save)
@@ -472,34 +479,46 @@ int Debugger::step(bool save)
 // to share between stack and variables, I doubt any 2600 games will ever
 // use recursion...
 
-int Debugger::trace()
+int Debugger::trace(uInt32 count)
 {
-  // 32 is the 6502 JSR instruction:
-  if(mySystem->peekOob(myCpuDebug->pc()) == 32)
+  saveOldState();
+
+  const uInt64 startCycle = mySystem->cycles();
+
+  for(uInt32 i = 0; i < count; ++i)
   {
-    saveOldState();
-
-    const uInt64 startCycle = mySystem->cycles();
-    const int targetPC = myCpuDebug->pc() + 3; // return address
-
-    // set temporary breakpoint at target PC (if not existing already)
-    const uInt16 bank = myCartDebug->getBank(targetPC);
-    if(!checkBreakPoint(targetPC, bank))
+    // 32 is the 6502 JSR instruction:
+    if(mySystem->peekOob(myCpuDebug->pc()) == 32)
     {
-      // add temporary breakpoint and remove later
-      setBreakPoint(targetPC, bank, BreakpointMap::ONE_SHOT);
+      const uInt64 jsrCycle = mySystem->cycles();
+      const int targetPC = myCpuDebug->pc() + 3; // return address
+
+      // set temporary breakpoint at target PC (if not existing already)
+      const uInt16 bank = myCartDebug->getBank(targetPC);
+      if(!checkBreakPoint(targetPC, bank))
+      {
+        // add temporary breakpoint and remove later
+        setBreakPoint(targetPC, bank, BreakpointMap::ONE_SHOT);
+      }
+
+      unlockSystem();
+      mySystem->m6502().execute(11900000); // max. ~10 seconds
+      // As in step(), a break at the current cycle blocks the first attempt
+      if(mySystem->cycles() == jsrCycle)
+        mySystem->m6502().execute(11900000);
+      myOSystem.console().tia().flushLineCache();
+      lockSystem();
+
+      // A breakpoint, trap or the time limit ended the subroutine early
+      if(myCpuDebug->pc() != targetPC)
+        break;
     }
-
-    unlockSystem();
-    mySystem->m6502().execute(11900000); // max. ~10 seconds
-    myOSystem.console().tia().flushLineCache();
-    lockSystem();
-
-    addState("trace");
-    return I32(mySystem->cycles() - startCycle);
+    else
+      step(false);
   }
-  else
-    return step();
+
+  addState("trace");
+  return I32(mySystem->cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

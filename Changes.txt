@@ -125,6 +125,16 @@
       (issue #1120)
     - Fix controller widget crash in I/O tab in certain cases (issue #954)
     - Improve AR/Supercharger debugger area (issue #200)
+    - Fixed Step and Trace (buttons and prompt commands) doing nothing
+      when stepping from a breakpoint address
+    - 'step' and 'trace' prompt commands now honour their count argument,
+      which was previously ignored
+    - Prompt command arguments are now validated more strictly; 'type'
+      with an invalid end address no longer hangs, 'ram' and 'rom' reject
+      values over $ff, 'cheat' accepts more than one code, and extra
+      arguments are reported instead of silently ignored
+    - Fixed a nested 'exec' in a debugger script changing the file prefix
+      used by the outer script
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,
@@ -196,7 +206,8 @@
 
   * Updated internal ROM properties database to ROM-Hunter version 20
     (thanks go to RomHunter for his tireless research in this area).
-    Related to this, updated the snapshot collection.
+    Related to this, updated the snapshot collection, and added internal
+    tools to handle future RomHunter releases.
 
 -Have fun!
 
