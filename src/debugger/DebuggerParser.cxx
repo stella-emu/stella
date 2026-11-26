@@ -83,8 +83,9 @@ string DebuggerParser::run(string_view command)
     commandResult.swap(outerResult);
   };
 
+  // Leading blanks would otherwise make the verb empty
   string verb;
-  getArgs(command, verb);
+  getArgs(BSPF::trim(command), verb);
 
   // NOLINTNEXTLINE(readability-qualified-auto)
   const auto it = std::ranges::find_if(commands,
@@ -343,8 +344,11 @@ void DebuggerParser::getArgs(string_view command, string& verb)
   argValid.clear();
   verb.clear();
 
-  // Extract verb as everything up to the first space
-  const auto verbEnd = command.find(' ');
+  // Tokens are separated by spaces or tabs
+  const auto isBlank = [](char c) { return c == ' ' || c == '\t'; };
+
+  // Extract verb as everything up to the first blank
+  const auto verbEnd = command.find_first_of(" \t");
   if(verbEnd == string_view::npos)
   {
     verb = command;
@@ -354,8 +358,8 @@ void DebuggerParser::getArgs(string_view command, string& verb)
 
   verb = command.substr(0, verbEnd);
 
-  // Walk the remainder parsing space-separated tokens,
-  // with {brace} quoting for tokens containing spaces
+  // Walk the remainder parsing blank-separated tokens,
+  // with {brace} quoting for tokens containing blanks
   const auto rest = command.substr(verbEnd + 1);
   string curArg;
   curArg.reserve(32);
@@ -368,7 +372,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
       case ParseState::IN_SPACE:
         if(c == '{')
           state = ParseState::IN_BRACE;
-        else if(c != ' ')
+        else if(!isBlank(c))
         {
           state = ParseState::IN_ARG;
           curArg += c;
@@ -387,7 +391,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
         break;
 
       case ParseState::IN_ARG:
-        if(c == ' ')
+        if(isBlank(c))
         {
           state = ParseState::IN_SPACE;
           argStrings.push_back(std::move(curArg));
@@ -2631,6 +2635,10 @@ void DebuggerParser::executeTraps(bool read, bool write, string_view command,
     for(const uInt32 n: {2U, 1U})
     {
       if(argCount < n + 1)
+        continue;
+
+      // The address tokens must evaluate, else they belong to the condition
+      if(!argValid[argCount - 1] || (n == 2 && !argValid[argCount - 2]))
         continue;
 
       string candidate = buildExprStr(0, argCount - n);

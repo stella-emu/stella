@@ -141,6 +141,8 @@
       instead of being treated as -1; negative values are also now
       printed correctly
     - 'help' now reports unknown commands
+    - Prompt commands and scripts now accept tabs between arguments, and
+      leading blanks before a command
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,
