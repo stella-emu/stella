@@ -108,15 +108,16 @@ class DebuggerParser
     enum class ParseState: uInt8 { IN_SPACE, IN_BRACE, IN_ARG };
 
     enum class Parameters: uInt8 {
-      ARG_WORD,       // single 16-bit value
-      ARG_DWORD,      // single 32-bit value
-      ARG_BYTE,       // single 8-bit value
-      ARG_MULTI_BYTE, // multiple 8-bit values (must occur last)
-      ARG_BOOL,       // 0 or 1 only
-      ARG_LABEL,      // label (need not be defined, treated as string)
-      ARG_FILE,       // filename
-      ARG_BASE_SPCL,  // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
-      ARG_END_ARGS    // sentinel, occurs at end of list
+      ARG_WORD,        // single 16-bit value
+      ARG_DWORD,       // single 32-bit value
+      ARG_BYTE,        // single 8-bit value
+      ARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
+      ARG_MULTI_LABEL, // multiple unchecked tokens, e.g. a split expression (must occur last)
+      ARG_BOOL,        // 0 or 1 only
+      ARG_LABEL,       // label (need not be defined, treated as string)
+      ARG_FILE,        // filename
+      ARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
+      ARG_END_ARGS     // sentinel, occurs at end of list
     };
 
     // List of commands available
@@ -136,8 +137,11 @@ class DebuggerParser
       // True when the executor re-parses all args itself via buildExprStr();
       // suppresses the normal YaccParser evaluation pass in evalArgs()
       bool skipEval{false};
-      // Expected argument types, in order, terminated by ARG_END_ARGS;
-      // MULTI_* entries repeat for all remaining arguments
+      // Expected argument types, in order, terminated by ARG_END_ARGS or a
+      // MULTI_* entry (which repeats for all remaining arguments).
+      // Every supplied argument is type-checked against its entry; trailing
+      // entries may be omitted, so an executor that needs more than one
+      // argument must check argCount itself.
       std::array<Parameters, 10> parms;
       // Member function that carries out the command
       void (DebuggerParser::*executor)();

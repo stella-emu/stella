@@ -430,12 +430,16 @@ bool DebuggerParser::validateArgs(int cmd)
     return true;
   }
 
-  auto p = std::span{parms}.begin();
-  uInt32 curCount = 0;
+  // Each supplied argument is checked against its parameter entry; a MULTI_*
+  // entry covers all remaining arguments.  Trailing entries may be omitted
+  // (executors needing more than one argument check argCount themselves).
+  size_t parm = 0;
 
-  while(curCount < argCount)
+  for(uInt32 curCount = 0; curCount < argCount; ++curCount)
   {
-    if(*p == Parameters::ARG_END_ARGS)
+    const Parameters type = parm < parms.size() ? parms[parm]
+                                                : Parameters::ARG_END_ARGS;
+    if(type == Parameters::ARG_END_ARGS)
     {
       outputCommandError("too many arguments", cmd);
       return false;
@@ -444,7 +448,19 @@ bool DebuggerParser::validateArgs(int cmd)
     const uInt32  curArgInt = args[curCount];
     const string& curArgStr = argStrings[curCount];
 
-    switch(*p)
+    // Numeric parameters whose argument didn't evaluate (undefined label,
+    // typo, etc.) get a clearer message than a range error
+    const bool numeric = type == Parameters::ARG_WORD ||
+                         type == Parameters::ARG_BYTE ||
+                         type == Parameters::ARG_MULTI_BYTE ||
+                         type == Parameters::ARG_BOOL;
+    if(numeric && args[curCount] == -1)
+    {
+      outputCommandError(std::format("invalid argument '{}'", curArgStr), cmd);
+      return false;
+    }
+
+    switch(type)
     {
       case Parameters::ARG_WORD:
         if(curArgInt > 0xffff)
@@ -455,6 +471,7 @@ bool DebuggerParser::validateArgs(int cmd)
         break;
 
       case Parameters::ARG_BYTE:
+      case Parameters::ARG_MULTI_BYTE:
         if(curArgInt > 0xff)
         {
           outputCommandError("invalid byte argument (must be 0-$ff)", cmd);
@@ -482,30 +499,15 @@ bool DebuggerParser::validateArgs(int cmd)
 
       case Parameters::ARG_LABEL:
       case Parameters::ARG_FILE:
-        break;
-
       case Parameters::ARG_DWORD:
-        break;
-
-      case Parameters::ARG_MULTI_BYTE:
-        break;
-
+      case Parameters::ARG_MULTI_LABEL:
       case Parameters::ARG_END_ARGS:
-        break;
-
       default:
         break;
     }
 
-    ++curCount;
-    if(*p != Parameters::ARG_MULTI_BYTE)
-      ++p;
-  }
-
-  if(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE)
-  {
-    outputCommandError("missing required argument(s)", cmd);
-    return false;
+    if(type != Parameters::ARG_MULTI_BYTE && type != Parameters::ARG_MULTI_LABEL)
+      ++parm;
   }
   return true;
 }
@@ -1249,6 +1251,11 @@ void DebuggerParser::executeDebugColors()
 // "define"
 void DebuggerParser::executeDefine()
 {
+  if(argCount != 2)
+  {
+    outputCommandError("specify label and address", myCommand);
+    return;
+  }
   if(debugger.cartDebug().getAddress(argStrings[0]) != -1)
     commandResult << "warning: label '" << argStrings[0] << "' already defined\n";
   if(!debugger.cartDebug().addLabel(argStrings[0], args[1]))
@@ -1374,11 +1381,6 @@ void DebuggerParser::executeDump()
   if(argCount == 0 || argCount > 4)
   {
     outputCommandError("wrong number of arguments", myCommand);
-    return;
-  }
-  if(argCount > 1 && args[1] > 0xffff)
-  {
-    outputCommandError("invalid word argument (must be 0-$ffff)", myCommand);
     return;
   }
   if(argCount > 1 && args[1] < args[0])
@@ -2362,7 +2364,16 @@ void DebuggerParser::executeScanLine()
 // "step"
 void DebuggerParser::executeStep()
 {
-  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", debugger.step());
+  const uInt32 count = (argCount == 0) ? 1 : U32(args[0]);
+  int cycles = 0;
+
+  // Record the whole run as a single rewind state
+  debugger.saveOldState();
+  for(uInt32 i = 0; i < count; ++i)
+    cycles += debugger.step(false);
+  debugger.addState("step");
+
+  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2528,7 +2539,13 @@ void DebuggerParser::executeTimer()
 // "trace"
 void DebuggerParser::executeTrace()
 {
-  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", debugger.trace());
+  const uInt32 count = (argCount == 0) ? 1 : U32(args[0]);
+  int cycles = 0;
+
+  for(uInt32 i = 0; i < count; ++i)
+    cycles += debugger.trace();
+
+  std::format_to(std::ostreambuf_iterator(commandResult), "executed {} cycles", cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2923,7 +2940,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeAud
   },
 
@@ -2959,7 +2976,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeBCol
   },
 
@@ -2972,7 +2989,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     true,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeBreak
   },
 
@@ -2984,7 +3001,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     true,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeBreakIf
   },
 
@@ -3037,7 +3054,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeCheat
   },
 
@@ -3061,7 +3078,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeClearConfig
   },
 
@@ -3145,7 +3162,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeCode
   },
 
@@ -3157,7 +3174,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeCol
   },
 
@@ -3193,7 +3210,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeData
   },
 
@@ -3301,7 +3318,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeDisAsm
   },
 
@@ -3317,7 +3334,8 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_BYTE,
+      Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeDump
   },
 
@@ -3329,7 +3347,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     false,
-    { Parameters::ARG_FILE, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_FILE, Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeExec
   },
 
@@ -3365,7 +3383,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeFunction
   },
 
@@ -3377,7 +3395,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeGfx
   },
 
@@ -3545,7 +3563,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeListConfig
   },
 
@@ -3713,7 +3731,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executePCol
   },
 
@@ -3725,7 +3743,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executePGfx
   },
 
@@ -3833,7 +3851,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeRow
   },
 
@@ -4001,7 +4019,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     true,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeSaveStateIf
   },
 
@@ -4037,7 +4055,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     true,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeStepWhile
   },
 
@@ -4049,7 +4067,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     true,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeSwchb
   },
 
@@ -4074,7 +4092,8 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
-      Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+      Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
+      Parameters::ARG_END_ARGS },
     &DebuggerParser::executeTimer
   },
 
@@ -4098,7 +4117,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeTrap
   },
 
@@ -4110,7 +4129,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeTrapIf
   },
 
@@ -4122,7 +4141,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeTrapRead
   },
 
@@ -4134,7 +4153,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeTrapReadIf
   },
 
@@ -4146,7 +4165,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeTrapWrite
   },
 
@@ -4158,7 +4177,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_MULTI_LABEL },
     &DebuggerParser::executeTrapWriteIf
   },
 
@@ -4170,7 +4189,7 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     false,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     &DebuggerParser::executeType
   },
 
