@@ -61,6 +61,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
 
+  # Nintendo Switch 2
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/libounce-make.yml'
+
   # tvOS (AppleTV)
   - project: 'libretro-infrastructure/ci-templates'
     file: '/tvos-arm64.yml'
@@ -256,6 +260,12 @@ libretro-build-libnx-aarch64:
   extends:
     - .libretro-libnx-static-retroarch-master
     - .core-defs
+
+# Nintendo Switch 2
+libretro-build-libounce-aarch64:
+   extends:
+     - .libretro-libounce-make-aarch64
+     - .core-defs
 
 #################################### MISC ##################################
 # webOS 32-bit
