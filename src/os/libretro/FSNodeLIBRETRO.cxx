@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "bspf.hxx"
-#include "Cart.hxx"
 #include "FSNodeLIBRETRO.hxx"
 #include "libretro.h"
 
@@ -289,12 +288,12 @@ size_t FSNodeLIBRETRO::read(ByteArray& image, size_t size) const
   // where need_fullpath=false loads the ROM into memory but the path isn't readable)
   if(isMemoryROM())
   {
-    image.resize(Cartridge::maxSize());
+    image.resize(libretro_get_rom_size());
     const size_t romSize = libretro_read_rom(image.data());
 
     // Trim to what was actually there: callers hash and probe the buffer
-    // itself, so one padded out to maxSize() gives the wrong MD5 (and with
-    // it the wrong properties) and the wrong bankswitch type
+    // itself, so a padded one gives the wrong MD5 (and with it the wrong
+    // properties) and the wrong bankswitch type
     image.resize(romSize);
     return romSize;
   }

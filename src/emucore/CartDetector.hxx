@@ -94,6 +94,11 @@ class CartDetector
     static bool isProbably3EPlus(ByteSpan image);
 
     /**
+      Returns true if the image is probably a 3PO bankswitching cartridge
+    */
+    static bool isProbably3PO(ByteSpan image);
+
+    /**
       Returns true if the image is probably a 3F bankswitching cartridge
     */
     static bool isProbably3F(ByteSpan image);

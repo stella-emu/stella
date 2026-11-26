@@ -184,7 +184,9 @@ Bankswitch::Type CartDetector::autodetectType(ByteSpan image)
   }
 
   // Variable image.size()d ROM formats are independent of image image.size() and come last
-  if(     isProbably3EPlus(image))  type = Bankswitch::Type::_3EP;
+  // (3PO first: a 3PO ROM may carry 3E+'s 'TJ3E' too)
+  if(     isProbably3PO(image))     type = Bankswitch::Type::_3PO;
+  else if(isProbably3EPlus(image))  type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image))     type = Bankswitch::Type::MDM;
   else if(isProbablyMVC(image))     type = Bankswitch::Type::MVC;
 
@@ -313,6 +315,14 @@ bool CartDetector::isProbably3EPlus(ByteSpan image)
 {
   // 3E+ cart is identified key 'TJ3E' in the ROM
   static constexpr std::array<uInt8, 4> sig = { 'T', 'J', '3', 'E' };
+  return searchForBytes(image, sig);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbably3PO(ByteSpan image)
+{
+  // 3PO cart is identified by key 'C3PO' in the ROM
+  static constexpr std::array<uInt8, 4> sig = { 'C', '3', 'P', 'O' };
   return searchForBytes(image, sig);
 }
 

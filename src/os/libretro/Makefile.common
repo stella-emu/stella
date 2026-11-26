@@ -51,6 +51,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Cart2K.cxx \
 	$(CORE_DIR)/emucore/Cart3E.cxx \
 	$(CORE_DIR)/emucore/Cart3EPlus.cxx \
+	$(CORE_DIR)/emucore/Cart3PO.cxx \
 	$(CORE_DIR)/emucore/Cart3EX.cxx \
 	$(CORE_DIR)/emucore/Cart3F.cxx \
 	$(CORE_DIR)/emucore/Cart4A50.cxx \

@@ -40,8 +40,8 @@ class Bankswitch
     // Those starting with a number need an underscore (bugprone-reserved-identifier)
     enum class Type: uInt8 {
       AUTO,   _03E0,  _0840,   _0FA0,  _2IN1, _4IN1, _8IN1, _16IN1,
-      _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3F,
-      _4A50,  _4K,    _4KSC,   AR,     BF,    BFSC,  BUS,   CDF,
+      _32IN1, _64IN1, _128IN1, _2K,    _3E,   _3EX,  _3EP,  _3PO,
+      _3F,    _4A50,  _4K,     _4KSC,  AR,    BF,    BFSC,  BUS,   CDF,
       CM,     CTY,    CV,      DEVC,   DF,    DFSC,  DPC,   DPCP,
       E0,     E7,     EF,      EFF,    EFSC,  ELF,   F0,    F4,
       F4SC,   F6,     F6SC,    F8,     F8SC,  FA,    FA2,   FC,
@@ -86,6 +86,7 @@ class Bankswitch
       {    8_KB, 512_KB },    // _3E
       {    8_KB, 512_KB },    // _3EX
       {    8_KB,  64_KB },    // _3EP
+      {    8_KB, 16384_KB },  // _3PO
       {    8_KB, 512_KB },    // _3F
       {   64_KB,  64_KB },    // _4A50
       {    4_KB,   4_KB },    // _4K
@@ -164,6 +165,7 @@ class Bankswitch
       { "3E"      , "3E (Tigervision, 32K RAM)"   },
       { "3EX"     , "3EX (Tigervision, 256K RAM)" },
       { "3E+"     , "3E+ (TJ modified 3E)"        },
+      { "3PO"     , "3PO (Newbroo 3E+, 16MB)"     },
       { "3F"      , "3F (512K Tigervision)"       },
       { "4A50"    , "4A50 (64K 4A50 + RAM)"       },
       { "4K"      , "4K (4K Atari)"               },
@@ -319,7 +321,7 @@ class Bankswitch
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Extension table: entries MUST stay sorted case-insensitively (binary search)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    static constexpr std::array<TypeEntry, 115> ourExtensions = {{
+    static constexpr std::array<TypeEntry, 116> ourExtensions = {{
       { "03E"   , Bankswitch::Type::_03E0   },
       { "03E0"  , Bankswitch::Type::_03E0   },
       { "084"   , Bankswitch::Type::_0840   },
@@ -339,6 +341,7 @@ class Bankswitch
       { "3EP"   , Bankswitch::Type::_3EP    },
       { "3EX"   , Bankswitch::Type::_3EX    },
       { "3F"    , Bankswitch::Type::_3F     },
+      { "3PO"   , Bankswitch::Type::_3PO    },
       { "4A5"   , Bankswitch::Type::_4A50   },
       { "4A50"  , Bankswitch::Type::_4A50   },
       { "4K"    , Bankswitch::Type::_4K     },
@@ -415,7 +418,7 @@ class Bankswitch
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Name-to-type table: entries MUST stay sorted case-insensitively (binary search)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    static constexpr std::array<TypeEntry, 62> ourNameToTypes = {{
+    static constexpr std::array<TypeEntry, 63> ourNameToTypes = {{
       { "03E0"    , Bankswitch::Type::_03E0   },
       { "0840"    , Bankswitch::Type::_0840   },
       { "0FA0"    , Bankswitch::Type::_0FA0   },
@@ -428,6 +431,7 @@ class Bankswitch
       { "3E+"     , Bankswitch::Type::_3EP    },
       { "3EX"     , Bankswitch::Type::_3EX    },
       { "3F"      , Bankswitch::Type::_3F     },
+      { "3PO"     , Bankswitch::Type::_3PO    },
       { "4A50"    , Bankswitch::Type::_4A50   },
       { "4IN1"    , Bankswitch::Type::_4IN1   },
       { "4K"      , Bankswitch::Type::_4K     },

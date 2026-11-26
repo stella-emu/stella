@@ -597,6 +597,9 @@
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\emucore\Cart3PO.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\emucore\tia\Background.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
@@ -838,6 +841,9 @@
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\Cart3EPlusWidget.cxx">
+      <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\debugger\gui\Cart3POWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\Cart3EWidget.cxx">
@@ -1784,6 +1790,9 @@
     <ClInclude Include="..\..\emucore\Cart3EPlus.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\emucore\Cart3PO.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\emucore\tia\Background.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
@@ -2151,6 +2160,9 @@
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\Cart3EPlusWidget.hxx">
+      <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\gui\Cart3POWidget.hxx">
       <Filter>Header Files\debugger\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\Cart3EWidget.hxx">

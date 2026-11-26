@@ -253,6 +253,14 @@ uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
     count[PC >> 13U]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
+    // A RAM bank's number counts on from the ROM banks', but RAM banks are
+    // often smaller than ROM banks (3E+: 512 bytes against 1K), so 'offset'
+    // can run past the access flags: stay inside them.  (Before, a 3E+ RAM
+    // bank of 32 or more read past the end; with a 3PO image of 512K or
+    // more, whose flags are a separate large allocation, that crashed.)
+    if(offset + addr >= myAccessSize)
+      break;
+
     const Device::AccessType flags = myRomAccessBase[offset + addr];
     // only count really accessed addresses
     if(Bitmask::Enum{flags}.any_of(~Device::ROW))

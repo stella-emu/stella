@@ -24,6 +24,7 @@
 #include "Cart3E.hxx"
 #include "Cart3EX.hxx"
 #include "Cart3EPlus.hxx"
+#include "Cart3PO.hxx"
 #include "Cart3F.hxx"
 #include "Cart4A50.hxx"
 #include "Cart4K.hxx"
@@ -102,6 +103,7 @@ namespace  // anonymous namespace, to keep these functions private
       case _3E:   return std::make_unique<Cartridge3E>(image, md5, settings);
       case _3EX:  return std::make_unique<Cartridge3EX>(image, md5, settings);
       case _3EP:  return std::make_unique<Cartridge3EPlus>(image, md5, settings);
+      case _3PO:  return std::make_unique<Cartridge3PO>(image, md5, settings);
       case _3F:   return std::make_unique<Cartridge3F>(image, md5, settings);
       case _4A50: return std::make_unique<Cartridge4A50>(image, md5, settings);
       case _4K:   return std::make_unique<Cartridge4K>(image, md5, settings);
@@ -506,6 +508,11 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file, ByteSpan image,
     type = detectedType;
     autodetected = true;
   }
+
+  // Cartridge::maxSize() lets files up to 16MB in for 3PO; every other type
+  // keeps the 512K limit it always had
+  if(image.size() > 512_KB && type != Bankswitch::Type::_3PO)
+    throw std::runtime_error("ROM file too large");
 
   // Check for multicart first; if found, get the correct part of the image
   bool validMultiSize = true;
