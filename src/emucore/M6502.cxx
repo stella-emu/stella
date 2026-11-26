@@ -278,10 +278,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
             myLastBreakCycle = mySystem->cycles();
             const uInt32 flags = myBreakPoints.get(PC, bank);
 
-            // disable a one-shot breakpoint
+            // disable a one-shot breakpoint; it ends this run normally, as
+            // callers treat an unset result as an error
             if(flags & BreakpointMap::ONE_SHOT)
             {
               myBreakPoints.erase(PC, bank);
+              result.setOk(currentCycles);
               return;
             }
             else

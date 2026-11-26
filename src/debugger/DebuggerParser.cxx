@@ -2128,8 +2128,11 @@ void DebuggerParser::executeRunTo()
   progress.close();
 
   if(done)
+  {
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "found {} in {} disassembled instructions", target, count);
+    debugger.addState(std::format("RunTo {}", target));
+  }
   else
     std::format_to(std::ostreambuf_iterator(commandResult),
                    "{} not found in {} disassembled instructions", target, count);
@@ -2411,6 +2414,8 @@ void DebuggerParser::executeStepWhile()
   }
   int ncycles = 0;
 
+  debugger.saveOldState();
+
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
@@ -2426,6 +2431,7 @@ void DebuggerParser::executeStepWhile()
   } while(expr->evaluate() && !progress.isCancelled());
 
   progress.close();
+  debugger.addState("StepWhile");
   std::format_to(std::ostreambuf_iterator(commandResult),
                  "executed {} cycles", ncycles);
 }
@@ -2475,11 +2481,12 @@ void DebuggerParser::executeTimer()
 
   bool mirrors = (argCount >= 1 && argStrings[argCount - 1] == "+") ||
                  (argCount >= 2 && argStrings[argCount - 2] == "+");
-  bool anyBank = banked &&
-     ((argCount >= 1 && argStrings[argCount - 1] == "*") ||
-      (argCount >= 2 && argStrings[argCount - 2] == "*"));
+  // '*' is accepted, but ignored, for carts without banks
+  const bool allBanks = (argCount >= 1 && argStrings[argCount - 1] == "*") ||
+                        (argCount >= 2 && argStrings[argCount - 2] == "*");
+  bool anyBank = banked && allBanks;
 
-  argCount -= ((mirrors ? 1 : 0) + (anyBank ? 1 : 0));
+  argCount -= ((mirrors ? 1 : 0) + (allBanks ? 1 : 0));
 
   if(argCount > 4)
   {
@@ -2497,6 +2504,12 @@ void DebuggerParser::executeTimer()
 
   for(uInt32 i = 0; i < argCount; ++i)
   {
+    // Timer args are labels (for '+' and '*'), so validateArgs() can't check them
+    if(!argValid[i])
+    {
+      outputCommandError(std::format("invalid argument '{}'", argStrings[i]), myCommand);
+      return;
+    }
     if(std::cmp_greater_equal(args[i], std::max(0x80U, romBankCount - 1)))
     {
       if(numAddrs == 2)

@@ -143,6 +143,11 @@
     - 'help' now reports unknown commands
     - Prompt commands and scripts now accept tabs between arguments, and
       leading blanks before a command
+    - Fixed crash when continuing emulation after a 'trace' that stopped
+      before the subroutine returned (e.g. at a breakpoint inside it)
+    - 'runTo' and 'stepWhile' can now be rewound/unwound
+    - 'timer' now reports invalid arguments, instead of silently using
+      an invalid bank
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

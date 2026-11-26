@@ -495,7 +495,8 @@ int Debugger::trace(uInt32 count)
 
       // set temporary breakpoint at target PC (if not existing already)
       const uInt16 bank = myCartDebug->getBank(targetPC);
-      if(!checkBreakPoint(targetPC, bank))
+      const bool tempBreak = !checkBreakPoint(targetPC, bank);
+      if(tempBreak)
       {
         // add temporary breakpoint and remove later
         setBreakPoint(targetPC, bank, BreakpointMap::ONE_SHOT);
@@ -508,6 +509,12 @@ int Debugger::trace(uInt32 count)
         mySystem->m6502().execute(11900000);
       myOSystem.console().tia().flushLineCache();
       lockSystem();
+
+      // Execution can stop before the temporary breakpoint is hit (even at
+      // the return address, e.g. by a stack read trap); a stale one would
+      // trigger later, outside of trace
+      if(tempBreak)
+        clearBreakPoint(targetPC, bank);
 
       // A breakpoint, trap or the time limit ended the subroutine early
       if(myCpuDebug->pc() != targetPC)
