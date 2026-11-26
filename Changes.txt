@@ -135,6 +135,12 @@
       arguments are reported instead of silently ignored
     - Fixed a nested 'exec' in a debugger script changing the file prefix
       used by the outer script
+    - Fixed crash when a debugger script runs itself (directly or via
+      another script) with 'exec'
+    - Expressions that can't be parsed are now reported as errors,
+      instead of being treated as -1; negative values are also now
+      printed correctly
+    - 'help' now reports unknown commands
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

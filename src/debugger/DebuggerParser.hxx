@@ -167,9 +167,14 @@ class DebuggerParser
     IntArray args;
     StringList argStrings;
     uInt32 argCount{0};
+    // True for each argument that parsed, so args[] holds its value
+    BoolArray argValid;
 
     // Nesting depth of exec() calls; nonzero while a script is running
     uInt32 execDepth{0};
+    // Deepest exec() nesting allowed, so a script that runs itself
+    // can't exhaust the stack
+    static constexpr uInt32 kMaxExecDepth{16};
     // Filename prefix used by saveSnap/dump during script execution
     string execPrefix;
 

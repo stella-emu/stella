@@ -68,6 +68,7 @@ string DebuggerParser::run(string_view command)
   // restored on return.
   IntArray     outerArgs       = std::move(args);
   StringList   outerArgStrings = std::move(argStrings);
+  BoolArray    outerArgValid   = std::move(argValid);
   const uInt32 outerArgCount   = argCount;
   const int    outerCommand    = myCommand;
   std::ostringstream outerResult;
@@ -76,6 +77,7 @@ string DebuggerParser::run(string_view command)
   const auto restoreCtx = [&] {
     args       = std::move(outerArgs);
     argStrings = std::move(outerArgStrings);
+    argValid   = std::move(outerArgValid);
     argCount   = outerArgCount;
     myCommand  = outerCommand;
     commandResult.swap(outerResult);
@@ -114,6 +116,9 @@ string DebuggerParser::run(string_view command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::exec(const FSNode& file, StringList* history)
 {
+  if(execDepth >= kMaxExecDepth)
+    return red(std::format("exec nesting too deep (max {})", kMaxExecDepth));
+
   if(!file.exists())
     return red(std::format("script file '{}' not found",
                            file.getShortPath()));
@@ -335,6 +340,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
 {
   argStrings.clear();
   args.clear();
+  argValid.clear();
   verb.clear();
 
   // Extract verb as everything up to the first space
@@ -401,6 +407,7 @@ void DebuggerParser::getArgs(string_view command, string& verb)
 
   argCount = U32(argStrings.size());
   args.assign(argCount, -1);
+  argValid.assign(argCount, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -411,7 +418,10 @@ void DebuggerParser::evalArgs(const Command& cmd)
 
   for(uInt32 i = 0; i < argCount; ++i)
     if(auto expr = YaccParser::parse(argStrings[i]))
+    {
       args[i] = expr->evaluate();
+      argValid[i] = true;
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -448,13 +458,14 @@ bool DebuggerParser::validateArgs(int cmd)
     const uInt32  curArgInt = args[curCount];
     const string& curArgStr = argStrings[curCount];
 
-    // Numeric parameters whose argument didn't evaluate (undefined label,
-    // typo, etc.) get a clearer message than a range error
+    // Numeric parameters whose argument didn't parse (undefined label,
+    // typo, etc.) have no value to check
     const bool numeric = type == Parameters::ARG_WORD ||
+                         type == Parameters::ARG_DWORD ||
                          type == Parameters::ARG_BYTE ||
                          type == Parameters::ARG_MULTI_BYTE ||
                          type == Parameters::ARG_BOOL;
-    if(numeric && args[curCount] == -1)
+    if(numeric && !argValid[curCount])
     {
       outputCommandError(std::format("invalid argument '{}'", curArgStr), cmd);
       return false;
@@ -514,7 +525,8 @@ bool DebuggerParser::validateArgs(int cmd)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Each arg is formatted as:  [label(R/W): ] $hex [%binary] #decimal
-// Values >= 0x10000 suppress the binary and label fields (32-bit result).
+// Values outside 0-$ffff (32-bit results, including negative ones) suppress
+// the binary and label fields.
 string DebuggerParser::eval()
 {
   string buf;
@@ -523,8 +535,9 @@ string DebuggerParser::eval()
   for(uInt32 i = 0; i < argCount; ++i)
   {
     const int arg = args[i];
+    const bool is16Bit = arg >= 0 && arg < 0x10000;
 
-    if(arg < 0x10000)
+    if(is16Bit)
     {
       const string rlabel = debugger.cartDebug().getLabel(arg, true);
       const string wlabel = debugger.cartDebug().getLabel(arg, false);
@@ -544,9 +557,10 @@ string DebuggerParser::eval()
         std::format_to(std::back_inserter(buf), "{}(W): ", wlabel);
     }
 
-    std::format_to(std::back_inserter(buf), "${}", Base::toString(arg, Base::Fmt::_16));
+    std::format_to(std::back_inserter(buf), "${}",
+                   Base::toString(arg, is16Bit ? Base::Fmt::_16 : Base::Fmt::_16_8));
 
-    if(arg < 0x10000)
+    if(is16Bit)
       std::format_to(std::back_inserter(buf), " %{}", Base::toString(arg, Base::Fmt::_2));
 
     std::format_to(std::back_inserter(buf), " #{}", I32(arg));
@@ -1620,6 +1634,8 @@ void DebuggerParser::executeHelp()
       if(!it->example.empty())
         commandResult << "Example: " << it->example;
     }
+    else
+      commandResult << red("no such command");
   }
 }
 
