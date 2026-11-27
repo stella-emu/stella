@@ -102,6 +102,12 @@ namespace {
   constexpr double EK_CLOSURE_TICKS = 17.0;
   constexpr double EK_TAIL_TICKS = 4.0;
 
+  // TT KE KO said again start over: each copy's silence first, in Speed ticks
+  constexpr double sayOverTicks(int code)
+  {
+    return code == 191 ? 13.0 : code == 194 ? 19.0 : code == 195 ? 19.0 : 0.0;
+  }
+
   // A stop's closure at a Speed, stretched by Fast and Slow; EK's in ticks
   double closureOf(int code, uInt8 speed, double stretch)
   {
@@ -138,8 +144,8 @@ namespace {
     return code == 182 || (code >= 191 && code <= 199);
   }
 
-  // TT KE KO sound this much longer at the Reset's Speed than their length
-  // and joins give, which a voiced sound after them gives up
+  // TT KE KO sound this much longer at the Reset's Speed before another
+  // sound, which a voiced sound after them gives up
   constexpr double burstExtraMs(int code)
   {
     return code == 191 ? 9.0 : code == 194 ? 8.0 : code == 195 ? 5.0 : 0.0;
@@ -432,10 +438,14 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   const double pitchLaw = voiced && !held ? SpeakJetTables::phraseDuration(myPitch) : 1.0;
   ms *= pitchLaw;
 
-  // The same sound again carries on or is said over, taking what a copy adds
+  // The same sound again carries on, taking what a copy adds, or is said
+  // over at its own length after its silence
   const bool again = std::cmp_equal(code, myLastCode);
   const bool flowingIn = myLastCode >= 0;
-  if(again)
+  const bool saidOver = again && sayOverTicks(code) > 0.0;
+  const double overMs = saidOver
+      ? sayOverTicks(code) * TICK_MS[std::min(mySpeed, SpeakJet::MAX_SPEED)] * fastSlow : 0.0;
+  if(again && !saidOver)
   {
     if(const auto repeatMs = SpeakJetTables::repeatMs(code))
       ms = *repeatMs * timing * pitchLaw;
@@ -467,8 +477,8 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   else if(next.code >= 0 && next.code != code && ms > 0.0)
     ms = joinedMs(code, next, ms, closureMs);
 
-  // A burst's own time, and a hiss's
-  const double burstMs = burstExtraMs(code) * timing;
+  // A burst's own time once another sound is seen to follow, and a hiss's
+  const double burstMs = next.code >= 0 && next.code != code ? burstExtraMs(code) * timing : 0.0;
   ms += burstMs;
   if(flowingIn && next.code >= 0)
     ms = std::max(ms / 2, ms - hissLessMs(code) * timing);
@@ -484,6 +494,7 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
   if(myClosureMs > 0.0)
     quiet(myClosureMs, Kind::Closure);
   myClosureMs = 0.0;
+  quiet(overMs, Kind::Closure);
 
   const bool flowing = myLastCode >= 0;
   myLastCode = code;
@@ -515,7 +526,8 @@ void SpeakJetMSA::play(const SpeakJet::Utterance& utterance)
     }
   }
   myClosureMs = closureMs;
-  myJoin = {!seen && sound > before, code, baseMs, mySegments.size() - sound, endLessMs};
+  myJoin = {!seen && sound > before, code, baseMs, mySegments.size() - sound, endLessMs,
+            seen ? 0.0 : burstExtraMs(code) * timing};
   if(next.code >= 0 && !utterance.more)
     handOver(code, next.code, mySegments.size() - sound);
   if(next.code >= 0 && voicedThrough(next.code))
@@ -736,7 +748,7 @@ void SpeakJetMSA::join()
   Segment& last = mySegments[at];
   const size_t least = at == 0 ? myPos + 1 : 1;
   const double samples = DBL(last.samples) +
-      (ms - myJoin.ms + myJoin.endLessMs) * SpeakJetSynth::RATE / 1000.0;
+      (ms - myJoin.ms + myJoin.endLessMs + myJoin.burstMs) * SpeakJetSynth::RATE / 1000.0;
   last.samples = std::max(least, SZT(std::max(0.0, samples)));
   // A glide's slide cut short arrives by the cut, as the chip's does
   if(last.kind == Kind::Voiced)

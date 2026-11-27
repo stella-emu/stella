@@ -312,6 +312,9 @@ class SpeakJetMSA : public SpeakJet::Sink
 
       // What ending a run took off it, given back if a sound follows
       double endLessMs{0.0};
+
+      // Its burst's own time, given if another sound follows
+      double burstMs{0.0};
     };
     Join myJoin;
 

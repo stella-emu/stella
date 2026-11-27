@@ -758,8 +758,8 @@ namespace {
         233,     183,     252,     238,     175,      90,      87,      73,   // IYUW AXUW IHWW AYWW OWWW JH VV ZZ
          78,      70,      72,      70,      47,      60,      62,      60,   // ZH DH BE BO EB OB DE DO
          42,      43,      65,      63,      52,      55,      90,      75,   // ED OD GE GO EG OG CH HE
-    NO_PAIR,      73,      85,      92,      85,      65,      45,      53,   // HO WH FF SE SO SH TH TT
-        100,     190,      62,      62, NO_PAIR, NO_PAIR,      90,      92,   // TU TS KE KO EK OK PE PO
+    NO_PAIR,      73,      85,      92,      85,      65,      45, NO_PAIR,   // HO WH FF SE SO SH TH TT
+        100,     190, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR,      90,      92,   // TU TS KE KO EK OK PE PO
     NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR,   // R0 R1 R2 R3 R4 R5 R6 R7
     NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR,   // R8 R9 A0 A1 A2 A3 A4 A5
     NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR, NO_PAIR,   // A6 A7 A8 A9 B0 B1 B2 B3
