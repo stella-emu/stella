@@ -156,6 +156,12 @@
       -dbg.script) now name their 'dump'/'saveSnap' files with a
       timestamp, instead of no prefix
     - 'exec' now reports a missing script file by the name given
+    - Fixed 'run' in the middle of a debugger script (or autoexec.script)
+      leaving bankswitching disabled when later commands stepped the
+      emulation; 'run' now takes effect once the script has finished
+    - Fixed watches on expressions (e.g. 'watch {a+1}') always showing
+      'BAD WATCH', and watches containing spaces not loading from a
+      saved debugger script
 
   * Efficiency improvements:
     - Serializer completely reworked; much faster state save/load,

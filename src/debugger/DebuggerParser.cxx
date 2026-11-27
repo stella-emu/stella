@@ -343,16 +343,21 @@ string DebuggerParser::showWatches()
     if(watch.empty())
       continue;
 
+    // Evaluated the same way 'watch' validated it, and re-parsed each time
+    // since labels can change
+    const auto expr = YaccParser::parse(watch);
+    if(!expr)
+    {
+      std::format_to(std::back_inserter(buf), "BAD WATCH {}: {}\n", i + 1, watch);
+      continue;
+    }
+
     argStrings.clear();
     args.clear();
     argCount = 1;
     argStrings.push_back(watch);
-    args.push_back(decipherArg(watch));
-
-    if(args[0] < 0)
-      std::format_to(std::back_inserter(buf), "BAD WATCH {}: {}\n", i + 1, watch);
-    else
-      std::format_to(std::back_inserter(buf), " watch #{} ({}) -> {}\n", i + 1, watch, eval());
+    args.push_back(expr->evaluate());
+    std::format_to(std::back_inserter(buf), " watch #{} ({}) -> {}\n", i + 1, watch, eval());
   }
 
   args       = std::move(savedArgs);
@@ -869,9 +874,9 @@ string DebuggerParser::saveScriptFile(string file)
 
   for(const auto& w: myWatches)
   {
-    out += "watch ";
+    out += "watch {";
     out += w;
-    out += '\n';
+    out += "}\n";
   }
 
   for(const auto& bp: debugger.breakPoints().getBreakpoints())
@@ -2114,7 +2119,6 @@ void DebuggerParser::executeRow()
 // "run"
 void DebuggerParser::executeRun()
 {
-  debugger.saveOldState();
   debugger.exit(false);
   commandResult << kExitDebugger;
 }

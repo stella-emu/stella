@@ -195,8 +195,9 @@ class Debugger : public DialogContainer
     bool startWithFatalError(string_view message = "");
 
     /**
-      Wrapper method for EventHandler::leaveDebugMode() for those classes
-      that don't have access to EventHandler.
+      Leave the debugger, either to the emulation or to the ROM launcher.
+      The request is acted on from updateTime(), so the rest of a script
+      still runs inside the debugger.
     */
     void exit(bool exitrom);
 
@@ -503,9 +504,11 @@ class Debugger : public DialogContainer
     int myMemViewSettleCountdown{0};
     bool myMemViewWindowPending{false};
 
-    // Deferred ROM exit: 'exitRom' can run from stacks that still use the console after
-    // it returns, so the request is acted on from updateTime() once they unwind
-    bool myExitRomPending{false};
+    // Deferred exits: 'run' and 'exitRom' can run from a script, or from stacks that
+    // still use the console after they return, so the request is acted on from
+    // updateTime() once they unwind
+    enum class PendingExit: uInt8 { None, Run, ExitRom };
+    PendingExit myPendingExit{PendingExit::None};
 
     // Various builtin functions and operations
     struct BuiltinFunction {

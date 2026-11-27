@@ -220,12 +220,17 @@ void Debugger::updateTime(uInt64 time)
 {
   DialogContainer::updateTime(time);
 
-  // The stack that asked to exit the ROM has unwound by now, so the console
-  // can safely be torn down
-  if(myExitRomPending)
+  // The stack that asked to exit has unwound by now, so the console can
+  // safely be torn down
+  if(myPendingExit != PendingExit::None)
   {
-    myExitRomPending = false;
-    myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    if(std::exchange(myPendingExit, PendingExit::None) == PendingExit::ExitRom)
+      myOSystem.eventHandler().handleEvent(Event::ExitGame);
+    else
+    {
+      myOSystem.eventHandler().leaveDebugMode();
+      myOSystem.console().tia().clearPendingFrame();
+    }
     return;
   }
 
@@ -290,14 +295,11 @@ void Debugger::quit()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::exit(bool exitrom)
 {
+  // Deferred; see myPendingExit.  Exiting the ROM takes precedence.
   if(exitrom)
-    // Deferred; see myExitRomPending
-    myExitRomPending = true;
-  else
-  {
-    myOSystem.eventHandler().leaveDebugMode();
-    myOSystem.console().tia().clearPendingFrame();
-  }
+    myPendingExit = PendingExit::ExitRom;
+  else if(myPendingExit == PendingExit::None)
+    myPendingExit = PendingExit::Run;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -941,6 +943,7 @@ void Debugger::setStartState()
 
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockSystem();
+  myPendingExit = PendingExit::None;
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   const RewindManager& r = myOSystem.state().rewindManager();
