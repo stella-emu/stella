@@ -4313,9 +4313,9 @@ const DebuggerParser::CommandArray DebuggerParser::commands = { {
 
   {
     "watch",
-    "Print contents of address xx before every prompt",
+    "Print value of expression xx before every prompt",
     "",
-    "watch ram_80",
+    "watch *ram_80",
     true,
     false,
     false,

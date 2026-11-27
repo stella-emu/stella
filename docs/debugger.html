@@ -815,7 +815,7 @@ when bank 1 is selected.</p>
 every prompt. This is useful for e.g. tracking the contents of a
 memory location while stepping through code that modifies it.</p>
 
-<p>You can set up to 10 watches (in future the number will be unlimited).
+<p>There is no limit on the number of watches.
 Since the expression isn't evaluated until it's used, you can include
 registers: "watch *y" will show you the contents of the location
 pointed to by the Y register, even if the Y register changes.</p>
@@ -1063,7 +1063,7 @@ clearSaveStateIfs - Clear all saveState points
             undef - Undefine label xx (if defined)
            unwind - Unwind state state by one or [xx] steps/traces/scanlines/frames...
                 v - Overflow Flag: set (0 or 1), or toggle (no arg)
-            watch - Print contents of address xx before every prompt
+            watch - Print value of expression xx before every prompt
                 x - Set X Register to value xx
                 y - Set Y Register to value xx
                 z - Zero Flag: set (0 or 1), or toggle (no arg)
